@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Usage: scripts/bootstrap
+# Prepares git and pods integration by providing pre-commit hook and isolated CocoaPods environment via Bundler
+
+set -eu
+
+if [ -h .git/hooks/pre-commit ]; then
+    rm .git/hooks/pre-commit
+fi
+
+if [ -f .git/hooks/pre-commit ]; then
+    echo "A git pre-commit hook already exists. Please remove it and re-run this script."
+fi
+
+ln -s ../../scripts/pre-commit.sh .git/hooks/pre-commit
+
+bundle install --path Vendor/bundle
+
+bundle exec pod install

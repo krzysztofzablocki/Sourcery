@@ -1,0 +1,23 @@
+{
+  "name": "SwiftTryCatch",
+  "version": "1.0.0",
+  "summary": "Adds try/catch support for Swift.",
+  "homepage": "https://github.com/ravero/SwiftTryCatch",
+  "license": "MIT",
+  "authors": {
+    "William Falcon": "waf2107@columbia.edu"
+  },
+  "source": {
+    "git": "https://github.com/seanparsons/SwiftTryCatch.git",
+    "branch": "platformtweak",
+    "tag": "1.0.0"
+  },
+  "requires_arc": true,
+  "source_files": "SwiftTryCatch.{h,m}",
+  "platforms": {
+    "osx": null,
+    "ios": null,
+    "tvos": null,
+    "watchos": null
+  }
+}
