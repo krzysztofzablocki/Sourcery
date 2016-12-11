@@ -21,6 +21,7 @@
 		CD812F5E1DFDCC1A0088B2F6 /* Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F581DFDCC1A0088B2F6 /* Type.swift */; };
 		CD812F5F1DFDCC1A0088B2F6 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F591DFDCC1A0088B2F6 /* Variable.swift */; };
 		CD812F621DFDCDA10088B2F6 /* Equality.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F611DFDCDA10088B2F6 /* Equality.generated.swift */; };
+		CD812F671DFDD3990088B2F6 /* Description.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F661DFDD3990088B2F6 /* Description.generated.swift */; };
 		CD9C459D1DFAF76D00161C2C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9C459C1DFAF76D00161C2C /* main.swift */; };
 		E291D13413D92A8C36A07A86 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3D222F05C42C246CB73 /* EnumSpec.swift */; };
@@ -75,6 +76,8 @@
 		CD812F591DFDCC1A0088B2F6 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
 		CD812F611DFDCDA10088B2F6 /* Equality.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Equality.generated.swift; sourceTree = "<group>"; };
 		CD812F641DFDCEE50088B2F6 /* Equality.stencil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Equality.stencil.swift; sourceTree = "<group>"; };
+		CD812F661DFDD3990088B2F6 /* Description.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Description.generated.swift; sourceTree = "<group>"; };
+		CD812F681DFDD3AC0088B2F6 /* Description.stencil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Description.stencil.swift; sourceTree = "<group>"; };
 		CD9C459C1DFAF76D00161C2C /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D7C9B21117B6C7EB409B9D49 /* Pods_Insanity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Insanity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E291D3D222F05C42C246CB73 /* EnumSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumSpec.swift; sourceTree = "<group>"; };
@@ -193,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				CD812F611DFDCDA10088B2F6 /* Equality.generated.swift */,
+				CD812F661DFDD3990088B2F6 /* Description.generated.swift */,
 			);
 			path = CodeGenerated;
 			sourceTree = "<group>";
@@ -201,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				CD812F641DFDCEE50088B2F6 /* Equality.stencil.swift */,
+				CD812F681DFDD3AC0088B2F6 /* Description.stencil.swift */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -470,6 +475,7 @@
 				E291DCA363FD8EBF0455C712 /* Insanity.swift in Sources */,
 				CD812F5E1DFDCC1A0088B2F6 /* Type.swift in Sources */,
 				CD812F5F1DFDCC1A0088B2F6 /* Variable.swift in Sources */,
+				CD812F671DFDD3990088B2F6 /* Description.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
