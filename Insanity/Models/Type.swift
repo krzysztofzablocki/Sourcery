@@ -69,21 +69,4 @@ class Type: NSObject {
     func extend(_ type: Type) {
         self.variables += type.variables
     }
-
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Type else {
-            return false
-        }
-
-        let lhs = self
-        return type(of: lhs).self === type(of: rhs).self &&
-            lhs.name == rhs.name &&
-            lhs.accessLevel == rhs.accessLevel &&
-            lhs.isExtension == rhs.isExtension &&
-            lhs.variables == rhs.variables &&
-            lhs.inheritedTypes == rhs.inheritedTypes &&
-            lhs.containedTypes == rhs.containedTypes &&
-            lhs.parentName == rhs.parentName &&
-            lhs.staticVariables == rhs.staticVariables
-    }
 }

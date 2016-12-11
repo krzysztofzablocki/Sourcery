@@ -15,15 +15,6 @@ class Enum: Type {
                 self.name = name
                 self.type = type
             }
-
-            override func isEqual(_ object: Any?) -> Bool {
-                guard let rhs = object as? Enum.Case.AssociatedValue else {
-                    return false
-                }
-
-                return name == rhs.name &&
-                        type == rhs.type
-            }
         }
 
         var name: String
@@ -39,16 +30,6 @@ class Enum: Type {
             self.rawValue = rawValue
             self.associatedValues = associatedValues
         }
-
-        override func isEqual(_ object: Any?) -> Bool {
-            guard let rhs = object as? Enum.Case else {
-                return false
-            }
-
-            return name == rhs.name &&
-                    rawValue == rhs.rawValue &&
-                    associatedValues == rhs.associatedValues
-        }
     }
 
     /// Enum cases
@@ -61,15 +42,5 @@ class Enum: Type {
         self.cases = cases
         self.rawType = inheritedTypes.first
         super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes)
-    }
-
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Enum else {
-            return false
-        }
-
-        return type(of: self).self === type(of: rhs).self &&
-                cases == rhs.cases &&
-                super.isEqual(rhs)
     }
 }
