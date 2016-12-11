@@ -37,6 +37,7 @@ There are multiple benefits in using Insanity approach:
 - Write less boilerplate code and make it easy adhere to [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself)
 - Avoid the risk of forgetting to update boilerplate when refactoring
 - Gives you meta-programming powers, while still allowing the compiler to ensure everything is correct.
+- **Insanity is so crazy that it uses itself to code-generate boilerplate**
 
 Daemon mode in action:
 
