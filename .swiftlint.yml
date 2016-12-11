@@ -1,0 +1,49 @@
+disabled_rules: # rule identifiers to exclude from running
+  - function_parameter_count
+  - line_length
+  - variable_name
+  - cyclomatic_complexity
+  - nesting
+  - conditional_binding_cascade
+
+opt_in_rules: # some rules are only opt-in
+  - force_unwrapping
+  - force_https
+  - empty_count
+  - conditional_binding_cascade
+
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Carthage
+  - Pods
+
+type_body_length:
+  - 700 #warning
+  - 1000 #error
+
+file_length:
+  - 1000 #warning
+  - 1200 #error
+
+function_body_length:
+  - 125 #warning
+  - 200 #error
+
+type_name:
+  min_length: 3 # only warning
+  max_length: # warning and error
+    warning: 50
+    error: 50
+
+custom_rules:
+  force_https:
+    name: "Force HTTPS over HTTP"
+    regex: "((?i)http(?!s))"
+    match_kinds: string
+    message: "HTTPS should be favored over HTTP"
+    severity: warning
+
+  explicit_failure_calls:
+    name: "Avoid asserting 'false'"
+    regex: "((assert|precondition)\(false)"
+    message: "Use assertionFailure() or preconditionFailure() instead."
+    severity: warning

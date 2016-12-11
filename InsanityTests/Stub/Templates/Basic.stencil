@@ -1,0 +1,10 @@
+
+{% for type in types.classes %}
+extension {{ type.name }}: Equatable {}
+
+func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+    {% for variable in type.variables %} if lhs.{{ variable.name }} != rhs.{{ variable.name }} { return false }
+    {% endfor %}
+    return true
+}
+{% endfor %}
