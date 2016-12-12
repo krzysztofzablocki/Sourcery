@@ -61,9 +61,7 @@ private class TypesReflectionBox: NSObject {
         let classesNames = self.classes.map({ $0.name })
         
         var content = [String: [Type]]()
-        self.all.forEach { type in
-            guard classesNames.contains(type.name) else { return }
-            
+        self.classes.forEach { type in
             type.inheritedTypes.forEach { name in
                 guard classesNames.contains(name) else { return }
                 
