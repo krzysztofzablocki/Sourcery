@@ -37,7 +37,7 @@ There are multiple benefits in using Insanity approach:
 - Write less boilerplate code and make it easy adhere to [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself)
 - Avoid the risk of forgetting to update boilerplate when refactoring
 - Gives you meta-programming powers, while still allowing the compiler to ensure everything is correct.
-- **Insanity is so crazy that it uses itself to code-generate boilerplate**
+- **Insanity is so meta that it uses itself to code-generate boilerplate**
 
 Daemon mode in action:
 
@@ -218,7 +218,7 @@ Options:
 
 Contributions to Insanity are welcomed and encouraged!
 
-Please see the [Contributing guide](CONTRIBUTING.md).
+It's easy to get involved, please see the [Contributing guide](CONTRIBUTING.md) for more details.
 
 [A list of contributors is available through GitHub.](https://github.com/krzysztofzablocki/Insanity/graphs/contributors)
 
@@ -245,7 +245,6 @@ Make sure to check my other libraries and tools, especially:
 - [KZPlayground](https://github.com/krzysztofzablocki/KZPlayground) - Powerful playgrounds for Swift and Objective-C
 - [KZFileWatchers](https://github.com/krzysztofzablocki/KZFileWatchers) - Daemon for observing local and remote file changes, used for building other developer tools (Insanity uses it)
 
-You can [follow me on twitter][7] for news / updates about other projects I'm creating.
+You can [follow me on twitter][1] for news / updates about other projects I'm creating.
 
- [2]: http://foldifyapp.com
- [7]: http://twitter.com/merowing_
+ [1]: http://twitter.com/merowing_
