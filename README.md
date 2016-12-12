@@ -168,7 +168,7 @@ For each type you can access following properties:
 
 - `rawType` <- enum raw type
 - `cases` <- list of `Enum.Case`
-- 'hasAssociatedValues' <- true if any of cases has associated values
+- `hasAssociatedValues` <- true if any of cases has associated values
 
 **Enum.Case** provides:
 
