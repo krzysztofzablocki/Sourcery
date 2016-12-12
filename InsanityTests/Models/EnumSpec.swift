@@ -16,6 +16,18 @@ class EnumSpec: QuickSpec {
                 sut = nil
             }
 
+            it("doesn't have associated values") {
+                expect(sut?.hasAssociatedValues).to(beFalse())
+            }
+
+            context("given associated values") {
+                let sut = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [Enum.Case(name: "CaseA", associatedValues: [Enum.Case.AssociatedValue(name: nil, type: "Int")]), Enum.Case(name: "CaseB")])
+
+                it("hasAssociatedValues") {
+                    expect(sut.hasAssociatedValues).to(beTrue())
+                }
+            }
+
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {

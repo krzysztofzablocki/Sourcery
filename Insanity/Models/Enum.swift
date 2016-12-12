@@ -38,6 +38,15 @@ class Enum: Type {
     /// Raw type of the enum
     let rawType: String?
 
+    /// Checks whether enum contains any associated values
+    var hasAssociatedValues: Bool {
+        for entry in cases {
+            if entry.hasAssociatedValue { return true }
+        }
+
+        return false
+    }
+
     init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], cases: [Case] = [], variables: [Variable] = []) {
         self.cases = cases
         self.rawType = inheritedTypes.first
