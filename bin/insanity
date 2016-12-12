@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# This file serves just as a link
+
+parent_path=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
+
+${parent_path}/Insanity.app/Contents/MacOS/Insanity "$@"
