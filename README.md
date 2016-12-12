@@ -186,6 +186,11 @@ For each type you can access following properties:
 ## Installation
 
 <details>
+<summary>Binary form</summary>
+The easiest way to download the tool right now is to just grab a newest `.zip` distribution from [releases tab](https://github.com/krzysztofzablocki/Insanity/releases).
+</details>
+
+<details>
 <summary>Via CocoaPods</summary>
 If you're using CocoaPods, you can simply add pod 'Insanity' to your Podfile.
 
@@ -199,7 +204,7 @@ You can clone it from the repo and just run `Insanity.xcworkspace`.
 </details>
 
 ## Usage
-Insanity is a command line tool `Insanity`:
+Insanity is a command line tool `insanity`:
 ```
 $ ./insanity <source> <templates> <output>
 ```
