@@ -218,11 +218,11 @@ Options:
 
 Contributions to Insanity are welcomed and encouraged!
 
-Please see the [Contributing guide](CONTRIBUTING).
+Please see the [Contributing guide](CONTRIBUTING.md).
 
 [A list of contributors is available through GitHub.](https://github.com/krzysztofzablocki/Insanity/graphs/contributors)
 
-To give clarity of what is expected of our community, Insanity has adopted the code of conduct defined by the Contributor Covenant. This document is used across many open source communities, and I think it articulates my values well. For more, see the [Code of Conduct](CODE_OF_CONDUCT).
+To give clarity of what is expected of our community, Insanity has adopted the code of conduct defined by the Contributor Covenant. This document is used across many open source communities, and I think it articulates my values well. For more, see the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
