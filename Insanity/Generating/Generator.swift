@@ -11,8 +11,9 @@ import Stencil
 /// types.structs <- lists all structs
 /// types.enums <- lists all enums
 /// types.protocols <- lists all protocols (that were defined in the project)
-/// types.inheriting.BaseClassOrProtocol <- lists all types inheriting from given BaseClass or implementing given Protocol
-/// types.implementing.BaseClassOrProtocol <- convience alias for inheriting ^
+/// types.inheriting.BaseClass <- lists all classes inheriting from known BaseClass
+/// types.implementing.BaseProtocol <- lists all types implementing known BaseProtocol
+/// types.based.BaseClassOrProtocol <- lists all types inheriting from given BaseClass or implementing given Protocol
 private class TypesReflectionBox: NSObject {
     private let types: [Type]
 
@@ -44,7 +45,7 @@ private class TypesReflectionBox: NSObject {
         return self.types.filter { $0 is Enum }
     }()
 
-    lazy var inheriting: [String: [Type]] = {
+    lazy var based: [String: [Type]] = {
         var content = [String: [Type]]()
         self.all.forEach { type in
             type.inheritedTypes.forEach { name in
@@ -56,7 +57,39 @@ private class TypesReflectionBox: NSObject {
         return content
     }()
 
-    lazy var implementing: [String: [Type]] = self.inheriting
+    lazy var inheriting: [String: [Type]] = {
+        let classesNames = self.classes.map({ $0.name })
+        
+        var content = [String: [Type]]()
+        self.all.forEach { type in
+            guard classesNames.contains(type.name) else { return }
+            
+            type.inheritedTypes.forEach { name in
+                guard classesNames.contains(name) else { return }
+                
+                var list = content[name] ?? [Type]()
+                list.append(type)
+                content[name] = list
+            }
+        }
+        return content
+    }()
+
+    lazy var implementing: [String: [Type]] = {
+        let protocolsNames = self.protocols.map({ $0.name })
+        
+        var content = [String: [Type]]()
+        self.all.forEach { type in
+            type.inheritedTypes.forEach { name in
+                guard protocolsNames.contains(name) else { return }
+                
+                var list = content[name] ?? [Type]()
+                list.append(type)
+                content[name] = list
+            }
+        }
+        return content
+    }()
 }
 
 enum Generator {
