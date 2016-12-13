@@ -36,7 +36,13 @@ class Enum: Type {
     internal(set) var cases: [Case]
 
     /// Raw type of the enum
-    let rawType: String?
+    internal(set) var rawType: String? {
+        didSet {
+            if let rawType = rawType, let index = inheritedTypes.index(of: rawType) {
+                inheritedTypes.remove(at: index)
+            }
+        }
+    }
 
     /// Checks whether enum contains any associated values
     var hasAssociatedValues: Bool {
@@ -49,7 +55,6 @@ class Enum: Type {
 
     init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], cases: [Case] = [], variables: [Variable] = [], containedTypes: [Type] = []) {
         self.cases = cases
-        self.rawType = inheritedTypes.first
         super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes)
     }
 }
