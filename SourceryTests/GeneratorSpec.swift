@@ -17,7 +17,11 @@ class GeneratorSpec: QuickSpec {
                             Variable(name: "fooBar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: true)
                     ]),
                     Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["NSObject", "KnownProtocol", "Decodable"]),
-                    Enum(name: "Options", accessLevel: .public, cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")]),
+                    Enum(name: "Options", accessLevel: .public, cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")], containedTypes: [
+                            Type(name: "InnerOptions", accessLevel: .public, variables: [
+                                    Variable(name: "foo", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)
+                            ])
+                    ]),
                     Protocol(name: "KnownProtocol")
             ]
 
@@ -74,6 +78,10 @@ class GeneratorSpec: QuickSpec {
 
                 it("generates type.TypeName") {
                     expect(generate("{{ type.Foo.name }} has {{ type.Foo.variables.first.name }} variable")).to(equal("Foo has intValue variable"))
+                }
+
+                it("generates contained types properly, type.ParentType.ContainedType properly") {
+                    expect(generate("{{ type.Options.InnerOptions.variables.count }} variable")).to(equal("1 variable"))
                 }
 
                 it("generates enum properly") {

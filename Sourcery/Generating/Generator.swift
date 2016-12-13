@@ -90,6 +90,16 @@ private class TypesReflectionBox: NSObject {
     }()
 }
 
+extension Type {
+    override func value(forUndefinedKey key: String) -> Any? {
+        if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
+            return innerType
+        }
+
+        return super.value(forUndefinedKey: key)
+    }
+}
+
 enum Generator {
     static func generate(_ types: [Type], template: Template) throws -> String {
         var typesByName = [String: Type]()
