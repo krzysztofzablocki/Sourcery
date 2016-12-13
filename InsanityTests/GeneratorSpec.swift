@@ -10,12 +10,13 @@ class GeneratorSpec: QuickSpec {
 
             let types = [
                     Type(name: "Foo", accessLevel: .public, variables: [Variable(name: "intValue", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)]),
+                    Type(name: "FooSubclass", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"]),
                     Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [
                             Variable(name: "foo", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false),
                             Variable(name: "bar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false),
                             Variable(name: "fooBar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: true)
                     ]),
-                    Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["Decodable"]),
+                    Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["NSObject", "KnownProtocol", "Decodable"]),
                     Enum(name: "Options", accessLevel: .public, cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")]),
                     Protocol(name: "KnownProtocol")
             ]
@@ -26,7 +27,7 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("generates types.all by skipping protocols") {
-                expect(generate("Found {{ types.all.count }} types")).to(equal("Found 4 types"))
+                expect(generate("Found {{ types.all.count }} types")).to(equal("Found 5 types"))
             }
 
             it("generates types.protocols") {
@@ -34,7 +35,7 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("generates types.classes") {
-                expect(generate("Found {{ types.classes.count }} classes, first: {{ types.classes.first.name }}")).to(equal("Found 1 classes, first: Foo"))
+                expect(generate("Found {{ types.classes.count }} classes, first: {{ types.classes.first.name }}, second: {{ types.classes.last.name }}")).to(equal("Found 2 classes, first: Foo, second: FooSubclass"))
             }
 
             it("generates types.structs") {
@@ -46,11 +47,27 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("feeds types.implementing specific protocol") {
-                expect(generate("Found {{ types.implementing.Decodable.count }} types")).to(equal("Found 1 types"))
+                expect(generate("Found {{ types.implementing.KnownProtocol.count }} types")).to(equal("Found 2 types"))
+                expect(generate("Found {{ types.implementing.Decodable.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.implementing.Foo.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.implementing.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.implementing.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
             }
 
-            it("feeds types.inheriting specific protocol") {
-                expect(generate("Found {{ types.inheriting.Decodable.count }} types")).to(equal("Found 1 types"))
+            it("feeds types.inheriting specific class") {
+                expect(generate("Found {{ types.inheriting.KnownProtocol.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.inheriting.Decodable.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.inheriting.Foo.count }} types")).to(equal("Found 1 types"))
+                expect(generate("Found {{ types.inheriting.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.inheriting.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+            }
+
+            it("feeds types.based specific type or protocol") {
+                expect(generate("Found {{ types.based.KnownProtocol.count }} types")).to(equal("Found 2 types"))
+                expect(generate("Found {{ types.based.Decodable.count }} types")).to(equal("Found 1 types"))
+                expect(generate("Found {{ types.based.Foo.count }} types")).to(equal("Found 1 types"))
+                expect(generate("Found {{ types.based.NSObject.count }} types")).to(equal("Found 1 types"))
+                expect(generate("Found {{ types.based.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
             }
 
             describe("accessing specific type via type.Typename") {
