@@ -185,6 +185,16 @@ For each type you can access following properties:
 - `name` <- name
 - `type` <- type of associated value
 
+**Variable** provides:
+
+- `name` <- Name
+- `type` <- type of the variable
+- `isOptional` <- whether is optional
+- `isComputed` <- whether is computed
+- `isStatic` <- whether is static variable
+- `readAccess` <- what is the protection access for reading?
+- `writeAccess` <- what is the protection access for writing?
+
 # Installing
 
 ## Installation
