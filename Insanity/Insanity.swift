@@ -21,13 +21,15 @@ internal class InsanityTemplate: Template {
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Insanity {
 
+    let version: String
     let verbose: Bool
     var watcherEnabled: Bool = false
 
     /// Creates Insanity processor
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
-    public init(verbose: Bool = false) {
+    public init(version: String, verbose: Bool = false) {
+        self.version = version
         self.verbose = verbose
     }
 
@@ -113,8 +115,11 @@ public class Insanity {
 
         print("Generating code...")
 
+        let header = "// Generated using Insanity \(version) — https://github.com/krzysztofzablocki/Insanity\n"
+            + "// DO NOT EDIT\n\n"
+
         guard output.isDirectory else {
-            let result = try allTemplates.reduce("") { result, template in
+            let result = try allTemplates.reduce(header) { result, template in
                 return result + "\n" + (try generate(template, forTypes: types))
             }
 
@@ -123,7 +128,7 @@ public class Insanity {
         }
 
         try allTemplates.forEach { template in
-            let result = try generate(template, forTypes: types)
+            let result = header + (try generate(template, forTypes: types))
             let outputPath = output + generatedPath(for: template.sourcePath)
             try outputPath.write(result, encoding: .utf8)
         }

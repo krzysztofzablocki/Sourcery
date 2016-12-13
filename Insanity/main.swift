@@ -71,7 +71,7 @@ func runCLI() {
         do {
 
             guard watcherEnabled else {
-                return try Insanity(verbose: verboseLogging).processFiles(source, usingTemplates: template, output: output)
+                return try Insanity(version: version, verbose: verboseLogging).processFiles(source, usingTemplates: template, output: output)
             }
 
             guard let onlySingleTemplate = FilePath(path: template) else {
@@ -79,7 +79,7 @@ func runCLI() {
                 exit(3)
             }
 
-            if let _ = try Insanity(verbose: verboseLogging).processFiles(source, usingTemplates: onlySingleTemplate, output: output, watcherEnabled: watcherEnabled) {
+            if let _ = try Insanity(version: version, verbose: verboseLogging).processFiles(source, usingTemplates: onlySingleTemplate, output: output, watcherEnabled: watcherEnabled) {
                 RunLoop.current.run()
             }
         } catch {

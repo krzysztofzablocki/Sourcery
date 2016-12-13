@@ -1,3 +1,6 @@
+// Generated using Insanity Major.Minor.Patch — https://github.com/krzysztofzablocki/Insanity
+// DO NOT EDIT
+
 extension Bar: Equatable {}
 
 func == (lhs: Bar, rhs: Bar) -> Bool {

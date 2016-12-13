@@ -10,6 +10,8 @@ private extension String {
     }
 }
 
+private let version = "Major.Minor.Patch"
+
 class InsanitySpecTests: QuickSpec {
     override func spec() {
         describe ("Insanity") {
@@ -29,9 +31,9 @@ class InsanitySpecTests: QuickSpec {
 
                 context("without a watcher") {
                     it("creates expected output file") {
-                        expect { try Insanity().processFiles(sourceDir, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
+                        expect { try Insanity(version: version).processFiles(sourceDir, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
 
-                        let result = (try? (outputDir + Insanity().generatedPath(for: templatePath.path)).read(.utf8))
+                        let result = (try? (outputDir + Insanity(version: version).generatedPath(for: templatePath.path)).read(.utf8))
                         expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
                     }
                 }
@@ -45,13 +47,13 @@ class InsanitySpecTests: QuickSpec {
                         updateTemplate(code: "Found {{ types.enums.count }} Enums")
                         guard let tmpTemplate = FilePath(path: tmpTemplate) else { return fail() }
 
-                        expect { watcher = try Insanity().processFiles(sourceDir, usingTemplates: tmpTemplate, output: outputDir, watcherEnabled: true) }.toNot(throwError())
+                        expect { watcher = try Insanity(version: version).processFiles(sourceDir, usingTemplates: tmpTemplate, output: outputDir, watcherEnabled: true) }.toNot(throwError())
 
                         //! Change the template
                         updateTemplate(code: "Found {{ types.all.count }} Types")
 
-                        let result: () -> String? = { (try? (outputDir + Insanity().generatedPath(for: tmpTemplate.path)).read(.utf8)) }
-                        expect(result()).toEventually(equal("Found 3 Types"))
+                        let result: () -> String? = { (try? (outputDir + Insanity(version: version).generatedPath(for: tmpTemplate.path)).read(.utf8)) }
+                        expect(result()).toEventually(contain("Found 3 Types"))
                     }
                 }
             }
@@ -64,7 +66,7 @@ class InsanitySpecTests: QuickSpec {
                     let expectedResult = try? (stubBasePath + Path("Result/Basic+Other.swift")).read(.utf8).trimAll
 
                     it("joins code generated code into single file") {
-                        expect { try Insanity().processFiles(sourceDir, usingTemplates: templatePath, output: outputFile) }.toNot(throwError())
+                        expect { try Insanity(version: version).processFiles(sourceDir, usingTemplates: templatePath, output: outputFile) }.toNot(throwError())
 
                         let result = try? outputFile.read(.utf8)
                         expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
@@ -74,10 +76,10 @@ class InsanitySpecTests: QuickSpec {
                 context("given an output directory") {
                     it("creates corresponding output file for each template") {
                         let templateNames = ["Basic", "Other"]
-                        let generated = templateNames.map { outputDir + Insanity().generatedPath(for: stubBasePath + "Templates/\($0).stencil") }
+                        let generated = templateNames.map { outputDir + Insanity(version: version).generatedPath(for: stubBasePath + "Templates/\($0).stencil") }
                         let expected = templateNames.map { stubBasePath + Path("Result/\($0).swift") }
 
-                        expect { try Insanity().processFiles(sourceDir, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
+                        expect { try Insanity(version: version).processFiles(sourceDir, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
 
                         for (idx, outputPath) in generated.enumerated() {
                             let output = try? outputPath.read(.utf8)
