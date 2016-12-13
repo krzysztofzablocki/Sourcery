@@ -15,8 +15,6 @@ private let version = "Major.Minor.Patch"
 class SourcerySpecTests: QuickSpec {
     override func spec() {
         describe ("Sourcery") {
-            let stubBasePath = Bundle(for: type(of: self)).resourcePath.flatMap { Path($0) }!
-            let sourceDir = stubBasePath + Path("Source")
             let outputDir: Path = {
                 guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Sourcery") else { fatalError("Unable to get temporary path") }
                 _ = try? FileManager.default.removeItem(at: tempDirURL)
@@ -26,14 +24,14 @@ class SourcerySpecTests: QuickSpec {
             }()
 
             context("given a single template") {
-                guard let templatePath = FilePath(path: stubBasePath + Path("Templates/Basic.stencil")) else { fatalError() }
-                let expectedResult = try? (stubBasePath + Path("Result/Basic.swift")).read(.utf8).trimAll
+                guard let templatePath = FilePath(path: Stubs.templateDirectory + Path("Basic.stencil")) else { fatalError() }
+                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8).trimAll
 
                 context("without a watcher") {
                     it("creates expected output file") {
-                        expect { try Sourcery(version: version).processFiles(sourceDir, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
 
-                        let result = (try? (outputDir + Sourcery(version: version).generatedPath(for: templatePath.path)).read(.utf8))
+                        let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath.path)).read(.utf8))
                         expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
                     }
                 }
@@ -47,26 +45,25 @@ class SourcerySpecTests: QuickSpec {
                         updateTemplate(code: "Found {{ types.enums.count }} Enums")
                         guard let tmpTemplate = FilePath(path: tmpTemplate) else { return fail() }
 
-                        expect { watcher = try Sourcery(version: version).processFiles(sourceDir, usingTemplates: tmpTemplate, output: outputDir, watcherEnabled: true) }.toNot(throwError())
+                        expect { watcher = try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: tmpTemplate, output: outputDir, watcherEnabled: true) }.toNot(throwError())
 
                         //! Change the template
                         updateTemplate(code: "Found {{ types.all.count }} Types")
 
-                        let result: () -> String? = { (try? (outputDir + Sourcery(version: version).generatedPath(for: tmpTemplate.path)).read(.utf8)) }
+                        let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate.path)).read(.utf8)) }
                         expect(result()).toEventually(contain("Found 3 Types"))
                     }
                 }
             }
 
             context("given a template folder") {
-                let templatePath = stubBasePath + Path("Templates/")
 
                 context("given a single file output") {
                     let outputFile = outputDir + "Composed.swift"
-                    let expectedResult = try? (stubBasePath + Path("Result/Basic+Other.swift")).read(.utf8).trimAll
+                    let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8).trimAll
 
                     it("joins code generated code into single file") {
-                        expect { try Sourcery(version: version).processFiles(sourceDir, usingTemplates: templatePath, output: outputFile) }.toNot(throwError())
+                        expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: Stubs.templateDirectory, output: outputFile) }.toNot(throwError())
 
                         let result = try? outputFile.read(.utf8)
                         expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
@@ -76,10 +73,10 @@ class SourcerySpecTests: QuickSpec {
                 context("given an output directory") {
                     it("creates corresponding output file for each template") {
                         let templateNames = ["Basic", "Other"]
-                        let generated = templateNames.map { outputDir + Sourcery(version: version).generatedPath(for: stubBasePath + "Templates/\($0).stencil") }
-                        let expected = templateNames.map { stubBasePath + Path("Result/\($0).swift") }
+                        let generated = templateNames.map { outputDir + Sourcery().generatedPath(for: Stubs.templateDirectory + "\($0).stencil") }
+                        let expected = templateNames.map { Stubs.resultDirectory + Path("\($0).swift") }
 
-                        expect { try Sourcery(version: version).processFiles(sourceDir, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: Stubs.templateDirectory, output: outputDir) }.toNot(throwError())
 
                         for (idx, outputPath) in generated.enumerated() {
                             let output = try? outputPath.read(.utf8)

@@ -20,16 +20,16 @@ internal class SourceryTemplate: Template {
 /// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
+    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.3.3"
+    public static let generationMarker: String = "// Generated using Sourcery"
 
-    let version: String
     let verbose: Bool
     var watcherEnabled: Bool = false
 
     /// Creates Sourcery processor
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
-    public init(version: String, verbose: Bool = false) {
-        self.version = version
+    public init(verbose: Bool = false) {
         self.verbose = verbose
     }
 
@@ -115,7 +115,7 @@ public class Sourcery {
 
         print("Generating code...")
 
-        let header = "// Generated using Sourcery \(version) — https://github.com/krzysztofzablocki/Sourcery\n"
+        let header = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
             + "// DO NOT EDIT\n\n"
 
         guard output.isDirectory else {

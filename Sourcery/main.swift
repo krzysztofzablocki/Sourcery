@@ -55,8 +55,6 @@ public struct FilePath {
 }
 
 func runCLI() {
-    let version = "0.3.1"
-
     command(
         Flag("watch",
              flag: "w",
@@ -71,7 +69,7 @@ func runCLI() {
         do {
 
             guard watcherEnabled else {
-                return try Sourcery(version: version, verbose: verboseLogging).processFiles(source, usingTemplates: template, output: output)
+                return try Sourcery(verbose: verboseLogging).processFiles(source, usingTemplates: template, output: output)
             }
 
             guard let onlySingleTemplate = FilePath(path: template) else {
@@ -79,17 +77,19 @@ func runCLI() {
                 exit(3)
             }
 
-            if let _ = try Sourcery(version: version, verbose: verboseLogging).processFiles(source, usingTemplates: onlySingleTemplate, output: output, watcherEnabled: watcherEnabled) {
+            if let _ = try Sourcery(verbose: verboseLogging).processFiles(source, usingTemplates: onlySingleTemplate, output: output, watcherEnabled: watcherEnabled) {
                 RunLoop.current.run()
             }
         } catch {
             print(error)
             exit(4)
         }
-        }.run(version)
+        }.run(Sourcery.version)
 }
 
-if NSClassFromString("XCTest") == nil {
+public var inUnitTests = NSClassFromString("XCTest") != nil
+
+if !inUnitTests {
     runCLI()
 } else {
     //! Need to run something for tests to work
