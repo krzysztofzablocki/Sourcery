@@ -68,9 +68,11 @@ final class Parser {
             case .extensionStruct:
                 type = Struct(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
             case .enum:
-                type = Enum(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes, cases: [])
+                let enumeration = Enum(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
+                enumeration.rawType = parseEnumRawType(source, type: enumeration)
+                type = enumeration
             case .extensionEnum:
-                type = Enum(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes, cases: [])
+                type = Enum(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
             case .enumelement:
                 return parseEnumCase(source)
             case .varInstance:
@@ -259,4 +261,51 @@ extension Parser {
             }
         }
     }
+    
+    internal func parseEnumRawType(_ source:  [String: SourceKitRepresentable], type: Enum) -> String? {
+        guard !type.inheritedTypes.isEmpty else { return nil }
+        guard type.inheritedTypes.contains("RawRepresentable") else { return type.inheritedTypes.first! }
+        
+        if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
+            for substructure in substructures {
+                if let substructure = substructure as? [String: SourceKitRepresentable] {
+                    if let requirements = parseTypeRequirements(substructure),
+                        requirements.kind == .varInstance,
+                        let variable = parseVariable(substructure),
+                        variable.name == "rawValue" {
+                        
+                        if variable.type == "RawValue" {
+                            return parseEnumRawValueAssociatedType(source)
+                        } else {
+                            return variable.type
+                        }
+                    }
+                }
+            }
+        }
+        return nil
+    }
+    
+    private func parseEnumRawValueAssociatedType(_ source:  [String: SourceKitRepresentable]) -> String? {
+        guard let bodyOffset = source["key.bodyoffset"] as? Int64,
+            let bodyLength = source["key.bodylength"] as? Int64,
+            bodyLength > 0 else { return nil }
+
+        var rawType: String?
+
+        let bodyRange = NSRange(location: Int(bodyOffset), length: Int(bodyLength))
+        contents.bridge().substring(with: bodyRange)
+            .replacingOccurrences(of: ";", with: "\n")
+            .enumerateLines(invoking: { (substring, stop) in
+                let substring = substring.trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                if substring.hasPrefix("typealias"), let type = substring.components(separatedBy: " ").last {
+                    rawType = type
+                    stop = true
+                }
+            })
+        
+        return rawType
+    }
+    
 }
