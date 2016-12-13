@@ -23,6 +23,8 @@
 		CD812F621DFDCDA10088B2F6 /* Equality.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F611DFDCDA10088B2F6 /* Equality.generated.swift */; };
 		CD812F671DFDD3990088B2F6 /* Description.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F661DFDD3990088B2F6 /* Description.generated.swift */; };
 		CD9C459D1DFAF76D00161C2C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9C459C1DFAF76D00161C2C /* main.swift */; };
+		CDBD141F1DFFC2CC00FF9F21 /* Description.stencil in Resources */ = {isa = PBXBuildFile; fileRef = CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */; };
+		CDBD14201DFFC2CC00FF9F21 /* Equality.stencil in Resources */ = {isa = PBXBuildFile; fileRef = CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */; };
 		E291D13413D92A8C36A07A86 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3D222F05C42C246CB73 /* EnumSpec.swift */; };
 		E291D4E250805568DBC33F7E /* TypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF48D4FBBB43C1F7EF8A /* TypeSpec.swift */; };
@@ -75,10 +77,10 @@
 		CD812F581DFDCC1A0088B2F6 /* Type.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Type.swift; sourceTree = "<group>"; };
 		CD812F591DFDCC1A0088B2F6 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
 		CD812F611DFDCDA10088B2F6 /* Equality.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Equality.generated.swift; sourceTree = "<group>"; };
-		CD812F641DFDCEE50088B2F6 /* Equality.stencil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Equality.stencil.swift; sourceTree = "<group>"; };
 		CD812F661DFDD3990088B2F6 /* Description.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Description.generated.swift; sourceTree = "<group>"; };
-		CD812F681DFDD3AC0088B2F6 /* Description.stencil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Description.stencil.swift; sourceTree = "<group>"; };
 		CD9C459C1DFAF76D00161C2C /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Description.stencil; sourceTree = "<group>"; };
+		CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Equality.stencil; sourceTree = "<group>"; };
 		D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sourcery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E291D3D222F05C42C246CB73 /* EnumSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumSpec.swift; sourceTree = "<group>"; };
 		E291D78F72297EDB30B2A757 /* ParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserSpec.swift; sourceTree = "<group>"; };
@@ -204,8 +206,8 @@
 		CD812F631DFDCED40088B2F6 /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				CD812F641DFDCEE50088B2F6 /* Equality.stencil.swift */,
-				CD812F681DFDD3AC0088B2F6 /* Description.stencil.swift */,
+				CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */,
+				CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -337,6 +339,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDBD14201DFFC2CC00FF9F21 /* Equality.stencil in Resources */,
+				CDBD141F1DFFC2CC00FF9F21 /* Description.stencil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
