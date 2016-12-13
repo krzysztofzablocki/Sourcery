@@ -23,6 +23,18 @@ class VariableSpec: QuickSpec {
                 expect(sut?.writeAccess == .internal).to(beTrue())
             }
 
+            it("reports optional false") {
+                expect(sut?.isOptional).to(beFalse())
+            }
+
+            it("reports optional for short syntax?") {
+                expect(Variable(name: "Foo", type: "Int?").isOptional).to(beTrue())
+            }
+
+            it("reports optional for long generic syntax") {
+                expect(Variable(name: "Foo", type: "Optional<Int>").isOptional).to(beTrue())
+            }
+
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {

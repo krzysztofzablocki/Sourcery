@@ -13,6 +13,13 @@ class Variable: NSObject {
     /// Variable type
     var type: String
 
+    /// Is the variable optional?
+    var isOptional: Bool {
+        if type.hasSuffix("?") { return true }
+        if type.hasPrefix("Optional<") { return true }
+        return false
+    }
+
     /// Whether is computed
     var isComputed: Bool
 
