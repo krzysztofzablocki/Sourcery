@@ -55,7 +55,7 @@ public struct FilePath {
 }
 
 func runCLI() {
-    let version = "0.2.2"
+    let version = "0.3.0"
 
     command(
         Flag("watch",
