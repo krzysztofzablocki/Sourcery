@@ -136,13 +136,6 @@ class ParserSpec: QuickSpec {
                                 ]))
                     }
 
-                    it("extracts cases properly") {
-                        expect(parse("enum Foo { case optionA }"))
-                                .to(equal([
-                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA")])
-                                ]))
-                    }
-
                     it("extracts enums with raw type") {
                         expect(parse("enum Foo: String { case optionA }"))
                                 .to(equal([
@@ -166,6 +159,17 @@ class ParserSpec: QuickSpec {
                                             Enum.Case(name: "optionB", associatedValues: [Enum.Case.AssociatedValue(name: "named", type: "Float")])
                                         ])
                                 ]))
+                    }
+
+                    it("extracts enums with empty parenthesis as ones without associated type") {
+                        expect(parse("enum Foo { case optionA(); case optionB() }"))
+                                .to(equal([
+                                                  Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
+                                                  [
+                                                          Enum.Case(name: "optionA", associatedValues: []),
+                                                          Enum.Case(name: "optionB", associatedValues: [])
+                                                  ])
+                                          ]))
                     }
                 }
 

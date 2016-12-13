@@ -236,6 +236,8 @@ extension Parser {
     }
 
     private func parseEnumAssociatedValues(_ body: String) -> [Enum.Case.AssociatedValue] {
+        guard !body.isEmpty else { return [] }
+
         /// name: type, otherType
         let components = body.components(separatedBy: ",")
         return components.flatMap { element in
