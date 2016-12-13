@@ -93,7 +93,7 @@ extension AdType {
 
 ----
 
-##### Use case: `I want to generate Equality for types implementing specific protocol.'
+##### Use case: `I want to generate Equality for types implementing specific protocol.`
 
 Template:
 
@@ -122,7 +122,7 @@ func == (lhs: AccountSectionConfiguration, rhs: AccountSectionConfiguration) -> 
 }
 ```
 
-##### Use case: `I want to list all computed variables in a given type.'
+##### Use case: `I want to list all computed variables in a given type.`
 
 Template:
 
