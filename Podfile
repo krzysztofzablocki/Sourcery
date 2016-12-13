@@ -4,12 +4,12 @@
 target 'Sourcery' do
   use_frameworks!
 
-  pod 'Stencil'
+  pod 'Stencil', :git => "git@github.com:kylef/Stencil", :commit => '39517b7'
   pod 'Commander'
   pod 'PathKit', :git => "git@github.com:kylef/PathKit.git", :commit => 'c662c2a'
   pod 'KZFileWatchers'
-  pod 'SourceKitten', :git => "https://github.com/jpsim/SourceKitten", :commit => '9adc3e0'
-  pod 'SwiftTryCatch', :git => 'https://github.com/seanparsons/SwiftTryCatch', :commit => '798c512'
+  pod 'SourceKitten', :git => "git@github.com:jpsim/SourceKitten", :commit => '9adc3e0'
+  pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
 
   target 'SourceryTests' do
     inherit! :search_paths

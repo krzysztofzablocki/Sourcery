@@ -105,10 +105,10 @@ enum Generator {
         var typesByName = [String: Type]()
         types.forEach { typesByName[$0.name] = $0 }
 
-        let context = Context(dictionary: [
+        let context: [String: Any]? = [
             "types": TypesReflectionBox(types: types),
             "type": typesByName
-            ])
+            ]
 
         return try template.render(context)
     }
