@@ -1,16 +1,19 @@
-[![CI Status](http://img.shields.io/travis/krzysztofzablocki/Insanity.svg?style=flat)](https://travis-ci.org/krzysztofzablocki/Insanity)
-[![codecov](https://codecov.io/gh/krzysztofzablocki/Insanity/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Insanity)
-[![Version](https://img.shields.io/cocoapods/v/Insanity.svg?style=flat)](http://cocoapods.org/pods/Insanity)
-[![License](https://img.shields.io/cocoapods/l/Insanity.svg?style=flat)](http://cocoapods.org/pods/Insanity)
-[![Platform](https://img.shields.io/cocoapods/p/Insanity.svg?style=flat)](http://cocoapods.org/pods/Insanity)
+[![CI Status](http://img.shields.io/travis/krzysztofzablocki/Sourcery.svg?style=flat)](https://travis-ci.org/krzysztofzablocki/Sourcery)
+[![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery)
+[![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
+[![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
+[![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 
 <img style="float: left;" src="Resources/icon-256.png">
 
-### What is Insanity?
-> Doing the same thing over and over again and expecting different results.
+### What is Sourcery?
 
 Swift is a beautiful language that powers a lot of great iOS apps. Unfortunately it features very limited runtime and no meta-programming features.
+
 This has led our projects to contain a lot of duplicated code patterns, they can be considered the same code, just with minimal variations.
+
+Sourcery has been created to allow Swift developers to stop doing the same thing over and over again.
+It allows us to have meta-programming while still maintaning strong typing, preventing bugs and leveraging compiler.
 <br><br>
 
 Have you ever?
@@ -25,19 +28,19 @@ If you did then you probably found yourself writing a lot of repetitive code to 
 Even worse, if you ever add a new property to a type all of those implementations have to be updated, or you'll end up with bugs.
 In those scenarios usually **compiler won't generate the error for you**, which leads to error prone code.
 
-_**Insanity** is a tool that scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes._
+_**Sourcery** is a tool that scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes._
 
 - Scans your project code.
 - Allows your templates to access information about project types.
 - Generates swift code.
-- **Immediate feedback:** Insanity features built-in daemon support, allowing you to write your templates in real-time side-by-side with generated code.
+- **Immediate feedback:** Sourcery features built-in daemon support, allowing you to write your templates in real-time side-by-side with generated code.
 
-There are multiple benefits in using Insanity approach:
+There are multiple benefits in using Sourcery approach:
 
 - Write less boilerplate code and make it easy adhere to [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself)
 - Avoid the risk of forgetting to update boilerplate when refactoring
 - Gives you meta-programming powers, while still allowing the compiler to ensure everything is correct.
-- **Insanity is so meta that it uses itself to code-generate boilerplate**
+- **Sourcery is so meta that it uses itself to code-generate boilerplate**
 
 Daemon mode in action:
 
@@ -49,7 +52,7 @@ How everything connects:
 
                                    +--------------+
          Scans code to build AST   |              |  Generates new code
-      +---------------------------->   INSANITY   +--------------------------------+
+      +---------------------------->   SOURCERY   +--------------------------------+
       |                            |              |                                |
       |                            +--^--------^--+                                |
       |                               |        |                                   |
@@ -136,9 +139,9 @@ attributedHeadline: NSAttributedString
 attributedSummary: NSAttributedString
 ```
 ## Writing templates
-*Insanity templates are powered by [Stencil](https://github.com/kylef/Stencil)*
+*Sourcery templates are powered by [Stencil](https://github.com/kylef/Stencil)*
 
-Make sure you leverage Insanity built-in daemon to make writing templates a pleasure:
+Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
 you can open template side-by-side with generated code and see it change live.
 
 There are multiple ways to access your types:
@@ -149,8 +152,9 @@ There are multiple ways to access your types:
 - `types.structs`
 - `types.enums`
 - `types.protocols` => lists all protocols (that were defined in the project)
-- `types.inheriting.BaseClassOrProtocol` => lists all types inheriting from given BaseClass or implementing given Protocol
-- `types.implementing.BaseClassOrProtocol` => convience alias that works exactly the same as `.inheriting`
+- `types.inheriting.BaseClass` => lists all types inherting from known BaseClass (only those that were defined in source code that Sourcery scanned)
+- `types.implementing.Protocol` => lists all types conforming to given Protocol (only those that were defined in source code that Sourcery scanned)
+- `types.based.BaseClassOrProtocol` => lists all types implementing or inhertiing from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
 
 For each type you can access following properties:
 
@@ -187,26 +191,26 @@ For each type you can access following properties:
 
 <details>
 <summary>Binary form</summary>
-The easiest way to download the tool right now is to just grab a newest `.zip` distribution from [releases tab](https://github.com/krzysztofzablocki/Insanity/releases).
+The easiest way to download the tool right now is to just grab a newest `.zip` distribution from [releases tab](https://github.com/krzysztofzablocki/Sourcery/releases).
 </details>
 
 <details>
 <summary>Via CocoaPods</summary>
-If you're using CocoaPods, you can simply add pod 'Insanity' to your Podfile.
+If you're using CocoaPods, you can simply add pod 'Sourcery' to your Podfile.
 
-This will download the Insanity binaries and dependencies in `Pods/`.
-You just need to add `$PODS_ROOT/Insanity/bin/insanity {source} {templates} {output}` in your Script Build Phases.
+This will download the Sourcery binaries and dependencies in `Pods/`.
+You just need to add `$PODS_ROOT/Sourcery/bin/sourcery {source} {templates} {output}` in your Script Build Phases.
 </details>
 
 <details>
 <summary>From Source</summary>
-You can clone it from the repo and just run `Insanity.xcworkspace`.
+You can clone it from the repo and just run `Sourcery.xcworkspace`.
 </details>
 
 ## Usage
-Insanity is a command line tool `insanity`:
+Sourcery is a command line tool `sourcery`:
 ```
-$ ./insanity <source> <templates> <output>
+$ ./sourcery <source> <templates> <output>
 ```
 Arguments:
 
@@ -221,17 +225,17 @@ Options:
 
 ## Contributing
 
-Contributions to Insanity are welcomed and encouraged!
+Contributions to Sourcery are welcomed and encouraged!
 
 It's easy to get involved, please see the [Contributing guide](CONTRIBUTING.md) for more details.
 
-[A list of contributors is available through GitHub.](https://github.com/krzysztofzablocki/Insanity/graphs/contributors)
+[A list of contributors is available through GitHub.](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors)
 
-To give clarity of what is expected of our community, Insanity has adopted the code of conduct defined by the Contributor Covenant. This document is used across many open source communities, and I think it articulates my values well. For more, see the [Code of Conduct](CODE_OF_CONDUCT.md).
+To give clarity of what is expected of our community, Sourcery has adopted the code of conduct defined by the Contributor Covenant. This document is used across many open source communities, and I think it articulates my values well. For more, see the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
-Insanity is available under the MIT license. See [LICENSE](LICENSE) for more information.
+Sourcery is available under the MIT license. See [LICENSE](LICENSE) for more information.
 
 # Attributions
 
@@ -248,7 +252,7 @@ If you want to generate code for asset related logic, I highly recommend [SwiftG
 
 Make sure to check my other libraries and tools, especially:
 - [KZPlayground](https://github.com/krzysztofzablocki/KZPlayground) - Powerful playgrounds for Swift and Objective-C
-- [KZFileWatchers](https://github.com/krzysztofzablocki/KZFileWatchers) - Daemon for observing local and remote file changes, used for building other developer tools (Insanity uses it)
+- [KZFileWatchers](https://github.com/krzysztofzablocki/KZFileWatchers) - Daemon for observing local and remote file changes, used for building other developer tools (Sourcery uses it)
 
 You can [follow me on twitter][1] for news / updates about other projects I'm creating.
 

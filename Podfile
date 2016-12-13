@@ -1,7 +1,7 @@
 # Uncomment this line to define a global platform for your project
 # platform :ios, '9.0'
 
-target 'Insanity' do
+target 'Sourcery' do
   use_frameworks!
 
   pod 'Stencil'
@@ -11,7 +11,7 @@ target 'Insanity' do
   pod 'SourceKitten', :git => "https://github.com/jpsim/SourceKitten", :commit => '9adc3e0'
   pod 'SwiftTryCatch', :git => 'https://github.com/seanparsons/SwiftTryCatch', :commit => '798c512'
 
-  target 'InsanityTests' do
+  target 'SourceryTests' do
     inherit! :search_paths
     pod 'Quick'
     pod 'Nimble'

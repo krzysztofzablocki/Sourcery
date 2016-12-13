@@ -1,6 +1,6 @@
-# Contributing to Insanity
+# Contributing to Sourcery
 
-Insanity is an open source project started by Krzysztof Zabłocki and open to the entire Cocoa community.
+Sourcery is an open source project started by Krzysztof Zabłocki and open to the entire Cocoa community.
 
 I really appreciate your help!
 
@@ -24,7 +24,7 @@ Before submitting changes, please follow these guidelines:
 5. Make sure the entire test suite passes locally and on Travis CI.
 6. Open a Pull Request.
 
-Unless otherwise noted, the Insanity source files are distributed under
+Unless otherwise noted, the Sourcery source files are distributed under
 the MIT-style [LICENSE](LICENSE).
 
-[Please review our Code of Conduct](https://github.com/krzysztofzablocki/Insanity/blob/master/CODE_OF_CONDUCT.md)
+[Please review our Code of Conduct](https://github.com/krzysztofzablocki/Sourcery/blob/master/CODE_OF_CONDUCT.md)

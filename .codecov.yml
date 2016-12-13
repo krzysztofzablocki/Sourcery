@@ -1,6 +1,6 @@
 coverage:
   ignore:
-    - Insanity/main.swift
+    - Sourcery/main.swift
     - Pods/*
   status:
     patch: false
