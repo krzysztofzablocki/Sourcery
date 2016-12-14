@@ -137,36 +137,47 @@ class ParserSpec: QuickSpec {
                                 ]))
                     }
 
-                    it("extracts enums with raw type not implementing RawRepresentable") {
-                        let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA")])
-						expectedEnum.rawType = "String"
-						expect(parse("enum Foo: String { case optionA }")).to(equal([expectedEnum]))
+                    context("given enum containing rawType") {
+
+                        it("extracts enums without RawRepresentable") {
+                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA")])
+                            expectedEnum.rawType = "String"
+
+                            expect(parse("enum Foo: String { case optionA }")).to(equal([expectedEnum]))
+                        }
+
+                        it("extracts enums with RawRepresentable by inferring from variable") {
+                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", type: "String", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                            expectedEnum.rawType = "String"
+
+                            expect(parse("enum Foo: RawRepresentable { case optionA; var rawValue: String { return \"\" }; }")).to(equal([expectedEnum]))
+                        }
+
+                        it("extracts enums with RawRepresentable by inferring from variable with typealias") {
+                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", type: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                            expectedEnum.rawType = "String"
+
+                            expect(parse("enum Foo: RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([expectedEnum]))
+                        }
+
+                        it("extracts enums with RawRepresentable by inferring from typealias") {
+                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["CustomStringConvertible", "RawRepresentable"], cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", type: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                            expectedEnum.rawType = "String"
+
+    						expect(parse("enum Foo: CustomStringConvertible, RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([expectedEnum]))
+                        }
+
+                        it("extracts enums with custom values") {
+                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [Enum.Case(name: "optionA", rawValue: "Value")])
+
+                            expect(parse("enum Foo: String { case optionA = \"Value\" }")).to(equal([expectedEnum]))
+                        }
                     }
-                    
-                    it("extracts enums with rawType implementing RawRepresentable") {
-                        let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA")])
-                        expectedEnum.rawType = "String"
 
-                        expectedEnum.inheritedTypes = ["RawRepresentable"]
-                        expectedEnum.variables = [Variable(name: "rawValue", type: "String", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)]
-						expect(parse("enum Foo: RawRepresentable { case optionA; var rawValue: String { return \"\" }; init?(rawValue: String) { self = .optionA } }")).to(equal([expectedEnum]))
-
-                        expectedEnum.variables = [Variable(name: "rawValue", type: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)]
-						expect(parse("enum Foo: RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([expectedEnum]))
-
-                        expectedEnum.inheritedTypes = ["CustomStringConvertible", "RawRepresentable"]
-						expect(parse("enum Foo: CustomStringConvertible, RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([expectedEnum]))
-                    }
-                    
                     it("extracts enums without rawType") {
-						let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA")])
-						expect(parse("enum Foo { case optionA }")).to(equal([expectedEnum]))
-                    }
+                        let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA")])
 
-                    it("extracts enums with raw type and custom values") {
-						let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA", rawValue: "Value")])
-						expectedEnum.rawType = "String"
-                        expect(parse("enum Foo: String { case optionA = \"Value\" }")).to(equal([expectedEnum]))
+                        expect(parse("enum Foo { case optionA }")).to(equal([expectedEnum]))
                     }
 
                     it("extracts enums with associated types") {
