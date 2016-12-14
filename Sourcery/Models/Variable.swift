@@ -32,6 +32,9 @@ class Variable: NSObject {
     /// Write access
     var writeAccess: AccessLevel
 
+    /// Underlying parser data, never to be used by anything else
+    internal var __parserData: Any?
+
     init(name: String, type: String, accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal), isComputed: Bool = false, isStatic: Bool = false) {
         self.name = name
         self.type = type

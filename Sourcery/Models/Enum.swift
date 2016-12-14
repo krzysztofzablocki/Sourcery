@@ -44,6 +44,14 @@ class Enum: Type {
         }
     }
 
+    override var inheritedTypes: [String] {
+        didSet {
+            if rawType == nil && !inheritedTypes.contains("RawRepresentable") {
+                rawType = inheritedTypes.removeFirst()
+            }
+        }
+    }
+
     /// Checks whether enum contains any associated values
     var hasAssociatedValues: Bool {
         for entry in cases {
@@ -55,6 +63,15 @@ class Enum: Type {
 
     init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], cases: [Case] = [], variables: [Variable] = [], containedTypes: [Type] = []) {
         self.cases = cases
+
+        var rawType: String? = nil
+        var inheritedTypes = inheritedTypes
+        if !inheritedTypes.contains("RawRepresentable") {
+            rawType = inheritedTypes.first
+            inheritedTypes = Array(inheritedTypes.dropFirst())
+        }
+
         super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes)
+        self.rawType = rawType
     }
 }
