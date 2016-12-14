@@ -148,13 +148,11 @@ final class Parser {
                 containingType.staticVariables += [variable]
             } else {
                 containingType.variables += [variable]
-            }
 
-        if let enumeration = containingType as? Enum {
-            if let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
-                enumeration.rawType = updatedRawType
+                if let enumeration = containingType as? Enum, let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
+                    enumeration.rawType = updatedRawType
+                }
             }
-        }
 
         case let (_, childType as Type):
             containingType.containedTypes += [childType]
