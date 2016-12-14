@@ -27,6 +27,39 @@ private extension Type {
     }
 }
 
+fileprivate enum SubstringIdentifier {
+    case body
+    case key
+    case name
+    case nameSuffix
+
+    func range(`for` source: [String: SourceKitRepresentable]) -> (offset: Int64, length: Int64)? {
+
+        func extract(_ offset: SwiftDocKey, _ length: SwiftDocKey) -> (offset: Int64, length: Int64)? {
+            if let offset = source[offset.rawValue] as? Int64, let length = source[length.rawValue] as? Int64 {
+                return (offset, length)
+            }
+            return nil
+        }
+
+        switch self {
+        case .body:
+            return extract(.bodyOffset, .bodyLength)
+        case .key:
+            return extract(.offset, .length)
+        case .name:
+            return extract(.nameOffset, .nameLength)
+        case .nameSuffix:
+            if let name = SubstringIdentifier.name.range(for: source), let key = SubstringIdentifier.key.range(for: source) {
+                let nameEnd = name.offset + name.length
+                return (name.offset + name.length, key.offset + key.length - nameEnd)
+            }
+        }
+
+        return nil
+    }
+}
+
 final class Parser {
 
     let verbose: Bool
@@ -238,23 +271,16 @@ extension Parser {
         var associatedValues: [Enum.Case.AssociatedValue] = []
         var rawValue: String? = nil
 
-        if let nameOffset = source[SwiftDocKey.nameOffset.rawValue] as? Int64,
-            let nameLength = source[SwiftDocKey.nameLength.rawValue] as? Int64,
-            let keyOffset = source["key.offset"] as? Int64,
-            let keyLength = source["key.length"] as? Int64,
-            keyLength != nameLength {
-
-            if let wrappedBody = contents.bridge().substringWithByteRange(start: Int(nameOffset + nameLength), length: Int(keyOffset + keyLength - (nameOffset + nameLength)))?.trimmingCharacters(in: .whitespacesAndNewlines) {
-                switch (wrappedBody.characters.first, wrappedBody.characters.last) {
-                case ("="?, _):
-                    let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-                    rawValue = parseEnumValues(body)
-                case ("("?, ")"?):
-                    let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-                    associatedValues = parseEnumAssociatedValues(body)
-                default:
-                    print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
-                }
+        if let wrappedBody = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) {
+            switch (wrappedBody.characters.first, wrappedBody.characters.last) {
+            case ("="?, _):
+                let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+                rawValue = parseEnumValues(body)
+            case ("("?, ")"?):
+                let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+                associatedValues = parseEnumAssociatedValues(body)
+            default:
+                print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
             }
         }
 
@@ -300,14 +326,9 @@ extension Parser {
     }
 
     fileprivate func parseEnumRawValueAssociatedType(_ source: [String: SourceKitRepresentable]) -> String? {
-        guard let bodyOffset = source[SwiftDocKey.bodyOffset.rawValue] as? Int64,
-            let bodyLength = source[SwiftDocKey.bodyLength.rawValue] as? Int64,
-            bodyLength > 0 else { return nil }
-
         var rawType: String?
 
-        let bodyRange = NSRange(location: Int(bodyOffset), length: Int(bodyLength))
-        contents.bridge().substring(with: bodyRange)
+        extract(.body, from: source)?
             .replacingOccurrences(of: ";", with: "\n")
             .enumerateLines(invoking: { (substring, stop) in
                 let substring = substring.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -321,4 +342,8 @@ extension Parser {
         return rawType
     }
 
+    fileprivate func extract(_ substringIdentifier: SubstringIdentifier, from source: [String: SourceKitRepresentable]) -> String? {
+        let substring = substringIdentifier.range(for: source).flatMap { self.contents.substringWithByteRange(start: Int($0.offset), length: Int($0.length)) }
+        return substring?.isEmpty == true ? nil : substring
+    }
 }
