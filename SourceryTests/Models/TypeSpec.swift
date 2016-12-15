@@ -16,7 +16,7 @@ class TypeSpec: QuickSpec {
             afterEach {
                 sut = nil
             }
-            
+
             it("reports kind as class") {
                 expect(sut?.kind).to(equal("class"))
             }
