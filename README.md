@@ -1,4 +1,4 @@
-[![CI Status](http://img.shields.io/travis/krzysztofzablocki/Sourcery.svg?style=flat)](https://travis-ci.org/krzysztofzablocki/Sourcery)
+[![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=svg)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
 [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
@@ -171,7 +171,7 @@ extension House {
        House(rooms: house.rooms, address: address, size: house.size)
     }
   )
-  
+
   ...
 }
 ```
