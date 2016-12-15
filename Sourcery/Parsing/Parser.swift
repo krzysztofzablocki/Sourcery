@@ -220,6 +220,12 @@ final class Parser {
             current.extend(type)
             unique[type.name] = current
         }
+        
+        for (name, type) in unique {
+            for variable in type.variables {
+                variable.type = unique[name]
+            }
+        }
 
         return unique.values.sorted { $0.name < $1.name }
     }

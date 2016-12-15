@@ -7,16 +7,28 @@ class GeneratorSpec: QuickSpec {
     override func spec() {
 
         describe("Generator") {
+            
+            let fooType = Type(name: "Foo", accessLevel: .public, variables: [Variable(name: "intValue", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)])
+            let fooSubclassType = Type(name: "FooSubclass", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"])
+            let barType = Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["NSObject", "KnownProtocol", "Decodable"])
 
+            let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
+            let fooVar = Variable(name: "foo", type: "Foo", accessLevel: (read: .public, write: .public), isComputed: false)
+            fooVar.type = fooType
+            let barVar = Variable(name: "bar", type: "Bar", accessLevel: (read: .public, write: .public), isComputed: false)
+            barVar.type = barType
+            
+            complexType.variables = [
+                fooVar,
+                barVar,
+                Variable(name: "fooBar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: true)
+            ]
+            
             let types = [
-                    Type(name: "Foo", accessLevel: .public, variables: [Variable(name: "intValue", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)]),
-                    Type(name: "FooSubclass", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"]),
-                    Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [
-                            Variable(name: "foo", type: "Foo", accessLevel: (read: .public, write: .public), isComputed: false),
-                            Variable(name: "bar", type: "Bar", accessLevel: (read: .public, write: .public), isComputed: false),
-                            Variable(name: "fooBar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: true)
-                    ]),
-                    Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["NSObject", "KnownProtocol", "Decodable"]),
+                    fooType,
+                    fooSubclassType,
+                    complexType,
+                    barType,
                     Enum(name: "Options", accessLevel: .public, cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")], containedTypes: [
                             Type(name: "InnerOptions", accessLevel: .public, variables: [
                                     Variable(name: "foo", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)

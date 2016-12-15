@@ -54,7 +54,7 @@ extension Variable {
     override var description: String {
         var string = "\(type(of: self)): " 
         string += "name = \(name), "
-        string += "type = \(type), "
+        string += "type = \(typeName), "
         string += "isComputed = \(isComputed), "
         string += "isStatic = \(isStatic), "
         string += "readAccess = \(readAccess), "
