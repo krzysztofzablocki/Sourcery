@@ -32,6 +32,7 @@ fileprivate enum SubstringIdentifier {
     case key
     case name
     case nameSuffix
+    case keyPrefix
 
     func range(`for` source: [String: SourceKitRepresentable]) -> (offset: Int64, length: Int64)? {
 
@@ -54,6 +55,8 @@ fileprivate enum SubstringIdentifier {
                 let nameEnd = name.offset + name.length
                 return (name.offset + name.length, key.offset + key.length - nameEnd)
             }
+        case .keyPrefix:
+            return SubstringIdentifier.key.range(for: source).flatMap { (offset: 0, length: $0.offset) }
         }
 
         return nil
@@ -141,7 +144,10 @@ final class Parser {
                 return nil
             }
 
-            types.append(type.setSource(source: source))
+            type.setSource(source: source)
+            type.annotations = parseAnnotations(source)
+
+            types.append(type)
             return type
         }
 
@@ -261,7 +267,9 @@ extension Parser {
         }
 
         let variable = Variable(name: name, type: type, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic)
+        variable.annotations = parseAnnotations(source)
         variable.__parserData = source
+
         return variable
     }
 
@@ -340,6 +348,59 @@ extension Parser {
             })
 
         return rawType
+    }
+
+    fileprivate func parseAnnotations(_ source: [String: SourceKitRepresentable]) -> [String: NSObject] {
+        guard let substring = extract(.keyPrefix, from: source) else { return [:] }
+
+        var annotations = [String: NSObject]()
+
+        let newlines = NSCharacterSet.newlines
+        let lines = substring
+                .unicodeScalars
+                .split(omittingEmptySubsequences: false, whereSeparator: { newlines.contains($0) })
+                .flatMap(String.init)
+                .reversed()
+                .dropFirst()    //! last line is the actual key definition so skip it
+
+        var commentLines = [String]()
+
+        //! move lines iteratively and stop after the first one that's not a comment line:
+        for var line in lines {
+            line = line.trimmingCharacters(in: .whitespaces)
+            if !line.hasPrefix("//") {
+                break
+            }
+
+            commentLines.append(line)
+        }
+
+        let annotationDefinitions = commentLines
+                .filter { $0.contains("sourcery:") }
+                .flatMap { line in line.range(of: "sourcery:").flatMap { line.substring(from: $0.upperBound).trimmingCharacters(in: .whitespaces) } }
+                .flatMap { $0.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) } }
+
+        annotationDefinitions.forEach { annotation in
+            let parts = annotation.components(separatedBy: "=").map { $0.trimmingCharacters(in: .whitespaces) }
+            if let name = parts.first, !name.isEmpty {
+
+                guard parts.count > 1, var value = parts.last, value.isEmpty == false else {
+                    annotations[name] = NSNumber(value: true)
+                    return
+                }
+
+                if let number = Float(value) {
+                    annotations[name] = NSNumber(value: number)
+                } else {
+                    if (value.hasPrefix("'") && value.hasSuffix("'")) || (value.hasPrefix("\"") && value.hasSuffix("\"")) {
+                        value = value[value.characters.index(after: value.startIndex) ..< value.characters.index(before: value.endIndex)]
+                    }
+                    annotations[name] = value as NSString
+                }
+            }
+        }
+
+        return annotations
     }
 
     fileprivate func extract(_ substringIdentifier: SubstringIdentifier, from source: [String: SourceKitRepresentable]) -> String? {

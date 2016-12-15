@@ -10,7 +10,7 @@ class TypeSpec: QuickSpec {
             let storedVariable = Variable(name: "otherVariable", type: "Int", isComputed: false)
 
             beforeEach {
-                sut = Type(name: "Foo", parentName: "Parent", variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"])
+                sut = Type(name: "Foo", parentName: "Parent", variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])
             }
 
             afterEach {
@@ -48,7 +48,7 @@ class TypeSpec: QuickSpec {
             }
 
             describe("when extending with Type extension") {
-                it("composes variables") {
+                it("adds variables") {
                     let extraVariable = Variable(name: "variable", type: "Int")
                     let type = Type(name: "Foo", isExtension: true, variables: [extraVariable])
 
@@ -56,23 +56,35 @@ class TypeSpec: QuickSpec {
 
                     expect(sut?.variables).to(equal([storedVariable, computedVariable, extraVariable]))
                 }
+
+                it("adds annotations") {
+                    let expected: [String: NSObject] = ["something": NSNumber(value: 161), "ExtraAnnotation": "ExtraValue" as NSString]
+                    let type = Type(name: "Foo", isExtension: true)
+                    type.annotations["ExtraAnnotation"] = "ExtraValue" as NSString
+
+                    sut?.extend(type)
+
+                    guard let annotations = sut?.annotations else { return fail() }
+                    expect(annotations == expected).to(beTrue())
+                }
             }
 
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"])))
+                        expect(sut).to(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
                     }
                 }
 
                 context("given different items") {
                     it("is not equal") {
-                        expect(sut).toNot(equal(Type(name: "Bar", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"])))
-                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .public, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"])))
-                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: true, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"])))
-                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [computedVariable], inheritedTypes: ["NSObject"])))
-                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: [])))
-                        expect(sut).toNot(equal(Type(name: "Foo", parentName: nil, accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"])))
+                        expect(sut).toNot(equal(Type(name: "Bar", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .public, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: true, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: [], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).toNot(equal(Type(name: "Foo", parentName: nil, accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).toNot(equal(Type(name: "Foo", parentName: "Parent", accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: [:])))
                     }
                 }
             }

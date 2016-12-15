@@ -32,6 +32,9 @@ class Variable: NSObject {
     /// Write access
     var writeAccess: AccessLevel
 
+    ///  Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    var annotations: [String: NSObject] = [:]
+
     /// Underlying parser data, never to be used by anything else
     internal var __parserData: Any?
 
