@@ -31,6 +31,7 @@ In those scenarios usually **compiler won't generate the error for you**, which 
 _**Sourcery** is a tool that scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes._
 
 - Scans your project code.
+- [Adds code annotations](#source-annotations), think attributes like in Rust
 - Allows your templates to access information about project types.
 - Generates swift code.
 - **Immediate feedback:** Sourcery features built-in daemon support, allowing you to write your templates in real-time side-by-side with generated code.
@@ -196,6 +197,7 @@ There are multiple ways to access your types:
 For each type you can access following properties:
 
 - `name`
+- `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`
 - `localName` <- name within parent scope
 - `staticVariables` <- list of static variables
 - `variables` <- list of instance variables
@@ -204,6 +206,7 @@ For each type you can access following properties:
 - `inheritedTypes` <- list of type names that this type implements / inherits
 - `containedTypes` <- list of types contained within this type
 - `parentName` <- list of parent type (for contained ones)
+- `annotations` <- dictionary with configured [annotations](#source-annotations)
 
 **Enum** types builts on top of regular types and adds:
 
@@ -231,6 +234,41 @@ For each type you can access following properties:
 - `isStatic` <- whether is static variable
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
+- `annotations` <- dictionary with configured [annotations](#source-annotations)
+
+
+## Source Annotations
+
+Sourcery supports annotating your classes and variables with special annotations, similar how attributes work in Rust / Java
+
+```swift
+/// sourcery: skipPersistence
+/// Some documentation comment
+/// sourcery: anotherAnnotation = 232, yetAnotherAnnotation = "value"
+/// Documentation
+var precomputedHash: Int
+```
+
+#### Features:
+
+- Multiple annotations can occur on the same line
+- Multiline annotations are supported
+- You can interleave annotations with documentation
+- Sourcery will scan all `sourcery:` annotations in the given comment block above the source until first non comment/doc line
+
+#### Format:
+
+- simple entry, e.g. `sourcery: skipPersistence`
+- key = number, e.g. `sourcery: another = 123`
+- key = string, e.g. `sourcery: jsonKey = "json_key"`
+
+#### Accessing in templates:
+
+```swift
+{% ifnot variable.annotations.skipPersistence %}
+  var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
+{% endif %}
+```
 
 # Installing
 
