@@ -72,5 +72,6 @@ class Type: NSObject {
     /// - Parameter type: Extension of this type
     func extend(_ type: Type) {
         self.variables += type.variables
+        self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
     }
 }

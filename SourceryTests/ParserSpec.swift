@@ -108,9 +108,16 @@ class ParserSpec: QuickSpec {
                     }
 
                     it("extracts inherited types properly") {
-                        expect(parse("class Foo: TestProtocol { }"))
+                        expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
                                 .to(equal([
-                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
+                                ]))
+                    }
+                    
+                    it("extracts unknown type extension") {
+                        expect(parse("extension Foo: TestProtocol { }; extension Foo: AnotherProtocol { var x: Int { return 0 }}"))
+                                .to(equal(
+                                        [Type(name: "Foo", accessLevel: .none, isExtension: true, variables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
                                 ]))
                     }
                 }
