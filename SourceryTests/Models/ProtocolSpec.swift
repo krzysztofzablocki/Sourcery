@@ -2,21 +2,21 @@ import Quick
 import Nimble
 @testable import Sourcery
 
-class StructSpec: QuickSpec {
+class ProtocolSpec: QuickSpec {
     override func spec() {
-        describe ("Struct") {
+        describe ("Protocol") {
             var sut: Type?
 
             beforeEach {
-                sut = Struct(name: "Foo", variables: [], inheritedTypes: [])
+                sut = Protocol(name: "Foo", variables: [], inheritedTypes: [])
             }
 
             afterEach {
                 sut = nil
             }
 
-            it("reports kind as struct") {
-                expect(sut?.kind).to(equal("struct"))
+            it("reports kind as protocol") {
+                expect(sut?.kind).to(equal("protocol"))
             }
 
         }

@@ -1,4 +1,4 @@
-[![CI Status](http://img.shields.io/travis/krzysztofzablocki/Sourcery.svg?style=flat)](https://travis-ci.org/krzysztofzablocki/Sourcery)
+[![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=shield)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
 [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
@@ -31,6 +31,7 @@ In those scenarios usually **compiler won't generate the error for you**, which 
 _**Sourcery** is a tool that scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes._
 
 - Scans your project code.
+- [Adds code annotations](#source-annotations), think attributes like in Rust
 - Allows your templates to access information about project types.
 - Generates swift code.
 - **Immediate feedback:** Sourcery features built-in daemon support, allowing you to write your templates in real-time side-by-side with generated code.
@@ -138,6 +139,43 @@ attributedKicker: NSAttributedString
 attributedHeadline: NSAttributedString
 attributedSummary: NSAttributedString
 ```
+
+
+##### Use case: `I want to create lenses helpers for all structs.`
+_[Full implementation](gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
+
+Template:
+
+```stencil
+{% for type in types.structs %}
+extension {{ type.name }} {
+{% for variable in type.variables %}
+  static let {{ variable.name }}Lens = Lens<{{type.name}}, {{variable.type}}>(
+    get: { $0.{{variable.name}} },
+    set: { {{variable.name}}, {{type.name | lowercase}} in
+       {{type.name}}({% for argument in type.variables %}{{argument.name}}: {% if variable.name == argument.name %}{{variable.name}}{% else %}{{type.name || lowercase}}.{{argument.name}}{% endif %}{% if not forloop.last%}, {% endif %}{% endfor %})
+    }
+  ){% endfor %}
+}
+{% endfor %}
+```
+
+Result:
+```swift
+
+extension House {
+
+  static let addressLens = Lens<House, String>(
+    get: { $0.address },
+    set: { address, house in
+       House(rooms: house.rooms, address: address, size: house.size)
+    }
+  )
+
+  ...
+}
+```
+
 ## Writing templates
 *Sourcery templates are powered by [Stencil](https://github.com/kylef/Stencil)*
 
@@ -159,6 +197,7 @@ There are multiple ways to access your types:
 For each type you can access following properties:
 
 - `name`
+- `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`
 - `localName` <- name within parent scope
 - `staticVariables` <- list of static variables
 - `variables` <- list of instance variables
@@ -167,6 +206,7 @@ For each type you can access following properties:
 - `inheritedTypes` <- list of type names that this type implements / inherits
 - `containedTypes` <- list of types contained within this type
 - `parentName` <- list of parent type (for contained ones)
+- `annotations` <- dictionary with configured [annotations](#source-annotations)
 
 **Enum** types builts on top of regular types and adds:
 
@@ -194,6 +234,41 @@ For each type you can access following properties:
 - `isStatic` <- whether is static variable
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
+- `annotations` <- dictionary with configured [annotations](#source-annotations)
+
+
+## Source Annotations
+
+Sourcery supports annotating your classes and variables with special annotations, similar how attributes work in Rust / Java
+
+```swift
+/// sourcery: skipPersistence
+/// Some documentation comment
+/// sourcery: anotherAnnotation = 232, yetAnotherAnnotation = "value"
+/// Documentation
+var precomputedHash: Int
+```
+
+#### Features:
+
+- Multiple annotations can occur on the same line
+- Multiline annotations are supported
+- You can interleave annotations with documentation
+- Sourcery will scan all `sourcery:` annotations in the given comment block above the source until first non comment/doc line
+
+#### Format:
+
+- simple entry, e.g. `sourcery: skipPersistence`
+- key = number, e.g. `sourcery: another = 123`
+- key = string, e.g. `sourcery: jsonKey = "json_key"`
+
+#### Accessing in templates:
+
+```swift
+{% ifnot variable.annotations.skipPersistence %}
+  var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
+{% endif %}
+```
 
 # Installing
 

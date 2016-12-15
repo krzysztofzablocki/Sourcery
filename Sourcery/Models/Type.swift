@@ -27,6 +27,9 @@ class Type: NSObject {
     /// All instance variables
     var variables: [Variable]
 
+    ///  Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    var annotations: [String: NSObject] = [:]
+
     /// Only computed instance variables
     var computedVariables: [Variable] {
         return variables.filter { $0.isComputed }
@@ -50,10 +53,12 @@ class Type: NSObject {
     /// Parent type name in global scope
     var parentName: String?
 
+    /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
+    /// sourcery: skipDescription
     internal var __parserData: Any?
 
-    init(name: String, parentName: String? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = []) {
+    init(name: String = "", parentName: String? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:]) {
         self.localName = name
         self.accessLevel = accessLevel
         self.isExtension = isExtension
@@ -62,6 +67,7 @@ class Type: NSObject {
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
         self.parentName = parentName
+        self.annotations = annotations
 
         super.init()
         containedTypes.forEach { $0.parentName = self.name }
@@ -72,6 +78,8 @@ class Type: NSObject {
     /// - Parameter type: Extension of this type
     func extend(_ type: Type) {
         self.variables += type.variables
+
+        type.annotations.forEach { self.annotations[$0.key] = $0.value }
         self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
     }
 }

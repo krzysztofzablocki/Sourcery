@@ -2,7 +2,7 @@
 extension {{ type.name }} {
     override var description: String {
         var string = "\(type(of: self)): " {% for variable in type.variables %}
-        string += "{{ variable.name }} = \({{ variable.name }}), "{% endfor %}
+        {% ifnot variable.annotations.skipDescription %} string += "{{ variable.name }} = \({{ variable.name }}), "{% endif %}{% endfor %}
         return string
     }
 }

@@ -33,7 +33,7 @@ class Enum: Type {
     }
 
     override var kind: String { return "enum" }
-    
+
     /// Enum cases
     internal(set) var cases: [Case]
 

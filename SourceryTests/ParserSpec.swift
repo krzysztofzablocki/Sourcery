@@ -23,6 +23,7 @@ class ParserSpec: QuickSpec {
 
             describe("parseVariable") {
                 func parse(_ code: String) -> Variable? {
+                    _ = sut?.parseContents(code)
                     let code = build(code)
                     guard let substructures = code?[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable],
                           let src = substructures.first as? [String: SourceKitRepresentable] else {
@@ -55,6 +56,60 @@ class ParserSpec: QuickSpec {
                                     "didSet { _ = 2 }\n" +
                                     "willSet { _ = 4 }\n" +
                                     "}")).to(equal(Variable(name: "name", type: "Int?", accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                }
+
+                context("given it has sourcery annotations") {
+                    it("extracts single annotation") {
+                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
+
+                        expect(parse("// sourcery: skipEquability\n" +
+                                             "var name: Int { return 2 }")).to(equal(expectedVariable))
+                    }
+
+                    it("extracts multiple annotations on the same line") {
+                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
+                        expectedVariable.annotations["jsonKey"] = "json_key" as NSString
+
+                        expect(parse("// sourcery: skipEquability, jsonKey = \"json_key\"\n" +
+                                             "var name: Int { return 2 }")).to(equal(expectedVariable))
+                    }
+
+                    it("extracts multi-line annotations, including numbers") {
+                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
+                        expectedVariable.annotations["jsonKey"] = "json_key" as NSString
+                        expectedVariable.annotations["thirdProperty"] = NSNumber(value: -3)
+
+                        let result = parse(        "// sourcery: skipEquability, jsonKey = \"json_key\"\n" +
+                                                           "// sourcery: thirdProperty = -3\n" +
+                                                           "var name: Int { return 2 }")
+                        expect(result).to(equal(expectedVariable))
+                    }
+
+                    it("extracts annotations interleaved with comments") {
+                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        expectedVariable.annotations["isSet"] = NSNumber(value: true)
+                        expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
+
+                        let result = parse(        "// sourcery: isSet\n" +
+                                                           "/// isSet is used for something useful\n" +
+                                                           "// sourcery: numberOfIterations = 2\n" +
+                                                           "var name: Int { return 2 }")
+                        expect(result).to(equal(expectedVariable))
+                    }
+
+                    it("stops extracting annotations if it encounters a non-comment line") {
+                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
+
+                        let result = parse(        "// sourcery: isSet\n" +
+                                                           "\n" +
+                                                           "// sourcery: numberOfIterations = 2\n" +
+                                                           "var name: Int { return 2 }")
+                        expect(result).to(equal(expectedVariable))
+                    }
                 }
             }
 
@@ -119,6 +174,15 @@ class ParserSpec: QuickSpec {
                                 .to(equal(
                                         [Type(name: "Foo", accessLevel: .none, isExtension: true, variables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
                                 ]))
+                    }
+
+                    it("extracts annotations correctly") {
+                        let expectedType = Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                        expectedType.annotations["firstLine"] = NSNumber(value: true)
+                        expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
+
+                        expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\n class Foo: TestProtocol { }"))
+                                .to(equal([expectedType]))
                     }
                 }
                 

@@ -3,4 +3,4 @@
 
 parent_path=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 
-${parent_path}/Sourcery.app/Contents/MacOS/Sourcery "$@"
+"${parent_path}"/Sourcery.app/Contents/MacOS/Sourcery "$@"
