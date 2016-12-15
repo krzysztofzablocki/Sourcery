@@ -11,12 +11,13 @@ class Variable: NSObject {
     var name: String
 
     /// Variable type
-    var type: String
+    var typeName: String
+    var type: Type?
 
     /// Is the variable optional?
     var isOptional: Bool {
-        if type.hasSuffix("?") { return true }
-        if type.hasPrefix("Optional<") { return true }
+        if typeName.hasSuffix("?") { return true }
+        if typeName.hasPrefix("Optional<") { return true }
         return false
     }
 
@@ -37,7 +38,7 @@ class Variable: NSObject {
 
     init(name: String, type: String, accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal), isComputed: Bool = false, isStatic: Bool = false) {
         self.name = name
-        self.type = type
+        self.typeName = type
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read

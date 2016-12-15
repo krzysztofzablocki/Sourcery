@@ -53,7 +53,7 @@ extension Variable {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Variable else { return false }
         if self.name != rhs.name { return false }
-        if self.type != rhs.type { return false }
+        if self.typeName != rhs.typeName { return false }
         if self.isComputed != rhs.isComputed { return false }
         if self.isStatic != rhs.isStatic { return false }
         if self.readAccess != rhs.readAccess { return false }

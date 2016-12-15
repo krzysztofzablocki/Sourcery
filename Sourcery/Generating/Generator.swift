@@ -19,6 +19,13 @@ private class TypesReflectionBox: NSObject {
 
     init(types: [Type]) {
         self.types = types
+        
+        for type in types {
+            for variable in type.variables {
+                variable.type = types.filter({ $0.name == variable.typeName }).first
+            }
+        }
+        
         super.init()
     }
 

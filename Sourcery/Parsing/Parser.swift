@@ -318,11 +318,11 @@ extension Parser {
             return nil
         }
 
-        if variable.type == "RawValue" {
+        if variable.typeName == "RawValue" {
             return parseEnumRawValueAssociatedType(enumeration.__underlyingSource)
         }
 
-        return variable.type
+        return variable.typeName
     }
 
     fileprivate func parseEnumRawValueAssociatedType(_ source: [String: SourceKitRepresentable]) -> String? {

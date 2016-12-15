@@ -12,8 +12,8 @@ class GeneratorSpec: QuickSpec {
                     Type(name: "Foo", accessLevel: .public, variables: [Variable(name: "intValue", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)]),
                     Type(name: "FooSubclass", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"]),
                     Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [
-                            Variable(name: "foo", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false),
-                            Variable(name: "bar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false),
+                            Variable(name: "foo", type: "Foo", accessLevel: (read: .public, write: .public), isComputed: false),
+                            Variable(name: "bar", type: "Bar", accessLevel: (read: .public, write: .public), isComputed: false),
                             Variable(name: "fooBar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: true)
                     ]),
                     Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["NSObject", "KnownProtocol", "Decodable"]),
@@ -90,6 +90,10 @@ class GeneratorSpec: QuickSpec {
 
                 it("classifies computed properties properly") {
                     expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("3, 1, 2"))
+                }
+                
+                it("can access variable type information") {
+                    expect(generate("{% for variable in type.Complex.variables %}{{ variable.type.name }}{% endfor %}")).to(equal("FooBar"))
                 }
             }
         }
