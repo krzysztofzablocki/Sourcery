@@ -20,6 +20,15 @@ class Variable: NSObject {
         if typeName.hasPrefix("Optional<") { return true }
         return false
     }
+    
+    var __unwrappedTypeName: String {
+        guard isOptional else { return typeName }
+        if typeName.hasSuffix("?") {
+            return String(typeName.characters.dropLast())
+        } else {
+            return String(typeName.characters.dropFirst("Optional<".characters.count).dropLast())
+        }
+    }
 
     /// Whether is computed
     var isComputed: Bool

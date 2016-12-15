@@ -219,9 +219,9 @@ final class Parser {
             unique[type.name] = current
         }
         
-        for (name, type) in unique {
+        for (_, type) in unique {
             for variable in type.variables {
-                variable.type = unique[name]
+                variable.type = unique[variable.__unwrappedTypeName]
             }
         }
 

@@ -25,6 +25,16 @@ class VariableSpec: QuickSpec {
 
             it("reports optional false") {
                 expect(sut?.isOptional).to(beFalse())
+                sut?.typeName = "Int?"
+                expect(sut?.isOptional).to(beTrue())
+            }
+            
+            it("reports unwrapped type name") {
+                expect(sut?.__unwrappedTypeName).to(equal("Int"))
+                sut?.typeName = "Int?"
+                expect(sut?.__unwrappedTypeName).to(equal("Int"))
+                sut?.typeName = "Optional<Int>"
+                expect(sut?.__unwrappedTypeName).to(equal("Int"))
             }
 
             it("reports optional for short syntax?") {
