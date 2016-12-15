@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
 		985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */; };
 		CD0020EA1D8844AE001CB583 /* ParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D78F72297EDB30B2A757 /* ParserSpec.swift */; };
@@ -59,6 +60,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
 		3825CA349BD2B2AAB9605E7F /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
 		47FBEB8D5AB4DA51522B302B /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
 		4E26A60E38FEA181642B97B4 /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 			children = (
 				E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */,
 				E291DF48D4FBBB43C1F7EF8A /* TypeSpec.swift */,
+				09346DC71E02195300D6358C /* StructSpec.swift */,
 				E291D3D222F05C42C246CB73 /* EnumSpec.swift */,
 			);
 			path = Models;
@@ -493,6 +496,7 @@
 				CD0020EB1D8844B1001CB583 /* GeneratorSpec.swift in Sources */,
 				CD0020EA1D8844AE001CB583 /* ParserSpec.swift in Sources */,
 				E291D8BB621560C275813B1F /* SourcerySpec.swift in Sources */,
+				09346DC81E02195300D6358C /* StructSpec.swift in Sources */,
 				E291D13413D92A8C36A07A86 /* VariableSpec.swift in Sources */,
 				E291D4E250805568DBC33F7E /* TypeSpec.swift in Sources */,
 				E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */,

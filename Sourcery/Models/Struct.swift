@@ -8,4 +8,6 @@
 
 import Foundation
 
-class Struct: Type {}
+class Struct: Type {
+    override var kind: String { return "struct" }
+}
