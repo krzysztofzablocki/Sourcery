@@ -138,6 +138,43 @@ attributedKicker: NSAttributedString
 attributedHeadline: NSAttributedString
 attributedSummary: NSAttributedString
 ```
+
+
+##### Use case: `I want to create lenses helpers for all structs.`
+_[Full implementation](gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
+
+Template:
+
+```stencil
+{% for type in types.structs %}
+extension {{ type.name }} {
+{% for variable in type.variables %}
+  static let {{ variable.name }}Lens = Lens<{{type.name}}, {{variable.type}}>(
+    get: { $0.{{variable.name}} },
+    set: { {{variable.name}}, {{type.name | lowercase}} in
+       {{type.name}}({% for argument in type.variables %}{{argument.name}}: {% if variable.name == argument.name %}{{variable.name}}{% else %}{{type.name || lowercase}}.{{argument.name}}{% endif %}{% if not forloop.last%}, {% endif %}{% endfor %})
+    }
+  ){% endfor %}
+}
+{% endfor %}
+```
+
+Result:
+```swift
+
+extension House {
+
+  static let addressLens = Lens<House, String>(
+    get: { $0.address },
+    set: { address, house in
+       House(rooms: house.rooms, address: address, size: house.size)
+    }
+  )
+  
+  ...
+}
+```
+
 ## Writing templates
 *Sourcery templates are powered by [Stencil](https://github.com/kylef/Stencil)*
 
