@@ -15,6 +15,10 @@ class EnumSpec: QuickSpec {
             afterEach {
                 sut = nil
             }
+            
+            it("reports kind as enum") {
+                expect(sut?.kind).to(equal("enum"))
+            }
 
             it("doesn't have associated values") {
                 expect(sut?.hasAssociatedValues).to(beFalse())

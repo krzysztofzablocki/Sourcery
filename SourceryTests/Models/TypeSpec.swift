@@ -16,6 +16,10 @@ class TypeSpec: QuickSpec {
             afterEach {
                 sut = nil
             }
+            
+            it("reports kind as class") {
+                expect(sut?.kind).to(equal("class"))
+            }
 
             it("resolves name") {
                 expect(sut?.name).to(equal("Parent.Foo"))
