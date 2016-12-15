@@ -36,6 +36,7 @@ class Variable: NSObject {
     var annotations: [String: NSObject] = [:]
 
     /// Underlying parser data, never to be used by anything else
+    /// sourcery: skipEquality, skipDescription
     internal var __parserData: Any?
 
     init(name: String, type: String, accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal), isComputed: Bool = false, isStatic: Bool = false) {

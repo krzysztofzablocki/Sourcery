@@ -53,7 +53,9 @@ class Type: NSObject {
     /// Parent type name in global scope
     var parentName: String?
 
+    /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
+    /// sourcery: skipDescription
     internal var __parserData: Any?
 
     init(name: String = "", parentName: String? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:]) {
