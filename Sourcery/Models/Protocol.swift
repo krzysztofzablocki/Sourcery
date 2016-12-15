@@ -8,4 +8,6 @@
 
 import Foundation
 
-class Protocol: Type {}
+class Protocol: Type {
+    override var kind: String { return "protocol" }
+}
