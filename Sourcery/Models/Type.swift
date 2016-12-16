@@ -27,7 +27,7 @@ class Type: NSObject {
     /// All instance variables
     var variables: [Variable]
 
-    ///  Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
     /// Only computed instance variables

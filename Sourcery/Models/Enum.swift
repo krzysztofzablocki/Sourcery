@@ -32,6 +32,7 @@ class Enum: Type {
         }
     }
 
+    /// sourcery: skipDescription
     override var kind: String { return "enum" }
 
     /// Enum cases

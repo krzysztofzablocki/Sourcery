@@ -12,6 +12,9 @@ class Variable: NSObject {
 
     /// Variable type
     var typeName: String
+    
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
     var type: Type?
 
     /// Is the variable optional?
@@ -21,6 +24,8 @@ class Variable: NSObject {
         return false
     }
     
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
     var unwrappedTypeName: String {
         guard isOptional else { return typeName }
         if typeName.hasSuffix("?") {
@@ -42,7 +47,7 @@ class Variable: NSObject {
     /// Write access
     var writeAccess: AccessLevel
 
-    ///  Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
     /// Underlying parser data, never to be used by anything else
