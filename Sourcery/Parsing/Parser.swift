@@ -164,6 +164,7 @@ final class Parser {
                 return nil
             }
 
+            type.hasGenericComponent = isGeneric(source: source)
             type.setSource(source: source)
             type.annotations = parseAnnotations(source)
 
@@ -210,14 +211,14 @@ final class Parser {
 
                 if let enumeration = containingType as? Enum,
                     let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
-                    
+
                     enumeration.rawType = updatedRawType
                 }
             }
 
         case let (_, childType as Type):
             containingType.containedTypes += [childType]
-            childType.parentName = containingType.name
+            childType.parent = containingType
         case let (enumeration as Enum, enumCase as Enum.Case):
             enumeration.cases += [enumCase]
         default:
@@ -265,7 +266,7 @@ final class Parser {
                 }
             }
         }
-        
+
         for (_, type) in unique {
             if let enumeration = type as? Enum, enumeration.rawType == nil {
                 guard let rawTypeName = enumeration.inheritedTypes.first else { continue }
@@ -454,6 +455,11 @@ extension Parser {
         }
 
         return annotations
+    }
+
+    fileprivate func isGeneric(source: [String: SourceKitRepresentable]) -> Bool {
+        guard let substring = extract(.nameSuffix, from: source), substring.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<") == true else { return false }
+        return true
     }
 
     fileprivate func extract(_ substringIdentifier: SubstringIdentifier, from source: [String: SourceKitRepresentable]) -> String? {

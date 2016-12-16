@@ -14,8 +14,13 @@ class Type: NSObject {
 
     /// Name in global scope 
     var name: String {
-        guard let parentName = parentName else { return localName }
+        guard let parentName = parent?.name else { return localName }
         return "\(parentName).\(localName)"
+    }
+
+    /// Is this type generic? regardless whether it's this type directly or one of its parent types
+    var isGeneric: Bool {
+        return (parent?.isGeneric ?? false) || hasGenericComponent
     }
 
     /// Name in parent scope
@@ -46,19 +51,32 @@ class Type: NSObject {
     /// Contained types
     var containedTypes: [Type] {
         didSet {
-            containedTypes.forEach { $0.parentName = self.name }
+            containedTypes.forEach { $0.parent = self }
         }
     }
 
-    /// Parent type name in global scope
+    /// Parent name
     var parentName: String?
+
+    /// Parent type
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var parent: Type? {
+        didSet {
+            parentName = parent?.name
+        }
+    }
+
+    /// Whether the type has generic component
+    /// This is not the same as `isGeneric` because this is only local information, you should use `isGeneric`
+    var hasGenericComponent: Bool = false
 
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
     /// sourcery: skipDescription
     internal var __parserData: Any?
 
-    init(name: String = "", parentName: String? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:]) {
+    init(name: String = "", parent: Type? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:], hasGenericComponent: Bool = false) {
         self.localName = name
         self.accessLevel = accessLevel
         self.isExtension = isExtension
@@ -66,11 +84,13 @@ class Type: NSObject {
         self.staticVariables = staticVariables
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
-        self.parentName = parentName
+        self.parent = parent
+        self.parentName = parent?.name
         self.annotations = annotations
+        self.hasGenericComponent = hasGenericComponent
 
         super.init()
-        containedTypes.forEach { $0.parentName = self.name }
+        containedTypes.forEach { $0.parent = self }
     }
 
     /// Extends this type with an extension
