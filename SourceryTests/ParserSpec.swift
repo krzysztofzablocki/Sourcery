@@ -168,7 +168,7 @@ class ParserSpec: QuickSpec {
                                         Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
                                 ]))
                     }
-                    
+
                     it("extracts annotations correctly") {
                         let expectedType = Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
@@ -178,7 +178,7 @@ class ParserSpec: QuickSpec {
                                 .to(equal([expectedType]))
                     }
                 }
-                
+
                 context("given typealias") {
                     it("extracts typealiases properly") {
                         expect(sut?.parseContents("typealias FooAlias = Foo; class Foo {}").typealiases)
@@ -186,14 +186,14 @@ class ParserSpec: QuickSpec {
                                 ["FooAlias": "Foo"]
                             ))
                     }
-                    
+
                     it("replaces variable alias type with actual type") {
                         let expectedVariable = Variable(name: "foo", type: "FooAlias")
                         expectedVariable.type = Type(name: "Foo")
-                        
+
                         let type = parse("typealias FooAlias = Foo; internal class Foo {}; class Bar { internal var foo: FooAlias }").first
                         let variable = type?.variables.first
-                        
+
                         expect(variable).to(equal(expectedVariable))
                         expect(variable?.type).to(equal(expectedVariable.type))
                     }
@@ -201,14 +201,14 @@ class ParserSpec: QuickSpec {
                     it("replaces variable optional alias type with actual type") {
                         let expectedVariable = Variable(name: "foo", type: "FooAlias?")
                         expectedVariable.type = Type(name: "Foo")
-                        
+
                         let type = parse("typealias FooAlias = Foo; class Foo {}; class Bar { var foo: FooAlias? }").first
                         let variable = type?.variables.first
-                        
+
                         expect(variable).to(equal(expectedVariable))
                         expect(variable?.type).to(equal(expectedVariable.type))
                     }
-                    
+
                     it("extends actual type with type alias extension") {
                         expect(parse("typealias FooAlias = Foo; class Foo: TestProtocol { }; extension FooAlias: AnotherProtocol {}"))
                             .to(equal([

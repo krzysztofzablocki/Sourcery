@@ -12,7 +12,7 @@ class Variable: NSObject {
 
     /// Variable type
     var typeName: String
-    
+
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var type: Type?
@@ -23,7 +23,7 @@ class Variable: NSObject {
         if typeName.hasPrefix("Optional<") { return true }
         return false
     }
-    
+
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var unwrappedTypeName: String {

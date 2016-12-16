@@ -7,7 +7,7 @@ class GeneratorSpec: QuickSpec {
     override func spec() {
 
         describe("Generator") {
-            
+
             let fooType = Type(name: "Foo", accessLevel: .public, variables: [Variable(name: "intValue", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)])
             let fooSubclassType = Type(name: "FooSubclass", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"])
             let barType = Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["NSObject", "KnownProtocol", "Decodable"])
@@ -17,13 +17,13 @@ class GeneratorSpec: QuickSpec {
             fooVar.type = fooType
             let barVar = Variable(name: "bar", type: "Bar", accessLevel: (read: .public, write: .public), isComputed: false)
             barVar.type = barType
-            
+
             complexType.variables = [
                 fooVar,
                 barVar,
                 Variable(name: "fooBar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: true)
             ]
-            
+
             let types = [
                     fooType,
                     fooSubclassType,
@@ -103,7 +103,7 @@ class GeneratorSpec: QuickSpec {
                 it("classifies computed properties properly") {
                     expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("3, 1, 2"))
                 }
-                
+
                 it("can access variable type information") {
                     expect(generate("{% for variable in type.Complex.variables %}{{ variable.type.name }}{% endfor %}")).to(equal("FooBar"))
                 }

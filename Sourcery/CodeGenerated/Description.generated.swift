@@ -1,7 +1,6 @@
 // Generated using Sourcery 0.3.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
- 
 extension Enum {
     override var description: String {
         var string = super.description
@@ -12,7 +11,7 @@ extension Enum {
         return string
     }
 }
- 
+
 extension Enum.Case {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -23,7 +22,7 @@ extension Enum.Case {
         return string
     }
 }
- 
+
 extension Enum.Case.AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -32,7 +31,7 @@ extension Enum.Case.AssociatedValue {
         return string
     }
 }
-   
+
 extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -52,7 +51,7 @@ extension Type {
         return string
     }
 }
- 
+
 extension Variable {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -67,4 +66,3 @@ extension Variable {
         return string
     }
 }
-

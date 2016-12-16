@@ -103,13 +103,13 @@ final class Parser {
         }
 
         self.contents = contents
-        
+
         let file = File(contents: contents)
         let types = parseTypes(Structure(file: file).dictionary, existingTypes: existingTypes.types)
         let typealiases = parseTypeAliases(SyntaxMap(file: file).tokens, existingTypealiases: existingTypes.typealiases)
         return (types, typealiases)
     }
-    
+
     internal func parseTypeAliases(_ tokens: [SyntaxToken], existingTypealiases: [String: String]) -> [String: String] {
         var typealiases = existingTypealiases
         tokens.enumerated()
@@ -118,7 +118,7 @@ final class Parser {
                     extract(token) == "typealias",
                     let alias = extract(tokens[index + 1]),
                     let type = extract(tokens[index + 2]) {
-                    
+
                     typealiases[alias] = type
                 }
             }
@@ -231,7 +231,7 @@ final class Parser {
         var unique = [String: Type]()
         let types = ParserResult.types
         let typealiases = ParserResult.typealiases
-        
+
         //replace extensions for type aliases with original types
         types
             .filter { $0.isExtension == true }
@@ -252,7 +252,7 @@ final class Parser {
             current.extend(type)
             unique[type.name] = current
         }
-        
+
         for (_, type) in unique {
             for variable in type.variables {
                 if let actualTypeName = typealiases[variable.unwrappedTypeName] {
@@ -265,7 +265,7 @@ final class Parser {
 
         return unique.values.sorted { $0.name < $1.name }
     }
-    
+
 }
 
 // MARK: Details parsing
@@ -444,7 +444,7 @@ extension Parser {
         let substring = substringIdentifier.range(for: source).flatMap { self.contents.substringWithByteRange(start: Int($0.offset), length: Int($0.length)) }
         return substring?.isEmpty == true ? nil : substring
     }
-    
+
     fileprivate func extract(_ token: SyntaxToken) -> String? {
         return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
     }
