@@ -21,7 +21,7 @@ class Variable: NSObject {
         return false
     }
     
-    var __unwrappedTypeName: String {
+    var unwrappedTypeName: String {
         guard isOptional else { return typeName }
         if typeName.hasSuffix("?") {
             return String(typeName.characters.dropLast())

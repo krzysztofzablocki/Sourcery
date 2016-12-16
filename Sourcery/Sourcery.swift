@@ -87,13 +87,11 @@ public class Sourcery {
         print("Scanning sources...")
         let parser = Parser(verbose: verbose)
 
-        var types = [Type]()
-        var typealiases = [String: String]()
+        var parserResult: ParserResult = ([], [:])
 
         guard from.isDirectory else {
-            (types, typealiases) = try parser.parseFile(from, existingTypes: [])
-            types = parser.uniqueTypes(types, typealiases: typealiases)
-            return types
+            let parserResult = try parser.parseFile(from)
+            return parser.uniqueTypes(parserResult)
         }
 
         try from
@@ -102,11 +100,11 @@ public class Sourcery {
                 $0.extension == "swift"
             }
             .forEach { path in
-                (types, typealiases) = try parser.parseFile(path, existingTypes: types)
+                parserResult = try parser.parseFile(path, existingTypes: parserResult)
         }
 
         //! All files have been scanned, time to join extensions with base class
-        types = parser.uniqueTypes(types, typealiases: typealiases)
+        let types = parser.uniqueTypes(parserResult)
 
         print("Found \(types.count) types")
         return types
