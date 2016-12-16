@@ -179,6 +179,16 @@ class ParserSpec: QuickSpec {
                     }
                 }
 
+                context("given unknown type") {
+                    it("extracts extensions properly") {
+                        expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { reutnr 0 } }"))
+                            .to(equal([
+                                Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)], inheritedTypes: ["Foo"]),
+                                Protocol(name: "Foo")
+                                ]))
+                    }
+                }
+
                 context("given typealias") {
                     it("extracts typealiases properly") {
                         expect(sut?.parseContents("typealias FooAlias = Foo; class Foo {}").typealiases)

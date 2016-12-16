@@ -17,8 +17,12 @@ class TypeSpec: QuickSpec {
                 sut = nil
             }
 
-            it("reports kind as class") {
+            it("being not an extension reports kind as class") {
                 expect(sut?.kind).to(equal("class"))
+            }
+
+            it("being an extension reports kind as extension") {
+                expect((Type(name: "Foo", isExtension: true)).kind).to(equal("extension"))
             }
 
             it("resolves name") {

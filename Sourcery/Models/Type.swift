@@ -9,7 +9,7 @@ import Foundation
 class Type: NSObject {
     internal var isExtension: Bool
 
-    var kind: String { return "class" }
+    var kind: String { return isExtension ? "extension" : "class" }
     var accessLevel: AccessLevel
 
     /// Name in global scope 
