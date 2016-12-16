@@ -196,7 +196,7 @@ There are multiple ways to access your types:
 
 For each type you can access following properties:
 
-- `name`
+- `name` <- name
 - `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`
 - `localName` <- name within parent scope
 - `staticVariables` <- list of static variables
@@ -229,6 +229,8 @@ For each type you can access following properties:
 
 - `name` <- Name
 - `type` <- type of the variable
+- `typeName` <- returns name of the type, including things like optional markup
+- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
 - `isComputed` <- whether is computed
 - `isStatic` <- whether is static variable
