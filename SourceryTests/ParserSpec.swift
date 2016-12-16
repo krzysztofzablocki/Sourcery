@@ -9,6 +9,7 @@ func build(_ source: String) -> [String: SourceKitRepresentable]? {
 }
 
 class ParserSpec: QuickSpec {
+    // swiftlint:disable function_body_length
     override func spec() {
         describe("Parser") {
             var sut: Parser?
@@ -125,6 +126,13 @@ class ParserSpec: QuickSpec {
                                 .to(equal([
                                         Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [])
                                 ]))
+                    }
+
+                    it("extracts generic struct properly") {
+                        expect(parse("struct Foo<Something> { }"))
+                                .to(equal([
+                                    Struct(name: "Foo", hasGenericComponent: true)
+                                          ]))
                     }
 
                     it("extracts instance variables properly") {
@@ -249,7 +257,7 @@ class ParserSpec: QuickSpec {
                                         Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [], variables: [Variable(name: "x", type: "Int", accessLevel: (.internal, .none), isComputed: true)])
                                 ]))
                     }
-                    
+
                     context("given enum without rawType") {
                         it("extracts inherited types properly") {
                             expect(parse("enum Foo: SomeProtocol { case optionA }; protocol SomeProtocol {}"))
