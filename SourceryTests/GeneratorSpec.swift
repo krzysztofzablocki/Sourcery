@@ -29,7 +29,7 @@ class GeneratorSpec: QuickSpec {
                     fooSubclassType,
                     complexType,
                     barType,
-                    Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")], containedTypes: [
+                    Enum(name: "Options", accessLevel: .public, cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")], containedTypes: [
                         Type(name: "InnerOptions", accessLevel: .public, variables: [
                             Variable(name: "foo", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)
                             ])
