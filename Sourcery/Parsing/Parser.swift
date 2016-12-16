@@ -113,19 +113,15 @@ final class Parser {
     internal func parseTypeAliases(_ tokens: [SyntaxToken], existingTypealiases: [String: String]) -> [String: String] {
         var typealiases = existingTypealiases
         tokens.enumerated()
-            .filter { _, token in
-                guard token.type == "source.lang.swift.syntaxtype.keyword" else { return false }
-                guard let keyword = contents.bridge().substringWithByteRange(start: token.offset, length: token.length) else { return false }
-                return keyword == "typealias"
+            .forEach { index, token in
+                if token.type == "source.lang.swift.syntaxtype.keyword",
+                    extract(token) == "typealias",
+                    let alias = extract(tokens[index + 1]),
+                    let type = extract(tokens[index + 2]) {
+                    
+                    typealiases[alias] = type
+                }
             }
-            .map({ (index, _) in (tokens[index + 1], tokens[index + 2]) })
-            .forEach({ (aliasToken, typeToken) in
-                guard
-                    let alias = contents.bridge().substringWithByteRange(start: aliasToken.offset, length: aliasToken.length),
-                    let type = contents.bridge().substringWithByteRange(start: typeToken.offset, length: typeToken.length) else { return }
-                
-                typealiases[alias] = type
-            })
         return typealiases
     }
 
@@ -447,5 +443,9 @@ extension Parser {
     fileprivate func extract(_ substringIdentifier: SubstringIdentifier, from source: [String: SourceKitRepresentable]) -> String? {
         let substring = substringIdentifier.range(for: source).flatMap { self.contents.substringWithByteRange(start: Int($0.offset), length: Int($0.length)) }
         return substring?.isEmpty == true ? nil : substring
+    }
+    
+    fileprivate func extract(_ token: SyntaxToken) -> String? {
+        return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
     }
 }
