@@ -26,15 +26,29 @@ class VariableSpec: QuickSpec {
             it("reports optional false") {
                 expect(sut?.isOptional).to(beFalse())
             }
-
-            it("reports optional for short syntax?") {
-                expect(Variable(name: "Foo", type: "Int?").isOptional).to(beTrue())
+            
+            context("given optional type with short syntax") {
+                it("reports optional true") {
+                    expect(Variable(name: "Foo", type: "Int?").isOptional).to(beTrue())
+                }
+                
+                it("reports non-optional type for unwrappedTypeName") {
+                    expect(Variable(name: "Foo", type: "Int?").unwrappedTypeName).to(equal("Int"))
+                }
             }
-
-            it("reports optional for long generic syntax") {
-                expect(Variable(name: "Foo", type: "Optional<Int>").isOptional).to(beTrue())
+            
+            context("given optional type with long generic syntax") {
+                sut?.typeName = "Optional<Int>"
+                
+                it("reports optional true") {
+                    expect(Variable(name: "Foo", type: "Optional<Int>").isOptional).to(beTrue())
+                }
+                
+                it("reports non-optional type for unwrappedTypeName") {
+                    expect(Variable(name: "Foo", type: "Optional<Int>").unwrappedTypeName).to(equal("Int"))
+                }
             }
-
+            
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {

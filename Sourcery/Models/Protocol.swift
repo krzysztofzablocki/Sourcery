@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// sourcery: skipDescription
 class Protocol: Type {
     override var kind: String { return "protocol" }
 }

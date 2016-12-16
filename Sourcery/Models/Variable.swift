@@ -11,13 +11,28 @@ class Variable: NSObject {
     var name: String
 
     /// Variable type
-    var type: String
+    var typeName: String
+    
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var type: Type?
 
     /// Is the variable optional?
     var isOptional: Bool {
-        if type.hasSuffix("?") { return true }
-        if type.hasPrefix("Optional<") { return true }
+        if typeName.hasSuffix("?") { return true }
+        if typeName.hasPrefix("Optional<") { return true }
         return false
+    }
+    
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var unwrappedTypeName: String {
+        guard isOptional else { return typeName }
+        if typeName.hasSuffix("?") {
+            return String(typeName.characters.dropLast())
+        } else {
+            return String(typeName.characters.dropFirst("Optional<".characters.count).dropLast())
+        }
     }
 
     /// Whether is computed
@@ -32,7 +47,7 @@ class Variable: NSObject {
     /// Write access
     var writeAccess: AccessLevel
 
-    ///  Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
     /// Underlying parser data, never to be used by anything else
@@ -41,7 +56,7 @@ class Variable: NSObject {
 
     init(name: String, type: String, accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal), isComputed: Bool = false, isStatic: Bool = false) {
         self.name = name
-        self.type = type
+        self.typeName = type
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read

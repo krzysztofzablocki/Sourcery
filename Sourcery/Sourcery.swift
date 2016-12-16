@@ -87,22 +87,24 @@ public class Sourcery {
         print("Scanning sources...")
         let parser = Parser(verbose: verbose)
 
+        var parserResult: ParserResult = ([], [:])
+
         guard from.isDirectory else {
-            return try parser.parseFile(from, existingTypes: [])
+            let parserResult = try parser.parseFile(from)
+            return parser.uniqueTypes(parserResult)
         }
 
-        var types = [Type]()
         try from
             .recursiveChildren()
             .filter {
                 $0.extension == "swift"
             }
             .forEach { path in
-                types = try parser.parseFile(path, existingTypes: types)
+                parserResult = try parser.parseFile(path, existingTypes: parserResult)
         }
 
         //! All files have been scanned, time to join extensions with base class
-        types = parser.uniqueTypes(types)
+        let types = parser.uniqueTypes(parserResult)
 
         print("Found \(types.count) types")
         return types

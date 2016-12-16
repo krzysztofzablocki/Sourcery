@@ -115,8 +115,8 @@ class ParserSpec: QuickSpec {
 
             describe("parseTypes") {
                 func parse(_ code: String, existingTypes: [Type] = []) -> [Type] {
-                    let types = sut?.parseContents(code, existingTypes: existingTypes) ?? []
-                    return sut?.uniqueTypes(types) ?? []
+                    let parserResult = sut?.parseContents(code, existingTypes: (existingTypes, [:])) ?? ([], [:])
+                    return sut?.uniqueTypes(parserResult) ?? []
                 }
 
                 context("given struct") {
@@ -163,12 +163,12 @@ class ParserSpec: QuickSpec {
                     }
 
                     it("extracts inherited types properly") {
-                        expect(parse("class Foo: TestProtocol { }"))
+                        expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
                                 .to(equal([
-                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
                                 ]))
                     }
-
+                    
                     it("extracts annotations correctly") {
                         let expectedType = Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
@@ -177,6 +177,45 @@ class ParserSpec: QuickSpec {
                         expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\n class Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
                     }
+                }
+                
+                context("given typealias") {
+                    it("extracts typealiases properly") {
+                        expect(sut?.parseContents("typealias FooAlias = Foo; class Foo {}").typealiases)
+                            .to(equal(
+                                ["FooAlias": "Foo"]
+                            ))
+                    }
+                    
+                    it("replaces variable alias type with actual type") {
+                        let expectedVariable = Variable(name: "foo", type: "FooAlias")
+                        expectedVariable.type = Type(name: "Foo")
+                        
+                        let type = parse("typealias FooAlias = Foo; internal class Foo {}; class Bar { internal var foo: FooAlias }").first
+                        let variable = type?.variables.first
+                        
+                        expect(variable).to(equal(expectedVariable))
+                        expect(variable?.type).to(equal(expectedVariable.type))
+                    }
+
+                    it("replaces variable optional alias type with actual type") {
+                        let expectedVariable = Variable(name: "foo", type: "FooAlias?")
+                        expectedVariable.type = Type(name: "Foo")
+                        
+                        let type = parse("typealias FooAlias = Foo; class Foo {}; class Bar { var foo: FooAlias? }").first
+                        let variable = type?.variables.first
+                        
+                        expect(variable).to(equal(expectedVariable))
+                        expect(variable?.type).to(equal(expectedVariable.type))
+                    }
+                    
+                    it("extends actual type with type alias extension") {
+                        expect(parse("typealias FooAlias = Foo; class Foo: TestProtocol { }; extension FooAlias: AnotherProtocol {}"))
+                            .to(equal([
+                                Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
+                                ]))
+                    }
+
                 }
 
                 context("given enum") {
@@ -291,7 +330,7 @@ class ParserSpec: QuickSpec {
                     let existingTypes: [Type] = [Type(name: "Bar", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])]
                     var updatedTypes: [Type]?
 
-                    expect { updatedTypes = try sut?.parseFile(Stubs.resultDirectory + Path("Basic.swift"), existingTypes: existingTypes) }.toNot(throwError())
+                    expect { updatedTypes = try sut?.parseFile(Stubs.resultDirectory + Path("Basic.swift"), existingTypes: (existingTypes, [:])).types }.toNot(throwError())
 
                     expect(updatedTypes).to(equal(existingTypes))
                 }

@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// sourcery: skipDescription
 class Struct: Type {
     override var kind: String { return "struct" }
 }
