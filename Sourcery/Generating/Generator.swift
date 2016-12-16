@@ -25,7 +25,7 @@ private class TypesReflectionBox: NSObject {
     lazy var classes: [Type] = {
         return self.types.filter { type in
             let isNotClass = type is Struct || type is Enum || type is Protocol
-            return !isNotClass
+            return !isNotClass && !type.isExtension
         }
     }()
 

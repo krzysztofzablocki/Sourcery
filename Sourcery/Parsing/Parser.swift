@@ -243,8 +243,9 @@ final class Parser {
 
         types.forEach { type in
             guard let current = unique[type.name] else {
-                let inheritanceClause = type.inheritedTypes.isEmpty ? "" : ": \(type.inheritedTypes)"
-                if verbose { print("\(logPrefix)Ignoring \"extension \(type.name)\(inheritanceClause)\" because we don't have original type definition information") }
+                unique[type.name] = type
+                let inheritanceClause = type.inheritedTypes.isEmpty ? "" : ": \(type.inheritedTypes.joined(separator: ", "))"
+                if verbose { print("\(logPrefix)Found \"extension \(type.name)\(inheritanceClause)\" of type for which we don't have original type definition information") }
                 return
             }
             if current == type { return }
