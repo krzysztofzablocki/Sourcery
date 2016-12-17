@@ -105,6 +105,20 @@ enum Generator {
         var typesByName = [String: Type]()
         types.forEach { typesByName[$0.name] = $0 }
 
+        types.forEach { type in
+            type.based.keys.forEach { name in
+                switch typesByName[name]?.kind {
+                case "class"?:
+                    type.inherits[name] = name
+                case "protocol"?:
+                    type.implements[name] = name
+                default:
+                    break
+                }
+            }
+
+        }
+
         let context: [String: Any]? = [
             "types": TypesReflectionBox(types: types),
             "type": typesByName
