@@ -163,7 +163,7 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given class") {
-                    it("extracts extensions properly") {
+                    it("extracts variables properly") {
                         expect(parse("class Foo { }; extension Foo { var x: Int }"))
                                 .to(equal([
                                         Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false)])

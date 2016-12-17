@@ -6,12 +6,13 @@ class TypeSpec: QuickSpec {
     override func spec() {
         describe ("Type") {
             var sut: Type?
+            let staticVariable = Variable(name: "staticVar", type: "Int", isStatic: true)
             let computedVariable = Variable(name: "variable", type: "Int", isComputed: true)
             let storedVariable = Variable(name: "otherVariable", type: "Int", isComputed: false)
             let parentType = Type(name: "Parent")
 
             beforeEach {
-                sut = Type(name: "Foo", parent: parentType, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])
+                sut = Type(name: "Foo", parent: parentType, variables: [storedVariable, computedVariable, staticVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])
             }
 
             afterEach {
@@ -34,6 +35,10 @@ class TypeSpec: QuickSpec {
                 expect(sut?.localName).to(equal("Foo"))
             }
 
+            it("filters static variables") {
+                expect(sut?.staticVariables).to(equal([staticVariable]))
+            }
+            
             it("filters computed variables") {
                 expect(sut?.computedVariables).to(equal([computedVariable]))
             }
@@ -77,7 +82,7 @@ class TypeSpec: QuickSpec {
 
                     sut?.extend(type)
 
-                    expect(sut?.variables).to(equal([storedVariable, computedVariable, extraVariable]))
+                    expect(sut?.variables).to(equal([storedVariable, computedVariable, staticVariable, extraVariable]))
                 }
 
                 it("adds annotations") {
@@ -95,7 +100,7 @@ class TypeSpec: QuickSpec {
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Type(name: "Foo", parent: parentType, accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).to(equal(Type(name: "Foo", parent: parentType, accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable, staticVariable], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
                     }
                 }
 
