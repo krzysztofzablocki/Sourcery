@@ -208,7 +208,9 @@ final class Parser {
             } else {
                 containingType.variables += [variable]
 
-                if let enumeration = containingType as? Enum, let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
+                if let enumeration = containingType as? Enum,
+                    let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
+                    
                     enumeration.rawType = updatedRawType
                 }
             }
@@ -260,6 +262,19 @@ final class Parser {
                     variable.type = unique[actualTypeName]
                 } else {
                     variable.type = unique[variable.unwrappedTypeName]
+                }
+            }
+        }
+        
+        for (_, type) in unique {
+            if let enumeration = type as? Enum, enumeration.rawType == nil {
+                guard let rawTypeName = enumeration.inheritedTypes.first else { continue }
+                if let rawTypeCandidate = unique[rawTypeName] {
+                    if !(rawTypeCandidate is Protocol) {
+                        enumeration.rawType = rawTypeCandidate.name
+                    }
+                } else {
+                    enumeration.rawType = rawTypeName
                 }
             }
         }
