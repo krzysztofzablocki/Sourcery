@@ -45,8 +45,23 @@ class Type: NSObject {
         return variables.filter { !$0.isComputed && !$0.isStatic }
     }
 
-    /// Types / Protocols we inherit from
+    /// Types / Protocols names we inherit from, in order of definition
     var inheritedTypes: [String]
+
+    /// contains all base types inheriting from given BaseClass or implementing given Protocol, even not known by Sourcery
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var based = [String: String]()
+
+    /// contains all types implementing known BaseProtocol
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var inherits = [String: String]()
+
+    /// contains all types implementing known BaseClass
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var implements = [String: String]()
 
     /// Contained types
     var containedTypes: [Type] {
@@ -86,6 +101,9 @@ class Type: NSObject {
 
         super.init()
         containedTypes.forEach { $0.parent = self }
+        inheritedTypes.forEach { name in
+            self.based[name] = name
+        }
     }
 
     /// Extends this type with an extension
@@ -95,6 +113,9 @@ class Type: NSObject {
         self.variables += type.variables
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
+        type.based.keys.forEach { self.based[$0] = $0 }
+        type.inherits.keys.forEach { self.inherits[$0] = $0 }
+        type.implements.keys.forEach { self.implements[$0] = $0 }
         self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
     }
 }
