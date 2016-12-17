@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.3.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -6,7 +6,6 @@ extension Enum {
         guard let rhs = object as? Enum else { return false }
         if self.cases != rhs.cases { return false }
         if self.rawType != rhs.rawType { return false }
-        if self.inheritedTypes != rhs.inheritedTypes { return false }
 
         return super.isEqual(rhs)
     }
@@ -45,6 +44,7 @@ extension Type {
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
+        if self.hasGenericComponent != rhs.hasGenericComponent { return false }
 
         return true
     }

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.3.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -6,7 +6,6 @@ extension Enum {
         var string = super.description
         string += "cases = \(cases), "
         string += "rawType = \(rawType), "
-        string += "inheritedTypes = \(inheritedTypes), "
         string += "hasAssociatedValues = \(hasAssociatedValues), "
         return string
     }
@@ -39,6 +38,7 @@ extension Type {
         string += "kind = \(kind), "
         string += "accessLevel = \(accessLevel), "
         string += "name = \(name), "
+        string += "isGeneric = \(isGeneric), "
         string += "localName = \(localName), "
         string += "staticVariables = \(staticVariables), "
         string += "variables = \(variables), "
@@ -48,6 +48,7 @@ extension Type {
         string += "inheritedTypes = \(inheritedTypes), "
         string += "containedTypes = \(containedTypes), "
         string += "parentName = \(parentName), "
+        string += "hasGenericComponent = \(hasGenericComponent), "
         return string
     }
 }
