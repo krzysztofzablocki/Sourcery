@@ -151,7 +151,7 @@ final class Parser {
                 return parseEnumCase(source)
             case .varInstance:
                 return parseVariable(source)
-            case .varStatic:
+            case .varStatic, .varClass:
                 return parseVariable(source, isStatic: true)
             case .varLocal, .varParameter:
                 //! Don't log local / param vars
