@@ -198,7 +198,7 @@ For each type you can access following properties:
 
 - `name` <- name
 - `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`, it will also provide `extension` for types that are unknown to us(e.g. 3rd party or objc), but had extension in the project
-- `isGeneric` <- info whether the type (or any of its parent) was generic
+- `isGeneric` <- info whether the type is generic
 - `localName` <- name within parent scope
 - `staticVariables` <- list of static variables
 - `variables` <- list of instance variables

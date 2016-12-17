@@ -45,13 +45,7 @@ class TypeSpec: QuickSpec {
             describe("isGeneric") {
                 context("given generic type") {
                     it("recognizes correctly for simple generic") {
-                        let sut = Type(name: "Foo", hasGenericComponent: true)
-
-                        expect(sut.isGeneric).to(beTrue())
-                    }
-
-                    it("recognizes correctly for type contained inside generic") {
-                        let sut = Type(name: "Foo", parent: Type(name: "Root", hasGenericComponent: true))
+                        let sut = Type(name: "Foo", isGeneric: true)
 
                         expect(sut.isGeneric).to(beTrue())
                     }
