@@ -48,7 +48,6 @@ extension Type {
         string += "inheritedTypes = \(inheritedTypes), "
         string += "containedTypes = \(containedTypes), "
         string += "parentName = \(parentName), "
-        string += "hasGenericComponent = \(hasGenericComponent), "
         return string
     }
 }

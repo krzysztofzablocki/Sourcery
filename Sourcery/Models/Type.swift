@@ -18,10 +18,8 @@ class Type: NSObject {
         return "\(parentName).\(localName)"
     }
 
-    /// Is this type generic? regardless whether it's this type directly or one of its parent types
-    var isGeneric: Bool {
-        return (parent?.isGeneric ?? false) || hasGenericComponent
-    }
+    /// Is this type generic?
+    var isGeneric: Bool
 
     /// Name in parent scope
     var localName: String
@@ -67,16 +65,12 @@ class Type: NSObject {
         }
     }
 
-    /// Whether the type has generic component
-    /// This is not the same as `isGeneric` because this is only local information, you should use `isGeneric`
-    var hasGenericComponent: Bool = false
-
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
     /// sourcery: skipDescription
     internal var __parserData: Any?
 
-    init(name: String = "", parent: Type? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:], hasGenericComponent: Bool = false) {
+    init(name: String = "", parent: Type? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:], isGeneric: Bool = false) {
         self.localName = name
         self.accessLevel = accessLevel
         self.isExtension = isExtension
@@ -87,7 +81,7 @@ class Type: NSObject {
         self.parent = parent
         self.parentName = parent?.name
         self.annotations = annotations
-        self.hasGenericComponent = hasGenericComponent
+        self.isGeneric = isGeneric
 
         super.init()
         containedTypes.forEach { $0.parent = self }

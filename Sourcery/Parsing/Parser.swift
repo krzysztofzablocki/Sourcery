@@ -164,7 +164,7 @@ final class Parser {
                 return nil
             }
 
-            type.hasGenericComponent = isGeneric(source: source)
+            type.isGeneric = isGeneric(source: source)
             type.setSource(source: source)
             type.annotations = parseAnnotations(source)
 

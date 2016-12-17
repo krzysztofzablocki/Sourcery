@@ -37,6 +37,7 @@ extension Type {
         guard let rhs = object as? Type else { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
+        if self.isGeneric != rhs.isGeneric { return false }
         if self.localName != rhs.localName { return false }
         if self.staticVariables != rhs.staticVariables { return false }
         if self.variables != rhs.variables { return false }
@@ -44,7 +45,6 @@ extension Type {
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
-        if self.hasGenericComponent != rhs.hasGenericComponent { return false }
 
         return true
     }

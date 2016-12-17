@@ -131,7 +131,7 @@ class ParserSpec: QuickSpec {
                     it("extracts generic struct properly") {
                         expect(parse("struct Foo<Something> { }"))
                                 .to(equal([
-                                    Struct(name: "Foo", hasGenericComponent: true)
+                                    Struct(name: "Foo", isGeneric: true)
                                           ]))
                     }
 
