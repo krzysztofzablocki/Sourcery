@@ -39,7 +39,6 @@ extension Type {
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
         if self.localName != rhs.localName { return false }
-        if self.staticVariables != rhs.staticVariables { return false }
         if self.variables != rhs.variables { return false }
         if self.annotations != rhs.annotations { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }

@@ -143,10 +143,13 @@ class ParserSpec: QuickSpec {
                     }
 
                     it("extracts class variables properly") {
-                        expect(parse("struct Foo { static var x: Int { return 2 } }"))
+                        expect(parse("struct Foo { static var x: Int { return 2 }; class var y: Int = 0 }"))
                                 .to(equal([
-                                                  Struct(name: "Foo", accessLevel: .internal, isExtension: false, staticVariables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true)])
-                                          ]))
+                                    Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
+                                        Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true),
+                                        Variable.init(name: "y", type: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false, isStatic: true)
+                                        ])
+                                    ]))
                     }
 
                     context("given nested struct") {
@@ -163,7 +166,7 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given class") {
-                    it("extracts extensions properly") {
+                    it("extracts variables properly") {
                         expect(parse("class Foo { }; extension Foo { var x: Int }"))
                                 .to(equal([
                                         Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false)])

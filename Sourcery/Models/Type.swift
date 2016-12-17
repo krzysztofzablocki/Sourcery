@@ -24,23 +24,25 @@ class Type: NSObject {
     /// Name in parent scope
     var localName: String
 
-    /// All type static variables
-    var staticVariables: [Variable]
-
     /// All instance variables
     var variables: [Variable]
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
+    /// All type static variables
+    var staticVariables: [Variable] {
+        return variables.filter({ $0.isStatic })
+    }
+
     /// Only computed instance variables
     var computedVariables: [Variable] {
-        return variables.filter { $0.isComputed }
+        return variables.filter { $0.isComputed && !$0.isStatic }
     }
 
     /// Only stored instance variables
     var storedVariables: [Variable] {
-        return variables.filter { !$0.isComputed }
+        return variables.filter { !$0.isComputed && !$0.isStatic }
     }
 
     /// Types / Protocols we inherit from
@@ -70,12 +72,11 @@ class Type: NSObject {
     /// sourcery: skipDescription
     internal var __parserData: Any?
 
-    init(name: String = "", parent: Type? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:], isGeneric: Bool = false) {
+    init(name: String = "", parent: Type? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:], isGeneric: Bool = false) {
         self.localName = name
         self.accessLevel = accessLevel
         self.isExtension = isExtension
         self.variables = variables
-        self.staticVariables = staticVariables
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
         self.parent = parent
