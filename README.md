@@ -192,7 +192,7 @@ There are multiple ways to access your types:
 - `types.protocols` => lists all protocols (that were defined in the project)
 - `types.inheriting.BaseClass` => lists all types inherting from known BaseClass (only those that were defined in source code that Sourcery scanned)
 - `types.implementing.Protocol` => lists all types conforming to given Protocol (only those that were defined in source code that Sourcery scanned)
-- `types.based.BaseClassOrProtocol` => lists all types implementing or inhertiing from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
+- `types.based.BaseClassOrProtocol` => lists all types implementing or inheriting from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
 
 For each type you can access following properties:
 
@@ -204,7 +204,10 @@ For each type you can access following properties:
 - `variables` <- list of instance variables
 - `computedVariables` <- list of computed instance variables
 - `storedVariables` <- list of computed stored variables
-- `inheritedTypes` <- list of type names that this type implements / inherits
+- `inheritedTypes` <- list of type names that this type implements / inherits in the declaration order
+- `inherits.BaseClass` => info whether type inherits from known base class
+- `implements.Protocol` => info whether type implements known protocol
+- `based.BaseClassOrProtocol` => info whether type implements or inherits from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
 - `containedTypes` <- list of types contained within this type
 - `parentName` <- list of parent type (for contained ones)
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
