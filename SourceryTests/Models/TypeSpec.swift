@@ -38,7 +38,7 @@ class TypeSpec: QuickSpec {
             it("filters static variables") {
                 expect(sut?.staticVariables).to(equal([staticVariable]))
             }
-            
+
             it("filters computed variables") {
                 expect(sut?.computedVariables).to(equal([computedVariable]))
             }
