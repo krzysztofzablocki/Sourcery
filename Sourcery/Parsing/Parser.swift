@@ -409,8 +409,6 @@ extension Parser {
     fileprivate func parseAnnotations(_ source: [String: SourceKitRepresentable]) -> [String: NSObject] {
         guard let substring = extract(.keyPrefix, from: source) else { return [:] }
 
-        var annotations = [String: NSObject]()
-
         let newlines = NSCharacterSet.newlines
         let lines = substring
                 .unicodeScalars
@@ -431,12 +429,23 @@ extension Parser {
             commentLines.append(line)
         }
 
-        let annotationDefinitions = commentLines
-                .filter { $0.contains("sourcery:") }
-                .flatMap { line in line.range(of: "sourcery:").flatMap { line.substring(from: $0.upperBound).trimmingCharacters(in: .whitespaces) } }
-                .flatMap { $0.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) } }
+        var annotations = [String: NSObject]()
+        commentLines.map(searchForAnnotations).forEach { collected in
+                    collected.forEach {
+                        annotations[$0.key] = $0.value
+                    }
+                }
+        return annotations
+    }
 
-        annotationDefinitions.forEach { annotation in
+    fileprivate func searchForAnnotations(commentLine: String) -> [String: NSObject] {
+        guard commentLine.contains("sourcery:") else { return [:] }
+        let annotationDefinitions = commentLine
+                .range(of: "sourcery:").map { commentLine.substring(from: $0.upperBound).trimmingCharacters(in: .whitespaces) }
+                .map { $0.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) } }
+
+        var annotations = [String: NSObject]()
+        annotationDefinitions?.forEach { annotation in
             let parts = annotation.components(separatedBy: "=").map { $0.trimmingCharacters(in: .whitespaces) }
             if let name = parts.first, !name.isEmpty {
 
