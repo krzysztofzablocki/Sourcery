@@ -254,6 +254,14 @@ Sourcery supports annotating your classes and variables with special annotations
 var precomputedHash: Int
 ```
 
+If you want to attribute multiple items with same attributes, you can use section annotations:
+```swift
+/// sourcery:begin: skipEquality, skipPersistence
+  var firstVariable: Int
+  var secondVariable: Int
+/// sourcery:end
+```
+
 #### Features:
 
 - Multiple annotations can occur on the same line
