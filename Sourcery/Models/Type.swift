@@ -47,6 +47,14 @@ class Type: NSObject {
 
     /// Types / Protocols names we inherit from, in order of definition
     var inheritedTypes: [String]
+    var inheritedTypes: [String] {
+        didSet {
+            based.removeAll()
+            inheritedTypes.forEach { name in
+                self.based[name] = name
+            }
+        }
+    }
 
     /// contains all base types inheriting from given BaseClass or implementing given Protocol, even not known by Sourcery
     /// sourcery: skipEquality
@@ -113,7 +121,6 @@ class Type: NSObject {
         self.variables += type.variables
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
-        type.based.keys.forEach { self.based[$0] = $0 }
         type.inherits.keys.forEach { self.inherits[$0] = $0 }
         type.implements.keys.forEach { self.implements[$0] = $0 }
         self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
