@@ -34,6 +34,10 @@ class ParserSpec: QuickSpec {
                     return sut?.parseVariable(src)
                 }
 
+                it("ignores private variables") {
+                    expect(parse("private var name: String")).to(beNil())
+                }
+                
                 it("extracts standard property correctly") {
                     expect(parse("var name: String")).to(equal(Variable(name: "name", type: "String", accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
@@ -121,6 +125,10 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given struct") {
+                    it("ignores private structs") {
+                        expect(parse("private struct Foo {}")).to(beEmpty())
+                    }
+
                     it("extracts properly") {
                         expect(parse("struct Foo { }"))
                                 .to(equal([
@@ -166,6 +174,10 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given class") {
+                    it("ignores private classes") {
+                        expect(parse("private class Foo {}")).to(beEmpty())
+                    }
+
                     it("extracts variables properly") {
                         expect(parse("class Foo { }; extension Foo { var x: Int }"))
                                 .to(equal([
@@ -240,6 +252,10 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given enum") {
+                    it("ignores private enums") {
+                        expect(parse("private enum Foo {}")).to(beEmpty())
+                    }
+
                     it("extracts empty enum properly") {
                         expect(parse("enum Foo { }"))
                                 .to(equal([
@@ -345,11 +361,21 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given protocol") {
+                    it("ignores private protocols") {
+                        expect(parse("private protocol Foo {}")).to(beEmpty())
+                    }
+
                     it("extracts empty protocol properly") {
                         expect(parse("protocol Foo { }"))
                             .to(equal([
                                 Protocol(name: "Foo")
                                 ]))
+                    }
+                }
+                
+                context("given extension") {
+                    it("ignores extension for private type") {
+                        expect(parse("private struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())
                     }
                 }
 

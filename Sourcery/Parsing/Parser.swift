@@ -227,10 +227,10 @@ final class Parser {
     ///
     /// - Parameter types: Types and extensions.
     /// - Returns: Just types.
-    internal func uniqueTypes(_ ParserResult: ParserResult) -> [Type] {
+    internal func uniqueTypes(_ parserResult: ParserResult) -> [Type] {
         var unique = [String: Type]()
-        let types = ParserResult.types
-        let typealiases = ParserResult.typealiases
+        let types = parserResult.types
+        let typealiases = parserResult.typealiases
 
         //replace extensions for type aliases with original types
         types
@@ -238,7 +238,7 @@ final class Parser {
             .forEach { $0.localName = typealiases[$0.name] ?? $0.localName }
 
         types
-            .filter { $0.isExtension == false }
+            .filter { $0.isExtension == false}
             .forEach { unique[$0.name] = $0 }
 
         types.forEach { type in
@@ -277,7 +277,11 @@ final class Parser {
             }
         }
 
-        return unique.values.sorted { $0.name < $1.name }
+        return unique.values.filter {
+            let isPrivate = $0.accessLevel == .private
+            if isPrivate && self.verbose { print("Skipping \($0.kind) \($0.name) as it is private") }
+            return !isPrivate
+            }.sorted { $0.name < $1.name }
     }
 
 }
@@ -301,6 +305,7 @@ extension Parser {
 
     internal func parseVariable(_ source: [String: SourceKitRepresentable], isStatic: Bool = false) -> Variable? {
         guard let (name, _, accesibility) = parseTypeRequirements(source),
+            accesibility != .private,
             let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
 
         var writeAccessibility = AccessLevel.none
