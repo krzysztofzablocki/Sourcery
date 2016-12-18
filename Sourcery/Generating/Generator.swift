@@ -6,14 +6,13 @@
 import Foundation
 import Stencil
 
-/// types.all <- lists all types, excluding protocols
-/// types.classes <- lists all classes
-/// types.structs <- lists all structs
-/// types.enums <- lists all enums
-/// types.protocols <- lists all protocols (that were defined in the project)
-/// types.inheriting.BaseClass <- lists all classes inheriting from known BaseClass
-/// types.implementing.BaseProtocol <- lists all types implementing known BaseProtocol
-/// types.based.BaseClassOrProtocol <- lists all types inheriting from given BaseClass or implementing given Protocol
+private extension Type {
+    var isClass: Bool {
+        let isNotClass = self is Struct || self is Enum || self is Protocol
+        return !isNotClass && !isExtension
+    }
+}
+
 private class TypesReflectionBox: NSObject {
     private let types: [Type]
 
@@ -22,29 +21,32 @@ private class TypesReflectionBox: NSObject {
         super.init()
     }
 
+    /// Lists all known classes in the project
     lazy var classes: [Type] = {
-        return self.types.filter { type in
-            let isNotClass = type is Struct || type is Enum || type is Protocol
-            return !isNotClass && !type.isExtension
-        }
+        return self.types.filter { $0.isClass }
     }()
 
+    /// lists all known types, excluding protocols
     lazy var all: [Type] = {
         return self.types.filter { !($0 is Protocol) }
     }()
 
+    /// Lists all known protocols
     lazy var protocols: [Type] = {
         return self.types.filter { $0 is Protocol }
     }()
 
+    /// Lists all known structs
     lazy var structs: [Type] = {
         return self.types.filter { $0 is Struct }
     }()
 
+    /// Lists all known enums
     lazy var enums: [Type] = {
         return self.types.filter { $0 is Enum }
     }()
 
+    /// Lists all encountered types, even if they are not known e.g. Apple or 3rd party frameworks
     lazy var based: [String: [Type]] = {
         var content = [String: [Type]]()
         self.all.forEach { type in
@@ -57,6 +59,7 @@ private class TypesReflectionBox: NSObject {
         return content
     }()
 
+    /// Contains reference to types inheriting from any known class
     lazy var inheriting: [String: [Type]] = {
         var content = [String: [Type]]()
         self.classes.forEach { type in
@@ -69,6 +72,7 @@ private class TypesReflectionBox: NSObject {
         return content
     }()
 
+    /// Contains reference to types implementing any known protocol
     lazy var implementing: [String: [Type]] = {
         var content = [String: [Type]]()
         self.all.forEach { type in
@@ -103,8 +107,7 @@ enum Generator {
 
             baseType.based.keys.forEach {  type.based[$0] = $0 }
 
-            let isNotClass = baseType is Struct || baseType is Enum || baseType is Protocol || baseType.isExtension
-            if !isNotClass {
+            if baseType.isClass {
                 type.inherits[name] = name
                 baseType.inherits.keys.forEach {  type.inherits[$0] = $0 }
             } else if baseType is Protocol {
