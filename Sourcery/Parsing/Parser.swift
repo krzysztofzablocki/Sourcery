@@ -66,8 +66,15 @@ typealias ParserResult = (types: [Type], typealiases: [String: String])
 
 final class Parser {
 
+    struct Line {
+        let content: String
+        let isComment: Bool
+        let annotations: [String: NSObject]
+    }
+
     let verbose: Bool
     fileprivate var contents: String = ""
+    fileprivate var lines = [Line]()
     fileprivate var path: String? = nil
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0): " } ?? ""
@@ -103,6 +110,19 @@ final class Parser {
         }
 
         self.contents = contents
+        self.lines = contents.lines()
+                .map { $0.content.trimmingCharacters(in: .whitespaces) }
+                .map { line in
+                    var annotations = [String: NSObject]()
+                    let isComment = line.hasPrefix("//")
+                    if isComment {
+                        annotations = searchForAnnotations(commentLine: line)
+                    }
+
+                    return Line(content: line,
+                            isComment: isComment,
+                            annotations: annotations)
+                }
 
         let file = File(contents: contents)
         let types = parseTypes(Structure(file: file).dictionary, existingTypes: existingTypes.types)
@@ -407,34 +427,20 @@ extension Parser {
     }
 
     fileprivate func parseAnnotations(_ source: [String: SourceKitRepresentable]) -> [String: NSObject] {
-        guard let substring = extract(.keyPrefix, from: source) else { return [:] }
+        guard let range = SubstringIdentifier.key.range(for: source),
+        let lineInfo = contents.lineAndCharacter(forByteOffset: Int(range.offset)) else { return [:] }
 
-        let newlines = NSCharacterSet.newlines
-        let lines = substring
-                .unicodeScalars
-                .split(omittingEmptySubsequences: false, whereSeparator: { newlines.contains($0) })
-                .flatMap(String.init)
-                .reversed()
-                .dropFirst()    //! last line is the actual key definition so skip it
-
-        var commentLines = [String]()
-
-        //! move lines iteratively and stop after the first one that's not a comment line:
-        for var line in lines {
-            line = line.trimmingCharacters(in: .whitespaces)
-            if !line.hasPrefix("//") {
+        var annotations = [String: NSObject]()
+        for line in lines[0..<lineInfo.line-1].reversed() {
+            if !line.isComment {
                 break
             }
 
-            commentLines.append(line)
+            line.annotations.forEach { annotation in
+                annotations[annotation.key] = annotation.value
+            }
         }
 
-        var annotations = [String: NSObject]()
-        commentLines.map(searchForAnnotations).forEach { collected in
-                    collected.forEach {
-                        annotations[$0.key] = $0.value
-                    }
-                }
         return annotations
     }
 
