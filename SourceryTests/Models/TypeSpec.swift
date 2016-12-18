@@ -95,6 +95,15 @@ class TypeSpec: QuickSpec {
                     guard let annotations = sut?.annotations else { return fail() }
                     expect(annotations == expected).to(beTrue())
                 }
+
+                it("adds inherited types") {
+                    let type = Type(name: "Foo", isExtension: true, inheritedTypes: ["Something", "New"])
+
+                    sut?.extend(type)
+
+                    expect(sut?.inheritedTypes).to(equal(["NSObject", "New", "Something"]))
+                    expect(sut?.based).to(equal(["NSObject": "NSObject", "Something": "Something", "New": "New"]))
+                }
             }
 
             describe("When testing equality") {
