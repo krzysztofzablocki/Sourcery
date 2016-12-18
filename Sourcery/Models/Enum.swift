@@ -41,8 +41,21 @@ class Enum: Type {
     /// Raw type of the enum
     internal(set) var rawType: String? {
         didSet {
-            if let rawType = rawType, let index = inheritedTypes.index(of: rawType) {
-                inheritedTypes.remove(at: index)
+            if let rawType = rawType {
+                if let index = inheritedTypes.index(of: rawType) {
+                    inheritedTypes.remove(at: index)
+                }
+                if based[rawType] != nil {
+                    based[rawType] = nil
+                }
+            }
+        }
+    }
+    
+    override var based: [String : String] {
+        didSet {
+            if let rawType = rawType, based[rawType] != nil {
+                based[rawType] = nil
             }
         }
     }
@@ -60,5 +73,9 @@ class Enum: Type {
         self.cases = cases
         self.rawType = rawType
         super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes)
+
+        if let rawType = rawType, let index = self.inheritedTypes.index(of: rawType) {
+            self.inheritedTypes.remove(at: index)
+        }
     }
 }
