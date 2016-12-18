@@ -64,6 +64,7 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given it has sourcery annotations") {
+
                     it("extracts single annotation") {
                         let expectedVariable = Variable(name: "name", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
@@ -122,6 +123,29 @@ class ParserSpec: QuickSpec {
                 func parse(_ code: String, existingTypes: [Type] = []) -> [Type] {
                     let parserResult = sut?.parseContents(code, existingTypes: (existingTypes, [:])) ?? ([], [:])
                     return sut?.uniqueTypes(parserResult) ?? []
+                }
+
+                context("given it has sourcery annotations") {
+                    it("extracts annotation block") {
+                        let annotations = [
+                                ["skipEquality" : NSNumber(value: true)],
+                                ["skipEquality" : NSNumber(value: true), "extraAnnotation" : NSNumber(value: Float(2))],
+                                [:]
+                        ]
+                        let expectedVariables = (1...3)
+                                .map { Variable(name: "property\($0)", typeName: "Int", annotations: annotations[$0 - 1]) }
+                        let expectedType = Type(name: "Foo", variables: expectedVariables, annotations: ["skipEquality" : NSNumber(value: true)])
+
+                        let result = parse("// sourcery:begin: skipEquality\n\n\n\n" +
+                                "class Foo {\n" +
+                                "  var property1: Int\n\n\n" +
+                                " // sourcery: extraAnnotation = 2\n" +
+                                "  var property2: Int\n\n" +
+                                "  // sourcery:end\n" +
+                                "  var property3: Int\n" +
+                                "}")
+                        expect(result).to(equal([expectedType]))
+                    }
                 }
 
                 context("given struct") {

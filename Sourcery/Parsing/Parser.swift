@@ -62,14 +62,27 @@ fileprivate enum SubstringIdentifier {
     }
 }
 
+private typealias Annotations = [String: NSObject]
+private enum AnnotationType {
+    case begin(Annotations)
+    case annotations(Annotations)
+    case end
+}
+
 typealias ParserResult = (types: [Type], typealiases: [String: String])
 
 final class Parser {
 
-    struct Line {
+    private struct Line {
+        enum LineType {
+            case comment
+            case blockStart
+            case blockEnd
+            case other
+        }
         let content: String
-        let isComment: Bool
-        let annotations: [String: NSObject]
+        let type: LineType
+        let annotations: Annotations
     }
 
     let verbose: Bool
@@ -110,17 +123,36 @@ final class Parser {
         }
 
         self.contents = contents
+
+        var annotationsBlock = Annotations()
         self.lines = contents.lines()
                 .map { $0.content.trimmingCharacters(in: .whitespaces) }
                 .map { line in
-                    var annotations = [String: NSObject]()
+                    var annotations = Annotations()
                     let isComment = line.hasPrefix("//")
+                    var type: Line.LineType = isComment ? .comment : .other
                     if isComment {
-                        annotations = searchForAnnotations(commentLine: line)
+                        switch searchForAnnotations(commentLine: line) {
+                            case let .begin(items):
+                                type = .blockStart
+                                items.forEach { annotationsBlock[$0.key] = $0.value }
+                                break
+                            case let .annotations(items):
+                                items.forEach { annotations[$0.key] = $0.value }
+                                break
+                            case let .end:
+                                type = .blockEnd
+                                annotationsBlock.removeAll()
+                                break
+                        }
+                    }
+
+                    annotationsBlock.forEach { annotation in
+                        annotations[annotation.key] = annotation.value
                     }
 
                     return Line(content: line,
-                            isComment: isComment,
+                            type: type,
                             annotations: annotations)
                 }
 
@@ -426,32 +458,50 @@ extension Parser {
         return rawType
     }
 
-    fileprivate func parseAnnotations(_ source: [String: SourceKitRepresentable]) -> [String: NSObject] {
+    fileprivate func parseAnnotations(_ source: [String: SourceKitRepresentable]) -> Annotations {
         guard let range = SubstringIdentifier.key.range(for: source),
         let lineInfo = contents.lineAndCharacter(forByteOffset: Int(range.offset)) else { return [:] }
 
-        var annotations = [String: NSObject]()
+        var annotations = Annotations()
         for line in lines[0..<lineInfo.line-1].reversed() {
-            if !line.isComment {
-                break
-            }
-
             line.annotations.forEach { annotation in
                 annotations[annotation.key] = annotation.value
+            }
+
+            if line.type != .comment {
+                break
             }
         }
 
         return annotations
     }
 
-    fileprivate func searchForAnnotations(commentLine: String) -> [String: NSObject] {
-        guard commentLine.contains("sourcery:") else { return [:] }
-        let annotationDefinitions = commentLine
-                .range(of: "sourcery:").map { commentLine.substring(from: $0.upperBound).trimmingCharacters(in: .whitespaces) }
-                .map { $0.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) } }
+    fileprivate func searchForAnnotations(commentLine: String) -> AnnotationType {
+        guard commentLine.contains("sourcery:") else { return .annotations([:]) }
 
-        var annotations = [String: NSObject]()
-        annotationDefinitions?.forEach { annotation in
+        let substringRange: Range<String.CharacterView.Index>?
+        let insideBlock: Bool
+        if commentLine.contains("sourcery:begin:") {
+            substringRange = commentLine
+                    .range(of: "sourcery:begin:")
+            insideBlock = true
+        } else if commentLine.contains("sourcery:end") {
+            return .end
+        } else {
+            substringRange = commentLine
+                    .range(of: "sourcery:")
+            insideBlock = false
+        }
+
+        guard let range = substringRange else { return .annotations([:]) }
+
+        let annotationDefinitions = commentLine
+                .substring(from: range.upperBound)
+                .trimmingCharacters(in: .whitespaces)
+                .components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+
+        var annotations = Annotations()
+        annotationDefinitions.forEach { annotation in
             let parts = annotation.components(separatedBy: "=").map { $0.trimmingCharacters(in: .whitespaces) }
             if let name = parts.first, !name.isEmpty {
 
@@ -471,7 +521,7 @@ extension Parser {
             }
         }
 
-        return annotations
+        return insideBlock ? .begin(annotations) : .annotations(annotations)
     }
 
     fileprivate func isGeneric(source: [String: SourceKitRepresentable]) -> Bool {
