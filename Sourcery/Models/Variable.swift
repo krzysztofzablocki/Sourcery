@@ -56,11 +56,12 @@ class Variable: NSObject {
     /// sourcery: skipEquality, skipDescription
     internal var __parserData: Any?
 
-    init(name: String,
-         typeName: String,
+    init(name: String = "",
+         typeName: String = "",
          accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
          isComputed: Bool = false,
-         isStatic: Bool = false) {
+         isStatic: Bool = false,
+         annotations: [String: NSObject] = [:]) {
 
         self.name = name
         self.typeName = typeName
@@ -68,5 +69,6 @@ class Variable: NSObject {
         self.isStatic = isStatic
         self.readAccess = accessLevel.read
         self.writeAccess = accessLevel.write
+        self.annotations = annotations
     }
 }
