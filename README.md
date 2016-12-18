@@ -204,7 +204,6 @@ For each type you can access following properties:
 - `variables` <- list of instance variables
 - `computedVariables` <- list of computed instance variables
 - `storedVariables` <- list of computed stored variables
-- `inheritedTypes` <- list of type names that this type implements / inherits in the declaration order
 - `inherits.BaseClass` => info whether type inherits from known base class
 - `implements.Protocol` => info whether type implements known protocol
 - `based.BaseClassOrProtocol` => info whether type implements or inherits from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
