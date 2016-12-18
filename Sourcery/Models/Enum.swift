@@ -8,8 +8,8 @@ import Foundation
 class Enum: Type {
     class Case: NSObject {
         class AssociatedValue: NSObject {
-            var name: String?
-            var type: String
+            let name: String?
+            let type: String
 
             init(name: String?, type: String) {
                 self.name = name
@@ -17,9 +17,9 @@ class Enum: Type {
             }
         }
 
-        var name: String
-        var rawValue: String?
-        var associatedValues: [AssociatedValue]
+        let name: String
+        let rawValue: String?
+        let associatedValues: [AssociatedValue]
 
         var hasAssociatedValue: Bool {
             return !associatedValues.isEmpty

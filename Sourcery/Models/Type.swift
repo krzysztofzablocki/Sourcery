@@ -10,7 +10,9 @@ class Type: NSObject {
     internal var isExtension: Bool
 
     var kind: String { return isExtension ? "extension" : "class" }
-    var accessLevel: AccessLevel
+
+    /// What is the type access level?
+    let accessLevel: AccessLevel
 
     /// Name in global scope 
     var name: String {
@@ -24,7 +26,7 @@ class Type: NSObject {
     /// Name in parent scope
     var localName: String
 
-    /// All instance variables
+    /// All variables associated with this type
     var variables: [Variable]
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
@@ -32,7 +34,7 @@ class Type: NSObject {
 
     /// All type static variables
     var staticVariables: [Variable] {
-        return variables.filter({ $0.isStatic })
+        return variables.filter { $0.isStatic }
     }
 
     /// Only computed instance variables
@@ -46,7 +48,6 @@ class Type: NSObject {
     }
 
     /// Types / Protocols names we inherit from, in order of definition
-    var inheritedTypes: [String]
     var inheritedTypes: [String] {
         didSet {
             based.removeAll()
@@ -79,7 +80,7 @@ class Type: NSObject {
     }
 
     /// Parent name
-    var parentName: String?
+    private(set) var parentName: String?
 
     /// Parent type
     /// sourcery: skipEquality
@@ -95,7 +96,16 @@ class Type: NSObject {
     /// sourcery: skipDescription
     internal var __parserData: Any?
 
-    init(name: String = "", parent: Type? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:], isGeneric: Bool = false) {
+    init(name: String = "",
+         parent: Type? = nil,
+         accessLevel: AccessLevel = .internal,
+         isExtension: Bool = false,
+         variables: [Variable] = [],
+         inheritedTypes: [String] = [],
+         containedTypes: [Type] = [],
+         annotations: [String: NSObject] = [:],
+         isGeneric: Bool = false) {
+
         self.localName = name
         self.accessLevel = accessLevel
         self.isExtension = isExtension

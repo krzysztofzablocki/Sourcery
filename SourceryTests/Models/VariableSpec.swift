@@ -38,8 +38,6 @@ class VariableSpec: QuickSpec {
             }
 
             context("given optional type with long generic syntax") {
-                sut?.typeName = "Optional<Int>"
-
                 it("reports optional true") {
                     expect(Variable(name: "Foo", type: "Optional<Int>").isOptional).to(beTrue())
                 }
