@@ -37,7 +37,7 @@ class ParserSpec: QuickSpec {
                 it("ignores private variables") {
                     expect(parse("private var name: String")).to(beNil())
                 }
-                
+
                 it("extracts standard property correctly") {
                     expect(parse("var name: String")).to(equal(Variable(name: "name", type: "String", accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
@@ -372,7 +372,7 @@ class ParserSpec: QuickSpec {
                                 ]))
                     }
                 }
-                
+
                 context("given extension") {
                     it("ignores extension for private type") {
                         expect(parse("private struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())

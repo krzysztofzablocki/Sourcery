@@ -6,9 +6,10 @@
 import Foundation
 
 /// Defines a variable
+
 class Variable: NSObject {
     /// Variable name
-    var name: String
+    let name: String
 
     /// Variable type
     var typeName: String
@@ -19,8 +20,9 @@ class Variable: NSObject {
 
     /// Is the variable optional?
     var isOptional: Bool {
-        if typeName.hasSuffix("?") { return true }
-        if typeName.hasPrefix("Optional<") { return true }
+        if typeName.hasSuffix("?") || typeName.hasPrefix("Optional<") {
+            return true
+        }
         return false
     }
 
@@ -36,16 +38,16 @@ class Variable: NSObject {
     }
 
     /// Whether is computed
-    var isComputed: Bool
+    let isComputed: Bool
 
     /// Whether this is static variable
-    var isStatic: Bool
+    let isStatic: Bool
 
     /// Read access
-    var readAccess: AccessLevel
+    let readAccess: AccessLevel
 
     /// Write access
-    var writeAccess: AccessLevel
+    let writeAccess: AccessLevel
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
@@ -54,7 +56,12 @@ class Variable: NSObject {
     /// sourcery: skipEquality, skipDescription
     internal var __parserData: Any?
 
-    init(name: String, type: String, accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal), isComputed: Bool = false, isStatic: Bool = false) {
+    init(name: String,
+         type: String,
+         accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
+         isComputed: Bool = false,
+         isStatic: Bool = false) {
+
         self.name = name
         self.typeName = type
         self.isComputed = isComputed
