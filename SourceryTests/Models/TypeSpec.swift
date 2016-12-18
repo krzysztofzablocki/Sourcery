@@ -6,9 +6,9 @@ class TypeSpec: QuickSpec {
     override func spec() {
         describe ("Type") {
             var sut: Type?
-            let staticVariable = Variable(name: "staticVar", type: "Int", isStatic: true)
-            let computedVariable = Variable(name: "variable", type: "Int", isComputed: true)
-            let storedVariable = Variable(name: "otherVariable", type: "Int", isComputed: false)
+            let staticVariable = Variable(name: "staticVar", typeName: "Int", isStatic: true)
+            let computedVariable = Variable(name: "variable", typeName: "Int", isComputed: true)
+            let storedVariable = Variable(name: "otherVariable", typeName: "Int", isComputed: false)
             let parentType = Type(name: "Parent")
 
             beforeEach {
@@ -77,7 +77,7 @@ class TypeSpec: QuickSpec {
 
             describe("when extending with Type extension") {
                 it("adds variables") {
-                    let extraVariable = Variable(name: "variable", type: "Int")
+                    let extraVariable = Variable(name: "variable", typeName: "Int")
                     let type = Type(name: "Foo", isExtension: true, variables: [extraVariable])
 
                     sut?.extend(type)
@@ -87,8 +87,7 @@ class TypeSpec: QuickSpec {
 
                 it("adds annotations") {
                     let expected: [String: NSObject] = ["something": NSNumber(value: 161), "ExtraAnnotation": "ExtraValue" as NSString]
-                    let type = Type(name: "Foo", isExtension: true)
-                    type.annotations["ExtraAnnotation"] = "ExtraValue" as NSString
+                    let type = Type(name: "Foo", isExtension: true, annotations: ["ExtraAnnotation": "ExtraValue" as NSString])
 
                     sut?.extend(type)
 

@@ -57,13 +57,13 @@ class Variable: NSObject {
     internal var __parserData: Any?
 
     init(name: String,
-         type: String,
+         typeName: String,
          accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
          isComputed: Bool = false,
          isStatic: Bool = false) {
 
         self.name = name
-        self.typeName = type
+        self.typeName = typeName
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read

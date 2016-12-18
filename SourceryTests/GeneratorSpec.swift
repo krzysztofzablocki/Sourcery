@@ -8,20 +8,20 @@ class GeneratorSpec: QuickSpec {
 
         describe("Generator") {
 
-            let fooType = Type(name: "Foo", accessLevel: .public, variables: [Variable(name: "intValue", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)], inheritedTypes: ["Decodable"])
-            let fooSubclassType = Type(name: "FooSubclass", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"])
-            let barType = Struct(name: "Bar", accessLevel: .public, inheritedTypes: ["NSObject", "ProjectClass", "KnownProtocol", "Decodable"])
+            let fooType = Type(name: "Foo", variables: [Variable(name: "intValue", typeName: "Int")], inheritedTypes: ["Decodable"])
+            let fooSubclassType = Type(name: "FooSubclass", inheritedTypes: ["Foo", "KnownProtocol"])
+            let barType = Struct(name: "Bar", inheritedTypes: ["NSObject", "ProjectClass", "KnownProtocol", "Decodable"])
 
             let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
-            let fooVar = Variable(name: "foo", type: "Foo", accessLevel: (read: .public, write: .public), isComputed: false)
+            let fooVar = Variable(name: "foo", typeName: "Foo", accessLevel: (read: .public, write: .public), isComputed: false)
             fooVar.type = fooType
-            let barVar = Variable(name: "bar", type: "Bar", accessLevel: (read: .public, write: .public), isComputed: false)
+            let barVar = Variable(name: "bar", typeName: "Bar", accessLevel: (read: .public, write: .public), isComputed: false)
             barVar.type = barType
 
             complexType.variables = [
                 fooVar,
                 barVar,
-                Variable(name: "fooBar", type: "Int", accessLevel: (read: .public, write: .public), isComputed: true)
+                Variable(name: "fooBar", typeName: "Int", isComputed: true)
             ]
 
             let types = [
@@ -31,7 +31,7 @@ class GeneratorSpec: QuickSpec {
                     barType,
                     Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")], containedTypes: [
                         Type(name: "InnerOptions", accessLevel: .public, variables: [
-                            Variable(name: "foo", type: "Int", accessLevel: (read: .public, write: .public), isComputed: false)
+                            Variable(name: "foo", typeName: "Int", accessLevel: (read: .public, write: .public), isComputed: false)
                             ])
                         ]),
                     Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawType: "Foo", cases: [Enum.Case(name: "fooA"), Enum.Case(name: "fooB")]),
