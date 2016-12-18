@@ -322,7 +322,7 @@ extension Parser {
             computed = false
         }
 
-        let variable = Variable(name: name, type: type, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic)
+        let variable = Variable(name: name, typeName: type, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic)
         variable.annotations = parseAnnotations(source)
         variable.__parserData = source
 
@@ -367,9 +367,9 @@ extension Parser {
 
             switch nameType.count {
             case 1:
-                return Enum.Case.AssociatedValue(name: nil, type: nameType.first ?? "")
+                return Enum.Case.AssociatedValue(name: nil, typeName: nameType.first ?? "")
             case 2:
-                return Enum.Case.AssociatedValue(name: nameType.first, type: nameType.last ?? "")
+                return Enum.Case.AssociatedValue(name: nameType.first, typeName: nameType.last ?? "")
             default:
                 print("\(logPrefix)parseEnumAssociatedValues: Unknown enum case body format \(body)")
                 return nil

@@ -9,11 +9,11 @@ class Enum: Type {
     class Case: NSObject {
         class AssociatedValue: NSObject {
             let name: String?
-            let type: String
+            let typeName: String
 
-            init(name: String?, type: String) {
+            init(name: String?, typeName: String) {
                 self.name = name
-                self.type = type
+                self.typeName = typeName
             }
         }
 
