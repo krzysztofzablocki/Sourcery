@@ -8,8 +8,8 @@ class GeneratorSpec: QuickSpec {
 
         describe("Generator") {
 
-            let fooType = Type(name: "Foo", variables: [Variable(name: "intValue", typeName: "Int")], inheritedTypes: ["Decodable"])
-            let fooSubclassType = Type(name: "FooSubclass", inheritedTypes: ["Foo", "KnownProtocol"])
+            let fooType = Type(name: "Foo", variables: [Variable(name: "intValue", typeName: "Int")], inheritedTypes: ["Decodable", "AlternativeProtocol"])
+            let fooSubclassType = Type(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"])
             let barType = Struct(name: "Bar", inheritedTypes: ["NSObject", "ProjectClass", "KnownProtocol", "Decodable"])
 
             let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
@@ -38,7 +38,9 @@ class GeneratorSpec: QuickSpec {
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Type(name: "ProjectClass", accessLevel: .none),
                     Type(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
-                    Protocol(name: "KnownProtocol")
+                    Protocol(name: "KnownProtocol"),
+                    Protocol(name: "AlternativeProtocol"),
+                    Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
             ]
 
             func generate(_ template: String) -> String {
@@ -51,7 +53,7 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("generates types.protocols") {
-                expect(generate("Found {{ types.protocols.count }} protocols")).to(equal("Found 1 protocols"))
+                expect(generate("Found {{ types.protocols.count }} protocols")).to(equal("Found 3 protocols"))
             }
 
             it("generates types.classes") {
@@ -116,6 +118,7 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{% if type.Bar.inherits.ProjectClass %} TRUE {% endif %}")).to(equal(" TRUE "))
                     expect(generate("{% if type.Bar.inherits.Decodable %} TRUE {% endif %}")).toNot(equal(" TRUE "))
                     expect(generate("{% if type.Bar.inherits.KnownProtocol %} TRUE {% endif %}")).toNot(equal(" TRUE "))
+                    expect(generate("{% if type.Bar.inherits.AlternativeProtocol %} TRUE {% endif %}")).toNot(equal(" TRUE "))
 
                     expect(generate("{% if type.ProjectFooSubclass.inherits.Foo %} TRUE {% endif %}")).to(equal(" TRUE "))
                 }
@@ -126,6 +129,7 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{% if type.Bar.implements.KnownProtocol %} TRUE {% endif %}")).to(equal(" TRUE "))
 
                     expect(generate("{% if type.ProjectFooSubclass.implements.KnownProtocol %} TRUE {% endif %}")).to(equal(" TRUE "))
+                    expect(generate("{% if type.ProjectFooSubclass.implements.AlternativeProtocol %} TRUE {% endif %}")).to(equal(" TRUE "))
                 }
 
                 it("generates proper response for type.based") {
@@ -136,6 +140,7 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{% if type.ProjectFooSubclass.based.KnownProtocol %} TRUE {% endif %}")).to(equal(" TRUE "))
                     expect(generate("{% if type.ProjectFooSubclass.based.Foo %} TRUE {% endif %}")).to(equal(" TRUE "))
                     expect(generate("{% if type.ProjectFooSubclass.based.Decodable %} TRUE {% endif %}")).to(equal(" TRUE "))
+                    expect(generate("{% if type.ProjectFooSubclass.based.AlternativeProtocol %} TRUE {% endif %}")).to(equal(" TRUE "))
                 }
             }
         }
