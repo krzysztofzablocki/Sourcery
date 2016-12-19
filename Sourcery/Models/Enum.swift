@@ -51,7 +51,7 @@ class Enum: Type {
             }
         }
     }
-    
+
     override var based: [String : String] {
         didSet {
             if let rawType = rawType, based[rawType] != nil {
