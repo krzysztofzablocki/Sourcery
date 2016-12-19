@@ -1,8 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-
-## master
+## 0.4.2
 
 ### Bug Fixes
 

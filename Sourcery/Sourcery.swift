@@ -20,7 +20,7 @@ internal class SourceryTemplate: Template {
 /// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
-    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.4.3"
+    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.4.2"
     public static let generationMarker: String = "// Generated using Sourcery"
 
     let verbose: Bool
