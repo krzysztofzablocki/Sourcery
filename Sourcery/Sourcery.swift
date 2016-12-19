@@ -12,8 +12,25 @@ import SwiftTryCatch
 internal class SourceryTemplate: Template {
     private(set) var sourcePath: Path = ""
     convenience init(path: Path) throws {
-        self.init(templateString: try path.read())
+        self.init(templateString: try path.read(), environment: SourceryTemplate.sourceryEnvironment())
         sourcePath = path
+    }
+
+    convenience init(templateString: String) {
+        self.init(templateString: templateString, environment: SourceryTemplate.sourceryEnvironment())
+    }
+
+    private static func sourceryEnvironment() -> Stencil.Environment {
+        let ext = Stencil.Extension()
+        ext.registerFilter("upperFirst") { (any: Any?) in
+            guard let s = any as? String else {
+                return any
+            }
+            let first = String(s.characters.prefix(1)).capitalized
+            let other = String(s.characters.dropFirst())
+            return first + other
+        }
+        return Stencil.Environment(extensions: [ext])
     }
 }
 
