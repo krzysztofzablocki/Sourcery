@@ -35,6 +35,7 @@ extension Enum.Case.AssociatedValue {
 extension Type {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
+        if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
@@ -46,6 +47,17 @@ extension Type {
         if self.parentName != rhs.parentName { return false }
 
         return true
+    }
+}
+
+extension Typealias {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Typealias else { return false }
+        if self.aliasName != rhs.aliasName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.parentName != rhs.parentName { return false }
+
+        return true 
     }
 }
 
