@@ -45,7 +45,7 @@ class GeneratorSpec: QuickSpec {
 
             func generate(_ template: String) -> String {
                 return (try? Generator.generate(types,
-                        template: Template(templateString: template))) ?? ""
+                        template: SourceryTemplate(templateString: template))) ?? ""
             }
 
             it("generates types.all by skipping protocols") {
@@ -66,6 +66,10 @@ class GeneratorSpec: QuickSpec {
 
             it("generates types.enums") {
                 expect(generate("Found {{ types.enums.count }} enums, first: {{ types.enums.first.name }}")).to(equal("Found 2 enums, first: Options"))
+            }
+
+            it("generates uppercase") {
+                expect(generate("{{\"helloWorld\" | upperFirst }}")).to(equal("HelloWorld"))
             }
 
             it("feeds types.implementing specific protocol") {
