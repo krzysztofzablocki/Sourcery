@@ -226,7 +226,7 @@ For each type you can access following properties:
 **Enum.Case.AssociatedValue** provides:
 
 - `name` <- name
-- `type` <- type of associated value
+- `typeName` <- name of type of associated value
 
 **Variable** provides:
 
