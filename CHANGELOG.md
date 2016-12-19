@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## 0.4.3
+
+### New Features
+* Add upperFirst stencil filter
+
 ## 0.4.2
 
 ### Bug Fixes
