@@ -9,6 +9,7 @@ func build(_ source: String) -> [String: SourceKitRepresentable]? {
 }
 
 class ParserSpec: QuickSpec {
+    // swiftlint:disable function_body_length
     override func spec() {
         describe("Parser") {
             var sut: Parser?
@@ -33,21 +34,25 @@ class ParserSpec: QuickSpec {
                     return sut?.parseVariable(src)
                 }
 
+                it("ignores private variables") {
+                    expect(parse("private var name: String")).to(beNil())
+                }
+
                 it("extracts standard property correctly") {
-                    expect(parse("var name: String")).to(equal(Variable(name: "name", type: "String", accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: String")).to(equal(Variable(name: "name", typeName: "String", accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
                 it("extracts standard let property correctly") {
                     let r = parse("let name: String")
-                    expect(r).to(equal(Variable(name: "name", type: "String", accessLevel: (read: .internal, write: .none), isComputed: false)))
+                    expect(r).to(equal(Variable(name: "name", typeName: "String", accessLevel: (read: .internal, write: .none), isComputed: false)))
                 }
 
                 it("extracts computed property correctly") {
-                    expect(parse("var name: Int { return 2 }")).to(equal(Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)))
+                    expect(parse("var name: Int { return 2 }")).to(equal(Variable(name: "name", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)))
                 }
 
                 it("extracts generic property correctly") {
-                    expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", type: "Observable<Int>", accessLevel: (read: .internal, write: .none), isComputed: false)))
+                    expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", typeName: "Observable<Int>", accessLevel: (read: .internal, write: .none), isComputed: false)))
                 }
 
                 it("extracts property with didSet correctly") {
@@ -55,12 +60,13 @@ class ParserSpec: QuickSpec {
                             "var name: Int? {\n" +
                                     "didSet { _ = 2 }\n" +
                                     "willSet { _ = 4 }\n" +
-                                    "}")).to(equal(Variable(name: "name", type: "Int?", accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                                    "}")).to(equal(Variable(name: "name", typeName: "Int?", accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
                 context("given it has sourcery annotations") {
+
                     it("extracts single annotation") {
-                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
 
                         expect(parse("// sourcery: skipEquability\n" +
@@ -68,7 +74,7 @@ class ParserSpec: QuickSpec {
                     }
 
                     it("extracts multiple annotations on the same line") {
-                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
                         expectedVariable.annotations["jsonKey"] = "json_key" as NSString
 
@@ -77,7 +83,7 @@ class ParserSpec: QuickSpec {
                     }
 
                     it("extracts multi-line annotations, including numbers") {
-                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
                         expectedVariable.annotations["jsonKey"] = "json_key" as NSString
                         expectedVariable.annotations["thirdProperty"] = NSNumber(value: -3)
@@ -89,7 +95,7 @@ class ParserSpec: QuickSpec {
                     }
 
                     it("extracts annotations interleaved with comments") {
-                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["isSet"] = NSNumber(value: true)
                         expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
 
@@ -101,7 +107,7 @@ class ParserSpec: QuickSpec {
                     }
 
                     it("stops extracting annotations if it encounters a non-comment line") {
-                        let expectedVariable = Variable(name: "name", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
 
                         let result = parse(        "// sourcery: isSet\n" +
@@ -115,11 +121,38 @@ class ParserSpec: QuickSpec {
 
             describe("parseTypes") {
                 func parse(_ code: String, existingTypes: [Type] = []) -> [Type] {
-                    let types = sut?.parseContents(code, existingTypes: existingTypes) ?? []
-                    return sut?.uniqueTypes(types) ?? []
+                    let parserResult = sut?.parseContents(code, existingTypes: (existingTypes, [:])) ?? ([], [:])
+                    return sut?.uniqueTypes(parserResult) ?? []
+                }
+
+                context("given it has sourcery annotations") {
+                    it("extracts annotation block") {
+                        let annotations = [
+                                ["skipEquality" : NSNumber(value: true)],
+                                ["skipEquality" : NSNumber(value: true), "extraAnnotation" : NSNumber(value: Float(2))],
+                                [:]
+                        ]
+                        let expectedVariables = (1...3)
+                                .map { Variable(name: "property\($0)", typeName: "Int", annotations: annotations[$0 - 1]) }
+                        let expectedType = Type(name: "Foo", variables: expectedVariables, annotations: ["skipEquality" : NSNumber(value: true)])
+
+                        let result = parse("// sourcery:begin: skipEquality\n\n\n\n" +
+                                "class Foo {\n" +
+                                "  var property1: Int\n\n\n" +
+                                " // sourcery: extraAnnotation = 2\n" +
+                                "  var property2: Int\n\n" +
+                                "  // sourcery:end\n" +
+                                "  var property3: Int\n" +
+                                "}")
+                        expect(result).to(equal([expectedType]))
+                    }
                 }
 
                 context("given struct") {
+                    it("ignores private structs") {
+                        expect(parse("private struct Foo {}")).to(beEmpty())
+                    }
+
                     it("extracts properly") {
                         expect(parse("struct Foo { }"))
                                 .to(equal([
@@ -127,18 +160,28 @@ class ParserSpec: QuickSpec {
                                 ]))
                     }
 
+                    it("extracts generic struct properly") {
+                        expect(parse("struct Foo<Something> { }"))
+                                .to(equal([
+                                    Struct(name: "Foo", isGeneric: true)
+                                          ]))
+                    }
+
                     it("extracts instance variables properly") {
                         expect(parse("struct Foo { var x: Int }"))
                                 .to(equal([
-                                                  Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false)])
+                                                  Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", typeName: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false)])
                                           ]))
                     }
 
                     it("extracts class variables properly") {
-                        expect(parse("struct Foo { static var x: Int { return 2 } }"))
+                        expect(parse("struct Foo { static var x: Int { return 2 }; class var y: Int = 0 }"))
                                 .to(equal([
-                                                  Struct(name: "Foo", accessLevel: .internal, isExtension: false, staticVariables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true)])
-                                          ]))
+                                    Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
+                                        Variable.init(name: "x", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true),
+                                        Variable.init(name: "y", typeName: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false, isStatic: true)
+                                        ])
+                                    ]))
                     }
 
                     context("given nested struct") {
@@ -155,17 +198,21 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given class") {
-                    it("extracts extensions properly") {
+                    it("ignores private classes") {
+                        expect(parse("private class Foo {}")).to(beEmpty())
+                    }
+
+                    it("extracts variables properly") {
                         expect(parse("class Foo { }; extension Foo { var x: Int }"))
                                 .to(equal([
-                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", type: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false)])
+                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", typeName: "Int", accessLevel: (read: .internal, write: .internal), isComputed: false)])
                                 ]))
                     }
 
                     it("extracts inherited types properly") {
-                        expect(parse("class Foo: TestProtocol { }"))
+                        expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
                                 .to(equal([
-                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
                                 ]))
                     }
 
@@ -179,7 +226,60 @@ class ParserSpec: QuickSpec {
                     }
                 }
 
+                context("given unknown type") {
+                    it("extracts extensions properly") {
+                        expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { reutnr 0 } }"))
+                            .to(equal([
+                                Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable.init(name: "x", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)], inheritedTypes: ["Foo"]),
+                                Protocol(name: "Foo")
+                                ]))
+                    }
+                }
+
+                context("given typealias") {
+                    it("extracts typealiases properly") {
+                        expect(sut?.parseContents("typealias FooAlias = Foo; class Foo {}").typealiases)
+                            .to(equal(
+                                ["FooAlias": "Foo"]
+                            ))
+                    }
+
+                    it("replaces variable alias type with actual type") {
+                        let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
+                        expectedVariable.type = Type(name: "Foo")
+
+                        let type = parse("typealias FooAlias = Foo; internal class Foo {}; class Bar { internal var foo: FooAlias }").first
+                        let variable = type?.variables.first
+
+                        expect(variable).to(equal(expectedVariable))
+                        expect(variable?.type).to(equal(expectedVariable.type))
+                    }
+
+                    it("replaces variable optional alias type with actual type") {
+                        let expectedVariable = Variable(name: "foo", typeName: "FooAlias?")
+                        expectedVariable.type = Type(name: "Foo")
+
+                        let type = parse("typealias FooAlias = Foo; class Foo {}; class Bar { var foo: FooAlias? }").first
+                        let variable = type?.variables.first
+
+                        expect(variable).to(equal(expectedVariable))
+                        expect(variable?.type).to(equal(expectedVariable.type))
+                    }
+
+                    it("extends actual type with type alias extension") {
+                        expect(parse("typealias FooAlias = Foo; class Foo: TestProtocol { }; extension FooAlias: AnotherProtocol {}"))
+                            .to(equal([
+                                Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
+                                ]))
+                    }
+
+                }
+
                 context("given enum") {
+                    it("ignores private enums") {
+                        expect(parse("private enum Foo {}")).to(beEmpty())
+                    }
+
                     it("extracts empty enum properly") {
                         expect(parse("enum Foo { }"))
                                 .to(equal([
@@ -197,44 +297,61 @@ class ParserSpec: QuickSpec {
                     it("extracts variables properly") {
                         expect(parse("enum Foo { var x: Int { return 1 } }"))
                                 .to(equal([
-                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [], variables: [Variable(name: "x", type: "Int", accessLevel: (.internal, .none), isComputed: true)])
+                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [], variables: [Variable(name: "x", typeName: "Int", accessLevel: (.internal, .none), isComputed: true)])
                                 ]))
+                    }
+
+                    context("given enum without rawType") {
+                        it("extracts inherited types properly") {
+                            expect(parse("enum Foo: SomeProtocol { case optionA }; protocol SomeProtocol {}"))
+                                .to(equal([
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawType: nil, cases: [Enum.Case(name: "optionA")]),
+                                    Protocol(name: "SomeProtocol")
+                                    ]))
+                        }
+
+                        it("extracts types inherited in extension properly") {
+                            expect(parse("enum Foo { case optionA }; extension Foo: SomeProtocol {}; protocol SomeProtocol {}"))
+                                .to(equal([
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawType: nil, cases: [Enum.Case(name: "optionA")]),
+                                    Protocol(name: "SomeProtocol")
+                                    ]))
+                        }
                     }
 
                     context("given enum containing rawType") {
 
                         it("extracts enums without RawRepresentable") {
-                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA")])
-                            expectedEnum.rawType = "String"
-
-                            expect(parse("enum Foo: String { case optionA }")).to(equal([expectedEnum]))
+                            expect(parse("enum Foo: String, SomeProtocol { case optionA }; protocol SomeProtocol {}"))
+                                .to(equal([
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawType: "String", cases: [Enum.Case(name: "optionA")]),
+                                    Protocol(name: "SomeProtocol")
+                                    ]))
                         }
 
                         it("extracts enums with RawRepresentable by inferring from variable") {
-                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", type: "String", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
-                            expectedEnum.rawType = "String"
-
-                            expect(parse("enum Foo: RawRepresentable { case optionA; var rawValue: String { return \"\" }; }")).to(equal([expectedEnum]))
+                            expect(parse("enum Foo: RawRepresentable { case optionA; var rawValue: String { return \"\" }; init?(rawValue: String) { self = .optionA } }")).to(equal([
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "String", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                                ]))
                         }
 
                         it("extracts enums with RawRepresentable by inferring from variable with typealias") {
-                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", type: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
-                            expectedEnum.rawType = "String"
-
-                            expect(parse("enum Foo: RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([expectedEnum]))
+                            expect(parse("enum Foo: RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                                ]))
                         }
 
                         it("extracts enums with RawRepresentable by inferring from typealias") {
-                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["CustomStringConvertible", "RawRepresentable"], cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", type: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
-                            expectedEnum.rawType = "String"
-
-    						expect(parse("enum Foo: CustomStringConvertible, RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([expectedEnum]))
+    						expect(parse("enum Foo: CustomStringConvertible, RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["CustomStringConvertible", "RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                                ]))
                         }
 
                         it("extracts enums with custom values") {
-                            let expectedEnum = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [Enum.Case(name: "optionA", rawValue: "Value")])
-
-                            expect(parse("enum Foo: String { case optionA = \"Value\" }")).to(equal([expectedEnum]))
+                            expect(parse("enum Foo: String { case optionA = \"Value\" }"))
+                                .to(equal([
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawType: "String", cases: [Enum.Case(name: "optionA", rawValue: "Value")])
+                                    ]))
                         }
                     }
 
@@ -249,8 +366,8 @@ class ParserSpec: QuickSpec {
                                 .to(equal([
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
-                                            Enum.Case(name: "optionA", associatedValues: [Enum.Case.AssociatedValue(name: nil, type: "Observable<Int>")]),
-                                            Enum.Case(name: "optionB", associatedValues: [Enum.Case.AssociatedValue(name: "named", type: "Float")])
+                                            Enum.Case(name: "optionA", associatedValues: [Enum.Case.AssociatedValue(name: nil, typeName: "Observable<Int>")]),
+                                            Enum.Case(name: "optionB", associatedValues: [Enum.Case.AssociatedValue(name: "named", typeName: "Float")])
                                         ])
                                 ]))
                     }
@@ -268,11 +385,21 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given protocol") {
+                    it("ignores private protocols") {
+                        expect(parse("private protocol Foo {}")).to(beEmpty())
+                    }
+
                     it("extracts empty protocol properly") {
                         expect(parse("protocol Foo { }"))
                             .to(equal([
                                 Protocol(name: "Foo")
                                 ]))
+                    }
+                }
+
+                context("given extension") {
+                    it("ignores extension for private type") {
+                        expect(parse("private struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())
                     }
                 }
 
@@ -287,11 +414,13 @@ class ParserSpec: QuickSpec {
             }
 
             describe("parseFile") {
-                it("ignores files that are marked with Generated by Sourcery") {
-                    var types: [Type]? = nil
-                    expect { types = try sut?.parseFile(Stubs.resultDirectory + Path("Basic.swift")) }.toNot(throwError())
+                it("ignores files that are marked with Generated by Sourcery, returning previous types") {
+                    let existingTypes: [Type] = [Type(name: "Bar", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])]
+                    var updatedTypes: [Type]?
 
-                    expect(types).to(beEmpty())
+                    expect { updatedTypes = try sut?.parseFile(Stubs.resultDirectory + Path("Basic.swift"), existingTypes: (existingTypes, [:])).types }.toNot(throwError())
+
+                    expect(updatedTypes).to(equal(existingTypes))
                 }
             }
         }

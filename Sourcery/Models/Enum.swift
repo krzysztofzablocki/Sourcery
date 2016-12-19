@@ -8,18 +8,18 @@ import Foundation
 class Enum: Type {
     class Case: NSObject {
         class AssociatedValue: NSObject {
-            var name: String?
-            var type: String
+            let name: String?
+            let typeName: String
 
-            init(name: String?, type: String) {
+            init(name: String?, typeName: String) {
                 self.name = name
-                self.type = type
+                self.typeName = typeName
             }
         }
 
-        var name: String
-        var rawValue: String?
-        var associatedValues: [AssociatedValue]
+        let name: String
+        let rawValue: String?
+        let associatedValues: [AssociatedValue]
 
         var hasAssociatedValue: Bool {
             return !associatedValues.isEmpty
@@ -32,6 +32,7 @@ class Enum: Type {
         }
     }
 
+    /// sourcery: skipDescription
     override var kind: String { return "enum" }
 
     /// Enum cases
@@ -40,16 +41,21 @@ class Enum: Type {
     /// Raw type of the enum
     internal(set) var rawType: String? {
         didSet {
-            if let rawType = rawType, let index = inheritedTypes.index(of: rawType) {
-                inheritedTypes.remove(at: index)
+            if let rawType = rawType {
+                if let index = inheritedTypes.index(of: rawType) {
+                    inheritedTypes.remove(at: index)
+                }
+                if based[rawType] != nil {
+                    based[rawType] = nil
+                }
             }
         }
     }
 
-    override var inheritedTypes: [String] {
+    override var based: [String : String] {
         didSet {
-            if rawType == nil && !inheritedTypes.contains("RawRepresentable") {
-                rawType = inheritedTypes.removeFirst()
+            if let rawType = rawType, based[rawType] != nil {
+                based[rawType] = nil
             }
         }
     }
@@ -63,17 +69,13 @@ class Enum: Type {
         return false
     }
 
-    init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], cases: [Case] = [], variables: [Variable] = [], containedTypes: [Type] = []) {
+    init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], rawType: String? = nil, cases: [Case] = [], variables: [Variable] = [], containedTypes: [Type] = []) {
         self.cases = cases
-
-        var rawType: String? = nil
-        var inheritedTypes = inheritedTypes
-        if !inheritedTypes.contains("RawRepresentable") {
-            rawType = inheritedTypes.first
-            inheritedTypes = Array(inheritedTypes.dropFirst())
-        }
-
-        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes)
         self.rawType = rawType
+        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes)
+
+        if let rawType = rawType, let index = self.inheritedTypes.index(of: rawType) {
+            self.inheritedTypes.remove(at: index)
+        }
     }
 }

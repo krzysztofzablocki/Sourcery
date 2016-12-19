@@ -1,4 +1,4 @@
-[![CI Status](http://img.shields.io/travis/krzysztofzablocki/Sourcery.svg?style=flat)](https://travis-ci.org/krzysztofzablocki/Sourcery)
+[![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=shield)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
 [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
@@ -171,7 +171,7 @@ extension House {
        House(rooms: house.rooms, address: address, size: house.size)
     }
   )
-  
+
   ...
 }
 ```
@@ -192,18 +192,21 @@ There are multiple ways to access your types:
 - `types.protocols` => lists all protocols (that were defined in the project)
 - `types.inheriting.BaseClass` => lists all types inherting from known BaseClass (only those that were defined in source code that Sourcery scanned)
 - `types.implementing.Protocol` => lists all types conforming to given Protocol (only those that were defined in source code that Sourcery scanned)
-- `types.based.BaseClassOrProtocol` => lists all types implementing or inhertiing from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
+- `types.based.BaseClassOrProtocol` => lists all types implementing or inheriting from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
 
 For each type you can access following properties:
 
-- `name`
-- `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`
+- `name` <- name
+- `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`, it will also provide `extension` for types that are unknown to us(e.g. 3rd party or objc), but had extension in the project
+- `isGeneric` <- info whether the type is generic
 - `localName` <- name within parent scope
 - `staticVariables` <- list of static variables
 - `variables` <- list of instance variables
 - `computedVariables` <- list of computed instance variables
 - `storedVariables` <- list of computed stored variables
-- `inheritedTypes` <- list of type names that this type implements / inherits
+- `inherits.BaseClass` => info whether type inherits from known base class
+- `implements.Protocol` => info whether type implements known protocol
+- `based.BaseClassOrProtocol` => info whether type implements or inherits from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
 - `containedTypes` <- list of types contained within this type
 - `parentName` <- list of parent type (for contained ones)
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
@@ -223,12 +226,14 @@ For each type you can access following properties:
 **Enum.Case.AssociatedValue** provides:
 
 - `name` <- name
-- `type` <- type of associated value
+- `typeName` <- name of type of associated value
 
 **Variable** provides:
 
 - `name` <- Name
 - `type` <- type of the variable
+- `typeName` <- returns name of the type, including things like optional markup
+- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
 - `isComputed` <- whether is computed
 - `isStatic` <- whether is static variable
@@ -247,6 +252,14 @@ Sourcery supports annotating your classes and variables with special annotations
 /// sourcery: anotherAnnotation = 232, yetAnotherAnnotation = "value"
 /// Documentation
 var precomputedHash: Int
+```
+
+If you want to attribute multiple items with same attributes, you can use section annotations:
+```swift
+/// sourcery:begin: skipEquality, skipPersistence
+  var firstVariable: Int
+  var secondVariable: Int
+/// sourcery:end
 ```
 
 #### Features:

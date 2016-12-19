@@ -6,14 +6,13 @@
 import Foundation
 import Stencil
 
-/// types.all <- lists all types, excluding protocols
-/// types.classes <- lists all classes
-/// types.structs <- lists all structs
-/// types.enums <- lists all enums
-/// types.protocols <- lists all protocols (that were defined in the project)
-/// types.inheriting.BaseClass <- lists all classes inheriting from known BaseClass
-/// types.implementing.BaseProtocol <- lists all types implementing known BaseProtocol
-/// types.based.BaseClassOrProtocol <- lists all types inheriting from given BaseClass or implementing given Protocol
+private extension Type {
+    var isClass: Bool {
+        let isNotClass = self is Struct || self is Enum || self is Protocol
+        return !isNotClass && !isExtension
+    }
+}
+
 private class TypesReflectionBox: NSObject {
     private let types: [Type]
 
@@ -22,33 +21,36 @@ private class TypesReflectionBox: NSObject {
         super.init()
     }
 
+    /// Lists all known classes in the project
     lazy var classes: [Type] = {
-        return self.types.filter { type in
-            let isNotClass = type is Struct || type is Enum || type is Protocol
-            return !isNotClass
-        }
+        return self.types.filter { $0.isClass }
     }()
 
+    /// lists all known types, excluding protocols
     lazy var all: [Type] = {
         return self.types.filter { !($0 is Protocol) }
     }()
 
+    /// Lists all known protocols
     lazy var protocols: [Type] = {
         return self.types.filter { $0 is Protocol }
     }()
 
+    /// Lists all known structs
     lazy var structs: [Type] = {
         return self.types.filter { $0 is Struct }
     }()
 
+    /// Lists all known enums
     lazy var enums: [Type] = {
         return self.types.filter { $0 is Enum }
     }()
 
+    /// Lists all encountered types, even if they are not known e.g. Apple or 3rd party frameworks
     lazy var based: [String: [Type]] = {
         var content = [String: [Type]]()
         self.all.forEach { type in
-            type.inheritedTypes.forEach { name in
+            type.based.keys.forEach { name in
                 var list = content[name] ?? [Type]()
                 list.append(type)
                 content[name] = list
@@ -57,14 +59,11 @@ private class TypesReflectionBox: NSObject {
         return content
     }()
 
+    /// Contains reference to types inheriting from any known class
     lazy var inheriting: [String: [Type]] = {
-        let classesNames = self.classes.map({ $0.name })
-
         var content = [String: [Type]]()
         self.classes.forEach { type in
-            type.inheritedTypes.forEach { name in
-                guard classesNames.contains(name) else { return }
-
+            type.inherits.keys.forEach { name in
                 var list = content[name] ?? [Type]()
                 list.append(type)
                 content[name] = list
@@ -73,14 +72,11 @@ private class TypesReflectionBox: NSObject {
         return content
     }()
 
+    /// Contains reference to types implementing any known protocol
     lazy var implementing: [String: [Type]] = {
-        let protocolsNames = self.protocols.map({ $0.name })
-
         var content = [String: [Type]]()
         self.all.forEach { type in
-            type.inheritedTypes.forEach { name in
-                guard protocolsNames.contains(name) else { return }
-
+            type.implements.keys.forEach { name in
                 var list = content[name] ?? [Type]()
                 list.append(type)
                 content[name] = list
@@ -101,9 +97,35 @@ extension Type {
 }
 
 enum Generator {
+    private static func updateTypeRelationship(for type: Type, typesByName: [String: Type], processed: inout [String: Bool]) {
+        type.based.keys.forEach { name in
+            guard let baseType = typesByName[name] else { return }
+            if processed[name] != true {
+                processed[name] = true
+                updateTypeRelationship(for: baseType, typesByName: typesByName, processed: &processed)
+            }
+
+            baseType.based.keys.forEach {  type.based[$0] = $0 }
+            baseType.inherits.keys.forEach {  type.inherits[$0] = $0 }
+            baseType.implements.keys.forEach {  type.implements[$0] = $0 }
+
+            if baseType.isClass {
+                type.inherits[name] = name
+            } else if baseType is Protocol {
+                type.implements[name] = name
+            }
+        }
+    }
+
     static func generate(_ types: [Type], template: Template) throws -> String {
         var typesByName = [String: Type]()
         types.forEach { typesByName[$0.name] = $0 }
+
+        var processed = [String: Bool]()
+        types.forEach { type in
+            processed[type.name] = true
+            updateTypeRelationship(for: type, typesByName: typesByName, processed: &processed)
+        }
 
         let context: [String: Any]? = [
             "types": TypesReflectionBox(types: types),

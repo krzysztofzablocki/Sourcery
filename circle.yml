@@ -1,0 +1,15 @@
+machine:
+  xcode:
+    version: 8.0
+  environment:
+    XCODE_WORKSPACE: Sourcery.xcworkspace
+    XCODE_SCHEME: Sourcery
+
+test:
+  override:
+      - set -o pipefail
+      - xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO build | xcpretty
+      - xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | tee $CIRCLE_ARTIFACTS/xcode_raw.log | xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+  post:
+      - bash <(curl -s https://codecov.io/bash)
+      - bundle exec danger

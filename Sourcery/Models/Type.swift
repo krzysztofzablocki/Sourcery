@@ -9,68 +9,119 @@ import Foundation
 class Type: NSObject {
     internal var isExtension: Bool
 
-    var kind: String { return "class" }
-    var accessLevel: AccessLevel
+    var kind: String { return isExtension ? "extension" : "class" }
+
+    /// What is the type access level?
+    let accessLevel: AccessLevel
 
     /// Name in global scope 
     var name: String {
-        guard let parentName = parentName else { return localName }
+        guard let parentName = parent?.name else { return localName }
         return "\(parentName).\(localName)"
     }
+
+    /// Is this type generic?
+    var isGeneric: Bool
 
     /// Name in parent scope
     var localName: String
 
-    /// All type static variables
-    var staticVariables: [Variable]
-
-    /// All instance variables
+    /// All variables associated with this type
     var variables: [Variable]
 
-    ///  Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
+
+    /// All type static variables
+    var staticVariables: [Variable] {
+        return variables.filter { $0.isStatic }
+    }
 
     /// Only computed instance variables
     var computedVariables: [Variable] {
-        return variables.filter { $0.isComputed }
+        return variables.filter { $0.isComputed && !$0.isStatic }
     }
 
     /// Only stored instance variables
     var storedVariables: [Variable] {
-        return variables.filter { !$0.isComputed }
+        return variables.filter { !$0.isComputed && !$0.isStatic }
     }
 
-    /// Types / Protocols we inherit from
-    var inheritedTypes: [String]
+    /// Types / Protocols names we inherit from, in order of definition
+    var inheritedTypes: [String] {
+        didSet {
+            based.removeAll()
+            inheritedTypes.forEach { name in
+                self.based[name] = name
+            }
+        }
+    }
+
+    /// contains all base types inheriting from given BaseClass or implementing given Protocol, even not known by Sourcery
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var based = [String: String]()
+
+    /// contains all types implementing known BaseProtocol
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var inherits = [String: String]()
+
+    /// contains all types implementing known BaseClass
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var implements = [String: String]()
 
     /// Contained types
     var containedTypes: [Type] {
         didSet {
-            containedTypes.forEach { $0.parentName = self.name }
+            containedTypes.forEach { $0.parent = self }
         }
     }
 
-    /// Parent type name in global scope
-    var parentName: String?
+    /// Parent name
+    private(set) var parentName: String?
+
+    /// Parent type
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var parent: Type? {
+        didSet {
+            parentName = parent?.name
+        }
+    }
 
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
     /// sourcery: skipDescription
     internal var __parserData: Any?
 
-    init(name: String = "", parentName: String? = nil, accessLevel: AccessLevel = .internal, isExtension: Bool = false, variables: [Variable] = [], staticVariables: [Variable] = [], inheritedTypes: [String] = [], containedTypes: [Type] = [], annotations: [String: NSObject] = [:]) {
+    init(name: String = "",
+         parent: Type? = nil,
+         accessLevel: AccessLevel = .internal,
+         isExtension: Bool = false,
+         variables: [Variable] = [],
+         inheritedTypes: [String] = [],
+         containedTypes: [Type] = [],
+         annotations: [String: NSObject] = [:],
+         isGeneric: Bool = false) {
+
         self.localName = name
         self.accessLevel = accessLevel
         self.isExtension = isExtension
         self.variables = variables
-        self.staticVariables = staticVariables
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
-        self.parentName = parentName
+        self.parent = parent
+        self.parentName = parent?.name
         self.annotations = annotations
+        self.isGeneric = isGeneric
 
         super.init()
-        containedTypes.forEach { $0.parentName = self.name }
+        containedTypes.forEach { $0.parent = self }
+        inheritedTypes.forEach { name in
+            self.based[name] = name
+        }
     }
 
     /// Extends this type with an extension
@@ -80,5 +131,8 @@ class Type: NSObject {
         self.variables += type.variables
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
+        type.inherits.keys.forEach { self.inherits[$0] = $0 }
+        type.implements.keys.forEach { self.implements[$0] = $0 }
+        self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
     }
 }

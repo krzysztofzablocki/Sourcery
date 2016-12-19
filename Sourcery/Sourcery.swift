@@ -12,15 +12,32 @@ import SwiftTryCatch
 internal class SourceryTemplate: Template {
     private(set) var sourcePath: Path = ""
     convenience init(path: Path) throws {
-        self.init(templateString: try path.read())
+        self.init(templateString: try path.read(), environment: SourceryTemplate.sourceryEnvironment())
         sourcePath = path
+    }
+
+    convenience init(templateString: String) {
+        self.init(templateString: templateString, environment: SourceryTemplate.sourceryEnvironment())
+    }
+
+    private static func sourceryEnvironment() -> Stencil.Environment {
+        let ext = Stencil.Extension()
+        ext.registerFilter("upperFirst") { (any: Any?) in
+            guard let s = any as? String else {
+                return any
+            }
+            let first = String(s.characters.prefix(1)).capitalized
+            let other = String(s.characters.dropFirst())
+            return first + other
+        }
+        return Stencil.Environment(extensions: [ext])
     }
 }
 
 /// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
-    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.3.6"
+    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.4.3"
     public static let generationMarker: String = "// Generated using Sourcery"
 
     let verbose: Bool
@@ -87,22 +104,24 @@ public class Sourcery {
         print("Scanning sources...")
         let parser = Parser(verbose: verbose)
 
+        var parserResult: ParserResult = ([], [:])
+
         guard from.isDirectory else {
-            return try parser.parseFile(from, existingTypes: [])
+            let parserResult = try parser.parseFile(from)
+            return parser.uniqueTypes(parserResult)
         }
 
-        var types = [Type]()
         try from
             .recursiveChildren()
             .filter {
                 $0.extension == "swift"
             }
             .forEach { path in
-                types = try parser.parseFile(path, existingTypes: types)
+                parserResult = try parser.parseFile(path, existingTypes: parserResult)
         }
 
         //! All files have been scanned, time to join extensions with base class
-        types = parser.uniqueTypes(types)
+        let types = parser.uniqueTypes(parserResult)
 
         print("Found \(types.count) types")
         return types

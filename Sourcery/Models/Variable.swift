@@ -6,45 +6,69 @@
 import Foundation
 
 /// Defines a variable
+
 class Variable: NSObject {
     /// Variable name
-    var name: String
+    let name: String
 
     /// Variable type
-    var type: String
+    var typeName: String
+
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var type: Type?
 
     /// Is the variable optional?
     var isOptional: Bool {
-        if type.hasSuffix("?") { return true }
-        if type.hasPrefix("Optional<") { return true }
+        if typeName.hasSuffix("?") || typeName.hasPrefix("Optional<") {
+            return true
+        }
         return false
     }
 
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var unwrappedTypeName: String {
+        guard isOptional else { return typeName }
+        if typeName.hasSuffix("?") {
+            return String(typeName.characters.dropLast())
+        } else {
+            return String(typeName.characters.dropFirst("Optional<".characters.count).dropLast())
+        }
+    }
+
     /// Whether is computed
-    var isComputed: Bool
+    let isComputed: Bool
 
     /// Whether this is static variable
-    var isStatic: Bool
+    let isStatic: Bool
 
     /// Read access
-    var readAccess: AccessLevel
+    let readAccess: AccessLevel
 
     /// Write access
-    var writeAccess: AccessLevel
+    let writeAccess: AccessLevel
 
-    ///  Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
     /// Underlying parser data, never to be used by anything else
     /// sourcery: skipEquality, skipDescription
     internal var __parserData: Any?
 
-    init(name: String, type: String, accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal), isComputed: Bool = false, isStatic: Bool = false) {
+    init(name: String = "",
+         typeName: String = "",
+         accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
+         isComputed: Bool = false,
+         isStatic: Bool = false,
+         annotations: [String: NSObject] = [:]) {
+
         self.name = name
-        self.type = type
+        self.typeName = typeName
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read
         self.writeAccess = accessLevel.write
+        self.annotations = annotations
     }
 }
