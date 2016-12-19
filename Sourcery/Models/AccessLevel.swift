@@ -9,6 +9,7 @@ import Foundation
 enum AccessLevel: String {
     case `internal`
     case `private`
+    case `fileprivate`
     case `public`
     case none
 }

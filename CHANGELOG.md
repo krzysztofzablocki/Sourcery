@@ -1,6 +1,13 @@
 # Sourcery CHANGELOG
 
 ---
+
+## Master
+
+### Bug Fixes
+
+* Improved handling global and local typealiases. Using typealiases as inherited types and using typealiases of typealiases is not supported.
+
 ## 0.4.3
 
 ### New Features

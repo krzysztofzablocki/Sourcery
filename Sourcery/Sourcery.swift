@@ -104,7 +104,7 @@ public class Sourcery {
         print("Scanning sources...")
         let parser = Parser(verbose: verbose)
 
-        var parserResult: ParserResult = ([], [:])
+        var parserResult: ParserResult = ([], [])
 
         guard from.isDirectory else {
             let parserResult = try parser.parseFile(from)
