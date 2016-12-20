@@ -222,6 +222,7 @@ For each type you can access following properties:
 - `name` <- name
 - `rawValue` <- raw value
 - `associatedValues` <- list of `AssociatedValue`
+- `annotations` <- dictionary with configured [annotations](#source-annotations)
 
 **Enum.Case.AssociatedValue** provides:
 
