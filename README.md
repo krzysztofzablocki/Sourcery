@@ -302,6 +302,14 @@ You just need to add `$PODS_ROOT/Sourcery/bin/sourcery {source} {templates} {out
 </details>
 
 <details>
+<summary>Via Swift Package Manager</summary>
+If you're using SwiftPM, you can simply add 'Sourcery' to your manifest.
+
+Sourcery will be placed in `Packages`.
+After your first `swift build`, you can run `.build/debug/Sourcery {source} {templates} {output}`.
+</details>
+
+<details>
 <summary>From Source</summary>
 You can clone it from the repo and just run `Sourcery.xcworkspace`.
 </details>
