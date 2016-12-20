@@ -68,10 +68,6 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.enums.count }} enums, first: {{ types.enums.first.name }}")).to(equal("Found 2 enums, first: Options"))
             }
 
-            it("generates uppercase") {
-                expect(generate("{{\"helloWorld\" | upperFirst }}")).to(equal("HelloWorld"))
-            }
-
             it("feeds types.implementing specific protocol") {
                 expect(generate("Found {{ types.implementing.KnownProtocol.count }} types")).to(equal("Found 6 types"))
                 expect(generate("Found {{ types.implementing.Decodable.count|default:\"0\" }} types")).to(equal("Found 0 types"))
