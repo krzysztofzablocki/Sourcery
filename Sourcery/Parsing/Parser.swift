@@ -310,9 +310,6 @@ final class Parser {
             //! replace all keys
             aliasNamesToReplace.forEach { typealiasesByNames[$0] = finalAlias }
         }
-        
-        
-        //! TODO: replace typealiases in inherited types
 
         func typeName(for alias: String, containingType: Type? = nil) -> String? {
 
@@ -348,6 +345,8 @@ final class Parser {
             .forEach { $0.localName = typeName(for: $0.name) ?? $0.localName }
 
         types.forEach { type in
+            type.inheritedTypes = type.inheritedTypes.map { typeName(for: $0) ?? $0 }
+
             guard let current = unique[type.name] else {
                 unique[type.name] = type
 
