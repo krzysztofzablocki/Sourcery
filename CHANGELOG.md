@@ -4,7 +4,11 @@
 
 ## Master
 
-### Bug Fixes
+### New Features
+
+* Enum cases also have annotation support
+
+### Internal changes
 
 * Improved handling of global and local typealiases.
 

@@ -21,14 +21,18 @@ class Enum: Type {
         let rawValue: String?
         let associatedValues: [AssociatedValue]
 
+        /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+        var annotations: [String: NSObject] = [:]
+
         var hasAssociatedValue: Bool {
             return !associatedValues.isEmpty
         }
 
-        init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = []) {
+        init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {
             self.name = name
             self.rawValue = rawValue
             self.associatedValues = associatedValues
+            self.annotations = annotations
         }
     }
 

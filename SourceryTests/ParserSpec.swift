@@ -392,6 +392,15 @@ class ParserSpec: QuickSpec {
                                 ]))
                     }
 
+                    it("extracts cases with annotations properly") {
+                        expect(parse("enum Foo {\n // sourcery: annotation\ncase optionA(Int)\n case optionB }"))
+                                .to(equal([
+                                        Enum(name: "Foo", cases: [Enum.Case(name: "optionA",
+                                                associatedValues: [Enum.Case.AssociatedValue(name: nil, typeName: "Int")],
+                                                annotations: ["annotation": NSNumber(value: true)]), Enum.Case(name: "optionB")])
+                                ]))
+                    }
+
                     it("extracts variables properly") {
                         expect(parse("enum Foo { var x: Int { return 1 } }"))
                                 .to(equal([
