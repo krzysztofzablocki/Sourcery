@@ -309,6 +309,13 @@ class ParserSpec: QuickSpec {
                                     ]))
                         }
 
+                        it("updates inheritedTypes with real type name") {
+                            expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
+                                .to(contain([
+                                    Type(name: "Bar", inheritedTypes: ["Foo"])
+                                    ]))
+                        }
+
                     }
 
                     context("given local typealias") {
