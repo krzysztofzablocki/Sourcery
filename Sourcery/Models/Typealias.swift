@@ -1,7 +1,10 @@
 import Foundation
 
 class Typealias: NSObject {
+    /// New typealias name
     let aliasName: String
+
+    /// Target name
     let typeName: String
 
     // sourcery: skipEquality

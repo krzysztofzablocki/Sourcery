@@ -288,7 +288,7 @@ final class Parser {
         let types = parserResult.types
         let typealiases = parserResult.typealiases
 
-        //flatten typealiases by their full names
+        //! flatten typealiases by their full names
         var typealiasesByNames = [String: Typealias]()
         typealiases.forEach { typealiasesByNames[$0.name] = $0 }
         types.forEach { type in
@@ -297,9 +297,22 @@ final class Parser {
             })
         }
 
-        //TODO: replace typealiases of typealiases
-        //typealias Foo = Int; typealias Bar = Foo
-        //TODO: replace typealiases in inherited types
+        //! if a typealias leads to another typealias, follow through and replace with final type
+        typealiasesByNames.forEach { _, alias in
+
+            var aliasNamesToReplace = [alias.name]
+            var finalAlias = alias
+            while let targetAlias = typealiasesByNames[finalAlias.typeName] {
+                aliasNamesToReplace.append(targetAlias.name)
+                finalAlias = targetAlias
+            }
+
+            //! replace all keys
+            aliasNamesToReplace.forEach { typealiasesByNames[$0] = finalAlias }
+        }
+        
+        
+        //! TODO: replace typealiases in inherited types
 
         func typeName(for alias: String, containingType: Type? = nil) -> String? {
 
@@ -308,7 +321,8 @@ final class Parser {
                 return name
             }
 
-            guard let containingType = containingType, let possibleTypeName = typealiasesByNames["\(containingType.name).\(alias)"]?.typeName else {
+            guard let containingType = containingType,
+                  let possibleTypeName = typealiasesByNames["\(containingType.name).\(alias)"]?.typeName else {
                 return nil
             }
 
@@ -619,7 +633,7 @@ extension Parser {
                     if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier",
                         let subtype = extract(tokens[index], contents: contents) {
                         subtypes.append(subtype)
-                    }
+                    } else { break }
                 }
 
                 typealiases.append(Typealias(aliasName: alias, typeName: subtypes.joined(separator: ".")))
