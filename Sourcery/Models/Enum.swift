@@ -21,14 +21,18 @@ class Enum: Type {
         let rawValue: String?
         let associatedValues: [AssociatedValue]
 
+        /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+        var annotations: [String: NSObject] = [:]
+
         var hasAssociatedValue: Bool {
             return !associatedValues.isEmpty
         }
 
-        init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = []) {
+        init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {
             self.name = name
             self.rawValue = rawValue
             self.associatedValues = associatedValues
+            self.annotations = annotations
         }
     }
 
@@ -52,6 +56,8 @@ class Enum: Type {
         }
     }
 
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
     override var based: [String : String] {
         didSet {
             if let rawType = rawType, based[rawType] != nil {
@@ -69,10 +75,10 @@ class Enum: Type {
         return false
     }
 
-    init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], rawType: String? = nil, cases: [Case] = [], variables: [Variable] = [], containedTypes: [Type] = []) {
+    init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], rawType: String? = nil, cases: [Case] = [], variables: [Variable] = [], containedTypes: [Type] = [], typealiases: [Typealias] = []) {
         self.cases = cases
         self.rawType = rawType
-        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes)
+        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)
 
         if let rawType = rawType, let index = self.inheritedTypes.index(of: rawType) {
             self.inheritedTypes.remove(at: index)

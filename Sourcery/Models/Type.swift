@@ -7,6 +7,14 @@ import Foundation
 
 /// Defines Swift Type
 class Type: NSObject {
+
+    /// All local typealiases
+    var typealiases: [String: Typealias] {
+        didSet {
+            typealiases.values.forEach { $0.parent = self }
+        }
+    }
+
     internal var isExtension: Bool
 
     var kind: String { return isExtension ? "extension" : "class" }
@@ -103,6 +111,7 @@ class Type: NSObject {
          variables: [Variable] = [],
          inheritedTypes: [String] = [],
          containedTypes: [Type] = [],
+		 typealiases: [Typealias] = [],
          annotations: [String: NSObject] = [:],
          isGeneric: Bool = false) {
 
@@ -112,6 +121,7 @@ class Type: NSObject {
         self.variables = variables
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
+        self.typealiases = [:]
         self.parent = parent
         self.parentName = parent?.name
         self.annotations = annotations
@@ -122,6 +132,10 @@ class Type: NSObject {
         inheritedTypes.forEach { name in
             self.based[name] = name
         }
+        typealiases.forEach({
+            $0.parent = self
+            self.typealiases[$0.aliasName] = $0
+        })
     }
 
     /// Extends this type with an extension

@@ -17,6 +17,7 @@ extension Enum.Case {
         if self.name != rhs.name { return false }
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
+        if self.annotations != rhs.annotations { return false }
 
         return true
     }
@@ -35,6 +36,7 @@ extension Enum.Case.AssociatedValue {
 extension Type {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
+        if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
@@ -43,6 +45,17 @@ extension Type {
         if self.annotations != rhs.annotations { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
+        if self.parentName != rhs.parentName { return false }
+
+        return true
+    }
+}
+
+extension Typealias {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Typealias else { return false }
+        if self.aliasName != rhs.aliasName { return false }
+        if self.typeName != rhs.typeName { return false }
         if self.parentName != rhs.parentName { return false }
 
         return true

@@ -36,6 +36,7 @@ class ParserSpec: QuickSpec {
 
                 it("ignores private variables") {
                     expect(parse("private var name: String")).to(beNil())
+                    expect(parse("fileprivate var name: String")).to(beNil())
                 }
 
                 it("extracts standard property correctly") {
@@ -121,7 +122,7 @@ class ParserSpec: QuickSpec {
 
             describe("parseTypes") {
                 func parse(_ code: String, existingTypes: [Type] = []) -> [Type] {
-                    let parserResult = sut?.parseContents(code, existingTypes: (existingTypes, [:])) ?? ([], [:])
+                    let parserResult = sut?.parseContents(code, existingTypes: (existingTypes, [])) ?? ([], [])
                     return sut?.uniqueTypes(parserResult) ?? []
                 }
 
@@ -151,6 +152,7 @@ class ParserSpec: QuickSpec {
                 context("given struct") {
                     it("ignores private structs") {
                         expect(parse("private struct Foo {}")).to(beEmpty())
+                        expect(parse("fileprivate struct Foo {}")).to(beEmpty())
                     }
 
                     it("extracts properly") {
@@ -200,6 +202,7 @@ class ParserSpec: QuickSpec {
                 context("given class") {
                     it("ignores private classes") {
                         expect(parse("private class Foo {}")).to(beEmpty())
+                        expect(parse("fileprivate class Foo {}")).to(beEmpty())
                     }
 
                     it("extracts variables properly") {
@@ -228,7 +231,7 @@ class ParserSpec: QuickSpec {
 
                 context("given unknown type") {
                     it("extracts extensions properly") {
-                        expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { reutnr 0 } }"))
+                        expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { return 0 } }"))
                             .to(equal([
                                 Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable.init(name: "x", typeName: "Int", accessLevel: (read: .internal, write: .none), isComputed: true)], inheritedTypes: ["Foo"]),
                                 Protocol(name: "Foo")
@@ -237,40 +240,134 @@ class ParserSpec: QuickSpec {
                 }
 
                 context("given typealias") {
-                    it("extracts typealiases properly") {
-                        expect(sut?.parseContents("typealias FooAlias = Foo; class Foo {}").typealiases)
-                            .to(equal(
-                                ["FooAlias": "Foo"]
-                            ))
+                    it("ignores private typealiases") {
+                        expect(sut?.parseContents("private typealias Alias = String").typealiases).to(beEmpty())
+
+                        expect(sut?.parseContents("fileprivate typealias Alias = String").typealiases).to(beEmpty())
                     }
 
-                    it("replaces variable alias type with actual type") {
-                        let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
-                        expectedVariable.type = Type(name: "Foo")
+                    context("given global typealias") {
+                        it("extracts global typealiases properly") {
+                            expect(sut?.parseContents("typealias GlobalAlias = Foo; class Foo { typealias FooAlias = Int; class Bar { typealias BarAlias = Int } }").typealiases)
+                                .to(equal([
+                                    Typealias(aliasName: "GlobalAlias", typeName: "Foo")
+                                    ]))
+                        }
 
-                        let type = parse("typealias FooAlias = Foo; internal class Foo {}; class Bar { internal var foo: FooAlias }").first
-                        let variable = type?.variables.first
+                        it("extracts typealiases for inner types") {
+                            expect(sut?.parseContents("typealias GlobalAlias = Foo.Bar;").typealiases)
+                                .to(equal([
+                                    Typealias(aliasName: "GlobalAlias", typeName: "Foo.Bar")
+                                    ]))
+                        }
 
-                        expect(variable).to(equal(expectedVariable))
-                        expect(variable?.type).to(equal(expectedVariable.type))
+                        it("extracts typealiases of other typealiases") {
+                            expect(sut?.parseContents("typealias Foo = Int; typealias Bar = Foo").typealiases)
+                                .to(contain([
+                                    Typealias(aliasName: "Foo", typeName: "Int"),
+                                    Typealias(aliasName: "Bar", typeName: "Foo"),
+                                    ]))
+                        }
+
+                        it("replaces variable alias with actual type via 3 typealiases") {
+                            let expectedVariable = Variable(name: "foo", typeName: "FinalAlias")
+                            expectedVariable.type = Type(name: "Foo")
+
+                            let type = parse("typealias FooAlias = Foo; typealias BarAlias = FooAlias; typealias FinalAlias = BarAlias; class Foo {}; class Bar { var foo: FinalAlias }").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.type).to(equal(expectedVariable.type))
+                        }
+
+                        it("replaces variable alias type with actual type") {
+                            let expectedVariable = Variable(name: "foo", typeName: "GlobalAlias")
+                            expectedVariable.type = Type(name: "Foo")
+
+                            let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias }").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.type).to(equal(expectedVariable.type))
+                        }
+
+                        it("replaces variable optional alias type with actual type") {
+                            let expectedVariable = Variable(name: "foo", typeName: "GlobalAlias?")
+                            expectedVariable.type = Type(name: "Foo")
+
+                            let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias? }").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.type).to(equal(expectedVariable.type))
+                        }
+
+                        it("extends actual type with type alias extension") {
+                            expect(parse("typealias GlobalAlias = Foo; class Foo: TestProtocol { }; extension GlobalAlias: AnotherProtocol {}"))
+                                .to(equal([
+                                    Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
+                                    ]))
+                        }
+
+                        it("updates inheritedTypes with real type name") {
+                            expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
+                                .to(contain([
+                                    Type(name: "Bar", inheritedTypes: ["Foo"])
+                                    ]))
+                        }
+
                     }
 
-                    it("replaces variable optional alias type with actual type") {
-                        let expectedVariable = Variable(name: "foo", typeName: "FooAlias?")
-                        expectedVariable.type = Type(name: "Foo")
+                    context("given local typealias") {
+                        it ("extracts local typealiases properly") {
+                            let foo = Type(name: "Foo")
+                            let bar = Type(name: "Bar", parent: foo)
+                            let fooBar = Type(name: "FooBar", parent: bar)
 
-                        let type = parse("typealias FooAlias = Foo; class Foo {}; class Bar { var foo: FooAlias? }").first
-                        let variable = type?.variables.first
+                            let types = sut?.parseContents("class Foo { typealias FooAlias = String; struct Bar { typealias BarAlias = Int; struct FooBar { typealias FooBarAlias = Float } } }").types
 
-                        expect(variable).to(equal(expectedVariable))
-                        expect(variable?.type).to(equal(expectedVariable.type))
-                    }
+                            let fooAliases = types?.first?.typealiases
+                            let barAliases = types?.first?.containedTypes.first?.typealiases
+                            let fooBarAliases = types?.first?.containedTypes.first?.containedTypes.first?.typealiases
 
-                    it("extends actual type with type alias extension") {
-                        expect(parse("typealias FooAlias = Foo; class Foo: TestProtocol { }; extension FooAlias: AnotherProtocol {}"))
-                            .to(equal([
-                                Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
-                                ]))
+                            expect(fooAliases).to(equal(["FooAlias": Typealias(aliasName: "FooAlias", typeName: "String", parent: foo)]))
+                            expect(barAliases).to(equal(["BarAlias": Typealias(aliasName: "BarAlias", typeName: "Int", parent: bar)]))
+                            expect(fooBarAliases).to(equal(["FooBarAlias": Typealias(aliasName: "FooBarAlias", typeName: "Float", parent: fooBar)]))
+                        }
+
+                        it("replaces variable alias type with actual type") {
+                            let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
+                            expectedVariable.type = Type(name: "Foo")
+
+                            let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.type).to(equal(expectedVariable.type))
+                        }
+
+                        it("replaces variable alias type with actual contained type") {
+                            let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
+                            expectedVariable.type = Type(name: "Foo", parent: Type(name: "Bar"))
+
+                            let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.type).to(equal(expectedVariable.type))
+                        }
+
+                        it("replaces variable alias type with actual foreign contained type") {
+                            let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
+                            expectedVariable.type = Type(name: "Foo", parent: Type(name: "FooBar"))
+
+                            let type = parse("class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.type).to(equal(expectedVariable.type))
+                        }
+
                     }
 
                 }
@@ -278,6 +375,7 @@ class ParserSpec: QuickSpec {
                 context("given enum") {
                     it("ignores private enums") {
                         expect(parse("private enum Foo {}")).to(beEmpty())
+                        expect(parse("fileprivate enum Foo {}")).to(beEmpty())
                     }
 
                     it("extracts empty enum properly") {
@@ -291,6 +389,15 @@ class ParserSpec: QuickSpec {
                         expect(parse("enum Foo { case optionA; case optionB }"))
                                 .to(equal([
                                         Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")])
+                                ]))
+                    }
+
+                    it("extracts cases with annotations properly") {
+                        expect(parse("enum Foo {\n // sourcery: annotation\ncase optionA(Int)\n case optionB }"))
+                                .to(equal([
+                                        Enum(name: "Foo", cases: [Enum.Case(name: "optionA",
+                                                associatedValues: [Enum.Case.AssociatedValue(name: nil, typeName: "Int")],
+                                                annotations: ["annotation": NSNumber(value: true)]), Enum.Case(name: "optionB")])
                                 ]))
                     }
 
@@ -337,13 +444,13 @@ class ParserSpec: QuickSpec {
 
                         it("extracts enums with RawRepresentable by inferring from variable with typealias") {
                             expect(parse("enum Foo: RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([
-                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)], typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
                                 ]))
                         }
 
                         it("extracts enums with RawRepresentable by inferring from typealias") {
     						expect(parse("enum Foo: CustomStringConvertible, RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([
-                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["CustomStringConvertible", "RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["CustomStringConvertible", "RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)], typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
                                 ]))
                         }
 
@@ -387,6 +494,7 @@ class ParserSpec: QuickSpec {
                 context("given protocol") {
                     it("ignores private protocols") {
                         expect(parse("private protocol Foo {}")).to(beEmpty())
+                        expect(parse("fileprivate protocol Foo {}")).to(beEmpty())
                     }
 
                     it("extracts empty protocol properly") {
@@ -400,6 +508,7 @@ class ParserSpec: QuickSpec {
                 context("given extension") {
                     it("ignores extension for private type") {
                         expect(parse("private struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())
+                        expect(parse("fileprivate struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())
                     }
                 }
 
@@ -418,7 +527,7 @@ class ParserSpec: QuickSpec {
                     let existingTypes: [Type] = [Type(name: "Bar", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])]
                     var updatedTypes: [Type]?
 
-                    expect { updatedTypes = try sut?.parseFile(Stubs.resultDirectory + Path("Basic.swift"), existingTypes: (existingTypes, [:])).types }.toNot(throwError())
+                    expect { updatedTypes = try sut?.parseFile(Stubs.resultDirectory + Path("Basic.swift"), existingTypes: (existingTypes, [])).types }.toNot(throwError())
 
                     expect(updatedTypes).to(equal(existingTypes))
                 }

@@ -34,6 +34,7 @@ extension Enum.Case.AssociatedValue {
 extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
+        string += "typealiases = \(typealiases), "
         string += "isExtension = \(isExtension), "
         string += "kind = \(kind), "
         string += "accessLevel = \(accessLevel), "
@@ -48,6 +49,17 @@ extension Type {
         string += "inheritedTypes = \(inheritedTypes), "
         string += "containedTypes = \(containedTypes), "
         string += "parentName = \(parentName), "
+        return string
+    }
+}
+
+extension Typealias {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "aliasName = \(aliasName), "
+        string += "typeName = \(typeName), "
+        string += "parentName = \(parentName), "
+        string += "name = \(name), "
         return string
     }
 }

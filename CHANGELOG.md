@@ -5,7 +5,17 @@
 
 ### New Features
 
-* Swift Package Manager support
+* Swift Package Manager support.
+
+## 0.4.4
+
+### New Features
+
+* Enum cases also have annotation support
+
+### Internal changes
+
+* Improved handling of global and local typealiases.
 
 ## 0.4.3
 
