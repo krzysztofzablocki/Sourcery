@@ -242,6 +242,7 @@ class ParserSpec: QuickSpec {
                 context("given typealias") {
                     it("ignores private typealiases") {
                         expect(sut?.parseContents("private typealias Alias = String").typealiases).to(beEmpty())
+
                         expect(sut?.parseContents("fileprivate typealias Alias = String").typealiases).to(beEmpty())
                     }
 
@@ -258,6 +259,25 @@ class ParserSpec: QuickSpec {
                                 .to(equal([
                                     Typealias(aliasName: "GlobalAlias", typeName: "Foo.Bar")
                                     ]))
+                        }
+
+                        it("extracts typealiases of other typealiases") {
+                            expect(sut?.parseContents("typealias Foo = Int; typealias Bar = Foo").typealiases)
+                                .to(contain([
+                                    Typealias(aliasName: "Foo", typeName: "Int"),
+                                    Typealias(aliasName: "Bar", typeName: "Foo"),
+                                    ]))
+                        }
+
+                        it("replaces variable alias with actual type via 3 typealiases") {
+                            let expectedVariable = Variable(name: "foo", typeName: "FinalAlias")
+                            expectedVariable.type = Type(name: "Foo")
+
+                            let type = parse("typealias FooAlias = Foo; typealias BarAlias = FooAlias; typealias FinalAlias = BarAlias; class Foo {}; class Bar { var foo: FinalAlias }").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.type).to(equal(expectedVariable.type))
                         }
 
                         it("replaces variable alias type with actual type") {
