@@ -11,6 +11,8 @@
 		0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA601E0341400084F702 /* ProtocolSpec.swift */; };
 		097E11EE1E05E76900FEB751 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11ED1E05E76900FEB751 /* Typealias.swift */; };
 		097E11F01E05E78600FEB751 /* TypealiasSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */; };
+		097E11F31E09EB6900FEB751 /* SourceryTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11F21E09EB6900FEB751 /* SourceryTemplate.swift */; };
+		097E11F51E09EEC500FEB751 /* SourceryTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11F41E09EEC500FEB751 /* SourceryTemplateSpecs.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
 		985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */; };
 		CD0020EA1D8844AE001CB583 /* ParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D78F72297EDB30B2A757 /* ParserSpec.swift */; };
@@ -67,6 +69,8 @@
 		0967DA601E0341400084F702 /* ProtocolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolSpec.swift; sourceTree = "<group>"; };
 		097E11ED1E05E76900FEB751 /* Typealias.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
 		097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypealiasSpec.swift; sourceTree = "<group>"; };
+		097E11F21E09EB6900FEB751 /* SourceryTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceryTemplate.swift; sourceTree = "<group>"; };
+		097E11F41E09EEC500FEB751 /* SourceryTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceryTemplateSpecs.swift; sourceTree = "<group>"; };
 		3825CA349BD2B2AAB9605E7F /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
 		47FBEB8D5AB4DA51522B302B /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
 		4E26A60E38FEA181642B97B4 /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -172,6 +176,7 @@
 				E291DB249799066B169A0F41 /* Parsing */,
 				E291DB64F90A7CCCD66B3801 /* Generating */,
 				E291DB6A95BAECDB6E978A76 /* Sourcery.swift */,
+				097E11F21E09EB6900FEB751 /* SourceryTemplate.swift */,
 				CD754C951D853F000082B512 /* Info.plist */,
 				CD9C459C1DFAF76D00161C2C /* main.swift */,
 			);
@@ -186,6 +191,7 @@
 				CD754CA01D853F000082B512 /* Info.plist */,
 				E291D78F72297EDB30B2A757 /* ParserSpec.swift */,
 				E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */,
+				097E11F41E09EEC500FEB751 /* SourceryTemplateSpecs.swift */,
 				E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */,
 			);
 			path = SourceryTests;
@@ -490,6 +496,7 @@
 				CD812F5D1DFDCC1A0088B2F6 /* Struct.swift in Sources */,
 				CD812F621DFDCDA10088B2F6 /* Equality.generated.swift in Sources */,
 				E291D8C0F0FE5B3DF91025CC /* Generator.swift in Sources */,
+				097E11F31E09EB6900FEB751 /* SourceryTemplate.swift in Sources */,
 				CD812F5A1DFDCC1A0088B2F6 /* AccessLevel.swift in Sources */,
 				E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */,
 				CD812F5E1DFDCC1A0088B2F6 /* Type.swift in Sources */,
@@ -505,6 +512,7 @@
 			files = (
 				0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */,
 				CD0020EB1D8844B1001CB583 /* GeneratorSpec.swift in Sources */,
+				097E11F51E09EEC500FEB751 /* SourceryTemplateSpecs.swift in Sources */,
 				CD0020EA1D8844AE001CB583 /* ParserSpec.swift in Sources */,
 				E291D8BB621560C275813B1F /* SourcerySpec.swift in Sources */,
 				09346DC81E02195300D6358C /* StructSpec.swift in Sources */,

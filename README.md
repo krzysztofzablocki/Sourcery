@@ -284,6 +284,14 @@ If you want to attribute multiple items with same attributes, you can use sectio
 {% endif %}
 ```
 
+## Custom Stencil tags and filter
+
+- `{{ name|upperFirst }}` - makes first letter in `name` lowercase
+- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
+- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
+- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
+
+
 # Installing
 
 ## Installation

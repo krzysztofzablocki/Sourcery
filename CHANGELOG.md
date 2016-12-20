@@ -2,6 +2,10 @@
 
 ---
 
+## Master
+
+* added contains, hasSuffix and hasPrefix filters for string values
+
 ## 0.4.4
 
 ### New Features
