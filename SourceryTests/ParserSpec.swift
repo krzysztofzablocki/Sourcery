@@ -244,7 +244,7 @@ class ParserSpec: QuickSpec {
                         expect(sut?.parseContents("private typealias Alias = String").typealiases).to(beEmpty())
                         expect(sut?.parseContents("fileprivate typealias Alias = String").typealiases).to(beEmpty())
                     }
-                    
+
                     context("given global typealias") {
                         it("extracts global typealiases properly") {
                             expect(sut?.parseContents("typealias GlobalAlias = Foo; class Foo { typealias FooAlias = Int; class Bar { typealias BarAlias = Int } }").typealiases)
@@ -252,36 +252,36 @@ class ParserSpec: QuickSpec {
                                     Typealias(aliasName: "GlobalAlias", typeName: "Foo")
                                     ]))
                         }
-                        
+
                         it("extracts typealiases for inner types") {
                             expect(sut?.parseContents("typealias GlobalAlias = Foo.Bar;").typealiases)
                                 .to(equal([
                                     Typealias(aliasName: "GlobalAlias", typeName: "Foo.Bar")
                                     ]))
                         }
-                        
+
                         it("replaces variable alias type with actual type") {
                             let expectedVariable = Variable(name: "foo", typeName: "GlobalAlias")
                             expectedVariable.type = Type(name: "Foo")
-                            
+
                             let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias }").first
                             let variable = type?.variables.first
-                            
+
                             expect(variable).to(equal(expectedVariable))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
-                        
+
                         it("replaces variable optional alias type with actual type") {
                             let expectedVariable = Variable(name: "foo", typeName: "GlobalAlias?")
                             expectedVariable.type = Type(name: "Foo")
-                            
+
                             let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias? }").first
                             let variable = type?.variables.first
-                            
+
                             expect(variable).to(equal(expectedVariable))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
-                        
+
                         it("extends actual type with type alias extension") {
                             expect(parse("typealias GlobalAlias = Foo; class Foo: TestProtocol { }; extension GlobalAlias: AnotherProtocol {}"))
                                 .to(equal([
@@ -290,31 +290,31 @@ class ParserSpec: QuickSpec {
                         }
 
                     }
-                    
+
                     context("given local typealias") {
                         it ("extracts local typealiases properly") {
                             let foo = Type(name: "Foo")
                             let bar = Type(name: "Bar", parent: foo)
                             let fooBar = Type(name: "FooBar", parent: bar)
-                            
+
                             let types = sut?.parseContents("class Foo { typealias FooAlias = String; struct Bar { typealias BarAlias = Int; struct FooBar { typealias FooBarAlias = Float } } }").types
-                            
+
                             let fooAliases = types?.first?.typealiases
                             let barAliases = types?.first?.containedTypes.first?.typealiases
                             let fooBarAliases = types?.first?.containedTypes.first?.containedTypes.first?.typealiases
-                            
+
                             expect(fooAliases).to(equal(["FooAlias": Typealias(aliasName: "FooAlias", typeName: "String", parent: foo)]))
                             expect(barAliases).to(equal(["BarAlias": Typealias(aliasName: "BarAlias", typeName: "Int", parent: bar)]))
                             expect(fooBarAliases).to(equal(["FooBarAlias": Typealias(aliasName: "FooBarAlias", typeName: "Float", parent: fooBar)]))
                         }
-                        
+
                         it("replaces variable alias type with actual type") {
                             let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
                             expectedVariable.type = Type(name: "Foo")
-                            
+
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
                             let variable = type?.variables.first
-                            
+
                             expect(variable).to(equal(expectedVariable))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
@@ -322,10 +322,10 @@ class ParserSpec: QuickSpec {
                         it("replaces variable alias type with actual contained type") {
                             let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
                             expectedVariable.type = Type(name: "Foo", parent: Type(name: "Bar"))
-                            
+
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
                             let variable = type?.variables.first
-                            
+
                             expect(variable).to(equal(expectedVariable))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
@@ -333,10 +333,10 @@ class ParserSpec: QuickSpec {
                         it("replaces variable alias type with actual foreign contained type") {
                             let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
                             expectedVariable.type = Type(name: "Foo", parent: Type(name: "FooBar"))
-                            
+
                             let type = parse("class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
                             let variable = type?.variables.first
-                            
+
                             expect(variable).to(equal(expectedVariable))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
@@ -468,7 +468,7 @@ class ParserSpec: QuickSpec {
                                 ]))
                     }
                 }
-                
+
                 context("given extension") {
                     it("ignores extension for private type") {
                         expect(parse("private struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())

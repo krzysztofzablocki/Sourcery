@@ -57,7 +57,7 @@ extension Typealias {
         if self.typeName != rhs.typeName { return false }
         if self.parentName != rhs.parentName { return false }
 
-        return true 
+        return true
     }
 }
 
