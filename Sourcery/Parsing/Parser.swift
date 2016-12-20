@@ -609,34 +609,35 @@ extension Parser {
         var typealiases = existingTypealiases
 
         for (index, token) in tokens.enumerated() {
-            if token.type == "source.lang.swift.syntaxtype.keyword",
-                extract(token, contents: contents) == "typealias" {
-
-                if index > 0,
-                    let accessLevel = extract(tokens[index - 1], contents: contents).flatMap(AccessLevel.init),
-                    accessLevel == .private || accessLevel == .fileprivate {
+            guard token.type == "source.lang.swift.syntaxtype.keyword",
+                extract(token, contents: contents) == "typealias" else {
                     continue
-                }
-
-                guard let alias = extract(tokens[index + 1], contents: contents),
-                    let type = extract(tokens[index + 2], contents: contents) else {
-                        continue
-                }
-
-                //get all subsequent type identifiers
-                var subtypes = [type]
-                var index = index + 2
-                while index < tokens.count - 1 {
-                    index += 1
-
-                    if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier",
-                        let subtype = extract(tokens[index], contents: contents) {
-                        subtypes.append(subtype)
-                    } else { break }
-                }
-
-                typealiases.append(Typealias(aliasName: alias, typeName: subtypes.joined(separator: ".")))
             }
+
+            if index > 0,
+                let accessLevel = extract(tokens[index - 1], contents: contents).flatMap(AccessLevel.init),
+                accessLevel == .private || accessLevel == .fileprivate {
+                continue
+            }
+
+            guard let alias = extract(tokens[index + 1], contents: contents),
+                let type = extract(tokens[index + 2], contents: contents) else {
+                    continue
+            }
+
+            //get all subsequent type identifiers
+            var subtypes = [type]
+            var index = index + 2
+            while index < tokens.count - 1 {
+                index += 1
+
+                if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier",
+                    let subtype = extract(tokens[index], contents: contents) {
+                    subtypes.append(subtype)
+                } else { break }
+            }
+
+            typealiases.append(Typealias(aliasName: alias, typeName: subtypes.joined(separator: ".")))
         }
         return typealiases
     }
