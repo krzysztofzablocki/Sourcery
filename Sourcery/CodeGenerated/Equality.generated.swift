@@ -17,6 +17,7 @@ extension Enum.Case {
         if self.name != rhs.name { return false }
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
+        if self.annotations != rhs.annotations { return false }
 
         return true
     }

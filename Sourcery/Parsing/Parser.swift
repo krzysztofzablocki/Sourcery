@@ -457,7 +457,8 @@ extension Parser {
             }
         }
 
-        return Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues)
+        let annotations = parseAnnotations(source)
+        return Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations)
     }
 
     fileprivate func parseEnumValues(_ body: String) -> String {
