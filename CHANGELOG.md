@@ -6,7 +6,7 @@
 
 ### Bug Fixes
 
-* Improved handling global and local typealiases. Using typealiases as inherited types and using typealiases of typealiases is not supported.
+* Improved handling of global and local typealiases.
 
 ## 0.4.3
 
