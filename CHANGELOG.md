@@ -1,6 +1,12 @@
 # Sourcery CHANGELOG
 
 ---
+## Future Release
+
+### New Features
+
+* Swift Package Manager support
+
 ## 0.4.3
 
 ### New Features
