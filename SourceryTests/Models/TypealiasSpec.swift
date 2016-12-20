@@ -6,25 +6,25 @@ class TypealiasSpec: QuickSpec {
     override func spec() {
         describe ("Typealias") {
             var sut: Typealias?
-            
+
             beforeEach {
                 sut = Typealias(aliasName: "Foo", typeName: "Bar")
             }
-            
+
             afterEach {
                 sut = nil
             }
-            
+
             context("give no parent type") {
                 it("reports name correctly") {
                     expect(sut?.name).to(equal("Foo"))
                 }
             }
-            
+
             context("given parent type") {
                 it("reports name correctly") {
                     sut?.parent = Type(name: "FooBar", parent: Type(name: "Parent"))
-                    
+
                     expect(sut?.name).to(equal("Parent.FooBar.Foo"))
                 }
             }

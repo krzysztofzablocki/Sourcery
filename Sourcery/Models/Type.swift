@@ -7,14 +7,14 @@ import Foundation
 
 /// Defines Swift Type
 class Type: NSObject {
-    
+
     /// All local typealiases
     var typealiases: [String: Typealias] {
         didSet {
             typealiases.values.forEach { $0.parent = self }
         }
     }
-    
+
     internal var isExtension: Bool
 
     var kind: String { return isExtension ? "extension" : "class" }

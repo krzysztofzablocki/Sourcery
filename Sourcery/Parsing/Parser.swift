@@ -73,7 +73,7 @@ typealias ParserResult = (types: [Type], typealiases: [Typealias])
 
 final class Parser {
 
-    private struct Line {
+    fileprivate struct Line {
         enum LineType {
             case comment
             case blockStart
@@ -86,9 +86,9 @@ final class Parser {
     }
 
     let verbose: Bool
-    fileprivate var contents: String = ""
+    private(set) var contents: String = ""
     fileprivate var lines = [Line]()
-    fileprivate var path: String? = nil
+    private(set) var path: String? = nil
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0): " } ?? ""
     }
@@ -123,7 +123,20 @@ final class Parser {
         }
 
         self.contents = contents
+        processLines()
 
+        let file = File(contents: contents)
+        let source = Structure(file: file).dictionary
+
+        var processedGlobalTypes = [[String: SourceKitRepresentable]]()
+        let types = parseTypes(source, existingTypes: existingTypes.types, processed: &processedGlobalTypes)
+        var typealises = existingTypes.typealiases
+
+        typealises += parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
+        return (types, typealises)
+    }
+
+    private func processLines() {
         var annotationsBlock = Annotations()
         self.lines = contents.lines()
                 .map { $0.content.trimmingCharacters(in: .whitespaces) }
@@ -133,17 +146,17 @@ final class Parser {
                     var type: Line.LineType = isComment ? .comment : .other
                     if isComment {
                         switch searchForAnnotations(commentLine: line) {
-                            case let .begin(items):
-                                type = .blockStart
-                                items.forEach { annotationsBlock[$0.key] = $0.value }
-                                break
-                            case let .annotations(items):
-                                items.forEach { annotations[$0.key] = $0.value }
-                                break
-                            case let .end:
-                                type = .blockEnd
-                                annotationsBlock.removeAll()
-                                break
+                        case let .begin(items):
+                            type = .blockStart
+                            items.forEach { annotationsBlock[$0.key] = $0.value }
+                            break
+                        case let .annotations(items):
+                            items.forEach { annotations[$0.key] = $0.value }
+                            break
+                        case .end:
+                            type = .blockEnd
+                            annotationsBlock.removeAll()
+                            break
                         }
                     }
 
@@ -155,14 +168,6 @@ final class Parser {
                             type: type,
                             annotations: annotations)
                 }
-
-        let file = File(contents: contents)
-        let source = Structure(file: file).dictionary
-        var processedGlobalTypes = [[String: SourceKitRepresentable]]()
-        let types = parseTypes(source, existingTypes: existingTypes.types, processed: &processedGlobalTypes)
-        var typealises = existingTypes.typealiases
-        typealises += parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
-        return (types, typealises)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], existingTypes: [Type] = [], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
@@ -224,7 +229,7 @@ final class Parser {
             }
         }
     }
-    
+
     /// Walks single type in the source, recursively processing containing types
     private func walkType(source: [String: SourceKitRepresentable], containingType: Any? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
         var type = containingType
@@ -240,13 +245,13 @@ final class Parser {
 
         var processedInnerTypes = [[String: SourceKitRepresentable]]()
         walkTypes(source: source, containingType: type, processed: &processedInnerTypes, foundEntry: foundEntry)
-        
+
         if let type = type as? Type {
             parseTypealiases(from: source, containingType: type, processed: processedInnerTypes)
                 .forEach { type.typealiases[$0.aliasName] = $0 }
         }
     }
-    
+
     private func processContainedType(_ type: Any, within containingType: Any) {
         ///! only Type can contain children
         guard let containingType = containingType as? Type else {
@@ -282,7 +287,7 @@ final class Parser {
         var unique = [String: Type]()
         let types = parserResult.types
         let typealiases = parserResult.typealiases
-        
+
         //flatten typealiases by their full names
         var typealiasesByNames = [String: Typealias]()
         typealiases.forEach { typealiasesByNames[$0.name] = $0 }
@@ -296,22 +301,27 @@ final class Parser {
         //typealias Foo = Int; typealias Bar = Foo
         //TODO: replace typealiases in inherited types
 
-        func actualTypeName(for name: String, containingType: Type? = nil) -> String? {
+        func typeName(for alias: String, containingType: Type? = nil) -> String? {
+
             // first try global typealiases
-            if let typeNameCandidate = typealiasesByNames[name]?.typeName {
-                return typeNameCandidate
-            } else if let containingType = containingType {
-                let fullTypealiasName = "\(containingType.name).\(name)"
-                if let typeNameCandidate = typealiasesByNames[fullTypealiasName]?.typeName {
-                    //check if typealias is for one of contained types
-                    let containedType = containingType.containedTypes.filter({
-                        $0.name == "\(containingType.name).\(typeNameCandidate)" ||
-                            $0.name == typeNameCandidate}).first
-                    
-                    return containedType?.name ?? typeNameCandidate
-                }
+            if let name = typealiasesByNames[alias]?.typeName {
+                return name
             }
-            return nil
+
+            guard let containingType = containingType, let possibleTypeName = typealiasesByNames["\(containingType.name).\(alias)"]?.typeName else {
+                return nil
+            }
+
+            //check if typealias is for one of contained types
+            let containedType = containingType
+                .containedTypes
+                .filter {
+                    $0.name == "\(containingType.name).\(possibleTypeName)" ||
+                        $0.name == possibleTypeName
+                }
+                .first
+
+            return containedType?.name ?? possibleTypeName
         }
 
         types
@@ -321,24 +331,28 @@ final class Parser {
         //replace extensions for type aliases with original types
         types
             .filter { $0.isExtension == true }
-            .forEach { $0.localName = actualTypeName(for: $0.name) ?? $0.localName }
-        
+            .forEach { $0.localName = typeName(for: $0.name) ?? $0.localName }
+
         types.forEach { type in
             guard let current = unique[type.name] else {
                 unique[type.name] = type
-                let inheritanceClause = type.inheritedTypes.isEmpty ? "" : ": \(type.inheritedTypes.joined(separator: ", "))"
+
+                let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
+                        ": \(type.inheritedTypes.joined(separator: ", "))"
+
                 if verbose { print("\(logPrefix)Found \"extension \(type.name)\(inheritanceClause)\" of type for which we don't have original type definition information") }
                 return
             }
+
             if current == type { return }
 
             current.extend(type)
             unique[type.name] = current
         }
-        
+
         for (_, type) in unique {
             for variable in type.variables {
-                if let actualTypeName = actualTypeName(for: variable.unwrappedTypeName, containingType: type) {
+                if let actualTypeName = typeName(for: variable.unwrappedTypeName, containingType: type) {
                     variable.type = unique[actualTypeName]
                 } else {
                     variable.type = unique[variable.unwrappedTypeName]
@@ -553,20 +567,20 @@ extension Parser {
 
         return insideBlock ? .begin(annotations) : .annotations(annotations)
     }
-    
+
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {
         var contentToParse = self.contents
-        
-        //replace all processed substructures with whitespaces so that we don't process their typealiases again
+
+        // replace all processed substructures with whitespaces so that we don't process their typealiases again
         for substructure in processed {
             if let range = SubstringIdentifier.key.range(for: substructure)
                 .flatMap({ contentToParse.byteRangeToNSRange(start: Int($0.offset), length: Int($0.length)) }) {
-            
+
                 let replacement = String(repeating: " ", count: range.length)
                 contentToParse = contentToParse.bridge().replacingCharacters(in: range, with: replacement)
             }
         }
-        
+
         if containingType != nil {
             if let body = extract(.body, from: source, contents: contentToParse) {
                 return parseTypealiases(SyntaxMap(file: File(contents: body)).tokens, contents: body)
@@ -577,37 +591,37 @@ extension Parser {
             return parseTypealiases(SyntaxMap(file: File(contents: contentToParse)).tokens, contents: contentToParse)
         }
     }
-    
+
     private func parseTypealiases(_ tokens: [SyntaxToken], contents: String, existingTypealiases: [Typealias] = []) -> [Typealias] {
         var typealiases = existingTypealiases
-        
+
         for (index, token) in tokens.enumerated() {
             if token.type == "source.lang.swift.syntaxtype.keyword",
                 extract(token, contents: contents) == "typealias" {
-                
+
                 if index > 0,
                     let accessLevel = extract(tokens[index - 1], contents: contents).flatMap(AccessLevel.init),
                     accessLevel == .private || accessLevel == .fileprivate {
                     continue
                 }
-                
+
                 guard let alias = extract(tokens[index + 1], contents: contents),
                     let type = extract(tokens[index + 2], contents: contents) else {
                         continue
                 }
-                
+
                 //get all subsequent type identifiers
                 var subtypes = [type]
                 var index = index + 2
                 while index < tokens.count - 1 {
                     index += 1
-                    
+
                     if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier",
                         let subtype = extract(tokens[index], contents: contents) {
                         subtypes.append(subtype)
                     }
                 }
-                
+
                 typealiases.append(Typealias(aliasName: alias, typeName: subtypes.joined(separator: ".")))
             }
         }
@@ -631,7 +645,7 @@ extension Parser {
     fileprivate func extract(_ token: SyntaxToken) -> String? {
         return extract(token, contents: self.contents)
     }
-    
+
     fileprivate func extract(_ token: SyntaxToken, contents: String) -> String? {
         return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
     }

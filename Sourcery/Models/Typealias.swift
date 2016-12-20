@@ -3,7 +3,7 @@ import Foundation
 class Typealias: NSObject {
     let aliasName: String
     let typeName: String
-    
+
     // sourcery: skipEquality
     // sourcery: skipDescription
     var parent: Type? {
@@ -11,9 +11,9 @@ class Typealias: NSObject {
             parentName = parent?.name
         }
     }
-    
+
     private(set) var parentName: String?
-    
+
     var name: String {
         if let parentName = parent?.name {
             return "\(parentName).\(aliasName)"
@@ -21,7 +21,7 @@ class Typealias: NSObject {
             return aliasName
         }
     }
-    
+
     init(aliasName: String, typeName: String, parent: Type? = nil) {
         self.aliasName = aliasName
         self.typeName = typeName
