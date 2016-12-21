@@ -26,6 +26,8 @@ private extension Type {
     }
 }
 
+typealias SourceRange = (offset: Int64, length: Int64)
+
 fileprivate enum SubstringIdentifier {
     case body
     case key
@@ -33,9 +35,9 @@ fileprivate enum SubstringIdentifier {
     case nameSuffix
     case keyPrefix
 
-    func range(`for` source: [String: SourceKitRepresentable]) -> (offset: Int64, length: Int64)? {
+    func range(`for` source: [String: SourceKitRepresentable]) -> SourceRange? {
 
-        func extract(_ offset: SwiftDocKey, _ length: SwiftDocKey) -> (offset: Int64, length: Int64)? {
+        func extract(_ offset: SwiftDocKey, _ length: SwiftDocKey) -> SourceRange? {
             if let offset = source[offset.rawValue] as? Int64, let length = source[length.rawValue] as? Int64 {
                 return (offset, length)
             }
@@ -60,6 +62,15 @@ fileprivate enum SubstringIdentifier {
 
         return nil
     }
+}
+
+extension SyntaxToken {
+    
+    /// Returns true if token completely fits the range
+    func isInSourceRange(_ range: SourceRange) -> Bool {
+        return offset >= Int(range.offset) && (offset + length) < Int(range.offset + range.length)
+    }
+    
 }
 
 private typealias Annotations = [String: NSObject]
@@ -88,6 +99,7 @@ final class Parser {
     let verbose: Bool
     private(set) var contents: String = ""
     fileprivate var lines = [Line]()
+    fileprivate var tokens = [SyntaxToken]()
     private(set) var path: String? = nil
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0): " } ?? ""
@@ -123,10 +135,12 @@ final class Parser {
         }
 
         self.contents = contents
+
         processLines()
 
         let file = File(contents: contents)
         let source = Structure(file: file).dictionary
+        tokens = SyntaxMap(file: File(contents: contents)).tokens
 
         var processedGlobalTypes = [[String: SourceKitRepresentable]]()
         let types = parseTypes(source, existingTypes: existingTypes.types, processed: &processedGlobalTypes)
@@ -583,37 +597,32 @@ extension Parser {
     }
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {
-        var contentToParse = self.contents
-
-        // replace all processed substructures with whitespaces so that we don't process their typealiases again
-        for substructure in processed {
-            if let substring = extract(.key, from: substructure) {
-
-                let replacementCharacter = " "
-                let count = substring.lengthOfBytes(using: .utf8) / replacementCharacter.lengthOfBytes(using: .utf8)
-                let replacement = String(repeating: replacementCharacter, count: count)
-                contentToParse = contentToParse.bridge().replacingOccurrences(of: substring, with: replacement)
-            }
-        }
+        let processedRanges = processed.flatMap(SubstringIdentifier.key.range(for:))
 
         guard containingType != nil else {
-            return parseTypealiases(SyntaxMap(file: File(contents: contentToParse)).tokens, contents: contentToParse)
+            return parseTypealiases(in: nil, excludingRanges: processedRanges)
         }
 
-        if let body = extract(.body, from: source, contents: contentToParse) {
-            return parseTypealiases(SyntaxMap(file: File(contents: body)).tokens, contents: body)
+        if let bodyRange = SubstringIdentifier.body.range(for: source) {
+            return parseTypealiases(in: bodyRange, excludingRanges: processedRanges)
         } else {
             return []
         }
     }
 
-    private func parseTypealiases(_ tokens: [SyntaxToken], contents: String, existingTypealiases: [Typealias] = []) -> [Typealias] {
+    private func parseTypealiases(in range: SourceRange?, excludingRanges: [SourceRange], existingTypealiases: [Typealias] = []) -> [Typealias] {
+
         var typealiases = existingTypealiases
 
-        for (index, token) in tokens.enumerated() {
+        tokensLoop: for (index, token) in tokens.enumerated() {
             guard token.type == "source.lang.swift.syntaxtype.keyword",
                 extract(token, contents: contents) == "typealias" else {
                     continue
+            }
+
+            if let range = range, !token.isInSourceRange(range) { continue }
+            for excludingRange in excludingRanges {
+                if token.isInSourceRange(excludingRange) { continue tokensLoop }
             }
 
             if index > 0,
@@ -641,6 +650,7 @@ extension Parser {
 
             typealiases.append(Typealias(aliasName: alias, typeName: subtypes.joined(separator: ".")))
         }
+        print(typealiases)
         return typealiases
     }
 
