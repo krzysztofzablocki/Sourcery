@@ -1,6 +1,10 @@
 # Sourcery CHANGELOG
 
 ---
+## 0.4.6
+
+### Bug Fixes
+- Typealiases parsing could cause crash, implemented a workaround for that until we can find a little more reliable solution
 
 ## 0.4.5
 

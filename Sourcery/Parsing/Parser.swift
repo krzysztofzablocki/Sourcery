@@ -587,22 +587,23 @@ extension Parser {
 
         // replace all processed substructures with whitespaces so that we don't process their typealiases again
         for substructure in processed {
-            if let range = SubstringIdentifier.key.range(for: substructure)
-                .flatMap({ contentToParse.byteRangeToNSRange(start: Int($0.offset), length: Int($0.length)) }) {
+            if let substring = extract(.key, from: substructure) {
 
-                let replacement = String(repeating: " ", count: range.length)
-                contentToParse = contentToParse.bridge().replacingCharacters(in: range, with: replacement)
+                let replacementCharacter = " "
+                let count = substring.lengthOfBytes(using: .utf8) / replacementCharacter.lengthOfBytes(using: .utf8)
+                let replacement = String(repeating: replacementCharacter, count: count)
+                contentToParse = contentToParse.bridge().replacingOccurrences(of: substring, with: replacement)
             }
         }
 
-        if containingType != nil {
-            if let body = extract(.body, from: source, contents: contentToParse) {
-                return parseTypealiases(SyntaxMap(file: File(contents: body)).tokens, contents: body)
-            } else {
-                return []
-            }
-        } else {
+        guard containingType != nil else {
             return parseTypealiases(SyntaxMap(file: File(contents: contentToParse)).tokens, contents: contentToParse)
+        }
+
+        if let body = extract(.body, from: source, contents: contentToParse) {
+            return parseTypealiases(SyntaxMap(file: File(contents: body)).tokens, contents: body)
+        } else {
+            return []
         }
     }
 
