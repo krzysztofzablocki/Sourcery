@@ -1,7 +1,8 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+
+## 0.4.5
 
 ### New Features
 
