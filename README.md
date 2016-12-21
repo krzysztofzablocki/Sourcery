@@ -306,7 +306,7 @@ You just need to add `$PODS_ROOT/Sourcery/bin/sourcery {source} {templates} {out
 If you're using SwiftPM, you can simply add 'Sourcery' to your manifest.
 
 Sourcery will be placed in `Packages`.
-After your first `swift build`, you can run `.build/debug/Sourcery {source} {templates} {output}`.
+After your first `swift build`, you can run `.build/debug/sourcery {source} {templates} {output}`.
 </details>
 
 <details>
