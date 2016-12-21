@@ -89,6 +89,9 @@ func runCLI() {
 
 public var inUnitTests = NSClassFromString("XCTest") != nil
 
+#if os(macOS)
+import AppKit
+
 if !inUnitTests {
     runCLI()
 } else {
@@ -114,3 +117,4 @@ if !inUnitTests {
         app.run()
     }
 }
+#endif

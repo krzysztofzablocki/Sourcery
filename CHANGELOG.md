@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+
+* Swift Package Manager support.
 
 ## 0.4.4
 
