@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Future Release
+## Master
 
 ### New Features
 
