@@ -1,6 +1,13 @@
 # Sourcery CHANGELOG
 
 ---
+## 0.4.7
+### New Features
+- Added `contains`, `hasPrefix`, `hasPrefix` filters
+
+### Bug Fixes
+- AccessLevel is now stored as string
+
 ## 0.4.6
 
 ### Bug Fixes
@@ -11,10 +18,6 @@
 ### New Features
 
 * Swift Package Manager support.
-
-## Master
-
-* added contains, hasSuffix and hasPrefix filters for string values
 
 ## 0.4.4
 

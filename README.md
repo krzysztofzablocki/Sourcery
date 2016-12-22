@@ -242,6 +242,12 @@ For each type you can access following properties:
 - `writeAccess` <- what is the protection access for writing?
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
+## Custom Stencil tags and filter
+
+- `{{ name|upperFirst }}` - makes first letter in `name` uppercase
+- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
+- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
+- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
 
 ## Source Annotations
 
@@ -283,14 +289,6 @@ If you want to attribute multiple items with same attributes, you can use sectio
   var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
 {% endif %}
 ```
-
-## Custom Stencil tags and filter
-
-- `{{ name|upperFirst }}` - makes first letter in `name` lowercase
-- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
-- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
-- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
-
 
 # Installing
 
