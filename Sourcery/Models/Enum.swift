@@ -75,10 +75,20 @@ class Enum: Type {
         return false
     }
 
-    init(name: String, accessLevel: AccessLevel = .internal, isExtension: Bool = false, inheritedTypes: [String] = [], rawType: String? = nil, cases: [Case] = [], variables: [Variable] = [], containedTypes: [Type] = [], typealiases: [Typealias] = []) {
+    init(name: String,
+         accessLevel: AccessLevel = .internal,
+         isExtension: Bool = false,
+         inheritedTypes: [String] = [],
+         rawType: String? = nil,
+         cases: [Case] = [],
+         variables: [Variable] = [],
+         methods: [Method] = [],
+         containedTypes: [Type] = [],
+         typealiases: [Typealias] = []) {
+        
         self.cases = cases
         self.rawType = rawType
-        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)
+        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)
 
         if let rawType = rawType, let index = self.inheritedTypes.index(of: rawType) {
             self.inheritedTypes.remove(at: index)

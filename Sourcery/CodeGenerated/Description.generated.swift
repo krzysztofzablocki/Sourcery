@@ -1,6 +1,7 @@
-// Generated using Sourcery 0.4.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+  
 extension Enum {
     override var description: String {
         var string = super.description
@@ -10,18 +11,19 @@ extension Enum {
         return string
     }
 }
-
+ 
 extension Enum.Case {
     override var description: String {
         var string = "\(type(of: self)): "
         string += "name = \(name), "
         string += "rawValue = \(rawValue), "
         string += "associatedValues = \(associatedValues), "
+        string += "annotations = \(annotations), "
         string += "hasAssociatedValue = \(hasAssociatedValue), "
         return string
     }
 }
-
+ 
 extension Enum.Case.AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -30,7 +32,36 @@ extension Enum.Case.AssociatedValue {
         return string
     }
 }
-
+ 
+extension Method {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "parameters = \(parameters), "
+        string += "shortName = \(shortName), "
+        string += "fullName = \(fullName), "
+        string += "returnTypeName = \(returnTypeName), "
+        string += "accessLevel = \(accessLevel), "
+        string += "isStatic = \(isStatic), "
+        string += "isClass = \(isClass), "
+        string += "isInitializer = \(isInitializer), "
+        string += "isFailableInitializer = \(isFailableInitializer), "
+        string += "annotations = \(annotations), "
+        return string
+    }
+}
+ 
+extension Method.Parameter {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "argumentLabel = \(argumentLabel), "
+        string += "name = \(name), "
+        string += "typeName = \(typeName), "
+        string += "type = \(type), "
+        string += "isOptional = \(isOptional), "
+        return string
+    }
+}
+   
 extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -42,6 +73,8 @@ extension Type {
         string += "isGeneric = \(isGeneric), "
         string += "localName = \(localName), "
         string += "variables = \(variables), "
+        string += "methods = \(methods), "
+        string += "initializers = \(initializers), "
         string += "annotations = \(annotations), "
         string += "staticVariables = \(staticVariables), "
         string += "computedVariables = \(computedVariables), "
@@ -52,7 +85,7 @@ extension Type {
         return string
     }
 }
-
+ 
 extension Typealias {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -63,7 +96,7 @@ extension Typealias {
         return string
     }
 }
-
+ 
 extension Variable {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -78,3 +111,4 @@ extension Variable {
         return string
     }
 }
+

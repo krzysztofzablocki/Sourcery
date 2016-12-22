@@ -1,4 +1,4 @@
-{% for type in types.classes %} {% if type.storedVariables.count %}
+{% for type in types.classes %}{% if type.storedVariables.count %}{% if not type.annotations.skipEquatable %}
 extension {{ type.name }} {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? {{ type.name }} else { return false }
@@ -7,4 +7,4 @@ extension {{ type.name }} {
         {% if type.inheritedTypes.first == "NSObject" %}return true {% else %}return super.isEqual(rhs){% endif %}
     }
 }
-{% endif %}{% endfor %}
+{% endif %}{% endif %}{% endfor %}

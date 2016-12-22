@@ -20,6 +20,7 @@ protocol Diffable {
 /// Phantom protocol for code generation
 protocol AutoDiffable {}
 
+// sourcery: skipEquatable, skipDescription
 @objc class DiffableResult: NSObject {
     private var results: [String]
     internal var identifier: String?

@@ -142,7 +142,7 @@ attributedSummary: NSAttributedString
 
 
 ##### Use case: `I want to create lenses helpers for all structs.`
-_[Full implementation](http://gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
+_[Full implementation](gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
 
 Template:
 
@@ -204,6 +204,8 @@ For each type you can access following properties:
 - `variables` <- list of instance variables
 - `computedVariables` <- list of computed instance variables
 - `storedVariables` <- list of computed stored variables
+- `methods` <- list of all methods
+- `initializers` <- list of all initializers
 - `inherits.BaseClass` => info whether type inherits from known base class
 - `implements.Protocol` => info whether type implements known protocol
 - `based.BaseClassOrProtocol` => info whether type implements or inherits from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
@@ -232,7 +234,7 @@ For each type you can access following properties:
 **Variable** provides:
 
 - `name` <- Name
-- `type` <- type of the variable
+- `type` <- type of the variable, if known
 - `typeName` <- returns name of the type, including things like optional markup
 - `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
@@ -242,12 +244,30 @@ For each type you can access following properties:
 - `writeAccess` <- what is the protection access for writing?
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
-## Custom Stencil tags and filter
+**Method** provides:
 
-- `{{ name|upperFirst }}` - makes first letter in `name` uppercase
-- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
-- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
-- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
+- `fullName` <- full name of the method, i.e for `func foo(bar: Bar) -> Bar` `foo(bar:)`
+- `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` `foo`
+- `parameters` <- list of all method parameters
+- `returnType` <- return type, if known, for initializers - containing type
+- `returnTypeName` <- return type name, including things like optional markup. Will be `Void` for methods without return value or empty string for initializers. 
+- `unwrappedReturnTypeName` <- name of return type, unwrapping the optional e.g. for return type `Int?` this would return `Int`
+- `isOptionalReturnType` <- whether return type is optional, `true` for failable initializers
+- `accessLevel` <- method access level
+- `isStatic` <- whether method is static
+- `isClass` <- whether method is class (can be overriden by subclasses)
+- `isInitializer` <- whether method is an initializer
+- `isFailableInitializer` <- whether method is failable initializer
+- `annotations` <- dictionary with configured [annotations](#source-annotations)
+
+**Method.Parameter** provides:
+
+- `name` <- parameter name
+- `argumentLabel` <- argument label (external name), if not set will be eqal to `name`
+- `type` <- type of parameter, if known
+- `typeName` <- parameter type name, including things like optional markup
+- `unwrappedTypeName` <- name of the type, unwrapping the optional e.g. for parameter with type `Int?` this would return `Int`
+- `isOptional` <- whether is optional
 
 ## Source Annotations
 
@@ -289,6 +309,14 @@ If you want to attribute multiple items with same attributes, you can use sectio
   var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
 {% endif %}
 ```
+
+## Custom Stencil tags and filter
+
+- `{{ name|upperFirst }}` - makes first letter in `name` lowercase
+- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
+- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
+- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
+
 
 # Installing
 

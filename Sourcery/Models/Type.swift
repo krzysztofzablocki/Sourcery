@@ -36,7 +36,15 @@ class Type: NSObject, AutoDiffable {
 
     /// All variables associated with this type
     var variables: [Variable]
-
+    
+    /// All methods defined by this type
+    var methods: [Method]
+    
+    /// All initializers defined by this type
+    var initializers: [Method] {
+        return methods.filter { $0.isInitializer }
+    }
+    
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
@@ -70,12 +78,12 @@ class Type: NSObject, AutoDiffable {
     /// sourcery: skipDescription
     var based = [String: String]()
 
-    /// contains all types implementing known BaseProtocol
+    /// contains all types implementing known BaseClass
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var inherits = [String: String]()
 
-    /// contains all types implementing known BaseClass
+    /// contains all types implementing known BaseProtocol
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var implements = [String: String]()
@@ -114,6 +122,7 @@ class Type: NSObject, AutoDiffable {
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,
          variables: [Variable] = [],
+		 methods: [Method] = [],
          inheritedTypes: [String] = [],
          containedTypes: [Type] = [],
 		 typealiases: [Typealias] = [],
@@ -124,6 +133,7 @@ class Type: NSObject, AutoDiffable {
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
         self.variables = variables
+        self.methods = methods
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
         self.typealiases = [:]
@@ -148,6 +158,7 @@ class Type: NSObject, AutoDiffable {
     /// - Parameter type: Extension of this type
     func extend(_ type: Type) {
         self.variables += type.variables
+        self.methods += type.methods
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
         type.inherits.keys.forEach { self.inherits[$0] = $0 }
