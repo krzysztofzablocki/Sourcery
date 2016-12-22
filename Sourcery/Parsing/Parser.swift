@@ -517,8 +517,7 @@ extension Parser {
     }
 
     fileprivate func parseAnnotations(_ source: [String: SourceKitRepresentable]) -> Annotations {
-        guard let range = SubstringIdentifier.key.range(for: source),
-        let lineInfo = contents.lineAndCharacter(forByteOffset: Int(range.offset)) else { return [:] }
+        guard let range = SubstringIdentifier.key.range(for: source), let lineInfo = location(fromByteOffset: Int(range.offset)).flatMap({ contents.lineAndCharacter(forCharacterOffset: $0) }) else { return [:] }
 
         var annotations = Annotations()
         for line in lines[0..<lineInfo.line-1].reversed() {
@@ -664,5 +663,29 @@ extension Parser {
 
     fileprivate func extract(_ token: SyntaxToken, contents: String) -> String? {
         return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
+    }
+
+    //! this isn't exposed in SourceKitten so we create our own variant
+    fileprivate func location(fromByteOffset byteOffset: Int) -> Int? {
+        let lines = contents.lines()
+        if lines.isEmpty {
+            return 0
+        }
+        let index = lines.index(where: { NSLocationInRange(byteOffset, $0.byteRange) })
+        // byteOffset may be out of bounds when sourcekitd points end of string.
+        guard let line = (index.map { lines[$0] } ?? lines.last) else {
+            fatalError()
+        }
+        let diff = byteOffset - line.byteRange.location
+        if diff == 0 {
+            return line.range.location
+        } else if line.byteRange.length == diff {
+            return NSMaxRange(line.range)
+        }
+        let utf8View = line.content.utf8
+        // swiftlint:disable:next force_unwrapping
+        guard let endUTF16index = utf8View.index(utf8View.startIndex, offsetBy: diff, limitedBy: utf8View.endIndex)?.samePosition(in: line.content.utf16) else { return nil }
+        let utf16Diff = line.content.utf16.distance(from: line.content.utf16.startIndex, to: endUTF16index)
+        return line.range.location + utf16Diff
     }
 }

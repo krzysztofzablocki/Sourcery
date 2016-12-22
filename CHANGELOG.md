@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### Bug Fixes
+- Fix dealing with multibyte characters
+
 ## 0.4.7
 ### New Features
 - Added `contains`, `hasPrefix`, `hasPrefix` filters

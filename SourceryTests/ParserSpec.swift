@@ -392,6 +392,13 @@ class ParserSpec: QuickSpec {
                                 ]))
                     }
 
+                    it("extracts multi-byte cases properly") {
+                        expect(parse("enum JapaneseEnum {\ncase アイウエオ\n}"))
+                            .to(equal([
+                                Enum(name: "JapaneseEnum", cases: [Enum.Case(name: "アイウエオ")])
+                                ]))
+                    }
+
                     it("extracts cases with annotations properly") {
                         expect(parse("enum Foo {\n // sourcery: annotation\ncase optionA(Int)\n case optionB }"))
                                 .to(equal([
