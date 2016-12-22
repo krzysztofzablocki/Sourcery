@@ -387,7 +387,7 @@ final class Parser {
         }
 
         return unique.values.filter {
-            let isPrivate = $0.accessLevel == .private || $0.accessLevel == .fileprivate
+            let isPrivate = AccessLevel(rawValue: $0.accessLevel) == .private || AccessLevel(rawValue: $0.accessLevel) == .fileprivate
             if isPrivate && self.verbose { print("Skipping \($0.kind) \($0.name) as it is private") }
             return !isPrivate
             }.sorted { $0.name < $1.name }

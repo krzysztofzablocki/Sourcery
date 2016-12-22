@@ -94,7 +94,7 @@ class GeneratorSpec: QuickSpec {
 
             describe("accessing specific type via type.Typename") {
 
-                fit("can render accessLevel") {
+                it("can render accessLevel") {
                    expect(generate("{{ type.Complex.accessLevel }}")).to(equal("public"))
                 }
 

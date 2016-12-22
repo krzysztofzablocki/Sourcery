@@ -8,18 +8,18 @@ internal class SourceryTemplate: Template {
         self.init(templateString: try path.read(), environment: SourceryTemplate.sourceryEnvironment())
         sourcePath = path
     }
-    
+
     convenience init(templateString: String) {
         self.init(templateString: templateString, environment: SourceryTemplate.sourceryEnvironment())
     }
-    
+
     private static func sourceryEnvironment() -> Stencil.Environment {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: upperFirstFilter)
         ext.registerFilter("contains", filter: stringContentFilter("contains", String.contains))
         ext.registerFilter("hasPrefix", filter: stringContentFilter("hasPrefix", String.hasPrefix))
         ext.registerFilter("hasSuffix", filter: stringContentFilter("hasSuffix", String.hasSuffix))
-        
+
         return Stencil.Environment(extensions: [ext])
     }
 }
@@ -44,4 +44,3 @@ private func stringContentFilter(_ name: String, _ filter: @escaping (String) ->
         return filter(s)(arg)
     }
 }
-

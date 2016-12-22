@@ -44,10 +44,10 @@ class Variable: NSObject {
     let isStatic: Bool
 
     /// Read access
-    let readAccess: AccessLevel
+    let readAccess: String
 
     /// Write access
-    let writeAccess: AccessLevel
+    let writeAccess: String
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
@@ -67,8 +67,8 @@ class Variable: NSObject {
         self.typeName = typeName
         self.isComputed = isComputed
         self.isStatic = isStatic
-        self.readAccess = accessLevel.read
-        self.writeAccess = accessLevel.write
+        self.readAccess = accessLevel.read.rawValue
+        self.writeAccess = accessLevel.write.rawValue
         self.annotations = annotations
     }
 }

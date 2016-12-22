@@ -12,4 +12,19 @@ enum AccessLevel: String {
     case `fileprivate`
     case `public`
     case none
+
+    var rawValue: String {
+        switch self {
+        case .internal:
+            return "internal"
+        case .private:
+            return "private"
+        case .fileprivate:
+            return "fileprivate"
+        case .public:
+            return "public"
+        case .none:
+            return ""
+        }
+    }
 }

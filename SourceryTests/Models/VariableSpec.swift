@@ -16,11 +16,11 @@ class VariableSpec: QuickSpec {
             }
 
             it("has proper read access") {
-                expect(sut?.readAccess == .public).to(beTrue())
+                expect(sut?.readAccess == AccessLevel.public.rawValue).to(beTrue())
             }
 
             it("has proper write access") {
-                expect(sut?.writeAccess == .internal).to(beTrue())
+                expect(sut?.writeAccess == AccessLevel.internal.rawValue).to(beTrue())
             }
 
             it("reports optional false") {

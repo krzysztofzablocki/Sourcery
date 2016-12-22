@@ -20,7 +20,7 @@ class Type: NSObject {
     var kind: String { return isExtension ? "extension" : "class" }
 
     /// What is the type access level?
-    let accessLevel: AccessLevel
+    let accessLevel: String
 
     /// Name in global scope 
     var name: String {
@@ -116,7 +116,7 @@ class Type: NSObject {
          isGeneric: Bool = false) {
 
         self.localName = name
-        self.accessLevel = accessLevel
+        self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
         self.variables = variables
         self.inheritedTypes = inheritedTypes
