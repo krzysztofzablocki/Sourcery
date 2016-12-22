@@ -94,6 +94,10 @@ class GeneratorSpec: QuickSpec {
 
             describe("accessing specific type via type.Typename") {
 
+                fit("can render accessLevel") {
+                   expect(generate("{{ type.Complex.accessLevel }}")).to(equal("public"))
+                }
+
                 it("generates type.TypeName") {
                     expect(generate("{{ type.Foo.name }} has {{ type.Foo.variables.first.name }} variable")).to(equal("Foo has intValue variable"))
                 }
