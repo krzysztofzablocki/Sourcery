@@ -2,13 +2,13 @@
 
 extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: Diffable {% endif %} {
     {% if type.based.Type %} override {% endif %}func diffAgainst(_ object: Any?) -> DiffableResult {
-        var results = DiffableResult()
+        let results = DiffableResult()
     {% if type.storedVariables.count %}
         guard let rhs = object as? {{ type.name }} else {
-          results.append("Incorrect type, expected {{ type.name }}, received: \(type(of: object))")
+          results.append("Incorrect type <expected: {{ type.name }}, received: \(type(of: object))>")
           return results
         }
-        {% for variable in type.storedVariables %}{% if not variable.annotations.skipEquality %}if self.{{ variable.name }} != rhs.{{ variable.name }} { results.append("Incorrect {{ variable.name }}, expected \(self.{{variable.name}}), received: \(rhs.{{variable.name}})") }
+        {% for variable in type.storedVariables %}{% if not variable.annotations.skipEquality %}if self.{{ variable.name }} != rhs.{{ variable.name }} { results.append("Incorrect {{ variable.name }} <expected: \(self.{{variable.name}}), received: \(rhs.{{variable.name}})>") }
         {% endif %}{% endfor %}
     {% endif %}
         {% if type.supertype.implements.AutoDiffable %}results.append(contentsOf: super.diffAgainst(object)) {% endif %}
