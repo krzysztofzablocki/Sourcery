@@ -46,6 +46,14 @@ class DiffableSpec: QuickSpec {
                 expect("\(sut)").to(equal("Value 1\nValue 2"))
             }
 
+            it("processes identifier for all elements") {
+                sut.identifier = "Prefixed"
+                sut.append("Value 1")
+                sut.append("Value 2")
+
+                expect("\(sut)").to(equal("Prefixed Value 1\nValue 2"))
+            }
+
             it("joins 2 diffable results") {
                 sut.append("Value 1")
                 sut.append(contentsOf: DiffableResult(results: ["Value 2"]))
@@ -58,7 +66,7 @@ class DiffableSpec: QuickSpec {
                     it("ads them if they aren't equal") {
                         sut.trackDifference(actual: 3, expected: 5)
 
-                        expect("\(sut)").to(equal("Item 3 is not equal to 5"))
+                        expect("\(sut)").to(equal("<expected: 3, received: 5>"))
                     }
 
                     it("doesn't add them if they are equal") {
@@ -72,7 +80,7 @@ class DiffableSpec: QuickSpec {
                     it("ads them if they aren't equal") {
                         sut.trackDifference(actual: Type(name: "Foo"), expected: Type(name: "Bar"))
 
-                        expect("\(sut)").to(equal("Incorrect localName <expected: Foo, received: Bar>"))
+                        expect("\(sut)").to(equal("localName <expected: Foo, received: Bar>"))
                     }
 
                     it("doesn't add them if they are equal") {
@@ -90,12 +98,20 @@ class DiffableSpec: QuickSpec {
                             expect("\(sut)").to(equal("Different count 1 vs 2"))
                         }
 
-                        it("finds difference at given idx count") {
+                        it("finds difference at given idx") {
                             sut.trackDifference(
                                     actual: [Type(name: "Foo"), Type(name: "Foo")],
                                     expected: [Type(name: "Foo"), Type(name: "Foo2")])
 
-                            expect("\(sut)").to(equal("idx 1: Incorrect localName <expected: Foo, received: Foo2>"))
+                            expect("\(sut)").to(equal("idx 1: localName <expected: Foo, received: Foo2>"))
+                        }
+
+                        it("finds difference at multiple idx") {
+                            sut.trackDifference(
+                                    actual: [Type(name: "FooBar"), Type(name: "Foo")],
+                                    expected: [Type(name: "Foo"), Type(name: "Foo2")])
+
+                            expect("\(sut)").to(equal("idx 0: localName <expected: FooBar, received: Foo>\nidx 1: localName <expected: Foo, received: Foo2>"))
                         }
                     }
 
@@ -113,7 +129,7 @@ class DiffableSpec: QuickSpec {
                                     actual: ["Key": Type(name: "Foo"), "Something": Type(name: "FooBar")],
                                     expected: ["Key": Type(name: "Foo"), "Something": Type(name: "Bar")])
 
-                            expect("\(sut)").to(equal("key \"Something\": Incorrect localName <expected: FooBar, received: Bar>"))
+                            expect("\(sut)").to(equal("key \"Something\": localName <expected: FooBar, received: Bar>"))
                         }
                     }
                 }
