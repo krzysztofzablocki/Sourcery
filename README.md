@@ -142,7 +142,7 @@ attributedSummary: NSAttributedString
 
 
 ##### Use case: `I want to create lenses helpers for all structs.`
-_[Full implementation](gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
+_[Full implementation](http://gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
 
 Template:
 
