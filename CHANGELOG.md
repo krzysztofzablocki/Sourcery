@@ -8,6 +8,9 @@
 ### Bug Fixes
 - Fix dealing with multibyte characters
 
+## Internal changes
+- TDD Development is now easier thanks to Diffable results, no longer we need to scan wall of text on failures, instead we see exactly what's different.
+
 ## 0.4.7
 ### New Features
 - Added `contains`, `hasPrefix`, `hasPrefix` filters
