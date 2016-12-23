@@ -472,12 +472,12 @@ extension Parser {
 
         /// name: type, otherType
         let components = body.components(separatedBy: ",")
-        return components.flatMap { element in
+        return components.enumerated().flatMap { idx, element in
             let nameType = element.components(separatedBy: ":").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
 
             switch nameType.count {
             case 1:
-                return Enum.Case.AssociatedValue(name: nil, typeName: nameType.first ?? "")
+                return Enum.Case.AssociatedValue(name: "\(idx)", typeName: nameType.first ?? "")
             case 2:
                 return Enum.Case.AssociatedValue(name: nameType.first, typeName: nameType.last ?? "")
             default:
