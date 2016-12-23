@@ -123,6 +123,9 @@ enum Generator {
 
         var processed = [String: Bool]()
         types.forEach { type in
+            if let supertype = type.inheritedTypes.first.flatMap({ typesByName[$0] }), supertype.isClass {
+                type.supertype = supertype
+            }
             processed[type.name] = true
             updateTypeRelationship(for: type, typesByName: typesByName, processed: &processed)
         }

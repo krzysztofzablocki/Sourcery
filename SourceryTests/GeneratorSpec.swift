@@ -98,6 +98,10 @@ class GeneratorSpec: QuickSpec {
                    expect(generate("{{ type.Complex.accessLevel }}")).to(equal("public"))
                 }
 
+                it("can access supertype") {
+                    expect(generate("{{ type.FooSubclass.supertype.name }}")).to(equal("Foo"))
+                }
+
                 it("generates type.TypeName") {
                     expect(generate("{{ type.Foo.name }} has {{ type.Foo.variables.first.name }} variable")).to(equal("Foo has intValue variable"))
                 }
