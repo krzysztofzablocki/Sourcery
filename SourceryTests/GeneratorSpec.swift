@@ -69,7 +69,7 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("feeds types.implementing specific protocol") {
-                expect(generate("Found {{ types.implementing.KnownProtocol.count }} types")).to(equal("Found 6 types"))
+                expect(generate("Found {{ types.implementing.KnownProtocol.count }} types")).to(equal("Found 7 types"))
                 expect(generate("Found {{ types.implementing.Decodable.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.Foo.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
@@ -85,7 +85,7 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("feeds types.based specific type or protocol") {
-                expect(generate("Found {{ types.based.KnownProtocol.count }} types")).to(equal("Found 6 types"))
+                expect(generate("Found {{ types.based.KnownProtocol.count }} types")).to(equal("Found 7 types"))
                 expect(generate("Found {{ types.based.Decodable.count }} types")).to(equal("Found 4 types"))
                 expect(generate("Found {{ types.based.Foo.count }} types")).to(equal("Found 2 types"))
                 expect(generate("Found {{ types.based.NSObject.count }} types")).to(equal("Found 1 types"))
