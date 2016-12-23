@@ -21,10 +21,12 @@ protocol Diffable {
 protocol AutoDiffable {}
 
 @objc class DiffableResult: NSObject {
-    private(set) var results: [String]
+    private var results: [String]
+    internal var identifier: String?
 
-    init(results: [String] = []) {
+    init(results: [String] = [], identifier: String? = nil) {
         self.results = results
+        self.identifier = identifier
     }
 
     func append(_ element: String) {
@@ -32,29 +34,50 @@ protocol AutoDiffable {}
     }
 
     func append(contentsOf contents: DiffableResult) {
-        results.append(contentsOf: contents.results)
+        if !contents.isEmpty {
+            results.append(contents.description)
+        }
     }
 
     var isEmpty: Bool { return results.isEmpty }
 
     override var description: String {
-        return results.joined(separator: "\n")
+        guard !results.isEmpty else { return "" }
+        return "\(identifier.flatMap { "\($0) " } ?? "")" + results.joined(separator: "\n")
     }
+}
 
-    func trackDifference<T: Equatable>(actual: T, expected: T) {
+extension DiffableResult {
+
+    @discardableResult func trackDifference<T: Equatable>(actual: T, expected: T) -> DiffableResult {
         if actual != expected {
-            append("Item \(actual) is not equal to \(expected)")
+            let result = DiffableResult(results: ["<expected: \(actual), received: \(expected)>"])
+            append(contentsOf: result)
         }
+        return self
     }
 
-    func trackDifference<T: Equatable>(actual: T, expected: T) where T: Diffable {
-        append(contentsOf: actual.diffAgainst(expected))
+    @discardableResult func trackDifference<T: Equatable>(actual: T?, expected: T?) -> DiffableResult {
+        if actual != expected {
+            let result = DiffableResult(results: ["<expected: \(actual), received: \(expected)>"])
+            append(contentsOf: result)
+        }
+        return self
     }
 
-    func trackDifference<T: Equatable>(actual: [T], expected: [T]) where T: Diffable {
+    @discardableResult func trackDifference<T: Equatable>(actual: T, expected: T) -> DiffableResult where T: Diffable {
+        let diffResult = actual.diffAgainst(expected)
+        append(contentsOf: diffResult)
+        return self
+    }
+
+    @discardableResult func trackDifference<T: Equatable>(actual: [T], expected: [T]) -> DiffableResult where T: Diffable {
+        let diffResult = DiffableResult()
+        defer { append(contentsOf: diffResult) }
+
         guard actual.count == expected.count else {
-            append("Different count \(actual.count) vs \(expected.count)")
-            return
+            diffResult.append("Different count \(actual.count) vs \(expected.count)")
+            return self
         }
 
         for (idx, item) in actual.enumerated() {
@@ -62,25 +85,53 @@ protocol AutoDiffable {}
             diff.trackDifference(actual: item, expected: expected[idx])
             if !diff.isEmpty {
                 let string = "idx \(idx): \(diff)"
-                append(string)
+                diffResult.append(string)
             }
         }
+
+        return self
     }
 
-    func trackDifference<K: Equatable, T: Equatable>(actual: [K: T], expected: [K: T]) where T: Diffable {
+    @discardableResult func trackDifference<T: Equatable>(actual: [T], expected: [T]) -> DiffableResult {
+        let diffResult = DiffableResult()
+        defer { append(contentsOf: diffResult) }
+
+        guard actual.count == expected.count else {
+            diffResult.append("Different count \(actual.count) vs \(expected.count)")
+            return self
+        }
+
+        for (idx, item) in actual.enumerated() {
+            if item != expected[idx] {
+                let string = "idx \(idx): <expected: \(actual), received: \(expected)>"
+                diffResult.append(string)
+            }
+        }
+
+        return self
+    }
+
+    @discardableResult func trackDifference<K: Equatable, T: Equatable>(actual: [K: T], expected: [K: T]) -> DiffableResult where T: Diffable {
+        let diffResult = DiffableResult()
+        defer { append(contentsOf: diffResult) }
+
         guard actual.count == expected.count else {
             append("Different count \(actual.count) vs \(expected.count)")
 
             if expected.count > actual.count {
-                let missingKeys = Array(expected.keys.filter { actual[$0] == nil }.map { String(describing: $0) })
-                append("Missing keys: \(missingKeys.joined(separator: ", "))")
+                let missingKeys = Array(expected.keys.filter {
+                    actual[$0] == nil
+                }.map {
+                    String(describing: $0)
+                })
+                diffResult.append("Missing keys: \(missingKeys.joined(separator: ", "))")
             }
-            return
+            return self
         }
 
         for (key, actualElement) in actual {
             guard let expectedElement = expected[key] else {
-                results.append("Missing key \"\(key)\"")
+                diffResult.append("Missing key \"\(key)\"")
                 continue
             }
 
@@ -88,8 +139,44 @@ protocol AutoDiffable {}
             diff.trackDifference(actual: actualElement, expected: expectedElement)
             if !diff.isEmpty {
                 let string = "key \"\(key)\": \(diff)"
-                results.append(string)
+                diffResult.append(string)
             }
         }
+
+        return self
+    }
+
+// MARK: - NSObject diffing
+
+    @discardableResult func trackDifference<K: Equatable, T: NSObjectProtocol>(actual: [K: T], expected: [K: T]) -> DiffableResult {
+        let diffResult = DiffableResult()
+        defer { append(contentsOf: diffResult) }
+
+        guard actual.count == expected.count else {
+            append("Different count \(actual.count) vs \(expected.count)")
+
+            if expected.count > actual.count {
+                let missingKeys = Array(expected.keys.filter {
+                    actual[$0] == nil
+                    }.map {
+                        String(describing: $0)
+                })
+                diffResult.append("Missing keys: \(missingKeys.joined(separator: ", "))")
+            }
+            return self
+        }
+
+        for (key, actualElement) in actual {
+            guard let expectedElement = expected[key] else {
+                diffResult.append("Missing key \"\(key)\"")
+                continue
+            }
+
+            if !actualElement.isEqual(expectedElement) {
+                diffResult.append("key \"\(key)\": <expected: \(actual), received: \(expected)>")
+            }
+        }
+
+        return self
     }
 }
