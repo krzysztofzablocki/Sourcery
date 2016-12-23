@@ -4,6 +4,7 @@
 ## Master
 ### New Features
 - You can now access `supertype` of a class
+- Associated values will now automatically use idx as name if no name is provided
 
 ### Bug Fixes
 - Fix dealing with multibyte characters

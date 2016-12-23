@@ -403,7 +403,7 @@ class ParserSpec: QuickSpec {
                         expect(parse("enum Foo {\n // sourcery: annotation\ncase optionA(Int)\n case optionB }"))
                                 .to(equal([
                                         Enum(name: "Foo", cases: [Enum.Case(name: "optionA",
-                                                associatedValues: [Enum.Case.AssociatedValue(name: nil, typeName: "Int")],
+                                                associatedValues: [Enum.Case.AssociatedValue(name: "0", typeName: "Int")],
                                                 annotations: ["annotation": NSNumber(value: true)]), Enum.Case(name: "optionB")])
                                 ]))
                     }
@@ -480,7 +480,7 @@ class ParserSpec: QuickSpec {
                                 .to(equal([
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
-                                            Enum.Case(name: "optionA", associatedValues: [Enum.Case.AssociatedValue(name: nil, typeName: "Observable<Int>")]),
+                                            Enum.Case(name: "optionA", associatedValues: [Enum.Case.AssociatedValue(name: "0", typeName: "Observable<Int>")]),
                                             Enum.Case(name: "optionB", associatedValues: [Enum.Case.AssociatedValue(name: "named", typeName: "Float")])
                                         ])
                                 ]))
