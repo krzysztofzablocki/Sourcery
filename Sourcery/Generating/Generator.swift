@@ -49,7 +49,7 @@ private class TypesReflectionBox: NSObject {
     /// Lists all encountered types, even if they are not known e.g. Apple or 3rd party frameworks
     lazy var based: [String: [Type]] = {
         var content = [String: [Type]]()
-        self.all.forEach { type in
+        self.types.forEach { type in
             type.based.keys.forEach { name in
                 var list = content[name] ?? [Type]()
                 list.append(type)
@@ -75,7 +75,7 @@ private class TypesReflectionBox: NSObject {
     /// Contains reference to types implementing any known protocol
     lazy var implementing: [String: [Type]] = {
         var content = [String: [Type]]()
-        self.all.forEach { type in
+        self.types.forEach { type in
             type.implements.keys.forEach { name in
                 var list = content[name] ?? [Type]()
                 list.append(type)

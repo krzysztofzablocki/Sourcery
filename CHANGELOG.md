@@ -7,6 +7,7 @@
 
 ### Bug Fixes
 - Fix dealing with multibyte characters
+- `types.implementing` and `types.based` should include protocols that are based on other protocols
 
 ## Internal changes
 - TDD Development is now easier thanks to Diffable results, no longer we need to scan wall of text on failures, instead we see exactly what's different.
