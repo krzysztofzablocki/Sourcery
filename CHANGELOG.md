@@ -2,6 +2,8 @@
 
 ---
 ## Master
+### New Features
+- You can now access `supertype` of a class
 
 ### Bug Fixes
 - Fix dealing with multibyte characters

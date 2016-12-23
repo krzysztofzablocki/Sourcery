@@ -99,6 +99,11 @@ class Type: NSObject {
         }
     }
 
+    /// Superclass definition if any
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var supertype: Type?
+
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
     /// sourcery: skipDescription
