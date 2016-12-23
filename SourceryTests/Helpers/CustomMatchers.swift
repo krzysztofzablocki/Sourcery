@@ -25,8 +25,10 @@ public func equal<T: Equatable>(_ expectedValue: T?) -> NonNilMatcherFunc<T> whe
             return false
         }
 
-        if !matches, let result = expectedValue?.diffAgainst(actualValue) {
-            prepare(failureMessage, results: result, actual: stringify(actualValue))
+        if !matches, let actual = actualValue, let expected = expectedValue {
+            let results = DiffableResult()
+            results.trackDifference(actual: actual, expected: expected)
+            prepare(failureMessage, results: results, actual: stringify(actualValue))
         }
         return matches
     }
@@ -48,16 +50,9 @@ public func equal<T: Equatable>(_ expectedValue: [T]?) -> NonNilMatcherFunc<[T]>
         // swiftlint:disable:next force_unwrapping
         let matches = expectedValue! == actualValue!
 
-        if !matches, let expected = expectedValue, let actual = actualValue, actual.count == expected.count {
-            var results = DiffableResult()
-            for (idx, item) in expected.enumerated() {
-                let diff = item.diffAgainst(actual[idx])
-                if !diff.isEmpty {
-                    let string = "idx \(idx): " + diff.joined(separator: "\n")
-                    results.append(string)
-                }
-            }
-
+        if !matches, let expected = expectedValue, let actual = actualValue {
+            let results = DiffableResult()
+            results.trackDifference(actual: actual, expected: expected)
             prepare(failureMessage, results: results, actual: stringify(actual))
         }
 
@@ -83,21 +78,9 @@ public func equal<T: Equatable, C: Equatable>(_ expectedValue: [T: C]?) -> NonNi
         // swiftlint:disable:next force_unwrapping
         let matches = expectedValue! == actualValue!
 
-        if !matches, let expected = expectedValue, let actual = actualValue, actual.keys.count == expected.keys.count {
-            var results = DiffableResult()
-            for (key, item) in expected {
-                guard let actualItem = actual[key] else {
-                    results.append("Missing item for \"\(key)\"")
-                    continue
-                }
-
-                let diff = item.diffAgainst(actualItem)
-                if !diff.isEmpty {
-                    let string = "key \"\(key)\": " + diff.joined(separator: "\n")
-                    results.append(string)
-                }
-            }
-
+        if !matches, let expected = expectedValue, let actual = actualValue {
+            let results = DiffableResult()
+            results.trackDifference(actual: actual, expected: expected)
             prepare(failureMessage, results: results, actual: stringify(actual))
         }
 
@@ -107,6 +90,6 @@ public func equal<T: Equatable, C: Equatable>(_ expectedValue: [T: C]?) -> NonNi
 
 fileprivate func prepare(_ message: FailureMessage, results: DiffableResult, actual: String) {
     if !results.isEmpty {
-        message.stringValue = results.joined(separator: "\n") + "\n Actual: \(actual)\(message.postfixActual)"
+        message.stringValue = "\(results)\n Actual: \(actual)\(message.postfixActual)"
     }
 }
