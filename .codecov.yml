@@ -1,6 +1,7 @@
 coverage:
   ignore:
     - Sourcery/main.swift
+    - Sourcery/CodeGenerated/*
     - Pods/*
   status:
     patch: false
