@@ -42,23 +42,11 @@ fileprivate enum Validators {
     }
 }
 
-/// File path, can't be created with directory path.
-public struct FilePath {
-    public let path: Path
-    public init?(path: Path) {
-        guard path.isFile else {
-            return nil
-        }
-
-        self.path = path
-    }
-}
-
 func runCLI() {
     command(
         Flag("watch",
              flag: "w",
-             description: "Watch template for changes and regenerate as needed. Only works with specific template path (not directory)."),
+             description: "Watch template for changes and regenerate as needed."),
         Flag("verbose",
              flag: "v",
              description: "Turn on verbose logging for ignored entities"),
@@ -67,18 +55,9 @@ func runCLI() {
         Argument<Path>("output", description: "Path to output. File or Directory.")
     ) { watcherEnabled, verboseLogging, source, template, output in
         do {
-
-            guard watcherEnabled else {
-                return try Sourcery(verbose: verboseLogging).processFiles(source, usingTemplates: template, output: output)
-            }
-
-            guard let onlySingleTemplate = FilePath(path: template) else {
-                print("'\(template)' isn't a single template file. In watch enabled mode only a single file can be used.")
-                exit(3)
-            }
-
-            if let _ = try Sourcery(verbose: verboseLogging).processFiles(source, usingTemplates: onlySingleTemplate, output: output, watcherEnabled: watcherEnabled) {
+            if let keepAlive = try Sourcery(verbose: verboseLogging).processFiles(source, usingTemplates: template, output: output, watcherEnabled: watcherEnabled) {
                 RunLoop.current.run()
+                _ = keepAlive
             }
         } catch {
             print(error)

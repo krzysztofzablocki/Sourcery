@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+- Watch mode now works with folders, reacting to source-code changes and adding templates/source files.
+
 ## 0.4.8
 ### New Features
 - You can now access `supertype` of a class

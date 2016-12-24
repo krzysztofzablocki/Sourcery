@@ -9,11 +9,15 @@ import PathKit
 import KZFileWatchers
 import SwiftTryCatch
 
+import Foundation
+
 /// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.4.8"
     public static let generationMarker: String = "// Generated using Sourcery"
+    public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
+        + "// DO NOT EDIT\n\n"
 
     let verbose: Bool
     var watcherEnabled: Bool = false
@@ -33,50 +37,62 @@ public class Sourcery {
     ///   - output: Path to output source code to.
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ files: Path, usingTemplates templatePath: FilePath, output: Path, watcherEnabled: Bool = false) throws -> FileWatcherProtocol? {
+    public func processFiles(_ sources: Path, usingTemplates templatesPath: Path, output: Path, watcherEnabled: Bool = false) throws -> [FolderWatcher.Local]? {
         self.watcherEnabled = watcherEnabled
 
+        var types: [Type] = try parseTypes(from: sources)
+        try generate(templatePath: templatesPath, output: output, types: types)
+
         guard watcherEnabled else {
-            try processFiles(files, usingTemplates: templatePath.path, output: output)
             return nil
         }
 
-        let types = try parseTypes(from: files)
+        print("Starting watching sources.")
+        let sourceWatcher = FolderWatcher.Local(path: sources.string) { events in
+            let events = events
+                .filter { $0.flags.contains(.isFile) && $0.path.hasSuffix(".swift") }
 
-        print("Starting watcher")
-        let watcher = FileWatcher.Local(path: templatePath.path.string)
-        try watcher.start { result in
-            switch result {
-            case .noChanges:
-                print("no changes")
-            case .updated:
+            var shouldRegenerate = false
+            for event in events {
+                guard let file = try? String(contentsOfFile: event.path, encoding: .utf8) else { continue }
+                if !file.hasPrefix(Sourcery.generationMarker) {
+                    shouldRegenerate = true
+                    break
+                }
+            }
+
+            if shouldRegenerate {
                 do {
-                    _ = try self.generate(templatePath: templatePath.path, output: output, types: types)
+                    print("Source changed: ", terminator: "")
+                    types = try self.parseTypes(from: sources)
+                    _ = try self.generate(templatePath: templatesPath, output: output, types: types)
                 } catch {
                     print(error)
                 }
             }
         }
 
-        return watcher
-    }
+        print("Starting watching templates.")
 
-    /// Processes source files and generates corresponding code.
-    ///
-    /// - Parameters:
-    ///   - files: Path of files to process, can be directory or specific file.
-    ///   - templatePath: Path to template's to use for code generation, can be directory or specific file.
-    ///   - output: Path to output source code to.
-    /// - Throws: Potential errors.
-    public func processFiles(_ files: Path, usingTemplates templatePath: Path, output: Path) throws {
-        let types = try parseTypes(from: files)
+        let templateWatcher = FolderWatcher.Local(path: templatesPath.string) { events in
+            let events = events
+                .filter { $0.flags.contains(.isFile) && $0.path.hasSuffix(".stencil") }
 
-        try generate(templatePath: templatePath, output: output, types: types)
-        return
+            if !events.isEmpty {
+                do {
+                    print("Template changed: ", terminator: "")
+                    _ = try self.generate(templatePath: templatesPath, output: output, types: types)
+                } catch {
+                    print(error)
+                }
+            }
+        }
+
+        return [sourceWatcher, templateWatcher]
     }
 
     private func parseTypes(from: Path) throws -> [Type] {
-        print("Scanning sources...")
+        print("Scanning sources...", terminator: "")
         let parser = Parser(verbose: verbose)
 
         var parserResult: ParserResult = ([], [])
@@ -98,22 +114,19 @@ public class Sourcery {
         //! All files have been scanned, time to join extensions with base class
         let types = parser.uniqueTypes(parserResult)
 
-        print("Found \(types.count) types")
+        print("Found \(types.count) types.")
         return types
     }
 
     private func generate(templatePath: Path, output: Path, types: [Type]) throws {
-        print("Loading templates...")
+        print("Loading templates...", terminator: "")
         let allTemplates = try templates(from: templatePath)
-        print("Loaded \(allTemplates.count) templates")
+        print("Loaded \(allTemplates.count) templates.")
 
-        print("Generating code...")
-
-        let header = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
-            + "// DO NOT EDIT\n\n"
+        print("Generating code...", terminator: "")
 
         guard output.isDirectory else {
-            let result = try allTemplates.reduce(header) { result, template in
+            let result = try allTemplates.reduce(Sourcery.generationHeader) { result, template in
                 return result + "\n" + (try generate(template, forTypes: types))
             }
 
@@ -122,10 +135,12 @@ public class Sourcery {
         }
 
         try allTemplates.forEach { template in
-            let result = header + (try generate(template, forTypes: types))
+            let result = Sourcery.generationHeader + (try generate(template, forTypes: types))
             let outputPath = output + generatedPath(for: template.sourcePath)
             try outputPath.write(result, encoding: .utf8)
         }
+
+        print("Finished.")
     }
 
     private func generate(_ template: Template, forTypes types: [Type]) throws -> String {
