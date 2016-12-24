@@ -24,34 +24,33 @@ class SourcerySpecTests: QuickSpec {
             }()
 
             context("given a single template") {
-                guard let templatePath = FilePath(path: Stubs.templateDirectory + Path("Basic.stencil")) else { fatalError() }
+                let templatePath = Stubs.templateDirectory + Path("Basic.stencil")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8).trimAll
 
                 context("without a watcher") {
                     it("creates expected output file") {
                         expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
 
-                        let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath.path)).read(.utf8))
+                        let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                         expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
                     }
                 }
 
                 context("with watcher") {
-                    var watcher: FileWatcherProtocol?
+                    var watcher: Any?
                     let tmpTemplate = outputDir + Path("FakeTemplate.stencil")
                     func updateTemplate(code: String) { guard let _ = try? tmpTemplate.write(code) else { fatalError() } }
 
                     it("re-generates on template change") {
                         updateTemplate(code: "Found {{ types.enums.count }} Enums")
-                        guard let tmpTemplate = FilePath(path: tmpTemplate) else { return fail() }
 
                         expect { watcher = try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: tmpTemplate, output: outputDir, watcherEnabled: true) }.toNot(throwError())
 
                         //! Change the template
                         updateTemplate(code: "Found {{ types.all.count }} Types")
 
-                        let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate.path)).read(.utf8)) }
-                        expect(result()).toEventually(contain("Found 3 Types"))
+                        let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate)).read(.utf8)) }
+                        expect(result()).toEventually(contain("\(Sourcery.generationHeader)Found 3 Types"))
                     }
                 }
             }
