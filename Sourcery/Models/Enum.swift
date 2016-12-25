@@ -11,6 +11,10 @@ class Enum: Type {
             let name: String?
             let typeName: String
 
+            /// sourcery: skipEquality
+            /// sourcery: skipDescription
+            var type: Type?
+
             init(name: String?, typeName: String) {
                 self.name = name
                 self.typeName = typeName
