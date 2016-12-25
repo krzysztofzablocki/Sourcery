@@ -28,7 +28,6 @@ extension Enum.Case.AssociatedValue {
         var string = "\(type(of: self)): "
         string += "name = \(name), "
         string += "typeName = \(typeName), "
-        string += "isOptional = \(isOptional), "
         return string
     }
 }
@@ -57,7 +56,6 @@ extension Method.Parameter {
         string += "name = \(name), "
         string += "typeName = \(typeName), "
         string += "type = \(type), "
-        string += "isOptional = \(isOptional), "
         return string
     }
 }
@@ -102,7 +100,6 @@ extension Variable {
         var string = "\(type(of: self)): "
         string += "name = \(name), "
         string += "typeName = \(typeName), "
-        string += "isOptional = \(isOptional), "
         string += "isComputed = \(isComputed), "
         string += "isStatic = \(isStatic), "
         string += "readAccess = \(readAccess), "

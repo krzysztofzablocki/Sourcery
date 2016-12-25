@@ -7,21 +7,13 @@ import Foundation
 
 class Enum: Type {
     class Case: NSObject, AutoDiffable {
-        class AssociatedValue: NSObject, AutoDiffable {
+        class AssociatedValue: NSObject, AutoDiffable, Typed {
             let name: String?
             let typeName: TypeName
 
             /// sourcery: skipEquality
             /// sourcery: skipDescription
             var type: Type?
-
-            /// Is the variable optional?
-            /// sourcery: skipEquality
-            var isOptional: Bool { return typeName.isOptional }
-
-            /// sourcery: skipEquality
-            /// sourcery: skipDescription
-            var unwrappedTypeName: String { return typeName.unwrappedTypeName }
 
             init(name: String?, typeName: String, type: Type? = nil) {
                 self.name = name

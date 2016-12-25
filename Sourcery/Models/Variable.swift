@@ -7,7 +7,7 @@ import Foundation
 
 /// Defines a variable
 
-class Variable: NSObject, AutoDiffable {
+class Variable: NSObject, AutoDiffable, Typed {
     /// Variable name
     let name: String
 
@@ -17,14 +17,6 @@ class Variable: NSObject, AutoDiffable {
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var type: Type?
-
-    /// Is the variable optional?
-    /// sourcery: skipEquality
-    var isOptional: Bool { return typeName.isOptional }
-
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
-    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
 
     /// Whether is computed
     let isComputed: Bool
