@@ -9,14 +9,22 @@ import PathKit
 import KZFileWatchers
 import SwiftTryCatch
 
+import Foundation
+
 /// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.4.8"
     public static let generationMarker: String = "// Generated using Sourcery"
+    public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
+        + "// DO NOT EDIT\n\n"
 
     let verbose: Bool
-    var watcherEnabled: Bool = false
+    private(set) var watcherEnabled: Bool = false
+    private var status = ""
+
+    private var templatesPath: Path = ""
+    private var outputPath: Path = ""
 
     /// Creates Sourcery processor
     ///
@@ -33,50 +41,64 @@ public class Sourcery {
     ///   - output: Path to output source code to.
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ files: Path, usingTemplates templatePath: FilePath, output: Path, watcherEnabled: Bool = false) throws -> FileWatcherProtocol? {
+    public func processFiles(_ sources: Path, usingTemplates templatesPath: Path, output: Path, watcherEnabled: Bool = false) throws -> [FolderWatcher.Local]? {
+        self.templatesPath = templatesPath
+        self.outputPath = output
         self.watcherEnabled = watcherEnabled
 
+        var types: [Type] = try parseTypes(from: sources)
+        try generate(templatePath: templatesPath, output: output, types: types)
+
         guard watcherEnabled else {
-            try processFiles(files, usingTemplates: templatePath.path, output: output)
             return nil
         }
 
-        let types = try parseTypes(from: files)
+        track("Starting watching sources.", skipStatus: true)
+        let sourceWatcher = FolderWatcher.Local(path: sources.string) { events in
+            let events = events
+                .filter { $0.flags.contains(.isFile) && $0.path.hasSuffix(".swift") }
 
-        print("Starting watcher")
-        let watcher = FileWatcher.Local(path: templatePath.path.string)
-        try watcher.start { result in
-            switch result {
-            case .noChanges:
-                print("no changes")
-            case .updated:
+            var shouldRegenerate = false
+            for event in events {
+                guard let file = try? String(contentsOfFile: event.path, encoding: .utf8) else { continue }
+                if !file.hasPrefix(Sourcery.generationMarker) {
+                    shouldRegenerate = true
+                    break
+                }
+            }
+
+            if shouldRegenerate {
                 do {
-                    _ = try self.generate(templatePath: templatePath.path, output: output, types: types)
+                    self.track("Source changed: ", terminator: "")
+                    types = try self.parseTypes(from: sources)
+                    _ = try self.generate(templatePath: templatesPath, output: output, types: types)
                 } catch {
-                    print(error)
+                    self.track(error)
                 }
             }
         }
 
-        return watcher
-    }
+        track("Starting watching templates.", skipStatus: true)
 
-    /// Processes source files and generates corresponding code.
-    ///
-    /// - Parameters:
-    ///   - files: Path of files to process, can be directory or specific file.
-    ///   - templatePath: Path to template's to use for code generation, can be directory or specific file.
-    ///   - output: Path to output source code to.
-    /// - Throws: Potential errors.
-    public func processFiles(_ files: Path, usingTemplates templatePath: Path, output: Path) throws {
-        let types = try parseTypes(from: files)
+        let templateWatcher = FolderWatcher.Local(path: templatesPath.string) { events in
+            let events = events
+                .filter { $0.flags.contains(.isFile) && $0.path.hasSuffix(".stencil") }
 
-        try generate(templatePath: templatePath, output: output, types: types)
-        return
+            if !events.isEmpty {
+                do {
+                    self.track("Templates changed: ", terminator: "")
+                    _ = try self.generate(templatePath: templatesPath, output: output, types: types)
+                } catch {
+                    self.track(error)
+                }
+            }
+        }
+
+        return [sourceWatcher, templateWatcher]
     }
 
     private func parseTypes(from: Path) throws -> [Type] {
-        print("Scanning sources...")
+        self.track("Scanning sources...", terminator: "")
         let parser = Parser(verbose: verbose)
 
         var parserResult: ParserResult = ([], [])
@@ -86,34 +108,40 @@ public class Sourcery {
             return parser.uniqueTypes(parserResult)
         }
 
-        try from
+        let sources = try from
             .recursiveChildren()
             .filter {
                 $0.extension == "swift"
             }
-            .forEach { path in
+
+        var lastIdx = 0
+        let step = sources.count / 10 // every 10%
+        try sources.enumerated().forEach { idx, path in
+                if idx > lastIdx + step {
+                    lastIdx = idx
+                    let percentage = idx * 100 / sources.count
+                    self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
+                }
                 parserResult = try parser.parseFile(path, existingTypes: parserResult)
         }
 
         //! All files have been scanned, time to join extensions with base class
         let types = parser.uniqueTypes(parserResult)
 
-        print("Found \(types.count) types")
+        track("Found \(types.count) types.")
         return types
     }
 
     private func generate(templatePath: Path, output: Path, types: [Type]) throws {
-        print("Loading templates...")
+        track("Loading templates...", terminator: "")
         let allTemplates = try templates(from: templatePath)
-        print("Loaded \(allTemplates.count) templates")
+        track("Loaded \(allTemplates.count) templates.")
 
-        print("Generating code...")
-
-        let header = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
-            + "// DO NOT EDIT\n\n"
+        track("Generating code...", terminator: "")
+        status = ""
 
         guard output.isDirectory else {
-            let result = try allTemplates.reduce(header) { result, template in
+            let result = try allTemplates.reduce(Sourcery.generationHeader) { result, template in
                 return result + "\n" + (try generate(template, forTypes: types))
             }
 
@@ -122,15 +150,16 @@ public class Sourcery {
         }
 
         try allTemplates.forEach { template in
-            let result = header + (try generate(template, forTypes: types))
+            let result = Sourcery.generationHeader + (try generate(template, forTypes: types))
             let outputPath = output + generatedPath(for: template.sourcePath)
             try outputPath.write(result, encoding: .utf8)
         }
+
+        track("Finished.", skipStatus: true)
     }
 
     private func generate(_ template: Template, forTypes types: [Type]) throws -> String {
-        let shouldRecover = watcherEnabled
-        guard shouldRecover else {
+        guard watcherEnabled else {
             return try Generator.generate(types, template: template)
         }
 
@@ -140,6 +169,7 @@ public class Sourcery {
         }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})
+
         return result
     }
 
@@ -148,17 +178,37 @@ public class Sourcery {
     }
 
     private func templates(from: Path) throws -> [SourceryTemplate] {
+        return try templatePaths(from: from).map {
+                try SourceryTemplate(path: $0)
+        }
+    }
+
+    private func outputPaths(from: Path, output: Path) throws -> [Path] {
+        return try templatePaths(from: from).map { output + generatedPath(for: $0) }
+    }
+
+    private func templatePaths(from: Path) throws -> [Path] {
         guard from.isDirectory else {
-            return [try SourceryTemplate(path: from)]
+            return [from]
         }
 
         return try from
             .recursiveChildren()
             .filter {
                 $0.extension == "stencil"
-            }
-            .map {
-                try SourceryTemplate(path: $0)
+        }
+    }
+
+    private func track(_ message: Any, terminator: String = "\n", skipStatus: Bool = false) {
+        if !watcherEnabled || verbose {
+            Swift.print(message, terminator: terminator)
+        }
+
+        guard watcherEnabled && !skipStatus else { return }
+        status = String(describing: message) + terminator
+
+        _ = try? outputPaths(from: templatesPath, output: outputPath).forEach { path in
+            _ = try? path.write(Sourcery.generationHeader + "STATUS:\n" + status, encoding: .utf8)
         }
     }
 }

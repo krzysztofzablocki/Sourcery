@@ -360,7 +360,7 @@ Arguments:
 
 Options:
 
-- `--watch` [default: false] - Watch template for changes and regenerate as needed. Only works with specific template path (not directory).
+- `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
 - `--verbose` [default: false] - Turn on verbose logging for ignored entities
 
 ## Contributing
