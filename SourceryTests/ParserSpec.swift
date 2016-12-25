@@ -509,10 +509,9 @@ class ParserSpec: QuickSpec {
                             expect(associatedValues?.count) == 1
 
                             let associatedValue = associatedValues?.first
-                            expect(associatedValue?.name) == "key"
-                            expect(associatedValue?.typeName) == "Bar"
-                            expect(associatedValue?.type?.name) == "Bar"
-                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                            let expectedAssociatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar")
+                            expectedAssociatedValue.type = Type(name: "Bar", inheritedTypes: ["Baz"])
+                            expect(associatedValue) == expectedAssociatedValue
                         }
 
                         it("extracts associated value's optional type") {
@@ -525,10 +524,9 @@ class ParserSpec: QuickSpec {
                             expect(associatedValues?.count) == 1
 
                             let associatedValue = associatedValues?.first
-                            expect(associatedValue?.name) == "key"
-                            expect(associatedValue?.typeName) == "Bar?"
-                            expect(associatedValue?.type?.name) == "Bar"
-                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                            let expectedAssociatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar?")
+                            expectedAssociatedValue.type = Type(name: "Bar", inheritedTypes: ["Baz"])
+                            expect(associatedValue) == expectedAssociatedValue
                         }
 
                         it("extracts associated value's typealias") {
@@ -541,10 +539,9 @@ class ParserSpec: QuickSpec {
                             expect(associatedValues?.count) == 1
 
                             let associatedValue = associatedValues?.first
-                            expect(associatedValue?.name) == "key"
-                            expect(associatedValue?.typeName) == "Bar2"
-                            expect(associatedValue?.type?.name) == "Bar"
-                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                            let expectedAssociatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar2")
+                            expectedAssociatedValue.type = Type(name: "Bar", inheritedTypes: ["Baz"])
+                            expect(associatedValue) == expectedAssociatedValue
                         }
 
                         it("extracts associated value's same (indirect) enum type") {
@@ -557,10 +554,9 @@ class ParserSpec: QuickSpec {
                             expect(associatedValues?.count) == 1
 
                             let associatedValue = associatedValues?.first
-                            expect(associatedValue?.name) == "key"
-                            expect(associatedValue?.typeName) == "Foo"
-                            expect(associatedValue?.type?.name) == "Foo"
-                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                            let expectedAssociatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Foo")
+                            expectedAssociatedValue.type = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: enumCases!)
+                            expect(associatedValue) == expectedAssociatedValue
                         }
 
                     }

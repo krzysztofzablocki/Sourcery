@@ -11,7 +11,6 @@ class Enum: Type {
             let name: String?
             let typeName: String
 
-            /// sourcery: skipEquality
             /// sourcery: skipDescription
             var type: Type?
 
@@ -23,7 +22,6 @@ class Enum: Type {
                 return false
             }
 
-            /// sourcery: skipEquality
             /// sourcery: skipDescription
             var unwrappedTypeName: String {
                 guard isOptional else { return typeName }

@@ -1,5 +1,14 @@
-// Generated using Sourcery 0.4.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
+extension DiffableResult {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DiffableResult else { return false }
+        if self.identifier != rhs.identifier { return false }
+
+        return true
+    }
+}
 
 extension Enum {
     override func isEqual(_ object: Any?) -> Bool {
@@ -28,6 +37,7 @@ extension Enum.Case.AssociatedValue {
         guard let rhs = object as? Enum.Case.AssociatedValue else { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.type != rhs.type { return false }
 
         return true
     }
