@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 0.4.9
 
 ### New Features
 - Watch mode now works with folders, reacting to source-code changes and adding templates/source files.
