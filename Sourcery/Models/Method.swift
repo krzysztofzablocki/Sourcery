@@ -49,11 +49,11 @@ class Method: NSObject, AutoDiffable {
     
     /// Method name without arguments names and parenthesis
     var shortName: String {
-        return fullName.range(of: "(").map({ fullName.substring(to: $0.lowerBound) }) ?? fullName
+        return selectorName.range(of: "(").map({ selectorName.substring(to: $0.lowerBound) }) ?? selectorName
     }
     
-    /// Method name including arguments names
-    let fullName: String
+    /// Method name including arguments names, i.e. `foo(bar:)`
+    let selectorName: String
     
     /// Name of the return type
     var returnTypeName: String
@@ -97,7 +97,7 @@ class Method: NSObject, AutoDiffable {
     
     /// Whether this is a constructor
     var isInitializer: Bool {
-        return fullName.hasPrefix("init(")
+        return selectorName.hasPrefix("init(")
     }
     
     /// Whether this is a failable initializer
@@ -110,7 +110,7 @@ class Method: NSObject, AutoDiffable {
     // sourcery: skipEquality, skipDescription
     internal var __parserData: Any?
 
-    init(fullName: String,
+    init(selectorName: String,
          parameters: [Parameter] = [],
          returnTypeName: String = "Void",
          accessLevel: AccessLevel = .internal,
@@ -119,7 +119,7 @@ class Method: NSObject, AutoDiffable {
          isFailableInitializer: Bool = false,
          annotations: [String: NSObject] = [:]) {
         
-        self.fullName = fullName
+        self.selectorName = selectorName
         self.parameters = parameters
         self.returnTypeName = returnTypeName
         self.accessLevel = accessLevel

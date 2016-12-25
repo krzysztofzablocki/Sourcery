@@ -137,11 +137,11 @@ class ParserSpec: QuickSpec {
                     it("extracts method properly") {
                         expect(parse("class Foo { func bar(some: Int) ->  Bar {}; func foo() ->    Foo {}; func fooBar() ->Foo }")).to(equal([
                             Type(name: "Foo", methods: [
-                                Method(fullName: "bar(some:)", parameters: [
+                                Method(selectorName: "bar(some:)", parameters: [
                                     Method.Parameter(name: "some", typeName: "Int")
                                     ], returnTypeName: "Bar"),
-                                Method(fullName: "foo()", returnTypeName: "Foo"),
-                                Method(fullName: "fooBar()", returnTypeName: "Foo")
+                                Method(selectorName: "foo()", returnTypeName: "Foo"),
+                                Method(selectorName: "fooBar()", returnTypeName: "Foo")
                                 ])
                         ]))
                     }
@@ -149,7 +149,7 @@ class ParserSpec: QuickSpec {
                     it("extracts class method properly") {
                         expect(parse("class Foo { class func foo() }")).to(equal([
                             Type(name: "Foo", methods: [
-                                Method(fullName: "foo()", parameters: [], isClass: true)
+                                Method(selectorName: "foo()", parameters: [], isClass: true)
                                 ])
                             ]))
                     }
@@ -157,7 +157,7 @@ class ParserSpec: QuickSpec {
                     it("extracts static method properly") {
                         expect(parse("class Foo { static func foo() }")).to(equal([
                             Type(name: "Foo", methods: [
-                                Method(fullName: "foo()", isStatic: true)
+                                Method(selectorName: "foo()", isStatic: true)
                                 ])
                             ]))
                     }
@@ -166,16 +166,16 @@ class ParserSpec: QuickSpec {
                         it("extracts method with single parameter properly") {
                             expect(parse("class Foo { func foo(bar: Int) }")).to(equal([
                                 Type(name: "Foo", methods: [
-                                Method(fullName: "foo(bar:)", parameters: [
+                                Method(selectorName: "foo(bar:)", parameters: [
                                     Method.Parameter(name: "bar", typeName: "Int")])
                                     ])
                             ]))
                         }
                         
                         it("extracts method with two parameters properly") {
-                            expect(parse("class Foo { func foo(bar: Int, foo: String) }")).to(equal([
+                            expect(parse("class Foo { func foo( bar:   Int,   foo : String  ) }")).to(equal([
                                 Type(name: "Foo", methods: [
-                                    Method(fullName: "foo(bar:foo:)", parameters: [
+                                    Method(selectorName: "foo(bar:foo:)", parameters: [
                                         Method.Parameter(name: "bar", typeName: "Int"),
                                         Method.Parameter(name: "foo", typeName: "String")
                                         ], returnTypeName: "Void")
@@ -186,12 +186,24 @@ class ParserSpec: QuickSpec {
                         it("extracts method with parameter with two names") {
                             expect(parse("class Foo { func foo(bar Bar: Int, _ foo: Int) }")).to(equal([
                                 Type(name: "Foo", methods: [
-                                Method(fullName: "foo(bar:_:)", parameters: [
+                                Method(selectorName: "foo(bar:_:)", parameters: [
                                     Method.Parameter(argumentLabel: "bar", name: "Bar", typeName: "Int"),
                                     Method.Parameter(argumentLabel: "_", name: "foo", typeName: "Int")
                                     ], returnTypeName: "Void")
                                     ])
                             ]))
+                        }
+                        
+                        it("extracts method with closure parameter") {
+                            expect(parse("class Foo { func foo(bar: Int, handler: (String) -> (Int)) -> Float {} }")).to(equal([
+                                Type(name: "Foo", methods: [
+                                    Method(selectorName: "foo(bar:handler:)", parameters: [
+                                        Method.Parameter(name: "bar", typeName: "Int"),
+                                        Method.Parameter(name: "handler", typeName: "(String) -> (Int)")
+                                        ], returnTypeName: "Float")
+                                    ])
+                                ]))
+                            
                         }
                     }
                     
@@ -207,9 +219,9 @@ class ParserSpec: QuickSpec {
                     context("given initializer") {
                         it("extracts initializer properly") {
                             let fooType = Type(name: "Foo")
-                            let expectedInitializer = Method(fullName: "init()", returnTypeName: "")
+                            let expectedInitializer = Method(selectorName: "init()", returnTypeName: "")
                             expectedInitializer.returnType = fooType
-                            fooType.methods = [Method(fullName: "foo()"), expectedInitializer]
+                            fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
                             
                             let type = parse("class Foo { func foo() {}; init() {} }").first
                             let initializer = type?.initializers.first
@@ -220,9 +232,9 @@ class ParserSpec: QuickSpec {
                         
                         it("extracts failable initializer properly") {
                             let fooType = Type(name: "Foo")
-                            let expectedInitializer = Method(fullName: "init()", returnTypeName: "", isFailableInitializer: true)
+                            let expectedInitializer = Method(selectorName: "init()", returnTypeName: "", isFailableInitializer: true)
                             expectedInitializer.returnType = fooType
-                            fooType.methods = [Method(fullName: "foo()"), expectedInitializer]
+                            fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
                             
                             let type = parse("class Foo { func foo() {}; init?() {} }").first
                             let initializer = type?.initializers.first
@@ -235,7 +247,7 @@ class ParserSpec: QuickSpec {
                     it("extracts sourcery annotations") {
                         expect(parse("class Foo {\n // sourcery: annotation\nfunc foo() }")).to(equal([
                             Type(name: "Foo", methods: [
-                                Method(fullName: "foo()", annotations: ["annotation": NSNumber(value: true)])
+                                Method(selectorName: "foo()", annotations: ["annotation": NSNumber(value: true)])
                                 ])
                             ]))
                     }
@@ -565,7 +577,7 @@ class ParserSpec: QuickSpec {
                                      rawType: "String",
                                      cases: [Enum.Case(name: "optionA")],
                                      variables: [Variable(name: "rawValue", typeName: "String", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)],
-                                     methods: [Method(fullName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "String")], returnTypeName: "", isFailableInitializer: true)]
+                                     methods: [Method(selectorName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "String")], returnTypeName: "", isFailableInitializer: true)]
                                 )
                                 ]))
                         }
@@ -577,7 +589,7 @@ class ParserSpec: QuickSpec {
                                      rawType: "String",
                                      cases: [Enum.Case(name: "optionA")],
                                      variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)],
-                                     methods: [Method(fullName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "RawValue")], returnTypeName: "", isFailableInitializer: true)],
+                                     methods: [Method(selectorName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "RawValue")], returnTypeName: "", isFailableInitializer: true)],
                                      typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
                                 ]))
                         }
@@ -589,7 +601,7 @@ class ParserSpec: QuickSpec {
                                      rawType: "String",
                                      cases: [Enum.Case(name: "optionA")],
                                      variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)],
-                                     methods: [Method(fullName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "RawValue")], returnTypeName: "", isFailableInitializer: true)],
+                                     methods: [Method(selectorName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "RawValue")], returnTypeName: "", isFailableInitializer: true)],
                                      typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
                                 ]))
                         }

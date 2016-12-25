@@ -38,7 +38,7 @@ extension Method {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Method else { return false }
         if self.parameters != rhs.parameters { return false }
-        if self.fullName != rhs.fullName { return false }
+        if self.selectorName != rhs.selectorName { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isStatic != rhs.isStatic { return false }

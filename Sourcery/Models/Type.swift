@@ -78,7 +78,7 @@ class Type: NSObject, AutoDiffable {
     /// sourcery: skipDescription
     var based = [String: String]()
 
-    /// contains all types implementing known BaseClass
+    /// contains all types inheriting from known BaseClass
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var inherits = [String: String]()

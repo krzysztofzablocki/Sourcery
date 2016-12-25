@@ -38,7 +38,7 @@ extension Method {
         var string = "\(type(of: self)): "
         string += "parameters = \(parameters), "
         string += "shortName = \(shortName), "
-        string += "fullName = \(fullName), "
+        string += "selectorName = \(selectorName), "
         string += "returnTypeName = \(returnTypeName), "
         string += "accessLevel = \(accessLevel), "
         string += "isStatic = \(isStatic), "

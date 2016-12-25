@@ -9,7 +9,7 @@ class TypeSpec: QuickSpec {
             let staticVariable = Variable(name: "staticVar", typeName: "Int", isStatic: true)
             let computedVariable = Variable(name: "variable", typeName: "Int", isComputed: true)
             let storedVariable = Variable(name: "otherVariable", typeName: "Int", isComputed: false)
-            let initializer = Method(fullName: "init()")
+            let initializer = Method(selectorName: "init()")
             let parentType = Type(name: "Parent")
 
             beforeEach {
@@ -91,7 +91,7 @@ class TypeSpec: QuickSpec {
                 }
                 
                 it("adds methods") {
-                    let extraMethod = Method(fullName: "foo()")
+                    let extraMethod = Method(selectorName: "foo()")
                     let type = Type(name: "Foo", isExtension: true, methods: [extraMethod])
                     
                     sut?.extend(type)

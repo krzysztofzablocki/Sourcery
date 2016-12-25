@@ -7,7 +7,7 @@ import Foundation
 import SourceKittenFramework
 import PathKit
 
-protocol Parsable {
+protocol Parsable: class {
     var __parserData: Any? { get set }
 }
 
@@ -18,7 +18,7 @@ private extension Parsable {
     }
     
     /// sets underlying source
-    mutating func setSource(_ source: [String: SourceKitRepresentable]) {
+    func setSource(_ source: [String: SourceKitRepresentable]) {
         __parserData = source
     }
 }
@@ -177,7 +177,7 @@ final class Parser {
     internal func parseTypes(_ source: [String: SourceKitRepresentable], existingTypes: [Type] = [], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
         var types = existingTypes
         walkTypes(source: source, processed: &processed) { kind, name, access, inheritedTypes, source in
-            var type: Type
+            let type: Type
 
             switch kind {
             case .protocol:
@@ -260,44 +260,48 @@ final class Parser {
     }
 
     private func processContainedType(_ type: Any, within containing: Any) {
-        if let containingType = containing as? Type {
-            switch (containingType, type) {
-            case let (_, variable as Variable):
-                containingType.variables += [variable]
-                if !variable.isStatic {
-                    if let enumeration = containingType as? Enum,
-                        let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
-                        
-                        enumeration.rawType = updatedRawType
-                    }
-                }
-                
-            case let (_, method as Method):
-                if method.isInitializer {
-                    method.returnTypeName = containingType.name
-                }
-                containingType.methods += [method]
-            case let (_, childType as Type):
-                containingType.containedTypes += [childType]
-                childType.parent = containingType
-            case let (enumeration as Enum, enumCase as Enum.Case):
-                enumeration.cases += [enumCase]
-            default:
-                break
-            }
-            
-            return
+        switch containing {
+        case let containingType as Type:
+            process(declaration: type, containedIn: containingType)
+        case let containingMethod as Method:
+            process(declaration: type, containedIn: containingMethod)
+        default: break
         }
-        
-        if let containingMethod = containing as? Method {
-            switch type {
-            case let (parameter as Method.Parameter):
-                containingMethod.parameters += [parameter]
-            default:
-                break
+    }
+    
+    private func process(declaration: Any, containedIn type: Type) {
+        switch (type, declaration) {
+        case let (_, variable as Variable):
+            type.variables += [variable]
+            if !variable.isStatic {
+                if let enumeration = type as? Enum,
+                    let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
+                    
+                    enumeration.rawType = updatedRawType
+                }
             }
             
-            return
+        case let (_, method as Method):
+            if method.isInitializer {
+                method.returnTypeName = type.name
+            }
+            type.methods += [method]
+        case let (_, childType as Type):
+            type.containedTypes += [childType]
+            childType.parent = type
+        case let (enumeration as Enum, enumCase as Enum.Case):
+            enumeration.cases += [enumCase]
+        default:
+            break
+        }
+    }
+    
+    private func process(declaration: Any, containedIn method: Method) {
+        switch declaration {
+        case let (parameter as Method.Parameter):
+            method.parameters += [parameter]
+        default:
+            break
         }
     }
     
@@ -359,8 +363,8 @@ final class Parser {
             // find actual methods parameters types and their argument labels
             for method in type.methods {
                 let argumentLabels: [String]
-                if let labels = method.fullName.range(of: "(")
-                    .map({ method.fullName.substring(from: $0.upperBound) })?
+                if let labels = method.selectorName.range(of: "(")
+                    .map({ method.selectorName.substring(from: $0.upperBound) })?
                     .trimmingCharacters(in: CharacterSet(charactersIn: ")"))
                     .components(separatedBy: ":")
                     .dropLast() {
@@ -370,7 +374,7 @@ final class Parser {
                 }
 
                 for (index, parameter) in method.parameters.enumerated() {
-                    if argumentLabels.count > index {
+                    if index < argumentLabels.count {
                         parameter.argumentLabel = argumentLabels[index]
                     }
                     
@@ -381,7 +385,7 @@ final class Parser {
                     }
                 }
                 
-                if method.returnTypeName != "Void" && method.returnType == nil {
+                if method.returnTypeName != "Void" {
                     if let actualTypeName = typeName(for: method.unwrappedReturnTypeName, containingType: type, typealiases: typealiases) {
                         method.returnType = unique[actualTypeName]
                     } else {
@@ -502,7 +506,7 @@ extension Parser {
             computed = false
         }
 
-        var variable = Variable(name: name, typeName: type, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic)
+        let variable = Variable(name: name, typeName: type, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic)
         variable.annotations = parseAnnotations(source)
         variable.setSource(source)
 
@@ -535,7 +539,7 @@ extension Parser {
             returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
         
-        var method = Method(fullName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: parseAnnotations(source))
+        let method = Method(selectorName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: parseAnnotations(source))
         method.setSource(source)
         return method
     }

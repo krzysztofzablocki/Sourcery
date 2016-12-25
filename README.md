@@ -142,7 +142,7 @@ attributedSummary: NSAttributedString
 
 
 ##### Use case: `I want to create lenses helpers for all structs.`
-_[Full implementation](gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
+_[Full implementation](http://gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
 
 Template:
 
@@ -246,7 +246,7 @@ For each type you can access following properties:
 
 **Method** provides:
 
-- `fullName` <- full name of the method, i.e for `func foo(bar: Bar) -> Bar` `foo(bar:)`
+- `selectorName` <- full name of the method, i.e for `func foo(bar: Bar) -> Bar` `foo(bar:)`
 - `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` `foo`
 - `parameters` <- list of all method parameters
 - `returnType` <- return type, if known, for initializers - containing type
@@ -268,6 +268,13 @@ For each type you can access following properties:
 - `typeName` <- parameter type name, including things like optional markup
 - `unwrappedTypeName` <- name of the type, unwrapping the optional e.g. for parameter with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
+
+## Custom Stencil tags and filter
+
+- `{{ name|upperFirst }}` - makes first letter in `name` uppercase
+- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
+- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
+- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
 
 ## Source Annotations
 
@@ -309,14 +316,6 @@ If you want to attribute multiple items with same attributes, you can use sectio
   var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
 {% endif %}
 ```
-
-## Custom Stencil tags and filter
-
-- `{{ name|upperFirst }}` - makes first letter in `name` lowercase
-- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
-- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
-- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
-
 
 # Installing
 
