@@ -183,6 +183,18 @@ class ParserSpec: QuickSpec {
                             ]))
                         }
 
+                        it("extracts method with closure parameters properly") {
+                            expect(parse("class Foo { func foo( bar:   Int,   foo : ((String, String) -> Void), other: Float }")).to(equal([
+                                            Type(name: "Foo", methods: [
+                                                    Method(selectorName: "foo(bar:foo:other:)", parameters: [
+                                                            Method.Parameter(name: "bar", typeName: "Int"),
+                                                            Method.Parameter(name: "foo", typeName: "((String, String) -> Void)"),
+                                                            Method.Parameter(name: "other", typeName: "Float")
+                                                    ], returnTypeName: "Void")
+                                            ])
+                                    ]))
+                        }
+
                         it("extracts method with parameter with two names") {
                             expect(parse("class Foo { func foo(bar Bar: Int, _ foo: Int) }")).to(equal([
                                 Type(name: "Foo", methods: [
