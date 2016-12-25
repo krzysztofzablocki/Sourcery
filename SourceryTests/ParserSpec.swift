@@ -126,16 +126,143 @@ class ParserSpec: QuickSpec {
                     return sut?.uniqueTypes(parserResult) ?? []
                 }
 
+                context("given it has methods") {
+                    it("ignores private methods") {
+                        expect(parse("class Foo { private func foo() }"))
+                            .to(equal([Type(name: "Foo", methods: [])]))
+                        expect(parse("class Foo { fileprivate func foo() }"))
+                            .to(equal([Type(name: "Foo", methods: [])]))
+                    }
+
+                    it("extracts method properly") {
+                        expect(parse("class Foo { func bar(some: Int) ->  Bar {}; func foo() ->    Foo {}; func fooBar() ->Foo }")).to(equal([
+                            Type(name: "Foo", methods: [
+                                Method(selectorName: "bar(some:)", parameters: [
+                                    Method.Parameter(name: "some", typeName: "Int")
+                                    ], returnTypeName: "Bar"),
+                                Method(selectorName: "foo()", returnTypeName: "Foo"),
+                                Method(selectorName: "fooBar()", returnTypeName: "Foo")
+                                ])
+                        ]))
+                    }
+
+                    it("extracts class method properly") {
+                        expect(parse("class Foo { class func foo() }")).to(equal([
+                            Type(name: "Foo", methods: [
+                                Method(selectorName: "foo()", parameters: [], isClass: true)
+                                ])
+                            ]))
+                    }
+
+                    it("extracts static method properly") {
+                        expect(parse("class Foo { static func foo() }")).to(equal([
+                            Type(name: "Foo", methods: [
+                                Method(selectorName: "foo()", isStatic: true)
+                                ])
+                            ]))
+                    }
+
+                    context("given method with parameters") {
+                        it("extracts method with single parameter properly") {
+                            expect(parse("class Foo { func foo(bar: Int) }")).to(equal([
+                                Type(name: "Foo", methods: [
+                                Method(selectorName: "foo(bar:)", parameters: [
+                                    Method.Parameter(name: "bar", typeName: "Int")])
+                                    ])
+                            ]))
+                        }
+
+                        it("extracts method with two parameters properly") {
+                            expect(parse("class Foo { func foo( bar:   Int,   foo : String  ) }")).to(equal([
+                                Type(name: "Foo", methods: [
+                                    Method(selectorName: "foo(bar:foo:)", parameters: [
+                                        Method.Parameter(name: "bar", typeName: "Int"),
+                                        Method.Parameter(name: "foo", typeName: "String")
+                                        ], returnTypeName: "Void")
+                                    ])
+                            ]))
+                        }
+
+                        it("extracts method with parameter with two names") {
+                            expect(parse("class Foo { func foo(bar Bar: Int, _ foo: Int) }")).to(equal([
+                                Type(name: "Foo", methods: [
+                                Method(selectorName: "foo(bar:_:)", parameters: [
+                                    Method.Parameter(argumentLabel: "bar", name: "Bar", typeName: "Int"),
+                                    Method.Parameter(argumentLabel: "_", name: "foo", typeName: "Int")
+                                    ], returnTypeName: "Void")
+                                    ])
+                            ]))
+                        }
+
+                        it("extracts method with closure parameter") {
+                            expect(parse("class Foo { func foo(bar: Int, handler: (String) -> (Int)) -> Float {} }")).to(equal([
+                                Type(name: "Foo", methods: [
+                                    Method(selectorName: "foo(bar:handler:)", parameters: [
+                                        Method.Parameter(name: "bar", typeName: "Int"),
+                                        Method.Parameter(name: "handler", typeName: "(String) -> (Int)")
+                                        ], returnTypeName: "Float")
+                                    ])
+                                ]))
+
+                        }
+                    }
+
+                    context("given method with return type") {
+                        it("finds actual return type") {
+                            let types = parse("class Foo { func foo() -> Bar { } }; class Bar {}")
+                            let method = types.last?.methods.first
+
+                            expect(method?.returnType).to(equal(Type(name: "Bar")))
+                        }
+                    }
+
+                    context("given initializer") {
+                        it("extracts initializer properly") {
+                            let fooType = Type(name: "Foo")
+                            let expectedInitializer = Method(selectorName: "init()", returnTypeName: "")
+                            expectedInitializer.returnType = fooType
+                            fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
+
+                            let type = parse("class Foo { func foo() {}; init() {} }").first
+                            let initializer = type?.initializers.first
+
+                            expect(initializer).to(equal(expectedInitializer))
+                            expect(initializer?.returnType).to(equal(fooType))
+                        }
+
+                        it("extracts failable initializer properly") {
+                            let fooType = Type(name: "Foo")
+                            let expectedInitializer = Method(selectorName: "init()", returnTypeName: "", isFailableInitializer: true)
+                            expectedInitializer.returnType = fooType
+                            fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
+
+                            let type = parse("class Foo { func foo() {}; init?() {} }").first
+                            let initializer = type?.initializers.first
+
+                            expect(initializer).to(equal(expectedInitializer))
+                            expect(initializer?.returnType).to(equal(fooType))
+                        }
+                    }
+
+                    it("extracts sourcery annotations") {
+                        expect(parse("class Foo {\n // sourcery: annotation\nfunc foo() }")).to(equal([
+                            Type(name: "Foo", methods: [
+                                Method(selectorName: "foo()", annotations: ["annotation": NSNumber(value: true)])
+                                ])
+                            ]))
+                    }
+                }
+
                 context("given it has sourcery annotations") {
                     it("extracts annotation block") {
                         let annotations = [
-                                ["skipEquality" : NSNumber(value: true)],
-                                ["skipEquality" : NSNumber(value: true), "extraAnnotation" : NSNumber(value: Float(2))],
+                                ["skipEquality": NSNumber(value: true)],
+                                ["skipEquality": NSNumber(value: true), "extraAnnotation": NSNumber(value: Float(2))],
                                 [:]
                         ]
                         let expectedVariables = (1...3)
                                 .map { Variable(name: "property\($0)", typeName: "Int", annotations: annotations[$0 - 1]) }
-                        let expectedType = Type(name: "Foo", variables: expectedVariables, annotations: ["skipEquality" : NSNumber(value: true)])
+                        let expectedType = Type(name: "Foo", variables: expectedVariables, annotations: ["skipEquality": NSNumber(value: true)])
 
                         let result = parse("// sourcery:begin: skipEquality\n\n\n\n" +
                                 "class Foo {\n" +
@@ -265,7 +392,7 @@ class ParserSpec: QuickSpec {
                             expect(sut?.parseContents("typealias Foo = Int; typealias Bar = Foo").typealiases)
                                 .to(contain([
                                     Typealias(aliasName: "Foo", typeName: "Int"),
-                                    Typealias(aliasName: "Bar", typeName: "Foo"),
+                                    Typealias(aliasName: "Bar", typeName: "Foo")
                                     ]))
                         }
 
@@ -445,19 +572,37 @@ class ParserSpec: QuickSpec {
 
                         it("extracts enums with RawRepresentable by inferring from variable") {
                             expect(parse("enum Foo: RawRepresentable { case optionA; var rawValue: String { return \"\" }; init?(rawValue: String) { self = .optionA } }")).to(equal([
-                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "String", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)])
+                                Enum(name: "Foo",
+                                     inheritedTypes: ["RawRepresentable"],
+                                     rawType: "String",
+                                     cases: [Enum.Case(name: "optionA")],
+                                     variables: [Variable(name: "rawValue", typeName: "String", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)],
+                                     methods: [Method(selectorName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "String")], returnTypeName: "", isFailableInitializer: true)]
+                                )
                                 ]))
                         }
 
                         it("extracts enums with RawRepresentable by inferring from variable with typealias") {
                             expect(parse("enum Foo: RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([
-                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)], typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
+                                Enum(name: "Foo",
+                                     inheritedTypes: ["RawRepresentable"],
+                                     rawType: "String",
+                                     cases: [Enum.Case(name: "optionA")],
+                                     variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)],
+                                     methods: [Method(selectorName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "RawValue")], returnTypeName: "", isFailableInitializer: true)],
+                                     typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
                                 ]))
                         }
 
                         it("extracts enums with RawRepresentable by inferring from typealias") {
     						expect(parse("enum Foo: CustomStringConvertible, RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(equal([
-                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["CustomStringConvertible", "RawRepresentable"], rawType: "String", cases: [Enum.Case(name: "optionA")], variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)], typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
+                                Enum(name: "Foo",
+                                     inheritedTypes: ["CustomStringConvertible", "RawRepresentable"],
+                                     rawType: "String",
+                                     cases: [Enum.Case(name: "optionA")],
+                                     variables: [Variable(name: "rawValue", typeName: "RawValue", accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false)],
+                                     methods: [Method(selectorName:"init(rawValue:)", parameters: [Method.Parameter(name: "rawValue", typeName: "RawValue")], returnTypeName: "", isFailableInitializer: true)],
+                                     typealiases: [Typealias(aliasName: "RawValue", typeName: "String")])
                                 ]))
                         }
 

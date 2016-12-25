@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -17,6 +17,7 @@ extension Enum.Case {
         string += "name = \(name), "
         string += "rawValue = \(rawValue), "
         string += "associatedValues = \(associatedValues), "
+        string += "annotations = \(annotations), "
         string += "hasAssociatedValue = \(hasAssociatedValue), "
         return string
     }
@@ -27,6 +28,35 @@ extension Enum.Case.AssociatedValue {
         var string = "\(type(of: self)): "
         string += "name = \(name), "
         string += "typeName = \(typeName), "
+        return string
+    }
+}
+
+extension Method {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "parameters = \(parameters), "
+        string += "shortName = \(shortName), "
+        string += "selectorName = \(selectorName), "
+        string += "returnTypeName = \(returnTypeName), "
+        string += "accessLevel = \(accessLevel), "
+        string += "isStatic = \(isStatic), "
+        string += "isClass = \(isClass), "
+        string += "isInitializer = \(isInitializer), "
+        string += "isFailableInitializer = \(isFailableInitializer), "
+        string += "annotations = \(annotations), "
+        return string
+    }
+}
+
+extension Method.Parameter {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "argumentLabel = \(argumentLabel), "
+        string += "name = \(name), "
+        string += "typeName = \(typeName), "
+        string += "type = \(type), "
+        string += "isOptional = \(isOptional), "
         return string
     }
 }
@@ -42,6 +72,8 @@ extension Type {
         string += "isGeneric = \(isGeneric), "
         string += "localName = \(localName), "
         string += "variables = \(variables), "
+        string += "methods = \(methods), "
+        string += "initializers = \(initializers), "
         string += "annotations = \(annotations), "
         string += "staticVariables = \(staticVariables), "
         string += "computedVariables = \(computedVariables), "
