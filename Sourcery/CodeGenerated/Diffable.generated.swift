@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -111,6 +111,18 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "inheritedTypes").trackDifference(actual: self.inheritedTypes, expected: rhs.inheritedTypes))
         results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: rhs.containedTypes))
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: rhs.parentName))
+
+        return results
+    }
+}
+extension TypeName: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? TypeName else {
+            results.append("Incorrect type <expected: TypeName, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
 
         return results
     }

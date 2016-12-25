@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+- Refactor code around typenames
+
 ## 0.4.9
 
 ### New Features
