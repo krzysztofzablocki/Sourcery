@@ -117,12 +117,14 @@ public class Sourcery {
         var lastIdx = 0
         let step = sources.count / 10 // every 10%
         try sources.enumerated().forEach { idx, path in
-                if idx > lastIdx + step {
-                    lastIdx = idx
-                    let percentage = idx * 100 / sources.count
-                    self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
-                }
-                parserResult = try parser.parseFile(path, existingTypes: parserResult)
+            if idx > lastIdx + step {
+                lastIdx = idx
+                let percentage = idx * 100 / sources.count
+                self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
+            }
+            let result = try parser.parseFile(path)
+            parserResult.typealiases += result.typealiases
+            parserResult.types += result.types
         }
 
         //! All files have been scanned, time to join extensions with base class
