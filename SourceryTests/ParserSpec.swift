@@ -119,7 +119,7 @@ class ParserSpec: QuickSpec {
                     }
                 }
             }
-            
+
             describe("parseTypes") {
                 func parse(_ code: String, existingTypes: [Type] = []) -> [Type] {
                     let parserResult = sut?.parseContents(code, existingTypes: (existingTypes, [])) ?? ([], [])
@@ -145,7 +145,7 @@ class ParserSpec: QuickSpec {
                                 ])
                         ]))
                     }
-                    
+
                     it("extracts class method properly") {
                         expect(parse("class Foo { class func foo() }")).to(equal([
                             Type(name: "Foo", methods: [
@@ -171,7 +171,7 @@ class ParserSpec: QuickSpec {
                                     ])
                             ]))
                         }
-                        
+
                         it("extracts method with two parameters properly") {
                             expect(parse("class Foo { func foo( bar:   Int,   foo : String  ) }")).to(equal([
                                 Type(name: "Foo", methods: [
@@ -182,7 +182,7 @@ class ParserSpec: QuickSpec {
                                     ])
                             ]))
                         }
-                        
+
                         it("extracts method with parameter with two names") {
                             expect(parse("class Foo { func foo(bar Bar: Int, _ foo: Int) }")).to(equal([
                                 Type(name: "Foo", methods: [
@@ -193,7 +193,7 @@ class ParserSpec: QuickSpec {
                                     ])
                             ]))
                         }
-                        
+
                         it("extracts method with closure parameter") {
                             expect(parse("class Foo { func foo(bar: Int, handler: (String) -> (Int)) -> Float {} }")).to(equal([
                                 Type(name: "Foo", methods: [
@@ -203,47 +203,47 @@ class ParserSpec: QuickSpec {
                                         ], returnTypeName: "Float")
                                     ])
                                 ]))
-                            
+
                         }
                     }
-                    
+
                     context("given method with return type") {
                         it("finds actual return type") {
                             let types = parse("class Foo { func foo() -> Bar { } }; class Bar {}")
                             let method = types.last?.methods.first
-                            
+
                             expect(method?.returnType).to(equal(Type(name: "Bar")))
                         }
                     }
-                    
+
                     context("given initializer") {
                         it("extracts initializer properly") {
                             let fooType = Type(name: "Foo")
                             let expectedInitializer = Method(selectorName: "init()", returnTypeName: "")
                             expectedInitializer.returnType = fooType
                             fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
-                            
+
                             let type = parse("class Foo { func foo() {}; init() {} }").first
                             let initializer = type?.initializers.first
-                            
+
                             expect(initializer).to(equal(expectedInitializer))
                             expect(initializer?.returnType).to(equal(fooType))
                         }
-                        
+
                         it("extracts failable initializer properly") {
                             let fooType = Type(name: "Foo")
                             let expectedInitializer = Method(selectorName: "init()", returnTypeName: "", isFailableInitializer: true)
                             expectedInitializer.returnType = fooType
                             fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
-                            
+
                             let type = parse("class Foo { func foo() {}; init?() {} }").first
                             let initializer = type?.initializers.first
-                            
+
                             expect(initializer).to(equal(expectedInitializer))
                             expect(initializer?.returnType).to(equal(fooType))
                         }
                     }
-                    
+
                     it("extracts sourcery annotations") {
                         expect(parse("class Foo {\n // sourcery: annotation\nfunc foo() }")).to(equal([
                             Type(name: "Foo", methods: [
@@ -252,17 +252,17 @@ class ParserSpec: QuickSpec {
                             ]))
                     }
                 }
-                
+
                 context("given it has sourcery annotations") {
                     it("extracts annotation block") {
                         let annotations = [
-                                ["skipEquality" : NSNumber(value: true)],
-                                ["skipEquality" : NSNumber(value: true), "extraAnnotation" : NSNumber(value: Float(2))],
+                                ["skipEquality": NSNumber(value: true)],
+                                ["skipEquality": NSNumber(value: true), "extraAnnotation": NSNumber(value: Float(2))],
                                 [:]
                         ]
                         let expectedVariables = (1...3)
                                 .map { Variable(name: "property\($0)", typeName: "Int", annotations: annotations[$0 - 1]) }
-                        let expectedType = Type(name: "Foo", variables: expectedVariables, annotations: ["skipEquality" : NSNumber(value: true)])
+                        let expectedType = Type(name: "Foo", variables: expectedVariables, annotations: ["skipEquality": NSNumber(value: true)])
 
                         let result = parse("// sourcery:begin: skipEquality\n\n\n\n" +
                                 "class Foo {\n" +
@@ -392,7 +392,7 @@ class ParserSpec: QuickSpec {
                             expect(sut?.parseContents("typealias Foo = Int; typealias Bar = Foo").typealiases)
                                 .to(contain([
                                     Typealias(aliasName: "Foo", typeName: "Int"),
-                                    Typealias(aliasName: "Bar", typeName: "Foo"),
+                                    Typealias(aliasName: "Bar", typeName: "Foo")
                                     ]))
                         }
 

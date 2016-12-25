@@ -4,17 +4,17 @@ import Foundation
 typealias SourceryMethod = Method
 
 class Method: NSObject, AutoDiffable {
-    
+
     class Parameter: NSObject, AutoDiffable {
         /// Parameter external name
         var argumentLabel: String
-        
+
         /// Parameter internal name
         let name: String
-        
+
         /// Parameter type name
         let typeName: String
-        
+
         /// Actual parameter type, if known
         var type: Type?
 
@@ -25,7 +25,7 @@ class Method: NSObject, AutoDiffable {
             }
             return false
         }
-        
+
         // sourcery: skipEquality
         // sourcery: skipDescription
         var unwrappedTypeName: String {
@@ -43,27 +43,27 @@ class Method: NSObject, AutoDiffable {
             self.name = name
         }
     }
-    
+
     /// All method parameters
     var parameters: [Parameter]
-    
+
     /// Method name without arguments names and parenthesis
     var shortName: String {
         return selectorName.range(of: "(").map({ selectorName.substring(to: $0.lowerBound) }) ?? selectorName
     }
-    
+
     /// Method name including arguments names, i.e. `foo(bar:)`
     let selectorName: String
-    
+
     /// Name of the return type
     var returnTypeName: String
-    
+
     /// Actual method return type, if known.
     // sourcery: skipEquality
     // sourcery: skipDescription
     //weak to avoid reference cycle between type and its initializers
     weak var returnType: Type?
-    
+
     // sourcery: skipEquality
     // sourcery: skipDescription
     var isOptionalReturnType: Bool {
@@ -78,31 +78,31 @@ class Method: NSObject, AutoDiffable {
     var unwrappedReturnTypeName: String {
         guard isOptionalReturnType else { return returnTypeName }
         guard !isFailableInitializer else { return returnTypeName }
-        
+
         if returnTypeName.hasSuffix("?") {
             return String(returnTypeName.characters.dropLast())
         } else {
             return String(returnTypeName.characters.dropFirst("Optional<".characters.count).dropLast())
         }
     }
-    
+
     /// Method access level
     let accessLevel: AccessLevel
-    
+
     /// Whether this is a static method
     let isStatic: Bool
 
     /// Whether this is a class method
     let isClass: Bool
-    
+
     /// Whether this is a constructor
     var isInitializer: Bool {
         return selectorName.hasPrefix("init(")
     }
-    
+
     /// Whether this is a failable initializer
     let isFailableInitializer: Bool
-    
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     let annotations: [String: NSObject]
 
@@ -118,7 +118,7 @@ class Method: NSObject, AutoDiffable {
          isClass: Bool = false,
          isFailableInitializer: Bool = false,
          annotations: [String: NSObject] = [:]) {
-        
+
         self.selectorName = selectorName
         self.parameters = parameters
         self.returnTypeName = returnTypeName
@@ -128,5 +128,5 @@ class Method: NSObject, AutoDiffable {
         self.isFailableInitializer = isFailableInitializer
         self.annotations = annotations
     }
-    
+
 }

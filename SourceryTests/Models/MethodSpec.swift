@@ -5,17 +5,17 @@ import Nimble
 class MethodSpec: QuickSpec {
     override func spec() {
         describe("Method") {
-            
+
             var sut: SourceryMethod?
-            
+
             beforeEach {
                 sut = Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: "Int")])
             }
-            
+
             afterEach {
                 sut = nil
             }
-            
+
             it("reposrts short name properly") {
                 expect(sut?.shortName).to(equal("foo"))
             }
@@ -24,17 +24,17 @@ class MethodSpec: QuickSpec {
                 it("reports return type as optional") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Int?").isOptionalReturnType).to(beTrue())
                 }
-                
+
                 it("reports non-optional type for unwrappedReturnTypeName") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Int?").unwrappedReturnTypeName).to(equal("Int"))
                 }
             }
-            
+
             context("given optional return type with long syntax") {
                 it("reports return type as optional") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Optional<Int>").isOptionalReturnType).to(beTrue())
                 }
-                
+
                 it("reports non-optional type for unwrappedReturnTypeName") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Optional<Int>").unwrappedReturnTypeName).to(equal("Int"))
                 }
@@ -44,19 +44,19 @@ class MethodSpec: QuickSpec {
                 expect(sut?.isInitializer).to(beFalse())
                 expect(Method(selectorName: "init()").isInitializer).to(beTrue())
             }
-            
+
             it("reports failable initializer return type as optional") {
                 expect(Method(selectorName: "init()", isFailableInitializer: true).isOptionalReturnType).to(beTrue())
             }
-            
+
             describe("When testing equality") {
-                
+
                 context("given same items") {
                     it("is equal") {
                         expect(sut).to(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: "Int")])))
                     }
                 }
-                
+
                 context("given different items") {
                     it("is not equal") {
                         expect(sut).toNot(equal(Method(selectorName: "bar(some: Int)", parameters: [Method.Parameter(name: "some", typeName: "Int")], returnTypeName: "Void", accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
@@ -69,12 +69,12 @@ class MethodSpec: QuickSpec {
                         expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: "Int")], returnTypeName: "Void", accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: ["some": NSNumber(value: true)])))
                     }
                 }
-                
+
             }
         }
-        
+
         describe("Method.Parameter") {
-            
+
             context("given optional parameter type with short syntax") {
                 it("reports type as optional") {
                     expect(Method.Parameter(name: "foo", typeName: "Int?").isOptional).to(beTrue())
@@ -94,23 +94,23 @@ class MethodSpec: QuickSpec {
             }
 
             describe("When testing equality") {
-                
+
                 var sut: SourceryMethod.Parameter?
-                
+
                 beforeEach {
                     sut = Method.Parameter(name: "foo", typeName: "Int")
                 }
-                
+
                 afterEach {
                     sut = nil
                 }
-                
+
                 context("given same items") {
                     it("is equal") {
                         expect(sut).to(equal(Method.Parameter(name: "foo", typeName: "Int")))
                     }
                 }
-                
+
                 context("given different items") {
                     it("is not equal") {
                         expect(sut).toNot(equal(Method.Parameter(name: "bar", typeName: "Int")))
@@ -118,7 +118,7 @@ class MethodSpec: QuickSpec {
                         expect(sut).toNot(equal(Method.Parameter(name: "foo", typeName: "String")))
                     }
                 }
-                
+
             }
         }
     }

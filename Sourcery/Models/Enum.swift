@@ -85,7 +85,7 @@ class Enum: Type {
          methods: [Method] = [],
          containedTypes: [Type] = [],
          typealiases: [Typealias] = []) {
-        
+
         self.cases = cases
         self.rawType = rawType
         super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)

@@ -1,13 +1,12 @@
 // Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
-
 extension Enum {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Enum else { return false }
         if self.cases != rhs.cases { return false }
         if self.rawType != rhs.rawType { return false }
-        
+
         return super.isEqual(rhs)
     }
 }
@@ -19,8 +18,8 @@ extension Enum.Case {
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
         if self.annotations != rhs.annotations { return false }
-        
-        return true 
+
+        return true
     }
 }
 
@@ -29,8 +28,8 @@ extension Enum.Case.AssociatedValue {
         guard let rhs = object as? Enum.Case.AssociatedValue else { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
-        
-        return true 
+
+        return true
     }
 }
 
@@ -45,8 +44,8 @@ extension Method {
         if self.isClass != rhs.isClass { return false }
         if self.isFailableInitializer != rhs.isFailableInitializer { return false }
         if self.annotations != rhs.annotations { return false }
-        
-        return true 
+
+        return true
     }
 }
 
@@ -57,8 +56,8 @@ extension Method.Parameter {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.type != rhs.type { return false }
-        
-        return true 
+
+        return true
     }
 }
 
@@ -76,8 +75,8 @@ extension Type {
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
-        
-        return true 
+
+        return true
     }
 }
 
@@ -87,8 +86,8 @@ extension Typealias {
         if self.aliasName != rhs.aliasName { return false }
         if self.typeName != rhs.typeName { return false }
         if self.parentName != rhs.parentName { return false }
-        
-        return true 
+
+        return true
     }
 }
 
@@ -102,8 +101,7 @@ extension Variable {
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
         if self.annotations != rhs.annotations { return false }
-        
-        return true 
+
+        return true
     }
 }
-

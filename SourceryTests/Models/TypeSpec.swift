@@ -47,7 +47,7 @@ class TypeSpec: QuickSpec {
             it("filters stored variables") {
                 expect(sut?.storedVariables).to(equal([storedVariable]))
             }
-            
+
             it("filters initializers") {
                 expect(sut?.initializers).to(equal([initializer]))
             }
@@ -89,13 +89,13 @@ class TypeSpec: QuickSpec {
 
                     expect(sut?.variables).to(equal([storedVariable, computedVariable, staticVariable, extraVariable]))
                 }
-                
+
                 it("adds methods") {
                     let extraMethod = Method(selectorName: "foo()")
                     let type = Type(name: "Foo", isExtension: true, methods: [extraMethod])
-                    
+
                     sut?.extend(type)
-                    
+
                     expect(sut?.methods).to(equal([initializer, extraMethod]))
                 }
 

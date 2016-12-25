@@ -22,7 +22,7 @@ class Type: NSObject, AutoDiffable {
     /// What is the type access level?
     let accessLevel: String
 
-    /// Name in global scope 
+    /// Name in global scope
     var name: String {
         guard let parentName = parent?.name else { return localName }
         return "\(parentName).\(localName)"
@@ -36,15 +36,15 @@ class Type: NSObject, AutoDiffable {
 
     /// All variables associated with this type
     var variables: [Variable]
-    
+
     /// All methods defined by this type
     var methods: [Method]
-    
+
     /// All initializers defined by this type
     var initializers: [Method] {
         return methods.filter { $0.isInitializer }
     }
-    
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 

@@ -16,7 +16,7 @@ private extension Parsable {
     var __underlyingSource: [String: SourceKitRepresentable] {
         return (__parserData as? [String: SourceKitRepresentable]) ?? [:]
     }
-    
+
     /// sets underlying source
     func setSource(_ source: [String: SourceKitRepresentable]) {
         __parserData = source
@@ -26,7 +26,6 @@ private extension Parsable {
 extension Variable: Parsable {}
 extension Type: Parsable {}
 extension Method: Parsable {}
-
 
 fileprivate enum SubstringIdentifier {
     case body
@@ -99,8 +98,8 @@ final class Parser {
         self.verbose = verbose
     }
 
-    //MARK: - Processing
-    
+    // MARK: - Processing
+
     /// Parses file under given path.
     ///
     /// - Parameters:
@@ -268,7 +267,7 @@ final class Parser {
         default: break
         }
     }
-    
+
     private func process(declaration: Any, containedIn type: Type) {
         switch (type, declaration) {
         case let (_, variable as Variable):
@@ -276,11 +275,11 @@ final class Parser {
             if !variable.isStatic {
                 if let enumeration = type as? Enum,
                     let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
-                    
+
                     enumeration.rawType = updatedRawType
                 }
             }
-            
+
         case let (_, method as Method):
             if method.isInitializer {
                 method.returnTypeName = type.name
@@ -295,7 +294,7 @@ final class Parser {
             break
         }
     }
-    
+
     private func process(declaration: Any, containedIn method: Method) {
         switch declaration {
         case let (parameter as Method.Parameter):
@@ -304,8 +303,8 @@ final class Parser {
             break
         }
     }
-    
-    //MARK: - Post processing
+
+    // MARK: - Post processing
 
     /// Performs final processing of discovered types:
     /// - extends types with their corresponding extensions;
@@ -377,14 +376,14 @@ final class Parser {
                     if index < argumentLabels.count {
                         parameter.argumentLabel = argumentLabels[index]
                     }
-                    
+
                     if let actualTypeName = typeName(for: parameter.unwrappedTypeName, containingType: type, typealiases: typealiases) {
                         parameter.type = unique[actualTypeName]
                     } else {
                         parameter.type = unique[parameter.unwrappedTypeName]
                     }
                 }
-                
+
                 if method.returnTypeName != "Void" {
                     if let actualTypeName = typeName(for: method.unwrappedReturnTypeName, containingType: type, typealiases: typealiases) {
                         method.returnType = unique[actualTypeName]
@@ -396,7 +395,7 @@ final class Parser {
                     }
                 }
             }
-            
+
             //find enums rawValue types
             if let enumeration = type as? Enum, enumeration.rawType == nil {
                 guard let rawTypeName = enumeration.inheritedTypes.first else { continue }
@@ -416,7 +415,7 @@ final class Parser {
             return !isPrivate
             }.sorted { $0.name < $1.name }
     }
-    
+
     /// returns typealiases map to their full names
     private func typealiasesByNames(_ parserResult: ParserResult) -> [String: Typealias] {
         var typealiasesByNames = [String: Typealias]()
@@ -426,36 +425,36 @@ final class Parser {
                 typealiasesByNames[alias.name] = alias
             })
         }
-        
+
         //! if a typealias leads to another typealias, follow through and replace with final type
         typealiasesByNames.forEach { _, alias in
-            
+
             var aliasNamesToReplace = [alias.name]
             var finalAlias = alias
             while let targetAlias = typealiasesByNames[finalAlias.typeName] {
                 aliasNamesToReplace.append(targetAlias.name)
                 finalAlias = targetAlias
             }
-            
+
             //! replace all keys
             aliasNamesToReplace.forEach { typealiasesByNames[$0] = finalAlias }
         }
         return typealiasesByNames
     }
-    
+
     /// returns actual type name for type alias
     private func typeName(for alias: String, containingType: Type? = nil, typealiases: [String: Typealias]) -> String? {
-        
+
         // first try global typealiases
         if let name = typealiases[alias]?.typeName {
             return name
         }
-        
+
         guard let containingType = containingType,
             let possibleTypeName = typealiases["\(containingType.name).\(alias)"]?.typeName else {
                 return nil
         }
-        
+
         //check if typealias is for one of contained types
         let containedType = containingType
             .containedTypes
@@ -464,10 +463,10 @@ final class Parser {
                     $0.name == possibleTypeName
             }
             .first
-        
+
         return containedType?.name ?? possibleTypeName
     }
-    
+
 }
 
 // MARK: - Details parsing
@@ -512,11 +511,11 @@ extension Parser {
 
         return variable
     }
-    
+
     internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> Method? {
         guard let (name, kind, accesibility) = parseTypeRequirements(source),
             accesibility != .private && accesibility != .fileprivate else { return nil }
-     
+
         let isStatic = kind == .functionMethodStatic
         let isClass = kind == .functionMethodClass
 
@@ -526,28 +525,28 @@ extension Parser {
         } else {
             isFailableInitializer = false
         }
-        
+
         let returnTypeName: String
         if let nameSuffix = extract(SubstringIdentifier.nameSuffix, from: source)?
             .trimmingCharacters(in: .whitespacesAndNewlines),
             nameSuffix.hasPrefix("->") {
-            
+
             returnTypeName = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 2))
                 .components(separatedBy: .whitespacesAndNewlines)
                 .filter({ $0 != "" }).first ?? ""
         } else {
             returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
-        
+
         let method = Method(selectorName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: parseAnnotations(source))
         method.setSource(source)
         return method
     }
-    
+
     internal func parseParameter(_ source: [String: SourceKitRepresentable]) -> Method.Parameter? {
         guard let (name, _, _) = parseTypeRequirements(source),
             let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
-        
+
         return Method.Parameter(name: name, typeName: type)
     }
 

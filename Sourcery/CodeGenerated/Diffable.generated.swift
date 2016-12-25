@@ -1,7 +1,6 @@
 // Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
-
 extension Enum {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -11,7 +10,7 @@ extension Enum {
         }
         results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: rhs.cases))
         results.append(contentsOf: DiffableResult(identifier: "rawType").trackDifference(actual: self.rawType, expected: rhs.rawType))
-        
+
         results.append(contentsOf: super.diffAgainst(object))
         return results
     }
@@ -27,7 +26,7 @@ extension Enum.Case: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: rhs.rawValue))
         results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: rhs.associatedValues))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: rhs.annotations))
-        
+
         return results
     }
 }
@@ -40,7 +39,7 @@ extension Enum.Case.AssociatedValue: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: rhs.typeName))
-        
+
         return results
     }
 }
@@ -59,7 +58,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: rhs.isClass))
         results.append(contentsOf: DiffableResult(identifier: "isFailableInitializer").trackDifference(actual: self.isFailableInitializer, expected: rhs.isFailableInitializer))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: rhs.annotations))
-        
+
         return results
     }
 }
@@ -74,14 +73,14 @@ extension Method.Parameter: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: rhs.typeName))
         results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: rhs.type))
-        
+
         return results
     }
 }
 extension Protocol {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        
+
         results.append(contentsOf: super.diffAgainst(object))
         return results
     }
@@ -89,7 +88,7 @@ extension Protocol {
 extension Struct {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        
+
         results.append(contentsOf: super.diffAgainst(object))
         return results
     }
@@ -112,7 +111,7 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "inheritedTypes").trackDifference(actual: self.inheritedTypes, expected: rhs.inheritedTypes))
         results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: rhs.containedTypes))
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: rhs.parentName))
-        
+
         return results
     }
 }
@@ -126,7 +125,7 @@ extension Typealias: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: rhs.aliasName))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: rhs.typeName))
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: rhs.parentName))
-        
+
         return results
     }
 }
@@ -144,7 +143,7 @@ extension Variable: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: rhs.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: rhs.writeAccess))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: rhs.annotations))
-        
+
         return results
     }
 }

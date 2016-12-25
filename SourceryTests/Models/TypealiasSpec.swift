@@ -30,7 +30,7 @@ class TypealiasSpec: QuickSpec {
             }
 
             describe("When testing equality") {
-                
+
                 context("given same items") {
                     it("is equal") {
                         expect(sut).to(equal(Typealias(aliasName: "Foo", typeName: "Bar")))
