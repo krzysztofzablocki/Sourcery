@@ -5,7 +5,7 @@ typealias SourceryMethod = Method
 
 class Method: NSObject, AutoDiffable {
 
-    class Parameter: NSObject, AutoDiffable {
+    class Parameter: NSObject, AutoDiffable, Typed {
         /// Parameter external name
         var argumentLabel: String
 
@@ -17,14 +17,6 @@ class Method: NSObject, AutoDiffable {
 
         /// Actual parameter type, if known
         var type: Type?
-
-        /// Is the variable optional?
-        /// sourcery: skipEquality
-        var isOptional: Bool { return typeName.isOptional }
-
-        /// sourcery: skipEquality
-        /// sourcery: skipDescription
-        var unwrappedTypeName: String { return typeName.unwrappedTypeName }
 
         init(argumentLabel: String? = nil, name: String, typeName: String) {
             self.typeName = TypeName(typeName)
@@ -62,7 +54,6 @@ class Method: NSObject, AutoDiffable {
     // sourcery: skipEquality
     // sourcery: skipDescription
     var unwrappedReturnTypeName: String {
-        guard !isFailableInitializer else { return returnTypeName.unwrappedTypeName }
         return returnTypeName.unwrappedTypeName
     }
 

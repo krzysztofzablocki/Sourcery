@@ -5,6 +5,29 @@
 
 import Foundation
 
+protocol Typed {
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var type: Type? { get set }
+
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var typeName: TypeName { get }
+
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var isOptional: Bool { get }
+
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var unwrappedTypeName: String { get }
+}
+
+extension Typed {
+    var isOptional: Bool { return typeName.isOptional }
+    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+}
+
 // sourcery: skipDescription
 class TypeName: NSObject, AutoDiffable {
     let name: String
@@ -34,6 +57,12 @@ class TypeName: NSObject, AutoDiffable {
         } else {
             return String(name.characters.dropFirst("Optional<".characters.count).dropLast())
         }
+    }
+
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var isVoid: Bool {
+        return name == "Void" || name == "()"
     }
 
     override var description: String {
