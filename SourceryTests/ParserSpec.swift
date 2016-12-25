@@ -496,6 +496,74 @@ class ParserSpec: QuickSpec {
                                                   ])
                                           ]))
                     }
+
+                    context("given associated value with its type existing") {
+
+                        it("extracts associated value's type") {
+                            let types = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar) }")
+                            let enumeration = types[2] as? Enum
+                            let enumCases = enumeration?.cases
+                            expect(enumCases?.count) == 1
+
+                            let associatedValues = enumCases?.first?.associatedValues
+                            expect(associatedValues?.count) == 1
+
+                            let associatedValue = associatedValues?.first
+                            expect(associatedValue?.name) == "key"
+                            expect(associatedValue?.typeName) == "Bar"
+                            expect(associatedValue?.type?.name) == "Bar"
+                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                        }
+
+                        it("extracts associated value's optional type") {
+                            let types = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar?) }")
+                            let enumeration = types[2] as? Enum
+                            let enumCases = enumeration?.cases
+                            expect(enumCases?.count) == 1
+
+                            let associatedValues = enumCases?.first?.associatedValues
+                            expect(associatedValues?.count) == 1
+
+                            let associatedValue = associatedValues?.first
+                            expect(associatedValue?.name) == "key"
+                            expect(associatedValue?.typeName) == "Bar?"
+                            expect(associatedValue?.type?.name) == "Bar"
+                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                        }
+
+                        it("extracts associated value's typealias") {
+                            let types = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar2) }")
+                            let enumeration = types[2] as? Enum
+                            let enumCases = enumeration?.cases
+                            expect(enumCases?.count) == 1
+
+                            let associatedValues = enumCases?.first?.associatedValues
+                            expect(associatedValues?.count) == 1
+
+                            let associatedValue = associatedValues?.first
+                            expect(associatedValue?.name) == "key"
+                            expect(associatedValue?.typeName) == "Bar2"
+                            expect(associatedValue?.type?.name) == "Bar"
+                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                        }
+
+                        it("extracts associated value's same (indirect) enum type") {
+                            let types = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(key: Foo) }")
+                            let enumeration = types[1] as? Enum
+                            let enumCases = enumeration?.cases
+                            expect(enumCases?.count) == 1
+
+                            let associatedValues = enumCases?.first?.associatedValues
+                            expect(associatedValues?.count) == 1
+
+                            let associatedValue = associatedValues?.first
+                            expect(associatedValue?.name) == "key"
+                            expect(associatedValue?.typeName) == "Foo"
+                            expect(associatedValue?.type?.name) == "Foo"
+                            expect(associatedValue?.type?.inheritedTypes) == ["Baz"]
+                        }
+
+                    }
                 }
 
                 context("given protocol") {

@@ -377,7 +377,11 @@ final class Parser {
             if let enumeration = type as? Enum, enumeration.rawType == nil {
                 enumeration.cases.forEach { enumCase in
                     enumCase.associatedValues.forEach { associatedValue in
-                        associatedValue.type = unique[associatedValue.typeName]
+                        if let actualTypeName = typeName(for: associatedValue.unwrappedTypeName) {
+                            associatedValue.type = unique[actualTypeName]
+                        } else {
+                            associatedValue.type = unique[associatedValue.unwrappedTypeName]
+                        }
                     }
                 }
 

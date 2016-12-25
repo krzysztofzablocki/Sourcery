@@ -15,6 +15,25 @@ class Enum: Type {
             /// sourcery: skipDescription
             var type: Type?
 
+            /// Is the variable optional?
+            var isOptional: Bool {
+                if typeName.hasSuffix("?") || typeName.hasPrefix("Optional<") {
+                    return true
+                }
+                return false
+            }
+
+            /// sourcery: skipEquality
+            /// sourcery: skipDescription
+            var unwrappedTypeName: String {
+                guard isOptional else { return typeName }
+                if typeName.hasSuffix("?") {
+                    return String(typeName.characters.dropLast())
+                } else {
+                    return String(typeName.characters.dropFirst("Optional<".characters.count).dropLast())
+                }
+            }
+
             init(name: String?, typeName: String) {
                 self.name = name
                 self.typeName = typeName
