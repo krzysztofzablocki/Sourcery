@@ -6,6 +6,7 @@
 ### New Features
 - Watch mode now works with folders, reacting to source-code changes and adding templates/source files.
 - When using watch mode, status info will be displayed in the generated code so that you don't need to look at console at all.
+- You can now access types of enum's associated values
 
 ## 0.4.8
 ### New Features

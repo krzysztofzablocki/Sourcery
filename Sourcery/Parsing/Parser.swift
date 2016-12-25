@@ -375,6 +375,16 @@ final class Parser {
 
         for (_, type) in unique {
             if let enumeration = type as? Enum, enumeration.rawType == nil {
+                enumeration.cases.forEach { enumCase in
+                    enumCase.associatedValues.forEach { associatedValue in
+                        if let actualTypeName = typeName(for: associatedValue.unwrappedTypeName) {
+                            associatedValue.type = unique[actualTypeName]
+                        } else {
+                            associatedValue.type = unique[associatedValue.unwrappedTypeName]
+                        }
+                    }
+                }
+
                 guard let rawTypeName = enumeration.inheritedTypes.first else { continue }
                 if let rawTypeCandidate = unique[rawTypeName] {
                     if !(rawTypeCandidate is Protocol) {

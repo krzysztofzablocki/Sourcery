@@ -496,6 +496,55 @@ class ParserSpec: QuickSpec {
                                                   ])
                                           ]))
                     }
+
+                    context("given associated value with its type existing") {
+
+                        it("extracts associated value's type") {
+                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let item = Enum(name: "Foo", cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
+
+                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar) }")
+                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                        it("extracts associated value's optional type") {
+                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar?", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let item = Enum(name: "Foo", cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
+
+                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar?) }")
+                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                        it("extracts associated value's typealias") {
+                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar2", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let item = Enum(name: "Foo", cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
+
+                            let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar2) }")
+                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                        it("extracts associated value's same (indirect) enum type") {
+                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Foo")
+                            let item = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
+                            associatedValue.type = item
+
+                            let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(key: Foo) }")
+                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                    }
                 }
 
                 context("given protocol") {
