@@ -279,7 +279,7 @@ final class Parser {
 
         case let (_, method as Method):
             if method.isInitializer {
-                method.returnTypeName = type.name
+                method.returnTypeName = TypeName(type.name)
             }
             type.methods += [method]
         case let (_, childType as Type):
@@ -381,14 +381,14 @@ final class Parser {
                     }
                 }
 
-                if method.returnTypeName != "Void" {
+                if method.returnTypeName.name != "Void" {
                     if let actualTypeName = typeName(for: method.unwrappedReturnTypeName, containingType: type, typealiases: typealiases) {
                         method.returnType = unique[actualTypeName]
                     } else {
                         method.returnType = unique[method.unwrappedReturnTypeName]
                     }
                     if method.isInitializer {
-                        method.returnTypeName = ""
+                        method.returnTypeName = TypeName("")
                     }
                 }
             }
@@ -611,11 +611,11 @@ extension Parser {
             return nil
         }
 
-        if variable.typeName == "RawValue" {
+        if variable.typeName.name == "RawValue" {
             return parseEnumRawValueAssociatedType(enumeration.__underlyingSource)
         }
 
-        return variable.typeName
+        return variable.typeName.name
     }
 
     fileprivate func parseEnumRawValueAssociatedType(_ source: [String: SourceKitRepresentable]) -> String? {

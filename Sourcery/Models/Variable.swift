@@ -11,31 +11,20 @@ class Variable: NSObject, AutoDiffable {
     /// Variable name
     let name: String
 
-    /// Variable type
-    var typeName: String
+    /// Variable type name
+    var typeName: TypeName
 
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var type: Type?
 
     /// Is the variable optional?
-    var isOptional: Bool {
-        if typeName.hasSuffix("?") || typeName.hasPrefix("Optional<") {
-            return true
-        }
-        return false
-    }
+    /// sourcery: skipEquality
+    var isOptional: Bool { return typeName.isOptional }
 
     /// sourcery: skipEquality
     /// sourcery: skipDescription
-    var unwrappedTypeName: String {
-        guard isOptional else { return typeName }
-        if typeName.hasSuffix("?") {
-            return String(typeName.characters.dropLast())
-        } else {
-            return String(typeName.characters.dropFirst("Optional<".characters.count).dropLast())
-        }
-    }
+    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
 
     /// Whether is computed
     let isComputed: Bool
@@ -64,7 +53,7 @@ class Variable: NSObject, AutoDiffable {
          annotations: [String: NSObject] = [:]) {
 
         self.name = name
-        self.typeName = typeName
+        self.typeName = TypeName(typeName)
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read.rawValue
