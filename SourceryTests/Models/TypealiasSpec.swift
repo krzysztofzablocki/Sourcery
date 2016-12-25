@@ -29,12 +29,22 @@ class TypealiasSpec: QuickSpec {
                 }
             }
 
-            context("given different items") {
-                it("is not equal") {
-                    expect(sut).toNot(equal(Typealias(aliasName:"Foo", typeName: "Foo")))
-                    expect(sut).toNot(equal(Typealias(aliasName:"Bar", typeName: "Bar")))
-                    expect(sut).toNot(equal(Typealias(aliasName:"Bar", typeName: "Bar", parent: Type(name: "Parent"))))
+            describe("When testing equality") {
+
+                context("given same items") {
+                    it("is equal") {
+                        expect(sut).to(equal(Typealias(aliasName: "Foo", typeName: "Bar")))
+                    }
                 }
+
+                context("given different items") {
+                    it("is not equal") {
+                        expect(sut).toNot(equal(Typealias(aliasName:"Foo", typeName: "Foo")))
+                        expect(sut).toNot(equal(Typealias(aliasName:"Bar", typeName: "Bar")))
+                        expect(sut).toNot(equal(Typealias(aliasName:"Bar", typeName: "Bar", parent: Type(name: "Parent"))))
+                    }
+                }
+
             }
         }
     }

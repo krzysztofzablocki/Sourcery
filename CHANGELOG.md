@@ -1,13 +1,17 @@
 # Sourcery CHANGELOG
 
 ---
+
 ## Master
 
 ### New Features
+
 - Watch mode now works with folders, reacting to source-code changes and adding templates/source files.
 - When using watch mode, status info will be displayed in the generated code so that you don't need to look at console at all.
+- You can now access type's `methods` and `initializers`
 
 ## 0.4.8
+
 ### New Features
 - You can now access `supertype` of a class
 - Associated values will now automatically use idx as name if no name is provided
@@ -20,6 +24,7 @@
 - TDD Development is now easier thanks to Diffable results, no longer we need to scan wall of text on failures, instead we see exactly what's different.
 
 ## 0.4.7
+
 ### New Features
 - Added `contains`, `hasPrefix`, `hasPrefix` filters
 

@@ -20,6 +20,7 @@ protocol Diffable {
 /// Phantom protocol for code generation
 protocol AutoDiffable {}
 
+// sourcery: skipEquatable, skipDescription
 @objc class DiffableResult: NSObject {
     private var results: [String]
     internal var identifier: String?
@@ -51,7 +52,7 @@ extension DiffableResult {
 
     @discardableResult func trackDifference<T: Equatable>(actual: T, expected: T) -> DiffableResult {
         if actual != expected {
-            let result = DiffableResult(results: ["<expected: \(actual), received: \(expected)>"])
+            let result = DiffableResult(results: ["<expected: \(expected), received: \(actual)>"])
             append(contentsOf: result)
         }
         return self
@@ -59,7 +60,7 @@ extension DiffableResult {
 
     @discardableResult func trackDifference<T: Equatable>(actual: T?, expected: T?) -> DiffableResult {
         if actual != expected {
-            let result = DiffableResult(results: ["<expected: \(actual), received: \(expected)>"])
+            let result = DiffableResult(results: ["<expected: \(expected), received: \(actual)>"])
             append(contentsOf: result)
         }
         return self
@@ -76,7 +77,7 @@ extension DiffableResult {
         defer { append(contentsOf: diffResult) }
 
         guard actual.count == expected.count else {
-            diffResult.append("Different count \(actual.count) vs \(expected.count)")
+            diffResult.append("Different count, expected: \(expected.count), received: \(actual.count)")
             return self
         }
 
@@ -97,13 +98,13 @@ extension DiffableResult {
         defer { append(contentsOf: diffResult) }
 
         guard actual.count == expected.count else {
-            diffResult.append("Different count \(actual.count) vs \(expected.count)")
+            diffResult.append("Different count, expected: \(expected.count), received: \(actual.count)")
             return self
         }
 
         for (idx, item) in actual.enumerated() {
             if item != expected[idx] {
-                let string = "idx \(idx): <expected: \(actual), received: \(expected)>"
+                let string = "idx \(idx): <expected: \(expected), received: \(actual)>"
                 diffResult.append(string)
             }
         }
@@ -116,7 +117,7 @@ extension DiffableResult {
         defer { append(contentsOf: diffResult) }
 
         guard actual.count == expected.count else {
-            append("Different count \(actual.count) vs \(expected.count)")
+            append("Different count, expected: \(expected.count), received: \(actual.count)")
 
             if expected.count > actual.count {
                 let missingKeys = Array(expected.keys.filter {
@@ -153,7 +154,7 @@ extension DiffableResult {
         defer { append(contentsOf: diffResult) }
 
         guard actual.count == expected.count else {
-            append("Different count \(actual.count) vs \(expected.count)")
+            append("Different count, expected: \(expected.count), received: \(actual.count)")
 
             if expected.count > actual.count {
                 let missingKeys = Array(expected.keys.filter {
@@ -173,7 +174,7 @@ extension DiffableResult {
             }
 
             if !actualElement.isEqual(expectedElement) {
-                diffResult.append("key \"\(key)\": <expected: \(actual), received: \(expected)>")
+                diffResult.append("key \"\(key)\": <expected: \(expected), received: \(actual)>")
             }
         }
 

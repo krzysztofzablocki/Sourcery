@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -33,6 +33,34 @@ extension Enum.Case.AssociatedValue {
     }
 }
 
+extension Method {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Method else { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.selectorName != rhs.selectorName { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.isClass != rhs.isClass { return false }
+        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
+        if self.annotations != rhs.annotations { return false }
+
+        return true
+    }
+}
+
+extension Method.Parameter {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Method.Parameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.type != rhs.type { return false }
+
+        return true
+    }
+}
+
 extension Type {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
@@ -42,6 +70,7 @@ extension Type {
         if self.isGeneric != rhs.isGeneric { return false }
         if self.localName != rhs.localName { return false }
         if self.variables != rhs.variables { return false }
+        if self.methods != rhs.methods { return false }
         if self.annotations != rhs.annotations { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }

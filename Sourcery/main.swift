@@ -88,7 +88,7 @@ if !inUnitTests {
 
     }
 
-    autoreleasepool { () -> () in
+    autoreleasepool { () -> Void in
         let app =   NSApplication.shared()
         let controller =   TestApplicationController()
 
