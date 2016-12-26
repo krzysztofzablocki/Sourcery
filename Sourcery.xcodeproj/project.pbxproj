@@ -37,6 +37,8 @@
 		CD9C459D1DFAF76D00161C2C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9C459C1DFAF76D00161C2C /* main.swift */; };
 		CDBD141F1DFFC2CC00FF9F21 /* Description.stencil in Resources */ = {isa = PBXBuildFile; fileRef = CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */; };
 		CDBD14201DFFC2CC00FF9F21 /* Equality.stencil in Resources */ = {isa = PBXBuildFile; fileRef = CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */; };
+		CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */; };
+		CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */ = {isa = PBXBuildFile; fileRef = CDE812EE1E112CC700F1FF97 /* Performance-Code */; };
 		E291D13413D92A8C36A07A86 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D139206162204C48F396 /* CustomMatchers.swift */; };
 		E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3D222F05C42C246CB73 /* EnumSpec.swift */; };
@@ -47,6 +49,7 @@
 		E291DC5F2343BF3DE3334986 /* Stubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D2450093BB4B3A9ADFEC /* Stubs.swift */; };
 		E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DB6A95BAECDB6E978A76 /* Sourcery.swift */; };
 		E291DCD43D41B7F8D7AAF7B9 /* DiffableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D30C065089B348EE7C42 /* DiffableSpec.swift */; };
+		E291DDBDE2CF209C856B90D7 /* TypeName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,12 +111,15 @@
 		CD9C459C1DFAF76D00161C2C /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Description.stencil; sourceTree = "<group>"; };
 		CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Equality.stencil; sourceTree = "<group>"; };
+		CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sourcery+PerformanceSpec.swift"; sourceTree = "<group>"; };
+		CDE812EE1E112CC700F1FF97 /* Performance-Code */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Performance-Code"; sourceTree = "<group>"; };
 		D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sourcery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E291D139206162204C48F396 /* CustomMatchers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMatchers.swift; sourceTree = "<group>"; };
 		E291D2450093BB4B3A9ADFEC /* Stubs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stubs.swift; sourceTree = "<group>"; };
 		E291D30C065089B348EE7C42 /* DiffableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiffableSpec.swift; sourceTree = "<group>"; };
 		E291D3D222F05C42C246CB73 /* EnumSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumSpec.swift; sourceTree = "<group>"; };
 		E291D78F72297EDB30B2A757 /* ParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserSpec.swift; sourceTree = "<group>"; };
+		E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeName.swift; sourceTree = "<group>"; };
 		E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
 		E291DA16190CED2907BDEA06 /* Generator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
 		E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourcerySpec.swift; sourceTree = "<group>"; };
@@ -211,6 +217,7 @@
 				E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */,
 				097E11F41E09EEC500FEB751 /* SourceryTemplateSpecs.swift */,
 				E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */,
+				CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */,
 			);
 			path = SourceryTests;
 			sourceTree = SOURCE_ROOT;
@@ -227,6 +234,7 @@
 				CD812F591DFDCC1A0088B2F6 /* Variable.swift */,
 				CD666A991E0BEF4F0045D31A /* Diffable.swift */,
 				0967DA671E0488170084F702 /* Method.swift */,
+				E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -262,6 +270,7 @@
 		E291D36844A70DF851656DE8 /* Stub */ = {
 			isa = PBXGroup;
 			children = (
+				CDE812EE1E112CC700F1FF97 /* Performance-Code */,
 				CD475D6E1DE9B98B009AD8B0 /* Result */,
 				CD53EE671D897D2900F5886C /* Templates */,
 				CD53EE651D897C1F00F5886C /* Source */,
@@ -404,6 +413,7 @@
 			files = (
 				CD53EE681D897D2900F5886C /* Templates in Resources */,
 				CD475D6F1DE9B98B009AD8B0 /* Result in Resources */,
+				CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */,
 				CD53EE661D897C1F00F5886C /* Source in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -540,6 +550,7 @@
 				CD4217191E0E71F300525198 /* FolderWatcher.swift in Sources */,
 				097E11EE1E05E76900FEB751 /* Typealias.swift in Sources */,
 				CD812F671DFDD3990088B2F6 /* Description.generated.swift in Sources */,
+				E291DDBDE2CF209C856B90D7 /* TypeName.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,6 +560,7 @@
 			files = (
 				0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */,
 				CD0020EB1D8844B1001CB583 /* GeneratorSpec.swift in Sources */,
+				CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */,
 				097E11F51E09EEC500FEB751 /* SourceryTemplateSpecs.swift in Sources */,
 				CD0020EA1D8844AE001CB583 /* ParserSpec.swift in Sources */,
 				E291D8BB621560C275813B1F /* SourcerySpec.swift in Sources */,

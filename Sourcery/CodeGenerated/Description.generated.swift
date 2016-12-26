@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -56,7 +56,6 @@ extension Method.Parameter {
         string += "name = \(name), "
         string += "typeName = \(typeName), "
         string += "type = \(type), "
-        string += "isOptional = \(isOptional), "
         return string
     }
 }
@@ -101,7 +100,6 @@ extension Variable {
         var string = "\(type(of: self)): "
         string += "name = \(name), "
         string += "typeName = \(typeName), "
-        string += "isOptional = \(isOptional), "
         string += "isComputed = \(isComputed), "
         string += "isStatic = \(isStatic), "
         string += "readAccess = \(readAccess), "

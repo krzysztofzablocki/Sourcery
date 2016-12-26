@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.4.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -75,6 +75,15 @@ extension Type {
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
+
+        return true
+    }
+}
+
+extension TypeName {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TypeName else { return false }
+        if self.name != rhs.name { return false }
 
         return true
     }

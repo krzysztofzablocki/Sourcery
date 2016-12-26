@@ -7,35 +7,16 @@ import Foundation
 
 /// Defines a variable
 
-class Variable: NSObject, AutoDiffable {
+class Variable: NSObject, AutoDiffable, Typed {
     /// Variable name
     let name: String
 
-    /// Variable type
-    var typeName: String
+    /// Variable type name
+    var typeName: TypeName
 
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     var type: Type?
-
-    /// Is the variable optional?
-    var isOptional: Bool {
-        if typeName.hasSuffix("?") || typeName.hasPrefix("Optional<") {
-            return true
-        }
-        return false
-    }
-
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
-    var unwrappedTypeName: String {
-        guard isOptional else { return typeName }
-        if typeName.hasSuffix("?") {
-            return String(typeName.characters.dropLast())
-        } else {
-            return String(typeName.characters.dropFirst("Optional<".characters.count).dropLast())
-        }
-    }
 
     /// Whether is computed
     let isComputed: Bool
@@ -64,7 +45,7 @@ class Variable: NSObject, AutoDiffable {
          annotations: [String: NSObject] = [:]) {
 
         self.name = name
-        self.typeName = typeName
+        self.typeName = TypeName(typeName)
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read.rawValue

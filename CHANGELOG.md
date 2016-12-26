@@ -4,7 +4,11 @@
 
 ## Master
 
+### New Features
 - You can now pass arbitrary values to templates with `--args` argument.
+
+### Internal changes
+- Refactor code around typenames
 
 ## 0.4.9
 

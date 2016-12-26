@@ -5,7 +5,7 @@ typealias SourceryMethod = Method
 
 class Method: NSObject, AutoDiffable {
 
-    class Parameter: NSObject, AutoDiffable {
+    class Parameter: NSObject, AutoDiffable, Typed {
         /// Parameter external name
         var argumentLabel: String
 
@@ -13,32 +13,13 @@ class Method: NSObject, AutoDiffable {
         let name: String
 
         /// Parameter type name
-        let typeName: String
+        let typeName: TypeName
 
         /// Actual parameter type, if known
         var type: Type?
 
-        /// Is the parameter optional?
-        var isOptional: Bool {
-            if typeName.hasSuffix("?") || typeName.hasPrefix("Optional<") {
-                return true
-            }
-            return false
-        }
-
-        // sourcery: skipEquality
-        // sourcery: skipDescription
-        var unwrappedTypeName: String {
-            guard isOptional else { return typeName }
-            if typeName.hasSuffix("?") {
-                return String(typeName.characters.dropLast())
-            } else {
-                return String(typeName.characters.dropFirst("Optional<".characters.count).dropLast())
-            }
-        }
-
         init(argumentLabel: String? = nil, name: String, typeName: String) {
-            self.typeName = typeName
+            self.typeName = TypeName(typeName)
             self.argumentLabel = argumentLabel ?? name
             self.name = name
         }
@@ -56,7 +37,7 @@ class Method: NSObject, AutoDiffable {
     let selectorName: String
 
     /// Name of the return type
-    var returnTypeName: String
+    var returnTypeName: TypeName
 
     /// Actual method return type, if known.
     // sourcery: skipEquality
@@ -67,23 +48,13 @@ class Method: NSObject, AutoDiffable {
     // sourcery: skipEquality
     // sourcery: skipDescription
     var isOptionalReturnType: Bool {
-        if returnTypeName.hasSuffix("?") || returnTypeName.hasPrefix("Optional<") {
-            return true
-        }
-        return isFailableInitializer
+        return returnTypeName.isOptional || isFailableInitializer
     }
 
     // sourcery: skipEquality
     // sourcery: skipDescription
     var unwrappedReturnTypeName: String {
-        guard isOptionalReturnType else { return returnTypeName }
-        guard !isFailableInitializer else { return returnTypeName }
-
-        if returnTypeName.hasSuffix("?") {
-            return String(returnTypeName.characters.dropLast())
-        } else {
-            return String(returnTypeName.characters.dropFirst("Optional<".characters.count).dropLast())
-        }
+        return returnTypeName.unwrappedTypeName
     }
 
     /// Method access level
@@ -121,7 +92,7 @@ class Method: NSObject, AutoDiffable {
 
         self.selectorName = selectorName
         self.parameters = parameters
-        self.returnTypeName = returnTypeName
+        self.returnTypeName = TypeName(returnTypeName)
         self.accessLevel = accessLevel
         self.isStatic = isStatic
         self.isClass = isClass

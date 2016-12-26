@@ -279,7 +279,7 @@ final class Parser {
 
         case let (_, method as Method):
             if method.isInitializer {
-                method.returnTypeName = type.name
+                method.returnTypeName = TypeName(type.name)
             }
             type.methods += [method]
         case let (_, childType as Type):
@@ -347,15 +347,17 @@ final class Parser {
             unique[type.name] = current
         }
 
+        let resolveType = { (unwrappedTypeName: String, containingType: Type?, typealiases: [String: Typealias]) in
+            return self.typeName(for: unwrappedTypeName, containingType: containingType, typealiases: typealiases)
+                    .flatMap { unique[$0] } ?? unique[unwrappedTypeName]
+        }
+
         for (_, type) in unique {
-            //find actual variables types
-            for variable in type.variables {
-                if let actualTypeName = typeName(for: variable.unwrappedTypeName, containingType: type, typealiases: typealiases) {
-                    variable.type = unique[actualTypeName]
-                } else {
-                    variable.type = unique[variable.unwrappedTypeName]
-                }
+            // find actual variables types
+            type.variables.forEach {
+                $0.type = resolveType($0.unwrappedTypeName, type, typealiases)
             }
+
             // find actual methods parameters types and their argument labels
             for method in type.methods {
                 let argumentLabels: [String]
@@ -374,21 +376,14 @@ final class Parser {
                         parameter.argumentLabel = argumentLabels[index]
                     }
 
-                    if let actualTypeName = typeName(for: parameter.unwrappedTypeName, containingType: type, typealiases: typealiases) {
-                        parameter.type = unique[actualTypeName]
-                    } else {
-                        parameter.type = unique[parameter.unwrappedTypeName]
-                    }
+                    parameter.type = resolveType(parameter.unwrappedTypeName, type, typealiases)
                 }
 
-                if method.returnTypeName != "Void" {
-                    if let actualTypeName = typeName(for: method.unwrappedReturnTypeName, containingType: type, typealiases: typealiases) {
-                        method.returnType = unique[actualTypeName]
-                    } else {
-                        method.returnType = unique[method.unwrappedReturnTypeName]
-                    }
+                if !method.returnTypeName.isVoid {
+                    method.returnType = resolveType(method.unwrappedReturnTypeName, type, typealiases)
+
                     if method.isInitializer {
-                        method.returnTypeName = ""
+                        method.returnTypeName = TypeName("")
                     }
                 }
             }
@@ -397,11 +392,7 @@ final class Parser {
             if let enumeration = type as? Enum, enumeration.rawType == nil {
                 enumeration.cases.forEach { enumCase in
                     enumCase.associatedValues.forEach { associatedValue in
-                        if let actualTypeName = typeName(for: associatedValue.unwrappedTypeName, typealiases: typealiases) {
-                            associatedValue.type = unique[actualTypeName]
-                        } else {
-                            associatedValue.type = unique[associatedValue.unwrappedTypeName]
-                        }
+                        associatedValue.type = resolveType(associatedValue.unwrappedTypeName, type, typealiases)
                     }
                 }
 
@@ -611,11 +602,11 @@ extension Parser {
             return nil
         }
 
-        if variable.typeName == "RawValue" {
+        if variable.typeName.name == "RawValue" {
             return parseEnumRawValueAssociatedType(enumeration.__underlyingSource)
         }
 
-        return variable.typeName
+        return variable.typeName.name
     }
 
     fileprivate func parseEnumRawValueAssociatedType(_ source: [String: SourceKitRepresentable]) -> String? {

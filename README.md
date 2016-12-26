@@ -4,73 +4,63 @@
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 
-<img style="float: left;" src="Resources/icon-256.png">
+<img src="Resources/icon-128.png">
 
-### What is Sourcery?
+## What is Sourcery?
+_**Sourcery** scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes._
 
-Swift is a beautiful language that powers a lot of great iOS apps. Unfortunately it features very limited runtime and no meta-programming features.
 
-This has led our projects to contain a lot of duplicated code patterns, they can be considered the same code, just with minimal variations.
+Using it offers many benefits:
 
-Sourcery has been created to allow Swift developers to stop doing the same thing over and over again.
-It allows us to have meta-programming while still maintaning strong typing, preventing bugs and leveraging compiler.
-<br><br>
-
-Have you ever?
-
-- Had to write NSCoding support?
-- Had to implement JSON serialization?
-- Wanted value types to be equatable and hashable?
-- Used enum to wrap decoupled types?
-
-If you did then you probably found yourself writing a lot of repetitive code to deal with those scenarios, does this feel right?
-
-Even worse, if you ever add a new property to a type all of those implementations have to be updated, or you'll end up with bugs.
-In those scenarios usually **compiler won't generate the error for you**, which leads to error prone code.
-
-_**Sourcery** is a tool that scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes._
-
-- Scans your project code.
-- [Adds code annotations](#source-annotations), think attributes like in Rust
-- Allows your templates to access information about project types.
-- Generates swift code.
-- **Immediate feedback:** Sourcery features built-in daemon support, allowing you to write your templates in real-time side-by-side with generated code.
-
-There are multiple benefits in using Sourcery approach:
-
-- Write less boilerplate code and make it easy adhere to [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself)
-- Avoid the risk of forgetting to update boilerplate when refactoring
-- Gives you meta-programming powers, while still allowing the compiler to ensure everything is correct.
-- **Sourcery is so meta that it is used to code-generate its own boilerplate code**
-
-Daemon mode in action:
+- Write less repetitive code and make it easy to adhere to [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself).
+- It allows you to create better code, one that would be hard to maintain without it, e.g. [performing automatic property level difference in tests](https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/Diffable.stencil)
+- Limits the risk of introducing human error when refactoring.
+- Sourcery **doesn't use runtime tricks**, in fact, it allows you to leverage compiler, even more, creating more safety.
+- **Immediate feedback:** Sourcery features built-in daemon support, enabling you to write your templates in real-time side-by-side with generated code.
 
 ![Daemon demo](Resources/daemon.gif)
 
-How everything connects:
+**Sourcery is so meta that it is used to code-generate its boilerplate code**
 
-```bash
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-                                   +--------------+
-         Scans code to build AST   |              |  Generates new code
-      +---------------------------->   SOURCERY   +--------------------------------+
-      |                            |              |                                |
-      |                            +--^--------^--+                                |
-      |                               |        |                                   |
-      |                               |        | Reads templates                   |
-      |                               |        |                                   |
-+-----+------+       +----------------+--+  +--+----------------+        +---------v---------+
-|            |       |                   |  |                   |        |                   |
-|   Source   |       | Equality Template |  | NSCoding Template |        |  Generated Swift  |
-|            |       |                   |  |                   |        |                   |
-+-----^------+       +-------------------+  +-------------------+        +-------------------+
-      |                                                                            |
-      |                                                                            |
-      |                                                                            |
-      +----------------------------------------------------------------------------+
-                              Compiled into your project
+- [What is Sourcery?](#what-is-sourcery)
+- [Why?](#why)
+- [Examples](#examples)
+- [Writing templates](#writing-templates)
+  - [Custom Stencil tags and filter](#custom-stencil-tags-and-filter)
+  - [Using Source Annotations](#using-source-annotations)
+    - [Rules:](#rules)
+    - [Format:](#format)
+    - [Accessing in templates:](#accessing-in-templates)
+- [Installing](#installing)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Attributions](#attributions)
+- [Other Libraries / Tools](#other-libraries--tools)
 
-```
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Why?
+
+Swift features very limited runtime and no meta-programming features. Which leads our projects to contain boilerplate code.
+
+Sourcery exists to allow Swift developers to stop doing the same thing over and over again while still maintaining strong typing, preventing bugs and leveraging compiler.
+
+Have you ever?
+
+- Had to write equatable/hashable?
+- Had to write NSCoding support?
+- Had to implement JSON serialization?
+- Wanted to use Lenses?
+
+If you did then you probably found yourself writing repetitive code to deal with those scenarios, does this feel right?
+
+Even worse, if you ever add a new property to a type all of those implementations have to be updated, or you will end up with bugs.
+In those scenarios usually **compiler will not generate the error for you**, which leads to error prone code.
 
 ## Examples
 
@@ -90,11 +80,13 @@ Result:
 extension AdType {
   static var count: Int { return 2 }
 }
+
+...
 ```
 
 ----
 
-##### Use case: `I want to generate Equality for types implementing specific protocol.`
+##### Use case: `I want to generate Equality for types implementing AutoEquatable.`
 
 Template:
 
@@ -121,27 +113,10 @@ func == (lhs: AccountSectionConfiguration, rhs: AccountSectionConfiguration) -> 
 
     return true
 }
+...
 ```
 
-##### Use case: `I want to list all computed variables in a given type.`
-
-Template:
-
-```swift
-{% for variable in type.VideoViewModel.computedVariables %} {{ variable.name }}: {{ variable.type }}
-{% endfor %}
-```
-
-Result:
-```swift
-attributedTitle: NSAttributedString
-attributedKicker: NSAttributedString
-attributedHeadline: NSAttributedString
-attributedSummary: NSAttributedString
-```
-
-
-##### Use case: `I want to create lenses helpers for all structs.`
+##### Use case: `I want to create lenses for all structs.`
 _[Full implementation](http://gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
 
 Template:
@@ -250,7 +225,7 @@ For each type you can access following properties:
 - `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` `foo`
 - `parameters` <- list of all method parameters
 - `returnType` <- return type, if known, for initializers - containing type
-- `returnTypeName` <- return type name, including things like optional markup. Will be `Void` for methods without return value or empty string for initializers. 
+- `returnTypeName` <- return type name, including things like optional markup. Will be `Void` for methods without return value or empty string for initializers.
 - `unwrappedReturnTypeName` <- name of return type, unwrapping the optional e.g. for return type `Int?` this would return `Int`
 - `isOptionalReturnType` <- whether return type is optional, `true` for failable initializers
 - `accessLevel` <- method access level
@@ -269,14 +244,14 @@ For each type you can access following properties:
 - `unwrappedTypeName` <- name of the type, unwrapping the optional e.g. for parameter with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
 
-## Custom Stencil tags and filter
+### Custom Stencil tags and filter
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
 - `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
 - `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
 - `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
 
-## Source Annotations
+### Using Source Annotations
 
 Sourcery supports annotating your classes and variables with special annotations, similar how attributes work in Rust / Java
 
@@ -296,12 +271,12 @@ If you want to attribute multiple items with same attributes, you can use sectio
 /// sourcery:end
 ```
 
-#### Features:
+#### Rules:
 
 - Multiple annotations can occur on the same line
-- Multiline annotations are supported
+- You can add multiline annotations
 - You can interleave annotations with documentation
-- Sourcery will scan all `sourcery:` annotations in the given comment block above the source until first non comment/doc line
+- Sourcery scans all `sourcery:` annotations in the given comment block above the source until first non-comment/doc line
 
 #### Format:
 
@@ -317,9 +292,7 @@ If you want to attribute multiple items with same attributes, you can use sectio
 {% endif %}
 ```
 
-# Installing
-
-## Installation
+## Installing
 
 <details>
 <summary>Binary form</summary>
@@ -338,7 +311,7 @@ You just need to add `$PODS_ROOT/Sourcery/bin/sourcery {source} {templates} {out
 <summary>Via Swift Package Manager</summary>
 If you're using SwiftPM, you can simply add 'Sourcery' to your manifest.
 
-Sourcery will be placed in `Packages`.
+Sourcery is placed in `Packages`.
 After your first `swift build`, you can run `.build/debug/sourcery {source} {templates} {output}`.
 </details>
 
@@ -368,7 +341,7 @@ Options:
 
 Contributions to Sourcery are welcomed and encouraged!
 
-It's easy to get involved, please see the [Contributing guide](CONTRIBUTING.md) for more details.
+It is easy to get involved. Please see the [Contributing guide](CONTRIBUTING.md) for more details.
 
 [A list of contributors is available through GitHub.](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors)
 
@@ -378,23 +351,27 @@ To give clarity of what is expected of our community, Sourcery has adopted the c
 
 Sourcery is available under the MIT license. See [LICENSE](LICENSE) for more information.
 
-# Attributions
+## Attributions
 
 This tool is powered by
 
 - [SourceKitten](https://github.com/jpsim/SourceKitten) by [JP Simard](https://github.com/jpsim)
 - [Stencil](https://github.com/kylef/Stencil) and few other libs by [Kyle Fuller](https://github.com/kylef)
 
-[Olivier Halligon](https://github.com/AliSoftware) pointed me to few of his setup scripts for CLI tools, very helpful, thank you!
+Thank you! for:
 
-# Other Libraries / Tools
+- [Mariusz Ostrowski](http://twitter.com/faktory) for creating the logo.
+- [Artsy Eidolon](https://github.com/artsy/eidolon) team, because we use their codebase as a stub data for performance testing the parser.
+- [Olivier Halligon](https://github.com/AliSoftware) for showing me his setup scripts for CLI tools which are powering our rakefile.
 
-If you want to generate code for asset related logic, I highly recommend [SwiftGen](https://github.com/AliSoftware/SwiftGen)
+## Other Libraries / Tools
+
+If you want to generate code for asset related data like .xib, .storyboards etc. use [SwiftGen](https://github.com/AliSoftware/SwiftGen). SwiftGen and Sourcery are complementary tools.
 
 Make sure to check my other libraries and tools, especially:
 - [KZPlayground](https://github.com/krzysztofzablocki/KZPlayground) - Powerful playgrounds for Swift and Objective-C
 - [KZFileWatchers](https://github.com/krzysztofzablocki/KZFileWatchers) - Daemon for observing local and remote file changes, used for building other developer tools (Sourcery uses it)
 
-You can [follow me on twitter][1] for news / updates about other projects I'm creating.
+You can [follow me on twitter][1] for news/updates about other projects I am creating.
 
  [1]: http://twitter.com/merowing_

@@ -12,6 +12,7 @@ private class Reference {}
 enum Stubs {
     private static let basePath = Bundle(for: Reference.self).resourcePath.flatMap { Path($0) }!
     static let sourceDirectory = basePath + Path("Source/")
+    static let sourceForPerformance = basePath + Path("Performance-Code/")
     static let resultDirectory = basePath + Path("Result/")
     static let templateDirectory = basePath + Path("Templates/")
 }
