@@ -4,11 +4,10 @@
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 
-<img src="Resources/icon-128.png">
-
 ## What is Sourcery?
 _**Sourcery** scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes._
 
+<img src="Resources/icon-128.png">
 
 Using it offers many benefits:
 
