@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+
+## Master
+
+- You can now pass arbitrary values to templates with `--args` argument.
+
 ## 0.4.9
 
 ### New Features

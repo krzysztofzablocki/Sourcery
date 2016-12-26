@@ -117,7 +117,7 @@ enum Generator {
         }
     }
 
-    static func generate(_ types: [Type], template: Template) throws -> String {
+    static func generate(_ types: [Type], template: Template, arguments: [String: Any] = [:]) throws -> String {
         var typesByName = [String: Type]()
         types.forEach { typesByName[$0.name] = $0 }
 
@@ -130,9 +130,10 @@ enum Generator {
             updateTypeRelationship(for: type, typesByName: typesByName, processed: &processed)
         }
 
-        let context: [String: Any]? = [
+        let context: [String: Any] = [
             "types": TypesReflectionBox(types: types),
-            "type": typesByName
+            "type": typesByName,
+            "args": arguments
             ]
 
         return try template.render(context)

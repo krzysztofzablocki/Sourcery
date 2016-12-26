@@ -22,6 +22,7 @@ public class Sourcery {
     let verbose: Bool
     private(set) var watcherEnabled: Bool = false
     private var status = ""
+	let arguments: [String: Any]
 
     private var templatesPath: Path = ""
     private var outputPath: Path = ""
@@ -29,8 +30,10 @@ public class Sourcery {
     /// Creates Sourcery processor
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
-    public init(verbose: Bool = false) {
+    /// - Parameter arguments: Additional arguments to pass to templates.
+    public init(verbose: Bool = false, arguments: [String: Any] = [:]) {
         self.verbose = verbose
+        self.arguments = arguments
     }
 
     /// Processes source files and generates corresponding code.
@@ -162,12 +165,12 @@ public class Sourcery {
 
     private func generate(_ template: Template, forTypes types: [Type]) throws -> String {
         guard watcherEnabled else {
-            return try Generator.generate(types, template: template)
+            return try Generator.generate(types, template: template, arguments: self.arguments)
         }
 
         var result: String = ""
         SwiftTryCatch.try({
-            result = (try? Generator.generate(types, template: template)) ?? ""
+            result = (try? Generator.generate(types, template: template, arguments: self.arguments)) ?? ""
         }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})

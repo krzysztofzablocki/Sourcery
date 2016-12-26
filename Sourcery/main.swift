@@ -20,6 +20,30 @@ extension Path: ArgumentConvertible {
     }
 }
 
+struct CustomArguments: ArgumentConvertible {
+    let arguments: [String: Any]
+    init(parser: ArgumentParser) throws {
+        var arguments = [String: Any]()
+        guard let args = try parser.shiftValueForOption("args") else {
+            self.arguments = arguments
+            return
+        }
+        for argument in args.components(separatedBy: ",") {
+            let keyAndValue = argument.components(separatedBy: "=")
+            if keyAndValue.count == 2 {
+                arguments[keyAndValue[0]] = keyAndValue[1]
+            } else {
+                arguments[keyAndValue[0]] = true
+            }
+        }
+        self.arguments = arguments
+    }
+
+    var description: String {
+        return arguments.description
+    }
+}
+
 fileprivate enum Validators {
     static func isReadable(path: Path) -> Path {
         if !path.isReadable {
@@ -52,10 +76,11 @@ func runCLI() {
              description: "Turn on verbose logging for ignored entities"),
         Argument<Path>("source", description: "Path to a source swift files", validator: Validators.isFileOrDirectory),
         Argument<Path>("templates", description: "Path to templates. File or Directory≥", validator: Validators.isFileOrDirectory),
-        Argument<Path>("output", description: "Path to output. File or Directory.")
-    ) { watcherEnabled, verboseLogging, source, template, output in
+        Argument<Path>("output", description: "Path to output. File or Directory."),
+        Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
+    ) { watcherEnabled, verboseLogging, source, template, output, args in
         do {
-            if let keepAlive = try Sourcery(verbose: verboseLogging).processFiles(source, usingTemplates: template, output: output, watcherEnabled: watcherEnabled) {
+            if let keepAlive = try Sourcery(verbose: verboseLogging, arguments: args.arguments).processFiles(source, usingTemplates: template, output: output, watcherEnabled: watcherEnabled) {
                 RunLoop.current.run()
                 _ = keepAlive
             }

@@ -43,9 +43,12 @@ class GeneratorSpec: QuickSpec {
                     Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
             ]
 
+            let arguments: [String: Any] = ["some": "value"]
+
             func generate(_ template: String) -> String {
                 return (try? Generator.generate(types,
-                        template: SourceryTemplate(templateString: template))) ?? ""
+                        template: SourceryTemplate(templateString: template),
+                        arguments: arguments)) ?? ""
             }
 
             it("generates types.all by skipping protocols") {
@@ -149,6 +152,12 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{% if type.ProjectFooSubclass.based.Foo %} TRUE {% endif %}")).to(equal(" TRUE "))
                     expect(generate("{% if type.ProjectFooSubclass.based.Decodable %} TRUE {% endif %}")).to(equal(" TRUE "))
                     expect(generate("{% if type.ProjectFooSubclass.based.AlternativeProtocol %} TRUE {% endif %}")).to(equal(" TRUE "))
+                }
+            }
+
+            context("given additional arguments") {
+                it("makes them accessible in templates") {
+                    expect(generate("{{ args.some }}")).to(equal("value"))
                 }
             }
         }
