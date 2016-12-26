@@ -22,7 +22,7 @@ public class Sourcery {
     let verbose: Bool
     private(set) var watcherEnabled: Bool = false
     private var status = ""
-	let arguments: [String: Any]
+	let arguments: [String: NSObject]
 
     private var templatesPath: Path = ""
     private var outputPath: Path = ""
@@ -31,7 +31,7 @@ public class Sourcery {
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
     /// - Parameter arguments: Additional arguments to pass to templates.
-    public init(verbose: Bool = false, arguments: [String: Any] = [:]) {
+    public init(verbose: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
     }

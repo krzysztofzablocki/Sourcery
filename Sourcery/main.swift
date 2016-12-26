@@ -21,25 +21,16 @@ extension Path: ArgumentConvertible {
 }
 
 struct CustomArguments: ArgumentConvertible {
-    let arguments: [String: Any]
+    let arguments: [String: NSObject]
+
     init(parser: ArgumentParser) throws {
-        var arguments = [String: Any]()
+        var arguments = [String: NSObject]()
         guard let args = try parser.shiftValueForOption("args") else {
             self.arguments = arguments
             return
         }
-        for argument in args.components(separatedBy: ",") {
-            let keyAndValue = argument
-                .components(separatedBy: "=")
-                .map({ $0.trimmingCharacters(in: .whitespaces) })
 
-            if keyAndValue.count == 2 {
-                arguments[keyAndValue[0]] = keyAndValue[1]
-            } else {
-                arguments[keyAndValue[0]] = true
-            }
-        }
-        self.arguments = arguments
+        self.arguments = Parser.parseAnnotations(line: args)
     }
 
     var description: String {

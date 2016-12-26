@@ -63,7 +63,7 @@ fileprivate enum SubstringIdentifier {
     }
 }
 
-private typealias Annotations = [String: NSObject]
+internal typealias Annotations = [String: NSObject]
 private enum AnnotationType {
     case begin(Annotations)
     case annotations(Annotations)
@@ -662,9 +662,13 @@ extension Parser {
 
         guard let range = substringRange else { return .annotations([:]) }
 
-        let annotationDefinitions = commentLine
-                .substring(from: range.upperBound)
-                .trimmingCharacters(in: .whitespaces)
+        let annotations = Parser.parseAnnotations(line: commentLine.substring(from: range.upperBound))
+
+        return insideBlock ? .begin(annotations) : .annotations(annotations)
+    }
+
+    static internal func parseAnnotations(line: String) -> Annotations {
+        let annotationDefinitions = line.trimmingCharacters(in: .whitespaces)
                 .components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
 
         var annotations = Annotations()
@@ -688,7 +692,7 @@ extension Parser {
             }
         }
 
-        return insideBlock ? .begin(annotations) : .annotations(annotations)
+        return annotations
     }
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {

@@ -329,7 +329,7 @@ Arguments:
 - source - Path to a source swift files.
 - templates - Path to templates. File or Directory.
 - output - Path to output. File or Directory.
-- args - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces.
+- args - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces. Arguments are accessible in templates via `argument.name`
 
 Options:
 

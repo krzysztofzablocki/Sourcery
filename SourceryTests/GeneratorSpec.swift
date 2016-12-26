@@ -43,7 +43,7 @@ class GeneratorSpec: QuickSpec {
                     Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
             ]
 
-            let arguments: [String: Any] = ["some": "value"]
+            let arguments: [String: NSObject] = ["some": "value" as NSString, "number": NSNumber(value: Float(4))]
 
             func generate(_ template: String) -> String {
                 return (try? Generator.generate(types,
@@ -156,8 +156,12 @@ class GeneratorSpec: QuickSpec {
             }
 
             context("given additional arguments") {
-                it("makes them accessible in templates") {
-                    expect(generate("{{ args.some }}")).to(equal("value"))
+                it("can reflect them") {
+                    expect(generate("{{ argument.some }}")).to(equal("value"))
+                }
+
+                it("parses numbers correctly") {
+                    expect(generate("{% if argument.number > 2 %}TRUE{% endif %}")).to(equal("TRUE"))
                 }
             }
         }

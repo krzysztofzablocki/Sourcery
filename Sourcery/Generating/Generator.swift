@@ -117,7 +117,7 @@ enum Generator {
         }
     }
 
-    static func generate(_ types: [Type], template: Template, arguments: [String: Any] = [:]) throws -> String {
+    static func generate(_ types: [Type], template: Template, arguments: [String: NSObject] = [:]) throws -> String {
         var typesByName = [String: Type]()
         types.forEach { typesByName[$0.name] = $0 }
 
@@ -133,7 +133,7 @@ enum Generator {
         let context: [String: Any] = [
             "types": TypesReflectionBox(types: types),
             "type": typesByName,
-            "args": arguments
+            "argument": arguments
             ]
 
         return try template.render(context)
