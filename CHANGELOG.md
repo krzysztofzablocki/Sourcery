@@ -5,6 +5,7 @@
 
 ### New Features
 - Refactor code around typenames
+- You can now pass arbitrary values to templates with `--args` argument.
 
 ## 0.4.9
 

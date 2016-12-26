@@ -322,13 +322,14 @@ You can clone it from the repo and just run `Sourcery.xcworkspace`.
 ## Usage
 Sourcery is a command line tool `sourcery`:
 ```
-$ ./sourcery <source> <templates> <output>
+$ ./sourcery <source> <templates> <output> [--args arg1=value,arg2]
 ```
 Arguments:
 
 - source - Path to a source swift files.
 - templates - Path to templates. File or Directory.
 - output - Path to output. File or Directory.
+- args - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces.
 
 Options:
 
