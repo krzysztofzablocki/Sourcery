@@ -11,6 +11,7 @@ enum AccessLevel: String {
     case `private`
     case `fileprivate`
     case `public`
+    case `open`
     case none
 
     var rawValue: String {
@@ -23,6 +24,8 @@ enum AccessLevel: String {
             return "fileprivate"
         case .public:
             return "public"
+        case .open:
+            return "open"
         case .none:
             return ""
         }
