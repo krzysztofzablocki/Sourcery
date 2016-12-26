@@ -17,7 +17,7 @@ class Type: NSObject, AutoDiffable {
 
     internal var isExtension: Bool
 
-    var kind: String { return isExtension ? "extension" : "class" }
+    var kind: String { return isExtension ? "extension" : "unknown" }
 
     /// What is the type access level?
     let accessLevel: String
@@ -78,11 +78,6 @@ class Type: NSObject, AutoDiffable {
     /// sourcery: skipDescription
     var based = [String: String]()
 
-    /// contains all types inheriting from known BaseClass
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
-    var inherits = [String: String]()
-
     /// contains all types implementing known BaseProtocol
     /// sourcery: skipEquality
     /// sourcery: skipDescription
@@ -106,11 +101,6 @@ class Type: NSObject, AutoDiffable {
             parentName = parent?.name
         }
     }
-
-    /// Superclass definition if any
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
-    var supertype: Type?
 
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
@@ -161,7 +151,6 @@ class Type: NSObject, AutoDiffable {
         self.methods += type.methods
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
-        type.inherits.keys.forEach { self.inherits[$0] = $0 }
         type.implements.keys.forEach { self.implements[$0] = $0 }
         self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
     }

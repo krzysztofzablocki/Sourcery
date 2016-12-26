@@ -179,19 +179,16 @@ final class Parser {
             case .protocol:
                 type = Protocol(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
             case .class:
-                type = Type(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
-            case .extension:
-                type = Type(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
-            case .extensionClass:
-                type = Type(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
+                type = Class(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
             case .struct:
                 type = Struct(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
-            case .extensionStruct:
-                type = Struct(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
             case .enum:
                 type = Enum(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
-            case .extensionEnum:
-                type = Enum(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
+            case .extension,
+                 .extensionClass,
+                 .extensionStruct,
+                 .extensionEnum:
+                type = Type(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
             case .enumelement:
                 return parseEnumCase(source)
             case .varInstance:

@@ -20,8 +20,8 @@ class TypeSpec: QuickSpec {
                 sut = nil
             }
 
-            it("being not an extension reports kind as class") {
-                expect(sut?.kind).to(equal("class"))
+            it("being not an extension reports kind as unknown") {
+                expect(sut?.kind).to(equal("unknown"))
             }
 
             it("being an extension reports kind as extension") {
@@ -116,6 +116,15 @@ class TypeSpec: QuickSpec {
 
                     expect(sut?.inheritedTypes).to(equal(["NSObject", "New", "Something"]))
                     expect(sut?.based).to(equal(["NSObject": "NSObject", "Something": "Something", "New": "New"]))
+                }
+
+                it("adds implemented types") {
+                    let type = Type(name: "Foo", isExtension: true)
+                    type.implements = ["New": "New"]
+
+                    sut?.extend(type)
+
+                    expect(sut?.implements).to(equal(["New": "New"]))
                 }
             }
 
