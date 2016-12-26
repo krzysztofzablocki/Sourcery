@@ -4,8 +4,12 @@
 ## Master
 
 ### New Features
-- Refactor code around typenames
 - You can now pass arbitrary values to templates with `--args` argument.
+- Added `open` access level
+- `supertype` and `inherits` are now only accessible on class types.
+
+### Internal changes
+- Refactor code around typenames
 
 ## 0.4.9
 
@@ -25,7 +29,7 @@
 - Fix dealing with multibyte characters
 - `types.implementing` and `types.based` should include protocols that are based on other protocols
 
-## Internal changes
+### Internal changes
 - TDD Development is now easier thanks to Diffable results, no longer we need to scan wall of text on failures, instead we see exactly what's different.
 
 ## 0.4.7
