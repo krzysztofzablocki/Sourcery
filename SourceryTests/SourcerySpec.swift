@@ -67,12 +67,6 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? outputFile.read(.utf8)
                         expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
                     }
-
-                    it("has reasonable performance") {
-                        self.measure({
-                          expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: Stubs.templateDirectory, output: outputFile) }.toNot(throwError())
-                        })
-                    }
                 }
 
                 context("given an output directory") {
