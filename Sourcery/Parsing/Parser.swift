@@ -379,7 +379,7 @@ final class Parser {
                     parameter.type = resolveType(parameter.unwrappedTypeName, type, typealiases)
                 }
 
-                if !method.returnTypeName.isVoid  {
+                if !method.returnTypeName.isVoid {
                     method.returnType = resolveType(method.unwrappedReturnTypeName, type, typealiases)
 
                     if method.isInitializer {

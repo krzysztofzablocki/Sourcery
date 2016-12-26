@@ -250,7 +250,7 @@ For each type you can access following properties:
 - `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` `foo`
 - `parameters` <- list of all method parameters
 - `returnType` <- return type, if known, for initializers - containing type
-- `returnTypeName` <- return type name, including things like optional markup. Will be `Void` for methods without return value or empty string for initializers. 
+- `returnTypeName` <- return type name, including things like optional markup. Will be `Void` for methods without return value or empty string for initializers.
 - `unwrappedReturnTypeName` <- name of return type, unwrapping the optional e.g. for return type `Int?` this would return `Int`
 - `isOptionalReturnType` <- whether return type is optional, `true` for failable initializers
 - `accessLevel` <- method access level
@@ -383,6 +383,8 @@ This tool is powered by
 
 - [SourceKitten](https://github.com/jpsim/SourceKitten) by [JP Simard](https://github.com/jpsim)
 - [Stencil](https://github.com/kylef/Stencil) and few other libs by [Kyle Fuller](https://github.com/kylef)
+
+It uses part of [Artsy Eidolon](https://github.com/artsy/eidolon) codebase as a stub data for performance testing the parser.
 
 [Olivier Halligon](https://github.com/AliSoftware) pointed me to few of his setup scripts for CLI tools, very helpful, thank you!
 
