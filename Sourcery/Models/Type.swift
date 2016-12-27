@@ -78,6 +78,11 @@ class Type: NSObject, AutoDiffable {
     /// sourcery: skipDescription
     var based = [String: String]()
 
+    /// contains all types inheriting from known BaseClass
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var inherits = [String: String]()
+
     /// contains all types implementing known BaseProtocol
     /// sourcery: skipEquality
     /// sourcery: skipDescription
@@ -101,6 +106,11 @@ class Type: NSObject, AutoDiffable {
             parentName = parent?.name
         }
     }
+
+    /// Superclass definition if any
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
+    var supertype: Type?
 
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else

@@ -6,7 +6,6 @@
 ### New Features
 - You can now pass arbitrary values to templates with `--args` argument.
 - Added `open` access level
-- `supertype` and `inherits` are now only accessible on class types.
 
 ### Internal changes
 - Refactor code around typenames
