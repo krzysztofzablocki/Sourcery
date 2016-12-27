@@ -561,6 +561,7 @@ class ParserSpec: QuickSpec {
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawType: nil, cases: [Enum.Case(name: "optionA")]),
                                     Protocol(name: "SomeProtocol")
                                     ]))
+
                         }
 
                         it("extracts types inherited in extension properly") {
@@ -570,6 +571,16 @@ class ParserSpec: QuickSpec {
                                     Protocol(name: "SomeProtocol")
                                     ]))
                         }
+
+                        it("does not use extension to infer rawType") {
+                            expect(parse("enum Foo { case one }; extension Foo: Equatable {}")).to(equal([
+                                Enum(name: "Foo",
+                                     inheritedTypes: ["Equatable"],
+                                     cases: [Enum.Case(name: "one")]
+                                )
+                                ]))
+                        }
+
                     }
 
                     context("given enum containing rawType") {
@@ -618,12 +629,13 @@ class ParserSpec: QuickSpec {
                                 ]))
                         }
 
-                        it("extracts enums with custom values") {
-                            expect(parse("enum Foo: String { case optionA = \"Value\" }"))
-                                .to(equal([
-                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawType: "String", cases: [Enum.Case(name: "optionA", rawValue: "Value")])
-                                    ]))
-                        }
+                    }
+
+                    it("extracts enums with custom values") {
+                        expect(parse("enum Foo: String { case optionA = \"Value\" }"))
+                            .to(equal([
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawType: "String", cases: [Enum.Case(name: "optionA", rawValue: "Value")])
+                                ]))
                     }
 
                     it("extracts enums without rawType") {

@@ -393,7 +393,7 @@ final class Parser {
                     }
                 }
 
-                guard let rawTypeName = enumeration.inheritedTypes.first else { continue }
+                guard enumeration.hasRawType, let rawTypeName = enumeration.inheritedTypes.first else { continue }
                 if let rawTypeCandidate = unique[rawTypeName] {
                     if !(rawTypeCandidate is Protocol) {
                         enumeration.rawType = rawTypeCandidate.name

@@ -51,6 +51,7 @@ class Enum: Type {
     internal(set) var rawType: String? {
         didSet {
             if let rawType = rawType {
+                hasRawType = true
                 if let index = inheritedTypes.index(of: rawType) {
                     inheritedTypes.remove(at: index)
                 }
@@ -60,6 +61,8 @@ class Enum: Type {
             }
         }
     }
+
+    private(set) var hasRawType: Bool
 
     /// sourcery: skipEquality
     /// sourcery: skipDescription
@@ -93,10 +96,13 @@ class Enum: Type {
 
         self.cases = cases
         self.rawType = rawType
+        self.hasRawType = rawType != nil || !inheritedTypes.isEmpty
+
         super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)
 
         if let rawType = rawType, let index = self.inheritedTypes.index(of: rawType) {
             self.inheritedTypes.remove(at: index)
         }
     }
+
 }
