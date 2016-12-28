@@ -24,9 +24,8 @@ struct CustomArguments: ArgumentConvertible {
     let arguments: [String: NSObject]
 
     init(parser: ArgumentParser) throws {
-        var arguments = [String: NSObject]()
         guard let args = try parser.shiftValueForOption("args") else {
-            self.arguments = arguments
+            self.arguments = [String: NSObject]()
             return
         }
 

@@ -1,6 +1,14 @@
 // Generated using Sourcery 0.4.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+extension Class {
+    override func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+
+        results.append(contentsOf: super.diffAgainst(object))
+        return results
+    }
+}
 extension Enum {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()

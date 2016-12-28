@@ -6,13 +6,6 @@
 import Foundation
 import Stencil
 
-private extension Type {
-    var isClass: Bool {
-        let isNotClass = self is Struct || self is Enum || self is Protocol
-        return !isNotClass && !isExtension
-    }
-}
-
 private class TypesReflectionBox: NSObject {
     private let types: [Type]
 
@@ -22,8 +15,8 @@ private class TypesReflectionBox: NSObject {
     }
 
     /// Lists all known classes in the project
-    lazy var classes: [Type] = {
-        return self.types.filter { $0.isClass }
+    lazy var classes: [Class] = {
+        return self.types.flatMap { $0 as? Class }
     }()
 
     /// lists all known types, excluding protocols
@@ -32,18 +25,18 @@ private class TypesReflectionBox: NSObject {
     }()
 
     /// Lists all known protocols
-    lazy var protocols: [Type] = {
-        return self.types.filter { $0 is Protocol }
+    lazy var protocols: [Protocol] = {
+        return self.types.flatMap { $0 as? Protocol }
     }()
 
     /// Lists all known structs
-    lazy var structs: [Type] = {
-        return self.types.filter { $0 is Struct }
+    lazy var structs: [Struct] = {
+        return self.types.flatMap { $0 as? Struct }
     }()
 
     /// Lists all known enums
-    lazy var enums: [Type] = {
-        return self.types.filter { $0 is Enum }
+    lazy var enums: [Enum] = {
+        return self.types.flatMap { $0 as? Enum }
     }()
 
     /// Lists all encountered types, even if they are not known e.g. Apple or 3rd party frameworks
@@ -109,7 +102,7 @@ enum Generator {
             baseType.inherits.keys.forEach {  type.inherits[$0] = $0 }
             baseType.implements.keys.forEach {  type.implements[$0] = $0 }
 
-            if baseType.isClass {
+            if baseType is Class {
                 type.inherits[name] = name
             } else if baseType is Protocol {
                 type.implements[name] = name
@@ -123,7 +116,7 @@ enum Generator {
 
         var processed = [String: Bool]()
         types.forEach { type in
-            if let supertype = type.inheritedTypes.first.flatMap({ typesByName[$0] }), supertype.isClass {
+            if let type = type as? Class, let supertype = type.inheritedTypes.first.flatMap({ typesByName[$0] }) as? Class {
                 type.supertype = supertype
             }
             processed[type.name] = true

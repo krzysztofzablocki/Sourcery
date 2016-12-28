@@ -17,7 +17,7 @@ class Type: NSObject, AutoDiffable {
 
     internal var isExtension: Bool
 
-    var kind: String { return isExtension ? "extension" : "class" }
+    var kind: String { return isExtension ? "extension" : "unknown" }
 
     /// What is the type access level?
     let accessLevel: String
@@ -161,7 +161,6 @@ class Type: NSObject, AutoDiffable {
         self.methods += type.methods
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
-        type.inherits.keys.forEach { self.inherits[$0] = $0 }
         type.implements.keys.forEach { self.implements[$0] = $0 }
         self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
     }
