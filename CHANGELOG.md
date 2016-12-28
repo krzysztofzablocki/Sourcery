@@ -6,6 +6,7 @@
 ### New Features
 - You can now pass arbitrary values to templates with `--args` argument.
 - Added `open` access level
+- Now you can avoid inferring unknown protocols as enum raw types by adding conformance in extension (instead of `enum Foo: Equatable {}` do `enum Foo {}; extension Foo: Equatable {}`)
 
 ### Internal changes
 - Refactor code around typenames
