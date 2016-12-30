@@ -16,7 +16,7 @@ class MethodSpec: QuickSpec {
                 sut = nil
             }
 
-            it("reposrts short name properly") {
+            it("reports short name properly") {
                 expect(sut?.shortName).to(equal("foo"))
             }
 

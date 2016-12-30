@@ -12,7 +12,8 @@ class TypeSpec: QuickSpec {
             let supertypeVariable = Variable(name: "supertypeVariable", typeName: "Int", isComputed: false)
             let initializer = Method(selectorName: "init()")
             let parentType = Type(name: "Parent")
-            let superType = Type(name: "Supertype", variables: [supertypeVariable])
+            let superTypeMethod = Method(selectorName: "doSomething()")
+            let superType = Type(name: "Supertype", variables: [supertypeVariable], methods: [superTypeMethod])
 
             beforeEach {
                 sut = Type(name: "Foo", parent: parentType, variables: [storedVariable, computedVariable, staticVariable], methods: [initializer], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])
@@ -57,6 +58,14 @@ class TypeSpec: QuickSpec {
 
             it("filters initializers") {
                 expect(sut?.initializers).to(equal([initializer]))
+            }
+
+            it("flattens methods from supertype") {
+                expect(sut?.allMethods).to(equal([initializer, superTypeMethod]))
+            }
+
+            it("flattens variables from supertype") {
+                expect(sut?.allVariables).to(equal([storedVariable, computedVariable, staticVariable, supertypeVariable]))
             }
 
             describe("isGeneric") {
