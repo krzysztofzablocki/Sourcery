@@ -255,7 +255,7 @@ For each type you can access following properties:
 - `static`, `instance`, `class`, `initializer` - can be used on Method[s] as filter e.g. `{% for method in allMethods|instance %}`
 - `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter
 - `count` - can be used to get count of filtered array
--
+
 ### Using Source Annotations
 
 Sourcery supports annotating your classes and variables with special annotations, similar how attributes work in Rust / Java
