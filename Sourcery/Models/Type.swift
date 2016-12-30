@@ -34,8 +34,21 @@ class Type: NSObject, AutoDiffable {
     /// Name in parent scope
     var localName: String
 
-    /// All variables associated with this type
+    /// Variables defined in this type only, excluding those from parent or protocols
     var variables: [Variable]
+
+    /// All variables associated with this type, including those from parent or protocols
+    /// sourcery: skipEquality, skipDescription
+    var allVariables: [Variable] {
+        let allVariables = NSMutableOrderedSet()
+        allVariables.addObjects(from: variables)
+
+        _ = supertype.flatMap { allVariables.addObjects(from: $0.variables) }
+        inherits.values.forEach { allVariables.addObjects(from: $0.variables) }
+        implements.values.forEach { allVariables.addObjects(from: $0.variables) }
+
+        return Array(allVariables.array.flatMap { $0 as? Variable })
+    }
 
     /// All methods defined by this type
     var methods: [Method]
@@ -45,20 +58,25 @@ class Type: NSObject, AutoDiffable {
         return methods.filter { $0.isInitializer }
     }
 
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alternative = 2
     var annotations: [String: NSObject] = [:]
 
-    /// All type static variables
+    /// Static variables defined in this type
     var staticVariables: [Variable] {
         return variables.filter { $0.isStatic }
     }
 
-    /// Only computed instance variables
+    /// Instance variables defined in this type
+    var instanceVariables: [Variable] {
+        return variables.filter { !$0.isStatic }
+    }
+
+    /// All computed instance variables defined in this type
     var computedVariables: [Variable] {
         return variables.filter { $0.isComputed && !$0.isStatic }
     }
 
-    /// Only stored instance variables
+    /// Only stored instance variables defined in this type
     var storedVariables: [Variable] {
         return variables.filter { !$0.isComputed && !$0.isStatic }
     }
@@ -81,12 +99,12 @@ class Type: NSObject, AutoDiffable {
     /// contains all types inheriting from known BaseClass
     /// sourcery: skipEquality
     /// sourcery: skipDescription
-    var inherits = [String: String]()
+    var inherits = [String: Type]()
 
     /// contains all types implementing known BaseProtocol
     /// sourcery: skipEquality
     /// sourcery: skipDescription
-    var implements = [String: String]()
+    var implements = [String: Type]()
 
     /// Contained types
     var containedTypes: [Type] {
@@ -161,7 +179,8 @@ class Type: NSObject, AutoDiffable {
         self.methods += type.methods
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
-        type.implements.keys.forEach { self.implements[$0] = $0 }
+        type.inherits.forEach { self.inherits[$0.key] = $0.value }
+        type.implements.forEach { self.implements[$0.key] = $0.value }
         self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
     }
 }

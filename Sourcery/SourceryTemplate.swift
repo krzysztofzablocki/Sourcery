@@ -20,6 +20,16 @@ internal class SourceryTemplate: Template {
         ext.registerFilter("hasPrefix", filter: stringContentFilter("hasPrefix", String.hasPrefix))
         ext.registerFilter("hasSuffix", filter: stringContentFilter("hasSuffix", String.hasSuffix))
 
+        ext.registerFilter("static", filter: Filter<Variable>.make({ $0.isStatic }))
+        ext.registerFilter("instance", filter: Filter<Variable>.make({ !$0.isStatic }))
+        ext.registerFilter("computed", filter: Filter<Variable>.make({ $0.isComputed && !$0.isStatic }))
+        ext.registerFilter("stored", filter: Filter<Variable>.make({ !$0.isComputed && !$0.isStatic }))
+
+        ext.registerFilter("enum", filter: Filter<Type>.make({ $0 is Enum }))
+        ext.registerFilter("class", filter: Filter<Type>.make({ $0 is Class }))
+        ext.registerFilter("struct", filter: Filter<Type>.make({ $0 is Struct }))
+        ext.registerFilter("protocol", filter: Filter<Type>.make({ $0 is Protocol }))
+
         return Stencil.Environment(extensions: [ext])
     }
 }
@@ -42,5 +52,26 @@ private func stringContentFilter(_ name: String, _ filter: @escaping (String) ->
             return any
         }
         return filter(s)(arg)
+    }
+}
+
+private struct Filter<T> {
+    static func make(_ filter: @escaping (T) -> Bool) -> (Any?) throws -> Any? {
+        return { (any) throws -> Any? in
+            switch any {
+            case let type as T:
+                if filter(type) {
+                    return true
+                } else {
+                    return false
+                }
+
+            case let array as NSArray:
+                return array.flatMap { $0 as? T }.filter(filter)
+
+            default:
+                return nil
+            }
+        }
     }
 }
