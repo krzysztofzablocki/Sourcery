@@ -114,6 +114,8 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{% for var in type.Complex.allVariables|stored %}V{% endfor %}")).to(equal("VV"))
                     expect(generate("{% for var in type.Complex.allVariables|instance %}V{% endfor %}")).to(equal("VVV"))
                     expect(generate("{% for var in type.Complex.allVariables|static %}V{% endfor %}")).to(equal(""))
+
+                    expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("3"))
                 }
 
                 it("generates type.TypeName") {

@@ -30,8 +30,18 @@ internal class SourceryTemplate: Template {
         ext.registerFilter("struct", filter: Filter<Type>.make({ $0 is Struct }))
         ext.registerFilter("protocol", filter: Filter<Type>.make({ $0 is Protocol }))
 
+        ext.registerFilter("count", filter: count)
+
         return Stencil.Environment(extensions: [ext])
     }
+}
+
+private func count(_ value: Any?) -> Any? {
+    guard let array = value as? NSArray else {
+        return value
+    }
+
+    return array.count
 }
 
 private func upperFirstFilter(_ value: Any?) -> Any? {
