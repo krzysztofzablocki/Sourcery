@@ -20,17 +20,19 @@ internal class SourceryTemplate: Template {
         ext.registerFilter("hasPrefix", filter: stringContentFilter("hasPrefix", String.hasPrefix))
         ext.registerFilter("hasSuffix", filter: stringContentFilter("hasSuffix", String.hasSuffix))
 
-        ext.registerFilter("static", filter: Filter<Variable>.make({ $0.isStatic }))
         ext.registerFilter("instance", filter: Filter<Variable>.make({ !$0.isStatic }))
         ext.registerFilter("computed", filter: Filter<Variable>.make({ $0.isComputed && !$0.isStatic }))
         ext.registerFilter("stored", filter: Filter<Variable>.make({ !$0.isComputed && !$0.isStatic }))
 
         ext.registerFilter("enum", filter: Filter<Type>.make({ $0 is Enum }))
-        ext.registerFilter("class", filter: Filter<Type>.make({ $0 is Class }))
         ext.registerFilter("struct", filter: Filter<Type>.make({ $0 is Struct }))
         ext.registerFilter("protocol", filter: Filter<Type>.make({ $0 is Protocol }))
 
         ext.registerFilter("count", filter: count)
+
+        ext.registerFilter("initializer", filter: Filter<Method>.make({ $0.isInitializer }))
+        ext.registerFilter("class", filter: FilterOr<Type, Method>.make({ $0 is Class }, other: { $0.isClass }))
+        ext.registerFilter("static", filter: FilterOr<Variable, Method>.make({ $0.isStatic }, other: { $0.isStatic }))
 
         return Stencil.Environment(extensions: [ext])
     }
@@ -70,17 +72,37 @@ private struct Filter<T> {
         return { (any) throws -> Any? in
             switch any {
             case let type as T:
-                if filter(type) {
-                    return true
-                } else {
-                    return false
-                }
+                return filter(type)
 
             case let array as NSArray:
                 return array.flatMap { $0 as? T }.filter(filter)
 
             default:
-                return nil
+                return any
+            }
+        }
+    }
+}
+
+private struct FilterOr<T, Y> {
+    static func make(_ filter: @escaping (T) -> Bool, other: @escaping (Y) -> Bool) -> (Any?) throws -> Any? {
+        return { (any) throws -> Any? in
+            switch any {
+            case let type as T:
+                return filter(type)
+
+            case let type as Y:
+                return other(type)
+
+            case let array as NSArray:
+                if array.first is T {
+                    return array.flatMap { $0 as? T }.filter(filter)
+                } else {
+                    return array.flatMap { $0 as? Y }.filter(other)
+                }
+
+            default:
+                return any
             }
         }
     }

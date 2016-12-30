@@ -40,17 +40,27 @@ class Type: NSObject, AutoDiffable {
     /// All variables associated with this type, including those from parent or protocols
     /// sourcery: skipEquality, skipDescription
     var allVariables: [Variable] {
-        let allVariables = NSMutableOrderedSet()
-        allVariables.addObjects(from: variables)
-
-        _ = supertype.flatMap { allVariables.addObjects(from: $0.variables) }
-        inherits.values.forEach { allVariables.addObjects(from: $0.variables) }
-        implements.values.forEach { allVariables.addObjects(from: $0.variables) }
-
-        return Array(allVariables.array.flatMap { $0 as? Variable })
+        return flattenAll { $0.variables }
     }
 
-    /// All methods defined by this type
+    /// All methods associated with this type, including those from parent or protocols
+    /// sourcery: skipEquality, skipDescription
+    var allMethods: [Method] {
+        return flattenAll { $0.methods }
+    }
+
+    private func flattenAll<T>(extraction: (Type) -> [T]) -> [T] {
+        let all = NSMutableOrderedSet()
+        all.addObjects(from: extraction(self))
+
+        _ = supertype.flatMap { all.addObjects(from: extraction($0)) }
+        inherits.values.forEach { all.addObjects(from: extraction($0)) }
+        implements.values.forEach { all.addObjects(from: extraction($0)) }
+
+        return Array(all.array.flatMap { $0 as? T })
+    }
+
+    /// All methods defined by this type, excluding those from parent or protocols
     var methods: [Method]
 
     /// All initializers defined by this type
