@@ -24,6 +24,12 @@ class GeneratorSpec: QuickSpec {
                 Variable(name: "fooBar", typeName: "Int", isComputed: true)
             ]
 
+            complexType.methods = [
+                    Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: "Int")]),
+                    Method(selectorName: "foo2(some: Int)", parameters: [Method.Parameter(name: "some", typeName: "Float")], isStatic: true),
+                    Method(selectorName: "foo3(some: Int)", parameters: [Method.Parameter(name: "some", typeName: "Int")], isClass: true)
+            ]
+
             let types = [
                     fooType,
                     fooSubclassType,
@@ -116,6 +122,15 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{% for var in type.Complex.allVariables|static %}V{% endfor %}")).to(equal(""))
 
                     expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("3"))
+                }
+
+                it("can use filter on methods") {
+                    expect(generate("{% for method in type.Complex.allMethods|instance %}M{% endfor %}")).to(equal("M"))
+                    expect(generate("{% for method in type.Complex.allMethods|class %}M{% endfor %}")).to(equal("M"))
+                    expect(generate("{% for method in type.Complex.allMethods|static %}M{% endfor %}")).to(equal("M"))
+                    expect(generate("{% for method in type.Complex.allMethods|initializer %}{% endfor %}")).to(equal(""))
+
+                    expect(generate("{{ type.Complex.allMethods|count }}")).to(equal("3"))
                 }
 
                 it("generates type.TypeName") {
