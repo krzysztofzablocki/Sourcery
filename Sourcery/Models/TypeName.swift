@@ -29,11 +29,15 @@ extension Typed {
 }
 
 // sourcery: skipDescription
-final class TypeName: NSObject, AutoDiffable {
+final class TypeName: NSObject, AutoDiffable, NSCoding {
     let name: String
 
-    init(_ name: String) {
+    init(name: String) {
         self.name = name
+    }
+
+    convenience init(_ name: String) {
+        self.init(name: name)
     }
 
     /// sourcery: skipEquality
@@ -67,5 +71,18 @@ final class TypeName: NSObject, AutoDiffable {
 
     override var description: String {
         return name
+    }
+
+    // 
+    required init?(coder aDecoder: NSCoder) {
+
+        self.name = aDecoder.decode(forKey: "name")
+
+    }
+
+    func encode(with aCoder: NSCoder) {
+
+        aCoder.encode(self.name, forKey: "name")
+
     }
 }

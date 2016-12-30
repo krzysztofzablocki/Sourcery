@@ -6,7 +6,7 @@
 import Foundation
 
 /// Defines Swift Type
-class Type: NSObject, AutoDiffable {
+class Type: NSObject, AutoDiffable, NSCoding {
 
     /// All local typealiases
     var typealiases: [String: Typealias] {
@@ -192,5 +192,56 @@ class Type: NSObject, AutoDiffable {
         type.inherits.forEach { self.inherits[$0.key] = $0.value }
         type.implements.forEach { self.implements[$0.key] = $0.value }
         self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
+    }
+
+    //
+    required init?(coder aDecoder: NSCoder) {
+        self.based = aDecoder.decode(forKey: "based")
+        self.inherits = aDecoder.decode(forKey: "inherits")
+        self.implements = aDecoder.decode(forKey: "implements")
+
+        self.typealiases = aDecoder.decode(forKey: "typealiases")
+        self.isExtension = aDecoder.decodeBool(forKey: "isExtension")
+        self.accessLevel = aDecoder.decode(forKey: "accessLevel")
+        self.isGeneric = aDecoder.decodeBool(forKey: "isGeneric")
+        self.localName = aDecoder.decode(forKey: "localName")
+        self.variables = aDecoder.decode(forKey: "variables")
+        self.methods = aDecoder.decode(forKey: "methods")
+        self.annotations = aDecoder.decode(forKey: "annotations")
+        self.inheritedTypes = aDecoder.decode(forKey: "inheritedTypes")
+        self.containedTypes = aDecoder.decode(forKey: "containedTypes")
+        self.parentName = aDecoder.decode(forKey: "parentName") as String?
+        self.parent = aDecoder.decode(forKey: "parent") as Type?
+        self.supertype = aDecoder.decode(forKey: "supertype")
+        self.__parserData = aDecoder.decode(forKey: "__parserData")
+
+    }
+
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.based, forKey: "based")
+        aCoder.encode(self.inherits, forKey: "inherits")
+        aCoder.encode(self.implements, forKey: "implements")
+
+        aCoder.encode(self.typealiases, forKey: "typealiases")
+        aCoder.encode(self.isExtension, forKey: "isExtension")
+        aCoder.encode(self.accessLevel, forKey: "accessLevel")
+        aCoder.encode(self.isGeneric, forKey: "isGeneric")
+        aCoder.encode(self.localName, forKey: "localName")
+        aCoder.encode(self.variables, forKey: "variables")
+        aCoder.encode(self.methods, forKey: "methods")
+        aCoder.encode(self.annotations, forKey: "annotations")
+        aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
+        aCoder.encode(self.containedTypes, forKey: "containedTypes")
+        aCoder.encode(self.parentName, forKey: "parentName")
+        aCoder.encode(self.parent, forKey: "parent")
+        aCoder.encode(self.supertype, forKey: "supertype")
+        aCoder.encode(self.__parserData, forKey: "__parserData")
+    }
+}
+
+extension Type {
+    var isClass: Bool {
+        let isNotClass = self is Struct || self is Enum || self is Protocol
+        return !isNotClass && !isExtension
     }
 }

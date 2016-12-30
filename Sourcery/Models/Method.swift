@@ -3,9 +3,9 @@ import Foundation
 //typealias used to avoid types ambiguty in tests
 typealias SourceryMethod = Method
 
-final class Method: NSObject, AutoDiffable {
+final class Method: NSObject, AutoDiffable, NSCoding {
 
-    class Parameter: NSObject, AutoDiffable, Typed {
+    final class Parameter: NSObject, AutoDiffable, Typed, NSCoding {
         /// Parameter external name
         var argumentLabel: String
 
@@ -23,7 +23,29 @@ final class Method: NSObject, AutoDiffable {
             self.argumentLabel = argumentLabel ?? name
             self.name = name
         }
+
+        //
+
+        required init?(coder aDecoder: NSCoder) {
+
+            self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
+            self.name = aDecoder.decode(forKey: "name")
+            self.typeName = aDecoder.decode(forKey: "typeName")
+            self.type = aDecoder.decode(forKey: "type")
+
+        }
+
+        func encode(with aCoder: NSCoder) {
+
+            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+
+        }
     }
+
+    /// Method name including arguments names, i.e. `foo(bar:)`
+    let selectorName: String
 
     /// All method parameters
     var parameters: [Parameter]
@@ -32,9 +54,6 @@ final class Method: NSObject, AutoDiffable {
     var shortName: String {
         return selectorName.range(of: "(").map({ selectorName.substring(to: $0.lowerBound) }) ?? selectorName
     }
-
-    /// Method name including arguments names, i.e. `foo(bar:)`
-    let selectorName: String
 
     /// Name of the return type
     var returnTypeName: TypeName
@@ -100,4 +119,34 @@ final class Method: NSObject, AutoDiffable {
         self.annotations = annotations
     }
 
+    //
+    required init?(coder aDecoder: NSCoder) {
+
+        self.selectorName = aDecoder.decode(forKey: "selectorName")
+        self.parameters = aDecoder.decode(forKey: "parameters")
+        self.returnTypeName = aDecoder.decode(forKey: "returnTypeName")
+        self.returnType = aDecoder.decode(forKey: "returnType")
+        self.accessLevel = aDecoder.decode(forKey: "accessLevel")
+        self.isStatic = aDecoder.decodeBool(forKey: "isStatic")
+        self.isClass = aDecoder.decodeBool(forKey: "isClass")
+        self.isFailableInitializer = aDecoder.decodeBool(forKey: "isFailableInitializer")
+        self.annotations = aDecoder.decode(forKey: "annotations")
+        self.__parserData = aDecoder.decode(forKey: "__parserData")
+
+    }
+
+    func encode(with aCoder: NSCoder) {
+
+        aCoder.encode(self.selectorName, forKey: "selectorName")
+        aCoder.encode(self.parameters, forKey: "parameters")
+        aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
+        aCoder.encode(self.returnType, forKey: "returnType")
+        aCoder.encode(self.accessLevel, forKey: "accessLevel")
+        aCoder.encode(self.isStatic, forKey: "isStatic")
+        aCoder.encode(self.isClass, forKey: "isClass")
+        aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
+        aCoder.encode(self.annotations, forKey: "annotations")
+        aCoder.encode(self.__parserData, forKey: "__parserData")
+
+    }
 }

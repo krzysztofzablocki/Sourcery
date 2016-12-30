@@ -1,0 +1,11 @@
+<% for type in types.classes { %>
+    extension <%= type.name %>: Equatable {}
+
+    <% if type.annotations["showComment"] != nil { %> // <%= type.name %> has Annotations <% } %>
+
+        func == (lhs: <%= type.name %>, rhs: <%= type.name %>) -> Bool {
+    <% for variable in type.variables { %> if lhs.<%= variable.name %> != rhs.<%= variable.name %> { return false }
+        <% } %>
+        return true
+    }
+<% } %>

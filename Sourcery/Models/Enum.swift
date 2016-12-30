@@ -6,8 +6,8 @@
 import Foundation
 
 final class Enum: Type {
-    final class Case: NSObject, AutoDiffable {
-        final class AssociatedValue: NSObject, AutoDiffable, Typed {
+    final class Case: NSObject, AutoDiffable, NSCoding {
+        final class AssociatedValue: NSObject, AutoDiffable, Typed, NSCoding {
             let name: String?
             let typeName: TypeName
 
@@ -19,6 +19,25 @@ final class Enum: Type {
                 self.name = name
                 self.typeName = TypeName(typeName)
                 self.type = type
+            }
+
+            // 
+
+            //
+            required init?(coder aDecoder: NSCoder) {
+
+                self.name = aDecoder.decode(forKey: "name")
+                self.typeName = aDecoder.decode(forKey: "typeName")
+                self.type = aDecoder.decode(forKey: "type")
+
+            }
+
+            func encode(with aCoder: NSCoder) {
+
+                aCoder.encode(self.name, forKey: "name")
+                aCoder.encode(self.typeName, forKey: "typeName")
+                aCoder.encode(self.type, forKey: "type")
+
             }
         }
 
@@ -39,6 +58,26 @@ final class Enum: Type {
             self.associatedValues = associatedValues
             self.annotations = annotations
         }
+
+        //
+        required init?(coder aDecoder: NSCoder) {
+
+            self.name = aDecoder.decode(forKey: "name")
+            self.rawValue = aDecoder.decode(forKey: "rawValue")
+            self.associatedValues = aDecoder.decode(forKey: "associatedValues")
+            self.annotations = aDecoder.decode(forKey: "annotations")
+
+        }
+
+        func encode(with aCoder: NSCoder) {
+
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.rawValue, forKey: "rawValue")
+            aCoder.encode(self.associatedValues, forKey: "associatedValues")
+            aCoder.encode(self.annotations, forKey: "annotations")
+
+        }
+
     }
 
     /// sourcery: skipDescription
@@ -105,4 +144,20 @@ final class Enum: Type {
         }
     }
 
+    //
+    required init?(coder aDecoder: NSCoder) {
+
+        self.cases = aDecoder.decode(forKey: "cases")
+        self.rawType = aDecoder.decode(forKey: "rawType")
+        self.hasRawType = aDecoder.decodeBool(forKey: "hasRawType")
+
+        super.init(coder: aDecoder)
+    }
+
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.cases, forKey: "cases")
+        aCoder.encode(self.rawType, forKey: "rawType")
+        aCoder.encode(self.hasRawType, forKey: "hasRawType")
+    }
 }

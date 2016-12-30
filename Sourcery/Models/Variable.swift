@@ -7,7 +7,7 @@ import Foundation
 
 /// Defines a variable
 
-final class Variable: NSObject, AutoDiffable, Typed {
+final class Variable: NSObject, AutoDiffable, Typed, NSCoding {
     /// Variable name
     let name: String
 
@@ -51,5 +51,34 @@ final class Variable: NSObject, AutoDiffable, Typed {
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
         self.annotations = annotations
+    }
+
+    //
+    required init?(coder aDecoder: NSCoder) {
+
+        self.name = aDecoder.decode(forKey: "name")
+        self.typeName = aDecoder.decode(forKey: "typeName")
+        self.type = aDecoder.decode(forKey: "type")
+        self.isComputed = aDecoder.decodeBool(forKey: "isComputed")
+        self.isStatic = aDecoder.decodeBool(forKey: "isStatic")
+        self.readAccess = aDecoder.decode(forKey: "readAccess")
+        self.writeAccess = aDecoder.decode(forKey: "writeAccess")
+        self.annotations = aDecoder.decode(forKey: "annotations")
+        self.__parserData = aDecoder.decode(forKey: "__parserData")
+
+    }
+
+    func encode(with aCoder: NSCoder) {
+
+        aCoder.encode(self.name, forKey: "name")
+        aCoder.encode(self.typeName, forKey: "typeName")
+        aCoder.encode(self.type, forKey: "type")
+        aCoder.encode(self.isComputed, forKey: "isComputed")
+        aCoder.encode(self.isStatic, forKey: "isStatic")
+        aCoder.encode(self.readAccess, forKey: "readAccess")
+        aCoder.encode(self.writeAccess, forKey: "writeAccess")
+        aCoder.encode(self.annotations, forKey: "annotations")
+        aCoder.encode(self.__parserData, forKey: "__parserData")
+
     }
 }

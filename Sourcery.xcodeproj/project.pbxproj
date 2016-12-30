@@ -19,6 +19,27 @@
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
 		985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */; };
+		C894A1A61E1930990098327C /* Coding.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1A51E1930990098327C /* Coding.generated.swift */; };
+		C894A1AD1E1931500098327C /* GenerationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AC1E1931500098327C /* GenerationContext.swift */; };
+		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
+		C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */; };
+		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
+		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
+		C894A1B71E19381A0098327C /* Coding.stencil in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B61E19381A0098327C /* Coding.stencil */; };
+		C894A1B91E1989D30098327C /* AccessLevel.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F541DFDCC1A0088B2F6 /* AccessLevel.swift */; };
+		C894A1BA1E1989D30098327C /* Enum.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F551DFDCC1A0088B2F6 /* Enum.swift */; };
+		C894A1BB1E1989D30098327C /* Protocol.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F561DFDCC1A0088B2F6 /* Protocol.swift */; };
+		C894A1BC1E1989D30098327C /* Struct.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F571DFDCC1A0088B2F6 /* Struct.swift */; };
+		C894A1BD1E1989D30098327C /* Class.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 09C6B0D11E11BA2500246CDF /* Class.swift */; };
+		C894A1BE1E1989D30098327C /* Type.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F581DFDCC1A0088B2F6 /* Type.swift */; };
+		C894A1BF1E1989D30098327C /* Typealias.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 097E11ED1E05E76900FEB751 /* Typealias.swift */; };
+		C894A1C01E1989D30098327C /* Variable.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F591DFDCC1A0088B2F6 /* Variable.swift */; };
+		C894A1C11E1989D30098327C /* Diffable.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD666A991E0BEF4F0045D31A /* Diffable.swift */; };
+		C894A1C21E1989D30098327C /* Method.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 0967DA671E0488170084F702 /* Method.swift */; };
+		C894A1C31E1989D30098327C /* TypeName.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */; };
+		C894A1C41E1989DA0098327C /* SwiftTemplate+Runtime.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */; };
+		C894A1C51E1989DA0098327C /* GenerationContext.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1AC1E1931500098327C /* GenerationContext.swift */; };
+		C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1A51E1930990098327C /* Coding.generated.swift */; };
 		CD0020EB1D8844B1001CB583 /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		CD475D6F1DE9B98B009AD8B0 /* Result in Resources */ = {isa = PBXBuildFile; fileRef = CD475D6E1DE9B98B009AD8B0 /* Result */; };
 		CD53EE661D897C1F00F5886C /* Source in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE651D897C1F00F5886C /* Source */; };
@@ -75,6 +96,30 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		C894A1B81E1989C00098327C /* SwiftTemplates */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = SwiftTemplateRuntime;
+			dstSubfolderSpec = 7;
+			files = (
+				C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */,
+				C894A1C41E1989DA0098327C /* SwiftTemplate+Runtime.swift in SwiftTemplates */,
+				C894A1C51E1989DA0098327C /* GenerationContext.swift in SwiftTemplates */,
+				C894A1B91E1989D30098327C /* AccessLevel.swift in SwiftTemplates */,
+				C894A1BA1E1989D30098327C /* Enum.swift in SwiftTemplates */,
+				C894A1BB1E1989D30098327C /* Protocol.swift in SwiftTemplates */,
+				C894A1BC1E1989D30098327C /* Struct.swift in SwiftTemplates */,
+				C894A1BD1E1989D30098327C /* Class.swift in SwiftTemplates */,
+				C894A1BE1E1989D30098327C /* Type.swift in SwiftTemplates */,
+				C894A1BF1E1989D30098327C /* Typealias.swift in SwiftTemplates */,
+				C894A1C01E1989D30098327C /* Variable.swift in SwiftTemplates */,
+				C894A1C11E1989D30098327C /* Diffable.swift in SwiftTemplates */,
+				C894A1C21E1989D30098327C /* Method.swift in SwiftTemplates */,
+				C894A1C31E1989D30098327C /* TypeName.swift in SwiftTemplates */,
+			);
+			name = SwiftTemplates;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CD754CB41D85431F0082B512 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -103,6 +148,13 @@
 		4E26A60E38FEA181642B97B4 /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
 		67BC066E18D9BE38229EEFA2 /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C894A1A51E1930990098327C /* Coding.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coding.generated.swift; sourceTree = "<group>"; };
+		C894A1AC1E1931500098327C /* GenerationContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerationContext.swift; sourceTree = "<group>"; };
+		C894A1AE1E19326C0098327C /* SwiftTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplate.swift; sourceTree = "<group>"; };
+		C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftTemplate+Runtime.swift"; sourceTree = "<group>"; };
+		C894A1B21E19328E0098327C /* SwiftTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SwiftTemplates; sourceTree = "<group>"; };
+		C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplateSpecs.swift; sourceTree = "<group>"; };
+		C894A1B61E19381A0098327C /* Coding.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Coding.stencil; sourceTree = "<group>"; };
 		CD475D6E1DE9B98B009AD8B0 /* Result */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Result; sourceTree = "<group>"; };
 		CD53EE651D897C1F00F5886C /* Source */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Source; sourceTree = "<group>"; };
 		CD53EE671D897D2900F5886C /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
@@ -193,6 +245,16 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		C894A1AB1E1931500098327C /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				C894A1AE1E19326C0098327C /* SwiftTemplate.swift */,
+				C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */,
+				C894A1AC1E1931500098327C /* GenerationContext.swift */,
+			);
+			path = Swift;
+			sourceTree = "<group>";
+		};
 		CD754C821D853F000082B512 = {
 			isa = PBXGroup;
 			children = (
@@ -266,6 +328,7 @@
 		CD812F601DFDCD900088B2F6 /* CodeGenerated */ = {
 			isa = PBXGroup;
 			children = (
+				C894A1A51E1930990098327C /* Coding.generated.swift */,
 				CD666A9B1E0BF0A10045D31A /* Diffable.generated.swift */,
 				CD812F611DFDCDA10088B2F6 /* Equality.generated.swift */,
 				CD812F661DFDD3990088B2F6 /* Description.generated.swift */,
@@ -276,6 +339,7 @@
 		CD812F631DFDCED40088B2F6 /* Templates */ = {
 			isa = PBXGroup;
 			children = (
+				C894A1B61E19381A0098327C /* Coding.stencil */,
 				CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */,
 				CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */,
 				097E11F81E0F01BD00FEB751 /* Diffable.stencil */,
@@ -315,6 +379,7 @@
 		E291D36844A70DF851656DE8 /* Stub */ = {
 			isa = PBXGroup;
 			children = (
+				C894A1B21E19328E0098327C /* SwiftTemplates */,
 				CDE812EE1E112CC700F1FF97 /* Performance-Code */,
 				CD475D6E1DE9B98B009AD8B0 /* Result */,
 				CD53EE671D897D2900F5886C /* Templates */,
@@ -379,6 +444,7 @@
 		E291DC8AFD88340E1355E531 /* Generating */ = {
 			isa = PBXGroup;
 			children = (
+				C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */,
 				E291D0D4A5AF091CD15550FD /* StencilTemplateSpec.swift */,
 			);
 			path = Generating;
@@ -387,6 +453,7 @@
 		E291DC91111A3AB71706291C /* Template */ = {
 			isa = PBXGroup;
 			children = (
+				C894A1AB1E1931500098327C /* Swift */,
 				E291D9983C09B59A00BC9213 /* Stencil */,
 				E291DC7064748459115A1660 /* Template.swift */,
 			);
@@ -416,6 +483,7 @@
 				C7CDE8D445443BF7F4CF3AEB /* [CP] Embed Pods Frameworks */,
 				A7A107008E6572DA90B257F6 /* [CP] Copy Pods Resources */,
 				CD754CB41D85431F0082B512 /* Embed Frameworks */,
+				C894A1B81E1989C00098327C /* SwiftTemplates */,
 			);
 			buildRules = (
 			);
@@ -495,6 +563,7 @@
 			files = (
 				CDBD14201DFFC2CC00FF9F21 /* Equality.stencil in Resources */,
 				CDBD141F1DFFC2CC00FF9F21 /* Description.stencil in Resources */,
+				C894A1B71E19381A0098327C /* Coding.stencil in Resources */,
 				097E11F91E0F01BD00FEB751 /* Diffable.stencil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,6 +575,7 @@
 				CD53EE681D897D2900F5886C /* Templates in Resources */,
 				CD475D6F1DE9B98B009AD8B0 /* Result in Resources */,
 				CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */,
+				C894A1B31E19328E0098327C /* SwiftTemplates in Resources */,
 				CD53EE661D897C1F00F5886C /* Source in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -632,13 +702,17 @@
 				CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */,
 				09C6B0D21E11BA2500246CDF /* Class.swift in Sources */,
 				CD812F5D1DFDCC1A0088B2F6 /* Struct.swift in Sources */,
+				C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */,
 				CD812F621DFDCDA10088B2F6 /* Equality.generated.swift in Sources */,
 				E291D8C0F0FE5B3DF91025CC /* Generator.swift in Sources */,
 				097E11F31E09EB6900FEB751 /* StencilTemplate.swift in Sources */,
+				C894A1AD1E1931500098327C /* GenerationContext.swift in Sources */,
+				C894A1A61E1930990098327C /* Coding.generated.swift in Sources */,
 				CD812F5A1DFDCC1A0088B2F6 /* AccessLevel.swift in Sources */,
 				E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */,
 				CD812F5E1DFDCC1A0088B2F6 /* Type.swift in Sources */,
 				CD812F5F1DFDCC1A0088B2F6 /* Variable.swift in Sources */,
+				C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */,
 				CD666A9C1E0BF0A10045D31A /* Diffable.generated.swift in Sources */,
 				097E11EE1E05E76900FEB751 /* Typealias.swift in Sources */,
 				CD812F671DFDD3990088B2F6 /* Description.generated.swift in Sources */,
@@ -669,6 +743,7 @@
 				09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */,
 				E291DC5F2343BF3DE3334986 /* Stubs.swift in Sources */,
 				097E11F01E05E78600FEB751 /* TypealiasSpec.swift in Sources */,
+				C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */,
 				E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */,
 				E291DCD43D41B7F8D7AAF7B9 /* DiffableSpec.swift in Sources */,
 				E291D90EC943AC5CBA99899A /* ParserComposerSpec.swift in Sources */,
