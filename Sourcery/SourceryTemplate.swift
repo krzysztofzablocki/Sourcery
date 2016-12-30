@@ -20,7 +20,6 @@ internal class SourceryTemplate: Template {
         ext.registerFilter("hasPrefix", filter: stringContentFilter("hasPrefix", String.hasPrefix))
         ext.registerFilter("hasSuffix", filter: stringContentFilter("hasSuffix", String.hasSuffix))
 
-        ext.registerFilter("instance", filter: Filter<Variable>.make({ !$0.isStatic }))
         ext.registerFilter("computed", filter: Filter<Variable>.make({ $0.isComputed && !$0.isStatic }))
         ext.registerFilter("stored", filter: Filter<Variable>.make({ !$0.isComputed && !$0.isStatic }))
 
@@ -33,6 +32,7 @@ internal class SourceryTemplate: Template {
         ext.registerFilter("initializer", filter: Filter<Method>.make({ $0.isInitializer }))
         ext.registerFilter("class", filter: FilterOr<Type, Method>.make({ $0 is Class }, other: { $0.isClass }))
         ext.registerFilter("static", filter: FilterOr<Variable, Method>.make({ $0.isStatic }, other: { $0.isStatic }))
+        ext.registerFilter("instance", filter: FilterOr<Variable, Method>.make({ !$0.isStatic }, other: { !($0.isStatic || $0.isClass) }))
 
         return Stencil.Environment(extensions: [ext])
     }
@@ -95,7 +95,7 @@ private struct FilterOr<T, Y> {
                 return other(type)
 
             case let array as NSArray:
-                if array.first is T {
+                if let _ = array.firstObject as? T {
                     return array.flatMap { $0 as? T }.filter(filter)
                 } else {
                     return array.flatMap { $0 as? Y }.filter(other)
