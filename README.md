@@ -177,7 +177,8 @@ For each type you can access following properties:
 - `variables` <- list of all variables defined in this type, excluding variables from protocols or inheritance
   - if you want to access all available variables, including those from inherited / protocol, then use `allVariables`
   - if you want to accces computed, stored, instance, or static variables, you can do so using our [custom filters](#custom-stencil-tags-and-filter) on both `variables` and `allVariables`
-- `methods` <- list of all methods
+- `methods` <- list of all methods defined in this type, excluding those from protocols or inheritance
+- `allMethods` <- same principles as in `allVariables`
 - `initializers` <- list of all initializers
 - `inherits.BaseClass` => info whether type inherits from known base class
 - `implements.Protocol` => info whether type implements known protocol
@@ -203,6 +204,8 @@ For each type you can access following properties:
 
 - `name` <- name
 - `typeName` <- name of type of associated value
+- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
+- `isOptional` <- whether is optional
 
 **Variable** provides:
 
@@ -249,6 +252,7 @@ For each type you can access following properties:
 - `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
 - `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
 - `static`, `instance`, `computed`, `stored` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`
+- `static`, `instance`, `class`, `initializer` - can be used on Method[s] as filter e.g. `{% for method in allMethods|instance %}`
 - `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter
 - `count` - can be used to get count of filtered array
 -

@@ -9,10 +9,11 @@
 - Type `inherits` and `implements` now allow you to access full type information, not just name
 - Type `allVariables` will now include all variables, including those inherited from supertype and known protocols.
 - Type `allMethods` will now include all methods, including those inherited from supertype and known protocols.
+- AssociatedValue exposes `unwrappedTypeName`, `isOptional`
 - New Available stencil filters:
   - `static`, `instance`, `computed`, `stored` for Variables
   - `enum`, `class`, `struct`, `protocol` for Types
-  - `class`, `initializer`, `static` for Methods
+  - `class`, `initializer`, `static`, `instance` for Methods
   - `count` for Arrays, this is used when chaining arrays with filters where Stencil wouldn't allow us to do `.count`, e.g. `{{ variables|instance|count }}`
 - Now you can avoid inferring unknown protocols as enum raw types by adding conformance in extension (instead of `enum Foo: Equatable {}` do `enum Foo {}; extension Foo: Equatable {}`)
 
