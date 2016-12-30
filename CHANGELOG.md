@@ -1,9 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
-
-### New Features
+## 0.5.0
 - You can now pass arbitrary values to templates with `--args` argument.
 - Added `open` access level
 - Type `inherits` and `implements` now allow you to access full type information, not just name
