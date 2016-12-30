@@ -11,6 +11,7 @@
 - New Available stencil filters:
   - `static`, `instance`, `computed`, `stored` for Variables
   - `enum`, `class`, `struct`, `protocol` for Types
+  - `count` for Arrays, this is used when chaining arrays with filters where Stencil wouldn't allow us to do `.count`, e.g. `{{ variables|instance|count }}`
 - Now you can avoid inferring unknown protocols as enum raw types by adding conformance in extension (instead of `enum Foo: Equatable {}` do `enum Foo {}; extension Foo: Equatable {}`)
 
 ### Internal changes

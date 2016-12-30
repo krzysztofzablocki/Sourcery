@@ -250,7 +250,8 @@ For each type you can access following properties:
 - `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
 - `static`, `instance`, `computed`, `stored` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`
 - `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter
-
+- `count` - can be used to get count of filtered array
+-
 ### Using Source Annotations
 
 Sourcery supports annotating your classes and variables with special annotations, similar how attributes work in Rust / Java
