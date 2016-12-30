@@ -99,13 +99,13 @@ enum Generator {
             }
 
             baseType.based.keys.forEach {  type.based[$0] = $0 }
-            baseType.inherits.keys.forEach {  type.inherits[$0] = $0 }
-            baseType.implements.keys.forEach {  type.implements[$0] = $0 }
+            baseType.inherits.forEach {  type.inherits[$0.key] = $0.value }
+            baseType.implements.forEach {  type.implements[$0.key] = $0.value }
 
             if baseType is Class {
-                type.inherits[name] = name
+                type.inherits[name] = baseType
             } else if baseType is Protocol {
-                type.implements[name] = name
+                type.implements[name] = baseType
             }
         }
     }

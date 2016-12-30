@@ -38,7 +38,7 @@ class GeneratorSpec: QuickSpec {
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Class(name: "ProjectClass", accessLevel: .none),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
-                    Protocol(name: "KnownProtocol"),
+                    Protocol(name: "KnownProtocol", variables: [Variable(name: "protocolVariable", typeName: "Int", isComputed: true)]),
                     Protocol(name: "AlternativeProtocol"),
                     Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
             ]
@@ -103,6 +103,17 @@ class GeneratorSpec: QuickSpec {
 
                 it("can access supertype") {
                     expect(generate("{{ type.FooSubclass.supertype.name }}")).to(equal("Foo"))
+                }
+
+                it("counts all variables including implements, inherits") {
+                    expect(generate("{{ type.ProjectFooSubclass.allVariables.count }}")).to(equal("2"))
+                }
+
+                it("can use filter on variables") {
+                    expect(generate("{% for var in type.Complex.allVariables|computed %}V{% endfor %}")).to(equal("V"))
+                    expect(generate("{% for var in type.Complex.allVariables|stored %}V{% endfor %}")).to(equal("VV"))
+                    expect(generate("{% for var in type.Complex.allVariables|instance %}V{% endfor %}")).to(equal("VVV"))
+                    expect(generate("{% for var in type.Complex.allVariables|static %}V{% endfor %}")).to(equal(""))
                 }
 
                 it("generates type.TypeName") {

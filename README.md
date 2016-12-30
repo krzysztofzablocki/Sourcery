@@ -174,10 +174,9 @@ For each type you can access following properties:
 - `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`, it will also provide `extension` for types that are unknown to us(e.g. 3rd party or objc), but had extension in the project
 - `isGeneric` <- info whether the type is generic
 - `localName` <- name within parent scope
-- `staticVariables` <- list of static variables
-- `variables` <- list of instance variables
-- `computedVariables` <- list of computed instance variables
-- `storedVariables` <- list of computed stored variables
+- `variables` <- list of all variables defined in this type, excluding variables from protocols or inheritance
+  - if you want to access all available variables, including those from inherited / protocol, then use `allVariables`
+  - if you want to accces computed, stored, instance, or static variables, you can do so using our [custom filters](#custom-stencil-tags-and-filter) on both `variables` and `allVariables`
 - `methods` <- list of all methods
 - `initializers` <- list of all initializers
 - `inherits.BaseClass` => info whether type inherits from known base class
@@ -249,6 +248,8 @@ For each type you can access following properties:
 - `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
 - `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
 - `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
+- `static`, `instance`, `computed`, `stored` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`
+- `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter
 
 ### Using Source Annotations
 

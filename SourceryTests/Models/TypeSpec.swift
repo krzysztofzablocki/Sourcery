@@ -9,11 +9,14 @@ class TypeSpec: QuickSpec {
             let staticVariable = Variable(name: "staticVar", typeName: "Int", isStatic: true)
             let computedVariable = Variable(name: "variable", typeName: "Int", isComputed: true)
             let storedVariable = Variable(name: "otherVariable", typeName: "Int", isComputed: false)
+            let supertypeVariable = Variable(name: "supertypeVariable", typeName: "Int", isComputed: false)
             let initializer = Method(selectorName: "init()")
             let parentType = Type(name: "Parent")
+            let superType = Type(name: "Supertype", variables: [supertypeVariable])
 
             beforeEach {
                 sut = Type(name: "Foo", parent: parentType, variables: [storedVariable, computedVariable, staticVariable], methods: [initializer], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])
+                sut?.supertype = superType
             }
 
             afterEach {
@@ -46,6 +49,10 @@ class TypeSpec: QuickSpec {
 
             it("filters stored variables") {
                 expect(sut?.storedVariables).to(equal([storedVariable]))
+            }
+
+            it("filters instance variables") {
+                expect(sut?.instanceVariables).to(equal([storedVariable, computedVariable]))
             }
 
             it("filters initializers") {
@@ -120,11 +127,11 @@ class TypeSpec: QuickSpec {
 
                 it("adds implemented types") {
                     let type = Type(name: "Foo", isExtension: true)
-                    type.implements = ["New": "New"]
+                    type.implements = ["New": Protocol(name: "New")]
 
                     sut?.extend(type)
 
-                    expect(sut?.implements).to(equal(["New": "New"]))
+                    expect(sut?.implements).to(equal(["New": Protocol(name: "New")]))
                 }
             }
 

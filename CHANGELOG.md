@@ -6,6 +6,11 @@
 ### New Features
 - You can now pass arbitrary values to templates with `--args` argument.
 - Added `open` access level
+- Type `inherits` and `implements` now allow you to access full type information, not just name
+- Type `allVariables` will now include all variables, including those inherited from supertype and known protocols.
+- New Available stencil filters:
+  - `static`, `instance`, `computed`, `stored` for Variables
+  - `enum`, `class`, `struct`, `protocol` for Types
 - Now you can avoid inferring unknown protocols as enum raw types by adding conformance in extension (instead of `enum Foo: Equatable {}` do `enum Foo {}; extension Foo: Equatable {}`)
 
 ### Internal changes
