@@ -3,10 +3,10 @@ import Nimble
 import Stencil
 @testable import Sourcery
 
-class SourceryTemplateSpec: QuickSpec {
+class StencilTemplateSpec: QuickSpec {
     override func spec() {
 
-        describe("SourceryTemplate") {
+        describe("StencilTemplate") {
 
             func generate(_ template: String) -> String {
                 return (try? Generator.generate([], template: StencilTemplate(templateString: template))) ?? ""
