@@ -3,6 +3,9 @@
 ---
 ## Master
 
+### New Features
+- Variables with default initializer are now supported, e.g. `var variable = Type(...)`
+
 ### Internal Changes
 - Performed significant refactoring and simplified mutations in parsers
 
