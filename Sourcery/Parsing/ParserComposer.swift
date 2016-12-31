@@ -56,16 +56,20 @@ struct ParserComposer {
             unique[type.name] = current
         }
 
-        let resolveType = { (unwrappedTypeName: String, containingType: Type?, typealiases: [String: Typealias]) in
-            return self.typeName(for: unwrappedTypeName, containingType: containingType, typealiases: typealiases)
-                    .flatMap { unique[$0] } ?? unique[unwrappedTypeName]
+        let resolveType = { (typeName: TypeName, containingType: Type?, typealiases: [String: Typealias]) in
+            return self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
+                    .flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
         }
 
         for (_, type) in unique {
             // find actual variables types
             type.variables.forEach {
-                $0.type = resolveType($0.unwrappedTypeName, type, typealiases)
+                $0.type = resolveType($0.typeName, type, typealiases)
             }
+
+            type.typealiases.forEach({ (_, alias) in
+                alias.type = resolveType(alias.typeName, type, typealiases)
+            })
 
             // find actual methods parameters types and their argument labels
             for method in type.methods {
@@ -85,11 +89,11 @@ struct ParserComposer {
                         parameter.argumentLabel = argumentLabels[index]
                     }
 
-                    parameter.type = resolveType(parameter.unwrappedTypeName, type, typealiases)
+                    parameter.type = resolveType(parameter.typeName, type, typealiases)
                 }
 
                 if !method.returnTypeName.isVoid {
-                    method.returnType = resolveType(method.unwrappedReturnTypeName, type, typealiases)
+                    method.returnType = resolveType(method.returnTypeName, type, typealiases)
 
                     if method.isInitializer {
                         method.returnTypeName = TypeName("")
@@ -101,7 +105,7 @@ struct ParserComposer {
             if let enumeration = type as? Enum, enumeration.rawType == nil {
                 enumeration.cases.forEach { enumCase in
                     enumCase.associatedValues.forEach { associatedValue in
-                        associatedValue.type = resolveType(associatedValue.unwrappedTypeName, type, typealiases)
+                        associatedValue.type = resolveType(associatedValue.typeName, type, typealiases)
                     }
                 }
 
@@ -141,7 +145,7 @@ struct ParserComposer {
 
             var aliasNamesToReplace = [alias.name]
             var finalAlias = alias
-            while let targetAlias = typealiasesByNames[finalAlias.typeName] {
+            while let targetAlias = typealiasesByNames[finalAlias.typeName.name] {
                 aliasNamesToReplace.append(targetAlias.name)
                 finalAlias = targetAlias
             }
@@ -156,12 +160,12 @@ struct ParserComposer {
     private func typeName(for alias: String, containingType: Type? = nil, typealiases: [String: Typealias]) -> String? {
 
         // first try global typealiases
-        if let name = typealiases[alias]?.typeName {
+        if let name = typealiases[alias]?.typeName.name {
             return name
         }
 
         guard let containingType = containingType,
-              let possibleTypeName = typealiases["\(containingType.name).\(alias)"]?.typeName else {
+              let possibleTypeName = typealiases["\(containingType.name).\(alias)"]?.typeName.name else {
             return nil
         }
 

@@ -136,6 +136,14 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given typealiases") {
 
+                    it("sets typealias type") {
+                        let types = parse("class Bar {}; class Foo { typealias BarAlias = Bar }")
+                        let bar = types.first
+                        let foo = types.last
+
+                        expect(foo?.typealiases["BarAlias"]?.type).to(equal(bar))
+                    }
+
                     it("replaces variable alias with actual type via 3 typealiases") {
                         let expectedVariable = Variable(name: "foo", typeName: "FinalAlias")
                         expectedVariable.type = Type(name: "Foo")
