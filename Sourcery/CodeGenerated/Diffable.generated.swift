@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.9 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Class {
@@ -101,6 +101,32 @@ extension Struct {
         return results
     }
 }
+extension TupleType: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? TupleType else {
+            results.append("Incorrect type <expected: TupleType, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "elements").trackDifference(actual: self.elements, expected: rhs.elements))
+
+        return results
+    }
+}
+extension TupleType.Element: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? TupleType.Element else {
+            results.append("Incorrect type <expected: TupleType.Element, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: rhs.typeName))
+
+        return results
+    }
+}
 extension Type: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -131,6 +157,7 @@ extension TypeName: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: rhs.tuple))
 
         return results
     }

@@ -64,7 +64,13 @@ struct ParserComposer {
         for (_, type) in unique {
             // find actual variables types
             type.variables.forEach {
-                $0.type = resolveType($0.typeName, type, typealiases)
+                if let tuple = $0.typeName.tuple {
+                    tuple.elements.forEach({
+                        $0.type = resolveType($0.typeName, type, typealiases)
+                    })
+                } else {
+                    $0.type = resolveType($0.typeName, type, typealiases)
+                }
             }
 
             type.typealiases.forEach({ (_, alias) in

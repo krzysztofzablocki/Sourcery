@@ -51,6 +51,31 @@ class VariableSpec: QuickSpec {
                 expect(TypeName("( a i:Int , _ s :  String ,\n  \t Int, Dictionary <  String, Float >  )").name).to(equal("(a i:Int,_ s:String,Int,Dictionary<String,Float>)"))
             }
 
+            describe("tuple type") {
+                it("reports tuple correctly") {
+                    expect(TypeName("(Int, Int)").isTuple).to(beTrue())
+                    expect(TypeName("(Int)").isTuple).to(beFalse())
+                    expect(TypeName("Int").isTuple).to(beFalse())
+                    expect(TypeName("(Int) -> (Int)").isTuple).to(beFalse())
+                    expect(TypeName("(Int, Int) -> (Int)").isTuple).to(beFalse())
+                    expect(TypeName("(Int, (Int, Int) -> (Int))").isTuple).to(beTrue())
+                    expect(TypeName("(Int, (Int, Int))").isTuple).to(beTrue())
+                    expect(TypeName("(Int, (Int) -> (Int -> Int))").isTuple).to(beTrue())
+                }
+
+                it("extracts elements properly") {
+                    expect(TypeName("(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))").tuple?.elements).to(equal([
+                        TupleType.Element(name: "a", typeName: TypeName("Int")),
+                        TupleType.Element(name: "b", typeName: TypeName("Int")),
+                        TupleType.Element(name: "2", typeName: TypeName("String")),
+                        TupleType.Element(name: "3", typeName: TypeName("Float")),
+                        TupleType.Element(name: "literal", typeName: TypeName("[String: [String: Int]]")),
+                        TupleType.Element(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>")),
+                        TupleType.Element(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)"))
+                        ]))
+                }
+            }
+
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {

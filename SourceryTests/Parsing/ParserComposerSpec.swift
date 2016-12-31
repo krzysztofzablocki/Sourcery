@@ -167,6 +167,21 @@ class ParserComposerSpec: QuickSpec {
                         expect(variable?.type).to(equal(expectedVariable.type))
                     }
 
+                    context("given variable of tuple type") {
+                        it("replaces tuple elements alias types with actual types") {
+                            let expectedVariable = Variable(name: "foo", typeName: "(GlobalAlias, Int)")
+                            let expectedTupleElement = expectedVariable.typeName.tuple?.elements.first
+                            expectedTupleElement?.type = Type(name: "Foo")
+
+                            let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: (GlobalAlias, Int) }").first
+                            let variable = type?.variables.first
+                            let tupleElement = variable?.typeName.tuple?.elements.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(tupleElement?.type).to(equal(expectedTupleElement?.type))
+                        }
+                    }
+
                     it("replaces variable optional alias type with actual type") {
                         let expectedVariable = Variable(name: "foo", typeName: "GlobalAlias?")
                         expectedVariable.type = Type(name: "Foo")

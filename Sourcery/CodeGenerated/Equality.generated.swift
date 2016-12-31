@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.9 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -61,6 +61,26 @@ extension Method.Parameter {
     }
 }
 
+extension TupleType {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elements != rhs.elements { return false }
+
+        return true
+    }
+}
+
+extension TupleType.Element {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleType.Element else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+
+        return true
+    }
+}
+
 extension Type {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
@@ -84,6 +104,7 @@ extension TypeName {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TypeName else { return false }
         if self.name != rhs.name { return false }
+        if self.tuple != rhs.tuple { return false }
 
         return true
     }

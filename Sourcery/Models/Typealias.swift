@@ -6,10 +6,11 @@ final class Typealias: NSObject, AutoDiffable, Typed {
 
     /// Target name
     let typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
     var type: Type?
 
-    // sourcery: skipEquality
-    // sourcery: skipDescription
+    // sourcery: skipEquality, skipDescription
     var parent: Type? {
         didSet {
             parentName = parent?.name
