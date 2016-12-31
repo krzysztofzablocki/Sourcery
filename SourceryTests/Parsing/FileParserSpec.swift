@@ -15,7 +15,7 @@ class FileParserSpec: QuickSpec {
             describe("parse") {
                 func parse(_ code: String) -> [Type] {
                     let parserResult = FileParser(contents: code).parse()
-                    return ParserComposer(verbose: false).uniqueTypes(parserResult) ?? []
+                    return ParserComposer(verbose: false).uniqueTypes(parserResult)
                 }
 
                 context("given it has methods") {

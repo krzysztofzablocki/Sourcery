@@ -5,9 +5,9 @@
 
 import Foundation
 
-class Enum: Type {
-    class Case: NSObject, AutoDiffable {
-        class AssociatedValue: NSObject, AutoDiffable, Typed {
+final class Enum: Type {
+    final class Case: NSObject, AutoDiffable {
+        final class AssociatedValue: NSObject, AutoDiffable, Typed {
             let name: String?
             let typeName: TypeName
 

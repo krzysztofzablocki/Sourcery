@@ -15,4 +15,12 @@ enum Stubs {
     static let sourceForPerformance = basePath + Path("Performance-Code/")
     static let resultDirectory = basePath + Path("Result/")
     static let templateDirectory = basePath + Path("Templates/")
+
+    static func cleanTemporarySourceryDir() -> Path {
+        guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Sourcery") else { fatalError("Unable to get temporary path") }
+        _ = try? FileManager.default.removeItem(at: tempDirURL)
+        // swiftlint:disable:next force_try
+        try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
+        return Path(tempDirURL.path)
+    }
 }

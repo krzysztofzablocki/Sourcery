@@ -2,7 +2,7 @@ import Foundation
 import Stencil
 import PathKit
 
-class StencilTemplate: Stencil.Template, Template {
+final class StencilTemplate: Stencil.Template, Template {
     private(set) var sourcePath: Path = ""
 
     convenience init(path: Path) throws {

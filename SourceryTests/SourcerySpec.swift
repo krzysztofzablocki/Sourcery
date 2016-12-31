@@ -4,35 +4,27 @@ import PathKit
 import KZFileWatchers
 @testable import Sourcery
 
-private extension String {
-    var trimAll: String {
-        return components(separatedBy: .whitespacesAndNewlines).joined(separator: "")
-    }
-}
-
 private let version = "Major.Minor.Patch"
 
 class SourcerySpecTests: QuickSpec {
     override func spec() {
         describe ("Sourcery") {
-            let outputDir: Path = {
-                guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Sourcery") else { fatalError("Unable to get temporary path") }
-                _ = try? FileManager.default.removeItem(at: tempDirURL)
-                // swiftlint:disable:next force_try
-                try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
-                return Path(tempDirURL.path)
-            }()
+            var outputDir = Path("/tmp")
+
+            beforeEach {
+                outputDir = Stubs.cleanTemporarySourceryDir()
+            }
 
             context("given a single template") {
                 let templatePath = Stubs.templateDirectory + Path("Basic.stencil")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8).trimAll
+                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8).withoutWhitespaces
 
                 context("without a watcher") {
                     it("creates expected output file") {
                         expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
 
                         let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                        expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
+                        expect(result.flatMap { $0.withoutWhitespaces }).to(equal(expectedResult?.withoutWhitespaces))
                     }
                 }
 
@@ -59,13 +51,13 @@ class SourcerySpecTests: QuickSpec {
 
                 context("given a single file output") {
                     let outputFile = outputDir + "Composed.swift"
-                    let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8).trimAll
+                    let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8).withoutWhitespaces
 
                     it("joins code generated code into single file") {
                         expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: Stubs.templateDirectory, output: outputFile) }.toNot(throwError())
 
                         let result = try? outputFile.read(.utf8)
-                        expect(result.flatMap { $0.trimAll }).to(equal(expectedResult?.trimAll))
+                        expect(result.flatMap { $0.withoutWhitespaces }).to(equal(expectedResult?.withoutWhitespaces))
                     }
                 }
 
@@ -81,7 +73,7 @@ class SourcerySpecTests: QuickSpec {
                             let output = try? outputPath.read(.utf8)
                             let expected = try? expected[idx].read(.utf8)
 
-                            expect(output?.trimAll).to(equal(expected?.trimAll))
+                            expect(output?.withoutWhitespaces).to(equal(expected?.withoutWhitespaces))
                         }
                     }
                 }

@@ -29,7 +29,7 @@ extension Typed {
 }
 
 // sourcery: skipDescription
-class TypeName: NSObject, AutoDiffable {
+final class TypeName: NSObject, AutoDiffable {
     let name: String
 
     init(_ name: String) {
