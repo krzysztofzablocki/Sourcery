@@ -40,6 +40,13 @@ internal struct AnnotationsParser {
         self.contents = contents
     }
 
+    /// returns all annotations in the contents
+    var all: Annotations {
+        var all = Annotations()
+        lines.forEach { $0.annotations.forEach { all[$0.key] = $0.value } }
+        return all
+    }
+
     /// Extracts annotations from given source
     ///
     /// - Parameter source: Source to extract annotations for.
