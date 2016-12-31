@@ -33,6 +33,12 @@ class FileParserVariableSpec: QuickSpec {
                     expect(parse("var name: String")).to(equal(Variable(name: "name", typeName: "String", accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
+                it("extracts property with default initializer correctly") {
+                    expect(parse("var name = String()")).to(equal(Variable(name: "name", typeName: "String", accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name = Parent.Children.init()")).to(equal(Variable(name: "name", typeName: "Parent.Children", accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: String? = String()")).to(equal(Variable(name: "name", typeName: "String?", accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                }
+
                 it("extracts standard let property correctly") {
                     let r = parse("let name: String")
                     expect(r).to(equal(Variable(name: "name", typeName: "String", accessLevel: (read: .internal, write: .none), isComputed: false)))

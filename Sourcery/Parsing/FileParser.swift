@@ -234,8 +234,25 @@ extension FileParser {
 
     internal func parseVariable(_ source: [String: SourceKitRepresentable], isStatic: Bool = false) -> Variable? {
         guard let (name, _, accesibility) = parseTypeRequirements(source),
-            accesibility != .private && accesibility != .fileprivate,
-            let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
+            accesibility != .private && accesibility != .fileprivate else { return nil }
+
+        var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
+
+        if maybeType == nil, let substring = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespaces) {
+            if !substring.hasPrefix("=") {
+                return nil
+            }
+
+            if let initializer = substring.range(of: ".init") {
+                maybeType = substring.substring(with: substring.index(substring.startIndex, offsetBy: 1)..<initializer.lowerBound)
+            } else if let parens = substring.range(of: "(") {
+                maybeType = substring.substring(with: substring.index(substring.startIndex, offsetBy: 1)..<parens.lowerBound)
+            }
+
+            maybeType = maybeType?.trimmingCharacters(in: .whitespaces)
+        }
+
+        guard let type = maybeType else { return nil }
 
         var writeAccessibility = AccessLevel.none
         var computed = false
