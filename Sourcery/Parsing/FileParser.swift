@@ -27,72 +27,18 @@ extension Variable: Parsable {}
 extension Type: Parsable {}
 extension Method: Parsable {}
 
-fileprivate enum SubstringIdentifier {
-    case body
-    case key
-    case name
-    case nameSuffix
-    case keyPrefix
-
-    func range(`for` source: [String: SourceKitRepresentable]) -> (offset: Int64, length: Int64)? {
-
-        func extract(_ offset: SwiftDocKey, _ length: SwiftDocKey) -> (offset: Int64, length: Int64)? {
-            if let offset = source[offset.rawValue] as? Int64, let length = source[length.rawValue] as? Int64 {
-                return (offset, length)
-            }
-            return nil
-        }
-
-        switch self {
-        case .body:
-            return extract(.bodyOffset, .bodyLength)
-        case .key:
-            return extract(.offset, .length)
-        case .name:
-            return extract(.nameOffset, .nameLength)
-        case .nameSuffix:
-            if let name = SubstringIdentifier.name.range(for: source), let key = SubstringIdentifier.key.range(for: source) {
-                let nameEnd = name.offset + name.length
-                return (name.offset + name.length, key.offset + key.length - nameEnd)
-            }
-        case .keyPrefix:
-            return SubstringIdentifier.key.range(for: source).flatMap { (offset: 0, length: $0.offset) }
-        }
-
-        return nil
-    }
-}
-
-internal typealias Annotations = [String: NSObject]
-private enum AnnotationType {
-    case begin(Annotations)
-    case annotations(Annotations)
-    case end
-}
-
 typealias ParserResult = (types: [Type], typealiases: [Typealias])
 
-final class Parser {
-
-    fileprivate struct Line {
-        enum LineType {
-            case comment
-            case blockStart
-            case blockEnd
-            case other
-        }
-        let content: String
-        let type: LineType
-        let annotations: Annotations
-    }
+final class FileParser {
 
     let verbose: Bool
     private(set) var contents: String = ""
-    fileprivate var lines = [Line]()
     private(set) var path: String? = nil
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0): " } ?? ""
     }
+
+    private(set) var annotations: AnnotationsParser! = nil
 
     init(verbose: Bool = false) {
         self.verbose = verbose
@@ -124,7 +70,7 @@ final class Parser {
         }
 
         self.contents = contents
-        processLines()
+        annotations = AnnotationsParser(contents: contents)
 
         let file = File(contents: contents)
         let source = Structure(file: file).dictionary
@@ -134,40 +80,6 @@ final class Parser {
 
         let typealises = parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
         return (types, typealises)
-    }
-
-    private func processLines() {
-        var annotationsBlock = Annotations()
-        self.lines = contents.lines()
-                .map { $0.content.trimmingCharacters(in: .whitespaces) }
-                .map { line in
-                    var annotations = Annotations()
-                    let isComment = line.hasPrefix("//")
-                    var type: Line.LineType = isComment ? .comment : .other
-                    if isComment {
-                        switch searchForAnnotations(commentLine: line) {
-                        case let .begin(items):
-                            type = .blockStart
-                            items.forEach { annotationsBlock[$0.key] = $0.value }
-                            break
-                        case let .annotations(items):
-                            items.forEach { annotations[$0.key] = $0.value }
-                            break
-                        case .end:
-                            type = .blockEnd
-                            annotationsBlock.removeAll()
-                            break
-                        }
-                    }
-
-                    annotationsBlock.forEach { annotation in
-                        annotations[annotation.key] = annotation.value
-                    }
-
-                    return Line(content: line,
-                            type: type,
-                            annotations: annotations)
-                }
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
@@ -211,7 +123,7 @@ final class Parser {
 
             type.isGeneric = isGeneric(source: source)
             type.setSource(source)
-            type.annotations = parseAnnotations(source)
+            type.annotations = annotations.from(source)
             types.append(type)
             return type
         }
@@ -300,7 +212,7 @@ final class Parser {
 }
 
 // MARK: - Details parsing
-extension Parser {
+extension FileParser {
 
     fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
         guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }),
@@ -336,7 +248,7 @@ extension Parser {
         }
 
         let variable = Variable(name: name, typeName: type, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic)
-        variable.annotations = parseAnnotations(source)
+        variable.annotations = annotations.from(source)
         variable.setSource(source)
 
         return variable
@@ -350,14 +262,14 @@ extension Parser {
         let isClass = kind == .functionMethodClass
 
         let isFailableInitializer: Bool
-        if let name = extract(SubstringIdentifier.name, from: source), name.hasPrefix("init?") {
+        if let name = extract(Substring.name, from: source), name.hasPrefix("init?") {
             isFailableInitializer = true
         } else {
             isFailableInitializer = false
         }
 
         let returnTypeName: String
-        if let nameSuffix = extract(SubstringIdentifier.nameSuffix, from: source)?
+        if let nameSuffix = extract(Substring.nameSuffix, from: source)?
             .trimmingCharacters(in: .whitespacesAndNewlines),
             nameSuffix.hasPrefix("->") {
 
@@ -368,7 +280,7 @@ extension Parser {
             returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
 
-        let method = Method(selectorName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: parseAnnotations(source))
+        let method = Method(selectorName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: annotations.from(source))
         method.setSource(source)
         return method
     }
@@ -399,8 +311,7 @@ extension Parser {
             }
         }
 
-        let annotations = parseAnnotations(source)
-        return Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations)
+        return Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
     }
 
     fileprivate func parseEnumValues(_ body: String) -> String {
@@ -456,75 +367,6 @@ extension Parser {
             })
 
         return rawType
-    }
-
-    fileprivate func parseAnnotations(_ source: [String: SourceKitRepresentable]) -> Annotations {
-        guard let range = SubstringIdentifier.key.range(for: source), let lineInfo = location(fromByteOffset: Int(range.offset)).flatMap({ contents.lineAndCharacter(forCharacterOffset: $0) }) else { return [:] }
-
-        var annotations = Annotations()
-        for line in lines[0..<lineInfo.line-1].reversed() {
-            line.annotations.forEach { annotation in
-                annotations[annotation.key] = annotation.value
-            }
-
-            if line.type != .comment {
-                break
-            }
-        }
-
-        return annotations
-    }
-
-    fileprivate func searchForAnnotations(commentLine: String) -> AnnotationType {
-        guard commentLine.contains("sourcery:") else { return .annotations([:]) }
-
-        let substringRange: Range<String.CharacterView.Index>?
-        let insideBlock: Bool
-        if commentLine.contains("sourcery:begin:") {
-            substringRange = commentLine
-                    .range(of: "sourcery:begin:")
-            insideBlock = true
-        } else if commentLine.contains("sourcery:end") {
-            return .end
-        } else {
-            substringRange = commentLine
-                    .range(of: "sourcery:")
-            insideBlock = false
-        }
-
-        guard let range = substringRange else { return .annotations([:]) }
-
-        let annotations = Parser.parseAnnotations(line: commentLine.substring(from: range.upperBound))
-
-        return insideBlock ? .begin(annotations) : .annotations(annotations)
-    }
-
-    static internal func parseAnnotations(line: String) -> Annotations {
-        let annotationDefinitions = line.trimmingCharacters(in: .whitespaces)
-                .components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-
-        var annotations = Annotations()
-        annotationDefinitions.forEach { annotation in
-            let parts = annotation.components(separatedBy: "=").map { $0.trimmingCharacters(in: .whitespaces) }
-            if let name = parts.first, !name.isEmpty {
-
-                guard parts.count > 1, var value = parts.last, value.isEmpty == false else {
-                    annotations[name] = NSNumber(value: true)
-                    return
-                }
-
-                if let number = Float(value) {
-                    annotations[name] = NSNumber(value: number)
-                } else {
-                    if (value.hasPrefix("'") && value.hasSuffix("'")) || (value.hasPrefix("\"") && value.hasSuffix("\"")) {
-                        value = value[value.characters.index(after: value.startIndex) ..< value.characters.index(before: value.endIndex)]
-                    }
-                    annotations[name] = value as NSString
-                }
-            }
-        }
-
-        return annotations
     }
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {
@@ -594,13 +436,12 @@ extension Parser {
         return true
     }
 
-    fileprivate func extract(_ substringIdentifier: SubstringIdentifier, from source: [String: SourceKitRepresentable]) -> String? {
-        return extract(substringIdentifier, from: source, contents: self.contents)
+    fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable]) -> String? {
+        return substringIdentifier.extract(from: source, contents: self.contents)
     }
 
-    fileprivate func extract(_ substringIdentifier: SubstringIdentifier, from source: [String: SourceKitRepresentable], contents: String) -> String? {
-        let substring = substringIdentifier.range(for: source).flatMap { contents.substringWithByteRange(start: Int($0.offset), length: Int($0.length)) }
-        return substring?.isEmpty == true ? nil : substring
+    fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable], contents: String) -> String? {
+        return substringIdentifier.extract(from: source, contents: contents)
     }
 
     fileprivate func extract(_ token: SyntaxToken) -> String? {
@@ -609,29 +450,5 @@ extension Parser {
 
     fileprivate func extract(_ token: SyntaxToken, contents: String) -> String? {
         return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
-    }
-
-    //! this isn't exposed in SourceKitten so we create our own variant
-    fileprivate func location(fromByteOffset byteOffset: Int) -> Int? {
-        let lines = contents.lines()
-        if lines.isEmpty {
-            return 0
-        }
-        let index = lines.index(where: { NSLocationInRange(byteOffset, $0.byteRange) })
-        // byteOffset may be out of bounds when sourcekitd points end of string.
-        guard let line = (index.map { lines[$0] } ?? lines.last) else {
-            fatalError()
-        }
-        let diff = byteOffset - line.byteRange.location
-        if diff == 0 {
-            return line.range.location
-        } else if line.byteRange.length == diff {
-            return NSMaxRange(line.range)
-        }
-        let utf8View = line.content.utf8
-        // swiftlint:disable:next force_unwrapping
-        guard let endUTF16index = utf8View.index(utf8View.startIndex, offsetBy: diff, limitedBy: utf8View.endIndex)?.samePosition(in: line.content.utf16) else { return nil }
-        let utf16Diff = line.content.utf16.distance(from: line.content.utf16.startIndex, to: endUTF16index)
-        return line.range.location + utf16Diff
     }
 }

@@ -21,15 +21,15 @@ extension Path: ArgumentConvertible {
 }
 
 struct CustomArguments: ArgumentConvertible {
-    let arguments: [String: NSObject]
+    let arguments: Annotations
 
     init(parser: ArgumentParser) throws {
         guard let args = try parser.shiftValueForOption("args") else {
-            self.arguments = [String: NSObject]()
+            self.arguments = Annotations()
             return
         }
 
-        self.arguments = Parser.parseAnnotations(line: args)
+        self.arguments = AnnotationsParser.parse(line: args)
     }
 
     var description: String {

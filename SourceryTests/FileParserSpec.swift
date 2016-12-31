@@ -8,14 +8,14 @@ func build(_ source: String) -> [String: SourceKitRepresentable]? {
     return Structure(file: File(contents: source)).dictionary
 }
 
-class ParserSpec: QuickSpec {
+class FileParserSpec: QuickSpec {
     // swiftlint:disable function_body_length
     override func spec() {
         describe("Parser") {
-            var sut: Parser?
+            var sut: FileParser?
 
             beforeEach {
-                sut = Parser()
+                sut = FileParser()
             }
 
             afterEach {

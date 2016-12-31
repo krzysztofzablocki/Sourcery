@@ -102,7 +102,7 @@ public class Sourcery {
 
     private func parseTypes(from: Path) throws -> [Type] {
         self.track("Scanning sources...", terminator: "")
-        let parser = Parser(verbose: verbose)
+        let parser = FileParser(verbose: verbose)
 
         var parserResult: ParserResult = ([], [])
 
