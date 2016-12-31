@@ -216,6 +216,7 @@
 		CD754C8D1D853F000082B512 /* Sourcery */ = {
 			isa = PBXGroup;
 			children = (
+				E291DB36A516C712B48D88D4 /* Utils */,
 				CD812F631DFDCED40088B2F6 /* Templates */,
 				CD812F601DFDCD900088B2F6 /* CodeGenerated */,
 				CD812F531DFDCC1A0088B2F6 /* Models */,
@@ -224,7 +225,6 @@
 				E291DB6A95BAECDB6E978A76 /* Sourcery.swift */,
 				CD754C951D853F000082B512 /* Info.plist */,
 				CD9C459C1DFAF76D00161C2C /* main.swift */,
-				E291DB36A516C712B48D88D4 /* Utils */,
 			);
 			path = Sourcery;
 			sourceTree = "<group>";
@@ -233,14 +233,14 @@
 			isa = PBXGroup;
 			children = (
 				E291D0AE58E620796FB2B57D /* Helpers */,
-				E291D8DDDA3F3377871F27A4 /* Models */,
 				E291D36844A70DF851656DE8 /* Stub */,
+				E291D8DDDA3F3377871F27A4 /* Models */,
+				E291D114F84B90258AD76A35 /* Parsing */,
+				E291DC8AFD88340E1355E531 /* Generating */,
 				CD754CA01D853F000082B512 /* Info.plist */,
 				E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */,
 				E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */,
 				CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */,
-				E291D114F84B90258AD76A35 /* Parsing */,
-				E291DC8AFD88340E1355E531 /* Generating */,
 			);
 			path = SourceryTests;
 			sourceTree = SOURCE_ROOT;
@@ -352,9 +352,9 @@
 		E291DB249799066B169A0F41 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
+				E291D1A12EBFA4B3450C5894 /* Utils */,
 				E291DBBBE7AF85DF7D7AF97D /* FileParser.swift */,
 				E291D3DB89E4D87FE8CB1A33 /* ParserComposer.swift */,
-				E291D1A12EBFA4B3450C5894 /* Utils */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";

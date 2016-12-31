@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### Internal Changes
+- Performed significant refactoring and simplified mutations in parsers
+
 ## 0.5.0
 - You can now pass arbitrary values to templates with `--args` argument.
 - Added `open` access level
