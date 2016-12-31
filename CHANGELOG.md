@@ -1,6 +1,16 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+- Sourcery will now use parallel parsing, expect more than 2x as fast execution 🚤 .
+
+### Bug Fixes
+
+### Internal Changes
+
+
 ## 0.5.1
 
 ### New Features
