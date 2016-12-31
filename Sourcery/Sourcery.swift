@@ -108,7 +108,7 @@ public class Sourcery {
 
         guard from.isDirectory else {
             let parserResult = try parser.parseFile(from)
-            return parser.uniqueTypes(parserResult)
+            return ParserComposer(verbose: verbose).uniqueTypes(parserResult)
         }
 
         let sources = try from
@@ -131,7 +131,7 @@ public class Sourcery {
         }
 
         //! All files have been scanned, time to join extensions with base class
-        let types = parser.uniqueTypes(parserResult)
+        let types = ParserComposer(verbose: verbose).uniqueTypes(parserResult)
 
         track("Found \(types.count) types.")
         return types
@@ -182,9 +182,9 @@ public class Sourcery {
         return Path("\(templatePath.lastComponentWithoutExtension).generated.swift")
     }
 
-    private func templates(from: Path) throws -> [SourceryTemplate] {
+    private func templates(from: Path) throws -> [Template] {
         return try templatePaths(from: from).map {
-                try SourceryTemplate(path: $0)
+                try StencilTemplate(path: $0)
         }
     }
 

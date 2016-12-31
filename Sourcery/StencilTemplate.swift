@@ -2,15 +2,29 @@ import Foundation
 import Stencil
 import PathKit
 
-internal class SourceryTemplate: Template {
+class StencilTemplate: Stencil.Template, Template {
     private(set) var sourcePath: Path = ""
+
     convenience init(path: Path) throws {
-        self.init(templateString: try path.read(), environment: SourceryTemplate.sourceryEnvironment())
+        self.init(templateString: try path.read(), environment: StencilTemplate.sourceryEnvironment())
         sourcePath = path
     }
 
     convenience init(templateString: String) {
-        self.init(templateString: templateString, environment: SourceryTemplate.sourceryEnvironment())
+        self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment())
+    }
+
+    func render(types: [Type], arguments: [String: NSObject]) throws -> String {
+        var typesByName = [String: Type]()
+        types.forEach { typesByName[$0.name] = $0 }
+
+        let context: [String: Any] = [
+                "types": TypesReflectionBox(types: types),
+                "type": typesByName,
+                "argument": arguments
+        ]
+
+        return try super.render(context)
     }
 
     private static func sourceryEnvironment() -> Stencil.Environment {

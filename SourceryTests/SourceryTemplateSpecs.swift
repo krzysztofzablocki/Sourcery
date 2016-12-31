@@ -9,7 +9,7 @@ class SourceryTemplateSpec: QuickSpec {
         describe("SourceryTemplate") {
 
             func generate(_ template: String) -> String {
-                return (try? Generator.generate([], template: SourceryTemplate(templateString: template))) ?? ""
+                return (try? Generator.generate([], template: StencilTemplate(templateString: template))) ?? ""
             }
 
             it("generates uppercase") {

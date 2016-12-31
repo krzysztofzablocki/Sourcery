@@ -123,7 +123,7 @@ class ParserSpec: QuickSpec {
             describe("parseTypes") {
                 func parse(_ code: String) -> [Type] {
                     let parserResult = sut?.parseContents(code) ?? ([], [])
-                    return sut?.uniqueTypes(parserResult) ?? []
+                    return ParserComposer(verbose: false).uniqueTypes(parserResult) ?? []
                 }
 
                 context("given it has methods") {

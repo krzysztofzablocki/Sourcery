@@ -52,8 +52,10 @@ class GeneratorSpec: QuickSpec {
             let arguments: [String: NSObject] = ["some": "value" as NSString, "number": NSNumber(value: Float(4))]
 
             func generate(_ template: String) -> String {
+                let types = ParserComposer().uniqueTypes((types, []))
+
                 return (try? Generator.generate(types,
-                        template: SourceryTemplate(templateString: template),
+                        template: StencilTemplate(templateString: template),
                         arguments: arguments)) ?? ""
             }
 
@@ -70,11 +72,11 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("generates types.structs") {
-                expect(generate("Found {{ types.structs.count }} structs, first: {{ types.structs.first.name }}")).to(equal("Found 2 structs, first: Complex"))
+                expect(generate("Found {{ types.structs.count }} structs, first: {{ types.structs.first.name }}")).to(equal("Found 2 structs, first: Bar"))
             }
 
             it("generates types.enums") {
-                expect(generate("Found {{ types.enums.count }} enums, first: {{ types.enums.first.name }}")).to(equal("Found 2 enums, first: Options"))
+                expect(generate("Found {{ types.enums.count }} enums, first: {{ types.enums.first.name }}")).to(equal("Found 2 enums, first: FooOptions"))
             }
 
             it("feeds types.implementing specific protocol") {
