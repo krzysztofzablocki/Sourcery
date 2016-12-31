@@ -5,7 +5,7 @@
 
 import Foundation
 
-class ParserComposer {
+struct ParserComposer {
     let verbose: Bool
 
     init(verbose: Bool = false) {

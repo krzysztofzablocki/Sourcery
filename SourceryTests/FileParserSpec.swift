@@ -12,26 +12,17 @@ class FileParserSpec: QuickSpec {
     // swiftlint:disable function_body_length
     override func spec() {
         describe("Parser") {
-            var sut: FileParser?
-
-            beforeEach {
-                sut = FileParser()
-            }
-
-            afterEach {
-                sut = nil
-            }
-
             describe("parseVariable") {
                 func parse(_ code: String) -> Variable? {
-                    _ = sut?.parseContents(code)
+                    let parser = FileParser(contents: code)
+                    parser.parse()
                     let code = build(code)
                     guard let substructures = code?[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable],
                           let src = substructures.first as? [String: SourceKitRepresentable] else {
                         fail()
                         return nil
                     }
-                    return sut?.parseVariable(src)
+                    return parser.parseVariable(src)
                 }
 
                 it("ignores private variables") {
@@ -122,7 +113,7 @@ class FileParserSpec: QuickSpec {
 
             describe("parseTypes") {
                 func parse(_ code: String) -> [Type] {
-                    let parserResult = sut?.parseContents(code) ?? ([], [])
+                    let parserResult = FileParser(contents: code).parse()
                     return ParserComposer(verbose: false).uniqueTypes(parserResult) ?? []
                 }
 
@@ -379,33 +370,45 @@ class FileParserSpec: QuickSpec {
                 }
 
                 context("given typealias") {
-                    it("ignores private typealiases") {
-                        expect(sut?.parseContents("private typealias Alias = String").typealiases).to(beEmpty())
+                    func parse(_ code: String) -> ParserResult {
+                        return FileParser(contents: code).parse()
+                    }
 
-                        expect(sut?.parseContents("fileprivate typealias Alias = String").typealiases).to(beEmpty())
+                    it("ignores private typealiases") {
+                        expect(parse("private typealias Alias = String").typealiases).to(beEmpty())
+
+                        expect(parse("fileprivate typealias Alias = String").typealiases).to(beEmpty())
                     }
 
                     context("given global typealias") {
                         it("extracts global typealiases properly") {
-                            expect(sut?.parseContents("typealias GlobalAlias = Foo; class Foo { typealias FooAlias = Int; class Bar { typealias BarAlias = Int } }").typealiases)
+                            expect(parse("typealias GlobalAlias = Foo; class Foo { typealias FooAlias = Int; class Bar { typealias BarAlias = Int } }").typealiases)
                                 .to(equal([
                                     Typealias(aliasName: "GlobalAlias", typeName: "Foo")
                                     ]))
                         }
 
                         it("extracts typealiases for inner types") {
-                            expect(sut?.parseContents("typealias GlobalAlias = Foo.Bar;").typealiases)
+                            expect(parse("typealias GlobalAlias = Foo.Bar;").typealiases)
                                 .to(equal([
                                     Typealias(aliasName: "GlobalAlias", typeName: "Foo.Bar")
                                     ]))
                         }
 
                         it("extracts typealiases of other typealiases") {
-                            expect(sut?.parseContents("typealias Foo = Int; typealias Bar = Foo").typealiases)
+                            expect(parse("typealias Foo = Int; typealias Bar = Foo").typealiases)
                                 .to(contain([
                                     Typealias(aliasName: "Foo", typeName: "Int"),
                                     Typealias(aliasName: "Bar", typeName: "Foo")
                                     ]))
+                        }
+                    }
+
+                    describe("typealiases resolution") {
+
+                        func parse(_ code: String) -> [Type] {
+                            let parserResult = FileParser(contents: code).parse()
+                            return ParserComposer(verbose: false).uniqueTypes(parserResult) ?? []
                         }
 
                         it("replaces variable alias with actual type via 3 typealiases") {
@@ -443,18 +446,52 @@ class FileParserSpec: QuickSpec {
 
                         it("extends actual type with type alias extension") {
                             expect(parse("typealias GlobalAlias = Foo; class Foo: TestProtocol { }; extension GlobalAlias: AnotherProtocol {}"))
-                                .to(equal([
-                                    Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
-                                    ]))
+                                    .to(equal([
+                                                      Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["AnotherProtocol", "TestProtocol"])
+                                              ]))
                         }
 
                         it("updates inheritedTypes with real type name") {
                             expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
-                                .to(contain([
-                                    Type(name: "Bar", inheritedTypes: ["Foo"])
-                                    ]))
+                                    .to(contain([
+                                                        Type(name: "Bar", inheritedTypes: ["Foo"])
+                                                ]))
                         }
 
+                        context("given local typealias") {
+                            it("replaces variable alias type with actual type") {
+                                let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
+                                expectedVariable.type = Type(name: "Foo")
+
+                                let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
+                                let variable = type?.variables.first
+
+                                expect(variable).to(equal(expectedVariable))
+                                expect(variable?.type).to(equal(expectedVariable.type))
+                            }
+
+                            it("replaces variable alias type with actual contained type") {
+                                let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
+                                expectedVariable.type = Type(name: "Foo", parent: Type(name: "Bar"))
+
+                                let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
+                                let variable = type?.variables.first
+
+                                expect(variable).to(equal(expectedVariable))
+                                expect(variable?.type).to(equal(expectedVariable.type))
+                            }
+
+                            it("replaces variable alias type with actual foreign contained type") {
+                                let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
+                                expectedVariable.type = Type(name: "Foo", parent: Type(name: "FooBar"))
+
+                                let type = parse("class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
+                                let variable = type?.variables.first
+
+                                expect(variable).to(equal(expectedVariable))
+                                expect(variable?.type).to(equal(expectedVariable.type))
+                            }
+                        }
                     }
 
                     context("given local typealias") {
@@ -463,50 +500,16 @@ class FileParserSpec: QuickSpec {
                             let bar = Type(name: "Bar", parent: foo)
                             let fooBar = Type(name: "FooBar", parent: bar)
 
-                            let types = sut?.parseContents("class Foo { typealias FooAlias = String; struct Bar { typealias BarAlias = Int; struct FooBar { typealias FooBarAlias = Float } } }").types
+                            let types = parse("class Foo { typealias FooAlias = String; struct Bar { typealias BarAlias = Int; struct FooBar { typealias FooBarAlias = Float } } }").types
 
-                            let fooAliases = types?.first?.typealiases
-                            let barAliases = types?.first?.containedTypes.first?.typealiases
-                            let fooBarAliases = types?.first?.containedTypes.first?.containedTypes.first?.typealiases
+                            let fooAliases = types.first?.typealiases
+                            let barAliases = types.first?.containedTypes.first?.typealiases
+                            let fooBarAliases = types.first?.containedTypes.first?.containedTypes.first?.typealiases
 
                             expect(fooAliases).to(equal(["FooAlias": Typealias(aliasName: "FooAlias", typeName: "String", parent: foo)]))
                             expect(barAliases).to(equal(["BarAlias": Typealias(aliasName: "BarAlias", typeName: "Int", parent: bar)]))
                             expect(fooBarAliases).to(equal(["FooBarAlias": Typealias(aliasName: "FooBarAlias", typeName: "Float", parent: fooBar)]))
                         }
-
-                        it("replaces variable alias type with actual type") {
-                            let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
-                            expectedVariable.type = Type(name: "Foo")
-
-                            let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
-                            let variable = type?.variables.first
-
-                            expect(variable).to(equal(expectedVariable))
-                            expect(variable?.type).to(equal(expectedVariable.type))
-                        }
-
-                        it("replaces variable alias type with actual contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
-                            expectedVariable.type = Type(name: "Foo", parent: Type(name: "Bar"))
-
-                            let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
-                            let variable = type?.variables.first
-
-                            expect(variable).to(equal(expectedVariable))
-                            expect(variable?.type).to(equal(expectedVariable.type))
-                        }
-
-                        it("replaces variable alias type with actual foreign contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: "FooAlias")
-                            expectedVariable.type = Type(name: "Foo", parent: Type(name: "FooBar"))
-
-                            let type = parse("class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
-                            let variable = type?.variables.first
-
-                            expect(variable).to(equal(expectedVariable))
-                            expect(variable?.type).to(equal(expectedVariable.type))
-                        }
-
                     }
 
                 }
@@ -742,7 +745,7 @@ class FileParserSpec: QuickSpec {
                 it("ignores files that are marked with Generated by Sourcery, returning no types") {
                     var updatedTypes: [Type]?
 
-                    expect { updatedTypes = try sut?.parseFile(Stubs.resultDirectory + Path("Basic.swift")).types }.toNot(throwError())
+                    expect { updatedTypes = try FileParser(path: Stubs.resultDirectory + Path("Basic.swift")).parse().types }.toNot(throwError())
 
                     expect(updatedTypes).to(beEmpty())
                 }

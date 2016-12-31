@@ -102,12 +102,10 @@ public class Sourcery {
 
     private func parseTypes(from: Path) throws -> [Type] {
         self.track("Scanning sources...", terminator: "")
-        let parser = FileParser(verbose: verbose)
-
         var parserResult: ParserResult = ([], [])
 
         guard from.isDirectory else {
-            let parserResult = try parser.parseFile(from)
+            let parserResult = try FileParser(verbose: verbose, path: from).parse()
             return ParserComposer(verbose: verbose).uniqueTypes(parserResult)
         }
 
@@ -125,7 +123,7 @@ public class Sourcery {
                 let percentage = idx * 100 / sources.count
                 self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
             }
-            let result = try parser.parseFile(path)
+            let result = try FileParser(verbose: verbose, path: path).parse()
             parserResult.typealiases += result.typealiases
             parserResult.types += result.types
         }
