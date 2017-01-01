@@ -33,4 +33,5 @@ final class Typealias: NSObject, AutoDiffable, Typed {
         self.parent = parent
         self.parentName = parent?.name
     }
+
 }

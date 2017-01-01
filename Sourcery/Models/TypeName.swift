@@ -106,26 +106,9 @@ final class TupleType: NSObject, AutoDiffable {
         }
     }
 
-    let elements: [Element]
-
-    init?(_ name: String) {
-        guard name.hasPrefix("("),
-            name.hasSuffix(")"),
-            name.contains(",") else { return nil }
-
-        //count open/closed brackets pairs after trimming brackets on bounds
-        //to find out if enclosing content is still valid
-        var brackets: Int = 0
-        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
-        for char in trimmedBracketsName.characters {
-            if char == "(" { brackets += 1 } else if char == ")" { brackets -= 1 }
-            if brackets < 0 { return nil }
-        }
-        guard brackets == 0 else { return nil }
-
-        self.name = name
-
-        self.elements = trimmedBracketsName.commaSeparated().enumerated().map {
+    lazy private(set) var elements: [Element] = {
+        let trimmedBracketsName = String(self.name.characters.dropFirst().dropLast())
+        return trimmedBracketsName.commaSeparated().enumerated().map {
             let nameAndType = $1.colonSeparated()
             guard nameAndType.count == 2 else {
                 return Element(name: "\($0)", typeName: TypeName($1), type: nil)
@@ -135,6 +118,17 @@ final class TupleType: NSObject, AutoDiffable {
             }
             return Element(name: nameAndType[0], typeName: TypeName(nameAndType[1]), type: nil)
         }
+    }()
+
+    init?(_ name: String) {
+        guard name.hasPrefix("("),
+            name.hasSuffix(")"),
+            name.contains(",") else { return nil }
+
+        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
+        guard trimmedBracketsName.bracketsBalanced() else { return nil }
+
+        self.name = name
     }
 
     override func value(forUndefinedKey key: String) -> Any? {
@@ -145,6 +139,20 @@ final class TupleType: NSObject, AutoDiffable {
 }
 
 extension String {
+
+    func bracketsBalancing() -> String {
+        let typeName = TypeName("(\(self))")
+        return typeName.isTuple || !bracketsBalanced() ? typeName.name : self
+    }
+
+    fileprivate func bracketsBalanced() -> Bool {
+        var bracketsCount: Int = 0
+        for char in characters {
+            if char == "(" { bracketsCount += 1 } else if char == ")" { bracketsCount -= 1 }
+            if bracketsCount < 0 { return false }
+        }
+        return bracketsCount == 0
+    }
 
     fileprivate func removingExtraWhitespaces() -> String {
         return replacingOccurrences(of: "\\s*([(),:<>])\\s*", with: "$1", options: .regularExpression)

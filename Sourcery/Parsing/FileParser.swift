@@ -403,6 +403,8 @@ extension FileParser {
                 contentToParse = contentToParse.bridge().replacingOccurrences(of: substring, with: replacement)
             }
         }
+        // `()` is not recognized as type identifier token
+        contentToParse = contentToParse.replacingOccurrences(of: "()", with: "(Void)")
 
         guard containingType != nil else {
             return parseTypealiases(SyntaxMap(file: File(contents: contentToParse)).tokens, contents: contentToParse)
@@ -429,25 +431,27 @@ extension FileParser {
                 accessLevel == .private || accessLevel == .fileprivate {
                 continue
             }
-
-            guard let alias = extract(tokens[index + 1], contents: contents),
-                let type = extract(tokens[index + 2], contents: contents) else {
-                    continue
+            guard let alias = extract(tokens[index + 1], contents: contents) else {
+                continue
             }
 
             //get all subsequent type identifiers
-            var subtypes = [type]
-            var index = index + 2
+            var index = index + 1
+            var lastTypeToken: SyntaxToken?
+            var firstTypeToken: SyntaxToken?
             while index < tokens.count - 1 {
                 index += 1
-
-                if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier",
-                    let subtype = extract(tokens[index], contents: contents) {
-                    subtypes.append(subtype)
+                if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier" {
+                    if firstTypeToken == nil { firstTypeToken = tokens[index] }
+                    lastTypeToken = tokens[index]
                 } else { break }
             }
-
-            typealiases.append(Typealias(aliasName: alias, typeName: subtypes.joined(separator: ".")))
+            if let firstTypeToken = firstTypeToken,
+                let lastTypeToken = lastTypeToken,
+                let typeName = extract(from: firstTypeToken, to: lastTypeToken, contents: contents) {
+                
+                typealiases.append(Typealias(aliasName: alias, typeName: typeName.bracketsBalancing()))
+            }
         }
         return typealiases
     }
@@ -472,4 +476,9 @@ extension FileParser {
     fileprivate func extract(_ token: SyntaxToken, contents: String) -> String? {
         return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
     }
+
+    fileprivate func extract(from: SyntaxToken, to: SyntaxToken, contents: String) -> String? {
+        return contents.bridge().substringWithByteRange(start: from.offset, length: to.offset + to.length - from.offset)
+    }
+
 }

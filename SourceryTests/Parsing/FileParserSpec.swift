@@ -289,6 +289,28 @@ class FileParserSpec: QuickSpec {
                                     Typealias(aliasName: "Bar", typeName: "Foo")
                                     ]))
                         }
+
+                        it("extracts typealias for tuple") {
+                            expect(parse("typealias GlobalAlias = (Foo, Bar)").typealiases)
+                                .to(equal([
+                                    Typealias(aliasName: "GlobalAlias", typeName: "(Foo, Bar)")
+                                    ]))
+                        }
+
+                        it("extracts typealias for closure") {
+                            expect(parse("typealias GlobalAlias = (Int) -> (String)").typealiases)
+                                .to(equal([
+                                    Typealias(aliasName: "GlobalAlias", typeName: "(Int) -> (String)")
+                                    ]))
+                        }
+
+                        it("extracts typealias for void") {
+                            expect(parse("typealias GlobalAlias = () -> ()").typealiases)
+                                .to(equal([
+                                    Typealias(aliasName: "GlobalAlias", typeName: "(Void) -> (Void)")
+                                    ]))
+                        }
+
                     }
 
                     context("given local typealias") {
