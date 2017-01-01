@@ -56,20 +56,20 @@ struct ParserComposer {
             unique[type.name] = current
         }
 
-        let resolveType = { (typeName: TypeName, containingType: Type?, typealiases: [String: Typealias]) in
-            return self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
-                    .flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
+        let resolveType = { (typeName: TypeName, containingType: Type?, typealiases: [String: Typealias]) -> Type? in
+            let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
+            typeName.actualTypeName = name.flatMap(TypeName.init)
+            return name.flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
         }
 
         for (_, type) in unique {
             // find actual variables types
             type.variables.forEach {
+                $0.type = resolveType($0.typeName, type, typealiases)
                 if let tuple = $0.typeName.tuple {
                     tuple.elements.forEach({
                         $0.type = resolveType($0.typeName, type, typealiases)
                     })
-                } else {
-                    $0.type = resolveType($0.typeName, type, typealiases)
                 }
             }
 

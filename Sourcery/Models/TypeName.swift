@@ -26,18 +26,26 @@ protocol Typed {
 extension Typed {
     var isOptional: Bool { return typeName.isOptional }
     var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    var actualTypeName: TypeName? { return typeName.actualTypeName }
 }
 
 // sourcery: skipDescription
 final class TypeName: NSObject, AutoDiffable {
     let name: String
 
+    /// Actual type name if given type name is type alias
+    // sourcery: skipEquality
+    var actualTypeName: TypeName? {
+        didSet {
+            _tuple = nil
+        }
+    }
+
     init(_ name: String) {
         self.name = name.removingExtraWhitespaces()
     }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    // sourcery: skipEquality
     var isOptional: Bool {
         if name.hasSuffix("?") || name.hasPrefix("Optional<") {
             return true
@@ -45,8 +53,7 @@ final class TypeName: NSObject, AutoDiffable {
         return false
     }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    // sourcery: skipEquality
     var unwrappedTypeName: String {
         guard isOptional else {
             return name
@@ -59,8 +66,7 @@ final class TypeName: NSObject, AutoDiffable {
         }
     }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    // sourcery: skipEquality
     var isVoid: Bool {
         return name == "Void" || name == "()"
     }
@@ -69,9 +75,16 @@ final class TypeName: NSObject, AutoDiffable {
         return tuple != nil
     }
 
-    lazy private(set) var tuple: TupleType? = TupleType(self.name)
+    private var _tuple: TupleType?
+    var tuple: TupleType? {
+        if _tuple == nil { _tuple = TupleType(self.actualTypeName?.name ?? self.name) }
+        return _tuple
+    }
 
     override var description: String {
+        if let actualTypeName = actualTypeName {
+            return "\(name) aka \(actualTypeName.name)"
+        }
         return name
     }
 }
