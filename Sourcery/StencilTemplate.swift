@@ -36,6 +36,7 @@ final class StencilTemplate: Stencil.Template, Template {
 
         ext.registerFilter("computed", filter: Filter<Variable>.make({ $0.isComputed && !$0.isStatic }))
         ext.registerFilter("stored", filter: Filter<Variable>.make({ !$0.isComputed && !$0.isStatic }))
+        ext.registerFilter("tuple", filter: Filter<Variable>.make({ $0.isTuple }))
 
         ext.registerFilter("enum", filter: Filter<Type>.make({ $0 is Enum }))
         ext.registerFilter("struct", filter: Filter<Type>.make({ $0 is Struct }))

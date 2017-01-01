@@ -449,7 +449,7 @@ extension FileParser {
             if let firstTypeToken = firstTypeToken,
                 let lastTypeToken = lastTypeToken,
                 let typeName = extract(from: firstTypeToken, to: lastTypeToken, contents: contents) {
-                
+
                 typealiases.append(Typealias(aliasName: alias, typeName: typeName.bracketsBalancing()))
             }
         }

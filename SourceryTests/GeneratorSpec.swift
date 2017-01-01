@@ -4,6 +4,7 @@ import Stencil
 @testable import Sourcery
 
 class GeneratorSpec: QuickSpec {
+    // swiftlint:disable function_body_length
     override func spec() {
 
         describe("Generator") {
@@ -21,7 +22,8 @@ class GeneratorSpec: QuickSpec {
             complexType.variables = [
                 fooVar,
                 barVar,
-                Variable(name: "fooBar", typeName: "Int", isComputed: true)
+                Variable(name: "fooBar", typeName: "Int", isComputed: true),
+                Variable(name: "tuple", typeName: "(Int, Bar)")
             ]
 
             complexType.methods = [
@@ -118,12 +120,11 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("can use filter on variables") {
-                    expect(generate("{% for var in type.Complex.allVariables|computed %}V{% endfor %}")).to(equal("V"))
-                    expect(generate("{% for var in type.Complex.allVariables|stored %}V{% endfor %}")).to(equal("VV"))
-                    expect(generate("{% for var in type.Complex.allVariables|instance %}V{% endfor %}")).to(equal("VVV"))
-                    expect(generate("{% for var in type.Complex.allVariables|static %}V{% endfor %}")).to(equal(""))
-
-                    expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("3"))
+                    expect(generate("{{ type.Complex.allVariables|computed|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allVariables|stored|count }}")).to(equal("3"))
+                    expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("4"))
+                    expect(generate("{{ type.Complex.allVariables|static|count }}")).to(equal("0"))
+                    expect(generate("{{ type.Complex.allVariables|tuple|count }}")).to(equal("1"))
                 }
 
                 it("can use filter on methods") {
@@ -148,7 +149,7 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("classifies computed properties properly") {
-                    expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("3, 1, 2"))
+                    expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("4, 1, 3"))
                 }
 
                 it("can access variable type information") {
