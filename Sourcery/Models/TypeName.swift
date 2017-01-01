@@ -100,9 +100,9 @@ final class TupleType: NSObject, AutoDiffable {
         // sourcery: skipEquality, skipDescription
         var type: Type?
 
-        init(name: String, typeName: TypeName, type: Type? = nil) {
+        init(name: String, typeName: String, type: Type? = nil) {
             self.name = name
-            self.typeName = typeName
+            self.typeName = TypeName(typeName)
             self.type = type
         }
     }
@@ -111,25 +111,26 @@ final class TupleType: NSObject, AutoDiffable {
         let trimmedBracketsName = String(self.name.characters.dropFirst().dropLast())
         return trimmedBracketsName.commaSeparated().enumerated().map {
             let nameAndType = $1.colonSeparated()
+
             guard nameAndType.count == 2 else {
-                return Element(name: "\($0)", typeName: TypeName($1), type: nil)
+                return Element(name: "\($0)", typeName: $1)
             }
             guard nameAndType[0] != "_" else {
-                return Element(name: "\($0)", typeName: TypeName(nameAndType[1]), type: nil)
+                return Element(name: "\($0)", typeName: nameAndType[1])
             }
-            return Element(name: nameAndType[0], typeName: TypeName(nameAndType[1]), type: nil)
+            return Element(name: nameAndType[0], typeName: nameAndType[1])
         }
     }()
 
     init?(_ name: String) {
-        guard name.hasPrefix("("),
-            name.hasSuffix(")"),
-            name.contains(",") else { return nil }
-
-        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
-        guard trimmedBracketsName.bracketsBalanced() else { return nil }
-
+        guard TupleType.isTuple(name) else { return nil }
         self.name = name
+    }
+
+    static func isTuple(_ name: String) -> Bool {
+        guard name.hasPrefix("(") && name.hasSuffix(")") else { return false }
+        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
+        return trimmedBracketsName.bracketsBalanced() && trimmedBracketsName.commaSeparated().count > 1
     }
 
 }
@@ -137,8 +138,8 @@ final class TupleType: NSObject, AutoDiffable {
 extension String {
 
     func bracketsBalancing() -> String {
-        let typeName = TypeName("(\(self))")
-        return typeName.isTuple || !bracketsBalanced() ? typeName.name : self
+        let wrapped = "(\(self))"
+        return TupleType.isTuple(wrapped) || !bracketsBalanced() ? wrapped : self
     }
 
     fileprivate func bracketsBalanced() -> Bool {
@@ -150,24 +151,29 @@ extension String {
         return bracketsCount == 0
     }
 
-    fileprivate func removingExtraWhitespaces() -> String {
+    func removingExtraWhitespaces() -> String {
+        guard contains(" ") else { return self }
         return replacingOccurrences(of: "\\s*([(),:<>])\\s*", with: "$1", options: .regularExpression)
     }
 
-    fileprivate func commaSeparated() -> [String] {
-        return components(separatedBy: ",", excludingDelimiterBetween: ("<", ">"))
+    func commaSeparated() -> [String] {
+        return components(separatedBy: ",", excludingDelimiterBetween: ("<(", ")>"))
     }
 
-    fileprivate func colonSeparated() -> [String] {
-        return components(separatedBy: ":", excludingDelimiterBetween: ("[", "]"))
+    func colonSeparated() -> [String] {
+        return components(separatedBy: ":", excludingDelimiterBetween: ("<[(", ")]>"))
     }
 
-    fileprivate func components(separatedBy delimiter: Character, excludingDelimiterBetween between: (open: Character, close: Character)) -> [String] {
+    fileprivate func components(separatedBy delimiter: Character, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
         var boundingCharactersCount: Int = 0
         var item = ""
         var items = [String]()
         for char in characters {
-            if char == between.open { boundingCharactersCount += 1 } else if char == between.close { boundingCharactersCount -= 1 }
+            if between.open.characters.contains(char) {
+                boundingCharactersCount += 1
+            } else if between.close.characters.contains(char) {
+                boundingCharactersCount -= 1
+            }
             if char == delimiter && boundingCharactersCount == 0 {
                 items.append(item)
                 item = ""

@@ -65,13 +65,13 @@ class VariableSpec: QuickSpec {
 
                 it("extracts elements properly") {
                     expect(TypeName("(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))").tuple?.elements).to(equal([
-                        TupleType.Element(name: "a", typeName: TypeName("Int")),
-                        TupleType.Element(name: "b", typeName: TypeName("Int")),
-                        TupleType.Element(name: "2", typeName: TypeName("String")),
-                        TupleType.Element(name: "3", typeName: TypeName("Float")),
-                        TupleType.Element(name: "literal", typeName: TypeName("[String: [String: Int]]")),
-                        TupleType.Element(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>")),
-                        TupleType.Element(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)"))
+                        TupleType.Element(name: "a", typeName: "Int"),
+                        TupleType.Element(name: "b", typeName: "Int"),
+                        TupleType.Element(name: "2", typeName: "String"),
+                        TupleType.Element(name: "3", typeName: "Float"),
+                        TupleType.Element(name: "literal", typeName: "[String: [String: Int]]"),
+                        TupleType.Element(name: "generic", typeName: "Dictionary<String, Dictionary<String, Float>>"),
+                        TupleType.Element(name: "closure", typeName: "(Int) -> (Int -> Int)")
                         ]))
                 }
             }

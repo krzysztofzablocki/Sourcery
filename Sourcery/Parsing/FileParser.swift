@@ -326,7 +326,7 @@ extension FileParser {
                 rawValue = parseEnumValues(body)
             case ("("?, ")"?):
                 let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-                associatedValues = parseEnumAssociatedValues(body)
+                associatedValues = parseEnumAssociatedValues(body.removingExtraWhitespaces())
             default:
                 print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
             }
@@ -344,20 +344,17 @@ extension FileParser {
     fileprivate func parseEnumAssociatedValues(_ body: String) -> [Enum.Case.AssociatedValue] {
         guard !body.isEmpty else { return [] }
 
-        /// name: type, otherType
-        let components = body.components(separatedBy: ",")
-        return components.enumerated().flatMap { idx, element in
-            let nameType = element.components(separatedBy: ":").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-            switch nameType.count {
-            case 1:
-                return Enum.Case.AssociatedValue(name: "\(idx)", typeName: nameType.first ?? "")
-            case 2:
-                return Enum.Case.AssociatedValue(name: nameType.first, typeName: nameType.last ?? "")
-            default:
-                print("\(logPrefix)parseEnumAssociatedValues: Unknown enum case body format \(body)")
-                return nil
+        let items = body.commaSeparated()
+        return items.enumerated().map {
+            let nameAndType = $1.colonSeparated()
+            let defaultName: String? = $0 == 0 && items.count == 1 ? nil : "\($0)"
+            guard nameAndType.count == 2 else {
+                return Enum.Case.AssociatedValue(name: defaultName, typeName: $1)
             }
+            guard nameAndType[0] != "_" else {
+                return Enum.Case.AssociatedValue(name: defaultName, typeName: nameAndType[1])
+            }
+            return Enum.Case.AssociatedValue(name: nameAndType[0], typeName: nameAndType[1])
         }
     }
 

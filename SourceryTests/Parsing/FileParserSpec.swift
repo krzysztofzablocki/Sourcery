@@ -360,7 +360,7 @@ class FileParserSpec: QuickSpec {
                         expect(parse("enum Foo {\n // sourcery: annotation\ncase optionA(Int)\n case optionB }"))
                                 .to(equal([
                                         Enum(name: "Foo", cases: [Enum.Case(name: "optionA",
-                                                associatedValues: [Enum.Case.AssociatedValue(name: "0", typeName: "Int")],
+                                                associatedValues: [Enum.Case.AssociatedValue(name: nil, typeName: "Int")],
                                                 annotations: ["annotation": NSNumber(value: true)]), Enum.Case(name: "optionB")])
                                 ]))
                     }
@@ -415,12 +415,20 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts enums with associated types") {
-                        expect(parse("enum Foo { case optionA(Observable<Int>); case optionB(named: Float) }"))
+                        expect(parse("enum Foo { case optionA(Observable<Int, Int>); case optionB(Int, named: Float); case optionC([String: String]) }"))
                                 .to(equal([
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
-                                            Enum.Case(name: "optionA", associatedValues: [Enum.Case.AssociatedValue(name: "0", typeName: "Observable<Int>")]),
-                                            Enum.Case(name: "optionB", associatedValues: [Enum.Case.AssociatedValue(name: "named", typeName: "Float")])
+                                            Enum.Case(name: "optionA", associatedValues: [
+                                                Enum.Case.AssociatedValue(name: nil, typeName: "Observable<Int, Int>")
+                                                ]),
+                                            Enum.Case(name: "optionB", associatedValues: [
+                                                Enum.Case.AssociatedValue(name: "0", typeName: "Int"),
+                                                Enum.Case.AssociatedValue(name: "named", typeName: "Float")
+                                                ]),
+                                            Enum.Case(name: "optionC", associatedValues: [
+                                                Enum.Case.AssociatedValue(name: nil, typeName: "[String: String]")
+                                                ])
                                         ])
                                 ]))
                     }
