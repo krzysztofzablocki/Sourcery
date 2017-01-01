@@ -132,11 +132,6 @@ final class TupleType: NSObject, AutoDiffable {
         self.name = name
     }
 
-    override func value(forUndefinedKey key: String) -> Any? {
-        guard let index = Int(key) else { return nil }
-        return elements[index]
-    }
-
 }
 
 extension String {

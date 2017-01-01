@@ -53,8 +53,4 @@ final class Variable: NSObject, AutoDiffable, Typed {
         self.annotations = annotations
     }
 
-    override func value(forUndefinedKey key: String) -> Any? {
-        return typeName.tuple?.value(forUndefinedKey: key)
-    }
-
 }
