@@ -33,7 +33,7 @@ final class TypeName: NSObject, AutoDiffable {
     let name: String
 
     init(_ name: String) {
-        self.name = name
+        self.name = name.removingExtraWhitespaces()
     }
 
     /// sourcery: skipEquality
@@ -68,4 +68,12 @@ final class TypeName: NSObject, AutoDiffable {
     override var description: String {
         return name
     }
+}
+
+extension String {
+
+    fileprivate func removingExtraWhitespaces() -> String {
+        return replacingOccurrences(of: "\\s*([(),:<>])\\s*", with: "$1", options: .regularExpression)
+    }
+
 }

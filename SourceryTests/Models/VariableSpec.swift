@@ -47,6 +47,10 @@ class VariableSpec: QuickSpec {
                 }
             }
 
+            it("removes extra whitespaces in type name") {
+                expect(TypeName("( a i:Int , _ s :  String ,\n  \t Int, Dictionary <  String, Float >  )").name).to(equal("(a i:Int,_ s:String,Int,Dictionary<String,Float>)"))
+            }
+
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {
