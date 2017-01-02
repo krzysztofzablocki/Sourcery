@@ -43,7 +43,7 @@ final class TypeName: NSObject, AutoDiffable {
     }
 
     init(_ name: String) {
-        self.name = name.removingExtraWhitespaces()
+        self.name = name
     }
 
     // sourcery: skipEquality
@@ -109,16 +109,20 @@ final class TupleType: NSObject, AutoDiffable {
 
     lazy private(set) var elements: [Element] = {
         let trimmedBracketsName = String(self.name.characters.dropFirst().dropLast())
-        return trimmedBracketsName.commaSeparated().enumerated().map {
-            let nameAndType = $1.colonSeparated()
+        return trimmedBracketsName
+            .commaSeparated()
+            .map({ $0.trimmingCharacters(in: .whitespaces) })
+            .enumerated()
+            .map {
+                let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
 
-            guard nameAndType.count == 2 else {
-                return Element(name: "\($0)", typeName: $1)
-            }
-            guard nameAndType[0] != "_" else {
-                return Element(name: "\($0)", typeName: nameAndType[1])
-            }
-            return Element(name: nameAndType[0], typeName: nameAndType[1])
+                guard nameAndType.count == 2 else {
+                    return Element(name: "\($0)", typeName: $1)
+                }
+                guard nameAndType[0] != "_" else {
+                    return Element(name: "\($0)", typeName: nameAndType[1])
+                }
+                return Element(name: nameAndType[0], typeName: nameAndType[1])
         }
     }()
 
@@ -149,11 +153,6 @@ extension String {
             if bracketsCount < 0 { return false }
         }
         return bracketsCount == 0
-    }
-
-    func removingExtraWhitespaces() -> String {
-        guard contains(" ") else { return self }
-        return replacingOccurrences(of: "\\s*([(),:<>])\\s*", with: "$1", options: .regularExpression)
     }
 
     func commaSeparated() -> [String] {

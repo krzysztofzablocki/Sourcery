@@ -326,7 +326,7 @@ extension FileParser {
                 rawValue = parseEnumValues(body)
             case ("("?, ")"?):
                 let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-                associatedValues = parseEnumAssociatedValues(body.removingExtraWhitespaces())
+                associatedValues = parseEnumAssociatedValues(body)
             default:
                 print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
             }
@@ -345,16 +345,20 @@ extension FileParser {
         guard !body.isEmpty else { return [] }
 
         let items = body.commaSeparated()
-        return items.enumerated().map {
-            let nameAndType = $1.colonSeparated()
-            let defaultName: String? = $0 == 0 && items.count == 1 ? nil : "\($0)"
-            guard nameAndType.count == 2 else {
-                return Enum.Case.AssociatedValue(name: defaultName, typeName: $1)
-            }
-            guard nameAndType[0] != "_" else {
-                return Enum.Case.AssociatedValue(name: defaultName, typeName: nameAndType[1])
-            }
-            return Enum.Case.AssociatedValue(name: nameAndType[0], typeName: nameAndType[1])
+        return items
+            .map({ $0.trimmingCharacters(in: .whitespaces) })
+            .enumerated()
+            .map {
+                let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+                let defaultName: String? = $0 == 0 && items.count == 1 ? nil : "\($0)"
+
+                guard nameAndType.count == 2 else {
+                    return Enum.Case.AssociatedValue(name: defaultName, typeName: $1)
+                }
+                guard nameAndType[0] != "_" else {
+                    return Enum.Case.AssociatedValue(name: defaultName, typeName: nameAndType[1])
+                }
+                return Enum.Case.AssociatedValue(name: nameAndType[0], typeName: nameAndType[1])
         }
     }
 
