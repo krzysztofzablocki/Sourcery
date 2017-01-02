@@ -68,7 +68,7 @@ func runCLI() {
              flag: "v",
              description: "Turn on verbose logging for ignored entities"),
         Argument<Path>("source", description: "Path to a source swift files", validator: Validators.isFileOrDirectory),
-        Argument<Path>("templates", description: "Path to templates. File or Directory≥", validator: Validators.isFileOrDirectory),
+        Argument<Path>("templates", description: "Path to templates. File or Directory.", validator: Validators.isFileOrDirectory),
         Argument<Path>("output", description: "Path to output. File or Directory."),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
     ) { watcherEnabled, verboseLogging, source, template, output, args in
