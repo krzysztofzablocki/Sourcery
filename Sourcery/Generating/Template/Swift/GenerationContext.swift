@@ -48,33 +48,31 @@ class GenerationContext: NSObject, NSCoding, AutoDiffable {
 
         return true
     }
-}
 
-extension GenerationContext {
     /// Lists all known classes in the project
-    var classes: [Class] {
+    lazy var classes: [Class] = {
         return self.types.classes
-    }
+    }()
 
     /// lists all known types, excluding protocols
-    var all: [Type] {
+    lazy var all: [Type] = {
         return self.types.all
-    }
+    }()
 
     /// Lists all known protocols
-    var protocols: [Protocol] {
+    lazy var protocols: [Protocol] = {
         return self.types.protocols
-    }
+    }()
 
     /// Lists all known structs
-    var structs: [Struct] {
+    lazy var structs: [Struct] = {
         return self.types.structs
-    }
+    }()
 
     /// Lists all known enums
-    var enums: [Enum] {
+    lazy var enums: [Enum] = {
         return self.types.enums
-    }
+    }()
 }
 
 protocol TypeConvertible {
