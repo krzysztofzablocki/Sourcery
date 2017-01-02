@@ -5,6 +5,13 @@
 
 ### New Features
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`
+- Added support for tuple types and `tuple` filter for variables
+- Added `actualTypeName` for `TypeName` that is typealias
+- Added `implements`, `inherits` and `based` filters
+
+### Fixed
+- Fixed parsing typealiases for tuples and closure types
+- Fixed parsing associated values of generic types
 
 ### Internal Changes
 - Performed significant refactoring and simplified mutations in parsers

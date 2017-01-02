@@ -203,19 +203,22 @@ For each type you can access following properties:
 **Enum.Case.AssociatedValue** provides:
 
 - `name` <- name
-- `typeName` <- name of type of associated value
-- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
-- `isOptional` <- whether is optional
+- `typeName` <- name of type of associated value (*TypeName*)
+- `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
+- `isOptional` <- shorthand for `typeName.isOptional`
+- `isTuple` <- shorthand for `typeName.isTuple`
 
 **Variable** provides:
 
 - `name` <- Name
 - `type` <- type of the variable, if known
-- `typeName` <- returns name of the type, including things like optional markup
-- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
-- `isOptional` <- whether is optional
+- `typeName` <- returns name of the type (*TypeName*)
+- `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
+- `isOptional` <- shorthand for `typeName.isOptional`
 - `isComputed` <- whether is computed
 - `isStatic` <- whether is static variable
+- `isTuple` <- shorthand for `typeName.isTuple`
+- `typeName.tuple` <- returns information about tuple type
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
@@ -226,9 +229,9 @@ For each type you can access following properties:
 - `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` `foo`
 - `parameters` <- list of all method parameters
 - `returnType` <- return type, if known, for initializers - containing type
-- `returnTypeName` <- return type name, including things like optional markup. Will be `Void` for methods without return value or empty string for initializers.
-- `unwrappedReturnTypeName` <- name of return type, unwrapping the optional e.g. for return type `Int?` this would return `Int`
-- `isOptionalReturnType` <- whether return type is optional, `true` for failable initializers
+- `returnTypeName` <- return type name (*TypeName*). Will be `Void` for methods without return value or empty string for initializers.
+- `unwrappedReturnTypeName` <- shorthand for `returnTypeName.unwrappedTypeName`
+- `isOptionalReturnType` <- shorthand for `returnTypeName.isOptional`
 - `accessLevel` <- method access level
 - `isStatic` <- whether method is static
 - `isClass` <- whether method is class (can be overriden by subclasses)
@@ -241,9 +244,26 @@ For each type you can access following properties:
 - `name` <- parameter name
 - `argumentLabel` <- argument label (external name), if not set will be eqal to `name`
 - `type` <- type of parameter, if known
-- `typeName` <- parameter type name, including things like optional markup
-- `unwrappedTypeName` <- name of the type, unwrapping the optional e.g. for parameter with type `Int?` this would return `Int`
+- `typeName` <- parameter type name (*TypeName*)
+- `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
+- `isOptional` <- shorthand for `typeName.isOptional`
+- `isTuple` <- shorthand for `typeName.isTuple`
+
+**TypeName** provides:
+
+- `name` <- type name
+- `actualTypeName` <- if give type is typealias will contain actual type name, otherwise will be `Void`
+- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
+- `isVoid` <- wheter type is Void (`Void` or `()`)
+- `isTuple` <- whether given type is a tuple
+- `tuple.elements` <- if given type is a tuple returns its elements information (*TupleType.Element*)
+
+**TupleType.Element** provides
+
+- `name` <- name of the element
+- `typeName` <- element type name (*TypeName*)
+- `type` <- type of element, if known
 
 ### Custom Stencil tags and filter
 
@@ -251,9 +271,10 @@ For each type you can access following properties:
 - `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
 - `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
 - `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
-- `static`, `instance`, `computed`, `stored` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`
+- `static`, `instance`, `computed`, `stored`, `tuple` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`
 - `static`, `instance`, `class`, `initializer` - can be used on Method[s] as filter e.g. `{% for method in allMethods|instance %}`
 - `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter
+- `based`, `implements`, `inherits` - can be used for Type[s], Variable[s], Associated value[s], 
 - `count` - can be used to get count of filtered array
 
 ### Using Source Annotations
