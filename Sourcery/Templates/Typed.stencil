@@ -1,0 +1,5 @@
+{% for type in types.implementing.Typed %}
+extension {{ type.name }} {
+    var isOptional: Bool { return typeName.isOptional }
+    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+}{% endfor %}

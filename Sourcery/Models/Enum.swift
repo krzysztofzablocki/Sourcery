@@ -62,6 +62,8 @@ final class Enum: Type {
         }
     }
 
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
     private(set) var hasRawType: Bool
 
     /// sourcery: skipEquality

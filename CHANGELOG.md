@@ -6,6 +6,9 @@
 ### New Features
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`
 
+### Bug Fixes
+- Using protocols doesn't expose variables using KVC, which meant some of the typeName properties weren't accessible via Templates, we fixed that using Sourcery itself to generate specific functions.
+
 ### Internal Changes
 - Performed significant refactoring and simplified mutations in parsers
 
