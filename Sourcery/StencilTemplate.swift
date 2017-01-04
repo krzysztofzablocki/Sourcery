@@ -62,11 +62,12 @@ extension Stencil.Extension {
     func registerFilterWithArguments<A>(_ name: String, filter: @escaping (Any?, A) throws -> Any?) {
         registerFilter(name) { (any, args) throws -> Any? in
             guard args.count == 1, let arg = args.first as? A else {
-                throw TemplateSyntaxError("'\(name)' filter takes a single string argument")
+                throw TemplateSyntaxError("'\(name)' filter takes a single \(A.self) argument")
             }
             return try filter(any, arg)
         }
     }
+
 }
 
 private func count(_ value: Any?) -> Any? {

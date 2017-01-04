@@ -36,11 +36,7 @@ final class TypeName: NSObject, AutoDiffable {
 
     /// Actual type name if given type name is type alias
     // sourcery: skipEquality
-    var actualTypeName: TypeName? {
-        didSet {
-            _tuple = nil
-        }
-    }
+    var actualTypeName: TypeName?
 
     init(_ name: String) {
         self.name = name
@@ -73,20 +69,21 @@ final class TypeName: NSObject, AutoDiffable {
     }
 
     var isTuple: Bool {
-        return tuple != nil
+        if let actualTypeName = actualTypeName?.name {
+            return actualTypeName.isValidTupleName()
+        } else {
+            return name.isValidTupleName()
+        }
     }
 
-    private var _tuple: TupleType?
-    var tuple: TupleType? {
-        if _tuple == nil { _tuple = TupleType(self.actualTypeName?.name ?? self.name) }
-        return _tuple
-    }
+    var tuple: TupleType?
 
     override var description: String {
         if let actualTypeName = actualTypeName {
             return "\(name) aka \(actualTypeName.name)"
+        } else {
+            return name
         }
-        return name
     }
 }
 
@@ -107,80 +104,11 @@ final class TupleType: NSObject, AutoDiffable {
         }
     }
 
-    lazy private(set) var elements: [Element] = {
-        let trimmedBracketsName = String(self.name.characters.dropFirst().dropLast())
-        return trimmedBracketsName
-            .commaSeparated()
-            .map({ $0.trimmingCharacters(in: .whitespaces) })
-            .enumerated()
-            .map {
-                let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+    let elements: [Element]
 
-                guard nameAndType.count == 2 else {
-                    return Element(name: "\($0)", typeName: $1)
-                }
-                guard nameAndType[0] != "_" else {
-                    return Element(name: "\($0)", typeName: nameAndType[1])
-                }
-                return Element(name: nameAndType[0], typeName: nameAndType[1])
-        }
-    }()
-
-    init?(_ name: String) {
-        guard TupleType.isTuple(name) else { return nil }
+    init(name: String, elements: [Element]) {
         self.name = name
+        self.elements = elements
     }
 
-    static func isTuple(_ name: String) -> Bool {
-        guard name.hasPrefix("(") && name.hasSuffix(")") else { return false }
-        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
-        return trimmedBracketsName.bracketsBalanced() && trimmedBracketsName.commaSeparated().count > 1
-    }
-
-}
-
-extension String {
-
-    func bracketsBalancing() -> String {
-        let wrapped = "(\(self))"
-        return TupleType.isTuple(wrapped) || !bracketsBalanced() ? wrapped : self
-    }
-
-    fileprivate func bracketsBalanced() -> Bool {
-        var bracketsCount: Int = 0
-        for char in characters {
-            if char == "(" { bracketsCount += 1 } else if char == ")" { bracketsCount -= 1 }
-            if bracketsCount < 0 { return false }
-        }
-        return bracketsCount == 0
-    }
-
-    func commaSeparated() -> [String] {
-        return components(separatedBy: ",", excludingDelimiterBetween: ("<(", ")>"))
-    }
-
-    func colonSeparated() -> [String] {
-        return components(separatedBy: ":", excludingDelimiterBetween: ("<[(", ")]>"))
-    }
-
-    fileprivate func components(separatedBy delimiter: Character, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
-        var boundingCharactersCount: Int = 0
-        var item = ""
-        var items = [String]()
-        for char in characters {
-            if between.open.characters.contains(char) {
-                boundingCharactersCount += 1
-            } else if between.close.characters.contains(char) {
-                boundingCharactersCount -= 1
-            }
-            if char == delimiter && boundingCharactersCount == 0 {
-                items.append(item)
-                item = ""
-            } else {
-                item.append(char)
-            }
-        }
-        items.append(item)
-        return items
-    }
 }

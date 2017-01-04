@@ -59,6 +59,7 @@ struct ParserComposer {
         let resolveType = { (typeName: TypeName, containingType: Type?, typealiases: [String: Typealias]) -> Type? in
             let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
             typeName.actualTypeName = name.flatMap(TypeName.init)
+            typeName.tuple = self.parseTupleType(name ?? typeName.name)
             return name.flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
         }
 
@@ -220,4 +221,29 @@ struct ParserComposer {
             }
         }
     }
+
+    fileprivate func parseTupleType(_ name: String) -> TupleType? {
+        guard name.isValidTupleName() else { return nil }
+        return TupleType(name: name, elements: parseTupleElements(name))
+    }
+
+    fileprivate func parseTupleElements(_ name: String) -> [TupleType.Element] {
+        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
+        return trimmedBracketsName
+            .commaSeparated()
+            .map({ $0.trimmingCharacters(in: .whitespaces) })
+            .enumerated()
+            .map {
+                let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+
+                guard nameAndType.count == 2 else {
+                    return TupleType.Element(name: "\($0)", typeName: $1)
+                }
+                guard nameAndType[0] != "_" else {
+                    return TupleType.Element(name: "\($0)", typeName: nameAndType[1])
+                }
+                return TupleType.Element(name: nameAndType[0], typeName: nameAndType[1])
+        }
+    }
+
 }

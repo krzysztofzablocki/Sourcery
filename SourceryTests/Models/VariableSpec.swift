@@ -58,18 +58,6 @@ class VariableSpec: QuickSpec {
                     expect(TypeName("(Int, (Int, Int))").isTuple).to(beTrue())
                     expect(TypeName("(Int, (Int) -> (Int -> Int))").isTuple).to(beTrue())
                 }
-
-                it("extracts elements properly") {
-                    expect(TypeName("(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))").tuple?.elements).to(equal([
-                        TupleType.Element(name: "a", typeName: "Int"),
-                        TupleType.Element(name: "b", typeName: "Int"),
-                        TupleType.Element(name: "2", typeName: "String"),
-                        TupleType.Element(name: "3", typeName: "Float"),
-                        TupleType.Element(name: "literal", typeName: "[String: [String: Int]]"),
-                        TupleType.Element(name: "generic", typeName: "Dictionary<String, Dictionary<String, Float>>"),
-                        TupleType.Element(name: "closure", typeName: "(Int) -> (Int -> Int)")
-                        ]))
-                }
             }
 
             describe("When testing equality") {
