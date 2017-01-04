@@ -102,6 +102,7 @@ func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
 ```
 
 Result:
+
 ```swift
 extension AccountSectionConfiguration: Equatable {}
 
@@ -113,7 +114,10 @@ func == (lhs: AccountSectionConfiguration, rhs: AccountSectionConfiguration) -> 
     return true
 }
 ...
+
 ```
+
+----
 
 ##### Use case: `I want to create lenses for all structs.`
 _[Full implementation](http://gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
@@ -135,8 +139,8 @@ extension {{ type.name }} {
 ```
 
 Result:
-```swift
 
+```swift
 extension House {
 
   static let addressLens = Lens<House, String>(
@@ -168,7 +172,11 @@ There are multiple ways to access your types:
 - `types.implementing.Protocol` => lists all types conforming to given Protocol (only those that were defined in source code that Sourcery scanned)
 - `types.based.BaseClassOrProtocol` => lists all types implementing or inheriting from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
 
-For each type you can access following properties:
+All of these properties return `Type` objects.
+
+Available types:
+
+<details><summary>**Type**. Properties:</summary>
 
 - `name` <- name
 - `kind` <- convience accessor that will contain one of `enum`, `class`, `struct`, `protocol`, it will also provide `extension` for types that are unknown to us(e.g. 3rd party or objc), but had extension in the project
@@ -187,28 +195,37 @@ For each type you can access following properties:
 - `parentName` <- list of parent type (for contained ones)
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
-**Enum** types builts on top of regular types and adds:
+</details>
+
+<details><summary> **Enum**. Built on top of `Type` and provides some additional properties:</summary>
 
 - `rawType` <- enum raw type
 - `cases` <- list of `Enum.Case`
 - `hasAssociatedValues` <- true if any of cases has associated values
 
-**Enum.Case** provides:
+</details>
+
+<details><summary>**Enum.Case**. Properties:</summary>
 
 - `name` <- name
 - `rawValue` <- raw value
 - `associatedValues` <- list of `AssociatedValue`
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
-**Enum.Case.AssociatedValue** provides:
+</details>
 
-- `name` <- name
+<details><summary>**Enum.Case.AssociatedValue**. Properties:</summary>
+
+- `localName` <- name to use to construct value, i.e. `value` in `Foo.foo(value: ...)`
+- `exteranlName` <- name to use when binding value, i.e. `value` or `other` in `enum Foo { case foo(value: ..., other: ... )}`. Will use index as a fallback
 - `typeName` <- name of type of associated value (*TypeName*)
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isTuple` <- shorthand for `typeName.isTuple`
 
-**Variable** provides:
+</details>
+
+<details><summary>**Variable**. Properties:</summary>
 
 - `name` <- Name
 - `type` <- type of the variable, if known
@@ -223,7 +240,9 @@ For each type you can access following properties:
 - `writeAccess` <- what is the protection access for writing?
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
-**Method** provides:
+</details>
+
+<details><summary>**Method**. Properties:</summary>
 
 - `selectorName` <- full name of the method, i.e for `func foo(bar: Bar) -> Bar` `foo(bar:)`
 - `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` `foo`
@@ -239,7 +258,9 @@ For each type you can access following properties:
 - `isFailableInitializer` <- whether method is failable initializer
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
-**Method.Parameter** provides:
+</details>
+
+<details><summary>**Method.Parameter**. Properties:</summary>
 
 - `name` <- parameter name
 - `argumentLabel` <- argument label (external name), if not set will be eqal to `name`
@@ -249,21 +270,27 @@ For each type you can access following properties:
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isTuple` <- shorthand for `typeName.isTuple`
 
-**TypeName** provides:
+</details>
+
+<details><summary>**TypeName**. Properties:</summary>
 
 - `name` <- type name
 - `actualTypeName` <- if give type is typealias will contain actual type name, otherwise will be `Void`
 - `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
-- `isVoid` <- wheter type is Void (`Void` or `()`)
+- `isVoid` <- whether type is Void (`Void` or `()`)
 - `isTuple` <- whether given type is a tuple
 - `tuple.elements` <- if given type is a tuple returns its elements information (*TupleType.Element*)
 
-**TupleType.Element** provides
+</details>
 
-- `name` <- name of the element
+<details><summary>**TupleType.Element**. Properties:</summary>
+
+- `name` <- element name
 - `typeName` <- element type name (*TypeName*)
 - `type` <- type of element, if known
+
+</details>
 
 ### Custom Stencil tags and filter
 

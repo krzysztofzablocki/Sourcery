@@ -26,7 +26,8 @@ extension Enum.Case {
 extension Enum.Case.AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(name), "
+        string += "localName = \(localName), "
+        string += "externalName = \(externalName), "
         string += "typeName = \(typeName), "
         return string
     }

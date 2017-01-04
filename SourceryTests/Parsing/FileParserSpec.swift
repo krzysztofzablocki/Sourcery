@@ -371,10 +371,14 @@ class FileParserSpec: QuickSpec {
                     it("extracts cases with annotations properly") {
                         expect(parse("enum Foo {\n // sourcery: annotation\ncase optionA(Int)\n case optionB }"))
                                 .to(equal([
-                                        Enum(name: "Foo", cases: [Enum.Case(name: "optionA",
-                                                associatedValues: [Enum.Case.AssociatedValue(name: nil, typeName: "Int")],
-                                                annotations: ["annotation": NSNumber(value: true)]), Enum.Case(name: "optionB")])
-                                ]))
+                                    Enum(name: "Foo",
+                                         cases: [
+                                            Enum.Case(name: "optionA", associatedValues: [
+                                                Enum.Case.AssociatedValue(name: nil, typeName: "Int")
+                                                ], annotations: ["annotation": NSNumber(value: true)]),
+                                            Enum.Case(name: "optionB")
+                                        ])
+                                    ]))
                     }
 
                     it("extracts variables properly") {
@@ -427,19 +431,20 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts enums with associated types") {
-                        expect(parse("enum Foo { case optionA(Observable<Int, Int>); case optionB(Int, named: Float); case optionC([String: String]) }"))
+                        expect(parse("enum Foo { case optionA(Observable<Int, Int>); case optionB(Int, named: Float, _: Int); case optionC(dict: [String: String]) }"))
                                 .to(equal([
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
                                             Enum.Case(name: "optionA", associatedValues: [
-                                                Enum.Case.AssociatedValue(name: nil, typeName: "Observable<Int, Int>")
+                                                Enum.Case.AssociatedValue(localName: nil, externalName: nil, typeName: "Observable<Int, Int>")
                                                 ]),
                                             Enum.Case(name: "optionB", associatedValues: [
-                                                Enum.Case.AssociatedValue(name: "0", typeName: "Int"),
-                                                Enum.Case.AssociatedValue(name: "named", typeName: "Float")
+                                                Enum.Case.AssociatedValue(localName: nil, externalName: "0", typeName: "Int"),
+                                                Enum.Case.AssociatedValue(localName: "named", externalName: "named", typeName: "Float"),
+                                                Enum.Case.AssociatedValue(localName: nil, externalName: "2", typeName: "Int")
                                                 ]),
                                             Enum.Case(name: "optionC", associatedValues: [
-                                                Enum.Case.AssociatedValue(name: nil, typeName: "[String: String]")
+                                                Enum.Case.AssociatedValue(localName: "dict", externalName: nil, typeName: "[String: String]")
                                                 ])
                                         ])
                                 ]))
@@ -459,10 +464,10 @@ class FileParserSpec: QuickSpec {
                     context("given associated value with its type existing") {
 
                         it("extracts associated value's type") {
-                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = Enum.Case.AssociatedValue(typeName: "Bar", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
                             let item = Enum(name: "Foo", cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
 
-                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar) }")
+                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar) }")
                             let parsedItem = parsed.flatMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))
@@ -470,10 +475,10 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts associated value's optional type") {
-                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar?", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = Enum.Case.AssociatedValue(typeName: "Bar?", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
                             let item = Enum(name: "Foo", cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
 
-                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar?) }")
+                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar?) }")
                             let parsedItem = parsed.flatMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))
@@ -481,10 +486,10 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts associated value's typealias") {
-                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Bar2", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = Enum.Case.AssociatedValue(typeName: "Bar2", type: Type(name: "Bar", inheritedTypes: ["Baz"]))
                             let item = Enum(name: "Foo", cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
 
-                            let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(key: Bar2) }")
+                            let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar2) }")
                             let parsedItem = parsed.flatMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))
@@ -492,11 +497,11 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts associated value's same (indirect) enum type") {
-                            let associatedValue = Enum.Case.AssociatedValue(name: "key", typeName: "Foo")
+                            let associatedValue = Enum.Case.AssociatedValue(typeName: "Foo")
                             let item = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: [Enum.Case(name: "optionA", associatedValues: [associatedValue])])
                             associatedValue.type = item
 
-                            let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(key: Foo) }")
+                            let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(Foo) }")
                             let parsedItem = parsed.flatMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))

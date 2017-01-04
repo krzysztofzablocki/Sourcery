@@ -26,7 +26,8 @@ extension Enum.Case {
 extension Enum.Case.AssociatedValue {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Enum.Case.AssociatedValue else { return false }
-        if self.name != rhs.name { return false }
+        if self.localName != rhs.localName { return false }
+        if self.externalName != rhs.externalName { return false }
         if self.typeName != rhs.typeName { return false }
 
         return true

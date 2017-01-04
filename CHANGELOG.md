@@ -7,6 +7,7 @@
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`
 - Added support for special escaped names in enum cases e.g. `default` or `for`
 - Added support for tuple types and `tuple` filter for variables
+- Enum associated values now have `localName` and `exteranlName` properties.
 - Added `actualTypeName` for `TypeName` that is typealias
 - Added `implements`, `inherits` and `based` filters
 

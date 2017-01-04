@@ -361,12 +361,14 @@ extension FileParser {
                 let defaultName: String? = $0 == 0 && items.count == 1 ? nil : "\($0)"
 
                 guard nameAndType.count == 2 else {
-                    return Enum.Case.AssociatedValue(name: defaultName, typeName: $1)
+                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: $1)
                 }
                 guard nameAndType[0] != "_" else {
-                    return Enum.Case.AssociatedValue(name: defaultName, typeName: nameAndType[1])
+                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: nameAndType[1])
                 }
-                return Enum.Case.AssociatedValue(name: nameAndType[0], typeName: nameAndType[1])
+                let localName = nameAndType[0]
+                let externalName = items.count > 1 ? localName : defaultName
+                return Enum.Case.AssociatedValue(localName: localName, externalName: externalName, typeName: nameAndType[1])
         }
     }
 

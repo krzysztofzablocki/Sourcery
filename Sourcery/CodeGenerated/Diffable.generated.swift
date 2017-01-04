@@ -45,7 +45,8 @@ extension Enum.Case.AssociatedValue: Diffable {
             results.append("Incorrect type <expected: Enum.Case.AssociatedValue, received: \(type(of: object))>")
             return results
         }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: rhs.localName))
+        results.append(contentsOf: DiffableResult(identifier: "externalName").trackDifference(actual: self.externalName, expected: rhs.externalName))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: rhs.typeName))
 
         return results
