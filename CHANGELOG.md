@@ -5,6 +5,7 @@
 
 ### New Features
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`
+- Added support for special escaped names in enum cases e.g. `default` or `for`
 
 ### Bug Fixes
 - Using protocols doesn't expose variables using KVC, which meant some of the typeName properties weren't accessible via Templates, we fixed that using Sourcery itself to generate specific functions.

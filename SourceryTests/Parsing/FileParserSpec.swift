@@ -327,6 +327,18 @@ class FileParserSpec: QuickSpec {
                                 ]))
                     }
 
+                    it("extracts cases with special names") {
+                        expect(parse("enum Foo { case `default`; case `for`(something: Int, else: Float, `default`: Bool) }"))
+                                .to(equal([
+                                                  Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [Enum.Case(name: "default"), Enum.Case(name: "for", associatedValues:
+                                                  [
+                                                          Enum.Case.AssociatedValue(name: "something", typeName: "Int"),
+                                                          Enum.Case.AssociatedValue(name: "else", typeName: "Float"),
+                                                          Enum.Case.AssociatedValue(name: "default", typeName: "Bool"),
+                                                  ])])
+                                          ]))
+                    }
+
                     it("extracts multi-byte cases properly") {
                         expect(parse("enum JapaneseEnum {\ncase アイウエオ\n}"))
                             .to(equal([

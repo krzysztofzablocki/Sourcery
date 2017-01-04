@@ -33,7 +33,7 @@ internal enum Substring {
         case .nameSuffix:
             if let name = Substring.name.range(for: source), let key = Substring.key.range(for: source) {
                 let nameEnd = name.offset + name.length
-                return (name.offset + name.length, key.offset + key.length - nameEnd)
+                return (nameEnd, key.offset + key.length - nameEnd)
             }
         case .keyPrefix:
             return Substring.key.range(for: source).flatMap { (offset: 0, length: $0.offset) }

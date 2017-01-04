@@ -319,17 +319,25 @@ extension FileParser {
         var associatedValues: [Enum.Case.AssociatedValue] = []
         var rawValue: String? = nil
 
-        if let wrappedBody = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) {
-            switch (wrappedBody.characters.first, wrappedBody.characters.last) {
-            case ("="?, _):
-                let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-                rawValue = parseEnumValues(body)
-            case ("("?, ")"?):
-                let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-                associatedValues = parseEnumAssociatedValues(body)
-            default:
-                print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
-            }
+        guard let keyString = extract(.key, from: source)?.replacingOccurrences(of: "`", with: ""),
+                let nameRange = keyString.range(of: name) else {
+            print("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")
+            return nil
+        }
+
+        let wrappedBody = keyString.substring(from: nameRange.upperBound).trimmingCharacters(in: .whitespacesAndNewlines)
+
+        switch (wrappedBody.characters.first, wrappedBody.characters.last) {
+        case ("="?, _?):
+             let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+             rawValue = parseEnumValues(body)
+        case ("("?, ")"?):
+             let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+             associatedValues = parseEnumAssociatedValues(body)
+        case (nil, nil):
+            break
+        default:
+             print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
         return Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
