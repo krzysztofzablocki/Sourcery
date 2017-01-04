@@ -211,14 +211,18 @@ For each type you can access following properties:
 
 - `name` <- Name
 - `type` <- type of the variable, if known
-- `typeName` <- returns name of the type, including things like optional markup
-- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
-- `isOptional` <- whether is optional
+- `typeName` <- returns information about the type
 - `isComputed` <- whether is computed
 - `isStatic` <- whether is static variable
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
+
+**TypeName** provides:
+- `type` <- the type of the type
+- `typeName` <- the name of the type
+- `isOptional` <- whether is optional
+- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 
 **Method** provides:
 
