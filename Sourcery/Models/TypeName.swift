@@ -23,13 +23,6 @@ protocol Typed {
     var unwrappedTypeName: String { get }
 }
 
-extension Typed {
-    var isOptional: Bool { return typeName.isOptional }
-    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    var actualTypeName: TypeName? { return typeName.actualTypeName }
-    var isTuple: Bool { return typeName.isTuple }
-}
-
 // sourcery: skipDescription
 final class TypeName: NSObject, AutoDiffable {
     let name: String

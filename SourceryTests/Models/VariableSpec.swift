@@ -35,6 +35,12 @@ class VariableSpec: QuickSpec {
                 it("reports non-optional type for unwrappedTypeName") {
                     expect(Variable(name: "Foo", typeName: "Int?").unwrappedTypeName).to(equal("Int"))
                 }
+
+                it("can report optional via KVC") {
+                    let variable = Variable(name: "Foo", typeName: "Int?")
+
+                    expect(variable.value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                }
             }
 
             context("given optional type with long generic syntax") {

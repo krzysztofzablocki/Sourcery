@@ -173,6 +173,10 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{% for variable in type.Complex.variables %}{{ variable.type.name }}{% endfor %}")).to(equal("FooBar"))
                 }
 
+                it("can render variable isOptional") {
+                    expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("0"))
+                }
+
                 it("generates proper response for type.inherits") {
                     expect(generate("{% if type.Foo.inherits.ProjectClass %} TRUE {% endif %}")).toNot(equal(" TRUE "))
                     expect(generate("{% if type.Foo.inherits.Decodable %} TRUE {% endif %}")).toNot(equal(" TRUE "))
