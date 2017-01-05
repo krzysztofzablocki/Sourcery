@@ -26,6 +26,8 @@ private extension Parsable {
 extension Variable: Parsable {}
 extension Type: Parsable {}
 extension Method: Parsable {}
+extension Method.Parameter: Parsable {}
+extension Enum.Case: Parsable {}
 
 typealias ParserResult = (types: [Type], typealiases: [Typealias])
 
@@ -126,8 +128,9 @@ struct FileParser {
             }
 
             type.isGeneric = isGeneric(source: source)
-            type.setSource(source)
             type.annotations = annotations.from(source)
+            type.attributes = parseDeclarationAttributes(source)
+            type.setSource(source)
             types.append(type)
             return type
         }
@@ -252,6 +255,16 @@ extension FileParser {
         } ?? []
     }
 
+    fileprivate func isGeneric(source: [String: SourceKitRepresentable]) -> Bool {
+        guard let substring = extract(.nameSuffix, from: source), substring.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<") == true else { return false }
+        return true
+    }
+
+}
+
+// MARK: - Variables
+extension FileParser {
+
     internal func parseVariable(_ source: [String: SourceKitRepresentable], isStatic: Bool = false) -> Variable? {
         guard let (name, _, accesibility) = parseTypeRequirements(source),
             accesibility != .private && accesibility != .fileprivate else { return nil }
@@ -273,6 +286,7 @@ extension FileParser {
         }
 
         guard let type = maybeType else { return nil }
+        let typeName = TypeName(type, attributes: parseTypeAttributes(type))
 
         var writeAccessibility = AccessLevel.none
         var computed = false
@@ -288,12 +302,16 @@ extension FileParser {
             computed = false
         }
 
-        let variable = Variable(name: name, typeName: type, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic)
-        variable.annotations = annotations.from(source)
+        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
         variable.setSource(source)
 
         return variable
     }
+
+}
+
+// MARK: - Methods
+extension FileParser {
 
     internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> Method? {
         guard let (name, kind, accesibility) = parseTypeRequirements(source),
@@ -321,7 +339,7 @@ extension FileParser {
             returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
 
-        let method = Method(selectorName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: annotations.from(source))
+        let method = Method(selectorName: name, returnTypeName: TypeName(returnTypeName), accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
         method.setSource(source)
 
         return method
@@ -331,8 +349,16 @@ extension FileParser {
         guard let (name, _, _) = parseTypeRequirements(source),
             let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
 
-        return Method.Parameter(name: name, typeName: type)
+        let typeName = TypeName(type, attributes: parseTypeAttributes(type))
+        let parameter = Method.Parameter(name: name, typeName: typeName)
+        parameter.setSource(source)
+        return parameter
     }
+
+}
+
+// MARK: - Enums
+extension FileParser {
 
     fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable]) -> Enum.Case? {
         guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
@@ -361,7 +387,9 @@ extension FileParser {
              print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        return Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
+        let enumCase = Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
+        enumCase.setSource(source)
+        return enumCase
     }
 
     fileprivate func parseEnumValues(_ body: String) -> String {
@@ -382,16 +410,24 @@ extension FileParser {
                 let defaultName: String? = $0 == 0 && items.count == 1 ? nil : "\($0)"
 
                 guard nameAndType.count == 2 else {
-                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: $1)
+                    let typeName = TypeName($1, attributes: parseTypeAttributes($1))
+                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
                 }
                 guard nameAndType[0] != "_" else {
-                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: nameAndType[1])
+                    let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
+                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
                 }
                 let localName = nameAndType[0]
                 let externalName = items.count > 1 ? localName : defaultName
-                return Enum.Case.AssociatedValue(localName: localName, externalName: externalName, typeName: nameAndType[1])
+                let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
+                return Enum.Case.AssociatedValue(localName: localName, externalName: externalName, typeName: typeName)
         }
     }
+
+}
+
+// MARK: - Typealiases
+extension FileParser {
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {
         var contentToParse = self.contents
@@ -424,7 +460,7 @@ extension FileParser {
         var typealiases = existingTypealiases
 
         for (index, token) in tokens.enumerated() {
-            guard token.type == "source.lang.swift.syntaxtype.keyword",
+            guard token.type == SyntaxKind.keyword.rawValue,
                 extract(token, contents: contents) == "typealias" else {
                     continue
             }
@@ -444,7 +480,7 @@ extension FileParser {
             var firstTypeToken: SyntaxToken?
             while index < tokens.count - 1 {
                 index += 1
-                if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier" {
+                if tokens[index].type == SyntaxKind.typeidentifier.rawValue {
                     if firstTypeToken == nil { firstTypeToken = tokens[index] }
                     lastTypeToken = tokens[index]
                 } else { break }
@@ -453,16 +489,92 @@ extension FileParser {
                 let lastTypeToken = lastTypeToken,
                 let typeName = extract(from: firstTypeToken, to: lastTypeToken, contents: contents) {
 
-                typealiases.append(Typealias(aliasName: alias, typeName: typeName.bracketsBalancing()))
+                typealiases.append(Typealias(aliasName: alias, typeName: TypeName(typeName.bracketsBalancing())))
             }
         }
         return typealiases
     }
 
-    fileprivate func isGeneric(source: [String: SourceKitRepresentable]) -> Bool {
-        guard let substring = extract(.nameSuffix, from: source), substring.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<") == true else { return false }
-        return true
+}
+
+// MARK: - Attributes
+extension FileParser {
+
+    internal func parseDeclarationAttributes(_ source: [String: SourceKitRepresentable]) -> [String: Attribute] {
+        guard let prefix = extract(.keyPrefix, from: source) else { return [:] }
+        if let attributesValue = source["key.attributes"] as? [[String: String]] {
+            var ranges = [NSRange]()
+            attributesValue.map({ $0.values }).joined()
+                .flatMap({ Attribute.Identifier(rawValue: $0.replacingOccurrences(of: "source.decl.attribute.", with: "")) })
+                .forEach {
+                    ranges.append(prefix.bridge().range(of: $0.description, options: .backwards))
+            }
+            guard let location = ranges.min(by: { $0.location < $1.location })?.location else { return [:] }
+            return parseAttributes(prefix.bridge().substring(from: location - 1))
+        }
+        return [:]
     }
+
+    internal func parseTypeAttributes(_ typeName: String) -> [String: Attribute] {
+        return parseAttributes(typeName)
+    }
+
+    private func parseAttributes(_ string: String) -> [String: Attribute] {
+        let items = string.components(separatedBy: "@", excludingDelimiterBetween: ("(", ")"))
+            .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+        guard items.count > 1 else { return [:] }
+
+        var attributes = [String: Attribute]()
+        let _attributes: [Attribute] = items.filter({ !$0.isEmpty }).flatMap {
+            guard let attributeString = $0.trimmingCharacters(in: .whitespaces)
+                .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
+
+            let name: String
+            if let openIndex = attributeString.characters.index(of: "(") {
+
+                name = String(attributeString.characters.prefix(upTo: openIndex))
+
+                let chars = attributeString.characters
+                let startIndex = chars.index(openIndex, offsetBy: 1)
+                let endIndex = chars.index(chars.endIndex, offsetBy: -1)
+                let argumentsString = String(chars[startIndex ..< endIndex])
+                let arguments = parseAttributeArguments(argumentsString)
+
+                return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")
+            } else {
+                return Attribute(name: attributeString)
+            }
+        }
+        _attributes.forEach { attributes[$0.name] = $0 }
+        return attributes
+    }
+
+    private func parseAttributeArguments(_ string: String) -> [String: NSObject] {
+        var arguments = [String: NSObject]()
+        string.components(separatedBy: ",", excludingDelimiterBetween: ("\"", "\""))
+            .map({ $0.trimmingCharacters(in: .whitespaces) })
+            .forEach { argument in
+                guard argument.contains("\"") else {
+                    if argument != "*" {
+                        arguments[argument.replacingOccurrences(of: " ", with: "_")] = NSNumber(value: true)
+                    }
+                    return
+                }
+
+                let nameAndValue = argument
+                    .components(separatedBy: ":", excludingDelimiterBetween: ("\"", "\""))
+                    .map({ $0.trimmingCharacters(in: CharacterSet(charactersIn: "\"").union(.whitespaces)) })
+                if nameAndValue.count != 1 {
+                    arguments[nameAndValue[0].replacingOccurrences(of: " ", with: "_")] = nameAndValue[1] as NSString
+                }
+        }
+        return arguments
+    }
+
+}
+
+// MARK: - Helpres
+extension FileParser {
 
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable]) -> String? {
         return substringIdentifier.extract(from: source, contents: self.contents)

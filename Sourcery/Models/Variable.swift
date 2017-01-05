@@ -33,23 +33,27 @@ final class Variable: NSObject, AutoDiffable, Typed, Annotated {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
+    var attributes: [String: Attribute]
+
     /// Underlying parser data, never to be used by anything else
     /// sourcery: skipEquality, skipDescription
     internal var __parserData: Any?
 
     init(name: String = "",
-         typeName: String = "",
+         typeName: TypeName,
          accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
          isComputed: Bool = false,
          isStatic: Bool = false,
+         attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:]) {
 
         self.name = name
-        self.typeName = TypeName(typeName)
+        self.typeName = typeName
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
+        self.attributes = attributes
         self.annotations = annotations
     }
 

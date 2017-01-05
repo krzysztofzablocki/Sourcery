@@ -140,6 +140,8 @@ class Type: NSObject, AutoDiffable, Annotated {
     /// sourcery: skipDescription
     var supertype: Type?
 
+    var attributes: [String: Attribute]
+
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
     /// sourcery: skipDescription
@@ -154,6 +156,7 @@ class Type: NSObject, AutoDiffable, Annotated {
          inheritedTypes: [String] = [],
          containedTypes: [Type] = [],
 		 typealiases: [Typealias] = [],
+		 attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:],
          isGeneric: Bool = false) {
 
@@ -167,6 +170,7 @@ class Type: NSObject, AutoDiffable, Annotated {
         self.typealiases = [:]
         self.parent = parent
         self.parentName = parent?.name
+        self.attributes = attributes
         self.annotations = annotations
         self.isGeneric = isGeneric
 

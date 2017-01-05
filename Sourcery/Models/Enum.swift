@@ -16,14 +16,14 @@ final class Enum: Type {
             /// sourcery: skipDescription
             var type: Type?
 
-            init(localName: String?, externalName: String?, typeName: String, type: Type? = nil) {
+            init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil) {
                 self.localName = localName
                 self.externalName = externalName
-                self.typeName = TypeName(typeName)
+                self.typeName = typeName
                 self.type = type
             }
 
-            convenience init(name: String? = nil, typeName: String, type: Type? = nil) {
+            convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil) {
                 self.init(localName: name, externalName: name, typeName: typeName, type: type)
             }
         }
@@ -38,6 +38,10 @@ final class Enum: Type {
         var hasAssociatedValue: Bool {
             return !associatedValues.isEmpty
         }
+
+        /// Underlying parser data, never to be used by anything else
+        // sourcery: skipEquality, skipDescription
+        internal var __parserData: Any?
 
         init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {
             self.name = name
@@ -98,22 +102,23 @@ final class Enum: Type {
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,
          inheritedTypes: [String] = [],
-         rawTypeName: String? = nil,
+         rawTypeName: TypeName? = nil,
          cases: [Case] = [],
          variables: [Variable] = [],
          methods: [Method] = [],
          containedTypes: [Type] = [],
          typealiases: [Typealias] = [],
+         attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:],
          isGeneric: Bool = false) {
 
         self.cases = cases
-        self.rawTypeName = rawTypeName.map(TypeName.init)
+        self.rawTypeName = rawTypeName
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, annotations: annotations, isGeneric: isGeneric)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, annotations: annotations, isGeneric: isGeneric)
 
-        if let rawTypeName = rawTypeName, let index = self.inheritedTypes.index(of: rawTypeName) {
+        if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.index(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
         }
     }

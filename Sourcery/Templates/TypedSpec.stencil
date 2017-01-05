@@ -1,0 +1,35 @@
+import Quick
+import Nimble
+@testable import Sourcery
+
+class TypedSpec: QuickSpec {
+    override func spec() {
+        {% for type in types.implementing.Typed %}
+        describe("{{ type.name }}") {
+            it("can report optional via KVC") {
+                expect({{ type.name }}(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect({{ type.name }}(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect({{ type.name }}(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect({{ type.name }}(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+                expect({{ type.name }}(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+            }
+
+            it("can report tuple type via KVC") {
+                let tuple = TupleType(name: "(Int, Int)", elements: [])
+                let sut = {{ type.name }}(typeName: TypeName("(Int, Int)"))
+                sut.typeName.tuple = tuple
+
+                expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
+            }
+
+            it("can report actual type name via KVC") {
+                let sut = Enum.Case.AssociatedValue(typeName: TypeName("Alias"))
+                expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
+
+                sut.typeName.actualTypeName = TypeName("Int")
+                expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
+            }
+        }
+        {% endfor %}
+    }
+}

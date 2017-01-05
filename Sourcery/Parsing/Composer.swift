@@ -59,7 +59,7 @@ struct Composer {
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
             let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
-            typeName.actualTypeName = name.flatMap(TypeName.init)
+            typeName.actualTypeName = name.flatMap({ TypeName($0) })
             typeName.tuple = self.parseTupleType(name ?? typeName.name)
             return name.flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
         }
@@ -209,9 +209,9 @@ struct Composer {
                 updateTypeRelationship(for: baseType, typesByName: typesByName, processed: &processed)
             }
 
-            baseType.based.keys.forEach {  type.based[$0] = $0 }
-            baseType.inherits.forEach {  type.inherits[$0.key] = $0.value }
-            baseType.implements.forEach {  type.implements[$0.key] = $0.value }
+            baseType.based.keys.forEach { type.based[$0] = $0 }
+            baseType.inherits.forEach { type.inherits[$0.key] = $0.value }
+            baseType.implements.forEach { type.implements[$0.key] = $0.value }
 
             if baseType is Class {
                 type.inherits[name] = baseType
@@ -236,12 +236,15 @@ struct Composer {
                 let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
 
                 guard nameAndType.count == 2 else {
-                    return TupleType.Element(name: "\($0)", typeName: $1)
+                    let typeName = TypeName($1)
+                    return TupleType.Element(name: "\($0)", typeName: typeName)
                 }
                 guard nameAndType[0] != "_" else {
-                    return TupleType.Element(name: "\($0)", typeName: nameAndType[1])
+                    let typeName = TypeName(nameAndType[1])
+                    return TupleType.Element(name: "\($0)", typeName: typeName)
                 }
-                return TupleType.Element(name: nameAndType[0], typeName: nameAndType[1])
+                let typeName = TypeName(nameAndType[1])
+                return TupleType.Element(name: nameAndType[0], typeName: typeName)
         }
     }
 
