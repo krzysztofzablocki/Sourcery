@@ -72,11 +72,7 @@ final class TypeName: NSObject, AutoDiffable {
     var tuple: TupleType?
 
     override var description: String {
-        if let actualTypeName = actualTypeName {
-            return "\(name) aka \(actualTypeName.name)"
-        } else {
-            return name
-        }
+        return name
     }
 }
 

@@ -217,7 +217,7 @@ Available types:
 <details><summary>**Enum.Case.AssociatedValue**. Properties:</summary>
 
 - `localName` <- name to use to construct value, i.e. `value` in `Foo.foo(value: ...)`
-- `exteranlName` <- name to use when binding value, i.e. `value` or `other` in `enum Foo { case foo(value: ..., other: ... )}`. Will use index as a fallback
+- `externalName` <- name to use when binding value, i.e. `value` or `other` in `enum Foo { case foo(value: ..., other: ... )}`. Will use index as a fallback
 - `typeName` <- name of type of associated value (*TypeName*)
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
@@ -287,8 +287,11 @@ Available types:
 <details><summary>**TupleType.Element**. Properties:</summary>
 
 - `name` <- element name
-- `typeName` <- element type name (*TypeName*)
 - `type` <- type of element, if known
+- `typeName` <- element type name (*TypeName*)
+- `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
+- `isOptional` <- shorthand for `typeName.isOptional`
+- `isTuple` <- shorthand for `typeName.isTuple`
 
 </details>
 
