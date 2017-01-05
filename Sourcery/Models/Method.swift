@@ -18,8 +18,14 @@ final class Method: NSObject, AutoDiffable, Annotated {
         /// Actual parameter type, if known
         var type: Type?
 
-        init(argumentLabel: String? = nil, name: String, typeName: String) {
-            self.typeName = TypeName(typeName)
+        var typeAttributes: [String: Attribute] { return typeName.attributes }
+
+        /// Underlying parser data, never to be used by anything else
+        // sourcery: skipEquality, skipDescription
+        internal var __parserData: Any?
+
+        init(argumentLabel: String? = nil, name: String = "", typeName: TypeName) {
+            self.typeName = typeName
             self.argumentLabel = argumentLabel ?? name
             self.name = name
         }
@@ -51,6 +57,8 @@ final class Method: NSObject, AutoDiffable, Annotated {
         return returnTypeName.isOptional || isFailableInitializer
     }
 
+    // sourcery: skipEquality
+    // sourcery: skipDescription
     var isImplicitlyUnwrappedOptionalReturnType: Bool {
         return returnTypeName.isImplicitlyUnwrappedOptional
     }
@@ -81,26 +89,30 @@ final class Method: NSObject, AutoDiffable, Annotated {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     let annotations: [String: NSObject]
 
+    let attributes: [String: Attribute]
+
     /// Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription
     internal var __parserData: Any?
 
     init(selectorName: String,
          parameters: [Parameter] = [],
-         returnTypeName: String = "Void",
+         returnTypeName: TypeName = TypeName("Void"),
          accessLevel: AccessLevel = .internal,
          isStatic: Bool = false,
          isClass: Bool = false,
          isFailableInitializer: Bool = false,
+         attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:]) {
 
         self.selectorName = selectorName
         self.parameters = parameters
-        self.returnTypeName = TypeName(returnTypeName)
+        self.returnTypeName = returnTypeName
         self.accessLevel = accessLevel
         self.isStatic = isStatic
         self.isClass = isClass
         self.isFailableInitializer = isFailableInitializer
+        self.attributes = attributes
         self.annotations = annotations
     }
 

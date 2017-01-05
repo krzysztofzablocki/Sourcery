@@ -27,9 +27,9 @@ final class Typealias: NSObject, AutoDiffable, Typed {
         }
     }
 
-    init(aliasName: String, typeName: String, parent: Type? = nil) {
+    init(aliasName: String = "", typeName: TypeName, parent: Type? = nil) {
         self.aliasName = aliasName
-        self.typeName = TypeName(typeName)
+        self.typeName = typeName
         self.parent = parent
         self.parentName = parent?.name
     }

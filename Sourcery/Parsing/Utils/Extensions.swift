@@ -33,7 +33,7 @@ extension String {
         return components(separatedBy: ":", excludingDelimiterBetween: ("<[(", ")]>"))
     }
 
-    fileprivate func components(separatedBy delimiter: Character, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
+    func components(separatedBy delimiter: Character, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
         var boundingCharactersCount: Int = 0
         var item = ""
         var items = [String]()

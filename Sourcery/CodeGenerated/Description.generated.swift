@@ -45,7 +45,8 @@ extension Method {
         string += "isClass = \(isClass), "
         string += "isInitializer = \(isInitializer), "
         string += "isFailableInitializer = \(isFailableInitializer), "
-        string += "annotations = \(annotations)"
+        string += "annotations = \(annotations), "
+        string += "attributes = \(attributes)"
         return string
     }
 }
@@ -56,7 +57,8 @@ extension Method.Parameter {
         string += "argumentLabel = \(argumentLabel), "
         string += "name = \(name), "
         string += "typeName = \(typeName), "
-        string += "type = \(type)"
+        string += "type = \(type), "
+        string += "typeAttributes = \(typeAttributes)"
         return string
     }
 }
@@ -99,7 +101,8 @@ extension Type {
         string += "storedVariables = \(storedVariables), "
         string += "inheritedTypes = \(inheritedTypes), "
         string += "containedTypes = \(containedTypes), "
-        string += "parentName = \(parentName)"
+        string += "parentName = \(parentName), "
+        string += "attributes = \(attributes)"
         return string
     }
 }
@@ -124,7 +127,8 @@ extension Variable {
         string += "isStatic = \(isStatic), "
         string += "readAccess = \(readAccess), "
         string += "writeAccess = \(writeAccess), "
-        string += "annotations = \(annotations)"
+        string += "annotations = \(annotations), "
+        string += "attributes = \(attributes)"
         return string
     }
 }

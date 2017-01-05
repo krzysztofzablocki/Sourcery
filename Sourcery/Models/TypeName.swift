@@ -20,6 +20,10 @@ protocol Typed {
 
     /// sourcery: skipEquality
     /// sourcery: skipDescription
+    var isImplicitlyUnwrappedOptional: Bool { get }
+
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
     var unwrappedTypeName: String { get }
 }
 
@@ -31,39 +35,44 @@ final class TypeName: NSObject, AutoDiffable {
     // sourcery: skipEquality
     var actualTypeName: TypeName?
 
-    init(_ name: String) {
+    init(_ name: String, attributes: [String: Attribute] = [:]) {
         self.name = name
-    }
+        self.attributes = attributes
 
-    // sourcery: skipEquality
-    var isOptional: Bool {
-        if name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional {
-            return true
-        }
-        return false
-    }
-
-    var isImplicitlyUnwrappedOptional: Bool {
-        if name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<") {
-            return true
-        }
-        return false
-    }
-
-    // sourcery: skipEquality
-    var unwrappedTypeName: String {
-        guard isOptional else {
-            return name
+        var name = name
+        attributes.forEach {
+            let trim = CharacterSet(charactersIn: "@\($0.key)")
+            name = name.trimmingCharacters(in: trim.union(.whitespaces))
         }
 
-        if name.hasSuffix("?") || name.hasSuffix("!") {
-            return String(name.characters.dropLast())
-        } else if name.hasPrefix("Optional<") {
-            return String(name.characters.dropFirst("Optional<".characters.count).dropLast())
+		let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
+        let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
+		self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
+        self.isOptional = isOptional
+
+        if isOptional {
+            if name.hasSuffix("?") || name.hasSuffix("!") {
+                self.unwrappedTypeName = String(name.characters.dropLast())
+            } else if name.hasPrefix("Optional<") {
+                self.unwrappedTypeName = String(name.characters.dropFirst("Optional<".characters.count).dropLast())
+            } else {
+                self.unwrappedTypeName = String(name.characters.dropFirst("ImplicitlyUnwrappedOptional<".characters.count).dropLast())
+            }
         } else {
-            return String(name.characters.dropFirst("ImplicitlyUnwrappedOptional<".characters.count).dropLast())
+            self.unwrappedTypeName = name
         }
     }
+
+    let attributes: [String: Attribute]
+
+    // sourcery: skipEquality
+    let isOptional: Bool
+
+    // sourcery: skipEquality
+    let isImplicitlyUnwrappedOptional: Bool
+
+    // sourcery: skipEquality
+    let unwrappedTypeName: String
 
     // sourcery: skipEquality
     var isVoid: Bool {
@@ -83,6 +92,7 @@ final class TypeName: NSObject, AutoDiffable {
     override var description: String {
         return name
     }
+
 }
 
 final class TupleType: NSObject, AutoDiffable {
@@ -95,9 +105,9 @@ final class TupleType: NSObject, AutoDiffable {
         // sourcery: skipEquality, skipDescription
         var type: Type?
 
-        init(name: String, typeName: String, type: Type? = nil) {
+        init(name: String = "", typeName: TypeName, type: Type? = nil) {
             self.name = name
-            self.typeName = TypeName(typeName)
+            self.typeName = typeName
             self.type = type
         }
     }

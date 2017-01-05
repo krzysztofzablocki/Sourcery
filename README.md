@@ -193,6 +193,7 @@ Available types:
 - `based.BaseClassOrProtocol` => info whether type implements or inherits from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
 - `containedTypes` <- list of types contained within this type
 - `parentName` <- list of parent type (for contained ones)
+- `attributes` <- type attributes, i.e. `type.attributes.objc`
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
 </details>
@@ -242,6 +243,7 @@ Available types:
 - `typeName.tuple` <- returns information about tuple type
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
+- `attributes` <- variable attributes, i.e. `var.attributes.NSManaged`
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
 </details>
@@ -261,6 +263,7 @@ Available types:
 - `isClass` <- whether method is class (can be overriden by subclasses)
 - `isInitializer` <- whether method is an initializer
 - `isFailableInitializer` <- whether method is failable initializer
+- `attributes` <- method attributes, i.e. `method.attributes.discardableResult`
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 
 </details>
@@ -276,6 +279,7 @@ Available types:
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
+- `typeAttributes` <- parameter's type attributes, shorthand for `typeName.attributes`, i.e. `param.typeAttributes.escaping`
 
 </details>
 
@@ -289,6 +293,7 @@ Available types:
 - `isVoid` <- whether type is Void (`Void` or `()`)
 - `isTuple` <- whether given type is a tuple
 - `tuple.elements` <- if given type is a tuple returns its elements information (*TupleType.Element*)
+- `attributes` <- type attributes, i.e. `typeName.attributes.escaping`
 
 </details>
 
