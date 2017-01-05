@@ -4,6 +4,7 @@ import Stencil
 @testable import Sourcery
 
 class GeneratorSpec: QuickSpec {
+    // swiftlint:disable function_body_length
     override func spec() {
 
         describe("Generator") {
@@ -21,7 +22,8 @@ class GeneratorSpec: QuickSpec {
             complexType.variables = [
                 fooVar,
                 barVar,
-                Variable(name: "fooBar", typeName: "Int", isComputed: true)
+                Variable(name: "fooBar", typeName: "Int", isComputed: true),
+                Variable(name: "tuple", typeName: "(Int, Bar)")
             ]
 
             complexType.methods = [
@@ -101,6 +103,10 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.based.Foo.count }} types")).to(equal("Found 2 types"))
                 expect(generate("Found {{ types.based.NSObject.count }} types")).to(equal("Found 3 types"))
                 expect(generate("Found {{ types.based.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+
+                expect(generate("{{ types.all|implements:\"KnownProtocol\"|count }}")).to(equal("7"))
+                expect(generate("{{ types.all|inherits:\"Foo\"|count }}")).to(equal("2"))
+                expect(generate("{{ types.all|based:\"Decodable\"|count }}")).to(equal("4"))
             }
 
             describe("accessing specific type via type.Typename") {
@@ -118,21 +124,33 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("can use filter on variables") {
-                    expect(generate("{% for var in type.Complex.allVariables|computed %}V{% endfor %}")).to(equal("V"))
-                    expect(generate("{% for var in type.Complex.allVariables|stored %}V{% endfor %}")).to(equal("VV"))
-                    expect(generate("{% for var in type.Complex.allVariables|instance %}V{% endfor %}")).to(equal("VVV"))
-                    expect(generate("{% for var in type.Complex.allVariables|static %}V{% endfor %}")).to(equal(""))
+                    expect(generate("{{ type.Complex.allVariables|computed|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allVariables|stored|count }}")).to(equal("3"))
+                    expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("4"))
+                    expect(generate("{{ type.Complex.allVariables|static|count }}")).to(equal("0"))
+                    expect(generate("{{ type.Complex.allVariables|tuple|count }}")).to(equal("1"))
 
-                    expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("3"))
+                    expect(generate("{{ type.Complex.allVariables|implements:\"KnownProtocol\"|count }}")).to(equal("2"))
+                    expect(generate("{{ type.Complex.allVariables|based:\"Decodable\"|count }}")).to(equal("2"))
+                    expect(generate("{{ type.Complex.allVariables|inherits:\"NSObject\"|count }}")).to(equal("0"))
                 }
 
                 it("can use filter on methods") {
-                    expect(generate("{% for method in type.Complex.allMethods|instance %}M{% endfor %}")).to(equal("M"))
-                    expect(generate("{% for method in type.Complex.allMethods|class %}M{% endfor %}")).to(equal("M"))
-                    expect(generate("{% for method in type.Complex.allMethods|static %}M{% endfor %}")).to(equal("M"))
-                    expect(generate("{% for method in type.Complex.allMethods|initializer %}{% endfor %}")).to(equal(""))
-
+                    expect(generate("{{ type.Complex.allMethods|instance|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allMethods|class|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allMethods|static|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allMethods|initializer|count }}")).to(equal("0"))
                     expect(generate("{{ type.Complex.allMethods|count }}")).to(equal("3"))
+                }
+
+                context("given tuple variable") {
+                    it("can access tuple elements") {
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements %}{{ e.typeName.name }},{% endfor %}{% endfor %}")).to(equal("Int,Bar,"))
+                    }
+
+                    it("can access tuple element type metadata") {
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements|implements:\"KnownProtocol\" %}{{ e.type.name }},{% endfor %}{% endfor %}")).to(equal("Bar,"))
+                    }
                 }
 
                 it("generates type.TypeName") {
@@ -148,7 +166,7 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("classifies computed properties properly") {
-                    expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("3, 1, 2"))
+                    expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("4, 1, 3"))
                 }
 
                 it("can access variable type information") {

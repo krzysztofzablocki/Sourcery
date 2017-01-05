@@ -26,7 +26,8 @@ extension Enum.Case {
 extension Enum.Case.AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(name), "
+        string += "localName = \(localName), "
+        string += "externalName = \(externalName), "
         string += "typeName = \(typeName), "
         return string
     }
@@ -56,6 +57,24 @@ extension Method.Parameter {
         string += "name = \(name), "
         string += "typeName = \(typeName), "
         string += "type = \(type), "
+        return string
+    }
+}
+
+extension TupleType {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(name), "
+        string += "elements = \(elements), "
+        return string
+    }
+}
+
+extension TupleType.Element {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(name), "
+        string += "typeName = \(typeName), "
         return string
     }
 }

@@ -352,20 +352,23 @@ extension FileParser {
     fileprivate func parseEnumAssociatedValues(_ body: String) -> [Enum.Case.AssociatedValue] {
         guard !body.isEmpty else { return [] }
 
-        /// name: type, otherType
-        let components = body.components(separatedBy: ",")
-        return components.enumerated().flatMap { idx, element in
-            let nameType = element.components(separatedBy: ":").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        let items = body.commaSeparated()
+        return items
+            .map({ $0.trimmingCharacters(in: .whitespaces) })
+            .enumerated()
+            .map {
+                let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+                let defaultName: String? = $0 == 0 && items.count == 1 ? nil : "\($0)"
 
-            switch nameType.count {
-            case 1:
-                return Enum.Case.AssociatedValue(name: "\(idx)", typeName: nameType.first ?? "")
-            case 2:
-                return Enum.Case.AssociatedValue(name: nameType.first, typeName: nameType.last ?? "")
-            default:
-                print("\(logPrefix)parseEnumAssociatedValues: Unknown enum case body format \(body)")
-                return nil
-            }
+                guard nameAndType.count == 2 else {
+                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: $1)
+                }
+                guard nameAndType[0] != "_" else {
+                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: nameAndType[1])
+                }
+                let localName = nameAndType[0]
+                let externalName = items.count > 1 ? localName : defaultName
+                return Enum.Case.AssociatedValue(localName: localName, externalName: externalName, typeName: nameAndType[1])
         }
     }
 
@@ -411,6 +414,8 @@ extension FileParser {
                 contentToParse = contentToParse.bridge().replacingOccurrences(of: substring, with: replacement)
             }
         }
+        // `()` is not recognized as type identifier token
+        contentToParse = contentToParse.replacingOccurrences(of: "()", with: "(Void)")
 
         guard containingType != nil else {
             return parseTypealiases(SyntaxMap(file: File(contents: contentToParse)).tokens, contents: contentToParse)
@@ -437,25 +442,27 @@ extension FileParser {
                 accessLevel == .private || accessLevel == .fileprivate {
                 continue
             }
-
-            guard let alias = extract(tokens[index + 1], contents: contents),
-                let type = extract(tokens[index + 2], contents: contents) else {
-                    continue
+            guard let alias = extract(tokens[index + 1], contents: contents) else {
+                continue
             }
 
             //get all subsequent type identifiers
-            var subtypes = [type]
-            var index = index + 2
+            var index = index + 1
+            var lastTypeToken: SyntaxToken?
+            var firstTypeToken: SyntaxToken?
             while index < tokens.count - 1 {
                 index += 1
-
-                if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier",
-                    let subtype = extract(tokens[index], contents: contents) {
-                    subtypes.append(subtype)
+                if tokens[index].type == "source.lang.swift.syntaxtype.typeidentifier" {
+                    if firstTypeToken == nil { firstTypeToken = tokens[index] }
+                    lastTypeToken = tokens[index]
                 } else { break }
             }
+            if let firstTypeToken = firstTypeToken,
+                let lastTypeToken = lastTypeToken,
+                let typeName = extract(from: firstTypeToken, to: lastTypeToken, contents: contents) {
 
-            typealiases.append(Typealias(aliasName: alias, typeName: subtypes.joined(separator: ".")))
+                typealiases.append(Typealias(aliasName: alias, typeName: typeName.bracketsBalancing()))
+            }
         }
         return typealiases
     }
@@ -480,4 +487,9 @@ extension FileParser {
     fileprivate func extract(_ token: SyntaxToken, contents: String) -> String? {
         return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
     }
+
+    fileprivate func extract(from: SyntaxToken, to: SyntaxToken, contents: String) -> String? {
+        return contents.bridge().substringWithByteRange(start: from.offset, length: to.offset + to.length - from.offset)
+    }
+
 }

@@ -29,13 +29,18 @@ final class StencilTemplate: Stencil.Template, Template {
 
     private static func sourceryEnvironment() -> Stencil.Environment {
         let ext = Stencil.Extension()
-        ext.registerFilter("upperFirst", filter: upperFirstFilter)
-        ext.registerFilter("contains", filter: stringContentFilter("contains", String.contains))
-        ext.registerFilter("hasPrefix", filter: stringContentFilter("hasPrefix", String.hasPrefix))
-        ext.registerFilter("hasSuffix", filter: stringContentFilter("hasSuffix", String.hasSuffix))
+        ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
+        ext.registerFilterWithArguments("contains", filter: Filter<String>.make({ $0.contains($1) }))
+        ext.registerFilterWithArguments("hasPrefix", filter: Filter<String>.make({ $0.hasPrefix($1) }))
+        ext.registerFilterWithArguments("hasSuffix", filter: Filter<String>.make({ $0.hasSuffix($1) }))
 
         ext.registerFilter("computed", filter: Filter<Variable>.make({ $0.isComputed && !$0.isStatic }))
         ext.registerFilter("stored", filter: Filter<Variable>.make({ !$0.isComputed && !$0.isStatic }))
+        ext.registerFilter("tuple", filter: Filter<Variable>.make({ $0.isTuple }))
+
+        ext.registerFilterWithArguments("based", filter: FilterOr<Type, Typed>.make({ $0.based[$1] != nil }, other: { $0.type?.based[$1] != nil }))
+        ext.registerFilterWithArguments("implements", filter: FilterOr<Type, Typed>.make({ $0.implements[$1] != nil }, other: { $0.type?.implements[$1] != nil }))
+        ext.registerFilterWithArguments("inherits", filter: FilterOr<Type, Typed>.make({ $0.inherits[$1] != nil }, other: { $0.type?.inherits[$1] != nil }))
 
         ext.registerFilter("enum", filter: Filter<Type>.make({ $0 is Enum }))
         ext.registerFilter("struct", filter: Filter<Type>.make({ $0 is Struct }))
@@ -52,6 +57,19 @@ final class StencilTemplate: Stencil.Template, Template {
     }
 }
 
+extension Stencil.Extension {
+
+    func registerFilterWithArguments<A>(_ name: String, filter: @escaping (Any?, A) throws -> Any?) {
+        registerFilter(name) { (any, args) throws -> Any? in
+            guard args.count == 1, let arg = args.first as? A else {
+                throw TemplateSyntaxError("'\(name)' filter takes a single \(A.self) argument")
+            }
+            return try filter(any, arg)
+        }
+    }
+
+}
+
 private func count(_ value: Any?) -> Any? {
     guard let array = value as? NSArray else {
         return value
@@ -60,25 +78,14 @@ private func count(_ value: Any?) -> Any? {
     return array.count
 }
 
-private func upperFirstFilter(_ value: Any?) -> Any? {
-    guard let string = value as? String else {
-        return value
-    }
-    let first = String(string.characters.prefix(1)).capitalized
-    let other = String(string.characters.dropFirst())
-    return first + other
-}
+extension String {
 
-private func stringContentFilter(_ name: String, _ filter: @escaping (String) -> (String) -> Bool) -> (Any?, [Any?]) throws -> Any? {
-    return { (any, args) throws -> Any? in
-        guard args.count == 1, let arg = args.first as? String else {
-            throw TemplateSyntaxError("'\(name)' filter takes a single string argument")
-        }
-        guard let s = any as? String else {
-            return any
-        }
-        return filter(s)(arg)
+    fileprivate func upperFirst() -> String {
+        let first = String(characters.prefix(1)).capitalized
+        let other = String(characters.dropFirst())
+        return first + other
     }
+
 }
 
 private struct Filter<T> {
@@ -90,6 +97,36 @@ private struct Filter<T> {
 
             case let array as NSArray:
                 return array.flatMap { $0 as? T }.filter(filter)
+
+            default:
+                return any
+            }
+        }
+    }
+
+    static func make<U>(_ filter: @escaping (T) -> U?) -> (Any?) throws -> Any? {
+        return { (any) throws -> Any? in
+            switch any {
+            case let type as T:
+                return filter(type)
+
+            case let array as NSArray:
+                return array.flatMap { $0 as? T }.flatMap(filter)
+
+            default:
+                return any
+            }
+        }
+    }
+
+    static func make<A>(_ filter: @escaping (T, A) -> Bool) -> (Any?, A) throws -> Any? {
+        return { (any, arg) throws -> Any? in
+            switch any {
+            case let type as T:
+                return filter(type, arg)
+
+            case let array as NSArray:
+                return array.flatMap { $0 as? T }.filter({ filter($0, arg) })
 
             default:
                 return any
@@ -113,6 +150,28 @@ private struct FilterOr<T, Y> {
                     return array.flatMap { $0 as? T }.filter(filter)
                 } else {
                     return array.flatMap { $0 as? Y }.filter(other)
+                }
+
+            default:
+                return any
+            }
+        }
+    }
+
+    static func make<A>(_ filter: @escaping (T, A) -> Bool, other: @escaping (Y, A) -> Bool) -> (Any?, A) throws -> Any? {
+        return { (any, arg) throws -> Any? in
+            switch any {
+            case let type as T:
+                return filter(type, arg)
+
+            case let type as Y:
+                return other(type, arg)
+
+            case let array as NSArray:
+                if let _ = array.firstObject as? T {
+                    return array.flatMap { $0 as? T }.filter({ filter($0, arg) })
+                } else {
+                    return array.flatMap { $0 as? Y }.filter({ other($0, arg) })
                 }
 
             default:

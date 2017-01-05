@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0911DAF01E1D90D1001FF3EB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAEF1E1D90D1001FF3EB /* Extensions.swift */; };
 		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
 		0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA601E0341400084F702 /* ProtocolSpec.swift */; };
 		0967DA681E0488170084F702 /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA671E0488170084F702 /* Method.swift */; };
@@ -86,6 +87,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0911DAEF1E1D90D1001FF3EB /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
 		0967DA601E0341400084F702 /* ProtocolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolSpec.swift; sourceTree = "<group>"; };
 		0967DA671E0488170084F702 /* Method.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Method.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 			children = (
 				E291D099BB0A5B35011F59C7 /* Substring.swift */,
 				E291DCDA23F3C1A44331A245 /* AnnotationsParser.swift */,
+				0911DAEF1E1D90D1001FF3EB /* Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -624,6 +627,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD666A9A1E0BEF4F0045D31A /* Diffable.swift in Sources */,
+				0911DAF01E1D90D1001FF3EB /* Extensions.swift in Sources */,
 				E291D5ABECEE3435131D8D05 /* FileParser.swift in Sources */,
 				0967DA681E0488170084F702 /* Method.swift in Sources */,
 				CD9C459D1DFAF76D00161C2C /* main.swift in Sources */,

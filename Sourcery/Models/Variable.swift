@@ -52,4 +52,5 @@ final class Variable: NSObject, AutoDiffable, Typed {
         self.writeAccess = accessLevel.write.rawValue
         self.annotations = annotations
     }
+
 }

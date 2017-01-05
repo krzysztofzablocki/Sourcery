@@ -53,6 +53,19 @@ class VariableSpec: QuickSpec {
                 }
             }
 
+            describe("tuple type") {
+                it("reports tuple correctly") {
+                    expect(TypeName("(Int, Int)").isTuple).to(beTrue())
+                    expect(TypeName("(Int)").isTuple).to(beFalse())
+                    expect(TypeName("Int").isTuple).to(beFalse())
+                    expect(TypeName("(Int) -> (Int)").isTuple).to(beFalse())
+                    expect(TypeName("(Int, Int) -> (Int)").isTuple).to(beFalse())
+                    expect(TypeName("(Int, (Int, Int) -> (Int))").isTuple).to(beTrue())
+                    expect(TypeName("(Int, (Int, Int))").isTuple).to(beTrue())
+                    expect(TypeName("(Int, (Int) -> (Int -> Int))").isTuple).to(beTrue())
+                }
+            }
+
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {

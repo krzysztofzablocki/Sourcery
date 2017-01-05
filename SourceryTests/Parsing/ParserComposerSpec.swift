@@ -134,7 +134,34 @@ class ParserComposerSpec: QuickSpec {
 
                 }
 
+                context("given tuple type") {
+                    it("extracts elements properly") {
+                        let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))}")
+                        let variable = types.first?.variables.first
+
+                        expect(variable?.typeName.tuple).to(equal(
+                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))", elements: [
+                                TupleType.Element(name: "a", typeName: "Int"),
+                                TupleType.Element(name: "b", typeName: "Int"),
+                                TupleType.Element(name: "2", typeName: "String"),
+                                TupleType.Element(name: "3", typeName: "Float"),
+                                TupleType.Element(name: "literal", typeName: "[String: [String: Int]]"),
+                                TupleType.Element(name: "generic", typeName: "Dictionary<String, Dictionary<String, Float>>"),
+                                TupleType.Element(name: "closure", typeName: "(Int) -> (Int -> Int)")
+                                ])
+                        ))
+                    }
+                }
+
                 context("given typealiases") {
+
+                    it("sets typealias type") {
+                        let types = parse("class Bar {}; class Foo { typealias BarAlias = Bar }")
+                        let bar = types.first
+                        let foo = types.last
+
+                        expect(foo?.typealiases["BarAlias"]?.type).to(equal(bar))
+                    }
 
                     it("replaces variable alias with actual type via 3 typealiases") {
                         let expectedVariable = Variable(name: "foo", typeName: "FinalAlias")
@@ -157,6 +184,39 @@ class ParserComposerSpec: QuickSpec {
 
                         expect(variable).to(equal(expectedVariable))
                         expect(variable?.type).to(equal(expectedVariable.type))
+                    }
+
+                    context("given variable of tuple type") {
+                        it("replaces tuple elements alias types with actual types") {
+                            let expectedVariable = Variable(name: "foo", typeName: "(GlobalAlias, Int)")
+                            expectedVariable.typeName.tuple = TupleType(name: "(GlobalAlias, Int)", elements: [
+                                TupleType.Element(name: "0", typeName: "GlobalAlias", type: Type(name: "Foo")),
+                                TupleType.Element(name: "1", typeName: "Int")
+                                ])
+                            let expectedTupleElement = expectedVariable.typeName.tuple?.elements.first
+                            expectedTupleElement?.type = Type(name: "Foo")
+
+                            let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: (GlobalAlias, Int) }").first
+
+                            expect(type?.variables.first).to(equal(expectedVariable))
+                        }
+
+                        it("replaces variable alias type with actual tuple type name") {
+                            let expectedVariable = Variable(name: "foo", typeName: "GlobalAlias")
+                            expectedVariable.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
+                                TupleType.Element(name: "0", typeName: "Foo", type: Type(name: "Foo")),
+                                TupleType.Element(name: "1", typeName: "Int")
+                                ])
+                            expectedVariable.typeName.actualTypeName = TypeName("(Foo, Int)")
+
+                            let type = parse(
+                                "typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { var foo: GlobalAlias }").first
+                            let variable = type?.variables.first
+
+                            expect(variable).to(equal(expectedVariable))
+                            expect(variable?.typeName.actualTypeName).to(equal(expectedVariable.typeName.actualTypeName))
+                            expect(variable?.typeName.isTuple).to(beTrue())
+                        }
                     }
 
                     it("replaces variable optional alias type with actual type") {

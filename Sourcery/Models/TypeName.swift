@@ -27,12 +27,15 @@ protocol Typed {
 final class TypeName: NSObject, AutoDiffable {
     let name: String
 
+    /// Actual type name if given type name is type alias
+    // sourcery: skipEquality
+    var actualTypeName: TypeName?
+
     init(_ name: String) {
         self.name = name
     }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    // sourcery: skipEquality
     var isOptional: Bool {
         if name.hasSuffix("?") || name.hasPrefix("Optional<") {
             return true
@@ -40,8 +43,7 @@ final class TypeName: NSObject, AutoDiffable {
         return false
     }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    // sourcery: skipEquality
     var unwrappedTypeName: String {
         guard isOptional else {
             return name
@@ -54,13 +56,48 @@ final class TypeName: NSObject, AutoDiffable {
         }
     }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    // sourcery: skipEquality
     var isVoid: Bool {
         return name == "Void" || name == "()"
     }
 
+    var isTuple: Bool {
+        if let actualTypeName = actualTypeName?.name {
+            return actualTypeName.isValidTupleName()
+        } else {
+            return name.isValidTupleName()
+        }
+    }
+
+    var tuple: TupleType?
+
     override var description: String {
         return name
     }
+}
+
+final class TupleType: NSObject, AutoDiffable {
+    let name: String
+
+    final class Element: NSObject, AutoDiffable, Typed {
+        let name: String
+        let typeName: TypeName
+
+        // sourcery: skipEquality, skipDescription
+        var type: Type?
+
+        init(name: String, typeName: String, type: Type? = nil) {
+            self.name = name
+            self.typeName = TypeName(typeName)
+            self.type = type
+        }
+    }
+
+    let elements: [Element]
+
+    init(name: String, elements: [Element]) {
+        self.name = name
+        self.elements = elements
+    }
+
 }
