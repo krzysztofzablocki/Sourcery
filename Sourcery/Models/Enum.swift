@@ -8,22 +8,27 @@ import Foundation
 final class Enum: Type {
     final class Case: NSObject, AutoDiffable, NSCoding {
         final class AssociatedValue: NSObject, AutoDiffable, Typed, NSCoding {
-            let name: String?
+            let localName: String?
+            let externalName: String?
             let typeName: TypeName
 
             /// sourcery: skipEquality
             /// sourcery: skipDescription
             var type: Type?
 
-            init(name: String?, typeName: String, type: Type? = nil) {
-                self.name = name
+            init(localName: String?, externalName: String?, typeName: String, type: Type? = nil) {
+                self.localName = localName
+                self.externalName = externalName
                 self.typeName = TypeName(typeName)
                 self.type = type
             }
 
-            // 
+            convenience init(name: String? = nil, typeName: String, type: Type? = nil) {
+                self.init(localName: name, externalName: name, typeName: typeName, type: type)
+            }
 
-            //
+            // serialization {
+
             required init?(coder aDecoder: NSCoder) {
 
                 self.name = aDecoder.decode(forKey: "name")
@@ -39,6 +44,8 @@ final class Enum: Type {
                 aCoder.encode(self.type, forKey: "type")
 
             }
+
+            // }
         }
 
         let name: String
@@ -101,6 +108,7 @@ final class Enum: Type {
         }
     }
 
+    // sourcery: skipDescription, skipEquality
     private(set) var hasRawType: Bool
 
     /// sourcery: skipEquality

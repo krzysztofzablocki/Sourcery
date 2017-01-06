@@ -53,7 +53,7 @@ final class Variable: NSObject, AutoDiffable, Typed, NSCoding {
         self.annotations = annotations
     }
 
-    //
+    // serialization {
     required init?(coder aDecoder: NSCoder) {
 
         self.name = aDecoder.decode(forKey: "name")
@@ -81,4 +81,6 @@ final class Variable: NSObject, AutoDiffable, Typed, NSCoding {
         aCoder.encode(self.__parserData, forKey: "__parserData")
 
     }
+
+    // }
 }

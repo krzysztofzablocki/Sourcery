@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.4.9 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Enum {
@@ -26,7 +26,8 @@ extension Enum.Case {
 extension Enum.Case.AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(name), "
+        string += "localName = \(localName), "
+        string += "externalName = \(externalName), "
         string += "typeName = \(typeName), "
         return string
     }
@@ -60,6 +61,24 @@ extension Method.Parameter {
     }
 }
 
+extension TupleType {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(name), "
+        string += "elements = \(elements), "
+        return string
+    }
+}
+
+extension TupleType.Element {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(name), "
+        string += "typeName = \(typeName), "
+        return string
+    }
+}
+
 extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -75,6 +94,7 @@ extension Type {
         string += "initializers = \(initializers), "
         string += "annotations = \(annotations), "
         string += "staticVariables = \(staticVariables), "
+        string += "instanceVariables = \(instanceVariables), "
         string += "computedVariables = \(computedVariables), "
         string += "storedVariables = \(storedVariables), "
         string += "inheritedTypes = \(inheritedTypes), "

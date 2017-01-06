@@ -56,16 +56,27 @@ struct ParserComposer {
             unique[type.name] = current
         }
 
-        let resolveType = { (unwrappedTypeName: String, containingType: Type?, typealiases: [String: Typealias]) in
-            return self.typeName(for: unwrappedTypeName, containingType: containingType, typealiases: typealiases)
-                    .flatMap { unique[$0] } ?? unique[unwrappedTypeName]
+        let resolveType = { (typeName: TypeName, containingType: Type?, typealiases: [String: Typealias]) -> Type? in
+            let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
+            typeName.actualTypeName = name.flatMap(TypeName.init)
+            typeName.tuple = self.parseTupleType(name ?? typeName.name)
+            return name.flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
         }
 
         for (_, type) in unique {
             // find actual variables types
             type.variables.forEach {
-                $0.type = resolveType($0.unwrappedTypeName, type, typealiases)
+                $0.type = resolveType($0.typeName, type, typealiases)
+                if let tuple = $0.typeName.tuple {
+                    tuple.elements.forEach({
+                        $0.type = resolveType($0.typeName, type, typealiases)
+                    })
+                }
             }
+
+            type.typealiases.forEach({ (_, alias) in
+                alias.type = resolveType(alias.typeName, type, typealiases)
+            })
 
             // find actual methods parameters types and their argument labels
             for method in type.methods {
@@ -85,11 +96,11 @@ struct ParserComposer {
                         parameter.argumentLabel = argumentLabels[index]
                     }
 
-                    parameter.type = resolveType(parameter.unwrappedTypeName, type, typealiases)
+                    parameter.type = resolveType(parameter.typeName, type, typealiases)
                 }
 
                 if !method.returnTypeName.isVoid {
-                    method.returnType = resolveType(method.unwrappedReturnTypeName, type, typealiases)
+                    method.returnType = resolveType(method.returnTypeName, type, typealiases)
 
                     if method.isInitializer {
                         method.returnTypeName = TypeName("")
@@ -101,7 +112,7 @@ struct ParserComposer {
             if let enumeration = type as? Enum, enumeration.rawType == nil {
                 enumeration.cases.forEach { enumCase in
                     enumCase.associatedValues.forEach { associatedValue in
-                        associatedValue.type = resolveType(associatedValue.unwrappedTypeName, type, typealiases)
+                        associatedValue.type = resolveType(associatedValue.typeName, type, typealiases)
                     }
                 }
 
@@ -141,7 +152,7 @@ struct ParserComposer {
 
             var aliasNamesToReplace = [alias.name]
             var finalAlias = alias
-            while let targetAlias = typealiasesByNames[finalAlias.typeName] {
+            while let targetAlias = typealiasesByNames[finalAlias.typeName.name] {
                 aliasNamesToReplace.append(targetAlias.name)
                 finalAlias = targetAlias
             }
@@ -156,12 +167,12 @@ struct ParserComposer {
     private func typeName(for alias: String, containingType: Type? = nil, typealiases: [String: Typealias]) -> String? {
 
         // first try global typealiases
-        if let name = typealiases[alias]?.typeName {
+        if let name = typealiases[alias]?.typeName.name {
             return name
         }
 
         guard let containingType = containingType,
-              let possibleTypeName = typealiases["\(containingType.name).\(alias)"]?.typeName else {
+              let possibleTypeName = typealiases["\(containingType.name).\(alias)"]?.typeName.name else {
             return nil
         }
 
@@ -210,4 +221,29 @@ struct ParserComposer {
             }
         }
     }
+
+    fileprivate func parseTupleType(_ name: String) -> TupleType? {
+        guard name.isValidTupleName() else { return nil }
+        return TupleType(name: name, elements: parseTupleElements(name))
+    }
+
+    fileprivate func parseTupleElements(_ name: String) -> [TupleType.Element] {
+        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
+        return trimmedBracketsName
+            .commaSeparated()
+            .map({ $0.trimmingCharacters(in: .whitespaces) })
+            .enumerated()
+            .map {
+                let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+
+                guard nameAndType.count == 2 else {
+                    return TupleType.Element(name: "\($0)", typeName: $1)
+                }
+                guard nameAndType[0] != "_" else {
+                    return TupleType.Element(name: "\($0)", typeName: nameAndType[1])
+                }
+                return TupleType.Element(name: nameAndType[0], typeName: nameAndType[1])
+        }
+    }
+
 }

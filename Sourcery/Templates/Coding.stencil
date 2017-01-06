@@ -64,7 +64,6 @@ extension NSCoder {
 /*
 extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: NSCoding{% endif %} {
     required init?(coder aDecoder: NSCoder) {
-
         {% for parameter in type.storedVariables %}{% if parameter.typeName == "Bool" %}self.{{parameter.name}} = aDecoder.decodeBool(forKey: "{{parameter.name}}"){% else %} {% if parameter.typeName == "Int" %}self.{{parameter.name}} = aDecoder.decodeInt(forKey: "{{parameter.name}}"){% else %}self.{{parameter.name}} = aDecoder.decode(forKey: "{{parameter.name}}"){% endif %}{% endif %}
         {% endfor %}
         {% if type.supertype.implements.AutoDiffable %}super.init(coder: aDecoder){% endif %}
