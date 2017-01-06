@@ -5,7 +5,7 @@ extension Enum {
     override var description: String {
         var string = super.description
         string += "cases = \(cases), "
-        string += "rawType = \(rawType), "
+        string += "rawTypeName = \(rawTypeName), "
         string += "hasAssociatedValues = \(hasAssociatedValues), "
         return string
     }

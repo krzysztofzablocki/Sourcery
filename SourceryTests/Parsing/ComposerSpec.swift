@@ -60,7 +60,7 @@ class ParserComposerSpec: QuickSpec {
                                                        accessLevel: .internal,
                                                        isExtension: false,
                                                        inheritedTypes: ["SomeProtocol"],
-                                                       rawType: "String",
+                                                       rawTypeName: "String",
                                                        cases: [Enum.Case(name: "optionA")]),
                                                   Protocol(name: "SomeProtocol")
                                           ]))
@@ -72,12 +72,12 @@ class ParserComposerSpec: QuickSpec {
                                         equal([
                                                       Enum(name: "Foo",
                                                            inheritedTypes: ["RawRepresentable"],
-                                                           rawType: "String",
+                                                           rawTypeName: "String",
                                                            cases: [Enum.Case(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: "String",
                                                                                 accessLevel: (read: .internal,
-                                                                                        write: .none),
+                                                                                              write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
                                                            methods: [Method(selectorName: "init(rawValue:)",
@@ -95,7 +95,7 @@ class ParserComposerSpec: QuickSpec {
                                         equal([
                                                       Enum(name: "Foo",
                                                            inheritedTypes: ["RawRepresentable"],
-                                                           rawType: "String",
+                                                           rawTypeName: "String",
                                                            cases: [Enum.Case(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: "RawValue",
@@ -116,7 +116,7 @@ class ParserComposerSpec: QuickSpec {
                                         equal([
                                                       Enum(name: "Foo",
                                                            inheritedTypes: ["CustomStringConvertible", "RawRepresentable"],
-                                                           rawType: "String",
+                                                           rawTypeName: "String",
                                                            cases: [Enum.Case(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: "RawValue",

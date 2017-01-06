@@ -183,14 +183,6 @@ struct FileParser {
         switch (type, declaration) {
         case let (_, variable as Variable):
             type.variables += [variable]
-            if !variable.isStatic {
-                if let enumeration = type as? Enum,
-                    let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
-
-                    enumeration.rawType = updatedRawType
-                }
-            }
-
         case let (_, method as Method):
             if method.isInitializer {
                 method.returnTypeName = TypeName(type.name)
@@ -399,35 +391,6 @@ extension FileParser {
                 let externalName = items.count > 1 ? localName : defaultName
                 return Enum.Case.AssociatedValue(localName: localName, externalName: externalName, typeName: nameAndType[1])
         }
-    }
-
-    fileprivate func parseEnumRawType(enumeration: Enum, from variable: Variable) -> String? {
-        guard variable.name == "rawValue" else {
-            return nil
-        }
-
-        if variable.typeName.name == "RawValue" {
-            return parseEnumRawValueAssociatedType(enumeration.__underlyingSource)
-        }
-
-        return variable.typeName.name
-    }
-
-    fileprivate func parseEnumRawValueAssociatedType(_ source: [String: SourceKitRepresentable]) -> String? {
-        var rawType: String?
-
-        extract(.body, from: source)?
-            .replacingOccurrences(of: ";", with: "\n")
-            .enumerateLines(invoking: { (substring, stop) in
-                let substring = substring.trimmingCharacters(in: .whitespacesAndNewlines)
-
-                if substring.hasPrefix("typealias"), let type = substring.components(separatedBy: " ").last {
-                    rawType = type
-                    stop = true
-                }
-            })
-
-        return rawType
     }
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {

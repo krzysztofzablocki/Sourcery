@@ -5,7 +5,7 @@ extension Enum {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Enum else { return false }
         if self.cases != rhs.cases { return false }
-        if self.rawType != rhs.rawType { return false }
+        if self.rawTypeName != rhs.rawTypeName { return false }
 
         return super.isEqual(rhs)
     }
