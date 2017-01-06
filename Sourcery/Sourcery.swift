@@ -204,7 +204,8 @@ public class Sourcery {
 
     private func track(_ message: Any, terminator: String = "\n", skipStatus: Bool = false) {
         if !watcherEnabled || verbose {
-            Swift.print(message, terminator: terminator)
+            //! console doesn't update in-place so always print on new line
+            Swift.print(message)
         }
 
         guard watcherEnabled && !skipStatus else { return }
