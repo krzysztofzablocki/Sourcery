@@ -43,6 +43,7 @@
 		C8E88CAC1E204E5000102D17 /* Diffable.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD666A9B1E0BF0A10045D31A /* Diffable.generated.swift */; };
 		C8E88CAD1E204E8400102D17 /* Typed.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CDF68B751E1C143D007C5396 /* Typed.generated.swift */; };
 		C8E88CAE1E204ED500102D17 /* Extensions.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 0911DAEF1E1D90D1001FF3EB /* Extensions.swift */; };
+		C8E88CB01E20579100102D17 /* Path+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E88CAF1E20579100102D17 /* Path+Extensions.swift */; };
 		CD0020EB1D8844B1001CB583 /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		CD475D6F1DE9B98B009AD8B0 /* Result in Resources */ = {isa = PBXBuildFile; fileRef = CD475D6E1DE9B98B009AD8B0 /* Result */; };
 		CD53EE661D897C1F00F5886C /* Source in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE651D897C1F00F5886C /* Source */; };
@@ -162,6 +163,7 @@
 		C894A1B21E19328E0098327C /* SwiftTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SwiftTemplates; sourceTree = "<group>"; };
 		C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplateSpecs.swift; sourceTree = "<group>"; };
 		C894A1B61E19381A0098327C /* Coding.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Coding.stencil; sourceTree = "<group>"; };
+		C8E88CAF1E20579100102D17 /* Path+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Path+Extensions.swift"; sourceTree = "<group>"; };
 		CD475D6E1DE9B98B009AD8B0 /* Result */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Result; sourceTree = "<group>"; };
 		CD53EE651D897C1F00F5886C /* Source */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Source; sourceTree = "<group>"; };
 		CD53EE671D897D2900F5886C /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
@@ -440,6 +442,7 @@
 			isa = PBXGroup;
 			children = (
 				E291DBAA16ABFED8C04CB42A /* FolderWatcher.swift */,
+				C8E88CAF1E20579100102D17 /* Path+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -711,6 +714,7 @@
 				CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */,
 				09C6B0D21E11BA2500246CDF /* Class.swift in Sources */,
 				CD812F5D1DFDCC1A0088B2F6 /* Struct.swift in Sources */,
+				C8E88CB01E20579100102D17 /* Path+Extensions.swift in Sources */,
 				C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */,
 				CD812F621DFDCDA10088B2F6 /* Equality.generated.swift in Sources */,
 				E291D8C0F0FE5B3DF91025CC /* Generator.swift in Sources */,

@@ -14,11 +14,7 @@ import Sourcery
 
 class SourceryPerformanceSpec: XCTestCase {
     let outputDir: Path = {
-        guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SourceryPerformance") else { fatalError("Unable to get temporary path") }
-        _ = try? FileManager.default.removeItem(at: tempDirURL)
-        // swiftlint:disable:next force_try
-        try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
-        return Path(tempDirURL.path)
+        Path.cleanTemporaryDir(name: "SourceryPerformance")
     }()
 
     func testParsingPerformance() {

@@ -7,6 +7,9 @@ import Foundation
 import PathKit
 import Quick
 
+@testable
+import Sourcery
+
 private class Reference {}
 
 enum Stubs {
@@ -18,10 +21,6 @@ enum Stubs {
     static let templateDirectory = basePath + Path("Templates/")
 
     static func cleanTemporarySourceryDir() -> Path {
-        guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Sourcery") else { fatalError("Unable to get temporary path") }
-        _ = try? FileManager.default.removeItem(at: tempDirURL)
-        // swiftlint:disable:next force_try
-        try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
-        return Path(tempDirURL.path)
+        return Path.cleanTemporaryDir(name: "Sourcery")
     }
 }

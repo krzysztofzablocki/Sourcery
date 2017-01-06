@@ -24,16 +24,6 @@ fileprivate struct ProcessResult {
     let error: String
 }
 
-fileprivate extension Path {
-    static func cleanTemporaryBuildDir() -> Path {
-        guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Sourcery.SwiftTemplate.build") else { fatalError("Unable to get temporary path") }
-        _ = try? FileManager.default.removeItem(at: tempDirURL)
-        // swiftlint:disable:next force_try
-        try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
-        return Path(tempDirURL.path)
-    }
-}
-
 class SwiftTemplate: Template {
     let sourcePath: Path
 
@@ -80,7 +70,7 @@ class SwiftTemplate: Template {
         let context = GenerationContext(types: types, arguments: arguments)
         let swiftCode = try SwiftTemplate.generateSwiftCode(templateContent: try sourcePath.read(), path: sourcePath)
 
-        let compilationDir = Path.cleanTemporaryBuildDir()
+        let compilationDir = Path.cleanTemporaryDir(name: "build")
 
         let runtimeFiles = try SwiftTemplate.swiftTemplatesRuntime.children().map { file in
             return file.description
