@@ -3,77 +3,58 @@ import Foundation
 
 extension NSCoder {
 
-    @nonobjc func decode(forKey: String) -> Int {
-        // swiftlint:disable force_cast
-        return self.decodeInteger(forKey: forKey)
-        // swiftlint:enable force_cast
+    @nonobjc func decode(forKey: String) -> String? {
+        return self.decode(forKey: forKey) as String?
     }
 
-    @nonobjc func decode(forKey: String) -> String {
-        // swiftlint:disable force_cast
-        return (self.decode(forKey: forKey) as String?)!
-        // swiftlint:enable force_cast
+    @nonobjc func decode(forKey: String) -> TypeName? {
+        return self.decode(forKey: forKey) as TypeName?
     }
 
-    @nonobjc func decode(forKey: String) -> Bool {
-        // swiftlint:disable force_cast
-        return self.decodeBool(forKey: forKey)
-        // swiftlint:enable force_cast
+    @nonobjc func decode(forKey: String) -> AccessLevel? {
+        return self.decode(forKey: forKey) as AccessLevel?
     }
 
-    @nonobjc func decode(forKey: String) -> TypeName {
-        return (self.decode(forKey: forKey) as TypeName?)!
-    }
-
-    @nonobjc func decode(forKey: String) -> AccessLevel {
-        return (self.decode(forKey: forKey) as AccessLevel?)!
-    }
-
-    func decode<E, V>(forKey: String) -> [E: V] {
-        // swiftlint:disable force_cast
-        guard let object = self.decodeObject(forKey: forKey) else {
-            return [:]
-        }
-
-        return object as! [E:V]
-        // swiftlint:enable force_cast
-    }
-
-    func decode<E>(forKey: String) -> E? {
-        // swiftlint:disable force_cast
+    func decode<E, V>(forKey: String) -> [E: V]? {
         guard let object = self.decodeObject(forKey: forKey) else {
             return nil
         }
 
-        return object as! E
-        // swiftlint:enable force_cast
+        return object as? [E:V]
     }
 
-    func decode<E>(forKey: String) -> [E] {
-        // swiftlint:disable force_cast
+    func decode<E>(forKey: String) -> E? {
+        guard let object = self.decodeObject(forKey: forKey) else {
+            return nil
+        }
+
+        return object as? E
+    }
+
+    func decode<E>(forKey: String) -> [E]? {
         guard let object = self.decodeObject(forKey: forKey) else {
             return []
         }
 
         return object as? [E]
-        // swiftlint:enable force_cast
     }
 }
 
 {% for type in types.implementing.AutoDiffable %}
 /*
 extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: NSCoding{% endif %} {
+    // {{ type.name }}.NSCoding {
     required init?(coder aDecoder: NSCoder) {
-        {% for parameter in type.storedVariables %}{% if parameter.typeName == "Bool" %}self.{{parameter.name}} = aDecoder.decodeBool(forKey: "{{parameter.name}}"){% else %} {% if parameter.typeName == "Int" %}self.{{parameter.name}} = aDecoder.decodeInt(forKey: "{{parameter.name}}"){% else %}self.{{parameter.name}} = aDecoder.decode(forKey: "{{parameter.name}}"){% endif %}{% endif %}
-        {% endfor %}
-        {% if type.supertype.implements.AutoDiffable %}super.init(coder: aDecoder){% endif %}
+        {% for variable in type.storedVariables %}{% if not variable.annotations.skipEquality %}{% if variable.typeName == "Bool" %}self.{{variable.name}} = aDecoder.decodeBool(forKey: "{{variable.name}}"){% else %} {% if variable.typeName == "Int" %}self.{{variable.name}} = aDecoder.decodeInt(forKey: "{{variable.name}}"){% else %}self.{{variable.name}} = aDecoder.decode(forKey: "{{variable.name}}"){% endif %}{% endif %}{%endif%}
+        {% endfor %}{% if type.supertype.implements.AutoDiffable %}super.init(coder: aDecoder){% endif %}
     }
  
     {% if type.supertype.implements.AutoDiffable %}override {% endif %}func encode(with aCoder: NSCoder) {
         {% if type.supertype.implements.AutoDiffable %}super.encode(with: aCoder){% endif %}
-        {% for parameter in type.storedVariables %}aCoder.encode(self.{{parameter.name}}, forKey: "{{parameter.name}}")
-        {% endfor %}
+        {% for variable in type.storedVariables %}{% if not variable.annotations.skipEquality %}aCoder.encode(self.{{variable.name}}, forKey: "{{variable.name}}")
+        {% endif %}{% endfor %}
     }
+    // } {{ type.name }}.NSCoding
 }
 */
     {% endfor %}
