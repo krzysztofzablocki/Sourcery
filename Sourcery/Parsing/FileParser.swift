@@ -131,7 +131,8 @@ struct FileParser {
             types.append(type)
             return type
         }
-        return types
+
+        return finishedParsing(types: types)
     }
 
     /// Walks all types in the source
@@ -212,6 +213,33 @@ struct FileParser {
         default:
             break
         }
+    }
+
+    private func finishedParsing(types: [Type]) -> [Type] {
+        for type in types {
+
+            // find actual methods parameters types and their argument labels
+            for method in type.allMethods {
+                let argumentLabels: [String]
+                if let labels = method.selectorName.range(of: "(")
+                        .map({ method.selectorName.substring(from: $0.upperBound) })?
+                        .trimmingCharacters(in: CharacterSet(charactersIn: ")"))
+                        .components(separatedBy: ":")
+                        .dropLast() {
+                    argumentLabels = Array(labels)
+                } else {
+                    argumentLabels = []
+                }
+
+                for (index, parameter) in method.parameters.enumerated() {
+                    if index < argumentLabels.count {
+                        parameter.argumentLabel = argumentLabels[index]
+                    }
+                }
+            }
+        }
+
+        return types
     }
 }
 
@@ -303,6 +331,7 @@ extension FileParser {
 
         let method = Method(selectorName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: annotations.from(source))
         method.setSource(source)
+
         return method
     }
 

@@ -5,7 +5,8 @@
 
 import Foundation
 
-struct ParserComposer {
+/// Responsible for composing results of `FileParser`.
+struct Composer {
     let verbose: Bool
 
     init(verbose: Bool = false) {
@@ -78,24 +79,9 @@ struct ParserComposer {
                 alias.type = resolveType(alias.typeName, type, typealiases)
             })
 
-            // find actual methods parameters types and their argument labels
+            // resolve type names
             for method in type.methods {
-                let argumentLabels: [String]
-                if let labels = method.selectorName.range(of: "(")
-                        .map({ method.selectorName.substring(from: $0.upperBound) })?
-                        .trimmingCharacters(in: CharacterSet(charactersIn: ")"))
-                        .components(separatedBy: ":")
-                        .dropLast() {
-                    argumentLabels = Array(labels)
-                } else {
-                    argumentLabels = []
-                }
-
                 for (index, parameter) in method.parameters.enumerated() {
-                    if index < argumentLabels.count {
-                        parameter.argumentLabel = argumentLabels[index]
-                    }
-
                     parameter.type = resolveType(parameter.typeName, type, typealiases)
                 }
 
@@ -180,9 +166,8 @@ struct ParserComposer {
         let containedType = containingType
                 .containedTypes
                 .filter {
-            $0.name == "\(containingType.name).\(possibleTypeName)" ||
-                    $0.name == possibleTypeName
-        }
+                    $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
+                }
                 .first
 
         return containedType?.name ?? possibleTypeName
