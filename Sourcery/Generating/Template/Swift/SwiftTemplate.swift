@@ -9,57 +9,22 @@
 import Foundation
 import PathKit
 
-enum SwiftTemplateParsingError: Error {
+fileprivate enum SwiftTemplateParsingError: Error {
     case unmatchedOpening(path: Path, line: Int)
     case compilationError(path: Path, error: String)
 }
 
-enum Delimiters {
+fileprivate enum Delimiters {
     static let open = "<%"
     static let close = "%>"
 }
 
-func generateSwiftCode(templateContent _templateContent: String, path: Path) throws -> String {
-    let templateContent = "<%%>" + _templateContent
-
-    let components = templateContent.components(separatedBy: Delimiters.open)
-
-    var sourceFile = [String]()
-
-    let line = {
-        return sourceFile.joined(separator: "").numberOfLineSeparators
-    }
-
-    for component in components.suffix(from: 1) {
-        guard let endIndex = component.range(of: Delimiters.close) else {
-            throw SwiftTemplateParsingError.unmatchedOpening(path: path, line: line())
-        }
-
-        let code = component.substring(to: endIndex.lowerBound)
-        if code.hasPrefix("=") {
-            let codeStartIndex = code.index(code.startIndex, offsetBy: 1)
-            let realCode = code.substring(from: codeStartIndex)
-            sourceFile.append("\n print(\"\\(" + realCode + ")\", terminator: \"\");")
-        } else {
-            sourceFile.append(code)
-        }
-
-        let encodedPart = component.substring(from: endIndex.upperBound)
-        sourceFile.append(("\n print(\"") + encodedPart.stringEncoded + "\", terminator: \"\");")
-        for _ in 0 ..< encodedPart.numberOfLineSeparators {
-            sourceFile.append("\n")
-        }
-    }
-
-    return sourceFile.joined(separator: "")
-}
-
-struct ProcessResult {
+fileprivate struct ProcessResult {
     let output: String
     let error: String
 }
 
-private extension Path {
+fileprivate extension Path {
     static func cleanTemporaryBuildDir() -> Path {
         guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Sourcery.SwiftTemplate.build") else { fatalError("Unable to get temporary path") }
         _ = try? FileManager.default.removeItem(at: tempDirURL)
@@ -76,9 +41,44 @@ class SwiftTemplate: Template {
         self.sourcePath = path
     }
 
+    fileprivate static func generateSwiftCode(templateContent _templateContent: String, path: Path) throws -> String {
+        let templateContent = "<%%>" + _templateContent
+
+        let components = templateContent.components(separatedBy: Delimiters.open)
+
+        var sourceFile = [String]()
+
+        let line = {
+            return sourceFile.joined(separator: "").numberOfLineSeparators
+        }
+
+        for component in components.suffix(from: 1) {
+            guard let endIndex = component.range(of: Delimiters.close) else {
+                throw SwiftTemplateParsingError.unmatchedOpening(path: path, line: line())
+            }
+
+            let code = component.substring(to: endIndex.lowerBound)
+            if code.hasPrefix("=") {
+                let codeStartIndex = code.index(code.startIndex, offsetBy: 1)
+                let realCode = code.substring(from: codeStartIndex)
+                sourceFile.append("\n print(\"\\(" + realCode + ")\", terminator: \"\");")
+            } else {
+                sourceFile.append(code)
+            }
+
+            let encodedPart = component.substring(from: endIndex.upperBound)
+            sourceFile.append(("\n print(\"") + encodedPart.stringEncoded + "\", terminator: \"\");")
+            for _ in 0 ..< encodedPart.numberOfLineSeparators {
+                sourceFile.append("\n")
+            }
+        }
+
+        return sourceFile.joined(separator: "")
+    }
+
     func render(types: [Type], arguments: [String: NSObject]) throws -> String {
         let context = GenerationContext(types: types, arguments: arguments)
-        let swiftCode = try generateSwiftCode(templateContent: try sourcePath.read(), path: sourcePath)
+        let swiftCode = try SwiftTemplate.generateSwiftCode(templateContent: try sourcePath.read(), path: sourcePath)
 
         let compilationDir = Path.cleanTemporaryBuildDir()
 
@@ -128,7 +128,7 @@ class SwiftTemplate: Template {
     }
 }
 
-extension SwiftTemplate {
+fileprivate extension SwiftTemplate {
     static var resourcesPath: Path {
         return Bundle(for: Sourcery.self).resourcePath.flatMap { Path($0) }!
     }
