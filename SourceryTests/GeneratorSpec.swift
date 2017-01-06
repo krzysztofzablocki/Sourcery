@@ -54,7 +54,7 @@ class GeneratorSpec: QuickSpec {
             let arguments: [String: NSObject] = ["some": "value" as NSString, "number": NSNumber(value: Float(4))]
 
             func generate(_ template: String) -> String {
-                let types = ParserComposer().uniqueTypes((types, []))
+                let types = Composer().uniqueTypes((types, []))
 
                 return (try? Generator.generate(types,
                         template: StencilTemplate(templateString: template),

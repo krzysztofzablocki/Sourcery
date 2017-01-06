@@ -106,7 +106,7 @@ public class Sourcery {
 
         guard from.isDirectory else {
             let parserResult = try FileParser(verbose: verbose, path: from).parse()
-            return ParserComposer(verbose: verbose).uniqueTypes(parserResult)
+            return Composer(verbose: verbose).uniqueTypes(parserResult)
         }
 
         let sources = try from
@@ -129,7 +129,7 @@ public class Sourcery {
         }
 
         //! All files have been scanned, time to join extensions with base class
-        let types = ParserComposer(verbose: verbose).uniqueTypes(parserResult)
+        let types = Composer(verbose: verbose).uniqueTypes(parserResult)
 
         track("Found \(types.count) types.")
         return types

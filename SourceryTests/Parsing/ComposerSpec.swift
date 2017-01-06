@@ -21,7 +21,7 @@ class ParserComposerSpec: QuickSpec {
             describe("uniqueType") {
                 func parse(_ code: String) -> [Type] {
                     let parserResult = FileParser(contents: code).parse()
-                    return ParserComposer(verbose: false).uniqueTypes(parserResult)
+                    return Composer(verbose: false).uniqueTypes(parserResult)
                 }
 
                 context("given private types") {
