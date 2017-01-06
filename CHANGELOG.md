@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 0.5.1
 
 ### New Features
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`
