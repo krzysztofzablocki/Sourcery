@@ -81,7 +81,7 @@ struct Composer {
 
             // resolve type names
             for method in type.methods {
-                for (index, parameter) in method.parameters.enumerated() {
+                for parameter in method.parameters {
                     parameter.type = resolveType(parameter.typeName, type, typealiases)
                 }
 
