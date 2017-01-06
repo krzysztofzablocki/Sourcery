@@ -186,13 +186,16 @@ private extension Process {
         errorHandle.closeFile()
 
         task.waitUntilExit()
-        
-        if task.terminationReason != .exit {
-            throw NSError(domain: NSPOSIXErrorDomain, code: task.terminationReason.rawValue, userInfo: nil)
-        }
 
         let output = String(data: outputData, encoding: .utf8) ?? ""
         let error = String(data: errorData, encoding: .utf8) ?? ""
+
+        if task.terminationReason != .exit {
+            throw NSError(domain: NSOSStatusErrorDomain, code: -1, userInfo: [
+                "terminationReason": task.terminationReason,
+                "error" : error,
+                ])
+        }
 
         return ProcessResult(output: output, error: error)
     }

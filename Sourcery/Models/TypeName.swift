@@ -75,19 +75,21 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
         return name
     }
 
-    // serialization {
-    required init?(coder aDecoder: NSCoder) {
+    // TypeName.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
 
-        self.name = aDecoder.decode(forKey: "name")
+             self.tuple = aDecoder.decode(forKey: "tuple")
 
-    }
+        }
 
-    func encode(with aCoder: NSCoder) {
+        func encode(with aCoder: NSCoder) {
 
-        aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.tuple, forKey: "tuple")
 
-    }
-    // }
+        }
+        // } TypeName.NSCoding
 }
 
 final class TupleType: NSObject, AutoDiffable {
@@ -105,6 +107,21 @@ final class TupleType: NSObject, AutoDiffable {
             self.typeName = TypeName(typeName)
             self.type = type
         }
+
+        // TupleType.Element.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+
+        }
+
+        func encode(with aCoder: NSCoder) {
+
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+
+        }
+        // } TupleType.Element.NSCoding
     }
 
     let elements: [Element]
@@ -114,4 +131,18 @@ final class TupleType: NSObject, AutoDiffable {
         self.elements = elements
     }
 
+    // TupleType.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             guard let elements: [Element] = aDecoder.decode(forKey: "elements") else { return nil }; self.elements = elements
+
+        }
+
+        func encode(with aCoder: NSCoder) {
+
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.elements, forKey: "elements")
+
+        }
+        // } TupleType.NSCoding
 }

@@ -38,13 +38,14 @@ final class Struct: Type {
         )
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    // Struct.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+        }
 
-        super.init(coder: aDecoder)
-    }
+        override func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
 
-    override func encode(with aCoder: NSCoder) {
-        super.encode(with: aCoder)
-
-    }
+        }
+        // } Struct.NSCoding
 }

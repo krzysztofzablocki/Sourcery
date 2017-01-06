@@ -27,25 +27,23 @@ final class Enum: Type {
                 self.init(localName: name, externalName: name, typeName: typeName, type: type)
             }
 
-            // serialization {
+        // Enum.Case.AssociatedValue.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             self.localName = aDecoder.decode(forKey: "localName")
+             self.externalName = aDecoder.decode(forKey: "externalName")
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
 
-            required init?(coder aDecoder: NSCoder) {
+        }
 
-                self.name = aDecoder.decode(forKey: "name")
-                self.typeName = aDecoder.decode(forKey: "typeName")
-                self.type = aDecoder.decode(forKey: "type")
+        func encode(with aCoder: NSCoder) {
 
-            }
+            aCoder.encode(self.localName, forKey: "localName")
+            aCoder.encode(self.externalName, forKey: "externalName")
+            aCoder.encode(self.typeName, forKey: "typeName")
 
-            func encode(with aCoder: NSCoder) {
+        }
+        // } Enum.Case.AssociatedValue.NSCoding
 
-                aCoder.encode(self.name, forKey: "name")
-                aCoder.encode(self.typeName, forKey: "typeName")
-                aCoder.encode(self.type, forKey: "type")
-
-            }
-
-            // }
         }
 
         let name: String
@@ -66,13 +64,12 @@ final class Enum: Type {
             self.annotations = annotations
         }
 
-        //
+        // Enum.Case.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-
-            self.name = aDecoder.decode(forKey: "name")
-            self.rawValue = aDecoder.decode(forKey: "rawValue")
-            self.associatedValues = aDecoder.decode(forKey: "associatedValues")
-            self.annotations = aDecoder.decode(forKey: "annotations")
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             self.rawValue = aDecoder.decode(forKey: "rawValue")
+             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { return nil }; self.associatedValues = associatedValues
+             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
 
         }
 
@@ -84,7 +81,7 @@ final class Enum: Type {
             aCoder.encode(self.annotations, forKey: "annotations")
 
         }
-
+        // } Enum.Case.NSCoding
     }
 
     /// sourcery: skipDescription
@@ -108,7 +105,7 @@ final class Enum: Type {
         }
     }
 
-    // sourcery: skipDescription, skipEquality
+    // sourcery: skipDescription
     private(set) var hasRawType: Bool
 
     /// sourcery: skipEquality
@@ -152,20 +149,21 @@ final class Enum: Type {
         }
     }
 
-    //
-    required init?(coder aDecoder: NSCoder) {
+    // Enum.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let cases: [Case] = aDecoder.decode(forKey: "cases") else { return nil }; self.cases = cases
+             self.rawType = aDecoder.decode(forKey: "rawType")
+            self.hasRawType = aDecoder.decodeBool(forKey: "hasRawType")
 
-        self.cases = aDecoder.decode(forKey: "cases")
-        self.rawType = aDecoder.decode(forKey: "rawType")
-        self.hasRawType = aDecoder.decodeBool(forKey: "hasRawType")
+            super.init(coder: aDecoder)
+        }
 
-        super.init(coder: aDecoder)
-    }
+        override func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
+            aCoder.encode(self.cases, forKey: "cases")
+            aCoder.encode(self.rawType, forKey: "rawType")
+            aCoder.encode(self.hasRawType, forKey: "hasRawType")
 
-    override func encode(with aCoder: NSCoder) {
-        super.encode(with: aCoder)
-        aCoder.encode(self.cases, forKey: "cases")
-        aCoder.encode(self.rawType, forKey: "rawType")
-        aCoder.encode(self.hasRawType, forKey: "hasRawType")
-    }
+        }
+        // } Enum.NSCoding
 }

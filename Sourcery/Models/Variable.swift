@@ -53,34 +53,29 @@ final class Variable: NSObject, AutoDiffable, Typed, NSCoding {
         self.annotations = annotations
     }
 
-    // serialization {
-    required init?(coder aDecoder: NSCoder) {
+    // Variable.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
 
-        self.name = aDecoder.decode(forKey: "name")
-        self.typeName = aDecoder.decode(forKey: "typeName")
-        self.type = aDecoder.decode(forKey: "type")
-        self.isComputed = aDecoder.decodeBool(forKey: "isComputed")
-        self.isStatic = aDecoder.decodeBool(forKey: "isStatic")
-        self.readAccess = aDecoder.decode(forKey: "readAccess")
-        self.writeAccess = aDecoder.decode(forKey: "writeAccess")
-        self.annotations = aDecoder.decode(forKey: "annotations")
-        self.__parserData = aDecoder.decode(forKey: "__parserData")
+            self.isComputed = aDecoder.decodeBool(forKey: "isComputed")
+            self.isStatic = aDecoder.decodeBool(forKey: "isStatic")
+             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { return nil }; self.readAccess = readAccess
+             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { return nil }; self.writeAccess = writeAccess
+             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
 
-    }
+        }
 
-    func encode(with aCoder: NSCoder) {
+        func encode(with aCoder: NSCoder) {
 
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.type, forKey: "type")
-        aCoder.encode(self.isComputed, forKey: "isComputed")
-        aCoder.encode(self.isStatic, forKey: "isStatic")
-        aCoder.encode(self.readAccess, forKey: "readAccess")
-        aCoder.encode(self.writeAccess, forKey: "writeAccess")
-        aCoder.encode(self.annotations, forKey: "annotations")
-        aCoder.encode(self.__parserData, forKey: "__parserData")
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.isComputed, forKey: "isComputed")
+            aCoder.encode(self.isStatic, forKey: "isStatic")
+            aCoder.encode(self.readAccess, forKey: "readAccess")
+            aCoder.encode(self.writeAccess, forKey: "writeAccess")
+            aCoder.encode(self.annotations, forKey: "annotations")
 
-    }
-
-    // }
+        }
+        // } Variable.NSCoding
 }

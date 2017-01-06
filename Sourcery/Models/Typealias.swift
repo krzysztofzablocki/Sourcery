@@ -34,23 +34,21 @@ final class Typealias: NSObject, AutoDiffable, NSCoding {
         self.parentName = parent?.name
     }
 
-    // serialization {
-    required init?(coder aDecoder: NSCoder) {
+    // Typealias.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { return nil }; self.aliasName = aliasName
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
 
-        self.aliasName = aDecoder.decode(forKey: "aliasName")
-        self.typeName = aDecoder.decode(forKey: "typeName")
-        self.parent = aDecoder.decode(forKey: "parent")
-        self.parentName = aDecoder.decode(forKey: "parentName")
+             self.parentName = aDecoder.decode(forKey: "parentName")
 
-    }
+        }
 
-    func encode(with aCoder: NSCoder) {
+        func encode(with aCoder: NSCoder) {
 
-        aCoder.encode(self.aliasName, forKey: "aliasName")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.parent, forKey: "parent")
-        aCoder.encode(self.parentName, forKey: "parentName")
+            aCoder.encode(self.aliasName, forKey: "aliasName")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.parentName, forKey: "parentName")
 
-    }
-    // }
+        }
+        // } Typealias.NSCoding
 }

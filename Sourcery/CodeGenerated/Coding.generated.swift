@@ -1,30 +1,39 @@
 // Generated using Sourcery 0.5.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
-
 import Foundation
-
 
 extension NSCoder {
 
     @nonobjc func decode(forKey: String) -> String? {
-        return self.decode(forKey: forKey) as String?
-    }
-
-    @nonobjc func decode(forKey: String) -> TypeName? {
-        return self.decode(forKey: forKey) as TypeName?
-    }
-
-    @nonobjc func decode(forKey: String) -> AccessLevel? {
-        return self.decode(forKey: forKey) as AccessLevel?
-    }
-
-    func decode<E, V>(forKey: String) -> [E: V]? {
         guard let object = self.decodeObject(forKey: forKey) else {
             return nil
         }
 
-        return object as? [E:V]
+        return object as? String
+    }
+
+    @nonobjc func decode(forKey: String) -> TypeName? {
+        guard let object = self.decodeObject(forKey: forKey) else {
+            return nil
+        }
+
+        return object as? TypeName
+    }
+
+    @nonobjc func decode(forKey: String) -> AccessLevel? {
+        guard let object = self.decodeObject(forKey: forKey) else {
+            return nil
+        }
+        return object as? AccessLevel
+    }
+
+    @nonobjc func decode(forKey: String) -> Bool {
+        return self.decodeBool(forKey: forKey)
+    }
+
+    @nonobjc func decode(forKey: String) -> Int {
+        return self.decodeInteger(forKey: forKey)
     }
 
     func decode<E>(forKey: String) -> E? {
@@ -35,367 +44,354 @@ extension NSCoder {
         return object as? E
     }
 
-    func decode<E>(forKey: String) -> [E]? {
-        guard let object = self.decodeObject(forKey: forKey) else {
-            return []
-        }
-
-        return object as? [E]
-    }
 }
-
 
 /*
 extension Class {
-    // Class.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+        // Class.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+        }
  
-    override func encode(with aCoder: NSCoder) {
-        super.encode(with: aCoder)
-        
-    }
-    // } Class.NSCoding
+        override func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
+            
+        }
+        // } Class.NSCoding
 }
 */
-    
+
 /*
 extension Enum {
-    // Enum.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.cases = aDecoder.decode(forKey: "cases")
-         self.rawType = aDecoder.decode(forKey: "rawType")
-        
-        
-        super.init(coder: aDecoder)
-    }
+        // Enum.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let cases: [Case] = aDecoder.decode(forKey: "cases") else { return nil }; self.cases = cases
+             self.rawType = aDecoder.decode(forKey: "rawType")
+            self.hasRawType = aDecoder.decodeBool(forKey: "hasRawType")
+            
+            super.init(coder: aDecoder)
+        }
  
-    override func encode(with aCoder: NSCoder) {
-        super.encode(with: aCoder)
-        aCoder.encode(self.cases, forKey: "cases")
-        aCoder.encode(self.rawType, forKey: "rawType")
-        
-    }
-    // } Enum.NSCoding
+        override func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
+            aCoder.encode(self.cases, forKey: "cases")
+            aCoder.encode(self.rawType, forKey: "rawType")
+            aCoder.encode(self.hasRawType, forKey: "hasRawType")
+            
+        }
+        // } Enum.NSCoding
 }
 */
-    
+
 /*
 extension Enum.Case: NSCoding {
-    // Enum.Case.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.name = aDecoder.decode(forKey: "name")
-         self.rawValue = aDecoder.decode(forKey: "rawValue")
-         self.associatedValues = aDecoder.decode(forKey: "associatedValues")
-         self.annotations = aDecoder.decode(forKey: "annotations")
-        
-    }
+        // Enum.Case.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             self.rawValue = aDecoder.decode(forKey: "rawValue")
+             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { return nil }; self.associatedValues = associatedValues
+             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.rawValue, forKey: "rawValue")
-        aCoder.encode(self.associatedValues, forKey: "associatedValues")
-        aCoder.encode(self.annotations, forKey: "annotations")
-        
-    }
-    // } Enum.Case.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.rawValue, forKey: "rawValue")
+            aCoder.encode(self.associatedValues, forKey: "associatedValues")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            
+        }
+        // } Enum.Case.NSCoding
 }
 */
-    
+
 /*
 extension Enum.Case.AssociatedValue: NSCoding {
-    // Enum.Case.AssociatedValue.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.localName = aDecoder.decode(forKey: "localName")
-         self.externalName = aDecoder.decode(forKey: "externalName")
-         self.typeName = aDecoder.decode(forKey: "typeName")
-        
-        
-    }
+        // Enum.Case.AssociatedValue.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             self.localName = aDecoder.decode(forKey: "localName")
+             self.externalName = aDecoder.decode(forKey: "externalName")
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+            
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.localName, forKey: "localName")
-        aCoder.encode(self.externalName, forKey: "externalName")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        
-    }
-    // } Enum.Case.AssociatedValue.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.localName, forKey: "localName")
+            aCoder.encode(self.externalName, forKey: "externalName")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            
+        }
+        // } Enum.Case.AssociatedValue.NSCoding
 }
 */
-    
+
 /*
 extension GenerationContext: NSCoding {
-    // GenerationContext.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.types = aDecoder.decode(forKey: "types")
-         self.typeByName = aDecoder.decode(forKey: "typeByName")
-         self.arguments = aDecoder.decode(forKey: "arguments")
-         self.classes = aDecoder.decode(forKey: "classes")
-         self.all = aDecoder.decode(forKey: "all")
-         self.protocols = aDecoder.decode(forKey: "protocols")
-         self.structs = aDecoder.decode(forKey: "structs")
-         self.enums = aDecoder.decode(forKey: "enums")
-        
-    }
+        // GenerationContext.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let types: [Type] = aDecoder.decode(forKey: "types") else { return nil }; self.types = types
+             guard let typeByName: [String : Type] = aDecoder.decode(forKey: "typeByName") else { return nil }; self.typeByName = typeByName
+             guard let arguments: [String : NSObject] = aDecoder.decode(forKey: "arguments") else { return nil }; self.arguments = arguments
+            
+            
+            
+            
+            
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.types, forKey: "types")
-        aCoder.encode(self.typeByName, forKey: "typeByName")
-        aCoder.encode(self.arguments, forKey: "arguments")
-        aCoder.encode(self.classes, forKey: "classes")
-        aCoder.encode(self.all, forKey: "all")
-        aCoder.encode(self.protocols, forKey: "protocols")
-        aCoder.encode(self.structs, forKey: "structs")
-        aCoder.encode(self.enums, forKey: "enums")
-        
-    }
-    // } GenerationContext.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.types, forKey: "types")
+            aCoder.encode(self.typeByName, forKey: "typeByName")
+            aCoder.encode(self.arguments, forKey: "arguments")
+            
+        }
+        // } GenerationContext.NSCoding
 }
 */
-    
+
 /*
 extension Method: NSCoding {
-    // Method.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.selectorName = aDecoder.decode(forKey: "selectorName")
-         self.parameters = aDecoder.decode(forKey: "parameters")
-         self.returnTypeName = aDecoder.decode(forKey: "returnTypeName")
-        
-         self.accessLevel = aDecoder.decode(forKey: "accessLevel")
-         self.isStatic = aDecoder.decode(forKey: "isStatic")
-         self.isClass = aDecoder.decode(forKey: "isClass")
-         self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
-         self.annotations = aDecoder.decode(forKey: "annotations")
-        
-        
-    }
+        // Method.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { return nil }; self.selectorName = selectorName
+             guard let parameters: [Parameter] = aDecoder.decode(forKey: "parameters") else { return nil }; self.parameters = parameters
+             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { return nil }; self.returnTypeName = returnTypeName
+            
+             guard let accessLevel: AccessLevel = aDecoder.decode(forKey: "accessLevel") else { return nil }; self.accessLevel = accessLevel
+            self.isStatic = aDecoder.decodeBool(forKey: "isStatic")
+            self.isClass = aDecoder.decodeBool(forKey: "isClass")
+            self.isFailableInitializer = aDecoder.decodeBool(forKey: "isFailableInitializer")
+             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
+            
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.selectorName, forKey: "selectorName")
-        aCoder.encode(self.parameters, forKey: "parameters")
-        aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
-        aCoder.encode(self.accessLevel, forKey: "accessLevel")
-        aCoder.encode(self.isStatic, forKey: "isStatic")
-        aCoder.encode(self.isClass, forKey: "isClass")
-        aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
-        aCoder.encode(self.annotations, forKey: "annotations")
-        
-    }
-    // } Method.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.selectorName, forKey: "selectorName")
+            aCoder.encode(self.parameters, forKey: "parameters")
+            aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
+            aCoder.encode(self.accessLevel, forKey: "accessLevel")
+            aCoder.encode(self.isStatic, forKey: "isStatic")
+            aCoder.encode(self.isClass, forKey: "isClass")
+            aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            
+        }
+        // } Method.NSCoding
 }
 */
-    
+
 /*
 extension Method.Parameter: NSCoding {
-    // Method.Parameter.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-         self.name = aDecoder.decode(forKey: "name")
-         self.typeName = aDecoder.decode(forKey: "typeName")
-         self.type = aDecoder.decode(forKey: "type")
-        
-    }
+        // Method.Parameter.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let argumentLabel: String = aDecoder.decode(forKey: "argumentLabel") else { return nil }; self.argumentLabel = argumentLabel
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+             self.type = aDecoder.decode(forKey: "type")
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.type, forKey: "type")
-        
-    }
-    // } Method.Parameter.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+            
+        }
+        // } Method.Parameter.NSCoding
 }
 */
-    
+
 /*
 extension Protocol {
-    // Protocol.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+        // Protocol.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+        }
  
-    override func encode(with aCoder: NSCoder) {
-        super.encode(with: aCoder)
-        
-    }
-    // } Protocol.NSCoding
+        override func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
+            
+        }
+        // } Protocol.NSCoding
 }
 */
-    
+
 /*
 extension Struct {
-    // Struct.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+        // Struct.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+        }
  
-    override func encode(with aCoder: NSCoder) {
-        super.encode(with: aCoder)
-        
-    }
-    // } Struct.NSCoding
+        override func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
+            
+        }
+        // } Struct.NSCoding
 }
 */
-    
+
 /*
 extension TupleType: NSCoding {
-    // TupleType.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.name = aDecoder.decode(forKey: "name")
-         self.elements = aDecoder.decode(forKey: "elements")
-        
-    }
+        // TupleType.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             guard let elements: [Element] = aDecoder.decode(forKey: "elements") else { return nil }; self.elements = elements
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.elements, forKey: "elements")
-        
-    }
-    // } TupleType.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.elements, forKey: "elements")
+            
+        }
+        // } TupleType.NSCoding
 }
 */
-    
+
 /*
 extension TupleType.Element: NSCoding {
-    // TupleType.Element.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.name = aDecoder.decode(forKey: "name")
-         self.typeName = aDecoder.decode(forKey: "typeName")
-        
-        
-    }
+        // TupleType.Element.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+            
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        
-    }
-    // } TupleType.Element.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            
+        }
+        // } TupleType.Element.NSCoding
 }
 */
-    
+
 /*
 extension Type: NSCoding {
-    // Type.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.typealiases = aDecoder.decode(forKey: "typealiases")
-         self.isExtension = aDecoder.decode(forKey: "isExtension")
-         self.accessLevel = aDecoder.decode(forKey: "accessLevel")
-         self.isGeneric = aDecoder.decode(forKey: "isGeneric")
-         self.localName = aDecoder.decode(forKey: "localName")
-         self.variables = aDecoder.decode(forKey: "variables")
-         self.methods = aDecoder.decode(forKey: "methods")
-         self.annotations = aDecoder.decode(forKey: "annotations")
-         self.inheritedTypes = aDecoder.decode(forKey: "inheritedTypes")
-        
-        
-        
-         self.containedTypes = aDecoder.decode(forKey: "containedTypes")
-         self.parentName = aDecoder.decode(forKey: "parentName")
-        
-        
-        
-        
-    }
+        // Type.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { return nil }; self.typealiases = typealiases
+            self.isExtension = aDecoder.decodeBool(forKey: "isExtension")
+             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { return nil }; self.accessLevel = accessLevel
+            self.isGeneric = aDecoder.decodeBool(forKey: "isGeneric")
+             guard let localName: String = aDecoder.decode(forKey: "localName") else { return nil }; self.localName = localName
+             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { return nil }; self.variables = variables
+             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { return nil }; self.methods = methods
+             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
+             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { return nil }; self.inheritedTypes = inheritedTypes
+            
+            
+            
+             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { return nil }; self.containedTypes = containedTypes
+             self.parentName = aDecoder.decode(forKey: "parentName")
+            
+            
+            
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.typealiases, forKey: "typealiases")
-        aCoder.encode(self.isExtension, forKey: "isExtension")
-        aCoder.encode(self.accessLevel, forKey: "accessLevel")
-        aCoder.encode(self.isGeneric, forKey: "isGeneric")
-        aCoder.encode(self.localName, forKey: "localName")
-        aCoder.encode(self.variables, forKey: "variables")
-        aCoder.encode(self.methods, forKey: "methods")
-        aCoder.encode(self.annotations, forKey: "annotations")
-        aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
-        aCoder.encode(self.containedTypes, forKey: "containedTypes")
-        aCoder.encode(self.parentName, forKey: "parentName")
-        
-    }
-    // } Type.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.typealiases, forKey: "typealiases")
+            aCoder.encode(self.isExtension, forKey: "isExtension")
+            aCoder.encode(self.accessLevel, forKey: "accessLevel")
+            aCoder.encode(self.isGeneric, forKey: "isGeneric")
+            aCoder.encode(self.localName, forKey: "localName")
+            aCoder.encode(self.variables, forKey: "variables")
+            aCoder.encode(self.methods, forKey: "methods")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
+            aCoder.encode(self.containedTypes, forKey: "containedTypes")
+            aCoder.encode(self.parentName, forKey: "parentName")
+            
+        }
+        // } Type.NSCoding
 }
 */
-    
+
 /*
 extension TypeName: NSCoding {
-    // TypeName.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.name = aDecoder.decode(forKey: "name")
-        
-         self.tuple = aDecoder.decode(forKey: "tuple")
-        
-    }
+        // TypeName.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+            
+             self.tuple = aDecoder.decode(forKey: "tuple")
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.tuple, forKey: "tuple")
-        
-    }
-    // } TypeName.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.tuple, forKey: "tuple")
+            
+        }
+        // } TypeName.NSCoding
 }
 */
-    
+
 /*
 extension Typealias: NSCoding {
-    // Typealias.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.aliasName = aDecoder.decode(forKey: "aliasName")
-         self.typeName = aDecoder.decode(forKey: "typeName")
-        
-        
-         self.parentName = aDecoder.decode(forKey: "parentName")
-        
-    }
+        // Typealias.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { return nil }; self.aliasName = aliasName
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+            
+            
+             self.parentName = aDecoder.decode(forKey: "parentName")
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.aliasName, forKey: "aliasName")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.parentName, forKey: "parentName")
-        
-    }
-    // } Typealias.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.aliasName, forKey: "aliasName")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.parentName, forKey: "parentName")
+            
+        }
+        // } Typealias.NSCoding
 }
 */
-    
+
 /*
 extension Variable: NSCoding {
-    // Variable.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-         self.name = aDecoder.decode(forKey: "name")
-         self.typeName = aDecoder.decode(forKey: "typeName")
-        
-         self.isComputed = aDecoder.decode(forKey: "isComputed")
-         self.isStatic = aDecoder.decode(forKey: "isStatic")
-         self.readAccess = aDecoder.decode(forKey: "readAccess")
-         self.writeAccess = aDecoder.decode(forKey: "writeAccess")
-         self.annotations = aDecoder.decode(forKey: "annotations")
-        
-        
-    }
+        // Variable.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+            
+            self.isComputed = aDecoder.decodeBool(forKey: "isComputed")
+            self.isStatic = aDecoder.decodeBool(forKey: "isStatic")
+             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { return nil }; self.readAccess = readAccess
+             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { return nil }; self.writeAccess = writeAccess
+             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
+            
+            
+        }
  
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.isComputed, forKey: "isComputed")
-        aCoder.encode(self.isStatic, forKey: "isStatic")
-        aCoder.encode(self.readAccess, forKey: "readAccess")
-        aCoder.encode(self.writeAccess, forKey: "writeAccess")
-        aCoder.encode(self.annotations, forKey: "annotations")
-        
-    }
-    // } Variable.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.isComputed, forKey: "isComputed")
+            aCoder.encode(self.isStatic, forKey: "isStatic")
+            aCoder.encode(self.readAccess, forKey: "readAccess")
+            aCoder.encode(self.writeAccess, forKey: "writeAccess")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            
+        }
+        // } Variable.NSCoding
 }
 */
-    

@@ -25,7 +25,6 @@
 		C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
 		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
-		C894A1B71E19381A0098327C /* Coding.stencil in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B61E19381A0098327C /* Coding.stencil */; };
 		C894A1B91E1989D30098327C /* AccessLevel.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F541DFDCC1A0088B2F6 /* AccessLevel.swift */; };
 		C894A1BA1E1989D30098327C /* Enum.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F551DFDCC1A0088B2F6 /* Enum.swift */; };
 		C894A1BB1E1989D30098327C /* Protocol.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F561DFDCC1A0088B2F6 /* Protocol.swift */; };
@@ -40,6 +39,10 @@
 		C894A1C41E1989DA0098327C /* SwiftTemplate+Runtime.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */; };
 		C894A1C51E1989DA0098327C /* GenerationContext.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1AC1E1931500098327C /* GenerationContext.swift */; };
 		C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1A51E1930990098327C /* Coding.generated.swift */; };
+		C8E88CAB1E204E4900102D17 /* Description.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F661DFDD3990088B2F6 /* Description.generated.swift */; };
+		C8E88CAC1E204E5000102D17 /* Diffable.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD666A9B1E0BF0A10045D31A /* Diffable.generated.swift */; };
+		C8E88CAD1E204E8400102D17 /* Typed.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CDF68B751E1C143D007C5396 /* Typed.generated.swift */; };
+		C8E88CAE1E204ED500102D17 /* Extensions.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 0911DAEF1E1D90D1001FF3EB /* Extensions.swift */; };
 		CD0020EB1D8844B1001CB583 /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		CD475D6F1DE9B98B009AD8B0 /* Result in Resources */ = {isa = PBXBuildFile; fileRef = CD475D6E1DE9B98B009AD8B0 /* Result */; };
 		CD53EE661D897C1F00F5886C /* Source in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE651D897C1F00F5886C /* Source */; };
@@ -102,19 +105,23 @@
 			dstSubfolderSpec = 7;
 			files = (
 				C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */,
+				C8E88CAB1E204E4900102D17 /* Description.generated.swift in SwiftTemplates */,
 				C894A1C41E1989DA0098327C /* SwiftTemplate+Runtime.swift in SwiftTemplates */,
 				C894A1C51E1989DA0098327C /* GenerationContext.swift in SwiftTemplates */,
 				C894A1B91E1989D30098327C /* AccessLevel.swift in SwiftTemplates */,
 				C894A1BA1E1989D30098327C /* Enum.swift in SwiftTemplates */,
+				C8E88CAD1E204E8400102D17 /* Typed.generated.swift in SwiftTemplates */,
 				C894A1BB1E1989D30098327C /* Protocol.swift in SwiftTemplates */,
 				C894A1BC1E1989D30098327C /* Struct.swift in SwiftTemplates */,
 				C894A1BD1E1989D30098327C /* Class.swift in SwiftTemplates */,
+				C8E88CAC1E204E5000102D17 /* Diffable.generated.swift in SwiftTemplates */,
 				C894A1BE1E1989D30098327C /* Type.swift in SwiftTemplates */,
 				C894A1BF1E1989D30098327C /* Typealias.swift in SwiftTemplates */,
 				C894A1C01E1989D30098327C /* Variable.swift in SwiftTemplates */,
 				C894A1C11E1989D30098327C /* Diffable.swift in SwiftTemplates */,
 				C894A1C21E1989D30098327C /* Method.swift in SwiftTemplates */,
 				C894A1C31E1989D30098327C /* TypeName.swift in SwiftTemplates */,
+				C8E88CAE1E204ED500102D17 /* Extensions.swift in SwiftTemplates */,
 			);
 			name = SwiftTemplates;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -811,6 +818,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-D DEBUG";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};

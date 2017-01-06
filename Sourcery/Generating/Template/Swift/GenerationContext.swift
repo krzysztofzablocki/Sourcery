@@ -25,17 +25,22 @@ class GenerationContext: NSObject, NSCoding, AutoDiffable {
         self.arguments = arguments
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        self.types = aDecoder.decode(forKey: "types")
-        self.typeByName = aDecoder.decode(forKey: "typeByName")
-        self.arguments = aDecoder.decode(forKey: "arguments")
-    }
+    // GenerationContext.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+             guard let types: [Type] = aDecoder.decode(forKey: "types") else { return nil }; self.types = types
+             guard let typeByName: [String : Type] = aDecoder.decode(forKey: "typeByName") else { return nil }; self.typeByName = typeByName
+             guard let arguments: [String : NSObject] = aDecoder.decode(forKey: "arguments") else { return nil }; self.arguments = arguments
 
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(self.types, forKey: "types")
-        aCoder.encode(self.typeByName, forKey: "typeByName")
-        aCoder.encode(self.arguments, forKey: "arguments")
-    }
+        }
+
+        func encode(with aCoder: NSCoder) {
+
+            aCoder.encode(self.types, forKey: "types")
+            aCoder.encode(self.typeByName, forKey: "typeByName")
+            aCoder.encode(self.arguments, forKey: "arguments")
+
+        }
+        // } GenerationContext.NSCoding
 
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? GenerationContext else {
@@ -50,26 +55,31 @@ class GenerationContext: NSObject, NSCoding, AutoDiffable {
     }
 
     /// Lists all known classes in the project
+    /// sourcery: skipEquality
     lazy var classes: [Class] = {
         return self.types.classes
     }()
 
     /// lists all known types, excluding protocols
+    /// sourcery: skipEquality
     lazy var all: [Type] = {
         return self.types.all
     }()
 
     /// Lists all known protocols
+    /// sourcery: skipEquality
     lazy var protocols: [Protocol] = {
         return self.types.protocols
     }()
 
     /// Lists all known structs
+    /// sourcery: skipEquality
     lazy var structs: [Struct] = {
         return self.types.structs
     }()
 
     /// Lists all known enums
+    /// sourcery: skipEquality
     lazy var enums: [Enum] = {
         return self.types.enums
     }()
