@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0911DAF01E1D90D1001FF3EB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAEF1E1D90D1001FF3EB /* Extensions.swift */; };
+		0911DAF21E212817001FF3EB /* Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF11E212817001FF3EB /* Annotations.swift */; };
 		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
 		0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA601E0341400084F702 /* ProtocolSpec.swift */; };
 		0967DA681E0488170084F702 /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA671E0488170084F702 /* Method.swift */; };
@@ -90,6 +91,7 @@
 /* Begin PBXFileReference section */
 		0911DAEF1E1D90D1001FF3EB /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameSpec.swift; sourceTree = "<group>"; };
+		0911DAF11E212817001FF3EB /* Annotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotations.swift; sourceTree = "<group>"; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
 		0967DA601E0341400084F702 /* ProtocolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolSpec.swift; sourceTree = "<group>"; };
 		0967DA671E0488170084F702 /* Method.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Method.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				CD666A991E0BEF4F0045D31A /* Diffable.swift */,
 				0967DA671E0488170084F702 /* Method.swift */,
 				E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */,
+				0911DAF11E212817001FF3EB /* Annotations.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -652,6 +655,7 @@
 				E291DDBDE2CF209C856B90D7 /* TypeName.swift in Sources */,
 				E291DDC342DD8A3BFD4D55B8 /* Template.swift in Sources */,
 				E291D4D8E67E26F4567EB5DE /* Composer.swift in Sources */,
+				0911DAF21E212817001FF3EB /* Annotations.swift in Sources */,
 				E291DD2ED0B47ECB174FEAAD /* Substring.swift in Sources */,
 				E291DF1320ACA969F7A8CBAE /* AnnotationsParser.swift in Sources */,
 				E291D8DB06EC63770326562B /* Type+Stencil.swift in Sources */,

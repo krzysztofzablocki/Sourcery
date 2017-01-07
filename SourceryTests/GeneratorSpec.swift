@@ -10,8 +10,8 @@ class GeneratorSpec: QuickSpec {
         describe("Generator") {
 
             let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: "Int")], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
-            let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"])
-            let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"])
+            let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2)])
+            let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
 
             let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
             let fooVar = Variable(name: "foo", typeName: "Foo", accessLevel: (read: .public, write: .public), isComputed: false)
@@ -121,6 +121,11 @@ class GeneratorSpec: QuickSpec {
 
                 it("counts all variables including implements, inherits") {
                     expect(generate("{{ type.ProjectFooSubclass.allVariables.count }}")).to(equal("2"))
+                }
+
+                it("can use annotations filter") {
+                    expect(generate("{% for type in types.all|annotated:\"bar\" %}{{ type.name }}{% endfor %}")).to(equal("Bar"))
+                    expect(generate("{% for type in types.all|annotated:\"foo = 2\" %}{{ type.name }}{% endfor %}")).to(equal("FooSubclass"))
                 }
 
                 it("can use filter on variables") {

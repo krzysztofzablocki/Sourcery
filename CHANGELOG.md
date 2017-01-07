@@ -3,9 +3,13 @@
 ---
 ## Master
 
+### New Features
+
 - Added support for `ImplicitlyUnwrappedOptional`
 - `actualTypeName` property of `Method.Parameter`, `Variable`, `Enum.Case.AssociatedValue`, `TupleType.Element` now returns `typeName` if type is not a type alias
 - `Enum` now contains type information for its raw value type. `rawType` now return `Type` object, `rawTypeName` returns its `TypeName`
+- Added `annotated` filter to filter by annotations
+- Added negative filters counterparts
 
 ## 0.5.1
 

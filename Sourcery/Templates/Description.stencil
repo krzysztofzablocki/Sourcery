@@ -1,9 +1,9 @@
 {% for type in types.classes %} {% if type.variables.count %}{% if not type.annotations.skipDescription %}
 extension {{ type.name }} {
     override var description: String {
-        var string = {% if type.inheritedTypes.first == "NSObject" %}"\(type(of: self)): "{% else %}super.description{% endif %}{% for variable in type.variables %}{% if not variable.annotations.skipDescription %}
-        string += "{{ variable.name }} = \({{ variable.name }}), "{% endif %}{% endfor %}
-        return string
+        var string = {% if type.inheritedTypes.first == "NSObject" %}"\(type(of: self)): "{% else %}super.description{% endif %}
+        {% for variable in type.variables|!annotated:"skipDescription" %}string += "{{ variable.name }} = \({{ variable.name }}){% if not forloop.last %}, {% endif %}"
+        {% endfor %}return string
     }
 }
 {% endif %}{% endif %}{% endfor %}
