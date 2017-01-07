@@ -1,6 +1,13 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+
+- Added support for `ImplicitlyUnwrappedOptional`
+
+
 ## 0.5.1
 
 ### New Features
