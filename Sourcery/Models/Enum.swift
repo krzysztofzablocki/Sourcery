@@ -6,7 +6,7 @@
 import Foundation
 
 final class Enum: Type {
-    final class Case: NSObject, AutoDiffable {
+    final class Case: NSObject, AutoDiffable, Annotated {
         final class AssociatedValue: NSObject, AutoDiffable, Typed {
             let localName: String?
             let externalName: String?
@@ -93,7 +93,8 @@ final class Enum: Type {
         return false
     }
 
-    init(name: String,
+    init(name: String = "",
+         parent: Type? = nil,
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,
          inheritedTypes: [String] = [],
@@ -102,13 +103,15 @@ final class Enum: Type {
          variables: [Variable] = [],
          methods: [Method] = [],
          containedTypes: [Type] = [],
-         typealiases: [Typealias] = []) {
+         typealiases: [Typealias] = [],
+         annotations: [String: NSObject] = [:],
+         isGeneric: Bool = false) {
 
         self.cases = cases
         self.rawTypeName = rawTypeName.map(TypeName.init)
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, annotations: annotations, isGeneric: isGeneric)
 
         if let rawTypeName = rawTypeName, let index = self.inheritedTypes.index(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)

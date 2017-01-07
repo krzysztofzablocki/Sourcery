@@ -3,7 +3,7 @@ import Foundation
 //typealias used to avoid types ambiguty in tests
 typealias SourceryMethod = Method
 
-final class Method: NSObject, AutoDiffable {
+final class Method: NSObject, AutoDiffable, Annotated {
 
     class Parameter: NSObject, AutoDiffable, Typed {
         /// Parameter external name

@@ -7,7 +7,7 @@ import Foundation
 
 /// Defines a variable
 
-final class Variable: NSObject, AutoDiffable, Typed {
+final class Variable: NSObject, AutoDiffable, Typed, Annotated {
     /// Variable name
     let name: String
 
