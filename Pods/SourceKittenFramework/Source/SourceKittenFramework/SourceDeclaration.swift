@@ -14,7 +14,7 @@ import Clang_C
 import Foundation
 
 public func insertMarks(declarations: [SourceDeclaration], limit: NSRange? = nil) -> [SourceDeclaration] {
-    guard declarations.count > 0 else { return [] }
+    guard !declarations.isEmpty else { return [] }
     guard let path = declarations.first?.location.file, let file = File(path: path) else {
         fatalError("can't extract marks without a file.")
     }
@@ -71,7 +71,7 @@ public struct SourceDeclaration {
         guard let declaration = declaration else {
             fatalError("Couldn't extract declaration")
         }
-        enum AccessorType {
+        enum AccessorType { // swiftlint:disable:this nesting
             case `class`, instance
 
             var propertyTypeString: String {
@@ -103,7 +103,7 @@ public struct SourceDeclaration {
         let usrPrefix = usr.substring(to: propertyTypeStringStart)
         let regex = try! NSRegularExpression(pattern: getter ? "getter\\s*=\\s*(\\w+)" : "setter\\s*=\\s*(\\w+:)")
         let matches = regex.matches(in: declaration, options: [], range: NSRange(location: 0, length: nsDeclaration.length))
-        if matches.count > 0 {
+        if !matches.isEmpty {
             let accessorName = nsDeclaration.substring(with: matches[0].rangeAt(1))
             return usrPrefix + accessorType.methodTypeString + accessorName
         } else if getter {

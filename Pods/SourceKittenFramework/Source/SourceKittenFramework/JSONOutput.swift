@@ -76,7 +76,7 @@ private func toOutputDictionary(_ decl: SourceDeclaration) -> [String: Any] {
         }
     }
     func setA(_ key: SwiftDocKey, _ value: [Any]?) {
-        if let value = value, value.count > 0 {
+        if let value = value, !value.isEmpty {
             dict[key.rawValue] = value
         }
     }
@@ -119,9 +119,9 @@ private func toOutputDictionary(_ param: Parameter) -> [String: Any] {
 
 private func toOutputDictionary(_ text: Text) -> [String: Any] {
     switch text {
-    case .Para(let str, let kind):
+    case .para(let str, let kind):
         return ["kind": kind ?? "", "Para": str]
-    case .Verbatim(let str):
+    case .verbatim(let str):
         return ["kind": "", "Verbatim": str]
     }
 }

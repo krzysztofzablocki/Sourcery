@@ -55,6 +55,7 @@ public enum ObjCDeclarationKind: String {
     /// `UnexposedDecl`
     case unexposedDecl = "sourcekitten.source.lang.objc.decl.unexposed"
 
+    // swiftlint:disable:next cyclomatic_complexity
     public init(_ cursorKind: CXCursorKind) {
         switch cursorKind {
         case CXCursor_ObjCCategoryDecl: self = .category

@@ -4,11 +4,11 @@
 target 'Sourcery' do
   use_frameworks!
 
-  pod 'Stencil', :git => "git@github.com:kylef/Stencil", :commit => '39517b7'
+  pod 'Stencil', :git => "git@github.com:kylef/Stencil", :commit => '99efba5'
   pod 'Commander'
   pod 'PathKit', :git => "git@github.com:kylef/PathKit.git", :commit => 'c662c2a'
   pod 'KZFileWatchers'
-  pod 'SourceKitten', :git => "git@github.com:jpsim/SourceKitten", :commit => '9adc3e0'
+  pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => 'b325ca1'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
 
   target 'SourceryTests' do

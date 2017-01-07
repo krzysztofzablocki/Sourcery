@@ -180,6 +180,18 @@ Running `sourcekitten syntax --file file.swift` or `sourcekitten syntax --text "
 ]
 ```
 
+## Request
+
+Running `sourcekitten request --yaml [FILE|TEXT]` will execute a sourcekit request with the given yaml. For example:
+
+```yaml
+key.request: source.request.cursorinfo
+key.sourcefile: "/tmp/foo.swift"
+key.offset: 8
+key.compilerargs:
+  - "/tmp/foo.swift"
+```
+
 ## SourceKittenFramework
 
 Most of the functionality of the `sourcekitten` command line tool is actually encapsulated in a framework named SourceKittenFramework.
