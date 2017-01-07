@@ -221,6 +221,7 @@ Available types:
 - `typeName` <- name of type of associated value (*TypeName*)
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
+- `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
 
 </details>
@@ -232,6 +233,7 @@ Available types:
 - `typeName` <- returns name of the type (*TypeName*)
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
+- `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isComputed` <- whether is computed
 - `isStatic` <- whether is static variable
 - `isTuple` <- shorthand for `typeName.isTuple`
@@ -251,6 +253,7 @@ Available types:
 - `returnTypeName` <- return type name (*TypeName*). Will be `Void` for methods without return value or empty string for initializers.
 - `unwrappedReturnTypeName` <- shorthand for `returnTypeName.unwrappedTypeName`
 - `isOptionalReturnType` <- shorthand for `returnTypeName.isOptional`
+- `isImplicitlyUnwrappedOptionalReturnType` <- shorthand for `returnTypeName. isImplicitlyUnwrappedOptional`
 - `accessLevel` <- method access level
 - `isStatic` <- whether method is static
 - `isClass` <- whether method is class (can be overriden by subclasses)
@@ -268,6 +271,7 @@ Available types:
 - `typeName` <- parameter type name (*TypeName*)
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
+- `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
 
 </details>
@@ -278,6 +282,7 @@ Available types:
 - `actualTypeName` <- if give type is typealias will contain actual type name, otherwise will be `Void`
 - `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
+- `isImplicitlyUnwrappedOptional` <- whether is implicitly unwrapped optional
 - `isVoid` <- whether type is Void (`Void` or `()`)
 - `isTuple` <- whether given type is a tuple
 - `tuple.elements` <- if given type is a tuple returns its elements information (*TupleType.Element*)

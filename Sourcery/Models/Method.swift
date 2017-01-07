@@ -51,6 +51,10 @@ final class Method: NSObject, AutoDiffable {
         return returnTypeName.isOptional || isFailableInitializer
     }
 
+    var isImplicitlyUnwrappedOptionalReturnType: Bool {
+        return returnTypeName.isImplicitlyUnwrappedOptional
+    }
+
     // sourcery: skipEquality
     // sourcery: skipDescription
     var unwrappedReturnTypeName: String {

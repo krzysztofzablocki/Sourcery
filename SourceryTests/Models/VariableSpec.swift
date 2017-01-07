@@ -23,46 +23,12 @@ class VariableSpec: QuickSpec {
                 expect(sut?.writeAccess == AccessLevel.internal.rawValue).to(beTrue())
             }
 
-            it("reports optional false") {
-                expect(sut?.isOptional).to(beFalse())
-            }
-
             context("given optional type with short syntax") {
-                it("reports optional true") {
-                    expect(Variable(name: "Foo", typeName: "Int?").isOptional).to(beTrue())
-                }
-
-                it("reports non-optional type for unwrappedTypeName") {
-                    expect(Variable(name: "Foo", typeName: "Int?").unwrappedTypeName).to(equal("Int"))
-                }
-
                 it("can report optional via KVC") {
-                    let variable = Variable(name: "Foo", typeName: "Int?")
-
-                    expect(variable.value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                }
-            }
-
-            context("given optional type with long generic syntax") {
-                it("reports optional true") {
-                    expect(Variable(name: "Foo", typeName: "Optional<Int>").isOptional).to(beTrue())
-                }
-
-                it("reports non-optional type for unwrappedTypeName") {
-                    expect(Variable(name: "Foo", typeName: "Optional<Int>").unwrappedTypeName).to(equal("Int"))
-                }
-            }
-
-            describe("tuple type") {
-                it("reports tuple correctly") {
-                    expect(TypeName("(Int, Int)").isTuple).to(beTrue())
-                    expect(TypeName("(Int)").isTuple).to(beFalse())
-                    expect(TypeName("Int").isTuple).to(beFalse())
-                    expect(TypeName("(Int) -> (Int)").isTuple).to(beFalse())
-                    expect(TypeName("(Int, Int) -> (Int)").isTuple).to(beFalse())
-                    expect(TypeName("(Int, (Int, Int) -> (Int))").isTuple).to(beTrue())
-                    expect(TypeName("(Int, (Int, Int))").isTuple).to(beTrue())
-                    expect(TypeName("(Int, (Int) -> (Int -> Int))").isTuple).to(beTrue())
+                    expect(Variable(name: "Foo", typeName: "Int?").value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                    expect(Variable(name: "Foo", typeName: "Int!").value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                    expect(Variable(name: "Foo", typeName: "Int?").value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                    expect(Variable(name: "Foo", typeName: "Int!").value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
                 }
             }
 
