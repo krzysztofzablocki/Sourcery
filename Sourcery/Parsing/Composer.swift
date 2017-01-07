@@ -102,7 +102,7 @@ struct Composer {
     }
 
     private func resolveMethodTypes(_ method: Method, of type: Type, resolve: TypeResolver) {
-        method.parameters.enumerated().forEach { (index, parameter) in
+        method.parameters.enumerated().forEach { (_, parameter) in
             parameter.type = resolve(parameter.typeName, type)
         }
 
