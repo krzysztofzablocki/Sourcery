@@ -75,13 +75,14 @@ class FileParserSpec: QuickSpec {
                             ]))
                         }
 
-                        it("extracts method with closure parameters properly") {
-                            expect(parse("class Foo { func foo( bar:   Int,   foo : ((String, String) -> Void), other: Float }")).to(equal([
+                        it("extracts method with complex parameters properly") {
+                            expect(parse("class Foo { func foo( bar: [String: String],   foo : ((String, String) -> Void), other: Optional<String> }"))
+                                .to(equal([
                                             Type(name: "Foo", methods: [
                                                     Method(selectorName: "foo(bar:foo:other:)", parameters: [
-                                                            Method.Parameter(name: "bar", typeName: "Int"),
+                                                            Method.Parameter(name: "bar", typeName: "[String: String]"),
                                                             Method.Parameter(name: "foo", typeName: "((String, String) -> Void)"),
-                                                            Method.Parameter(name: "other", typeName: "Float")
+                                                            Method.Parameter(name: "other", typeName: "Optional<String>")
                                                     ], returnTypeName: "Void")
                                             ])
                                     ]))
@@ -98,17 +99,6 @@ class FileParserSpec: QuickSpec {
                             ]))
                         }
 
-                        it("extracts method with closure parameter") {
-                            expect(parse("class Foo { func foo(bar: Int, handler: (String) -> (Int)) -> Float {} }")).to(equal([
-                                Type(name: "Foo", methods: [
-                                    Method(selectorName: "foo(bar:handler:)", parameters: [
-                                        Method.Parameter(name: "bar", typeName: "Int"),
-                                        Method.Parameter(name: "handler", typeName: "(String) -> (Int)")
-                                        ], returnTypeName: "Float")
-                                    ])
-                                ]))
-
-                        }
                     }
 
                     context("given method with return type") {
@@ -392,7 +382,7 @@ class FileParserSpec: QuickSpec {
                         it("extracts inherited types properly") {
                             expect(parse("enum Foo: SomeProtocol { case optionA }; protocol SomeProtocol {}"))
                                 .to(equal([
-                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawType: nil, cases: [Enum.Case(name: "optionA")]),
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawTypeName: nil, cases: [Enum.Case(name: "optionA")]),
                                     Protocol(name: "SomeProtocol")
                                     ]))
 
@@ -401,7 +391,7 @@ class FileParserSpec: QuickSpec {
                         it("extracts types inherited in extension properly") {
                             expect(parse("enum Foo { case optionA }; extension Foo: SomeProtocol {}; protocol SomeProtocol {}"))
                                 .to(equal([
-                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawType: nil, cases: [Enum.Case(name: "optionA")]),
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawTypeName: nil, cases: [Enum.Case(name: "optionA")]),
                                     Protocol(name: "SomeProtocol")
                                     ]))
                         }
@@ -420,7 +410,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts enums with custom values") {
                         expect(parse("enum Foo: String { case optionA = \"Value\" }"))
                             .to(equal([
-                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawType: "String", cases: [Enum.Case(name: "optionA", rawValue: "Value")])
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawTypeName: "String", cases: [Enum.Case(name: "optionA", rawValue: "Value")])
                                 ]))
                     }
 

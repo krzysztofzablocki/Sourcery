@@ -23,13 +23,28 @@ class VariableSpec: QuickSpec {
                 expect(sut?.writeAccess == AccessLevel.internal.rawValue).to(beTrue())
             }
 
-            context("given optional type with short syntax") {
-                it("can report optional via KVC") {
-                    expect(Variable(name: "Foo", typeName: "Int?").value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                    expect(Variable(name: "Foo", typeName: "Int!").value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                    expect(Variable(name: "Foo", typeName: "Int?").value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
-                    expect(Variable(name: "Foo", typeName: "Int!").value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
-                }
+            it("can report optional via KVC") {
+                expect(Variable(name: "Foo", typeName: "Int?").value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(Variable(name: "Foo", typeName: "Int!").value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(Variable(name: "Foo", typeName: "Int?").value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect(Variable(name: "Foo", typeName: "Int!").value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+
+                expect(Variable(name: "Foo", typeName: "Int?").value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+            }
+
+            it("can report tuple type via KVC") {
+                let tuple = TupleType(name: "(Int, Int)", elements: [])
+                let variable = Variable(name: "Foo", typeName: "(Int, Int)")
+                variable.typeName.tuple = tuple
+
+                expect(variable.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
+            }
+
+            it("can report actual type name via KVC") {
+                let variable = Variable(name: "Foo", typeName: "Alias")
+                variable.typeName.actualTypeName = TypeName("Int")
+
+                expect(variable.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(variable.typeName.actualTypeName))
             }
 
             describe("When testing equality") {

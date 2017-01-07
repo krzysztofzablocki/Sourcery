@@ -54,15 +54,15 @@ final class Enum: Type {
     internal(set) var cases: [Case]
 
     /// Raw type of the enum
-    internal(set) var rawType: String? {
+    internal(set) var rawTypeName: TypeName? {
         didSet {
-            if let rawType = rawType {
+            if let rawTypeName = rawTypeName {
                 hasRawType = true
-                if let index = inheritedTypes.index(of: rawType) {
+                if let index = inheritedTypes.index(of: rawTypeName.name) {
                     inheritedTypes.remove(at: index)
                 }
-                if based[rawType] != nil {
-                    based[rawType] = nil
+                if based[rawTypeName.name] != nil {
+                    based[rawTypeName.name] = nil
                 }
             }
         }
@@ -71,12 +71,15 @@ final class Enum: Type {
     // sourcery: skipDescription, skipEquality
     private(set) var hasRawType: Bool
 
+    // sourcery: skipDescription, skipEquality
+    var rawType: Type?
+
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     override var based: [String : String] {
         didSet {
-            if let rawType = rawType, based[rawType] != nil {
-                based[rawType] = nil
+            if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
+                based[rawTypeName.name] = nil
             }
         }
     }
@@ -94,7 +97,7 @@ final class Enum: Type {
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,
          inheritedTypes: [String] = [],
-         rawType: String? = nil,
+         rawTypeName: String? = nil,
          cases: [Case] = [],
          variables: [Variable] = [],
          methods: [Method] = [],
@@ -102,12 +105,12 @@ final class Enum: Type {
          typealiases: [Typealias] = []) {
 
         self.cases = cases
-        self.rawType = rawType
-        self.hasRawType = rawType != nil || !inheritedTypes.isEmpty
+        self.rawTypeName = rawTypeName.map(TypeName.init)
+        self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
         super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)
 
-        if let rawType = rawType, let index = self.inheritedTypes.index(of: rawType) {
+        if let rawTypeName = rawTypeName, let index = self.inheritedTypes.index(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
         }
     }

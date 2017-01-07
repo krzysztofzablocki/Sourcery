@@ -57,7 +57,7 @@ struct Composer {
             unique[type.name] = current
         }
 
-        let resolveType = { (typeName: TypeName, containingType: Type?, typealiases: [String: Typealias]) -> Type? in
+        let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
             let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
             typeName.actualTypeName = name.flatMap(TypeName.init)
             typeName.tuple = self.parseTupleType(name ?? typeName.name)
@@ -65,62 +65,78 @@ struct Composer {
         }
 
         for (_, type) in unique {
-            // find actual variables types
+            type.typealiases.forEach { (_, alias) in
+                alias.type = resolveType(alias.typeName, type)
+            }
             type.variables.forEach {
-                $0.type = resolveType($0.typeName, type, typealiases)
-                if let tuple = $0.typeName.tuple {
-                    tuple.elements.forEach({
-                        $0.type = resolveType($0.typeName, type, typealiases)
-                    })
-                }
+                resolveVariableTypes($0, of: type, resolve: resolveType)
+            }
+            type.methods.forEach {
+                resolveMethodTypes($0, of: type, resolve: resolveType)
             }
 
-            type.typealiases.forEach({ (_, alias) in
-                alias.type = resolveType(alias.typeName, type, typealiases)
-            })
-
-            // resolve type names
-            for method in type.methods {
-                for parameter in method.parameters {
-                    parameter.type = resolveType(parameter.typeName, type, typealiases)
-                }
-
-                if !method.returnTypeName.isVoid {
-                    method.returnType = resolveType(method.returnTypeName, type, typealiases)
-
-                    if method.isInitializer {
-                        method.returnTypeName = TypeName("")
-                    }
-                }
-            }
-
-            //find enums rawValue types
-            if let enumeration = type as? Enum, enumeration.rawType == nil {
-                enumeration.cases.forEach { enumCase in
-                    enumCase.associatedValues.forEach { associatedValue in
-                        associatedValue.type = resolveType(associatedValue.typeName, type, typealiases)
-                    }
-                }
-
-                guard enumeration.hasRawType, let rawTypeName = enumeration.inheritedTypes.first else { continue }
-                if let rawTypeCandidate = unique[rawTypeName] {
-                    if !(rawTypeCandidate is Protocol) {
-                        enumeration.rawType = rawTypeCandidate.name
-                    }
-                } else {
-                    enumeration.rawType = rawTypeName
-                }
+            if let enumeration = type as? Enum {
+                resolveEnumTypes(enumeration, types: unique, resolve: resolveType)
             }
         }
 
         let filteredTypes = unique.values.filter {
-            let isPrivate = AccessLevel(rawValue: $0.accessLevel) == .private || AccessLevel(rawValue: $0.accessLevel) == .fileprivate
+            let accessLevel = AccessLevel(rawValue: $0.accessLevel)
+            let isPrivate = accessLevel == .private || accessLevel == .fileprivate
             if isPrivate && self.verbose { print("Skipping \($0.kind) \($0.name) as it is private") }
             return !isPrivate
         }.sorted { $0.name < $1.name }
 
         updateTypeRelationships(types: filteredTypes)
         return filteredTypes
+    }
+
+    typealias TypeResolver = (TypeName, Type?) -> Type?
+
+    private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
+        variable.type = resolve(variable.typeName, type)
+
+        variable.typeName.tuple?.elements.forEach({ tuple in
+            tuple.type = resolve(tuple.typeName, type)
+        })
+    }
+
+    private func resolveMethodTypes(_ method: Method, of type: Type, resolve: TypeResolver) {
+        method.parameters.enumerated().forEach { (_, parameter) in
+            parameter.type = resolve(parameter.typeName, type)
+        }
+
+        if !method.returnTypeName.isVoid {
+            method.returnType = resolve(method.returnTypeName, type)
+
+            if method.isInitializer {
+                method.returnTypeName = TypeName("")
+            }
+        }
+    }
+
+    private func resolveEnumTypes(_ enumeration: Enum, types: [String: Type], resolve: TypeResolver) {
+        enumeration.cases.forEach { enumCase in
+            enumCase.associatedValues.forEach { associatedValue in
+                associatedValue.type = resolve(associatedValue.typeName, enumeration)
+            }
+        }
+
+        guard enumeration.hasRawType else { return }
+
+        if let rawValueVariable = enumeration.variables.first(where: { $0.name == "rawValue" && !$0.isStatic }) {
+            enumeration.rawTypeName = rawValueVariable.actualTypeName
+            enumeration.rawType = rawValueVariable.type
+        } else if let rawTypeName = enumeration.inheritedTypes.first {
+            if let rawTypeCandidate = types[rawTypeName] {
+                if !(rawTypeCandidate is Protocol) {
+                    enumeration.rawTypeName = TypeName(rawTypeName)
+                    enumeration.rawType = rawTypeCandidate
+                }
+            } else {
+                enumeration.rawTypeName = TypeName(rawTypeName)
+            }
+        }
     }
 
     /// returns typealiases map to their full names
@@ -135,7 +151,6 @@ struct Composer {
 
         //! if a typealias leads to another typealias, follow through and replace with final type
         typealiasesByNames.forEach { _, alias in
-
             var aliasNamesToReplace = [alias.name]
             var finalAlias = alias
             while let targetAlias = typealiasesByNames[finalAlias.typeName.name] {
@@ -151,7 +166,6 @@ struct Composer {
 
     /// returns actual type name for type alias
     private func typeName(for alias: String, containingType: Type? = nil, typealiases: [String: Typealias]) -> String? {
-
         // first try global typealiases
         if let name = typealiases[alias]?.typeName.name {
             return name
@@ -164,11 +178,11 @@ struct Composer {
 
         //check if typealias is for one of contained types
         let containedType = containingType
-                .containedTypes
-                .filter {
-                    $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
-                }
-                .first
+            .containedTypes
+            .filter {
+                $0.name == "\(containingType.name).\(possibleTypeName)" ||
+                    $0.name == possibleTypeName
+            }.first
 
         return containedType?.name ?? possibleTypeName
     }

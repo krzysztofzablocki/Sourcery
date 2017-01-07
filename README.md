@@ -219,6 +219,7 @@ Available types:
 - `localName` <- name to use to construct value, i.e. `value` in `Foo.foo(value: ...)`
 - `externalName` <- name to use when binding value, i.e. `value` or `other` in `enum Foo { case foo(value: ..., other: ... )}`. Will use index as a fallback
 - `typeName` <- name of type of associated value (*TypeName*)
+- `actualTypeName` <- returns `typeName.actualTypeName` or if it's `nil` returns `typeName`
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
@@ -231,6 +232,7 @@ Available types:
 - `name` <- Name
 - `type` <- type of the variable, if known
 - `typeName` <- returns name of the type (*TypeName*)
+- `actualTypeName` <- returns `typeName.actualTypeName` or if it's `nil` returns `typeName`
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
@@ -269,6 +271,7 @@ Available types:
 - `argumentLabel` <- argument label (external name), if not set will be eqal to `name`
 - `type` <- type of parameter, if known
 - `typeName` <- parameter type name (*TypeName*)
+- `actualTypeName` <- returns `typeName.actualTypeName` or if it's `nil` returns `typeName`
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
@@ -279,7 +282,7 @@ Available types:
 <details><summary>**TypeName**. Properties:</summary>
 
 - `name` <- type name
-- `actualTypeName` <- if give type is typealias will contain actual type name, otherwise will be `Void`
+- `actualTypeName` <- if given type is a typealias will contain actual type name
 - `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
 - `isImplicitlyUnwrappedOptional` <- whether is implicitly unwrapped optional

@@ -42,7 +42,7 @@ class GeneratorSpec: QuickSpec {
                             Variable(name: "foo", typeName: "Int", accessLevel: (read: .public, write: .public), isComputed: false)
                             ])
                         ]),
-                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawType: "Foo", cases: [Enum.Case(name: "fooA"), Enum.Case(name: "fooB")]),
+                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: "Foo", cases: [Enum.Case(name: "fooA"), Enum.Case(name: "fooB")]),
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Class(name: "ProjectClass", accessLevel: .none),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
