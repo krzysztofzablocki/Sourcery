@@ -37,7 +37,14 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
 
     // sourcery: skipEquality
     var isOptional: Bool {
-        if name.hasSuffix("?") || name.hasPrefix("Optional<") {
+        if name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional {
+            return true
+        }
+        return false
+    }
+
+    var isImplicitlyUnwrappedOptional: Bool {
+        if name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<") {
             return true
         }
         return false
@@ -49,10 +56,12 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
             return name
         }
 
-        if name.hasSuffix("?") {
+        if name.hasSuffix("?") || name.hasSuffix("!") {
             return String(name.characters.dropLast())
-        } else {
+        } else if name.hasPrefix("Optional<") {
             return String(name.characters.dropFirst("Optional<".characters.count).dropLast())
+        } else {
+            return String(name.characters.dropFirst("ImplicitlyUnwrappedOptional<".characters.count).dropLast())
         }
     }
 

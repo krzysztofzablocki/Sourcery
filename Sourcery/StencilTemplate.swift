@@ -30,31 +30,58 @@ final class StencilTemplate: Stencil.Template, Template {
     private static func sourceryEnvironment() -> Stencil.Environment {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
-        ext.registerFilterWithArguments("contains", filter: Filter<String>.make({ $0.contains($1) }))
-        ext.registerFilterWithArguments("hasPrefix", filter: Filter<String>.make({ $0.hasPrefix($1) }))
-        ext.registerFilterWithArguments("hasSuffix", filter: Filter<String>.make({ $0.hasSuffix($1) }))
+        ext.registerBoolFilterWithArguments("contains", filter: { (s1: String, s2) in s1.contains(s2) })
+        ext.registerBoolFilterWithArguments("hasPrefix", filter: { (s1: String, s2) in s1.hasPrefix(s2) })
+        ext.registerBoolFilterWithArguments("hasSuffix", filter: { (s1: String, s2) in s1.hasSuffix(s2) })
 
-        ext.registerFilter("computed", filter: Filter<Variable>.make({ $0.isComputed && !$0.isStatic }))
-        ext.registerFilter("stored", filter: Filter<Variable>.make({ !$0.isComputed && !$0.isStatic }))
-        ext.registerFilter("tuple", filter: Filter<Variable>.make({ $0.isTuple }))
+        ext.registerBoolFilter("computed", filter: { (v: Variable) in v.isComputed && !v.isStatic })
+        ext.registerBoolFilter("stored", filter: { (v: Variable) in !v.isComputed && !v.isStatic })
+        ext.registerBoolFilter("tuple", filter: { (v: Variable) in v.isTuple })
 
-        ext.registerFilterWithArguments("based", filter: FilterOr<Type, Typed>.make({ $0.based[$1] != nil }, other: { $0.type?.based[$1] != nil }))
-        ext.registerFilterWithArguments("implements", filter: FilterOr<Type, Typed>.make({ $0.implements[$1] != nil }, other: { $0.type?.implements[$1] != nil }))
-        ext.registerFilterWithArguments("inherits", filter: FilterOr<Type, Typed>.make({ $0.inherits[$1] != nil }, other: { $0.type?.inherits[$1] != nil }))
+        ext.registerBoolFilterOrWithArguments("based",
+                                              filter: { (t: Type, name: String) in t.based[name] != nil },
+                                              other: { (t: Typed, name: String) in t.type?.based[name] != nil })
+        ext.registerBoolFilterOrWithArguments("implements",
+                                              filter: { (t: Type, name: String) in t.implements[name] != nil },
+                                              other: { (t: Typed, name: String) in t.type?.implements[name] != nil })
+        ext.registerBoolFilterOrWithArguments("inherits",
+                                              filter: { (t: Type, name: String) in t.inherits[name] != nil },
+                                              other: { (t: Typed, name: String) in t.type?.inherits[name] != nil })
 
-        ext.registerFilter("enum", filter: Filter<Type>.make({ $0 is Enum }))
-        ext.registerFilter("struct", filter: Filter<Type>.make({ $0 is Struct }))
-        ext.registerFilter("protocol", filter: Filter<Type>.make({ $0 is Protocol }))
+        ext.registerBoolFilter("enum", filter: { (t: Type) in t is Enum })
+        ext.registerBoolFilter("struct", filter: { (t: Type) in t is Struct })
+        ext.registerBoolFilter("protocol", filter: { (t: Type) in t is Protocol })
 
         ext.registerFilter("count", filter: count)
 
-        ext.registerFilter("initializer", filter: Filter<Method>.make({ $0.isInitializer }))
-        ext.registerFilter("class", filter: FilterOr<Type, Method>.make({ $0 is Class }, other: { $0.isClass }))
-        ext.registerFilter("static", filter: FilterOr<Variable, Method>.make({ $0.isStatic }, other: { $0.isStatic }))
-        ext.registerFilter("instance", filter: FilterOr<Variable, Method>.make({ !$0.isStatic }, other: { !($0.isStatic || $0.isClass) }))
+        ext.registerBoolFilter("initializer", filter: { (m: Method) in m.isInitializer })
+        ext.registerBoolFilterOr("class",
+                                 filter: { (t: Type) in t is Class },
+                                 other: { (m: Method) in m.isClass })
+        ext.registerBoolFilterOr("static",
+                                 filter: { (v: Variable) in v.isStatic },
+                                 other: { (m: Method) in m.isStatic })
+        ext.registerBoolFilterOr("instance",
+                                 filter: { (v: Variable) in !v.isStatic },
+                                 other: { (m: Method) in !(m.isStatic || m.isClass) })
+
+        ext.registerBoolFilterWithArguments("annotated", filter: { (a: Annotated, annotation) in a.isAnnotated(with: annotation) })
 
         return Stencil.Environment(extensions: [ext])
     }
+}
+
+extension Annotated {
+
+    func isAnnotated(with annotation: String) -> Bool {
+        if annotation.contains("=") {
+            let components = annotation.components(separatedBy: "=").map({ $0.trimmingCharacters(in: .whitespaces) })
+            return annotations[components[0]]?.description == components[1]
+        } else {
+            return annotations[annotation] != nil
+        }
+    }
+
 }
 
 extension Stencil.Extension {
@@ -68,13 +95,32 @@ extension Stencil.Extension {
         }
     }
 
+    func registerBoolFilterWithArguments<U, A>(_ name: String, filter: @escaping (U, A) -> Bool) {
+        registerFilterWithArguments(name, filter: Filter.make(filter))
+        registerFilterWithArguments("!\(name)", filter: Filter.make({ !filter($0, $1) }))
+    }
+
+    public func registerBoolFilter<U>(_ name: String, filter: @escaping (U) -> Bool) {
+        registerFilter(name, filter: Filter.make(filter))
+        registerFilter("!\(name)", filter: Filter.make({ !filter($0) }))
+    }
+
+    func registerBoolFilterOrWithArguments<U, V, A>(_ name: String, filter: @escaping (U, A) -> Bool, other: @escaping (V, A) -> Bool) {
+        registerFilterWithArguments(name, filter: FilterOr.make(filter, other: other))
+        registerFilterWithArguments("!\(name)", filter: FilterOr.make({ !filter($0, $1) }, other: { !other($0, $1) }))
+    }
+
+    public func registerBoolFilterOr<U, V>(_ name: String, filter: @escaping (U) -> Bool, other: @escaping (V) -> Bool) {
+        registerFilter(name, filter: FilterOr.make(filter, other: other))
+        registerFilter("!\(name)", filter: FilterOr.make({ !filter($0) }, other: { !other($0) }))
+    }
+
 }
 
 private func count(_ value: Any?) -> Any? {
     guard let array = value as? NSArray else {
         return value
     }
-
     return array.count
 }
 

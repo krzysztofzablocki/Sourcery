@@ -6,7 +6,7 @@
 import Foundation
 
 final class Enum: Type {
-    final class Case: NSObject, AutoDiffable, NSCoding {
+    final class Case: NSObject, AutoDiffable, Annotated, NSCoding {
         final class AssociatedValue: NSObject, AutoDiffable, Typed, NSCoding {
             let localName: String?
             let externalName: String?
@@ -91,15 +91,15 @@ final class Enum: Type {
     internal(set) var cases: [Case]
 
     /// Raw type of the enum
-    internal(set) var rawType: String? {
+    internal(set) var rawTypeName: TypeName? {
         didSet {
-            if let rawType = rawType {
+            if let rawTypeName = rawTypeName {
                 hasRawType = true
-                if let index = inheritedTypes.index(of: rawType) {
+                if let index = inheritedTypes.index(of: rawTypeName.name) {
                     inheritedTypes.remove(at: index)
                 }
-                if based[rawType] != nil {
-                    based[rawType] = nil
+                if based[rawTypeName.name] != nil {
+                    based[rawTypeName.name] = nil
                 }
             }
         }
@@ -108,12 +108,15 @@ final class Enum: Type {
     // sourcery: skipDescription
     private(set) var hasRawType: Bool
 
+    // sourcery: skipDescription, skipEquality
+    var rawType: Type?
+
     /// sourcery: skipEquality
     /// sourcery: skipDescription
     override var based: [String : String] {
         didSet {
-            if let rawType = rawType, based[rawType] != nil {
-                based[rawType] = nil
+            if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
+                based[rawTypeName.name] = nil
             }
         }
     }
@@ -127,24 +130,27 @@ final class Enum: Type {
         return false
     }
 
-    init(name: String,
+    init(name: String = "",
+         parent: Type? = nil,
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,
          inheritedTypes: [String] = [],
-         rawType: String? = nil,
+         rawTypeName: String? = nil,
          cases: [Case] = [],
          variables: [Variable] = [],
          methods: [Method] = [],
          containedTypes: [Type] = [],
-         typealiases: [Typealias] = []) {
+         typealiases: [Typealias] = [],
+         annotations: [String: NSObject] = [:],
+         isGeneric: Bool = false) {
 
         self.cases = cases
-        self.rawType = rawType
-        self.hasRawType = rawType != nil || !inheritedTypes.isEmpty
+        self.rawTypeName = rawTypeName.map(TypeName.init)
+        self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, annotations: annotations, isGeneric: isGeneric)
 
-        if let rawType = rawType, let index = self.inheritedTypes.index(of: rawType) {
+        if let rawTypeName = rawTypeName, let index = self.inheritedTypes.index(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
         }
     }

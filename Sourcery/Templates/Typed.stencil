@@ -1,7 +1,8 @@
 {% for type in types.implementing.Typed %}
 extension {{ type.name }} {
     var isOptional: Bool { return typeName.isOptional }
+    var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
     var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    var actualTypeName: TypeName? { return typeName.actualTypeName }
+    var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
 }{% endfor %}

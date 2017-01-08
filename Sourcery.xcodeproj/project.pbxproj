@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0911DAF01E1D90D1001FF3EB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAEF1E1D90D1001FF3EB /* Extensions.swift */; };
+		0911DAF21E212817001FF3EB /* Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF11E212817001FF3EB /* Annotations.swift */; };
 		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
 		0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA601E0341400084F702 /* ProtocolSpec.swift */; };
 		0967DA681E0488170084F702 /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA671E0488170084F702 /* Method.swift */; };
@@ -15,6 +16,7 @@
 		097E11F01E05E78600FEB751 /* TypealiasSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */; };
 		097E11F31E09EB6900FEB751 /* StencilTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11F21E09EB6900FEB751 /* StencilTemplate.swift */; };
 		097E11F71E0EF63100FEB751 /* MethodSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11F61E0EF63100FEB751 /* MethodSpec.swift */; };
+		09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */; };
 		09C6B0D21E11BA2500246CDF /* Class.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D11E11BA2500246CDF /* Class.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
@@ -67,14 +69,14 @@
 		E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D139206162204C48F396 /* CustomMatchers.swift */; };
 		E291D33EA3BB6FC777B3950E /* FolderWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DBAA16ABFED8C04CB42A /* FolderWatcher.swift */; };
 		E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3D222F05C42C246CB73 /* EnumSpec.swift */; };
-		E291D4D8E67E26F4567EB5DE /* ParserComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3DB89E4D87FE8CB1A33 /* ParserComposer.swift */; };
+		E291D4D8E67E26F4567EB5DE /* Composer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3DB89E4D87FE8CB1A33 /* Composer.swift */; };
 		E291D4E250805568DBC33F7E /* TypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF48D4FBBB43C1F7EF8A /* TypeSpec.swift */; };
 		E291D5ABECEE3435131D8D05 /* FileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DBBBE7AF85DF7D7AF97D /* FileParser.swift */; };
 		E291D7114BA1479EC337A070 /* FileParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */; };
 		E291D8BB621560C275813B1F /* SourcerySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */; };
 		E291D8C0F0FE5B3DF91025CC /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DA16190CED2907BDEA06 /* Generator.swift */; };
 		E291D8DB06EC63770326562B /* Type+Stencil.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D04C9425FA502B37895D /* Type+Stencil.swift */; };
-		E291D90EC943AC5CBA99899A /* ParserComposerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DFE1A3D6905537EE86D9 /* ParserComposerSpec.swift */; };
+		E291D90EC943AC5CBA99899A /* ComposerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */; };
 		E291DA3352C0EDD1EB8DDCB3 /* FileParser+VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D37EF6AA39833209828F /* FileParser+VariableSpec.swift */; };
 		E291DBF5DD36D79E01E41270 /* TypeReflectionBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DBEB509979F90A2BDF94 /* TypeReflectionBox.swift */; };
 		E291DC5F2343BF3DE3334986 /* Stubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D2450093BB4B3A9ADFEC /* Stubs.swift */; };
@@ -141,6 +143,8 @@
 
 /* Begin PBXFileReference section */
 		0911DAEF1E1D90D1001FF3EB /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameSpec.swift; sourceTree = "<group>"; };
+		0911DAF11E212817001FF3EB /* Annotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotations.swift; sourceTree = "<group>"; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
 		0967DA601E0341400084F702 /* ProtocolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolSpec.swift; sourceTree = "<group>"; };
 		0967DA671E0488170084F702 /* Method.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Method.swift; sourceTree = "<group>"; };
@@ -197,7 +201,7 @@
 		E291D30C065089B348EE7C42 /* DiffableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiffableSpec.swift; sourceTree = "<group>"; };
 		E291D37EF6AA39833209828F /* FileParser+VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser+VariableSpec.swift"; sourceTree = "<group>"; };
 		E291D3D222F05C42C246CB73 /* EnumSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumSpec.swift; sourceTree = "<group>"; };
-		E291D3DB89E4D87FE8CB1A33 /* ParserComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserComposer.swift; sourceTree = "<group>"; };
+		E291D3DB89E4D87FE8CB1A33 /* Composer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Composer.swift; sourceTree = "<group>"; };
 		E291D5CD7EEDC70CB423C0BE /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeName.swift; sourceTree = "<group>"; };
 		E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
@@ -213,7 +217,7 @@
 		E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileParserSpec.swift; sourceTree = "<group>"; };
 		E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorSpec.swift; sourceTree = "<group>"; };
 		E291DF48D4FBBB43C1F7EF8A /* TypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeSpec.swift; sourceTree = "<group>"; };
-		E291DFE1A3D6905537EE86D9 /* ParserComposerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserComposerSpec.swift; sourceTree = "<group>"; };
+		E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposerSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,6 +336,7 @@
 				CD666A991E0BEF4F0045D31A /* Diffable.swift */,
 				0967DA671E0488170084F702 /* Method.swift */,
 				E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */,
+				0911DAF11E212817001FF3EB /* Annotations.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -372,7 +377,7 @@
 		E291D114F84B90258AD76A35 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
-				E291DFE1A3D6905537EE86D9 /* ParserComposerSpec.swift */,
+				E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */,
 				E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */,
 				E291DCF0A8E779EC67C9A37E /* AnnotationsParserSpec.swift */,
 				E291D37EF6AA39833209828F /* FileParser+VariableSpec.swift */,
@@ -415,6 +420,7 @@
 				097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */,
 				E291D30C065089B348EE7C42 /* DiffableSpec.swift */,
 				097E11F61E0EF63100FEB751 /* MethodSpec.swift */,
+				0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -433,7 +439,7 @@
 			children = (
 				E291D1A12EBFA4B3450C5894 /* Utils */,
 				E291DBBBE7AF85DF7D7AF97D /* FileParser.swift */,
-				E291D3DB89E4D87FE8CB1A33 /* ParserComposer.swift */,
+				E291D3DB89E4D87FE8CB1A33 /* Composer.swift */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -732,7 +738,8 @@
 				CD812F671DFDD3990088B2F6 /* Description.generated.swift in Sources */,
 				E291DDBDE2CF209C856B90D7 /* TypeName.swift in Sources */,
 				E291DDC342DD8A3BFD4D55B8 /* Template.swift in Sources */,
-				E291D4D8E67E26F4567EB5DE /* ParserComposer.swift in Sources */,
+				E291D4D8E67E26F4567EB5DE /* Composer.swift in Sources */,
+				0911DAF21E212817001FF3EB /* Annotations.swift in Sources */,
 				E291DD2ED0B47ECB174FEAAD /* Substring.swift in Sources */,
 				E291DF1320ACA969F7A8CBAE /* AnnotationsParser.swift in Sources */,
 				E291D8DB06EC63770326562B /* Type+Stencil.swift in Sources */,
@@ -749,6 +756,7 @@
 				CD0020EB1D8844B1001CB583 /* GeneratorSpec.swift in Sources */,
 				CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */,
 				E291D8BB621560C275813B1F /* SourcerySpec.swift in Sources */,
+				09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */,
 				09346DC81E02195300D6358C /* StructSpec.swift in Sources */,
 				E291D13413D92A8C36A07A86 /* VariableSpec.swift in Sources */,
 				E291D4E250805568DBC33F7E /* TypeSpec.swift in Sources */,
@@ -760,7 +768,7 @@
 				C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */,
 				E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */,
 				E291DCD43D41B7F8D7AAF7B9 /* DiffableSpec.swift in Sources */,
-				E291D90EC943AC5CBA99899A /* ParserComposerSpec.swift in Sources */,
+				E291D90EC943AC5CBA99899A /* ComposerSpec.swift in Sources */,
 				E291D7114BA1479EC337A070 /* FileParserSpec.swift in Sources */,
 				E291DF22F03C87C646576942 /* AnnotationsParserSpec.swift in Sources */,
 				E291DA3352C0EDD1EB8DDCB3 /* FileParser+VariableSpec.swift in Sources */,

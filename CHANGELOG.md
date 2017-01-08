@@ -1,6 +1,16 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+
+- Added support for `ImplicitlyUnwrappedOptional`
+- `actualTypeName` property of `Method.Parameter`, `Variable`, `Enum.Case.AssociatedValue`, `TupleType.Element` now returns `typeName` if type is not a type alias
+- `Enum` now contains type information for its raw value type. `rawType` now return `Type` object, `rawTypeName` returns its `TypeName`
+- Added `annotated` filter to filter by annotations
+- Added negative filters counterparts
+
 ## 0.5.1
 
 - Swift Templates are now supported
@@ -23,7 +33,7 @@
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`
 - Added support for special escaped names in enum cases e.g. `default` or `for`
 - Added support for tuple types and `tuple` filter for variables
-- Enum associated values now have `localName` and `exteranlName` properties.
+- Enum associated values now have `localName` and `externalName` properties.
 - Added `actualTypeName` for `TypeName` that is typealias
 - Added `implements`, `inherits` and `based` filters
 

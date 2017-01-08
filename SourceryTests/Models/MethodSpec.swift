@@ -23,20 +23,28 @@ class MethodSpec: QuickSpec {
             context("given optional return type with short syntax") {
                 it("reports return type as optional") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Int?").isOptionalReturnType).to(beTrue())
+                    expect(Method(selectorName: "foo()", returnTypeName: "Int!").isOptionalReturnType).to(beTrue())
+                    expect(Method(selectorName: "foo()", returnTypeName: "Int?").isImplicitlyUnwrappedOptionalReturnType).to(beFalse())
+                    expect(Method(selectorName: "foo()", returnTypeName: "Int!").isImplicitlyUnwrappedOptionalReturnType).to(beTrue())
                 }
 
                 it("reports non-optional type for unwrappedReturnTypeName") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Int?").unwrappedReturnTypeName).to(equal("Int"))
+                    expect(Method(selectorName: "foo()", returnTypeName: "Int!").unwrappedReturnTypeName).to(equal("Int"))
                 }
             }
 
             context("given optional return type with long syntax") {
                 it("reports return type as optional") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Optional<Int>").isOptionalReturnType).to(beTrue())
+                    expect(Method(selectorName: "foo()", returnTypeName: "ImplicitlyUnwrappedOptional<Int>").isOptionalReturnType).to(beTrue())
+                    expect(Method(selectorName: "foo()", returnTypeName: "Optional<Int>").isImplicitlyUnwrappedOptionalReturnType).to(beFalse())
+                    expect(Method(selectorName: "foo()", returnTypeName: "ImplicitlyUnwrappedOptional<Int>").isImplicitlyUnwrappedOptionalReturnType).to(beTrue())
                 }
 
                 it("reports non-optional type for unwrappedReturnTypeName") {
                     expect(Method(selectorName: "foo()", returnTypeName: "Optional<Int>").unwrappedReturnTypeName).to(equal("Int"))
+                    expect(Method(selectorName: "foo()", returnTypeName: "ImplicitlyUnwrappedOptional<Int>").unwrappedReturnTypeName).to(equal("Int"))
                 }
             }
 

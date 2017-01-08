@@ -106,7 +106,7 @@ public class Sourcery {
 
         guard from.isDirectory else {
             let parserResult = try FileParser(verbose: verbose, path: from).parse()
-            return ParserComposer(verbose: verbose).uniqueTypes(parserResult)
+            return Composer(verbose: verbose).uniqueTypes(parserResult)
         }
 
         let sources = try from
@@ -129,7 +129,7 @@ public class Sourcery {
         }
 
         //! All files have been scanned, time to join extensions with base class
-        let types = ParserComposer(verbose: verbose).uniqueTypes(parserResult)
+        let types = Composer(verbose: verbose).uniqueTypes(parserResult)
 
         track("Found \(types.count) types.")
         return types
@@ -208,7 +208,8 @@ public class Sourcery {
 
     private func track(_ message: Any, terminator: String = "\n", skipStatus: Bool = false) {
         if !watcherEnabled || verbose {
-            Swift.print(message, terminator: terminator)
+            //! console doesn't update in-place so always print on new line
+            Swift.print(message)
         }
 
         guard watcherEnabled && !skipStatus else { return }

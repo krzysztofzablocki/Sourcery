@@ -131,7 +131,8 @@ struct FileParser {
             types.append(type)
             return type
         }
-        return types
+
+        return finishedParsing(types: types)
     }
 
     /// Walks all types in the source
@@ -182,14 +183,6 @@ struct FileParser {
         switch (type, declaration) {
         case let (_, variable as Variable):
             type.variables += [variable]
-            if !variable.isStatic {
-                if let enumeration = type as? Enum,
-                    let updatedRawType = parseEnumRawType(enumeration: enumeration, from: variable) {
-
-                    enumeration.rawType = updatedRawType
-                }
-            }
-
         case let (_, method as Method):
             if method.isInitializer {
                 method.returnTypeName = TypeName(type.name)
@@ -212,6 +205,33 @@ struct FileParser {
         default:
             break
         }
+    }
+
+    private func finishedParsing(types: [Type]) -> [Type] {
+        for type in types {
+
+            // find actual methods parameters types and their argument labels
+            for method in type.allMethods {
+                let argumentLabels: [String]
+                if let labels = method.selectorName.range(of: "(")
+                        .map({ method.selectorName.substring(from: $0.upperBound) })?
+                        .trimmingCharacters(in: CharacterSet(charactersIn: ")"))
+                        .components(separatedBy: ":")
+                        .dropLast() {
+                    argumentLabels = Array(labels)
+                } else {
+                    argumentLabels = []
+                }
+
+                for (index, parameter) in method.parameters.enumerated() {
+                    if index < argumentLabels.count {
+                        parameter.argumentLabel = argumentLabels[index]
+                    }
+                }
+            }
+        }
+
+        return types
     }
 }
 
@@ -303,6 +323,7 @@ extension FileParser {
 
         let method = Method(selectorName: name, returnTypeName: returnTypeName, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, annotations: annotations.from(source))
         method.setSource(source)
+
         return method
     }
 
@@ -370,35 +391,6 @@ extension FileParser {
                 let externalName = items.count > 1 ? localName : defaultName
                 return Enum.Case.AssociatedValue(localName: localName, externalName: externalName, typeName: nameAndType[1])
         }
-    }
-
-    fileprivate func parseEnumRawType(enumeration: Enum, from variable: Variable) -> String? {
-        guard variable.name == "rawValue" else {
-            return nil
-        }
-
-        if variable.typeName.name == "RawValue" {
-            return parseEnumRawValueAssociatedType(enumeration.__underlyingSource)
-        }
-
-        return variable.typeName.name
-    }
-
-    fileprivate func parseEnumRawValueAssociatedType(_ source: [String: SourceKitRepresentable]) -> String? {
-        var rawType: String?
-
-        extract(.body, from: source)?
-            .replacingOccurrences(of: ";", with: "\n")
-            .enumerateLines(invoking: { (substring, stop) in
-                let substring = substring.trimmingCharacters(in: .whitespacesAndNewlines)
-
-                if substring.hasPrefix("typealias"), let type = substring.components(separatedBy: " ").last {
-                    rawType = type
-                    stop = true
-                }
-            })
-
-        return rawType
     }
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {

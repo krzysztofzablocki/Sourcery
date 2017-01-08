@@ -73,9 +73,12 @@ func runCLI() {
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
     ) { watcherEnabled, verboseLogging, source, template, output, args in
         do {
+            let start = CFAbsoluteTimeGetCurrent()
             if let keepAlive = try Sourcery(verbose: verboseLogging, arguments: args.arguments).processFiles(source, usingTemplates: template, output: output, watcherEnabled: watcherEnabled) {
                 RunLoop.current.run()
                 _ = keepAlive
+            } else {
+                print("Processing time \(CFAbsoluteTimeGetCurrent() - start) seconds")
             }
         } catch {
             print(error)

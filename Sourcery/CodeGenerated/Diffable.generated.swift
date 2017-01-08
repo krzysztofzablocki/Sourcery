@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension Class {
@@ -17,7 +17,7 @@ extension Enum {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: rhs.cases))
-        results.append(contentsOf: DiffableResult(identifier: "rawType").trackDifference(actual: self.rawType, expected: rhs.rawType))
+        results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: rhs.rawTypeName))
 
         results.append(contentsOf: super.diffAgainst(object))
         return results

@@ -219,8 +219,10 @@ Available types:
 - `localName` <- name to use to construct value, i.e. `value` in `Foo.foo(value: ...)`
 - `externalName` <- name to use when binding value, i.e. `value` or `other` in `enum Foo { case foo(value: ..., other: ... )}`. Will use index as a fallback
 - `typeName` <- name of type of associated value (*TypeName*)
+- `actualTypeName` <- returns `typeName.actualTypeName` or if it's `nil` returns `typeName`
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
+- `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
 
 </details>
@@ -230,8 +232,10 @@ Available types:
 - `name` <- Name
 - `type` <- type of the variable, if known
 - `typeName` <- returns name of the type (*TypeName*)
+- `actualTypeName` <- returns `typeName.actualTypeName` or if it's `nil` returns `typeName`
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
+- `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isComputed` <- whether is computed
 - `isStatic` <- whether is static variable
 - `isTuple` <- shorthand for `typeName.isTuple`
@@ -251,6 +255,7 @@ Available types:
 - `returnTypeName` <- return type name (*TypeName*). Will be `Void` for methods without return value or empty string for initializers.
 - `unwrappedReturnTypeName` <- shorthand for `returnTypeName.unwrappedTypeName`
 - `isOptionalReturnType` <- shorthand for `returnTypeName.isOptional`
+- `isImplicitlyUnwrappedOptionalReturnType` <- shorthand for `returnTypeName. isImplicitlyUnwrappedOptional`
 - `accessLevel` <- method access level
 - `isStatic` <- whether method is static
 - `isClass` <- whether method is class (can be overriden by subclasses)
@@ -266,8 +271,10 @@ Available types:
 - `argumentLabel` <- argument label (external name), if not set will be eqal to `name`
 - `type` <- type of parameter, if known
 - `typeName` <- parameter type name (*TypeName*)
+- `actualTypeName` <- returns `typeName.actualTypeName` or if it's `nil` returns `typeName`
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
+- `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
 
 </details>
@@ -275,9 +282,10 @@ Available types:
 <details><summary>**TypeName**. Properties:</summary>
 
 - `name` <- type name
-- `actualTypeName` <- if give type is typealias will contain actual type name, otherwise will be `Void`
+- `actualTypeName` <- if given type is a typealias will contain actual type name
 - `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
 - `isOptional` <- whether is optional
+- `isImplicitlyUnwrappedOptional` <- whether is implicitly unwrapped optional
 - `isVoid` <- whether type is Void (`Void` or `()`)
 - `isTuple` <- whether given type is a tuple
 - `tuple.elements` <- if given type is a tuple returns its elements information (*TupleType.Element*)
@@ -298,14 +306,15 @@ Available types:
 ### Custom Stencil tags and filter
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
-- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring
-- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring
-- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring
-- `static`, `instance`, `computed`, `stored`, `tuple` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`
-- `static`, `instance`, `class`, `initializer` - can be used on Method[s] as filter e.g. `{% for method in allMethods|instance %}`
-- `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter
-- `based`, `implements`, `inherits` - can be used for Type[s], Variable[s], Associated value[s], 
+- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
+- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.
+- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring, can be negated with `!` prefix.
+- `static`, `instance`, `computed`, `stored`, `tuple` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`, can be negated with `!` prefix.
+- `static`, `instance`, `class`, `initializer` - can be used on Method[s] as filter e.g. `{% for method in allMethods|instance %}`, can be negated with `!` prefix.
+- `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter, can be negated with `!` prefix.
+- `based`, `implements`, `inherits` - can be used for Type[s], Variable[s], Associated value[s], can be negated with `!` prefix.
 - `count` - can be used to get count of filtered array
+- `annotated` - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. `{% for var in variable|annotated: \"skipDescription\"%}`, can be negated with `!` prefix.
 
 ### Using Source Annotations
 

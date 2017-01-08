@@ -3,7 +3,7 @@ import Foundation
 //typealias used to avoid types ambiguty in tests
 typealias SourceryMethod = Method
 
-final class Method: NSObject, AutoDiffable, NSCoding {
+final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
 
     final class Parameter: NSObject, AutoDiffable, Typed, NSCoding {
         /// Parameter external name
@@ -68,6 +68,10 @@ final class Method: NSObject, AutoDiffable, NSCoding {
     // sourcery: skipDescription
     var isOptionalReturnType: Bool {
         return returnTypeName.isOptional || isFailableInitializer
+    }
+
+    var isImplicitlyUnwrappedOptionalReturnType: Bool {
+        return returnTypeName.isImplicitlyUnwrappedOptional
     }
 
     // sourcery: skipEquality
