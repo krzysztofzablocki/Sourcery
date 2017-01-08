@@ -100,7 +100,7 @@ extension Type: TypeConvertible {
 extension Array where Element: TypeConvertible {
     /// No filter
     var all: [Type] {
-        return self.map { $0.type }
+        return self.map { $0.type }.filter { !($0 is Protocol) }
     }
 
     /// Filters classes
