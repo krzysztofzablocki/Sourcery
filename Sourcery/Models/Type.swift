@@ -196,18 +196,18 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
 
     // Type.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { return nil }; self.typealiases = typealiases
-            self.isExtension = aDecoder.decodeBool(forKey: "isExtension")
-             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { return nil }; self.accessLevel = accessLevel
-            self.isGeneric = aDecoder.decodeBool(forKey: "isGeneric")
-             guard let localName: String = aDecoder.decode(forKey: "localName") else { return nil }; self.localName = localName
-             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { return nil }; self.variables = variables
-             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { return nil }; self.methods = methods
-             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
-             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { return nil }; self.inheritedTypes = inheritedTypes
+            guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
+            self.isExtension = aDecoder.decode(forKey: "isExtension")
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
+            self.isGeneric = aDecoder.decode(forKey: "isGeneric")
+            guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName
+            guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
+            guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods
+            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
 
-             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { return nil }; self.containedTypes = containedTypes
-             self.parentName = aDecoder.decode(forKey: "parentName")
+            guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedTypes"])); fatalError() }; self.containedTypes = containedTypes
+            self.parentName = aDecoder.decode(forKey: "parentName")
 
         }
 

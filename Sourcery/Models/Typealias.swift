@@ -36,10 +36,10 @@ final class Typealias: NSObject, AutoDiffable, NSCoding {
 
     // Typealias.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { return nil }; self.aliasName = aliasName
-             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+            guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["aliasName"])); fatalError() }; self.aliasName = aliasName
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
 
-             self.parentName = aDecoder.decode(forKey: "parentName")
+            self.parentName = aDecoder.decode(forKey: "parentName")
 
         }
 

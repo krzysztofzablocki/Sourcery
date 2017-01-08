@@ -26,10 +26,10 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
 
         // Method.Parameter.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let argumentLabel: String = aDecoder.decode(forKey: "argumentLabel") else { return nil }; self.argumentLabel = argumentLabel
-             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
-             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
-             self.type = aDecoder.decode(forKey: "type")
+            guard let argumentLabel: String = aDecoder.decode(forKey: "argumentLabel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argumentLabel"])); fatalError() }; self.argumentLabel = argumentLabel
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
 
         }
 
@@ -125,15 +125,15 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
 
     // Method.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { return nil }; self.selectorName = selectorName
-             guard let parameters: [Parameter] = aDecoder.decode(forKey: "parameters") else { return nil }; self.parameters = parameters
-             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { return nil }; self.returnTypeName = returnTypeName
+            guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["selectorName"])); fatalError() }; self.selectorName = selectorName
+            guard let parameters: [Parameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
 
-             guard let accessLevel: AccessLevel = aDecoder.decode(forKey: "accessLevel") else { return nil }; self.accessLevel = accessLevel
-            self.isStatic = aDecoder.decodeBool(forKey: "isStatic")
-            self.isClass = aDecoder.decodeBool(forKey: "isClass")
-            self.isFailableInitializer = aDecoder.decodeBool(forKey: "isFailableInitializer")
-             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
+            guard let accessLevel: AccessLevel = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
+            self.isStatic = aDecoder.decode(forKey: "isStatic")
+            self.isClass = aDecoder.decode(forKey: "isClass")
+            self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
+            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
 
         }
 

@@ -29,9 +29,9 @@ final class Enum: Type {
 
         // Enum.Case.AssociatedValue.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             self.localName = aDecoder.decode(forKey: "localName")
-             self.externalName = aDecoder.decode(forKey: "externalName")
-             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+            self.localName = aDecoder.decode(forKey: "localName")
+            self.externalName = aDecoder.decode(forKey: "externalName")
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
 
         }
 
@@ -66,10 +66,10 @@ final class Enum: Type {
 
         // Enum.Case.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
-             self.rawValue = aDecoder.decode(forKey: "rawValue")
-             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { return nil }; self.associatedValues = associatedValues
-             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { return nil }; self.annotations = annotations
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            self.rawValue = aDecoder.decode(forKey: "rawValue")
+            guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
+            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
 
         }
 
@@ -157,9 +157,9 @@ final class Enum: Type {
 
     // Enum.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let cases: [Case] = aDecoder.decode(forKey: "cases") else { return nil }; self.cases = cases
-             self.rawType = aDecoder.decode(forKey: "rawType")
-            self.hasRawType = aDecoder.decodeBool(forKey: "hasRawType")
+            guard let cases: [Case] = aDecoder.decode(forKey: "cases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["cases"])); fatalError() }; self.cases = cases
+            self.rawTypeName = aDecoder.decode(forKey: "rawTypeName")
+            self.hasRawType = aDecoder.decode(forKey: "hasRawType")
 
             super.init(coder: aDecoder)
         }
@@ -167,7 +167,7 @@ final class Enum: Type {
         override func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
             aCoder.encode(self.cases, forKey: "cases")
-            aCoder.encode(self.rawType, forKey: "rawType")
+            aCoder.encode(self.rawTypeName, forKey: "rawTypeName")
             aCoder.encode(self.hasRawType, forKey: "hasRawType")
 
         }

@@ -86,9 +86,9 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
 
     // TypeName.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
 
-             self.tuple = aDecoder.decode(forKey: "tuple")
+            self.tuple = aDecoder.decode(forKey: "tuple")
 
         }
 
@@ -119,8 +119,8 @@ final class TupleType: NSObject, AutoDiffable {
 
         // TupleType.Element.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
-             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { return nil }; self.typeName = typeName
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
 
         }
 
@@ -142,8 +142,8 @@ final class TupleType: NSObject, AutoDiffable {
 
     // TupleType.NSCoding {
         required init?(coder aDecoder: NSCoder) {
-             guard let name: String = aDecoder.decode(forKey: "name") else { return nil }; self.name = name
-             guard let elements: [Element] = aDecoder.decode(forKey: "elements") else { return nil }; self.elements = elements
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let elements: [Element] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
 
         }
 
