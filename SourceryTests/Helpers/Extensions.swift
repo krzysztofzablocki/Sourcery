@@ -4,6 +4,7 @@
 //
 
 import Foundation
+@testable import Sourcery
 
 extension String {
     var withoutWhitespaces: String {

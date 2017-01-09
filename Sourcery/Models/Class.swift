@@ -13,6 +13,7 @@ final class Class: Type {
                   inheritedTypes: [String] = [],
                   containedTypes: [Type] = [],
                   typealiases: [Typealias] = [],
+                  attributes: [String: Attribute] = [:],
                   annotations: [String: NSObject] = [:],
                   isGeneric: Bool = false) {
         super.init(

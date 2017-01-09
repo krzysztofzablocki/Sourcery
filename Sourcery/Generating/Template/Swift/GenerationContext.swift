@@ -14,7 +14,7 @@ class GenerationContext: NSObject, NSCoding, AutoDiffable {
     let arguments: [String : NSObject]
 
     init(types: [Type], arguments: [String: NSObject]) {
-        var typeByName = [String : Type]()
+        var typeByName = [String: Type]()
 
         types.forEach { type in
             typeByName[type.name] = type
@@ -55,31 +55,31 @@ class GenerationContext: NSObject, NSCoding, AutoDiffable {
     }
 
     /// Lists all known classes in the project
-    /// sourcery: skipEquality
+    /// sourcery: skipEquality, skipCoding
     lazy var classes: [Class] = {
         return self.types.classes
     }()
 
     /// lists all known types, excluding protocols
-    /// sourcery: skipEquality
+    /// sourcery: skipEquality, skipCoding
     lazy var all: [Type] = {
         return self.types.all
     }()
 
     /// Lists all known protocols
-    /// sourcery: skipEquality
+    /// sourcery: skipEquality, skipCoding
     lazy var protocols: [Protocol] = {
         return self.types.protocols
     }()
 
     /// Lists all known structs
-    /// sourcery: skipEquality
+    /// sourcery: skipEquality, skipCoding
     lazy var structs: [Struct] = {
         return self.types.structs
     }()
 
     /// Lists all known enums
-    /// sourcery: skipEquality
+    /// sourcery: skipEquality, skipCoding
     lazy var enums: [Enum] = {
         return self.types.enums
     }()

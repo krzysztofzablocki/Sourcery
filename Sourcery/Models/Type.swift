@@ -140,9 +140,11 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
     /// sourcery: skipDescription
     var supertype: Type?
 
+    var attributes: [String: Attribute]
+
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
-    /// sourcery: skipDescription
+    /// sourcery: skipDescription, skipCoding
     internal var __parserData: Any?
 
     init(name: String = "",
@@ -150,10 +152,11 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,
          variables: [Variable] = [],
-		 methods: [Method] = [],
+         methods: [Method] = [],
          inheritedTypes: [String] = [],
          containedTypes: [Type] = [],
-		 typealiases: [Typealias] = [],
+         typealiases: [Typealias] = [],
+         attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:],
          isGeneric: Bool = false) {
 
@@ -167,6 +170,7 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
         self.typealiases = [:]
         self.parent = parent
         self.parentName = parent?.name
+        self.attributes = attributes
         self.annotations = annotations
         self.isGeneric = isGeneric
 
@@ -205,9 +209,14 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
-
+            guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
+            guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
+            guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["implements"])); fatalError() }; self.implements = implements
             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedTypes"])); fatalError() }; self.containedTypes = containedTypes
             self.parentName = aDecoder.decode(forKey: "parentName")
+            self.parent = aDecoder.decode(forKey: "parent")
+            self.supertype = aDecoder.decode(forKey: "supertype")
+            guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
 
         }
 
@@ -222,8 +231,14 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
             aCoder.encode(self.methods, forKey: "methods")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
+            aCoder.encode(self.based, forKey: "based")
+            aCoder.encode(self.inherits, forKey: "inherits")
+            aCoder.encode(self.implements, forKey: "implements")
             aCoder.encode(self.containedTypes, forKey: "containedTypes")
             aCoder.encode(self.parentName, forKey: "parentName")
+            aCoder.encode(self.parent, forKey: "parent")
+            aCoder.encode(self.supertype, forKey: "supertype")
+            aCoder.encode(self.attributes, forKey: "attributes")
 
         }
         // } Type.NSCoding

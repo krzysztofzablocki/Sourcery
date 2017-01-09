@@ -33,23 +33,27 @@ final class Variable: NSObject, AutoDiffable, Typed, Annotated, NSCoding {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
+    var attributes: [String: Attribute]
+
     /// Underlying parser data, never to be used by anything else
-    /// sourcery: skipEquality, skipDescription
+    // sourcery: skipEquality, skipDescription, skipCoding
     internal var __parserData: Any?
 
     init(name: String = "",
-         typeName: String = "",
+         typeName: TypeName,
          accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
          isComputed: Bool = false,
          isStatic: Bool = false,
+         attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:]) {
 
         self.name = name
-        self.typeName = TypeName(typeName)
+        self.typeName = typeName
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
+        self.attributes = attributes
         self.annotations = annotations
     }
 
@@ -57,12 +61,13 @@ final class Variable: NSObject, AutoDiffable, Typed, Annotated, NSCoding {
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-
+            self.type = aDecoder.decode(forKey: "type")
             self.isComputed = aDecoder.decode(forKey: "isComputed")
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
 
         }
 
@@ -70,11 +75,13 @@ final class Variable: NSObject, AutoDiffable, Typed, Annotated, NSCoding {
 
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.isComputed, forKey: "isComputed")
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.attributes, forKey: "attributes")
 
         }
         // } Variable.NSCoding

@@ -1,6 +1,17 @@
 // Generated using Sourcery 0.5.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+extension Attribute {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Attribute else { return false }
+        if self.name != rhs.name { return false }
+        if self.arguments != rhs.arguments { return false }
+        if self._description != rhs._description { return false }
+
+        return true
+    }
+}
+
 extension Enum {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Enum else { return false }
@@ -45,6 +56,7 @@ extension Method {
         if self.isClass != rhs.isClass { return false }
         if self.isFailableInitializer != rhs.isFailableInitializer { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.attributes != rhs.attributes { return false }
 
         return true
     }
@@ -96,6 +108,7 @@ extension Type {
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
+        if self.attributes != rhs.attributes { return false }
 
         return true
     }
@@ -105,6 +118,7 @@ extension TypeName {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TypeName else { return false }
         if self.name != rhs.name { return false }
+        if self.attributes != rhs.attributes { return false }
         if self.tuple != rhs.tuple { return false }
 
         return true
@@ -132,6 +146,7 @@ extension Variable {
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.attributes != rhs.attributes { return false }
 
         return true
     }

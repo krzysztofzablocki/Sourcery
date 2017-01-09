@@ -16,14 +16,14 @@ final class Enum: Type {
             /// sourcery: skipDescription
             var type: Type?
 
-            init(localName: String?, externalName: String?, typeName: String, type: Type? = nil) {
+            init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil) {
                 self.localName = localName
                 self.externalName = externalName
-                self.typeName = TypeName(typeName)
+                self.typeName = typeName
                 self.type = type
             }
 
-            convenience init(name: String? = nil, typeName: String, type: Type? = nil) {
+            convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil) {
                 self.init(localName: name, externalName: name, typeName: typeName, type: type)
             }
 
@@ -32,6 +32,7 @@ final class Enum: Type {
             self.localName = aDecoder.decode(forKey: "localName")
             self.externalName = aDecoder.decode(forKey: "externalName")
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
 
         }
 
@@ -40,6 +41,7 @@ final class Enum: Type {
             aCoder.encode(self.localName, forKey: "localName")
             aCoder.encode(self.externalName, forKey: "externalName")
             aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
 
         }
         // } Enum.Case.AssociatedValue.NSCoding
@@ -56,6 +58,10 @@ final class Enum: Type {
         var hasAssociatedValue: Bool {
             return !associatedValues.isEmpty
         }
+
+        /// Underlying parser data, never to be used by anything else
+        // sourcery: skipEquality, skipDescription, skipCoding
+        internal var __parserData: Any?
 
         init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {
             self.name = name
@@ -84,7 +90,7 @@ final class Enum: Type {
         // } Enum.Case.NSCoding
     }
 
-    /// sourcery: skipDescription
+    /// sourcery: skipDescription, skipCoding
     override var kind: String { return "enum" }
 
     /// Enum cases
@@ -111,8 +117,7 @@ final class Enum: Type {
     // sourcery: skipDescription, skipEquality
     var rawType: Type?
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// sourcery: skipEquality, skipDescription, skipCoding
     override var based: [String : String] {
         didSet {
             if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
@@ -135,22 +140,23 @@ final class Enum: Type {
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,
          inheritedTypes: [String] = [],
-         rawTypeName: String? = nil,
+         rawTypeName: TypeName? = nil,
          cases: [Case] = [],
          variables: [Variable] = [],
          methods: [Method] = [],
          containedTypes: [Type] = [],
          typealiases: [Typealias] = [],
+         attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:],
          isGeneric: Bool = false) {
 
         self.cases = cases
-        self.rawTypeName = rawTypeName.map(TypeName.init)
+        self.rawTypeName = rawTypeName
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, annotations: annotations, isGeneric: isGeneric)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, annotations: annotations, isGeneric: isGeneric)
 
-        if let rawTypeName = rawTypeName, let index = self.inheritedTypes.index(of: rawTypeName) {
+        if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.index(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
         }
     }
@@ -160,6 +166,7 @@ final class Enum: Type {
             guard let cases: [Case] = aDecoder.decode(forKey: "cases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["cases"])); fatalError() }; self.cases = cases
             self.rawTypeName = aDecoder.decode(forKey: "rawTypeName")
             self.hasRawType = aDecoder.decode(forKey: "hasRawType")
+            self.rawType = aDecoder.decode(forKey: "rawType")
 
             super.init(coder: aDecoder)
         }
@@ -169,6 +176,7 @@ final class Enum: Type {
             aCoder.encode(self.cases, forKey: "cases")
             aCoder.encode(self.rawTypeName, forKey: "rawTypeName")
             aCoder.encode(self.hasRawType, forKey: "hasRawType")
+            aCoder.encode(self.rawType, forKey: "rawType")
 
         }
         // } Enum.NSCoding

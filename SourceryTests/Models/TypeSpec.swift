@@ -6,10 +6,10 @@ class TypeSpec: QuickSpec {
     override func spec() {
         describe ("Type") {
             var sut: Type?
-            let staticVariable = Variable(name: "staticVar", typeName: "Int", isStatic: true)
-            let computedVariable = Variable(name: "variable", typeName: "Int", isComputed: true)
-            let storedVariable = Variable(name: "otherVariable", typeName: "Int", isComputed: false)
-            let supertypeVariable = Variable(name: "supertypeVariable", typeName: "Int", isComputed: false)
+            let staticVariable = Variable(name: "staticVar", typeName: TypeName("Int"), isStatic: true)
+            let computedVariable = Variable(name: "variable", typeName: TypeName("Int"), isComputed: true)
+            let storedVariable = Variable(name: "otherVariable", typeName: TypeName("Int"), isComputed: false)
+            let supertypeVariable = Variable(name: "supertypeVariable", typeName: TypeName("Int"), isComputed: false)
             let initializer = Method(selectorName: "init()")
             let parentType = Type(name: "Parent")
             let superTypeMethod = Method(selectorName: "doSomething()")
@@ -98,7 +98,7 @@ class TypeSpec: QuickSpec {
 
             describe("when extending with Type extension") {
                 it("adds variables") {
-                    let extraVariable = Variable(name: "variable", typeName: "Int")
+                    let extraVariable = Variable(name: "variable", typeName: TypeName("Int"))
                     let type = Type(name: "Foo", isExtension: true, variables: [extraVariable])
 
                     sut?.extend(type)

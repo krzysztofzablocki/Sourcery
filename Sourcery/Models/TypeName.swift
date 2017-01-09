@@ -20,6 +20,10 @@ protocol Typed {
 
     /// sourcery: skipEquality
     /// sourcery: skipDescription
+    var isImplicitlyUnwrappedOptional: Bool { get }
+
+    /// sourcery: skipEquality
+    /// sourcery: skipDescription
     var unwrappedTypeName: String { get }
 }
 
@@ -31,39 +35,44 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
     // sourcery: skipEquality
     var actualTypeName: TypeName?
 
-    init(_ name: String) {
+    init(_ name: String, attributes: [String: Attribute] = [:]) {
         self.name = name
-    }
+        self.attributes = attributes
 
-    // sourcery: skipEquality
-    var isOptional: Bool {
-        if name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional {
-            return true
-        }
-        return false
-    }
-
-    var isImplicitlyUnwrappedOptional: Bool {
-        if name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<") {
-            return true
-        }
-        return false
-    }
-
-    // sourcery: skipEquality
-    var unwrappedTypeName: String {
-        guard isOptional else {
-            return name
+        var name = name
+        attributes.forEach {
+            let trim = CharacterSet(charactersIn: "@\($0.key)")
+            name = name.trimmingCharacters(in: trim.union(.whitespaces))
         }
 
-        if name.hasSuffix("?") || name.hasSuffix("!") {
-            return String(name.characters.dropLast())
-        } else if name.hasPrefix("Optional<") {
-            return String(name.characters.dropFirst("Optional<".characters.count).dropLast())
+		let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
+        let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
+		self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
+        self.isOptional = isOptional
+
+        if isOptional {
+            if name.hasSuffix("?") || name.hasSuffix("!") {
+                self.unwrappedTypeName = String(name.characters.dropLast())
+            } else if name.hasPrefix("Optional<") {
+                self.unwrappedTypeName = String(name.characters.dropFirst("Optional<".characters.count).dropLast())
+            } else {
+                self.unwrappedTypeName = String(name.characters.dropFirst("ImplicitlyUnwrappedOptional<".characters.count).dropLast())
+            }
         } else {
-            return String(name.characters.dropFirst("ImplicitlyUnwrappedOptional<".characters.count).dropLast())
+            self.unwrappedTypeName = name
         }
     }
+
+    let attributes: [String: Attribute]
+
+    // sourcery: skipEquality
+    let isOptional: Bool
+
+    // sourcery: skipEquality
+    let isImplicitlyUnwrappedOptional: Bool
+
+    // sourcery: skipEquality
+    let unwrappedTypeName: String
 
     // sourcery: skipEquality
     var isVoid: Bool {
@@ -87,7 +96,11 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
     // TypeName.NSCoding {
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-
+            self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
+            guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            self.isOptional = aDecoder.decode(forKey: "isOptional")
+            self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
+            guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["unwrappedTypeName"])); fatalError() }; self.unwrappedTypeName = unwrappedTypeName
             self.tuple = aDecoder.decode(forKey: "tuple")
 
         }
@@ -95,10 +108,16 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
         func encode(with aCoder: NSCoder) {
 
             aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
+            aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.isOptional, forKey: "isOptional")
+            aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
+            aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
             aCoder.encode(self.tuple, forKey: "tuple")
 
         }
         // } TypeName.NSCoding
+
 }
 
 final class TupleType: NSObject, AutoDiffable {
@@ -111,9 +130,9 @@ final class TupleType: NSObject, AutoDiffable {
         // sourcery: skipEquality, skipDescription
         var type: Type?
 
-        init(name: String, typeName: String, type: Type? = nil) {
+        init(name: String = "", typeName: TypeName, type: Type? = nil) {
             self.name = name
-            self.typeName = TypeName(typeName)
+            self.typeName = typeName
             self.type = type
         }
 
@@ -121,6 +140,7 @@ final class TupleType: NSObject, AutoDiffable {
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
 
         }
 
@@ -128,6 +148,7 @@ final class TupleType: NSObject, AutoDiffable {
 
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
 
         }
         // } TupleType.Element.NSCoding

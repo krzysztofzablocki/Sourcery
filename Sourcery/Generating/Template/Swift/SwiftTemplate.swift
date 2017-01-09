@@ -183,7 +183,7 @@ private extension Process {
         if task.terminationReason != .exit {
             throw NSError(domain: NSOSStatusErrorDomain, code: -1, userInfo: [
                 "terminationReason": task.terminationReason,
-                "error" : error,
+                "error": error
                 ])
         }
 

@@ -10,6 +10,7 @@
 - `Enum` now contains type information for its raw value type. `rawType` now return `Type` object, `rawTypeName` returns its `TypeName`
 - Added `annotated` filter to filter by annotations
 - Added negative filters counterparts
+- Added support for attributes, i.e. `@escaping`
 
 ## 0.5.1
 
