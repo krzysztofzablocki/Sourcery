@@ -1,0 +1,57 @@
+import Foundation
+
+
+extension NSCoder {
+
+    @nonobjc func decode(forKey: String) -> String? {
+        return self.maybeDecode(forKey: forKey) as String?
+    }
+
+    @nonobjc func decode(forKey: String) -> TypeName? {
+        return self.maybeDecode(forKey: forKey) as TypeName?
+    }
+
+    @nonobjc func decode(forKey: String) -> AccessLevel? {
+        return self.maybeDecode(forKey: forKey) as AccessLevel?
+    }
+
+    @nonobjc func decode(forKey: String) -> Bool {
+        return self.decodeBool(forKey: forKey)
+    }
+
+    @nonobjc func decode(forKey: String) -> Int {
+        return self.decodeInteger(forKey: forKey)
+    }
+
+    func decode<E>(forKey: String) -> E? {
+        return maybeDecode(forKey: forKey) as E?
+    }
+
+    fileprivate func maybeDecode<E>(forKey: String) -> E? {
+        guard let object = self.decodeObject(forKey: forKey) else {
+            return nil
+        }
+
+        return object as? E
+    }
+
+}
+
+{% for type in types.implementing.AutoDiffable %}
+/*
+extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: NSCoding{% endif %} {
+        // {{ type.name }}.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+            {% for variable in type.storedVariables %}{% if not variable.annotations.skipCoding %}{% if variable.typeName.name == "Bool" %}self.{{variable.name}} = aDecoder.decode(forKey: "{{variable.name}}"){% else %}{% if variable.typeName.name == "Int" %}self.{{variable.name}} = aDecoder.decode(forKey: "{{variable.name}}"){% else %}{% if not variable.typeName.isOptional %}guard let {{variable.name}}: {{ variable.typeName.unwrappedTypeName }} = aDecoder.decode(forKey: "{{variable.name}}") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["{{ variable.name }}"])); fatalError() }; self.{{variable.name}} = {{variable.name}}{% else %}self.{{variable.name}} = aDecoder.decode(forKey: "{{variable.name}}"){% endif %}{% endif %}{% endif %}{%endif%}
+            {% endfor %}{% if type.supertype.implements.AutoDiffable %}super.init(coder: aDecoder){% endif %}
+        }
+
+        {% if type.supertype.implements.AutoDiffable %}override {% endif %}func encode(with aCoder: NSCoder) {
+            {% if type.supertype.implements.AutoDiffable %}super.encode(with: aCoder){% endif %}
+            {% for variable in type.storedVariables %}{% if not variable.annotations.skipCoding %}aCoder.encode(self.{{variable.name}}, forKey: "{{variable.name}}")
+            {% endif %}{% endfor %}
+        }
+        // } {{ type.name }}.NSCoding
+}
+*/
+    {% endfor %}

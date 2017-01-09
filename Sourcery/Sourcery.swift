@@ -182,7 +182,11 @@ public class Sourcery {
 
     private func templates(from: Path) throws -> [Template] {
         return try templatePaths(from: from).map {
-                try StencilTemplate(path: $0)
+            if $0.extension == "swifttemplate" {
+                return try SwiftTemplate(path: $0)
+            } else {
+                return try StencilTemplate(path: $0)
+            }
         }
     }
 

@@ -14,6 +14,22 @@
 
 ## 0.5.1
 
+- Swift Templates are now supported
+
+```
+<% for type in types.classes { %>
+    extension <%= type.name %>: Equatable {}
+
+    <% if type.annotations["showComment"] != nil { %> // <%= type.name %> has Annotations <% } %>
+
+        func == (lhs: <%= type.name %>, rhs: <%= type.name %>) -> Bool {
+    <% for variable in type.variables { %> if lhs.<%= variable.name %> != rhs.<%= variable.name %> { return false }
+        <% } %>
+        return true
+    }
+<% } %>
+```
+
 ### New Features
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`
 - Added support for special escaped names in enum cases e.g. `default` or `for`

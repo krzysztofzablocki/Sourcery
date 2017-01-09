@@ -5,6 +5,7 @@ disabled_rules: # rule identifiers to exclude from running
   - cyclomatic_complexity
   - nesting
   - conditional_binding_cascade
+  - large_tuple
 
 opt_in_rules: # some rules are only opt-in
   - force_unwrapping
