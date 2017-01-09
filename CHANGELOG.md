@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 0.5.2
 
 ### New Features
 
@@ -11,10 +11,7 @@
 - Added `annotated` filter to filter by annotations
 - Added negative filters counterparts
 - Added support for attributes, i.e. `@escaping`
-
-## 0.5.1
-
-- Swift Templates are now supported
+- Experimental support for Swift Templates
 
 ```
 <% for type in types.classes { %>
@@ -29,6 +26,8 @@
     }
 <% } %>
 ```
+
+### 0.5.1
 
 ### New Features
 - Variables with default initializer are now supported, e.g. `var variable = Type(...)`

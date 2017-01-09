@@ -14,7 +14,7 @@ import Foundation
 /// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
-    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.1"
+    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.2"
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"
