@@ -227,7 +227,7 @@ struct Composer {
     }
 
     fileprivate func parseTupleElements(_ name: String) -> [TupleElement] {
-        let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
+        let trimmedBracketsName = name.dropFirstAndLast()
         return trimmedBracketsName
             .commaSeparated()
             .map({ $0.trimmingCharacters(in: .whitespaces) })

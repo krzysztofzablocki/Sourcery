@@ -263,6 +263,98 @@ extension FileParser {
 // MARK: - Variables
 extension FileParser {
 
+    private func inferType(from string: String) -> String? {
+        let string = string.trimmingCharacters(in: .whitespaces)
+
+        var inferredType: String
+        if string == "nil" {
+            return "Optional"
+        } else if string.characters.first == "\"" {
+            return "String"
+        } else if Bool(string) != nil {
+            return "Bool"
+        } else if Int(string) != nil {
+            return "Int"
+        } else if Double(string) != nil {
+            return "Double"
+        } else if string.isValidTupleName() {
+            //tuple
+            let string = string.dropFirstAndLast()
+            let elements = string.commaSeparated()
+
+            var types = [String]()
+            for element in elements {
+                let nameAndValue = element.colonSeparated()
+                if nameAndValue.count == 1 {
+                    guard let type = inferType(from: element) else { return nil }
+                    types.append(type)
+                } else {
+                    guard let type = inferType(from: nameAndValue[1]) else { return nil }
+                    let name = nameAndValue[0].replacingOccurrences(of: "_", with: "").trimmingCharacters(in: .whitespaces)
+                    if name.isEmpty {
+                        types.append(type)
+                    } else {
+                        types.append("\(name): \(type)")
+                    }
+                }
+            }
+
+            return "(\(types.joined(separator: ", ")))"
+        } else if string.characters.first == "[", string.characters.last == "]" {
+            //collection
+            let string = string.dropFirstAndLast()
+            let items = string.commaSeparated()
+
+            func genericType(from itemsTypes: [String]) -> String {
+                let genericType: String
+                var uniqueTypes = Set(itemsTypes)
+                if uniqueTypes.count == 1, let type = uniqueTypes.first {
+                    genericType = type
+                } else if uniqueTypes.count == 2,
+                    uniqueTypes.remove("Optional") != nil,
+                    let type = uniqueTypes.first {
+                    genericType = "\(type)?"
+                } else {
+                    genericType = "Any"
+                }
+                return genericType
+            }
+
+            if items[0].colonSeparated().count == 1 {
+                var itemsTypes = [String]()
+                for item in items {
+                    guard let type = inferType(from: item) else { return nil }
+                    itemsTypes.append(type)
+                }
+                return "[\(genericType(from: itemsTypes))]"
+            } else {
+                var keysTypes = [String]()
+                var valuesTypes = [String]()
+                for items in items {
+                    let keyAndValue = items.colonSeparated()
+                    guard keyAndValue.count == 2,
+                        let keyType = inferType(from: keyAndValue[0]),
+                        let valueType = inferType(from: keyAndValue[1])
+                        else { return nil }
+
+                    keysTypes.append(keyType)
+                    valuesTypes.append(valueType)
+                }
+                return "[\(genericType(from: keysTypes)): \(genericType(from: valuesTypes))]"
+            }
+        } else if let initializer = string.range(of: ".init(") {
+            //initializer
+            inferredType = string.substring(with: string.startIndex..<initializer.lowerBound)
+            return inferredType
+        } else if let parens = string.range(of: "("), string.characters.last == ")" {
+            inferredType = string.substring(with: string.startIndex..<parens.lowerBound)
+            //to avoid inferring i.e. 'Optional.some' for 'Optional.some(...)'
+            return inferredType.contains(".") ? nil : inferredType
+        } else {
+            return nil
+        }
+    }
+
     internal func parseVariable(_ source: [String: SourceKitRepresentable], isStatic: Bool = false) -> Variable? {
         guard let (name, _, accesibility) = parseTypeRequirements(source),
             accesibility != .private && accesibility != .fileprivate else { return nil }
@@ -270,21 +362,26 @@ extension FileParser {
         var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
 
         if maybeType == nil, let substring = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespaces) {
-            if !substring.hasPrefix("=") {
-                return nil
+            guard substring.hasPrefix("=") else { return nil }
+
+            var substring = substring.dropFirst().trimmingCharacters(in: .whitespaces)
+            substring = substring.components(separatedBy: .newlines)[0]
+
+            if substring.hasSuffix("{") {
+                substring = String(substring.characters.dropLast()).trimmingCharacters(in: .whitespaces)
             }
 
-            if let initializer = substring.range(of: ".init") {
-                maybeType = substring.substring(with: substring.index(substring.startIndex, offsetBy: 1)..<initializer.lowerBound)
-            } else if let parens = substring.range(of: "(") {
-                maybeType = substring.substring(with: substring.index(substring.startIndex, offsetBy: 1)..<parens.lowerBound)
-            }
-
-            maybeType = maybeType?.trimmingCharacters(in: .whitespaces)
+            maybeType = inferType(from: substring)
         }
 
-        guard let type = maybeType else { return nil }
-        let typeName = TypeName(type, attributes: parseTypeAttributes(type))
+        let typeName: TypeName
+        if let type = maybeType {
+            typeName = TypeName(type, attributes: parseTypeAttributes(type))
+        } else {
+            let declaration = extract(.key, from: source)
+            // swiftlint:disable:next force_unwrapping
+            typeName = TypeName("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
+        }
 
         var writeAccessibility = AccessLevel.none
         var computed = false

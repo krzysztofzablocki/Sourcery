@@ -54,9 +54,9 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
             if name.hasSuffix("?") || name.hasSuffix("!") {
                 self.unwrappedTypeName = String(name.characters.dropLast())
             } else if name.hasPrefix("Optional<") {
-                self.unwrappedTypeName = String(name.characters.dropFirst("Optional<".characters.count).dropLast())
+                self.unwrappedTypeName = name.drop(first: "Optional<".characters.count, last: 1)
             } else {
-                self.unwrappedTypeName = String(name.characters.dropFirst("ImplicitlyUnwrappedOptional<".characters.count).dropLast())
+                self.unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
             }
         } else {
             self.unwrappedTypeName = name
