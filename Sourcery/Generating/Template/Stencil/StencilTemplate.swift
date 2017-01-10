@@ -142,7 +142,7 @@ extension String {
 
     fileprivate func upperFirst() -> String {
         let first = String(characters.prefix(1)).capitalized
-        let other = String(characters.dropFirst())
+        let other = dropFirst()
         return first + other
     }
 

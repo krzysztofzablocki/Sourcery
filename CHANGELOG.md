@@ -5,6 +5,7 @@
 
 ### New Features
 - Added a new filter `replace`. Usage: `{{ name|replace:"substring","replacement" }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
+- Improved support for inferring types of variables with initial values
 - Sourcery will now use parallel parsing, expect more than 2x as fast execution.
 - Sourcery will now cache source artifacts, in many scenarios it will lead to order of magnitude faster processing.
 - e.g. on big codebase of over 300 swift files:
