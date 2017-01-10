@@ -311,6 +311,7 @@ Available types:
 ### Custom Stencil tags and filter
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
+- `{{ name|replace:"substring","replacement }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
 - `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
 - `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.
 - `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring, can be negated with `!` prefix.
