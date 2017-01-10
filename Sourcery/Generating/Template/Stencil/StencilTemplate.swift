@@ -33,7 +33,7 @@ final class StencilTemplate: Stencil.Template, Template {
         ext.registerFilterWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
             return source.replacingOccurrences(of: substring, with: replacement)
         })
-        
+
         ext.registerBoolFilterWithArguments("contains", filter: { (s1: String, s2) in s1.contains(s2) })
         ext.registerBoolFilterWithArguments("hasPrefix", filter: { (s1: String, s2) in s1.hasPrefix(s2) })
         ext.registerBoolFilterWithArguments("hasSuffix", filter: { (s1: String, s2) in s1.hasSuffix(s2) })
@@ -89,7 +89,7 @@ extension Annotated {
 }
 
 extension Stencil.Extension {
-    
+
     func registerFilterWithTwoArguments<T, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?) {
         registerFilter(name) { (any, args) throws -> Any? in
             guard let type = any as? T else { return any }
