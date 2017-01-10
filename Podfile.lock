@@ -19,7 +19,7 @@ DEPENDENCIES:
   - Nimble
   - PathKit (from `git@github.com:kylef/PathKit.git`, commit `c662c2a`)
   - Quick
-  - SourceKittenFramework (from `git@github.com:jpsim/SourceKitten`, commit `b325ca1`)
+  - SourceKittenFramework (from `git@github.com:jpsim/SourceKitten`, commit `380a5f6`)
   - Stencil (from `git@github.com:kylef/Stencil`, commit `99efba5`)
   - SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)
 
@@ -28,7 +28,7 @@ EXTERNAL SOURCES:
     :commit: c662c2a
     :git: git@github.com:kylef/PathKit.git
   SourceKittenFramework:
-    :commit: b325ca1
+    :commit: 380a5f6
     :git: git@github.com:jpsim/SourceKitten
   Stencil:
     :commit: 99efba5
@@ -42,7 +42,7 @@ CHECKOUT OPTIONS:
     :commit: c662c2a
     :git: git@github.com:kylef/PathKit.git
   SourceKittenFramework:
-    :commit: b325ca1
+    :commit: 380a5f6
     :git: git@github.com:jpsim/SourceKitten
   Stencil:
     :commit: 99efba5
@@ -63,6 +63,6 @@ SPEC CHECKSUMS:
   SWXMLHash: 80d2529d74891bb2f15305a0b9e08f2a4f229ee7
   Yams: 4a4d2b5f0db216fab03c6abc04b7692ceff7cf5f
 
-PODFILE CHECKSUM: 1a70a2d553edf9a8f0b3e59ab9f9a5ec7f37c749
+PODFILE CHECKSUM: d853bca72530608b148df8f46a1f81a71da4c759
 
 COCOAPODS: 1.2.0.beta.1

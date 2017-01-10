@@ -8,7 +8,7 @@ target 'Sourcery' do
   pod 'Commander'
   pod 'PathKit', :git => "git@github.com:kylef/PathKit.git", :commit => 'c662c2a'
   pod 'KZFileWatchers'
-  pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => 'b325ca1'
+  pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => '380a5f6'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
 
   target 'SourceryTests' do
