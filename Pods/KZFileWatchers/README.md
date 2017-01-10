@@ -20,14 +20,32 @@ This framework provides:
 
 ## Installation
 
-KZFileWatchers is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+KZFileWatchers is available through [CocoaPods](http://cocoapods.org) and [Swift Package Manager](http://github.com/apple/swift-package-manager).
+
+### CocoaPods
+
+In order to install KZFileWatchers by using CocoaPods, simply add the following line to your Podfile:
 
 ```ruby
 pod "KZFileWatchers"
 ```
 
 Last version to support Swift 2.3 is `0.1.2`
+
+### Swift Package Manager
+
+Installing KZFileWatchers over SwiftPM is only supported since version 1.0.1. You just need to add it as a dependency to your Package.swift manifest:
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "YourTarget",
+    dependencies: [
+        .Package(url: "https://github.com/krzysztofzablocki/KZFileWatchers.git", majorVersion: 1),
+    ]
+)
+```
 
 ## Author
 

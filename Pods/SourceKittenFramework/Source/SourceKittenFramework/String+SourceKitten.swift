@@ -8,6 +8,9 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+// This file could easily be split up
+
 /// Representation of line in String
 public struct Line {
     /// origin = 0
@@ -483,7 +486,7 @@ extension String {
         let matches = regex.matches(in: self, options: [], range: range)
 
         return matches.flatMap { match in
-            documentableOffsets.filter({ $0 >= match.range.location }).first
+            documentableOffsets.first { $0 >= match.range.location }
         }
     }
 
@@ -497,6 +500,7 @@ extension String {
         let patterns: [(pattern: String, options: NSRegularExpression.Options)] = [
             ("^\\s*\\/\\*\\*\\s*(.*?)\\*\\/", [.anchorsMatchLines, .dotMatchesLineSeparators]), // multi: ^\s*\/\*\*\s*(.*?)\*\/
             ("^\\s*\\/\\/\\/(.+)?",           .anchorsMatchLines)                               // single: ^\s*\/\/\/(.+)?
+            // swiftlint:disable:previous comma
         ]
         let range = range ?? NSRange(location: 0, length: nsString.length)
         for pattern in patterns {
@@ -516,7 +520,8 @@ extension String {
                     var lineEnd = nsString.length
                     let indexRange = NSRange(location: range.location, length: 0)
                     nsString.getLineStart(&lineStart, end: &lineEnd, contentsEnd: nil, for: indexRange)
-                    let leadingWhitespaceCountToAdd = nsString.substring(with: NSRange(location: lineStart, length: lineEnd - lineStart)).countOfLeadingCharacters(in: .whitespacesAndNewlines)
+                    let leadingWhitespaceCountToAdd = nsString.substring(with: NSRange(location: lineStart, length: lineEnd - lineStart))
+                                                              .countOfLeadingCharacters(in: .whitespacesAndNewlines)
                     let leadingWhitespaceToAdd = String(repeating: " ", count: leadingWhitespaceCountToAdd)
 
                     let bodySubstring = nsString.substring(with: range)
@@ -526,7 +531,7 @@ extension String {
                     return leadingWhitespaceToAdd + bodySubstring
                 }
             }
-            if bodyParts.count > 0 {
+            if !bodyParts.isEmpty {
                 return bodyParts.joined(separator: "\n").bridge()
                     .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
                     .removingCommonLeadingWhitespaceFromLines()

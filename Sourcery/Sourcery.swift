@@ -102,7 +102,6 @@ public class Sourcery {
 
     private func parseTypes(from: Path) throws -> [Type] {
         self.track("Scanning sources...", terminator: "")
-        var parserResult: ParserResult = ([], [])
 
         guard from.isDirectory else {
             let parserResult = try FileParser(verbose: verbose, path: from).parse()
@@ -114,18 +113,26 @@ public class Sourcery {
             .filter {
                 $0.extension == "swift"
             }
+            .map { try FileParser(verbose: verbose, path: $0) }
 
-        var lastIdx = 0
+        var previousUpdate = 0
+        var accumulator = 0
         let step = sources.count / 10 // every 10%
-        try sources.enumerated().forEach { idx, path in
-            if idx > lastIdx + step {
-                lastIdx = idx
-                let percentage = idx * 100 / sources.count
+
+        let results = sources.parallelMap({ $0.parse() }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+            if accumulator > previousUpdate + step {
+                previousUpdate = accumulator
+                let percentage = accumulator * 100 / sources.count
                 self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
             }
-            let result = try FileParser(verbose: verbose, path: path).parse()
-            parserResult.typealiases += result.typealiases
-            parserResult.types += result.types
+            accumulator += 1
+        })
+
+        let parserResult = results.reduce(ParserResult([], [])) { acc, next in
+            var result = acc
+            result.typealiases += next.typealiases
+            result.types += next.types
+            return result
         }
 
         //! All files have been scanned, time to join extensions with base class

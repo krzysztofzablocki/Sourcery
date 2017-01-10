@@ -47,7 +47,7 @@ extension StatementKind {
     public static var Guard: StatementKind { fatalError() }
 
     @available(*, unavailable, renamed: "if")
-    public static var If: StatementKind { fatalError() }
+    public static var If: StatementKind { fatalError() } // swiftlint:disable:this variable_name
 
     @available(*, unavailable, renamed: "repeatWhile")
     public static var RepeatWhile: StatementKind { fatalError() }

@@ -7,6 +7,6 @@
 //
 
 public enum Text {
-    case Para(String, String?)
-    case Verbatim(String)
+    case para(String, String?)
+    case verbatim(String)
 }

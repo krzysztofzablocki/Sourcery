@@ -14,7 +14,22 @@ import Clang_C
 import Foundation
 import SWXMLHash
 
-private var interfaceUUIDMap = [String: String]()
+private var _interfaceUUIDMap = [String: String]()
+private var _interfaceUUIDMapLock = NSLock()
+
+/// Thread safe read from sourceKitUID map
+private func uuidString(`for` sourceKitUID: String) -> String? {
+    _interfaceUUIDMapLock.lock()
+    defer { _interfaceUUIDMapLock.unlock() }
+    return _interfaceUUIDMap[sourceKitUID]
+}
+
+/// Thread safe write from sourceKitUID map
+private func setUUIDString(uidString: String, `for` file: String) {
+    _interfaceUUIDMapLock.lock()
+    defer { _interfaceUUIDMapLock.unlock() }
+    _interfaceUUIDMap[file] = uidString
+}
 
 struct ClangIndex {
     private let index = clang_createIndex(0, 1)
@@ -100,7 +115,7 @@ extension CXCursor {
             let regex = try! NSRegularExpression(pattern: "(\\w+)@(\\w+)", options: [])
             let range = NSRange(location: 0, length: usrNSString.length)
             let matches = regex.matches(in: usrNSString as String, options: [], range: range)
-            if matches.count > 0 {
+            if !matches.isEmpty {
                 let categoryOn = usrNSString.substring(with: matches[0].rangeAt(1))
                 let categoryName = ext ? "" : usrNSString.substring(with: matches[0].rangeAt(2))
                 return "\(categoryOn)(\(categoryName))"
@@ -150,7 +165,7 @@ extension CXCursor {
 
     func flatMap<T>(_ block: @escaping (CXCursor) -> T?) -> [T] {
         var ret = [T]()
-        visit() { cursor, _ in
+        visit { cursor, _ in
             if let val = block(cursor) {
                 ret.append(val)
             }
@@ -166,7 +181,7 @@ extension CXCursor {
             "@return ": "- returns: ",
             "@warning ": "- warning: ",
             "@see ": "- see: ",
-            "@note ": "- note: ",
+            "@note ": "- note: "
         ]
         var commentBody = rawComment?.commentBody()
         for (original, replacement) in replacements {
@@ -178,11 +193,12 @@ extension CXCursor {
     func swiftDeclaration(compilerArguments: [String]) -> String? {
         let file = location().file
         let swiftUUID: String
-        if let uuid = interfaceUUIDMap[file] {
+
+        if let uuid = uuidString(for: file) {
             swiftUUID = uuid
         } else {
             swiftUUID = NSUUID().uuidString
-            interfaceUUIDMap[file] = swiftUUID
+            setUUIDString(uidString: swiftUUID, for: file)
             // Generate Swift interface, associating it with the UUID
             _ = Request.interface(file: file, uuid: swiftUUID).send()
         }
@@ -213,7 +229,7 @@ extension CXComment {
 
     func paragraphToString(kindString: String? = nil) -> [Text] {
         if kind() == CXComment_VerbatimLine {
-            return [.Verbatim(clang_VerbatimLineComment_getText(self).str()!)]
+            return [.verbatim(clang_VerbatimLineComment_getText(self).str()!)]
         } else if kind() == CXComment_BlockCommand {
             return (0..<count()).reduce([]) { returnValue, childIndex in
                 return returnValue + self[childIndex].paragraphToString()
@@ -236,7 +252,7 @@ extension CXComment {
             }
             fatalError("not text: \(child.kind())")
         }
-        return [.Para(paragraphString.removingCommonLeadingWhitespaceFromLines(), kindString)]
+        return [.para(paragraphString.removingCommonLeadingWhitespaceFromLines(), kindString)]
     }
 
     func kind() -> CXCommentKind {

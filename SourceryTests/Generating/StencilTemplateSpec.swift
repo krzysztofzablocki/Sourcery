@@ -36,7 +36,7 @@ class StencilTemplateSpec: QuickSpec {
                 expect(generate("{{ \"FooBar\" | !hasSuffix:\"Bar\" }}")).to(equal("false"))
                 expect(generate("{{ \"FooBar\" | !hasSuffix:\"Foo\" }}")).to(equal("true"))
             }
-            
+
             it("removes instances of a substring") {
                 expect(generate("{{\"helloWorld\" | replace:\"hello\",\"hola\" }}")).to(equal("holaWorld"))
                 expect(generate("{{\"helloWorldhelloWorld\" | replace:\"hello\",\"hola\" }}")).to(equal("holaWorldholaWorld"))

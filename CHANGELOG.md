@@ -5,9 +5,7 @@
 
 ### New Features
 - Added a new filter `replace`. Usage: `{{ name|replace:"substring","replacement }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
-
-### Internal Changes
-- N/A
+- Sourcery will now use parallel parsing, expect more than 2x as fast execution 🚤 .
 
 ## 0.5.2
 
@@ -20,6 +18,8 @@
 - Added negative filters counterparts
 - Added support for attributes, i.e. `@escaping`
 - Experimental support for Swift Templates
+
+- Swift Templates are now supported
 
 ```
 <% for type in types.classes { %>
