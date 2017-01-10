@@ -89,7 +89,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
     }
 
     /// Method access level
-    let accessLevel: AccessLevel
+    let accessLevel: String
 
     /// Whether this is a static method
     let isStatic: Bool
@@ -127,7 +127,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
         self.selectorName = selectorName
         self.parameters = parameters
         self.returnTypeName = returnTypeName
-        self.accessLevel = accessLevel
+        self.accessLevel = accessLevel.rawValue
         self.isStatic = isStatic
         self.isClass = isClass
         self.isFailableInitializer = isFailableInitializer
@@ -141,7 +141,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
             guard let parameters: [Parameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
-            guard let accessLevel: AccessLevel = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             self.isClass = aDecoder.decode(forKey: "isClass")
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")

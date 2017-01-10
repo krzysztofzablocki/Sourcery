@@ -4,8 +4,11 @@
 ## Master
 
 ### New Features
-- Added a new filter `replace`. Usage: `{{ name|replace:"substring","replacement }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
-- Sourcery will now use parallel parsing, expect more than 2x as fast execution 🚤 .
+- Added a new filter `replace`. Usage: `{{ name|replace:"substring","replacement" }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
+- Sourcery will now use parallel parsing, expect more than 2x as fast execution.
+
+### Bug Fixes
+- Method `accessLevel` was not exposed as string so not accessible properly via templates, fixed that.
 
 ## 0.5.2
 
