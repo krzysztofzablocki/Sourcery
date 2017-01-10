@@ -30,6 +30,10 @@ final class StencilTemplate: Stencil.Template, Template {
     private static func sourceryEnvironment() -> Stencil.Environment {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
+        ext.registerFilterWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
+            return source.replacingOccurrences(of: substring, with: replacement)
+        })
+        
         ext.registerBoolFilterWithArguments("contains", filter: { (s1: String, s2) in s1.contains(s2) })
         ext.registerBoolFilterWithArguments("hasPrefix", filter: { (s1: String, s2) in s1.hasPrefix(s2) })
         ext.registerBoolFilterWithArguments("hasSuffix", filter: { (s1: String, s2) in s1.hasSuffix(s2) })
@@ -85,6 +89,16 @@ extension Annotated {
 }
 
 extension Stencil.Extension {
+    
+    func registerFilterWithTwoArguments<T, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?) {
+        registerFilter(name) { (any, args) throws -> Any? in
+            guard let type = any as? T else { return any }
+            guard args.count == 3, let argA = args[0] as? A, let argB = args[2] as? B else {
+                throw TemplateSyntaxError("'\(name)' filter takes two arguments: \(A.self) and \(B.self)")
+            }
+            return try filter(type, argA, argB)
+        }
+    }
 
     func registerFilterWithArguments<A>(_ name: String, filter: @escaping (Any?, A) throws -> Any?) {
         registerFilter(name) { (any, args) throws -> Any? in

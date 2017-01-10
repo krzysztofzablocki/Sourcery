@@ -1,6 +1,14 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+- Added a new filter `replace`. Usage: `{{ name|replace:"substring","replacement }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
+
+### Internal Changes
+- N/A
+
 ## 0.5.2
 
 ### New Features
