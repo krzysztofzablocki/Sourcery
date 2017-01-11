@@ -17,4 +17,14 @@ extension Path {
         try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
         return Path(tempDirURL.path)
     }
+
+    static func cachesDir(sourcePath: Path) -> Path {
+        var paths = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true) as [String]
+        let path = Path(paths[0]) + "Sourcery" + sourcePath.lastComponent
+        if !path.exists {
+            // swiftlint:disable:next force_try
+            try! FileManager.default.createDirectory(at: path.url, withIntermediateDirectories: true, attributes: nil)
+        }
+        return path
+    }
 }

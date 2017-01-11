@@ -26,6 +26,7 @@ public class Sourcery {
 
     private var templatesPath: Path = ""
     private var outputPath: Path = ""
+    private var cachesPath: Path = ""
 
     /// Creates Sourcery processor
     ///
@@ -44,12 +45,13 @@ public class Sourcery {
     ///   - output: Path to output source code to.
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ sources: Path, usingTemplates templatesPath: Path, output: Path, watcherEnabled: Bool = false) throws -> [FolderWatcher.Local]? {
+    public func processFiles(_ sources: Path, usingTemplates templatesPath: Path, output: Path, watcherEnabled: Bool = false, cacheDisabled: Bool = false) throws -> [FolderWatcher.Local]? {
         self.templatesPath = templatesPath
         self.outputPath = output
         self.watcherEnabled = watcherEnabled
+        self.cachesPath = Path.cachesDir(sourcePath: sources)
 
-        var types: [Type] = try parseTypes(from: sources)
+        var types: [Type] = try parseTypes(from: sources, cacheDisabled: cacheDisabled)
         try generate(templatePath: templatesPath, output: output, types: types)
 
         guard watcherEnabled else {
@@ -73,7 +75,7 @@ public class Sourcery {
             if shouldRegenerate {
                 do {
                     self.track("Source changed: ", terminator: "")
-                    types = try self.parseTypes(from: sources)
+                    types = try self.parseTypes(from: sources, cacheDisabled: cacheDisabled)
                     _ = try self.generate(templatePath: templatesPath, output: output, types: types)
                 } catch {
                     self.track(error)
@@ -100,7 +102,7 @@ public class Sourcery {
         return [sourceWatcher, templateWatcher]
     }
 
-    private func parseTypes(from: Path) throws -> [Type] {
+    private func parseTypes(from: Path, cacheDisabled: Bool) throws -> [Type] {
         self.track("Scanning sources...", terminator: "")
 
         guard from.isDirectory else {
@@ -119,7 +121,7 @@ public class Sourcery {
         var accumulator = 0
         let step = sources.count / 10 // every 10%
 
-        let results = sources.parallelMap({ $0.parse() }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+        let results = sources.parallelMap({ self.loadOrParse(parser: $0, cacheDisabled: cacheDisabled) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
             if accumulator > previousUpdate + step {
                 previousUpdate = accumulator
                 let percentage = accumulator * 100 / sources.count
@@ -128,11 +130,10 @@ public class Sourcery {
             accumulator += 1
         })
 
-        let parserResult = results.reduce(ParserResult([], [])) { acc, next in
-            var result = acc
-            result.typealiases += next.typealiases
-            result.types += next.types
-            return result
+        let parserResult = results.reduce(FileParserResult(types: [], typealiases: [])) { acc, next in
+            acc.typealiases += next.typealiases
+            acc.types += next.types
+            return acc
         }
 
         //! All files have been scanned, time to join extensions with base class
@@ -140,6 +141,32 @@ public class Sourcery {
 
         track("Found \(types.count) types.")
         return types
+    }
+
+    private func loadOrParse(parser: FileParser, cacheDisabled: Bool) -> FileParserResult {
+        guard let pathString = parser.path else { fatalError("Unable to retrieve FileParser.path") }
+        let path = Path(pathString)
+        let artifacts = cachesPath + "\(pathString.hash).srf"
+
+        guard !cacheDisabled,
+              artifacts.exists,
+              let contents = try? path.read(.utf8),
+              let contentSha = contents.sha256(),
+              let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts.string) as? FileParserResult,
+              unarchived.contentSha == contentSha else {
+
+            let result = parser.parse()
+            let data = NSKeyedArchiver.archivedData(withRootObject: result)
+            do {
+                try artifacts.write(data)
+            } catch {
+                fatalError("Unable to save artifacts for \(path) under \(artifacts), error: \(error)")
+            }
+
+            return result
+        }
+
+        return unarchived
     }
 
     private func generate(templatePath: Path, output: Path, types: [Type]) throws {
