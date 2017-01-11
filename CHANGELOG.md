@@ -6,6 +6,16 @@
 ### New Features
 - Added a new filter `replace`. Usage: `{{ name|replace:"substring","replacement" }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
 - Sourcery will now use parallel parsing, expect more than 2x as fast execution.
+- Sourcery will now cache source artifacts, in many scenarios it will lead to order of magnitude faster processing.
+- e.g. on big codebase of over 300 swift files:
+```
+Sourcery 0.5.2
+Processing time 8.69941002130508 seconds
+
+Sourcery 0.5.3
+First time 4.69904798269272 seconds
+Subsequent time: 0.882099032402039 seconds
+```
 
 ### Bug Fixes
 - Method `accessLevel` was not exposed as string so not accessible properly via templates, fixed that.
