@@ -10,6 +10,7 @@ target 'Sourcery' do
   pod 'KZFileWatchers'
   pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => '380a5f6'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
+  pod 'libCommonCrypto'
 
   target 'SourceryTests' do
     inherit! :search_paths

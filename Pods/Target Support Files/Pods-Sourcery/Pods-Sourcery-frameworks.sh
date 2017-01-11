@@ -97,6 +97,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Stencil/Stencil.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SwiftTryCatch/SwiftTryCatch.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Yams/Yams.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/libCommonCrypto/CommonCrypto.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Commander/Commander.framework"
@@ -107,6 +108,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Stencil/Stencil.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SwiftTryCatch/SwiftTryCatch.framework"
   install_framework "$BUILT_PRODUCTS_DIR/Yams/Yams.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/libCommonCrypto/CommonCrypto.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

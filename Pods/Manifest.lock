@@ -1,6 +1,7 @@
 PODS:
   - Commander (0.6.0)
   - KZFileWatchers (1.0.1)
+  - libCommonCrypto (0.1.1)
   - Nimble (5.1.1)
   - PathKit (0.7.1)
   - Quick (1.0.0)
@@ -16,6 +17,7 @@ PODS:
 DEPENDENCIES:
   - Commander
   - KZFileWatchers
+  - libCommonCrypto
   - Nimble
   - PathKit (from `git@github.com:kylef/PathKit.git`, commit `c662c2a`)
   - Quick
@@ -54,6 +56,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Commander: fba7c96c9e787ecc8ebe0737be875e1e18ef47ff
   KZFileWatchers: 0215a3745b1822c5efb56562b5870153dee582d0
+  libCommonCrypto: 8bc2f53375ef9815ddd9dd663e110e1cced41747
   Nimble: 415e3aa3267e7bc2c96b05fa814ddea7bb686a29
   PathKit: 81fe9770b9c5b345c658da9c90f35a2bbae203c0
   Quick: 8024e4a47e6cc03a9d5245ef0948264fc6d27cff
@@ -63,6 +66,6 @@ SPEC CHECKSUMS:
   SWXMLHash: 80d2529d74891bb2f15305a0b9e08f2a4f229ee7
   Yams: 4a4d2b5f0db216fab03c6abc04b7692ceff7cf5f
 
-PODFILE CHECKSUM: d853bca72530608b148df8f46a1f81a71da4c759
+PODFILE CHECKSUM: d992ea6f8295d4f5891db1bd5b516356e6ab318a
 
 COCOAPODS: 1.2.0.beta.1
