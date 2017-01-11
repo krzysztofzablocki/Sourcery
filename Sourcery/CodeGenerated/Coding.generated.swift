@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -153,6 +153,7 @@ extension FileParserResult: NSCoding {
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             self.contentSha = aDecoder.decode(forKey: "contentSha")
+            guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["sourceryVersion"])); fatalError() }; self.sourceryVersion = sourceryVersion
             
         }
 
@@ -161,6 +162,7 @@ extension FileParserResult: NSCoding {
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.contentSha, forKey: "contentSha")
+            aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
             
         }
         // } FileParserResult.NSCoding
