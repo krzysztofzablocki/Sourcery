@@ -69,6 +69,8 @@
 		CDBEC15D1E242C710090E881 /* Attribute.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 098442741E2241F10051E1A1 /* Attribute.swift */; };
 		CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */; };
 		CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */ = {isa = PBXBuildFile; fileRef = CDE812EE1E112CC700F1FF97 /* Performance-Code */; };
+		CDEF5F0F1E26A471000DB954 /* FileParserResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEF5F0E1E26A471000DB954 /* FileParserResult.swift */; };
+		CDEF5F101E26A47B000DB954 /* FileParserResult.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CDEF5F0E1E26A471000DB954 /* FileParserResult.swift */; };
 		CDF68B761E1C143D007C5396 /* Typed.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF68B751E1C143D007C5396 /* Typed.generated.swift */; };
 		E291D00F3B27A346A9ACCDA4 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D5CD7EEDC70CB423C0BE /* Extensions.swift */; };
 		E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D139206162204C48F396 /* CustomMatchers.swift */; };
@@ -114,6 +116,7 @@
 			dstPath = SwiftTemplateRuntime;
 			dstSubfolderSpec = 7;
 			files = (
+				CDEF5F101E26A47B000DB954 /* FileParserResult.swift in SwiftTemplates */,
 				CDBEC15D1E242C710090E881 /* Attribute.swift in SwiftTemplates */,
 				C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */,
 				C8E88CAB1E204E4900102D17 /* Description.generated.swift in SwiftTemplates */,
@@ -203,6 +206,7 @@
 		CDBEC15B1E242B9E0090E881 /* StencilTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StencilTemplate.swift; sourceTree = "<group>"; };
 		CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sourcery+PerformanceSpec.swift"; sourceTree = "<group>"; };
 		CDE812EE1E112CC700F1FF97 /* Performance-Code */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Performance-Code"; sourceTree = "<group>"; };
+		CDEF5F0E1E26A471000DB954 /* FileParserResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileParserResult.swift; sourceTree = "<group>"; };
 		CDF68B731E1C137E007C5396 /* Typed.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Typed.stencil; sourceTree = "<group>"; };
 		CDF68B751E1C143D007C5396 /* Typed.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Typed.generated.swift; sourceTree = "<group>"; };
 		D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sourcery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -353,6 +357,7 @@
 				E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */,
 				0911DAF11E212817001FF3EB /* Annotations.swift */,
 				098442741E2241F10051E1A1 /* Attribute.swift */,
+				CDEF5F0E1E26A471000DB954 /* FileParserResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -741,6 +746,7 @@
 				CD812F5B1DFDCC1A0088B2F6 /* Enum.swift in Sources */,
 				CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */,
 				09C6B0D21E11BA2500246CDF /* Class.swift in Sources */,
+				CDEF5F0F1E26A471000DB954 /* FileParserResult.swift in Sources */,
 				CD812F5D1DFDCC1A0088B2F6 /* Struct.swift in Sources */,
 				C8E88CB01E20579100102D17 /* Path+Extensions.swift in Sources */,
 				C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */,
