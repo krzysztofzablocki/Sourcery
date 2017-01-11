@@ -27,9 +27,9 @@ class GeneratorSpec: QuickSpec {
             ]
 
             complexType.methods = [
-                    Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))]),
-                    Method(selectorName: "foo2(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Float"))], isStatic: true),
-                    Method(selectorName: "foo3(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], isClass: true)
+                    Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))]),
+                    Method(selectorName: "foo2(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true),
+                    Method(selectorName: "foo3(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true)
             ]
 
             let types = [
@@ -37,12 +37,12 @@ class GeneratorSpec: QuickSpec {
                     fooSubclassType,
                     complexType,
                     barType,
-                    Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [Enum.Case(name: "optionA"), Enum.Case(name: "optionB")], containedTypes: [
+                    Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], containedTypes: [
                         Type(name: "InnerOptions", accessLevel: .public, variables: [
                             Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false)
                             ])
                         ]),
-                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [Enum.Case(name: "fooA"), Enum.Case(name: "fooB")]),
+                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Class(name: "ProjectClass", accessLevel: .none),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),

@@ -8,25 +8,25 @@ import Nimble
 class TypedSpec: QuickSpec {
     override func spec() {
 
-        describe("Enum.Case.AssociatedValue") {
+        describe("AssociatedValue") {
             it("can report optional via KVC") {
-                expect(Enum.Case.AssociatedValue(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(Enum.Case.AssociatedValue(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(Enum.Case.AssociatedValue(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
-                expect(Enum.Case.AssociatedValue(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
-                expect(Enum.Case.AssociatedValue(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+                expect(AssociatedValue(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(AssociatedValue(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(AssociatedValue(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect(AssociatedValue(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+                expect(AssociatedValue(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
             }
 
             it("can report tuple type via KVC") {
                 let tuple = TupleType(name: "(Int, Int)", elements: [])
-                let sut = Enum.Case.AssociatedValue(typeName: TypeName("(Int, Int)"))
+                let sut = AssociatedValue(typeName: TypeName("(Int, Int)"))
                 sut.typeName.tuple = tuple
 
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
-                let sut = Enum.Case.AssociatedValue(typeName: TypeName("Alias"))
+                let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
 
                 sut.typeName.actualTypeName = TypeName("Int")
@@ -34,25 +34,25 @@ class TypedSpec: QuickSpec {
             }
         }
 
-        describe("Method.Parameter") {
+        describe("MethodParameter") {
             it("can report optional via KVC") {
-                expect(Method.Parameter(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(Method.Parameter(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(Method.Parameter(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
-                expect(Method.Parameter(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
-                expect(Method.Parameter(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+                expect(MethodParameter(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(MethodParameter(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(MethodParameter(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect(MethodParameter(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+                expect(MethodParameter(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
             }
 
             it("can report tuple type via KVC") {
                 let tuple = TupleType(name: "(Int, Int)", elements: [])
-                let sut = Method.Parameter(typeName: TypeName("(Int, Int)"))
+                let sut = MethodParameter(typeName: TypeName("(Int, Int)"))
                 sut.typeName.tuple = tuple
 
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
-                let sut = Enum.Case.AssociatedValue(typeName: TypeName("Alias"))
+                let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
 
                 sut.typeName.actualTypeName = TypeName("Int")
@@ -60,25 +60,25 @@ class TypedSpec: QuickSpec {
             }
         }
 
-        describe("TupleType.Element") {
+        describe("TupleElement") {
             it("can report optional via KVC") {
-                expect(TupleType.Element(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(TupleType.Element(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(TupleType.Element(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
-                expect(TupleType.Element(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
-                expect(TupleType.Element(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+                expect(TupleElement(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(TupleElement(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(TupleElement(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect(TupleElement(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+                expect(TupleElement(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
             }
 
             it("can report tuple type via KVC") {
                 let tuple = TupleType(name: "(Int, Int)", elements: [])
-                let sut = TupleType.Element(typeName: TypeName("(Int, Int)"))
+                let sut = TupleElement(typeName: TypeName("(Int, Int)"))
                 sut.typeName.tuple = tuple
 
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
-                let sut = Enum.Case.AssociatedValue(typeName: TypeName("Alias"))
+                let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
 
                 sut.typeName.actualTypeName = TypeName("Int")
@@ -104,7 +104,7 @@ class TypedSpec: QuickSpec {
             }
 
             it("can report actual type name via KVC") {
-                let sut = Enum.Case.AssociatedValue(typeName: TypeName("Alias"))
+                let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
 
                 sut.typeName.actualTypeName = TypeName("Int")
@@ -130,7 +130,7 @@ class TypedSpec: QuickSpec {
             }
 
             it("can report actual type name via KVC") {
-                let sut = Enum.Case.AssociatedValue(typeName: TypeName("Alias"))
+                let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
 
                 sut.typeName.actualTypeName = TypeName("Int")
