@@ -147,6 +147,27 @@ extension Enum.Case.AssociatedValue: NSCoding {
 */
 
 /*
+extension FileParserResult: NSCoding {
+        // FileParserResult.NSCoding {
+        required init?(coder aDecoder: NSCoder) {
+            guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
+            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
+            self.contentSha = aDecoder.decode(forKey: "contentSha")
+            
+        }
+
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.types, forKey: "types")
+            aCoder.encode(self.typealiases, forKey: "typealiases")
+            aCoder.encode(self.contentSha, forKey: "contentSha")
+            
+        }
+        // } FileParserResult.NSCoding
+}
+*/
+
+/*
 extension GenerationContext: NSCoding {
         // GenerationContext.NSCoding {
         required init?(coder aDecoder: NSCoder) {

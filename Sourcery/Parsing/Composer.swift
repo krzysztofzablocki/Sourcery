@@ -21,7 +21,7 @@ struct Composer {
     ///
     /// - Parameter parserResult: Result of parsing source code.
     /// - Returns: Final types and extensions of unknown types.
-    func uniqueTypes(_ parserResult: ParserResult) -> [Type] {
+    func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
         var unique = [String: Type]()
         let types = parserResult.types
         let typealiases = self.typealiasesByNames(parserResult)
@@ -140,7 +140,7 @@ struct Composer {
     }
 
     /// returns typealiases map to their full names
-    private func typealiasesByNames(_ parserResult: ParserResult) -> [String: Typealias] {
+    private func typealiasesByNames(_ parserResult: FileParserResult) -> [String: Typealias] {
         var typealiasesByNames = [String: Typealias]()
         parserResult.typealiases.forEach { typealiasesByNames[$0.name] = $0 }
         parserResult.types.forEach { type in

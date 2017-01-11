@@ -1,7 +1,7 @@
 import Foundation
 
 // sourcery: skipDescription
-class Attribute: NSObject, AutoDiffable {
+class Attribute: NSObject, AutoDiffable, NSCoding {
     let name: String
     let arguments: [String: NSObject]
     let _description: String

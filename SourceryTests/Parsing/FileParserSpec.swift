@@ -253,7 +253,7 @@ class FileParserSpec: QuickSpec {
                 }
 
                 context("given typealias") {
-                    func parse(_ code: String) -> ParserResult {
+                    func parse(_ code: String) -> FileParserResult {
                         return FileParser(contents: code).parse()
                     }
 
