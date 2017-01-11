@@ -226,7 +226,7 @@ struct Composer {
         return TupleType(name: name, elements: parseTupleElements(name))
     }
 
-    fileprivate func parseTupleElements(_ name: String) -> [TupleType.Element] {
+    fileprivate func parseTupleElements(_ name: String) -> [TupleElement] {
         let trimmedBracketsName = String(name.characters.dropFirst().dropLast())
         return trimmedBracketsName
             .commaSeparated()
@@ -237,14 +237,14 @@ struct Composer {
 
                 guard nameAndType.count == 2 else {
                     let typeName = TypeName($1)
-                    return TupleType.Element(name: "\($0)", typeName: typeName)
+                    return TupleElement(name: "\($0)", typeName: typeName)
                 }
                 guard nameAndType[0] != "_" else {
                     let typeName = TypeName(nameAndType[1])
-                    return TupleType.Element(name: "\($0)", typeName: typeName)
+                    return TupleElement(name: "\($0)", typeName: typeName)
                 }
                 let typeName = TypeName(nameAndType[1])
-                return TupleType.Element(name: nameAndType[0], typeName: typeName)
+                return TupleElement(name: nameAndType[0], typeName: typeName)
         }
     }
 

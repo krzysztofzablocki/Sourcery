@@ -37,11 +37,11 @@ extension Enum {
         return results
     }
 }
-extension Enum.Case: Diffable {
+extension EnumCase: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let rhs = object as? Enum.Case else {
-            results.append("Incorrect type <expected: Enum.Case, received: \(type(of: object))>")
+        guard let rhs = object as? EnumCase else {
+            results.append("Incorrect type <expected: EnumCase, received: \(type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
@@ -52,11 +52,11 @@ extension Enum.Case: Diffable {
         return results
     }
 }
-extension Enum.Case.AssociatedValue: Diffable {
+extension AssociatedValue: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let rhs = object as? Enum.Case.AssociatedValue else {
-            results.append("Incorrect type <expected: Enum.Case.AssociatedValue, received: \(type(of: object))>")
+        guard let rhs = object as? AssociatedValue else {
+            results.append("Incorrect type <expected: AssociatedValue, received: \(type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: rhs.localName))
@@ -100,11 +100,11 @@ extension Method: Diffable {
         return results
     }
 }
-extension Method.Parameter: Diffable {
+extension MethodParameter: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let rhs = object as? Method.Parameter else {
-            results.append("Incorrect type <expected: Method.Parameter, received: \(type(of: object))>")
+        guard let rhs = object as? MethodParameter else {
+            results.append("Incorrect type <expected: MethodParameter, received: \(type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "argumentLabel").trackDifference(actual: self.argumentLabel, expected: rhs.argumentLabel))
@@ -144,11 +144,11 @@ extension TupleType: Diffable {
         return results
     }
 }
-extension TupleType.Element: Diffable {
+extension TupleElement: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let rhs = object as? TupleType.Element else {
-            results.append("Incorrect type <expected: TupleType.Element, received: \(type(of: object))>")
+        guard let rhs = object as? TupleElement else {
+            results.append("Incorrect type <expected: TupleElement, received: \(type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))

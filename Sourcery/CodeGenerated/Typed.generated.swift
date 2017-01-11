@@ -1,21 +1,21 @@
 // Generated using Sourcery 0.5.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
-extension Enum.Case.AssociatedValue {
+extension AssociatedValue {
     var isOptional: Bool { return typeName.isOptional }
     var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
     var unwrappedTypeName: String { return typeName.unwrappedTypeName }
     var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
 }
-extension Method.Parameter {
+extension MethodParameter {
     var isOptional: Bool { return typeName.isOptional }
     var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
     var unwrappedTypeName: String { return typeName.unwrappedTypeName }
     var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
 }
-extension TupleType.Element {
+extension TupleElement {
     var isOptional: Bool { return typeName.isOptional }
     var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
     var unwrappedTypeName: String { return typeName.unwrappedTypeName }

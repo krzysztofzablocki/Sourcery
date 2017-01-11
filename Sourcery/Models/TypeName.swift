@@ -120,43 +120,43 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
 
 }
 
+final class TupleElement: NSObject, AutoDiffable, Typed {
+    let name: String
+    let typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    var type: Type?
+
+    init(name: String = "", typeName: TypeName, type: Type? = nil) {
+        self.name = name
+        self.typeName = typeName
+        self.type = type
+    }
+
+    // TupleElement.NSCoding {
+    required init?(coder aDecoder: NSCoder) {
+        guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+        guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+        self.type = aDecoder.decode(forKey: "type")
+
+    }
+
+    func encode(with aCoder: NSCoder) {
+
+        aCoder.encode(self.name, forKey: "name")
+        aCoder.encode(self.typeName, forKey: "typeName")
+        aCoder.encode(self.type, forKey: "type")
+
+    }
+    // } TupleElement.NSCoding
+}
+
 final class TupleType: NSObject, AutoDiffable {
     let name: String
 
-    final class Element: NSObject, AutoDiffable, Typed {
-        let name: String
-        let typeName: TypeName
+    let elements: [TupleElement]
 
-        // sourcery: skipEquality, skipDescription
-        var type: Type?
-
-        init(name: String = "", typeName: TypeName, type: Type? = nil) {
-            self.name = name
-            self.typeName = typeName
-            self.type = type
-        }
-
-        // TupleType.Element.NSCoding {
-        required init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
-
-        }
-
-        func encode(with aCoder: NSCoder) {
-
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-
-        }
-        // } TupleType.Element.NSCoding
-    }
-
-    let elements: [Element]
-
-    init(name: String, elements: [Element]) {
+    init(name: String, elements: [TupleElement]) {
         self.name = name
         self.elements = elements
     }
@@ -164,7 +164,7 @@ final class TupleType: NSObject, AutoDiffable {
     // TupleType.NSCoding {
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let elements: [Element] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
+            guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
 
         }
 

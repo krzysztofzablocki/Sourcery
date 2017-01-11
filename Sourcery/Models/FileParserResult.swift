@@ -14,11 +14,11 @@ import Foundation
     var contentSha: String?
     var sourceryVersion: String
 
-    init(types: [Type], typealiases: [Typealias], content: String = "") {
+    init(types: [Type], typealiases: [Typealias], contentSha: String = "", sourceryVersion: String = "") {
         self.types = types
         self.typealiases = typealiases
-        self.contentSha = content.sha256()
-        self.sourceryVersion = Sourcery.version
+        self.contentSha = contentSha
+        self.sourceryVersion = sourceryVersion
     }
 
     // FileParserResult.NSCoding {

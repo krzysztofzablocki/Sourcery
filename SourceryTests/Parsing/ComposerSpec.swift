@@ -61,7 +61,7 @@ class ParserComposerSpec: QuickSpec {
                                                        isExtension: false,
                                                        inheritedTypes: ["SomeProtocol"],
                                                        rawTypeName: TypeName("String"),
-                                                       cases: [Enum.Case(name: "optionA")]),
+                                                       cases: [EnumCase(name: "optionA")]),
                                                   Protocol(name: "SomeProtocol")
                                           ]))
                     }
@@ -73,7 +73,7 @@ class ParserComposerSpec: QuickSpec {
                                                       Enum(name: "Foo",
                                                            inheritedTypes: ["RawRepresentable"],
                                                            rawTypeName: TypeName("String"),
-                                                           cases: [Enum.Case(name: "optionA")],
+                                                           cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: TypeName("String"),
                                                                                 accessLevel: (read: .internal,
@@ -81,7 +81,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
                                                            methods: [Method(selectorName: "init(rawValue:)",
-                                                                            parameters: [Method.Parameter(name: "rawValue",
+                                                                            parameters: [MethodParameter(name: "rawValue",
                                                                                                           typeName: TypeName("String"))],
                                                                             returnTypeName: TypeName(""),
                                                                             isFailableInitializer: true)]
@@ -96,14 +96,14 @@ class ParserComposerSpec: QuickSpec {
                                                       Enum(name: "Foo",
                                                            inheritedTypes: ["RawRepresentable"],
                                                            rawTypeName: TypeName("String"),
-                                                           cases: [Enum.Case(name: "optionA")],
+                                                           cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: TypeName("RawValue"),
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
                                                            methods: [Method(selectorName: "init(rawValue:)",
-                                                                            parameters: [Method.Parameter(name: "rawValue", typeName: TypeName("RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
                                                                             isFailableInitializer: true)],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
@@ -117,14 +117,14 @@ class ParserComposerSpec: QuickSpec {
                                                       Enum(name: "Foo",
                                                            inheritedTypes: ["CustomStringConvertible", "RawRepresentable"],
                                                            rawTypeName: TypeName("String"),
-                                                           cases: [Enum.Case(name: "optionA")],
+                                                           cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: TypeName("RawValue"),
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
                                                            methods: [Method(selectorName: "init(rawValue:)",
-                                                                            parameters: [Method.Parameter(name: "rawValue",
+                                                                            parameters: [MethodParameter(name: "rawValue",
                                                                                                           typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
                                                                             isFailableInitializer: true)],
@@ -141,13 +141,13 @@ class ParserComposerSpec: QuickSpec {
 
                         expect(variable?.typeName.tuple).to(equal(
                             TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))", elements: [
-                                TupleType.Element(name: "a", typeName: TypeName("Int")),
-                                TupleType.Element(name: "b", typeName: TypeName("Int")),
-                                TupleType.Element(name: "2", typeName: TypeName("String")),
-                                TupleType.Element(name: "3", typeName: TypeName("Float")),
-                                TupleType.Element(name: "literal", typeName: TypeName("[String: [String: Int]]")),
-                                TupleType.Element(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>")),
-                                TupleType.Element(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)"))
+                                TupleElement(name: "a", typeName: TypeName("Int")),
+                                TupleElement(name: "b", typeName: TypeName("Int")),
+                                TupleElement(name: "2", typeName: TypeName("String")),
+                                TupleElement(name: "3", typeName: TypeName("Float")),
+                                TupleElement(name: "literal", typeName: TypeName("[String: [String: Int]]")),
+                                TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>")),
+                                TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)"))
                                 ])
                         ))
                     }
@@ -190,8 +190,8 @@ class ParserComposerSpec: QuickSpec {
                         it("replaces tuple elements alias types with actual types") {
                             let expectedVariable = Variable(name: "foo", typeName: TypeName("(GlobalAlias, Int)"))
                             expectedVariable.typeName.tuple = TupleType(name: "(GlobalAlias, Int)", elements: [
-                                TupleType.Element(name: "0", typeName: TypeName("GlobalAlias"), type: Type(name: "Foo")),
-                                TupleType.Element(name: "1", typeName: TypeName("Int"))
+                                TupleElement(name: "0", typeName: TypeName("GlobalAlias"), type: Type(name: "Foo")),
+                                TupleElement(name: "1", typeName: TypeName("Int"))
                                 ])
                             let expectedTupleElement = expectedVariable.typeName.tuple?.elements.first
                             expectedTupleElement?.type = Type(name: "Foo")
@@ -204,8 +204,8 @@ class ParserComposerSpec: QuickSpec {
                         it("replaces variable alias type with actual tuple type name") {
                             let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias"))
                             expectedVariable.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleType.Element(name: "0", typeName: TypeName("Foo"), type: Type(name: "Foo")),
-                                TupleType.Element(name: "1", typeName: TypeName("Int"))
+                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Type(name: "Foo")),
+                                TupleElement(name: "1", typeName: TypeName("Int"))
                                 ])
                             expectedVariable.typeName.actualTypeName = TypeName("(Foo, Int)")
 

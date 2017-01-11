@@ -26,8 +26,8 @@ private extension Parsable {
 extension Variable: Parsable {}
 extension Type: Parsable {}
 extension Method: Parsable {}
-extension Method.Parameter: Parsable {}
-extension Enum.Case: Parsable {}
+extension MethodParameter: Parsable {}
+extension EnumCase: Parsable {}
 
 struct FileParser {
 
@@ -83,7 +83,7 @@ struct FileParser {
         let types = parseTypes(source, processed: &processedGlobalTypes)
 
         let typealiases = parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
-        return FileParserResult(types: types, typealiases: typealiases, content: contents)
+        return FileParserResult(types: types, typealiases: typealiases, contentSha: contents.sha256() ?? "", sourceryVersion: Sourcery.version)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
@@ -192,7 +192,7 @@ struct FileParser {
         case let (_, childType as Type):
             type.containedTypes += [childType]
             childType.parent = type
-        case let (enumeration as Enum, enumCase as Enum.Case):
+        case let (enumeration as Enum, enumCase as EnumCase):
             enumeration.cases += [enumCase]
         default:
             break
@@ -201,7 +201,7 @@ struct FileParser {
 
     private func process(declaration: Any, containedIn method: Method) {
         switch declaration {
-        case let (parameter as Method.Parameter):
+        case let (parameter as MethodParameter):
             method.parameters += [parameter]
         default:
             break
@@ -343,12 +343,12 @@ extension FileParser {
         return method
     }
 
-    internal func parseParameter(_ source: [String: SourceKitRepresentable]) -> Method.Parameter? {
+    internal func parseParameter(_ source: [String: SourceKitRepresentable]) -> MethodParameter? {
         guard let (name, _, _) = parseTypeRequirements(source),
             let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
 
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
-        let parameter = Method.Parameter(name: name, typeName: typeName)
+        let parameter = MethodParameter(name: name, typeName: typeName)
         parameter.setSource(source)
         return parameter
     }
@@ -358,10 +358,10 @@ extension FileParser {
 // MARK: - Enums
 extension FileParser {
 
-    fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable]) -> Enum.Case? {
+    fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable]) -> EnumCase? {
         guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
 
-        var associatedValues: [Enum.Case.AssociatedValue] = []
+        var associatedValues: [AssociatedValue] = []
         var rawValue: String? = nil
 
         guard let keyString = extract(.key, from: source)?.replacingOccurrences(of: "`", with: ""),
@@ -385,7 +385,7 @@ extension FileParser {
              print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        let enumCase = Enum.Case(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
+        let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
         enumCase.setSource(source)
         return enumCase
     }
@@ -396,7 +396,7 @@ extension FileParser {
         return body.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    fileprivate func parseEnumAssociatedValues(_ body: String) -> [Enum.Case.AssociatedValue] {
+    fileprivate func parseEnumAssociatedValues(_ body: String) -> [AssociatedValue] {
         guard !body.isEmpty else { return [] }
 
         let items = body.commaSeparated()
@@ -409,16 +409,16 @@ extension FileParser {
 
                 guard nameAndType.count == 2 else {
                     let typeName = TypeName($1, attributes: parseTypeAttributes($1))
-                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
+                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
                 }
                 guard nameAndType[0] != "_" else {
                     let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
-                    return Enum.Case.AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
+                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
                 }
                 let localName = nameAndType[0]
                 let externalName = items.count > 1 ? localName : defaultName
                 let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
-                return Enum.Case.AssociatedValue(localName: localName, externalName: externalName, typeName: typeName)
+                return AssociatedValue(localName: localName, externalName: externalName, typeName: typeName)
         }
     }
 

@@ -9,7 +9,7 @@ class MethodSpec: QuickSpec {
             var sut: SourceryMethod?
 
             beforeEach {
-                sut = Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))])
+                sut = Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))])
             }
 
             afterEach {
@@ -61,52 +61,52 @@ class MethodSpec: QuickSpec {
 
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))])))
+                        expect(sut).to(equal(Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))])))
                     }
                 }
 
                 context("given different items") {
                     it("is not equal") {
-                        expect(sut).toNot(equal(Method(selectorName: "bar(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
+                        expect(sut).toNot(equal(Method(selectorName: "bar(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
                         expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
-                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("String"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
-                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .public, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
-                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: true, isClass: false, isFailableInitializer: false, annotations: [:])))
-                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: true, isFailableInitializer: false, annotations: [:])))
-                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: true, annotations: [:])))
-                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [Method.Parameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: ["some": NSNumber(value: true)])))
+                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("String"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
+                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .public, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
+                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: true, isClass: false, isFailableInitializer: false, annotations: [:])))
+                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: true, isFailableInitializer: false, annotations: [:])))
+                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: true, annotations: [:])))
+                        expect(sut).toNot(equal(Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: ["some": NSNumber(value: true)])))
                     }
                 }
 
             }
         }
 
-        describe("Method.Parameter") {
+        describe("MethodParameter") {
 
             context("given optional parameter type with short syntax") {
                 it("reports type as optional") {
-                    expect(Method.Parameter(name: "foo", typeName: TypeName("Int?")).isOptional).to(beTrue())
+                    expect(MethodParameter(name: "foo", typeName: TypeName("Int?")).isOptional).to(beTrue())
                 }
                 it("reports non-optional type for unwrappedTypeName") {
-                    expect(Method.Parameter(name: "foo", typeName: TypeName("Int?")).unwrappedTypeName).to(equal("Int"))
+                    expect(MethodParameter(name: "foo", typeName: TypeName("Int?")).unwrappedTypeName).to(equal("Int"))
                 }
             }
 
             context("given optional parameter type with long syntax") {
                 it("reports type as optional") {
-                    expect(Method.Parameter(name: "foo", typeName: TypeName("Optional<Int>")).isOptional).to(beTrue())
+                    expect(MethodParameter(name: "foo", typeName: TypeName("Optional<Int>")).isOptional).to(beTrue())
                 }
                 it("reports non-optional type for unwrappedTypeName") {
-                    expect(Method.Parameter(name: "foo", typeName: TypeName("Optional<Int>")).unwrappedTypeName).to(equal("Int"))
+                    expect(MethodParameter(name: "foo", typeName: TypeName("Optional<Int>")).unwrappedTypeName).to(equal("Int"))
                 }
             }
 
             describe("When testing equality") {
 
-                var sut: SourceryMethod.Parameter?
+                var sut: MethodParameter?
 
                 beforeEach {
-                    sut = Method.Parameter(name: "foo", typeName: TypeName("Int"))
+                    sut = MethodParameter(name: "foo", typeName: TypeName("Int"))
                 }
 
                 afterEach {
@@ -115,15 +115,15 @@ class MethodSpec: QuickSpec {
 
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Method.Parameter(name: "foo", typeName: TypeName("Int"))))
+                        expect(sut).to(equal(MethodParameter(name: "foo", typeName: TypeName("Int"))))
                     }
                 }
 
                 context("given different items") {
                     it("is not equal") {
-                        expect(sut).toNot(equal(Method.Parameter(name: "bar", typeName: TypeName("Int"))))
-                        expect(sut).toNot(equal(Method.Parameter(argumentLabel: "bar", name: "foo", typeName: TypeName("Int"))))
-                        expect(sut).toNot(equal(Method.Parameter(name: "foo", typeName: TypeName("String"))))
+                        expect(sut).toNot(equal(MethodParameter(name: "bar", typeName: TypeName("Int"))))
+                        expect(sut).toNot(equal(MethodParameter(argumentLabel: "bar", name: "foo", typeName: TypeName("Int"))))
+                        expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName("String"))))
                     }
                 }
 

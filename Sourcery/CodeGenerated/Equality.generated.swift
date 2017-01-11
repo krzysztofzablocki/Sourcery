@@ -22,9 +22,9 @@ extension Enum {
     }
 }
 
-extension Enum.Case {
+extension EnumCase {
     override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Enum.Case else { return false }
+        guard let rhs = object as? EnumCase else { return false }
         if self.name != rhs.name { return false }
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
@@ -34,9 +34,9 @@ extension Enum.Case {
     }
 }
 
-extension Enum.Case.AssociatedValue {
+extension AssociatedValue {
     override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Enum.Case.AssociatedValue else { return false }
+        guard let rhs = object as? AssociatedValue else { return false }
         if self.localName != rhs.localName { return false }
         if self.externalName != rhs.externalName { return false }
         if self.typeName != rhs.typeName { return false }
@@ -62,9 +62,9 @@ extension Method {
     }
 }
 
-extension Method.Parameter {
+extension MethodParameter {
     override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Method.Parameter else { return false }
+        guard let rhs = object as? MethodParameter else { return false }
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
@@ -84,9 +84,9 @@ extension TupleType {
     }
 }
 
-extension TupleType.Element {
+extension TupleElement {
     override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TupleType.Element else { return false }
+        guard let rhs = object as? TupleElement else { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
 
