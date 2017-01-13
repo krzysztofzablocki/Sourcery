@@ -130,7 +130,7 @@ class TypeSpec: QuickSpec {
 
                     sut?.extend(type)
 
-                    expect(sut?.inheritedTypes).to(equal(["NSObject", "New", "Something"]))
+                    expect(sut?.inheritedTypes).to(equal(["NSObject", "Something", "New"]))
                     expect(sut?.based).to(equal(["NSObject": "NSObject", "Something": "Something", "New": "New"]))
                 }
 

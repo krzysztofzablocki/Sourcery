@@ -195,7 +195,13 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
         type.inherits.forEach { self.inherits[$0.key] = $0.value }
         type.implements.forEach { self.implements[$0.key] = $0.value }
-        self.inheritedTypes = Array(Set(self.inheritedTypes + type.inheritedTypes))
+
+        var inheritedTypes = self.inheritedTypes
+        for inherited in type.inheritedTypes {
+            guard !inheritedTypes.contains(inherited) else { continue }
+            inheritedTypes.append(inherited)
+        }
+        self.inheritedTypes = inheritedTypes
     }
 
     // Type.NSCoding {

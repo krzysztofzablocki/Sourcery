@@ -239,7 +239,7 @@ class ParserComposerSpec: QuickSpec {
                                                        accessLevel: .internal,
                                                        isExtension: false,
                                                        variables: [],
-                                                       inheritedTypes: ["AnotherProtocol", "TestProtocol"])
+                                                       inheritedTypes: ["TestProtocol", "AnotherProtocol"])
                                           ]))
                     }
 
