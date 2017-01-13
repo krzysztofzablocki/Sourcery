@@ -326,9 +326,20 @@ extension FileParser {
         }
 
         let returnTypeName: String
-        if let nameSuffix = extract(Substring.nameSuffix, from: source)?
+        var `throws` = false
+        if var nameSuffix = extract(Substring.nameSuffix, from: source)?
             .trimmingCharacters(in: .whitespacesAndNewlines),
-            nameSuffix.hasPrefix("->") {
+            nameSuffix.hasPrefix("->") || nameSuffix.hasPrefix("throws") || nameSuffix.hasPrefix("rethrows") {
+
+            if nameSuffix.hasPrefix("throws") {
+                `throws` = true
+                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 6))
+                    .trimmingCharacters(in: .whitespaces)
+            } else if nameSuffix.hasPrefix("rethrows") {
+                `throws` = true
+                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 8))
+                    .trimmingCharacters(in: .whitespaces)
+            }
 
             returnTypeName = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 2))
                 .components(separatedBy: .whitespacesAndNewlines)
@@ -337,7 +348,7 @@ extension FileParser {
             returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
 
-        let method = Method(selectorName: name, returnTypeName: TypeName(returnTypeName), accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
+        let method = Method(selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
         method.setSource(source)
 
         return method
