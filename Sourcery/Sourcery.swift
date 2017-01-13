@@ -236,7 +236,7 @@ public class Sourcery {
         return try from
             .recursiveChildren()
             .filter {
-                $0.extension == "stencil"
+                $0.extension == "stencil" || $0.extension == "swifttemplate"
         }
     }
 
