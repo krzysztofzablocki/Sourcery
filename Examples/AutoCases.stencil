@@ -4,8 +4,8 @@ extension {{ enum.name }} {
   {% if not enum.hasAssociatedValues %}
   static var allCases: [{{ enum.name }}] {
     return [
-    {% for case in enum.cases %}.{{ case.name }}
-    {% endfor %}]
+      {% for case in enum.cases %}.{{ case.name }} {% if not forloop.last %},{% endif %}
+      {% endfor %}]
   }
   {% endif %}
 }
