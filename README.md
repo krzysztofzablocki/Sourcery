@@ -63,12 +63,187 @@ In those scenarios usually **compiler will not generate the error for you**, whi
 
 ## Examples
 
-#### [`I want to generate Equatable implementation`](Examples/Equatable/Info.md)
-#### [`I want to generate Hashable implementation`](Examples/Hashable/Info.md)
-#### [`I want to list all cases in an enum`](Examples/EnumCases/Info.md)
-#### [`I want to generate test mocks for protocols`](Examples/Mocks/Info.md)
-#### [`I want to generate Lenses for all structs`](Examples/Lenses/Info.md)
-#### [`I want to have diffing in tests`](Examples/Diff/Info.md)
+<details>
+<summary>I want to generate `Equatable` implementation</summary>
+
+Template used to generate hashing for all types that conform to `:AutoHashable`, allowing us to avoid writing boilerplate code.
+
+It adds `:Hashable` conformance to all types, except protocols (because it would require turning them into PAT's).
+For protocols it's just generating `var hashValue` comparator.
+
+#### [Stencil template](Examples/AutoEquatable.stencil)
+
+#### Available variable annotations:
+
+- `skipEquality` allows you to skip variable from being compared.
+- `arrayEquality` mark this to use array comparsion for variables that have array of items that don't implement `Equatable` but have `==` operator e.g. Protocols
+
+#### Example output:
+
+```swift
+// MARK: - AdNodeViewModel AutoHashable
+extension AdNodeViewModel: Hashable {
+
+    internal var hashValue: Int {
+        return combineHashes(remoteAdView.hashValue, hidesDisclaimer.hashValue, type.hashValue, height.hashValue, attributedDisclaimer.hashValue, 0)
+    }
+}
+```
+</details>
+
+<details>
+<summary>I want to generate `Hashable` implementation</summary>
+
+Template used to generate hashing for all types that conform to `:AutoHashable`, allowing us to avoid writing boilerplate code.
+
+It adds `:Hashable` conformance to all types, except protocols (because it would require turning them into PAT's).
+For protocols it's just generating `var hashValue` comparator.
+
+#### [Stencil template](Examples/AutoHashable.stencil)
+
+#### Available variable annotations:
+
+- `skipHashing` allows you to skip variable from being compared.
+- `includeInHashing` is only applied on enums and allows us to add some computed variable into hashing logic
+
+#### Example output:
+
+```swift
+// MARK: - AdNodeViewModel AutoHashable
+extension AdNodeViewModel: Hashable {
+
+    internal var hashValue: Int {
+        return combineHashes(remoteAdView.hashValue, hidesDisclaimer.hashValue, type.hashValue, height.hashValue, attributedDisclaimer.hashValue, 0)
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>I want to list all cases in an enum</summary>
+
+Generate `count` and `allCases` for any enumeration that is marked with `AutoCases` phantom protocol.
+
+#### [Stencil Template](Examples/AutoCases.stencil)
+
+#### Example output:
+
+```swift
+extension BetaSettingsGroup {
+  static var count: Int { return 8 }
+
+  static var allCases: [BetaSettingsGroup] {
+    return [
+      .featuresInDevelopment,
+      .advertising,
+      .analytics,
+      .marketing,
+      .news,
+      .notifications,
+      .tech,
+      .appInformation
+    ]
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>I want to generate test mocks for protocols</summary>
+
+_Contributed by [@marinbenc](http://twitter.com/marinbenc)_
+
+#### For each protocol implementing `AutoMockable` it will...
+Create a class called `ProtocolNameMock` in which it will...
+
+**For each function:**
+ - Implement the function
+ - Add a `functionCalled` boolean to check if the function was called
+ - Add a `functionRecievedArguments` tuple to check the arguments that were passed to the function
+ - Add a `functionReturnValue` variable and return it when the function is called.
+
+**For each variable:**
+ - Add a gettable and settable variable with the same name and type
+
+#### Issues and limitations:
+* Overloaded methods will produce compiler erros since the variables above the functions have the same name. Workaround: delete the variables on top of one of the functions, or rename them.
+* Handling success/failure cases (for callbacks) is tricky to do automatically, so you have to do that yourself.
+* This is **not** a full replacement for hand-written mocks, but it will get you 90% of the way there. Any more complex logic than changing return types, you will have to implement yourself. This only removes the most boring boilerplate you have to write.
+
+#### [Stencil template](Examples/AutoMockable.stencil)
+
+#### Example output:
+
+```swift
+class MockableServiceMock: MockableService {
+    //MARK: - functionWithArguments
+    var functionWithArgumentsCalled = false
+    var functionWithArgumentsRecievedArguments: (firstArgument: String, onComplete: (String)-> Void)?
+
+    //MARK: - functionWithCallback
+    var functionWithCallbackCalled = false
+    var functionWithCallbackRecievedArguments: (firstArgument: String, onComplete: (String)-> Void)?
+
+    func functionWithCallback(_ firstArgument: String, onComplete: @escaping (String)-> Void) {
+        functionWithCallbackCalled = true
+        functionWithCallbackRecievedArguments = (firstArgument: firstArgument, onComplete: onComplete)
+    }
+  ...
+```
+</details>
+
+<details>
+<summary>I want to generate Lenses for all structs</summary>
+
+_Contributed by [@filip_zawada](http://twitter.com/filip_zawada)_
+
+What are Lenses? Great explanation by @mbrandonw
+
+This script assumes you follow swift naming convention, e.g. structs start with an upper letter.
+
+#### [Stencil template](Examples/AutoLenses.stencil)
+
+#### Example output:
+
+```swift
+extension House {
+
+  static let roomsLens = Lens<House, Room>(
+    get: { $0.rooms },
+    set: { rooms, house in
+       House(rooms: rooms, address: house.address, size: house.size)
+    }
+  )
+  static let addressLens = Lens<House, String>(
+  get: { $0.address },
+  set: { address, house in
+     House(rooms: house.rooms, address: address, size: house.size)
+    }
+  )
+  ...
+```
+</details>
+
+<details>
+<summary>I want to have diffing in tests</summary>
+
+Template used to generate much better output when using equality in tests, instead of having to read wall of text it's used to generate precise property level differences. This template uses [Sourcery Diffable implementation](../../Sourcery/Models/Diffable.swift)
+
+from this:
+<img width="600" alt="before" src="https://cloud.githubusercontent.com/assets/1468993/21425370/0e3dd990-c849-11e6-877a-6dc80ae8f039.png">
+
+to this:
+<img width="373" alt="after" src="https://cloud.githubusercontent.com/assets/1468993/21425376/11e9ad94-c849-11e6-882a-e7927a3b2b08.png">
+
+
+#### [Stencil Template](Sourcery/Templates/Diffable.stencil)
+
+#### Available annotations:
+
+- `skipEquality` allows you to skip variable from being compared.
+</details>
 
 ## Writing templates
 *Sourcery templates are powered by [Stencil](https://github.com/kylef/Stencil)*

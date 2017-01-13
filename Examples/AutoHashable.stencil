@@ -1,5 +1,15 @@
 // swiftlint:disable file_length
 
+fileprivate func combineHashes(hashes: [Int]) -> Int {
+    var combinedHash = 5381
+
+    for itemHash in hashes {
+        combinedHash = ((combinedHash << 5) &+ combinedHash) &+ itemHash
+    }
+
+    return combinedHash
+}
+
 // MARK: - AutoHashable for classes, protocols, structs
 {% for type in types.implementing.AutoHashable %}{% if not type.kind == "enum" %}
 // MARK: - {{ type.name }} AutoHashable
