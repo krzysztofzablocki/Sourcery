@@ -424,23 +424,26 @@ extension FileParser {
 
         let returnTypeName: String
         var `throws` = false
-        if var nameSuffix = extract(Substring.nameSuffix, from: source)?
+        if var nameSuffix = extract(.nameSuffix, from: source)?
             .trimmingCharacters(in: .whitespacesAndNewlines),
             nameSuffix.hasPrefix("->") || nameSuffix.hasPrefix("throws") || nameSuffix.hasPrefix("rethrows") {
 
             if nameSuffix.hasPrefix("throws") {
                 `throws` = true
                 nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 6))
-                    .trimmingCharacters(in: .whitespaces)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
             } else if nameSuffix.hasPrefix("rethrows") {
                 `throws` = true
                 nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 8))
-                    .trimmingCharacters(in: .whitespaces)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
             }
-
-            returnTypeName = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 2))
-                .components(separatedBy: .whitespacesAndNewlines)
-                .filter({ $0 != "" }).first ?? ""
+            if nameSuffix.hasPrefix("->") {
+                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 2))
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                returnTypeName = nameSuffix.components(separatedBy: .whitespacesAndNewlines).filter({ $0 != "" }).first ?? ""
+            } else {
+                returnTypeName = "Void"
+            }
         } else {
             returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
