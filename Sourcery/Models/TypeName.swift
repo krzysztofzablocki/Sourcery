@@ -120,7 +120,7 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
 
 }
 
-final class TupleElement: NSObject, AutoDiffable, Typed {
+final class TupleElement: NSObject, AutoDiffable, Typed, NSCoding {
     let name: String
     let typeName: TypeName
 
@@ -151,7 +151,7 @@ final class TupleElement: NSObject, AutoDiffable, Typed {
     // } TupleElement.NSCoding
 }
 
-final class TupleType: NSObject, AutoDiffable {
+final class TupleType: NSObject, AutoDiffable, NSCoding {
     let name: String
 
     let elements: [TupleElement]

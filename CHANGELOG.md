@@ -20,6 +20,7 @@ Subsequent time: 0.882099032402039 seconds
 
 ### Bug Fixes
 - Method `accessLevel` was not exposed as string so not accessible properly via templates, fixed that.
+- Fixes on Swift Templates
 
 ## 0.5.2
 
