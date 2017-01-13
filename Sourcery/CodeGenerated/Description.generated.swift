@@ -36,10 +36,11 @@ extension AssociatedValue {
 extension Method {
     override var description: String {
         var string = "\(type(of: self)): "
+        string += "selectorName = \(selectorName), "
         string += "parameters = \(parameters), "
         string += "shortName = \(shortName), "
-        string += "selectorName = \(selectorName), "
         string += "returnTypeName = \(returnTypeName), "
+        string += "throws = \(`throws`), "
         string += "accessLevel = \(accessLevel), "
         string += "isStatic = \(isStatic), "
         string += "isClass = \(isClass), "

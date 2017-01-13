@@ -4,6 +4,7 @@
 ## Master
 
 ### New Features
+- Added support for method return types with `throws` and `rethrows`
 - Added a new filter `replace`. Usage: `{{ name|replace:"substring","replacement" }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
 - Improved support for inferring types of variables with initial values
 - Sourcery will now use parallel parsing, expect more than 2x as fast execution.

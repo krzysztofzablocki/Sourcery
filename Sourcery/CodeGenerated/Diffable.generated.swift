@@ -90,6 +90,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: rhs.selectorName))
         results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: rhs.parameters))
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: rhs.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "throws").trackDifference(actual: self.throws, expected: rhs.throws))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: rhs.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: rhs.isStatic))
         results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: rhs.isClass))
