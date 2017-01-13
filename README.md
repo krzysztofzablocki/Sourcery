@@ -63,96 +63,12 @@ In those scenarios usually **compiler will not generate the error for you**, whi
 
 ## Examples
 
-##### Use case: `I want to know how many elements are in each enum`
-Template:
-```swift
-{% for enum in types.enums %}
-extension {{ enum.name }} {
-  static var count: Int { return {{ enum.cases.count }} }
-}
-{% endfor %}
-```
-
-Result:
-
-```swift
-extension AdType {
-  static var count: Int { return 2 }
-}
-
-...
-```
-
-----
-
-##### Use case: `I want to generate Equality for types implementing AutoEquatable.`
-
-Template:
-
-```swift
-{% for type in types.implementing.AutoEquatable %}
-extension {{ type.name }}: Equatable {}
-
-func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
-    {% for variable in type.storedVariables %} if lhs.{{ variable.name }} != rhs.{{ variable.name }} { return false }
-    {% endfor %}
-    return true
-}
-{% endfor %}
-```
-
-Result:
-
-```swift
-extension AccountSectionConfiguration: Equatable {}
-
-func == (lhs: AccountSectionConfiguration, rhs: AccountSectionConfiguration) -> Bool {
-     if lhs.status != rhs.status { return false }
-     if lhs.user != rhs.user { return false }
-     if lhs.entitlements != rhs.entitlements { return false }
-
-    return true
-}
-...
-
-```
-
-----
-
-##### Use case: `I want to create lenses for all structs.`
-_[Full implementation](http://gist.github.com/FilipZawada/934397bbef58e529762aff571a59d9b0)_
-
-Template:
-
-```stencil
-{% for type in types.structs %}
-extension {{ type.name }} {
-{% for variable in type.variables %}
-  static let {{ variable.name }}Lens = Lens<{{type.name}}, {{variable.type}}>(
-    get: { $0.{{variable.name}} },
-    set: { {{variable.name}}, {{type.name | lowercase}} in
-       {{type.name}}({% for argument in type.variables %}{{argument.name}}: {% if variable.name == argument.name %}{{variable.name}}{% else %}{{type.name || lowercase}}.{{argument.name}}{% endif %}{% if not forloop.last%}, {% endif %}{% endfor %})
-    }
-  ){% endfor %}
-}
-{% endfor %}
-```
-
-Result:
-
-```swift
-extension House {
-
-  static let addressLens = Lens<House, String>(
-    get: { $0.address },
-    set: { address, house in
-       House(rooms: house.rooms, address: address, size: house.size)
-    }
-  )
-
-  ...
-}
-```
+#### [`I want to generate Equatable implementation`](Examples/Equatable/Info.md)
+#### [`I want to generate Hashable implementation`](Examples/Hashable/Info.md)
+#### [`I want to list all cases in an enum`](Examples/EnumCases/Info.md)
+#### [`I want to generate test mocks for protocols`](Examples/Mocks/Info.md)
+#### [`I want to generate Lenses for all structs`](Examples/Lenses/Info.md)
+#### [`I want to have diffing in tests`](Examples/Diff/Info.md)
 
 ## Writing templates
 *Sourcery templates are powered by [Stencil](https://github.com/kylef/Stencil)*

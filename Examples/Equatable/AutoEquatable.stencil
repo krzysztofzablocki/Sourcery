@@ -1,0 +1,39 @@
+// swiftlint:disable file_length
+
+// MARK: - AutoEquatable for classes, protocols, structs
+{% for type in types.implementing.AutoEquatable %}{% if not type.kind == "enum" %}
+// MARK: - {{ type.name }} AutoEquatable
+{% if not type.kind == "protocol" %}extension {{ type.name }}: Equatable {} {% endif %}
+{% if type.supertype.implements.Equatable or type.supertype.implements.AutoEquatable %} THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoEquatable {% endif %}
+{{ type.accessLevel }} func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+    {% for variable in type.variables %}{% if not variable.isStatic and not variable.annotations.skipEquality %}guard {% if not variable.isOptional %}{% if not variable.annotations.arrayEquality %}lhs.{{ variable.name }} == rhs.{{ variable.name }}{% else %}compareArrays(lhs: lhs.{{ variable.name }}, rhs: rhs.{{ variable.name }}, compare: ==){% endif %}{% else %}compareOptionals(lhs: lhs.{{ variable.name }}, rhs: rhs.{{ variable.name }}, compare: ==){% endif %} else { return false }{% endif %}
+    {% endfor %}
+    return true
+}
+{% endif %}
+{% endfor %}
+
+// MARK: - AutoEquatable for Enums
+{% for type in types.implementing.AutoEquatable|enum %}
+// MARK: - {{ type.name }} AutoEquatable
+extension {{ type.name }}: Equatable {}
+{{ type.accessLevel }} func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+    switch (lhs, rhs) {
+        {% for case in type.cases %}
+        {% if case.hasAssociatedValue %} case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)): {% else %} case (.{{ case.name }}, .{{ case.name }}): {% endif %}
+            {% ifnot case.hasAssociatedValue %} return true {% else %}
+                {% if case.associatedValues.count == 1 %}
+                    return lhs == rhs
+                {% else %}
+                    {% for associated in case.associatedValues %} if lhs.{{ associated.externalName }} != rhs.{{ associated.externalName }} { return false }
+                    {% endfor %} return true
+                    {% endif %}
+            {% endif %}
+
+        {% endfor %}
+        default: return false
+    }
+}
+{% endfor %}
+
+// MARK: -

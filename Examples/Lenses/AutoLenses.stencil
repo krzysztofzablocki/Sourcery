@@ -1,0 +1,38 @@
+infix operator *~: MultiplicationPrecedence
+infix operator |>: AdditionPrecedence
+
+struct Lens<Whole, Part> {
+    let get: (Whole) -> Part
+    let set: (Part, Whole) -> Whole
+}
+
+func * <A, B, C> (lhs: Lens<A, B>, rhs: Lens<B, C>) -> Lens<A, C> {
+    return Lens<A, C>(
+        get: { a in rhs.get(lhs.get(a)) },
+        set: { (c, a) in lhs.set(rhs.set(c, lhs.get(a)), a) }
+    )
+}
+
+func *~ <A, B> (lhs: Lens<A, B>, rhs: B) -> (A) -> A {
+    return { a in lhs.set(rhs, a) }
+}
+
+func |> <A, B> (x: A, f: (A) -> B) -> B {
+    return f(x)
+}
+
+func |> <A, B, C> (f: @escaping (A) -> B, g: @escaping (B) -> C) -> (A) -> C {
+    return { g(f($0)) }
+}
+
+{% for type in types.implementing.AutoLenses|struct %}
+extension {{ type.name }} {
+{% for variable in type.variables %}
+  static let {{ variable.name }}Lens = Lens<{{type.name}}, {{variable.type}}>(
+    get: { $0.{{variable.name}} },
+    set: { {{variable.name}}, {{type.name|lowercase}} in
+       {{type.name}}({% for argument in type.variables %}{{argument.name}}: {% if variable.name == argument.name %}{{variable.name}}{% else %}{{type.name|lowercase}}.{{argument.name}}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})
+    }
+  ){% endfor %}
+}
+{% endfor %}
