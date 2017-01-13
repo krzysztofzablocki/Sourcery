@@ -71,7 +71,7 @@ Template used to generate hashing for all types that conform to `:AutoHashable`,
 It adds `:Hashable` conformance to all types, except protocols (because it would require turning them into PAT's).
 For protocols it's just generating `var hashValue` comparator.
 
-#### [Stencil template](Examples/AutoEquatable.stencil)
+#### [Stencil template](Templates/AutoEquatable.stencil)
 
 #### Available variable annotations:
 
@@ -99,7 +99,7 @@ Template used to generate hashing for all types that conform to `:AutoHashable`,
 It adds `:Hashable` conformance to all types, except protocols (because it would require turning them into PAT's).
 For protocols it's just generating `var hashValue` comparator.
 
-#### [Stencil template](Examples/AutoHashable.stencil)
+#### [Stencil template](Templates/AutoHashable.stencil)
 
 #### Available variable annotations:
 
@@ -125,7 +125,7 @@ extension AdNodeViewModel: Hashable {
 
 Generate `count` and `allCases` for any enumeration that is marked with `AutoCases` phantom protocol.
 
-#### [Stencil Template](Examples/AutoCases.stencil)
+#### [Stencil Template](Templates/AutoCases.stencil)
 
 #### Example output:
 
@@ -172,7 +172,7 @@ Create a class called `ProtocolNameMock` in which it will...
 * Handling success/failure cases (for callbacks) is tricky to do automatically, so you have to do that yourself.
 * This is **not** a full replacement for hand-written mocks, but it will get you 90% of the way there. Any more complex logic than changing return types, you will have to implement yourself. This only removes the most boring boilerplate you have to write.
 
-#### [Stencil template](Examples/AutoMockable.stencil)
+#### [Stencil template](Templates/AutoMockable.stencil)
 
 #### Example output:
 
@@ -203,7 +203,7 @@ What are Lenses? Great explanation by @mbrandonw
 
 This script assumes you follow swift naming convention, e.g. structs start with an upper letter.
 
-#### [Stencil template](Examples/AutoLenses.stencil)
+#### [Stencil template](Templates/AutoLenses.stencil)
 
 #### Example output:
 
