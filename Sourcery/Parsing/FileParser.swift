@@ -88,7 +88,7 @@ struct FileParser {
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
         var types = [Type]()
-        walkTypes(source: source, processed: &processed) { kind, name, access, inheritedTypes, source in
+        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source in
             let type: Type
 
             switch kind {
@@ -136,46 +136,47 @@ struct FileParser {
         return finishedParsing(types: types)
     }
 
-    /// Walks all types in the source
-    private func walkTypes(source: [String: SourceKitRepresentable], containingType: Any? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
+    /// Walks all declarations in the source
+    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
         if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
             for substructure in substructures {
                 if let source = substructure as? [String: SourceKitRepresentable] {
                     processed.append(source)
-                    walkType(source: source, containingType: containingType, foundEntry: foundEntry)
+                    walkDeclaration(source: source, containingIn: containingIn, foundEntry: foundEntry)
                 }
             }
         }
     }
 
-    /// Walks single type in the source, recursively processing containing types
-    private func walkType(source: [String: SourceKitRepresentable], containingType: Any? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
-        var type = containingType
+    /// Walks single declaration in the source, recursively processing containing types
+    private func walkDeclaration(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
+        var declaration = containingIn
 
         let inheritedTypes = extractInheritedTypes(source: source)
 
         if let requirements = parseTypeRequirements(source) {
-            type = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source)
-            if let type = type, let containingType = containingType {
-                processContainedType(type, within: containingType)
+            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source)
+            if let foundDeclaration = foundDeclaration, let containingIn = containingIn {
+                processContainedDeclaration(foundDeclaration, within: containingIn)
             }
+            declaration = foundDeclaration.map({ ($0, source) })
         }
 
         var processedInnerTypes = [[String: SourceKitRepresentable]]()
-        walkTypes(source: source, containingType: type, processed: &processedInnerTypes, foundEntry: foundEntry)
+        walkDeclarations(source: source, containingIn: declaration, processed: &processedInnerTypes, foundEntry: foundEntry)
 
-        if let type = type as? Type {
-            parseTypealiases(from: source, containingType: type, processed: processedInnerTypes)
-                .forEach { type.typealiases[$0.aliasName] = $0 }
+        if let foundType = declaration?.0 as? Type {
+            parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
+                .forEach { foundType.typealiases[$0.aliasName] = $0 }
         }
     }
 
-    private func processContainedType(_ type: Any, within containing: Any) {
-        switch containing {
+    private func processContainedDeclaration(_ declaration: Any, within containing: (declaration: Any, source: [String: SourceKitRepresentable])) {
+        switch containing.declaration {
         case let containingType as Type:
-            process(declaration: type, containedIn: containingType)
+            process(declaration: declaration, containedIn: containingType)
         case let containingMethod as Method:
-            process(declaration: type, containedIn: containingMethod)
+            process(declaration: declaration, containedIn: (containingMethod, containing.source))
         default: break
         }
     }
@@ -199,10 +200,16 @@ struct FileParser {
         }
     }
 
-    private func process(declaration: Any, containedIn method: Method) {
+    private func process(declaration: Any, containedIn: (method: Method, source: [String: SourceKitRepresentable])) {
         switch declaration {
         case let (parameter as MethodParameter):
-            method.parameters += [parameter]
+            //add only parameters that are in range of method name 
+            guard let nameRange = Substring.name.range(for: containedIn.source),
+                let paramKeyRange = Substring.key.range(for: parameter.__underlyingSource),
+                nameRange.offset + nameRange.length >= paramKeyRange.offset + paramKeyRange.length
+                else { return }
+
+            containedIn.method.parameters += [parameter]
         default:
             break
         }

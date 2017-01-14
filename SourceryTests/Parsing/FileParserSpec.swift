@@ -113,6 +113,17 @@ class FileParserSpec: QuickSpec {
                             ]))
                         }
 
+                        it("extracts parameters having inner closure") {
+                            expect(parse("class Foo { func foo(a: Int) { let handler = { (b:Int) in } } }")).to(equal([
+                                Class(name: "Foo", methods: [
+                                    Method(selectorName: "foo(a:)", parameters: [
+                                        MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("Int"))
+                                        ], returnTypeName: TypeName("Void"))
+                                    ])
+                                ]))
+
+                        }
+
                     }
 
                     context("given method with return type") {
