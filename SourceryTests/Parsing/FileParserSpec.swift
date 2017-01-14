@@ -21,14 +21,14 @@ class FileParserSpec: QuickSpec {
                 context("given it has methods") {
                     it("ignores private methods") {
                         expect(parse("class Foo { private func foo() }"))
-                            .to(equal([Type(name: "Foo", methods: [])]))
+                            .to(equal([Class(name: "Foo", methods: [])]))
                         expect(parse("class Foo { fileprivate func foo() }"))
-                            .to(equal([Type(name: "Foo", methods: [])]))
+                            .to(equal([Class(name: "Foo", methods: [])]))
                     }
 
                     it("extracts method properly") {
                         expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {} }")).to(equal([
-                            Type(name: "Foo", methods: [
+                            Class(name: "Foo", methods: [
                                 Method(selectorName: "bar(some:)", parameters: [
                                     MethodParameter(name: "some", typeName: TypeName("Int"))
                                     ], returnTypeName: TypeName("Bar"), throws: true),
@@ -40,7 +40,7 @@ class FileParserSpec: QuickSpec {
 
                     it("extracts class method properly") {
                         expect(parse("class Foo { class func foo() }")).to(equal([
-                            Type(name: "Foo", methods: [
+                            Class(name: "Foo", methods: [
                                 Method(selectorName: "foo()", parameters: [], isClass: true)
                                 ])
                             ]))
@@ -48,7 +48,7 @@ class FileParserSpec: QuickSpec {
 
                     it("extracts static method properly") {
                         expect(parse("class Foo { static func foo() }")).to(equal([
-                            Type(name: "Foo", methods: [
+                            Class(name: "Foo", methods: [
                                 Method(selectorName: "foo()", isStatic: true)
                                 ])
                             ]))
@@ -57,7 +57,7 @@ class FileParserSpec: QuickSpec {
                     context("given method with parameters") {
                         it("extracts method with single parameter properly") {
                             expect(parse("class Foo { func foo(bar: Int) }")).to(equal([
-                                Type(name: "Foo", methods: [
+                                Class(name: "Foo", methods: [
                                 Method(selectorName: "foo(bar:)", parameters: [
                                     MethodParameter(name: "bar", typeName: TypeName("Int"))])
                                     ])
@@ -66,7 +66,7 @@ class FileParserSpec: QuickSpec {
 
                         it("extracts method with two parameters properly") {
                             expect(parse("class Foo { func foo( bar:   Int,   foo : String  ) }")).to(equal([
-                                Type(name: "Foo", methods: [
+                                Class(name: "Foo", methods: [
                                     Method(selectorName: "foo(bar:foo:)", parameters: [
                                         MethodParameter(name: "bar", typeName: TypeName("Int")),
                                         MethodParameter(name: "foo", typeName: TypeName("String"))
@@ -78,7 +78,7 @@ class FileParserSpec: QuickSpec {
                         it("extracts method with complex parameters properly") {
                             expect(parse("class Foo { func foo( bar: [String: String],   foo : ((String, String) -> Void), other: Optional<String> }"))
                                 .to(equal([
-                                            Type(name: "Foo", methods: [
+                                            Class(name: "Foo", methods: [
                                                     Method(selectorName: "foo(bar:foo:other:)", parameters: [
                                                             MethodParameter(name: "bar", typeName: TypeName("[String: String]")),
                                                             MethodParameter(name: "foo", typeName: TypeName("((String, String) -> Void)")),
@@ -90,7 +90,7 @@ class FileParserSpec: QuickSpec {
 
                         it("extracts method with parameter with two names") {
                             expect(parse("class Foo { func foo(bar Bar: Int, _ foo: Int) }")).to(equal([
-                                Type(name: "Foo", methods: [
+                                Class(name: "Foo", methods: [
                                 Method(selectorName: "foo(bar:_:)", parameters: [
                                     MethodParameter(argumentLabel: "bar", name: "Bar", typeName: TypeName("Int")),
                                     MethodParameter(argumentLabel: "_", name: "foo", typeName: TypeName("Int"))
@@ -106,13 +106,13 @@ class FileParserSpec: QuickSpec {
                             let types = parse("class Foo { func foo() -> Bar { } }; class Bar {}")
                             let method = types.last?.methods.first
 
-                            expect(method?.returnType).to(equal(Type(name: "Bar")))
+                            expect(method?.returnType).to(equal(Class(name: "Bar")))
                         }
                     }
 
                     context("given initializer") {
                         it("extracts initializer properly") {
-                            let fooType = Type(name: "Foo")
+                            let fooType = Class(name: "Foo")
                             let expectedInitializer = Method(selectorName: "init()", returnTypeName: TypeName(""))
                             expectedInitializer.returnType = fooType
                             fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
@@ -125,7 +125,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts failable initializer properly") {
-                            let fooType = Type(name: "Foo")
+                            let fooType = Class(name: "Foo")
                             let expectedInitializer = Method(selectorName: "init()", returnTypeName: TypeName(""), isFailableInitializer: true)
                             expectedInitializer.returnType = fooType
                             fooType.methods = [Method(selectorName: "foo()"), expectedInitializer]
@@ -140,7 +140,7 @@ class FileParserSpec: QuickSpec {
 
                     it("extracts sourcery annotations") {
                         expect(parse("class Foo {\n // sourcery: annotation\nfunc foo() }")).to(equal([
-                            Type(name: "Foo", methods: [
+                            Class(name: "Foo", methods: [
                                 Method(selectorName: "foo()", annotations: ["annotation": NSNumber(value: true)])
                                 ])
                             ]))
@@ -156,7 +156,7 @@ class FileParserSpec: QuickSpec {
                         ]
                         let expectedVariables = (1...3)
                                 .map { Variable(name: "property\($0)", typeName: TypeName("Int"), annotations: annotations[$0 - 1]) }
-                        let expectedType = Type(name: "Foo", variables: expectedVariables, annotations: ["skipEquality": NSNumber(value: true)])
+                        let expectedType = Class(name: "Foo", variables: expectedVariables, annotations: ["skipEquality": NSNumber(value: true)])
 
                         let result = parse("// sourcery:begin: skipEquality\n\n\n\n" +
                                 "class Foo {\n" +
@@ -221,19 +221,19 @@ class FileParserSpec: QuickSpec {
                     it("extracts variables properly") {
                         expect(parse("class Foo { }; extension Foo { var x: Int }"))
                                 .to(equal([
-                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)])
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable.init(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)])
                                 ]))
                     }
 
                     it("extracts inherited types properly") {
                         expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
                                 .to(equal([
-                                        Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
                                 ]))
                     }
 
                     it("extracts annotations correctly") {
-                        let expectedType = Type(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
                         expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
 
@@ -454,7 +454,7 @@ class FileParserSpec: QuickSpec {
                     context("given associated value with its type existing") {
 
                         it("extracts associated value's type") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar"), type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar) }")
@@ -465,7 +465,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts associated value's optional type") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar?"), type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar?"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar?) }")
@@ -476,7 +476,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts associated value's typealias") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar2"), type: Type(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar2"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar2) }")

@@ -5,7 +5,7 @@ import Nimble
 class StructSpec: QuickSpec {
     override func spec() {
         describe ("Struct") {
-            var sut: Type?
+            var sut: Struct?
 
             beforeEach {
                 sut = Struct(name: "Foo", variables: [], inheritedTypes: [])

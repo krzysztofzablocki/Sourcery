@@ -42,18 +42,6 @@ class GenerationContext: NSObject, NSCoding, AutoDiffable {
         }
         // } GenerationContext.NSCoding
 
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenerationContext else {
-            return false
-        }
-
-        if self.types != rhs.types { return false }
-        if self.typeByName != rhs.typeByName { return false }
-        if self.arguments != rhs.arguments { return false }
-
-        return true
-    }
-
     /// Lists all known classes in the project
     /// sourcery: skipEquality, skipCoding
     lazy var classes: [Class] = {

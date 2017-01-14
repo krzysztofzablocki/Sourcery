@@ -17,6 +17,7 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
 
     internal var isExtension: Bool
 
+    // sourcery: forceEquality
     var kind: String { return isExtension ? "extension" : "unknown" }
 
     /// What is the type access level?
@@ -57,7 +58,7 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
         inherits.values.forEach { all.addObjects(from: extraction($0)) }
         implements.values.forEach { all.addObjects(from: extraction($0)) }
 
-        return Array(all.array.flatMap { $0 as? T })
+        return all.array.flatMap { $0 as? T }
     }
 
     /// All methods defined by this type, excluding those from parent or protocols
@@ -144,7 +145,7 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
 
     /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
-    /// sourcery: skipDescription, skipCoding
+    /// sourcery: skipDescription, skipEquality, skipCoding
     internal var __parserData: Any?
 
     init(name: String = "",
@@ -191,17 +192,11 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
     func extend(_ type: Type) {
         self.variables += type.variables
         self.methods += type.methods
+        self.inheritedTypes += type.inheritedTypes
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
         type.inherits.forEach { self.inherits[$0.key] = $0.value }
         type.implements.forEach { self.implements[$0.key] = $0.value }
-
-        var inheritedTypes = self.inheritedTypes
-        for inherited in type.inheritedTypes {
-            guard !inheritedTypes.contains(inherited) else { continue }
-            inheritedTypes.append(inherited)
-        }
-        self.inheritedTypes = inheritedTypes
     }
 
     // Type.NSCoding {
@@ -251,6 +246,8 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
 }
 
 extension Type {
+
+    // sourcery: skipDescription
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol
         return !isNotClass && !isExtension

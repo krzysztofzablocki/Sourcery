@@ -1,6 +1,6 @@
 import Foundation
 
-final class Typealias: NSObject, AutoDiffable, NSCoding {
+final class Typealias: NSObject, Typed, AutoDiffable, NSCoding {
     /// New typealias name
     let aliasName: String
 

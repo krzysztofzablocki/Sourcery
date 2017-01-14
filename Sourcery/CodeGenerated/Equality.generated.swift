@@ -1,5 +1,16 @@
-// Generated using Sourcery 0.5.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
+extension AssociatedValue {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedValue else { return false }
+        if self.localName != rhs.localName { return false }
+        if self.externalName != rhs.externalName { return false }
+        if self.typeName != rhs.typeName { return false }
+
+        return true
+    }
+}
 
 extension Attribute {
     override func isEqual(_ object: Any?) -> Bool {
@@ -9,6 +20,14 @@ extension Attribute {
         if self._description != rhs._description { return false }
 
         return true
+    }
+}
+
+extension Class {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Class else { return false }
+
+        return super.isEqual(rhs)
     }
 }
 
@@ -34,12 +53,12 @@ extension EnumCase {
     }
 }
 
-extension AssociatedValue {
+extension GenerationContext {
     override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? AssociatedValue else { return false }
-        if self.localName != rhs.localName { return false }
-        if self.externalName != rhs.externalName { return false }
-        if self.typeName != rhs.typeName { return false }
+        guard let rhs = object as? GenerationContext else { return false }
+        if self.types != rhs.types { return false }
+        if self.typeByName != rhs.typeByName { return false }
+        if self.arguments != rhs.arguments { return false }
 
         return true
     }
@@ -69,7 +88,32 @@ extension MethodParameter {
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
-        if self.type != rhs.type { return false }
+
+        return true
+    }
+}
+
+extension Protocol {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Protocol else { return false }
+
+        return super.isEqual(rhs)
+    }
+}
+
+extension Struct {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Struct else { return false }
+
+        return super.isEqual(rhs)
+    }
+}
+
+extension TupleElement {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleElement else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
 
         return true
     }
@@ -80,16 +124,6 @@ extension TupleType {
         guard let rhs = object as? TupleType else { return false }
         if self.name != rhs.name { return false }
         if self.elements != rhs.elements { return false }
-
-        return true
-    }
-}
-
-extension TupleElement {
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TupleElement else { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
 
         return true
     }
@@ -110,6 +144,8 @@ extension Type {
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
         if self.attributes != rhs.attributes { return false }
+
+        if self.kind != rhs.kind { return false }
 
         return true
     }
