@@ -27,15 +27,29 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts method properly") {
-                        expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {} }")).to(equal([
+                        expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {}; func fooVoid() {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(selectorName: "bar(some:)", parameters: [
                                     MethodParameter(name: "some", typeName: TypeName("Int"))
                                     ], returnTypeName: TypeName("Bar"), throws: true),
                                 Method(selectorName: "foo()", returnTypeName: TypeName("Foo")),
-                                Method(selectorName: "fooBar()", returnTypeName: TypeName("Void"), throws: true)
+                                Method(selectorName: "fooBar()", returnTypeName: TypeName("Void"), throws: true),
+                                Method(selectorName: "fooVoid()", returnTypeName: TypeName("Void"))
                                 ])
                         ]))
+                    }
+
+                    it("extracts protocol method properly") {
+                        expect(parse("class Foo { func bar(some: Int) throws ->Bar; func foo() ->    Foo; func fooBar() rethrows; func fooVoid() }")).to(equal([
+                            Class(name: "Foo", methods: [
+                                Method(selectorName: "bar(some:)", parameters: [
+                                    MethodParameter(name: "some", typeName: TypeName("Int"))
+                                    ], returnTypeName: TypeName("Bar"), throws: true),
+                                Method(selectorName: "foo()", returnTypeName: TypeName("Foo")),
+                                Method(selectorName: "fooBar()", returnTypeName: TypeName("Void"), throws: true),
+                                Method(selectorName: "fooVoid()", returnTypeName: TypeName("Void"))
+                                ])
+                            ]))
                     }
 
                     it("extracts class method properly") {

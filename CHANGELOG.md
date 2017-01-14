@@ -7,6 +7,7 @@
 ### Bug Fixes
 
 - fixed preserving order of inherited types
+- improved support for throwing methods in protocols
 
 ### Internal changes
 

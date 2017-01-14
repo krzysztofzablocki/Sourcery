@@ -422,30 +422,36 @@ extension FileParser {
             isFailableInitializer = false
         }
 
-        let returnTypeName: String
+        var returnTypeName: String = "Void"
         var `throws` = false
-        if var nameSuffix = extract(.nameSuffix, from: source)?
-            .trimmingCharacters(in: .whitespacesAndNewlines),
-            nameSuffix.hasPrefix("->") || nameSuffix.hasPrefix("throws") || nameSuffix.hasPrefix("rethrows") {
 
-            if nameSuffix.hasPrefix("throws") {
-                `throws` = true
-                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 6))
+        if name.hasPrefix("init(") {
+            returnTypeName = ""
+        } else if //has name suffix when has return type or body
+            var nameSuffix = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) {
+
+            `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
+            nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if nameSuffix.trimPrefix("->") {
+                returnTypeName = nameSuffix
                     .trimmingCharacters(in: .whitespacesAndNewlines)
-            } else if nameSuffix.hasPrefix("rethrows") {
-                `throws` = true
-                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 8))
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .components(separatedBy: .whitespacesAndNewlines)
+                    .filter({ $0 != "" }).first ?? ""
             }
-            if nameSuffix.hasPrefix("->") {
-                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 2))
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                returnTypeName = nameSuffix.components(separatedBy: .whitespacesAndNewlines).filter({ $0 != "" }).first ?? ""
-            } else {
-                returnTypeName = "Void"
+        } else if //has no name suffix when no return type and no body
+            let key = extract(.key, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines),
+            let line = extractLines(.key, from: source, contents: contents)?
+                .trimmingCharacters(in: CharacterSet(charactersIn: "}").union(.whitespacesAndNewlines)) {
+
+            if let range = line.range(of: key) {
+                let lineSuffix = String(line.characters.suffix(from: range.lowerBound))
+                let components = lineSuffix.semicolonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+                if var nameSuffix = components.first {
+                    nameSuffix = nameSuffix.trimmingPrefix(key).trimmingCharacters(in: .whitespaces)
+                    `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
+                }
             }
-        } else {
-            returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
 
         let method = Method(selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
@@ -691,6 +697,10 @@ extension FileParser {
 
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable], contents: String) -> String? {
         return substringIdentifier.extract(from: source, contents: contents)
+    }
+
+    fileprivate func extractLines(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable], contents: String) -> String? {
+        return substringIdentifier.extractLines(from: source, contents: contents)
     }
 
     fileprivate func extract(_ token: SyntaxToken) -> String? {
