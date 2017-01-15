@@ -38,8 +38,8 @@ class FileParserMethodsSpec: QuickSpec {
                         ]))
                 }
 
-                it("extracts protocol method properly") {
-                    expect(parse("class Foo { func bar(some: Int) throws ->Bar; func foo() ->    Foo; func fooBar() rethrows; func fooVoid() }")).to(equal([
+                it("extracts tuple return type") {
+                    expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {}; func fooVoid() {} }")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(selectorName: "bar(some:)", parameters: [
                                 MethodParameter(name: "some", typeName: TypeName("Int"))
@@ -47,6 +47,20 @@ class FileParserMethodsSpec: QuickSpec {
                             Method(selectorName: "foo()", returnTypeName: TypeName("Foo")),
                             Method(selectorName: "fooBar()", returnTypeName: TypeName("Void"), throws: true),
                             Method(selectorName: "fooVoid()", returnTypeName: TypeName("Void"))
+                            ])
+                        ]))
+                }
+
+                it("extracts protocol method properly") {
+                    let expectedTupleReturnType = TypeName("(Int, Int)")
+                    expectedTupleReturnType.tuple = TupleType(name: "(Int, Int)", elements: [
+                        TupleElement(name: "0", typeName: TypeName("Int")),
+                        TupleElement(name: "1", typeName: TypeName("Int"))
+                        ])
+
+                    expect(parse("class Foo { func foo() -> (Int, Int) }")).to(equal([
+                        Class(name: "Foo", methods: [
+                            Method(selectorName: "foo()", returnTypeName: expectedTupleReturnType)
                             ])
                         ]))
                 }
