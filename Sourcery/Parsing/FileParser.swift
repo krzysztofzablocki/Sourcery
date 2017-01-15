@@ -233,7 +233,11 @@ struct FileParser {
 
                 for (index, parameter) in method.parameters.enumerated() {
                     if index < argumentLabels.count {
-                        parameter.argumentLabel = argumentLabels[index]
+                        if argumentLabels[index] == "_" {
+                            parameter.argumentLabel = nil
+                        } else {
+                            parameter.argumentLabel = argumentLabels[index]
+                        }
                     }
                 }
             }

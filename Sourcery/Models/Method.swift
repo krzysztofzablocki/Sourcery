@@ -5,7 +5,7 @@ typealias SourceryMethod = Method
 
 final class MethodParameter: NSObject, AutoDiffable, Typed, NSCoding {
     /// Parameter external name
-    var argumentLabel: String
+    var argumentLabel: String?
 
     /// Parameter internal name
     let name: String
@@ -23,9 +23,15 @@ final class MethodParameter: NSObject, AutoDiffable, Typed, NSCoding {
     // sourcery: skipEquality, skipDescription, skipCoding
     internal var __parserData: Any?
 
-    init(argumentLabel: String? = nil, name: String = "", typeName: TypeName) {
+    init(argumentLabel: String?, name: String = "", typeName: TypeName) {
         self.typeName = typeName
-        self.argumentLabel = argumentLabel ?? name
+        self.argumentLabel = argumentLabel
+        self.name = name
+    }
+
+    init(name: String = "", typeName: TypeName) {
+        self.typeName = typeName
+        self.argumentLabel = name
         self.name = name
     }
 
