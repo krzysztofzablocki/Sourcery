@@ -51,20 +51,6 @@ class FileParserMethodsSpec: QuickSpec {
                         ]))
                 }
 
-                it("extracts protocol method properly") {
-                    let expectedTupleReturnType = TypeName("(Int, Int)")
-                    expectedTupleReturnType.tuple = TupleType(name: "(Int, Int)", elements: [
-                        TupleElement(name: "0", typeName: TypeName("Int")),
-                        TupleElement(name: "1", typeName: TypeName("Int"))
-                        ])
-
-                    expect(parse("class Foo { func foo() -> (Int, Int) }")).to(equal([
-                        Class(name: "Foo", methods: [
-                            Method(selectorName: "foo()", returnTypeName: expectedTupleReturnType)
-                            ])
-                        ]))
-                }
-
                 it("extracts class method properly") {
                     expect(parse("class Foo { class func foo() }")).to(equal([
                         Class(name: "Foo", methods: [
@@ -146,6 +132,26 @@ class FileParserMethodsSpec: QuickSpec {
                         let method = types.last?.methods.first
 
                         expect(method?.returnType).to(equal(Class(name: "Bar")))
+                    }
+
+                    it("extracts tuple return type correcty") {
+                        let types = parse("class Foo { func foo() -> (Bar, Int) { } }; class Bar {}")
+                        let method = types.last?.methods.first
+
+                        let expectedTypeName = TypeName("(Bar, Int)")
+                        expectedTypeName.tuple = TupleType(name: "(Bar, Int)", elements: [
+                            TupleElement(name: "0", typeName: TypeName("Bar"), type: Class(name: "Bar")),
+                            TupleElement(name: "1", typeName: TypeName("Int"))
+                            ])
+
+                        expect(method?.returnTypeName).to(equal(expectedTypeName))
+                    }
+
+                    it("extracts closure return type correcty") {
+                        let types = parse("class Foo { func foo() -> (Int, Int) -> () { } }")
+                        let method = types.last?.methods.first
+
+                        expect(method?.returnTypeName).to(equal(TypeName("(Int, Int) -> ()")))
                     }
                 }
 
