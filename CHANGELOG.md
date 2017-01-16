@@ -1,6 +1,19 @@
 # Sourcery CHANGELOG
 
 ---
+
+## Master
+
+### Bug Fixes
+
+- fixed preserving order of inherited types
+- improved support for throwing methods in protocols
+- fixed extracting parameters of methods with closures in their bodies
+
+### Internal changes
+
+- adjusted internal templates and updated generated code 
+
 ## 0.5.3
 
 ### New Features

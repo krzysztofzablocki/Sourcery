@@ -14,6 +14,7 @@ final class MethodParameter: NSObject, AutoDiffable, Typed, NSCoding {
     let typeName: TypeName
 
     /// Actual parameter type, if known
+    // sourcery: skipEquality, skipDescription
     var type: Type?
 
     var typeAttributes: [String: Attribute] { return typeName.attributes }

@@ -1,5 +1,17 @@
 extension String {
 
+    @discardableResult
+    mutating func trimPrefix(_ prefix: String) -> Bool {
+        guard hasPrefix(prefix) else { return false }
+        self = String(characters.suffix(characters.count - prefix.characters.count))
+        return true
+    }
+
+    func trimmingPrefix(_ prefix: String) -> String {
+        guard hasPrefix(prefix) else { return self }
+        return String(characters.suffix(characters.count - prefix.characters.count))
+    }
+
     func dropFirst(_ n: Int = 1) -> String {
         return String(characters.dropFirst(n))
     }
@@ -47,6 +59,11 @@ extension String {
     /// Returns components separated with colon respecting nested types
     func colonSeparated() -> [String] {
         return components(separatedBy: ":", excludingDelimiterBetween: ("<[(", ")]>"))
+    }
+
+    /// Returns components separated with semicolon respecting nested contexts
+    func semicolonSeparated() -> [String] {
+        return components(separatedBy: ";", excludingDelimiterBetween: ("{", "}"))
     }
 
     func components(separatedBy delimiter: Character, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {

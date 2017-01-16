@@ -88,7 +88,7 @@ struct FileParser {
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
         var types = [Type]()
-        walkTypes(source: source, processed: &processed) { kind, name, access, inheritedTypes, source in
+        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source in
             let type: Type
 
             switch kind {
@@ -136,46 +136,47 @@ struct FileParser {
         return finishedParsing(types: types)
     }
 
-    /// Walks all types in the source
-    private func walkTypes(source: [String: SourceKitRepresentable], containingType: Any? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
+    /// Walks all declarations in the source
+    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
         if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
             for substructure in substructures {
                 if let source = substructure as? [String: SourceKitRepresentable] {
                     processed.append(source)
-                    walkType(source: source, containingType: containingType, foundEntry: foundEntry)
+                    walkDeclaration(source: source, containingIn: containingIn, foundEntry: foundEntry)
                 }
             }
         }
     }
 
-    /// Walks single type in the source, recursively processing containing types
-    private func walkType(source: [String: SourceKitRepresentable], containingType: Any? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
-        var type = containingType
+    /// Walks single declaration in the source, recursively processing containing types
+    private func walkDeclaration(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
+        var declaration = containingIn
 
         let inheritedTypes = extractInheritedTypes(source: source)
 
         if let requirements = parseTypeRequirements(source) {
-            type = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source)
-            if let type = type, let containingType = containingType {
-                processContainedType(type, within: containingType)
+            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source)
+            if let foundDeclaration = foundDeclaration, let containingIn = containingIn {
+                processContainedDeclaration(foundDeclaration, within: containingIn)
             }
+            declaration = foundDeclaration.map({ ($0, source) })
         }
 
         var processedInnerTypes = [[String: SourceKitRepresentable]]()
-        walkTypes(source: source, containingType: type, processed: &processedInnerTypes, foundEntry: foundEntry)
+        walkDeclarations(source: source, containingIn: declaration, processed: &processedInnerTypes, foundEntry: foundEntry)
 
-        if let type = type as? Type {
-            parseTypealiases(from: source, containingType: type, processed: processedInnerTypes)
-                .forEach { type.typealiases[$0.aliasName] = $0 }
+        if let foundType = declaration?.0 as? Type {
+            parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
+                .forEach { foundType.typealiases[$0.aliasName] = $0 }
         }
     }
 
-    private func processContainedType(_ type: Any, within containing: Any) {
-        switch containing {
+    private func processContainedDeclaration(_ declaration: Any, within containing: (declaration: Any, source: [String: SourceKitRepresentable])) {
+        switch containing.declaration {
         case let containingType as Type:
-            process(declaration: type, containedIn: containingType)
+            process(declaration: declaration, containedIn: containingType)
         case let containingMethod as Method:
-            process(declaration: type, containedIn: containingMethod)
+            process(declaration: declaration, containedIn: (containingMethod, containing.source))
         default: break
         }
     }
@@ -199,10 +200,16 @@ struct FileParser {
         }
     }
 
-    private func process(declaration: Any, containedIn method: Method) {
+    private func process(declaration: Any, containedIn: (method: Method, source: [String: SourceKitRepresentable])) {
         switch declaration {
         case let (parameter as MethodParameter):
-            method.parameters += [parameter]
+            //add only parameters that are in range of method name 
+            guard let nameRange = Substring.name.range(for: containedIn.source),
+                let paramKeyRange = Substring.key.range(for: parameter.__underlyingSource),
+                nameRange.offset + nameRange.length >= paramKeyRange.offset + paramKeyRange.length
+                else { return }
+
+            containedIn.method.parameters += [parameter]
         default:
             break
         }
@@ -422,30 +429,36 @@ extension FileParser {
             isFailableInitializer = false
         }
 
-        let returnTypeName: String
+        var returnTypeName: String = "Void"
         var `throws` = false
-        if var nameSuffix = extract(.nameSuffix, from: source)?
-            .trimmingCharacters(in: .whitespacesAndNewlines),
-            nameSuffix.hasPrefix("->") || nameSuffix.hasPrefix("throws") || nameSuffix.hasPrefix("rethrows") {
 
-            if nameSuffix.hasPrefix("throws") {
-                `throws` = true
-                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 6))
+        if name.hasPrefix("init(") {
+            returnTypeName = ""
+        } else if //has name suffix when has return type or body
+            var nameSuffix = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) {
+
+            `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
+            nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if nameSuffix.trimPrefix("->") {
+                returnTypeName = nameSuffix
                     .trimmingCharacters(in: .whitespacesAndNewlines)
-            } else if nameSuffix.hasPrefix("rethrows") {
-                `throws` = true
-                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 8))
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .components(separatedBy: .whitespacesAndNewlines)
+                    .filter({ $0 != "" }).first ?? ""
             }
-            if nameSuffix.hasPrefix("->") {
-                nameSuffix = String(nameSuffix.characters.suffix(nameSuffix.characters.count - 2))
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                returnTypeName = nameSuffix.components(separatedBy: .whitespacesAndNewlines).filter({ $0 != "" }).first ?? ""
-            } else {
-                returnTypeName = "Void"
+        } else if //has no name suffix when no return type and no body
+            let key = extract(.key, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines),
+            let line = extractLines(.key, from: source, contents: contents)?
+                .trimmingCharacters(in: CharacterSet(charactersIn: "}").union(.whitespacesAndNewlines)) {
+
+            if let range = line.range(of: key) {
+                let lineSuffix = String(line.characters.suffix(from: range.lowerBound))
+                let components = lineSuffix.semicolonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+                if var nameSuffix = components.first {
+                    nameSuffix = nameSuffix.trimmingPrefix(key).trimmingCharacters(in: .whitespaces)
+                    `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
+                }
             }
-        } else {
-            returnTypeName = name.hasPrefix("init(") ? "" : "Void"
         }
 
         let method = Method(selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
@@ -691,6 +704,10 @@ extension FileParser {
 
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable], contents: String) -> String? {
         return substringIdentifier.extract(from: source, contents: contents)
+    }
+
+    fileprivate func extractLines(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable], contents: String) -> String? {
+        return substringIdentifier.extractLines(from: source, contents: contents)
     }
 
     fileprivate func extract(_ token: SyntaxToken) -> String? {

@@ -46,4 +46,11 @@ internal enum Substring {
         let substring = range(for: source).flatMap { contents.substringWithByteRange(start: Int($0.offset), length: Int($0.length)) }
         return substring?.isEmpty == true ? nil : substring
     }
+
+    func extractLines(from source: [String: SourceKitRepresentable], contents: String) -> String? {
+        guard let range = range(for: source) else { return nil }
+        let substring = contents.bridge().substringLinesWithByteRange(start: Int(range.offset), length: Int(range.length))
+        return substring?.isEmpty == true ? nil : substring
+    }
+
 }

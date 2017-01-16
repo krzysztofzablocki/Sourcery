@@ -165,7 +165,7 @@ class ParserComposerSpec: QuickSpec {
 
                     it("replaces variable alias with actual type via 3 typealiases") {
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("FinalAlias"))
-                        expectedVariable.type = Type(name: "Foo")
+                        expectedVariable.type = Class(name: "Foo")
 
                         let type = parse(
                                 "typealias FooAlias = Foo; typealias BarAlias = FooAlias; typealias FinalAlias = BarAlias; class Foo {}; class Bar { var foo: FinalAlias }").first
@@ -177,7 +177,7 @@ class ParserComposerSpec: QuickSpec {
 
                     it("replaces variable alias type with actual type") {
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias"))
-                        expectedVariable.type = Type(name: "Foo")
+                        expectedVariable.type = Class(name: "Foo")
 
                         let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias }").first
                         let variable = type?.variables.first
@@ -221,7 +221,7 @@ class ParserComposerSpec: QuickSpec {
 
                     it("replaces variable optional alias type with actual type") {
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias?"))
-                        expectedVariable.type = Type(name: "Foo")
+                        expectedVariable.type = Class(name: "Foo")
 
                         let type = parse(
                                 "typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias? }").first
@@ -235,25 +235,25 @@ class ParserComposerSpec: QuickSpec {
                         expect(parse(
                                 "typealias GlobalAlias = Foo; class Foo: TestProtocol { }; extension GlobalAlias: AnotherProtocol {}"))
                                 .to(equal([
-                                                  Type(name: "Foo",
+                                                  Class(name: "Foo",
                                                        accessLevel: .internal,
                                                        isExtension: false,
                                                        variables: [],
-                                                       inheritedTypes: ["AnotherProtocol", "TestProtocol"])
+                                                       inheritedTypes: ["TestProtocol", "AnotherProtocol"])
                                           ]))
                     }
 
                     it("updates inheritedTypes with real type name") {
                         expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
                                 .to(contain([
-                                                    Type(name: "Bar", inheritedTypes: ["Foo"])
+                                                    Class(name: "Bar", inheritedTypes: ["Foo"])
                                             ]))
                     }
 
                     context("given local typealias") {
                         it("replaces variable alias type with actual type") {
                             let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Type(name: "Foo")
+                            expectedVariable.type = Class(name: "Foo")
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
                             let variable = type?.variables.first
@@ -264,7 +264,7 @@ class ParserComposerSpec: QuickSpec {
 
                         it("replaces variable alias type with actual contained type") {
                             let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Type(name: "Foo", parent: Type(name: "Bar"))
+                            expectedVariable.type = Class(name: "Foo", parent: Type(name: "Bar"))
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
                             let variable = type?.variables.first
@@ -275,7 +275,7 @@ class ParserComposerSpec: QuickSpec {
 
                         it("replaces variable alias type with actual foreign contained type") {
                             let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Type(name: "Foo", parent: Type(name: "FooBar"))
+                            expectedVariable.type = Class(name: "Foo", parent: Type(name: "FooBar"))
 
                             let type = parse(
                                     "class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first

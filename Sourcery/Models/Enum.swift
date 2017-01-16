@@ -91,7 +91,7 @@ final class EnumCase: NSObject, AutoDiffable, Annotated, NSCoding {
 }
 
 final class Enum: Type {
-    /// sourcery: skipDescription, skipCoding
+    /// sourcery: skipDescription
     override var kind: String { return "enum" }
 
     /// Enum cases
@@ -112,7 +112,7 @@ final class Enum: Type {
         }
     }
 
-    // sourcery: skipDescription
+    // sourcery: skipDescription, skipEquality
     private(set) var hasRawType: Bool
 
     // sourcery: skipDescription, skipEquality
