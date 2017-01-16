@@ -33,7 +33,7 @@ extension {{ type.name }}: Hashable {
                     {% if case.associatedValues.count == 1 %}
                         return data.hashValue
                     {% else %}
-                        return combineHashes({% for associated in case.associatedValues %}data.{{ associated.externalName }}.hashValue{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}{% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %})
+                        return combineHashes({% for associated in case.associatedValues %}data.{{ associated.externalName }}.hashValue{% if not forloop.last %}, {% endif %}{% endfor %}{% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %})
                     {% endif %}
                 {% endif %}
 
