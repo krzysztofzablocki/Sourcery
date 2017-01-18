@@ -233,7 +233,11 @@ struct FileParser {
 
                 for (index, parameter) in method.parameters.enumerated() {
                     if index < argumentLabels.count {
-                        parameter.argumentLabel = argumentLabels[index]
+                        if argumentLabels[index] == "_" {
+                            parameter.argumentLabel = nil
+                        } else {
+                            parameter.argumentLabel = argumentLabels[index]
+                        }
                     }
                 }
             }
@@ -435,16 +439,13 @@ extension FileParser {
         if name.hasPrefix("init(") {
             returnTypeName = ""
         } else if //has name suffix when has return type or body
-            var nameSuffix = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) {
+            var nameSuffix = extract(.nameSuffixUpToBody, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) {
 
             `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
             nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
 
             if nameSuffix.trimPrefix("->") {
-                returnTypeName = nameSuffix
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                    .components(separatedBy: .whitespacesAndNewlines)
-                    .filter({ $0 != "" }).first ?? ""
+                returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
             }
         } else if //has no name suffix when no return type and no body
             let key = extract(.key, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines),

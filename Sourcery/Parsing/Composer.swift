@@ -58,10 +58,7 @@ struct Composer {
         }
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
-            typeName.actualTypeName = name.flatMap({ TypeName($0) })
-            typeName.tuple = self.parseTupleType(name ?? typeName.name)
-            return name.flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
+            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
         }
 
         for (_, type) in unique {
@@ -91,14 +88,23 @@ struct Composer {
         return filteredTypes
     }
 
+    private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], typealiases: [String: Typealias]) -> Type? {
+        let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
+        typeName.actualTypeName = name.flatMap({ TypeName($0) })
+        typeName.tuple = self.parseTupleType(name ?? typeName.name)
+
+        // recursively resolve type of each tuple element
+        typeName.tuple?.elements.forEach { tupleElement in
+            tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, typealiases: typealiases)
+        }
+
+        return name.flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
+    }
+
     typealias TypeResolver = (TypeName, Type?) -> Type?
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
-
-        variable.typeName.tuple?.elements.forEach({ tuple in
-            tuple.type = resolve(tuple.typeName, type)
-        })
     }
 
     private func resolveMethodTypes(_ method: Method, of type: Type, resolve: TypeResolver) {

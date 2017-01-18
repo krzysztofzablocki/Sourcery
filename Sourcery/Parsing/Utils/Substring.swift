@@ -12,7 +12,9 @@ internal enum Substring {
     case key
     case name
     case nameSuffix
+    case nameSuffixUpToBody
     case keyPrefix
+    case declaration
 
     func range(`for` source: [String: SourceKitRepresentable]) -> (offset: Int64, length: Int64)? {
 
@@ -34,6 +36,18 @@ internal enum Substring {
             if let name = Substring.name.range(for: source), let key = Substring.key.range(for: source) {
                 let nameEnd = name.offset + name.length
                 return (nameEnd, key.offset + key.length - nameEnd)
+            }
+        case .nameSuffixUpToBody:
+            guard let body = Substring.body.range(for: source) else {
+                return Substring.nameSuffix.range(for: source)
+            }
+            if let name = Substring.name.range(for: source) {
+                let nameEnd = name.offset + name.length
+                return (nameEnd, body.offset - nameEnd - 1)
+            }
+        case .declaration:
+            if let key = Substring.key.range(for: source), let body = Substring.body.range(for: source) {
+                return (key.offset, body.offset - key.offset - 1)
             }
         case .keyPrefix:
             return Substring.key.range(for: source).flatMap { (offset: 0, length: $0.offset) }
