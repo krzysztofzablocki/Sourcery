@@ -46,6 +46,17 @@ class TypeNameSpec: QuickSpec {
                 }
             }
 
+            context("given closure type") {
+                it("reports closure correctly") {
+                    expect(TypeName("() -> ()").isClosure).to(beTrue())
+                    expect(TypeName("(Int, Int) -> ()").isClosure).to(beTrue())
+                    expect(TypeName("() -> (Int, Int)").isClosure).to(beTrue())
+                    expect(TypeName("() -> (Int) -> (Int)").isClosure).to(beTrue())
+                    expect(TypeName("((Int) -> (Int)) -> ()").isClosure).to(beTrue())
+                    expect(TypeName("((Int, Int) -> (), Int)").isClosure).to(beFalse())
+                }
+            }
+
             it("removes attributes in unwrappedTypeName") {
                 expect(TypeName("@escaping (@escaping ()->())->()", attributes: [
                     "escaping": Attribute(name: "escaping")

@@ -4,6 +4,10 @@
 
 ## Master
 
+### New Features
+
+- Added `isClosure` property to `TypeName` to detect closure types
+
 ### Bug Fixes
 
 - fixed preserving order of inherited types

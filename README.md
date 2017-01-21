@@ -340,7 +340,7 @@ Available types:
 
 </details>
 
-<details><summary>**Enum.Case**. Properties:</summary>
+<details><summary>**EnumCase**. Properties:</summary>
 
 - `name` <- name
 - `rawValue` <- raw value
@@ -349,7 +349,7 @@ Available types:
 
 </details>
 
-<details><summary>**Enum.Case.AssociatedValue**. Properties:</summary>
+<details><summary>**AssociatedValue**. Properties:</summary>
 
 - `localName` <- name to use to construct value, i.e. `value` in `Foo.foo(value: ...)`
 - `externalName` <- name to use when binding value, i.e. `value` or `other` in `enum Foo { case foo(value: ..., other: ... )}`. Will use index as a fallback
@@ -359,6 +359,7 @@ Available types:
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
+- `isClosure` <- shorthand for `typeName.isClosure`
 
 </details>
 
@@ -374,7 +375,7 @@ Available types:
 - `isComputed` <- whether is computed
 - `isStatic` <- whether is static variable
 - `isTuple` <- shorthand for `typeName.isTuple`
-- `typeName.tuple` <- returns information about tuple type
+- `isClosure` <- shorthand for `typeName.isClosure`
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
 - `attributes` <- variable attributes, i.e. `var.attributes.NSManaged`
@@ -402,7 +403,7 @@ Available types:
 
 </details>
 
-<details><summary>**Method.Parameter**. Properties:</summary>
+<details><summary>**MethodParameter**. Properties:</summary>
 
 - `name` <- parameter name
 - `argumentLabel` <- argument label (external name), if not set will be eqal to `name`
@@ -413,6 +414,7 @@ Available types:
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
+- `isClosure` <- shorthand for `typeName.isClosure`
 - `typeAttributes` <- parameter's type attributes, shorthand for `typeName.attributes`, i.e. `param.typeAttributes.escaping`
 
 </details>
@@ -426,12 +428,20 @@ Available types:
 - `isImplicitlyUnwrappedOptional` <- whether is implicitly unwrapped optional
 - `isVoid` <- whether type is Void (`Void` or `()`)
 - `isTuple` <- whether given type is a tuple
-- `tuple.elements` <- if given type is a tuple returns its elements information (*TupleType.Element*)
+- `tuple` <- returns information about tuple type (*TupleType*)
+- `isClosure` <- shorthand for `typeName.isClosure`
 - `attributes` <- type attributes, i.e. `typeName.attributes.escaping`
 
 </details>
 
-<details><summary>**TupleType.Element**. Properties:</summary>
+<details><summary>**TupleType**. Properties:</summary>
+
+- `name` <- element name
+- `elements` <- returns tuple elements information (*TupleElement*)
+
+</details>
+
+<details><summary>**TupleElement**. Properties:</summary>
 
 - `name` <- element name
 - `type` <- type of element, if known
@@ -439,6 +449,7 @@ Available types:
 - `unwrappedTypeName` <- shorthand for `typeName.unwrappedTypeName`
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isTuple` <- shorthand for `typeName.isTuple`
+- `isClosure` <- shorthand for `typeName.isClosure`
 
 </details>
 
