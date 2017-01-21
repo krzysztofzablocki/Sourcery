@@ -12,6 +12,7 @@
 - fixed extracting method return types of tuple types
 - improved support for typealises as tuple elements types
 - method parameters with `_` argument label will now have `nil` in `argumentLabel` property
+- improved support for generic methods
 
 ### Internal changes
 

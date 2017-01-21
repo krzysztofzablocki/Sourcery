@@ -10,9 +10,9 @@ class TypeSpec: QuickSpec {
             let computedVariable = Variable(name: "variable", typeName: TypeName("Int"), isComputed: true)
             let storedVariable = Variable(name: "otherVariable", typeName: TypeName("Int"), isComputed: false)
             let supertypeVariable = Variable(name: "supertypeVariable", typeName: TypeName("Int"), isComputed: false)
-            let initializer = Method(selectorName: "init()")
+            let initializer = Method(name: "init()")
             let parentType = Type(name: "Parent")
-            let superTypeMethod = Method(selectorName: "doSomething()")
+            let superTypeMethod = Method(name: "doSomething()")
             let superType = Type(name: "Supertype", variables: [supertypeVariable], methods: [superTypeMethod])
 
             beforeEach {
@@ -107,7 +107,7 @@ class TypeSpec: QuickSpec {
                 }
 
                 it("adds methods") {
-                    let extraMethod = Method(selectorName: "foo()")
+                    let extraMethod = Method(name: "foo()")
                     let type = Type(name: "Foo", isExtension: true, methods: [extraMethod])
 
                     sut?.extend(type)

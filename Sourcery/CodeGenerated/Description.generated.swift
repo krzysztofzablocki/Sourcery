@@ -51,7 +51,7 @@ extension GenerationContext {
 extension Method {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "selectorName = \(self.selectorName), "
+        string += "name = \(self.name), "
         string += "parameters = \(self.parameters), "
         string += "shortName = \(self.shortName), "
         string += "returnTypeName = \(self.returnTypeName), "

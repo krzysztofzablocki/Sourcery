@@ -67,6 +67,7 @@ extension GenerationContext {
 extension Method {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Method else { return false }
+        if self.name != rhs.name { return false }
         if self.selectorName != rhs.selectorName { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }

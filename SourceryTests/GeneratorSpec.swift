@@ -27,9 +27,9 @@ class GeneratorSpec: QuickSpec {
             ]
 
             complexType.methods = [
-                    Method(selectorName: "foo(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))]),
-                    Method(selectorName: "foo2(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true),
-                    Method(selectorName: "foo3(some: Int)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true)
+                Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))]),
+                Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true),
+                Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true)
             ]
 
             let types = [

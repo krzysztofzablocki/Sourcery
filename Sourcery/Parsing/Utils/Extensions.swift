@@ -12,6 +12,11 @@ extension String {
         return String(characters.suffix(characters.count - prefix.characters.count))
     }
 
+    func trimmingSuffix(_ suffix: String) -> String {
+        guard hasSuffix(suffix) else { return self }
+        return String(characters.prefix(characters.count - suffix.characters.count))
+    }
+
     func dropFirst(_ n: Int = 1) -> String {
         return String(characters.dropFirst(n))
     }
@@ -76,7 +81,7 @@ extension String {
             if between.open.characters.contains(char) {
                 boundingCharactersCount += 1
             } else if between.close.characters.contains(char) {
-                boundingCharactersCount -= 1
+                boundingCharactersCount = max(0, boundingCharactersCount - 1)
             }
             if char == "\"" {
                 quotesCount += 1
