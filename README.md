@@ -384,11 +384,12 @@ Available types:
 
 <details><summary>**Method**. Properties:</summary>
 
-- `selectorName` <- full name of the method, i.e for `func foo(bar: Bar) -> Bar` `foo(bar:)`
-- `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` `foo`
+- `name` <- full name of the method including generic constraints, i.e. `func foo(bar: Bar)` or `foo<T>(bar: T)`
+- `selectorName` <- selector name of the method, i.e for `func foo(bar: Bar) -> Bar` it is `foo(bar:)`, for `func foo<T>(bar: T)` it is `foo(bar:)`
+- `shortName` <- short method name, i.e. for `func foo(bar: Bar) -> Bar` it is `foo`, for `func foo<T>(bar: T)` it is `foo<T>`
 - `parameters` <- list of all method parameters
 - `returnType` <- return type, if known, for initializers - containing type
-- `returnTypeName` <- return type name (*TypeName*). Will be `Void` for methods without return value or empty string for initializers.
+- `returnTypeName` <- return type name (*TypeName*). Will be `Void` for methods without return value or empty string for initializers. For generic methods can include generic constraints specified with `where`, i.e. `func foo<T>(bar: T) -> T where T: Equatable` it is `T where T: Equatable`
 - `unwrappedReturnTypeName` <- shorthand for `returnTypeName.unwrappedTypeName`
 - `isOptionalReturnType` <- shorthand for `returnTypeName.isOptional`
 - `isImplicitlyUnwrappedOptionalReturnType` <- shorthand for `returnTypeName. isImplicitlyUnwrappedOptional`
@@ -421,7 +422,7 @@ Available types:
 
 - `name` <- type name
 - `actualTypeName` <- if given type is a typealias will contain actual type name
-- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`
+- `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`, removing attributes and generic constraints
 - `isOptional` <- whether is optional
 - `isImplicitlyUnwrappedOptional` <- whether is implicitly unwrapped optional
 - `isVoid` <- whether type is Void (`Void` or `()`)

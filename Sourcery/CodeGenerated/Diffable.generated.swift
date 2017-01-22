@@ -106,6 +106,7 @@ extension Method: Diffable {
             results.append("Incorrect type <expected: Method, received: \(type(of: object))>")
             return results
         }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
         results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: rhs.selectorName))
         results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: rhs.parameters))
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: rhs.returnTypeName))

@@ -421,6 +421,7 @@ extension FileParser {
 
     internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> Method? {
         guard let (name, kind, accesibility) = parseTypeRequirements(source),
+            let fullName = extract(.name, from: source),
             accesibility != .private && accesibility != .fileprivate else { return nil }
 
         let isStatic = kind == .functionMethodStatic
@@ -438,31 +439,46 @@ extension FileParser {
 
         if name.hasPrefix("init(") {
             returnTypeName = ""
-        } else if //has name suffix when has return type or body
-            var nameSuffix = extract(.nameSuffixUpToBody, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) {
+        } else {
+            var nameSuffix: String?
+            if source.keys.contains(SwiftDocKey.bodyOffset.rawValue),
+                let suffix = extract(.nameSuffixUpToBody, from: source) {
+                //if declaration has body then get everything up to body start
+                nameSuffix = suffix
+            } else if
+                var key = extract(.key, from: source),
+                let line = extractLines(.key, from: source, contents: contents),
+                let range = line.range(of: key) {
 
-            `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
-            nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+                //otherwise get full declaration and parse it manually
 
-            if nameSuffix.trimPrefix("->") {
-                returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-        } else if //has no name suffix when no return type and no body
-            let key = extract(.key, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines),
-            let line = extractLines(.key, from: source, contents: contents)?
-                .trimmingCharacters(in: CharacterSet(charactersIn: "}").union(.whitespacesAndNewlines)) {
+                if let nameSuffix = extract(.nameSuffix, from: source) {
+                    key = key.trimmingSuffix(nameSuffix).trimmingCharacters(in: .whitespaces)
+                }
 
-            if let range = line.range(of: key) {
                 let lineSuffix = String(line.characters.suffix(from: range.lowerBound))
-                let components = lineSuffix.semicolonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
-                if var nameSuffix = components.first {
-                    nameSuffix = nameSuffix.trimmingPrefix(key).trimmingCharacters(in: .whitespaces)
-                    `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
+                let components = lineSuffix.semicolonSeparated()
+                if let suffix = components.first {
+                    nameSuffix = suffix
+                        .trimmingCharacters(in: .whitespaces)
+                        .trimmingPrefix(key)
+                        .trimmingCharacters(in: CharacterSet(charactersIn: "}").union(.whitespacesAndNewlines))
+                }
+            }
+
+            if var nameSuffix = nameSuffix {
+                `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
+                nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if nameSuffix.trimPrefix("->") {
+                    returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else if !nameSuffix.isEmpty {
+                    returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
                 }
             }
         }
 
-        let method = Method(selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
+        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
         method.setSource(source)
 
         return method

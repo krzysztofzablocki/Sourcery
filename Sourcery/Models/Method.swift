@@ -56,7 +56,12 @@ final class MethodParameter: NSObject, AutoDiffable, Typed, NSCoding {
 }
 
 final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
+
+    /// Full method name
+    let name: String
+
     /// Method name including arguments names, i.e. `foo(bar:)`
+    // sourcery: skipDescription
     let selectorName: String
 
     /// All method parameters
@@ -64,7 +69,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
 
     /// Method name without arguments names and parenthesis
     var shortName: String {
-        return selectorName.range(of: "(").map({ selectorName.substring(to: $0.lowerBound) }) ?? selectorName
+        return name.range(of: "(").map({ name.substring(to: $0.lowerBound) }) ?? name
     }
 
     /// Name of the return type
@@ -123,7 +128,8 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
     // sourcery: skipEquality, skipDescription, skipCoding
     internal var __parserData: Any?
 
-    init(selectorName: String,
+    init(name: String,
+         selectorName: String? = nil,
          parameters: [MethodParameter] = [],
          returnTypeName: TypeName = TypeName("Void"),
          throws: Bool = false,
@@ -134,7 +140,8 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
          attributes: [String: Attribute] = [:],
          annotations: [String: NSObject] = [:]) {
 
-        self.selectorName = selectorName
+        self.name = name
+        self.selectorName = selectorName ?? name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
         self.throws = `throws`
@@ -148,6 +155,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
 
     // Method.NSCoding {
         required init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["selectorName"])); fatalError() }; self.selectorName = selectorName
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
@@ -164,6 +172,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
 
         func encode(with aCoder: NSCoder) {
 
+            aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.selectorName, forKey: "selectorName")
             aCoder.encode(self.parameters, forKey: "parameters")
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")

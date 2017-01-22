@@ -45,21 +45,32 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
             name = name.trimmingCharacters(in: trim.union(.whitespaces))
         }
 
-		let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
-        let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
-		self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
-        self.isOptional = isOptional
+        if let genericConstraint = name.range(of: "where") {
+            name = String(name.characters.prefix(upTo: genericConstraint.lowerBound))
+                .trimmingCharacters(in: .whitespaces)
+        }
 
-        if isOptional {
-            if name.hasSuffix("?") || name.hasSuffix("!") {
-                self.unwrappedTypeName = String(name.characters.dropLast())
-            } else if name.hasPrefix("Optional<") {
-                self.unwrappedTypeName = name.drop(first: "Optional<".characters.count, last: 1)
-            } else {
-                self.unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
-            }
+        if name.isEmpty {
+            self.unwrappedTypeName = "Void"
+            self.isImplicitlyUnwrappedOptional = false
+            self.isOptional = false
         } else {
-            self.unwrappedTypeName = name
+            let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
+            let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
+            self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
+            self.isOptional = isOptional
+
+            if isOptional {
+                if name.hasSuffix("?") || name.hasSuffix("!") {
+                    self.unwrappedTypeName = String(name.characters.dropLast())
+                } else if name.hasPrefix("Optional<") {
+                    self.unwrappedTypeName = name.drop(first: "Optional<".characters.count, last: 1)
+                } else {
+                    self.unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
+                }
+            } else {
+                self.unwrappedTypeName = name
+            }
         }
     }
 
@@ -76,7 +87,7 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
 
     // sourcery: skipEquality
     var isVoid: Bool {
-        return name == "Void" || name == "()"
+        return name == "Void" || name == "()" || unwrappedTypeName == "Void"
     }
 
     var isTuple: Bool {

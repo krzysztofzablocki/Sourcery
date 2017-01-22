@@ -52,6 +52,11 @@ class TypeNameSpec: QuickSpec {
                     ]).unwrappedTypeName).to(equal("(@escaping ()->())->()"))
             }
 
+            it("removes generic constraints in unwrappedTypeName") {
+                expect(TypeName("Int where T: Equatable").unwrappedTypeName).to(equal("Int"))
+                expect(TypeName("where T: Equatable").unwrappedTypeName).to(equal("Void"))
+            }
+
         }
     }
 }

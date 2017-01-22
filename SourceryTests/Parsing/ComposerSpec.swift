@@ -80,7 +80,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                               write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
-                                                           methods: [Method(selectorName: "init(rawValue:)",
+                                                           methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
                                                                                                           typeName: TypeName("String"))],
                                                                             returnTypeName: TypeName(""),
@@ -102,7 +102,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
-                                                           methods: [Method(selectorName: "init(rawValue:)",
+                                                           methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
                                                                             isFailableInitializer: true)],
@@ -123,7 +123,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
-                                                           methods: [Method(selectorName: "init(rawValue:)",
+                                                           methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
                                                                                                           typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
@@ -212,7 +212,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given method return value type") {
                         it("replaces method return type alias with actual type") {
-                            let expectedMethod = Method(selectorName: "some()", returnTypeName: TypeName("FooAlias"))
+                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> FooAlias }")
                             let method = types.first?.methods.first
@@ -222,7 +222,7 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces tuple elements alias types with actual types") {
-                            let expectedMethod = Method(selectorName: "some()", returnTypeName: TypeName("(FooAlias, Int)"))
+                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("(FooAlias, Int)"))
                             expectedMethod.returnTypeName.tuple = TupleType(name: "(FooAlias, Int)", elements: [
                                 TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName("Int"))
@@ -237,7 +237,7 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces method return type alias with actual tuple type name") {
-                            let expectedMethod = Method(selectorName: "some()", returnTypeName: TypeName("GlobalAlias"))
+                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("GlobalAlias"))
                             expectedMethod.returnTypeName.tuple = TupleType(name: "(Foo, Int)", elements: [
                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName("Int"))
