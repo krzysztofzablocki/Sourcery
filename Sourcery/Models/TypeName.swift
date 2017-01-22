@@ -98,6 +98,14 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
         }
     }
 
+    var isClosure: Bool {
+        if let actualTypeName = actualTypeName?.name {
+            return actualTypeName.isValidClosureName()
+        } else {
+            return name.isValidClosureName()
+        }
+    }
+
     var tuple: TupleType?
 
     override var description: String {

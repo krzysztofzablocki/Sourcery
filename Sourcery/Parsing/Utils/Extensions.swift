@@ -46,6 +46,10 @@ extension String {
         return trimmedBracketsName.bracketsBalanced() && trimmedBracketsName.commaSeparated().count > 1
     }
 
+    func isValidClosureName() -> Bool {
+        return components(separatedBy: "->", excludingDelimiterBetween: ("(", ")")).count > 1
+    }
+
     /// Returns true if all opening brackets are balanced with closed brackets.
     func bracketsBalanced() -> Bool {
         var bracketsCount: Int = 0
@@ -71,11 +75,12 @@ extension String {
         return components(separatedBy: ";", excludingDelimiterBetween: ("{", "}"))
     }
 
-    func components(separatedBy delimiter: Character, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
+    func components(separatedBy delimiter: String, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
         var boundingCharactersCount: Int = 0
         var quotesCount: Int = 0
         var item = ""
         var items = [String]()
+        var matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
 
         for char in characters {
             if between.open.characters.contains(char) {
@@ -86,11 +91,27 @@ extension String {
             if char == "\"" {
                 quotesCount += 1
             }
-            if char == delimiter && boundingCharactersCount == 0 && quotesCount % 2 == 0 {
-                items.append(item)
-                item = ""
-            } else {
+
+            guard boundingCharactersCount == 0 && quotesCount % 2 == 0 else {
                 item.append(char)
+                continue
+            }
+
+            if char == matchedDelimiter.leftToMatch.characters.first {
+                matchedDelimiter.alreadyMatched.append(char)
+                matchedDelimiter.leftToMatch = matchedDelimiter.leftToMatch.dropFirst()
+                if matchedDelimiter.leftToMatch.isEmpty {
+                    items.append(item)
+                    item = ""
+                    matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
+                }
+            } else {
+                if matchedDelimiter.alreadyMatched.isEmpty {
+                    item.append(char)
+                } else {
+                    item.append(matchedDelimiter.alreadyMatched)
+                    matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
+                }
             }
         }
         items.append(item)
