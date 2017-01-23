@@ -120,11 +120,11 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
             self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
             guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["unwrappedTypeName"])); fatalError() }; self.unwrappedTypeName = unwrappedTypeName
             self.tuple = aDecoder.decode(forKey: "tuple")
-            
+
         }
 
         func encode(with aCoder: NSCoder) {
-            
+
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
             aCoder.encode(self.attributes, forKey: "attributes")
@@ -132,7 +132,7 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
             aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
             aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
             aCoder.encode(self.tuple, forKey: "tuple")
-            
+
         }
         // } TypeName.NSCoding
 
@@ -156,15 +156,15 @@ final class TupleElement: NSObject, SourceryModel, Typed {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
-            
+
         }
 
         func encode(with aCoder: NSCoder) {
-            
+
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
-            
+
         }
         // } TupleElement.NSCoding
 }
@@ -183,14 +183,14 @@ final class TupleType: NSObject, SourceryModel {
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
-            
+
         }
 
         func encode(with aCoder: NSCoder) {
-            
+
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.elements, forKey: "elements")
-            
+
         }
         // } TupleType.NSCoding
 }

@@ -45,7 +45,7 @@ final class Protocol: Type {
 
         override func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
-            
+
         }
         // } Protocol.NSCoding
 }

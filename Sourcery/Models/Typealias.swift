@@ -41,17 +41,17 @@ final class Typealias: NSObject, Typed, SourceryModel {
             self.type = aDecoder.decode(forKey: "type")
             self.parent = aDecoder.decode(forKey: "parent")
             self.parentName = aDecoder.decode(forKey: "parentName")
-            
+
         }
 
         func encode(with aCoder: NSCoder) {
-            
+
             aCoder.encode(self.aliasName, forKey: "aliasName")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.parentName, forKey: "parentName")
-            
+
         }
         // } Typealias.NSCoding
 }
