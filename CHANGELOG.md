@@ -7,6 +7,8 @@
 ### New Features
 
 - Added `isClosure` property to `TypeName` to detect closure types
+- Added `snakeCaseToCamelCase` filter
+- Added `camelCaseToSnakeCase` filter
 
 ### Bug Fixes
 
