@@ -3,7 +3,6 @@
 
 import Foundation
 
-
 extension NSCoder {
 
     @nonobjc func decode(forKey: String) -> String? {
@@ -40,7 +39,6 @@ extension NSCoder {
 
 }
 
-
 extension AssociatedValue: NSCoding {}
 /*
     // sourcery:inline:AssociatedValue.AutoCoding
@@ -63,7 +61,7 @@ extension AssociatedValue: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension Attribute: NSCoding {}
 /*
     // sourcery:inline:Attribute.AutoCoding
@@ -84,7 +82,6 @@ extension Attribute: NSCoding {}
     // sourcery:end
 }
 */
-    
 
 /*
     // sourcery:inline:Class.AutoCoding
@@ -99,7 +96,6 @@ extension Attribute: NSCoding {}
     // sourcery:end
 }
 */
-    
 
 /*
     // sourcery:inline:Enum.AutoCoding
@@ -122,7 +118,7 @@ extension Attribute: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension EnumCase: NSCoding {}
 /*
     // sourcery:inline:EnumCase.AutoCoding
@@ -145,7 +141,7 @@ extension EnumCase: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension FileParserResult: NSCoding {}
 /*
     // sourcery:inline:FileParserResult.AutoCoding
@@ -172,7 +168,7 @@ extension FileParserResult: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension GenerationContext: NSCoding {}
 /*
     // sourcery:inline:GenerationContext.AutoCoding
@@ -193,7 +189,7 @@ extension GenerationContext: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension Method: NSCoding {}
 /*
     // sourcery:inline:Method.AutoCoding
@@ -230,7 +226,7 @@ extension Method: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension MethodParameter: NSCoding {}
 /*
     // sourcery:inline:MethodParameter.AutoCoding
@@ -253,7 +249,6 @@ extension MethodParameter: NSCoding {}
     // sourcery:end
 }
 */
-    
 
 /*
     // sourcery:inline:Protocol.AutoCoding
@@ -268,7 +263,6 @@ extension MethodParameter: NSCoding {}
     // sourcery:end
 }
 */
-    
 
 /*
     // sourcery:inline:Struct.AutoCoding
@@ -283,7 +277,7 @@ extension MethodParameter: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension TupleElement: NSCoding {}
 /*
     // sourcery:inline:TupleElement.AutoCoding
@@ -304,7 +298,7 @@ extension TupleElement: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension TupleType: NSCoding {}
 /*
     // sourcery:inline:TupleType.AutoCoding
@@ -323,7 +317,7 @@ extension TupleType: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension Type: NSCoding {}
 /*
     // sourcery:inline:Type.AutoCoding
@@ -372,7 +366,7 @@ extension Type: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension TypeName: NSCoding {}
 /*
     // sourcery:inline:TypeName.AutoCoding
@@ -401,7 +395,7 @@ extension TypeName: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension Typealias: NSCoding {}
 /*
     // sourcery:inline:Typealias.AutoCoding
@@ -426,7 +420,7 @@ extension Typealias: NSCoding {}
     // sourcery:end
 }
 */
-    
+
 extension Variable: NSCoding {}
 /*
     // sourcery:inline:Variable.AutoCoding
@@ -459,4 +453,3 @@ extension Variable: NSCoding {}
     // sourcery:end
 }
 */
-    

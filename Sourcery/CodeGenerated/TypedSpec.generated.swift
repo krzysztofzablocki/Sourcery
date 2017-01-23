@@ -7,7 +7,7 @@ import Nimble
 
 class TypedSpec: QuickSpec {
     override func spec() {
-        
+
         describe("AssociatedValue") {
             it("can report optional via KVC") {
                 expect(AssociatedValue(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -33,7 +33,7 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
             }
         }
-        
+
         describe("MethodParameter") {
             it("can report optional via KVC") {
                 expect(MethodParameter(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -59,7 +59,7 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
             }
         }
-        
+
         describe("TupleElement") {
             it("can report optional via KVC") {
                 expect(TupleElement(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -85,7 +85,7 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
             }
         }
-        
+
         describe("Typealias") {
             it("can report optional via KVC") {
                 expect(Typealias(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -111,7 +111,7 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
             }
         }
-        
+
         describe("Variable") {
             it("can report optional via KVC") {
                 expect(Variable(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -137,6 +137,6 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
             }
         }
-        
+
     }
 }

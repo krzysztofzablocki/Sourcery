@@ -34,18 +34,18 @@ import Foundation
             guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineRanges"])); fatalError() }; self.inlineRanges = inlineRanges
             self.contentSha = aDecoder.decode(forKey: "contentSha")
             guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["sourceryVersion"])); fatalError() }; self.sourceryVersion = sourceryVersion
-            
+
         }
 
         func encode(with aCoder: NSCoder) {
-            
+
             aCoder.encode(self.path, forKey: "path")
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.inlineRanges, forKey: "inlineRanges")
             aCoder.encode(self.contentSha, forKey: "contentSha")
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
-            
+
         }
         // } FileParserResult.NSCoding
 }
