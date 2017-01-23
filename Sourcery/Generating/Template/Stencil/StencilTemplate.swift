@@ -31,6 +31,7 @@ final class StencilTemplate: Stencil.Template, Template {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
         ext.registerFilter("snakeCaseToCamelCase", filter: Filter<String>.make({ $0.snakeCaseToCamelCase() }))
+        ext.registerFilter("camelCaseToSnakeCase", filter: Filter<String>.make({ $0.camelCaseToSnakeCase() }))
 
         ext.registerFilterWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
             return source.replacingOccurrences(of: substring, with: replacement)
@@ -154,6 +155,17 @@ extension String {
         })
     }
 
+    fileprivate func camelCaseToSnakeCase() -> String {
+        do {
+            let string = self as NSString
+            let regex = try NSRegularExpression(pattern: "(?<=.)([A-Z]*)([A-Z])", options: [])
+            let range = NSRange(location: 0, length: string.length)
+            return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "_$1$2").lowercased()
+
+        } catch {
+            return self
+        }
+    }
 }
 
 private struct Filter<T> {
