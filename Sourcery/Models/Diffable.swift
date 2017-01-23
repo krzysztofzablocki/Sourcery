@@ -17,11 +17,24 @@ protocol Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult
 }
 
-/// Phantom protocol for code generation
-protocol AutoDiffable {}
+extension NSRange: Diffable, Equatable {
+    public static func == (lhs: NSRange, rhs: NSRange) -> Bool {
+        return NSEqualRanges(lhs, rhs)
+    }
 
-// sourcery: skipEquatable, skipDescription
-@objc class DiffableResult: NSObject {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? NSRange else {
+            results.append("Incorrect type <expected: FileParserResult, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "location").trackDifference(actual: self.location, expected: rhs.location))
+        results.append(contentsOf: DiffableResult(identifier: "length").trackDifference(actual: self.length, expected: rhs.length))
+        return results
+    }
+}
+
+@objc class DiffableResult: NSObject, AutoEquatable {
     private var results: [String]
     internal var identifier: String?
 

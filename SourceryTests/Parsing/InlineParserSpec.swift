@@ -9,13 +9,6 @@ import PathKit
 import SourceKittenFramework
 @testable import Sourcery
 
-extension NSRange: Equatable {
-}
-
-public func == (lhs: NSRange, rhs: NSRange) -> Bool {
-    return NSEqualRanges(lhs, rhs)
-}
-
 private func build(_ source: String) -> [String: SourceKitRepresentable]? {
     return Structure(file: File(contents: source)).dictionary
 }

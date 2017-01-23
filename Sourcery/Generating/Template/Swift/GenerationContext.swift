@@ -8,7 +8,7 @@
 
 import Foundation
 
-class GenerationContext: NSObject, NSCoding, AutoDiffable {
+class GenerationContext: NSObject, SourceryModel {
     let types: [Type]
     let typeByName: [String : Type]
     let arguments: [String : NSObject]
