@@ -1,3 +1,5 @@
+import Foundation
+
 extension String {
 
     @discardableResult
@@ -117,5 +119,10 @@ extension String {
         items.append(item)
         return items
     }
+}
 
+extension NSString {
+    var entireRange: NSRange {
+        return NSRange(location: 0, length: self.length)
+    }
 }
