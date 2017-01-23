@@ -158,8 +158,7 @@ public class Sourcery {
               artifacts.exists,
               let contents = try? path.read(.utf8),
               let contentSha = contents.sha256(),
-              let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts.string) as? FileParserResult,
-              unarchived.contentSha == contentSha else {
+              let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
 
             let result = parser.parse()
             let data = NSKeyedArchiver.archivedData(withRootObject: result)
@@ -173,6 +172,20 @@ public class Sourcery {
         }
 
         return unarchived
+    }
+
+    private func load(artifacts: String, contentSha: String) -> FileParserResult? {
+
+        var unarchivedResult: FileParserResult? = nil
+        SwiftTryCatch.try({
+            if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
+                unarchivedResult = unarchived
+            }
+        }, catch: { error in
+            self.track("Failed to unarchive \(artifacts) due to error, re-parsing")
+        }, finallyBlock: {})
+
+        return unarchivedResult
     }
 
     private func generate(templatePath: Path, output: Path, parsingResult: ParsingResult) throws {
