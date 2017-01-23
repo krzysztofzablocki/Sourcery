@@ -1,22 +1,13 @@
 // Generated using Sourcery 0.5.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
         string += "localName = \(self.localName), "
         string += "externalName = \(self.externalName), "
         string += "typeName = \(self.typeName)"
-        return string
-    }
-}
-
-extension Enum {
-    override var description: String {
-        var string = super.description
-        string += "cases = \(self.cases), "
-        string += "rawTypeName = \(self.rawTypeName), "
-        string += "hasAssociatedValues = \(self.hasAssociatedValues)"
         return string
     }
 }

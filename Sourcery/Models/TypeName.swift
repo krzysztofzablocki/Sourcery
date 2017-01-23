@@ -27,8 +27,7 @@ protocol Typed {
     var unwrappedTypeName: String { get }
 }
 
-// sourcery: skipDescription
-final class TypeName: NSObject, AutoDiffable, NSCoding {
+final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
     let name: String
 
     /// Actual type name if given type name is type alias
@@ -139,7 +138,7 @@ final class TypeName: NSObject, AutoDiffable, NSCoding {
 
 }
 
-final class TupleElement: NSObject, AutoDiffable, Typed, NSCoding {
+final class TupleElement: NSObject, SourceryModel, Typed {
     let name: String
     let typeName: TypeName
 
@@ -170,7 +169,7 @@ final class TupleElement: NSObject, AutoDiffable, Typed, NSCoding {
         // } TupleElement.NSCoding
 }
 
-final class TupleType: NSObject, AutoDiffable, NSCoding {
+final class TupleType: NSObject, SourceryModel {
     let name: String
 
     let elements: [TupleElement]

@@ -5,7 +5,7 @@
 
 import Foundation
 
-final class AssociatedValue: NSObject, AutoDiffable, Typed, NSCoding {
+final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed {
     let localName: String?
     let externalName: String?
     let typeName: TypeName
@@ -46,7 +46,7 @@ final class AssociatedValue: NSObject, AutoDiffable, Typed, NSCoding {
 
 }
 
-final class EnumCase: NSObject, AutoDiffable, Annotated, NSCoding {
+final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
 
     let name: String
     let rawValue: String?

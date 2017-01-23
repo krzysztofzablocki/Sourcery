@@ -1,4 +1,4 @@
-{% for type in types.classes|!annotated:"skipEquatable" %}
+{% for type in types.implementing.AutoEquatable|class %}
 extension {{ type.name }} {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? {{ type.name }} else { return false }

@@ -8,8 +8,7 @@
 
 import Foundation
 
-// sourcery: skipDescription, skipEquatable
-@objc final class FileParserResult: NSObject, AutoDiffable, NSCoding {
+@objc final class FileParserResult: NSObject, SourceryModel {
     var path: String?
     var types = [Type]()
     var typealiases = [Typealias]()
