@@ -14,6 +14,8 @@ import Foundation
 /// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
 /// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
+    private typealias ParsingResult = (types: [Type], inlineRanges: [(file: String, ranges: [String: NSRange])])
+
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.3"
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
@@ -51,8 +53,8 @@ public class Sourcery {
         self.watcherEnabled = watcherEnabled
         self.cachesPath = Path.cachesDir(sourcePath: sources)
 
-        var types: [Type] = try parseTypes(from: sources, cacheDisabled: cacheDisabled)
-        try generate(templatePath: templatesPath, output: output, types: types)
+        var result = try parse(from: sources, cacheDisabled: cacheDisabled)
+        try generate(templatePath: templatesPath, output: output, parsingResult: result)
 
         guard watcherEnabled else {
             return nil
@@ -75,8 +77,8 @@ public class Sourcery {
             if shouldRegenerate {
                 do {
                     self.track("Source changed: ", terminator: "")
-                    types = try self.parseTypes(from: sources, cacheDisabled: cacheDisabled)
-                    _ = try self.generate(templatePath: templatesPath, output: output, types: types)
+                    result = try self.parse(from: sources, cacheDisabled: cacheDisabled)
+                    _ = try self.generate(templatePath: templatesPath, output: output, parsingResult: result)
                 } catch {
                     self.track(error)
                 }
@@ -92,7 +94,7 @@ public class Sourcery {
             if !events.isEmpty {
                 do {
                     self.track("Templates changed: ", terminator: "")
-                    _ = try self.generate(templatePath: templatesPath, output: output, types: types)
+                    _ = try self.generate(templatePath: templatesPath, output: output, parsingResult: result)
                 } catch {
                     self.track(error)
                 }
@@ -102,12 +104,12 @@ public class Sourcery {
         return [sourceWatcher, templateWatcher]
     }
 
-    private func parseTypes(from: Path, cacheDisabled: Bool) throws -> [Type] {
+    private func parse(from: Path, cacheDisabled: Bool) throws -> ParsingResult {
         self.track("Scanning sources...", terminator: "")
 
         guard from.isDirectory else {
             let parserResult = try FileParser(verbose: verbose, path: from).parse()
-            return Composer(verbose: verbose).uniqueTypes(parserResult)
+            return (Composer(verbose: verbose).uniqueTypes(parserResult), [(from.string, parserResult.inlineRanges)])
         }
 
         let sources = try from
@@ -130,9 +132,13 @@ public class Sourcery {
             accumulator += 1
         })
 
-        let parserResult = results.reduce(FileParserResult(types: [], typealiases: [])) { acc, next in
+        var inlineRanges = [(file: String, ranges: [String: NSRange])]()
+
+        let parserResult = results.reduce(FileParserResult(path: nil, types: [], typealiases: [])) { acc, next in
             acc.typealiases += next.typealiases
             acc.types += next.types
+
+            inlineRanges.append( (next.path!, next.inlineRanges) )
             return acc
         }
 
@@ -140,7 +146,7 @@ public class Sourcery {
         let types = Composer(verbose: verbose).uniqueTypes(parserResult)
 
         track("Found \(types.count) types.")
-        return types
+        return (types, inlineRanges)
     }
 
     private func loadOrParse(parser: FileParser, cacheDisabled: Bool) -> FileParserResult {
@@ -169,7 +175,7 @@ public class Sourcery {
         return unarchived
     }
 
-    private func generate(templatePath: Path, output: Path, types: [Type]) throws {
+    private func generate(templatePath: Path, output: Path, parsingResult: ParsingResult) throws {
         track("Loading templates...", terminator: "")
         let allTemplates = try templates(from: templatePath)
         track("Loaded \(allTemplates.count) templates.")
@@ -179,7 +185,7 @@ public class Sourcery {
 
         guard output.isDirectory else {
             let result = try allTemplates.reduce(Sourcery.generationHeader) { result, template in
-                return result + "\n" + (try generate(template, forTypes: types))
+                return result + "\n" + (try generate(template, forTypes: parsingResult.types))
             }
 
             try output.write(result, encoding: .utf8)
@@ -187,8 +193,31 @@ public class Sourcery {
         }
 
         try allTemplates.forEach { template in
-            let result = Sourcery.generationHeader + (try generate(template, forTypes: types))
+            let result = Sourcery.generationHeader + (try generate(template, forTypes: parsingResult.types))
             let outputPath = output + generatedPath(for: template.sourcePath)
+
+            let inline = InlineParser.parse(result)
+
+            try inline
+                .inlineRanges
+                .map { ($0, $1) }
+                .sorted { $0.0.1.location > $0.1.1.location }
+                .forEach { (key, range) in
+
+                    let generatedBody = result.bridge().substring(with: range)
+
+                    try parsingResult.inlineRanges.forEach { (filePath, ranges) in
+
+                        if let range = ranges[key] {
+                            let path = Path(filePath)
+                            let original = try path.read(.utf8)
+                            let updated = original.bridge().replacingCharacters(in: range, with: generatedBody)
+                            try path.write(updated, encoding: .utf8)
+                        }
+                    }
+
+            }
+
             try outputPath.write(result, encoding: .utf8)
         }
 

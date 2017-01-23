@@ -26,23 +26,23 @@ final class AssociatedValue: NSObject, AutoDiffable, Typed, NSCoding {
     }
 
     // AssociatedValue.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-        self.localName = aDecoder.decode(forKey: "localName")
-        self.externalName = aDecoder.decode(forKey: "externalName")
-        guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-        self.type = aDecoder.decode(forKey: "type")
+        required init?(coder aDecoder: NSCoder) {
+            self.localName = aDecoder.decode(forKey: "localName")
+            self.externalName = aDecoder.decode(forKey: "externalName")
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+            
+        }
 
-    }
-
-    func encode(with aCoder: NSCoder) {
-
-        aCoder.encode(self.localName, forKey: "localName")
-        aCoder.encode(self.externalName, forKey: "externalName")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.type, forKey: "type")
-
-    }
-    // } AssociatedValue.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.localName, forKey: "localName")
+            aCoder.encode(self.externalName, forKey: "externalName")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+            
+        }
+        // } AssociatedValue.NSCoding
 
 }
 
@@ -71,23 +71,23 @@ final class EnumCase: NSObject, AutoDiffable, Annotated, NSCoding {
     }
 
     // EnumCase.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-        guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-        self.rawValue = aDecoder.decode(forKey: "rawValue")
-        guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
-        guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+        required init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            self.rawValue = aDecoder.decode(forKey: "rawValue")
+            guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
+            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            
+        }
 
-    }
-
-    func encode(with aCoder: NSCoder) {
-
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.rawValue, forKey: "rawValue")
-        aCoder.encode(self.associatedValues, forKey: "associatedValues")
-        aCoder.encode(self.annotations, forKey: "annotations")
-
-    }
-    // } EnumCase.NSCoding
+        func encode(with aCoder: NSCoder) {
+            
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.rawValue, forKey: "rawValue")
+            aCoder.encode(self.associatedValues, forKey: "associatedValues")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            
+        }
+        // } EnumCase.NSCoding
 }
 
 final class Enum: Type {
@@ -168,7 +168,6 @@ final class Enum: Type {
             self.rawTypeName = aDecoder.decode(forKey: "rawTypeName")
             self.hasRawType = aDecoder.decode(forKey: "hasRawType")
             self.rawType = aDecoder.decode(forKey: "rawType")
-
             super.init(coder: aDecoder)
         }
 
@@ -178,7 +177,7 @@ final class Enum: Type {
             aCoder.encode(self.rawTypeName, forKey: "rawTypeName")
             aCoder.encode(self.hasRawType, forKey: "hasRawType")
             aCoder.encode(self.rawType, forKey: "rawType")
-
+            
         }
         // } Enum.NSCoding
 }

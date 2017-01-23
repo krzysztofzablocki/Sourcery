@@ -38,7 +38,7 @@ final class Class: Type {
 
         override func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
-
+            
         }
         // } Class.NSCoding
 }

@@ -19,6 +19,41 @@ class SourcerySpecTests: QuickSpec {
                 let templatePath = Stubs.templateDirectory + Path("Basic.stencil")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8).withoutWhitespaces
 
+                describe("using inline generation") {
+                    let templatePath = outputDir + Path("FakeTemplate.stencil")
+                    let sourcePath = outputDir + Path("Source.swift")
+                    func update(code: String, in path: Path) { guard let _ = try? path.write(code) else { fatalError() } }
+
+                    it("replaces placeholder with generated code") {
+                        update(code: "class Foo { \n" +
+                                "// sourcery:inline:Foo.Inlined\n" +
+                                "\n" +
+                                "// This will be replaced\n" +
+                                "Last line\n" +
+                                "// sourcery:end\n" +
+                                "}", in: sourcePath)
+
+                        update(code: "// sourcery:inline:Foo.Inlined \n" +
+                                "// Line One\n" +
+                                "var property = 2\n" +
+                                "// Line Three\n" +
+                                "// sourcery:end", in: templatePath)
+
+                        let expectedResult = "class Foo { \n" +
+                                "// sourcery:inline:Foo.Inlined\n" +
+                                "// Line One\n" +
+                                "var property = 2\n" +
+                                "// Line Three\n" +
+                                "// sourcery:end\n" +
+                                "}"
+
+                        expect { try Sourcery().processFiles(sourcePath, usingTemplates: templatePath, output: outputDir, watcherEnabled: false, cacheDisabled: true) }.toNot(throwError())
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+                }
+
                 context("without a watcher") {
                     it("creates expected output file") {
                         expect { try Sourcery().processFiles(Stubs.sourceDirectory, usingTemplates: templatePath, output: outputDir, cacheDisabled: true) }.toNot(throwError())

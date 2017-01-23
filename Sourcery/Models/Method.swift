@@ -3,7 +3,7 @@ import Foundation
 //typealias used to avoid types ambiguty in tests
 typealias SourceryMethod = Method
 
-final class MethodParameter: NSObject, AutoDiffable, Typed, NSCoding {
+final class MethodParameter: NSObject, SourceryModel, Typed {
     /// Parameter external name
     var argumentLabel: String?
 
@@ -36,26 +36,26 @@ final class MethodParameter: NSObject, AutoDiffable, Typed, NSCoding {
     }
 
     // MethodParameter.NSCoding {
-    required init?(coder aDecoder: NSCoder) {
-        guard let argumentLabel: String = aDecoder.decode(forKey: "argumentLabel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argumentLabel"])); fatalError() }; self.argumentLabel = argumentLabel
-        guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-        guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-        self.type = aDecoder.decode(forKey: "type")
+        required init?(coder aDecoder: NSCoder) {
+            self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
 
-    }
+        }
 
-    func encode(with aCoder: NSCoder) {
+        func encode(with aCoder: NSCoder) {
 
-        aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
 
-    }
-    // } MethodParameter.NSCoding
+        }
+        // } MethodParameter.NSCoding
 }
 
-final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
+final class Method: NSObject, SourceryModel, Annotated {
 
     /// Full method name
     let name: String
@@ -160,7 +160,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
-            self.`throws` = aDecoder.decode(forKey: "throws")
+            self.throws = aDecoder.decode(forKey: "throws")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             self.isClass = aDecoder.decode(forKey: "isClass")
@@ -177,7 +177,7 @@ final class Method: NSObject, AutoDiffable, Annotated, NSCoding {
             aCoder.encode(self.parameters, forKey: "parameters")
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
             aCoder.encode(self.returnType, forKey: "returnType")
-            aCoder.encode(self.`throws`, forKey: "throws")
+            aCoder.encode(self.throws, forKey: "throws")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.isClass, forKey: "isClass")

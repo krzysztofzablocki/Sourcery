@@ -30,15 +30,15 @@ class GenerationContext: NSObject, NSCoding, AutoDiffable {
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let typeByName: [String : Type] = aDecoder.decode(forKey: "typeByName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeByName"])); fatalError() }; self.typeByName = typeByName
             guard let arguments: [String : NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
-
+            
         }
 
         func encode(with aCoder: NSCoder) {
-
+            
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typeByName, forKey: "typeByName")
             aCoder.encode(self.arguments, forKey: "arguments")
-
+            
         }
         // } GenerationContext.NSCoding
 
