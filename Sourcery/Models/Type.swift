@@ -218,11 +218,11 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
-
+            
         }
 
         func encode(with aCoder: NSCoder) {
-
+            
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
@@ -240,7 +240,7 @@ class Type: NSObject, AutoDiffable, Annotated, NSCoding {
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.supertype, forKey: "supertype")
             aCoder.encode(self.attributes, forKey: "attributes")
-
+            
         }
         // } Type.NSCoding
 }

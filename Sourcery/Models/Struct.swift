@@ -46,7 +46,7 @@ final class Struct: Type {
 
         override func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
-
+            
         }
         // } Struct.NSCoding
 }
