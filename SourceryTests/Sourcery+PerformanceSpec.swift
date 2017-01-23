@@ -1,3 +1,4 @@
+/*
 //
 //  Sourcery+PerformanceSpec.swift
 //  Sourcery
@@ -41,3 +42,4 @@ class SourceryPerformanceSpec: XCTestCase {
         }
     }
 }
+*/

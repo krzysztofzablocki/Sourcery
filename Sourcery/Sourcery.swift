@@ -11,32 +11,30 @@ import SwiftTryCatch
 
 import Foundation
 
-/// If you specify templatePath as a folder, it will create a Generated[TemplateName].swift file
-/// If you specify templatePath as specific file, it will put all generated results into that single file
 public class Sourcery {
-    private typealias ParsingResult = (types: [Type], inlineRanges: [(file: String, ranges: [String: NSRange])])
-
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.3"
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"
 
-    let verbose: Bool
-    private(set) var watcherEnabled: Bool = false
-    private var status = ""
-	let arguments: [String: NSObject]
+    fileprivate let verbose: Bool
+    fileprivate let watcherEnabled: Bool
+    fileprivate let arguments: [String: NSObject]
+    fileprivate let cacheDisabled: Bool
 
-    private var templatesPath: Path = ""
-    private var outputPath: Path = ""
-    private var cachesPath: Path = ""
+    fileprivate var status = ""
+    fileprivate var templatesPath: Path = ""
+    fileprivate var outputPath: Path = ""
 
     /// Creates Sourcery processor
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
     /// - Parameter arguments: Additional arguments to pass to templates.
-    public init(verbose: Bool = false, arguments: [String: NSObject] = [:]) {
+    public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
+        self.watcherEnabled = watcherEnabled
+        self.cacheDisabled = cacheDisabled
     }
 
     /// Processes source files and generates corresponding code.
@@ -47,13 +45,11 @@ public class Sourcery {
     ///   - output: Path to output source code to.
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ sources: Path, usingTemplates templatesPath: Path, output: Path, watcherEnabled: Bool = false, cacheDisabled: Bool = false) throws -> [FolderWatcher.Local]? {
+    public func processFiles(_ sources: Path, usingTemplates templatesPath: Path, output: Path) throws -> [FolderWatcher.Local]? {
         self.templatesPath = templatesPath
         self.outputPath = output
-        self.watcherEnabled = watcherEnabled
-        self.cachesPath = Path.cachesDir(sourcePath: sources)
 
-        var result = try parse(from: sources, cacheDisabled: cacheDisabled)
+        var result = try parse(from: sources)
         try generate(templatePath: templatesPath, output: output, parsingResult: result)
 
         guard watcherEnabled else {
@@ -77,7 +73,7 @@ public class Sourcery {
             if shouldRegenerate {
                 do {
                     self.track("Source changed: ", terminator: "")
-                    result = try self.parse(from: sources, cacheDisabled: cacheDisabled)
+                    result = try self.parse(from: sources)
                     _ = try self.generate(templatePath: templatesPath, output: output, parsingResult: result)
                 } catch {
                     self.track(error)
@@ -104,8 +100,56 @@ public class Sourcery {
         return [sourceWatcher, templateWatcher]
     }
 
-    private func parse(from: Path, cacheDisabled: Bool) throws -> ParsingResult {
+    fileprivate func templates(from: Path) throws -> [Template] {
+        return try templatePaths(from: from).map {
+            if $0.extension == "swifttemplate" {
+                return try SwiftTemplate(path: $0)
+            } else {
+                return try StencilTemplate(path: $0)
+            }
+        }
+    }
+
+    fileprivate func outputPaths(from: Path, output: Path) throws -> [Path] {
+        return try templatePaths(from: from).map { output + generatedPath(for: $0) }
+    }
+
+    fileprivate func track(_ message: Any, terminator: String = "\n", skipStatus: Bool = false) {
+        if !watcherEnabled || verbose {
+            //! console doesn't update in-place so always print on new line
+            Swift.print(message)
+        }
+
+        guard watcherEnabled && !skipStatus else { return }
+        status = String(describing: message) + terminator
+
+        _ = try? outputPaths(from: templatesPath, output: outputPath).forEach { path in
+            _ = try? path.write(Sourcery.generationHeader + "STATUS:\n" + status, encoding: .utf8)
+        }
+    }
+
+    private func templatePaths(from: Path) throws -> [Path] {
+        guard from.isDirectory else {
+            return [from]
+        }
+
+        return try from
+                .recursiveChildren()
+                .filter {
+                    $0.extension == "stencil" || $0.extension == "swifttemplate"
+                }
+    }
+}
+
+// MARK: - Parsing
+
+extension Sourcery {
+    typealias ParsingResult = (types: [Type], inlineRanges: [(file: String, ranges: [String: NSRange])])
+
+    fileprivate func parse(from: Path) throws -> ParsingResult {
         self.track("Scanning sources...", terminator: "")
+
+        let cachesPath = Path.cachesDir(sourcePath: from)
 
         guard from.isDirectory else {
             let parserResult = try FileParser(verbose: verbose, path: from).parse()
@@ -113,24 +157,24 @@ public class Sourcery {
         }
 
         let sources = try from
-            .recursiveChildren()
-            .filter {
-                $0.extension == "swift"
-            }
-            .map { try FileParser(verbose: verbose, path: $0) }
+                .recursiveChildren()
+                .filter {
+                    $0.extension == "swift"
+                }
+                .map { try FileParser(verbose: verbose, path: $0) }
 
         var previousUpdate = 0
         var accumulator = 0
         let step = sources.count / 10 // every 10%
 
-        let results = sources.parallelMap({ self.loadOrParse(parser: $0, cacheDisabled: cacheDisabled) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+        let results = sources.parallelMap({ self.loadOrParse(parser: $0, cachesPath: cachesPath) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
             if accumulator > previousUpdate + step {
                 previousUpdate = accumulator
                 let percentage = accumulator * 100 / sources.count
                 self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
             }
             accumulator += 1
-        })
+                })
 
         var inlineRanges = [(file: String, ranges: [String: NSRange])]()
 
@@ -149,7 +193,7 @@ public class Sourcery {
         return (types, inlineRanges)
     }
 
-    private func loadOrParse(parser: FileParser, cacheDisabled: Bool) -> FileParserResult {
+    private func loadOrParse(parser: FileParser, cachesPath: Path) -> FileParserResult {
         guard let pathString = parser.path else { fatalError("Unable to retrieve FileParser.path") }
         let path = Path(pathString)
         let artifacts = cachesPath + "\(pathString.hash).srf"
@@ -178,17 +222,20 @@ public class Sourcery {
 
         var unarchivedResult: FileParserResult? = nil
         SwiftTryCatch.try({
-            if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
-                unarchivedResult = unarchived
-            }
-        }, catch: { _ in
+                              if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
+                                  unarchivedResult = unarchived
+                              }
+                          }, catch: { _ in
             self.track("Failed to unarchive \(artifacts) due to error, re-parsing")
         }, finallyBlock: {})
 
         return unarchivedResult
     }
+}
 
-    private func generate(templatePath: Path, output: Path, parsingResult: ParsingResult) throws {
+// MARK: - Generation
+extension Sourcery {
+    fileprivate func generate(templatePath: Path, output: Path, parsingResult: ParsingResult) throws {
         track("Loading templates...", terminator: "")
         let allTemplates = try templates(from: templatePath)
         track("Loaded \(allTemplates.count) templates.")
@@ -222,8 +269,8 @@ public class Sourcery {
 
         var result: String = ""
         SwiftTryCatch.try({
-            result = (try? Generator.generate(parsingResult.types, template: template, arguments: self.arguments)) ?? ""
-        }, catch: { error in
+                              result = (try? Generator.generate(parsingResult.types, template: template, arguments: self.arguments)) ?? ""
+                          }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})
 
@@ -256,45 +303,5 @@ public class Sourcery {
 
     internal func generatedPath(`for` templatePath: Path) -> Path {
         return Path("\(templatePath.lastComponentWithoutExtension).generated.swift")
-    }
-
-    private func templates(from: Path) throws -> [Template] {
-        return try templatePaths(from: from).map {
-            if $0.extension == "swifttemplate" {
-                return try SwiftTemplate(path: $0)
-            } else {
-                return try StencilTemplate(path: $0)
-            }
-        }
-    }
-
-    private func outputPaths(from: Path, output: Path) throws -> [Path] {
-        return try templatePaths(from: from).map { output + generatedPath(for: $0) }
-    }
-
-    private func templatePaths(from: Path) throws -> [Path] {
-        guard from.isDirectory else {
-            return [from]
-        }
-
-        return try from
-            .recursiveChildren()
-            .filter {
-                $0.extension == "stencil" || $0.extension == "swifttemplate"
-        }
-    }
-
-    private func track(_ message: Any, terminator: String = "\n", skipStatus: Bool = false) {
-        if !watcherEnabled || verbose {
-            //! console doesn't update in-place so always print on new line
-            Swift.print(message)
-        }
-
-        guard watcherEnabled && !skipStatus else { return }
-        status = String(describing: message) + terminator
-
-        _ = try? outputPaths(from: templatesPath, output: outputPath).forEach { path in
-            _ = try? path.write(Sourcery.generationHeader + "STATUS:\n" + status, encoding: .utf8)
-        }
     }
 }
