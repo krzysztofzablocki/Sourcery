@@ -457,6 +457,8 @@ Available types:
 ### Custom Stencil tags and filter
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
+- `{{ name|camelCaseToSnakeCase }}` - converts a camel case string to a snake case one
+- `{{ name|snakeCaseToCamelCase }}` - converts a snake case string to a camel case one
 - `{{ name|replace:"substring","replacement }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
 - `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
 - `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.
