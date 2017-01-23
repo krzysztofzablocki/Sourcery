@@ -29,12 +29,6 @@ extension Method: Parsable {}
 extension MethodParameter: Parsable {}
 extension EnumCase: Parsable {}
 
-extension NSString {
-    var entireRange: NSRange {
-        return NSRange(location: 0, length: self.length)
-    }
-}
-
 struct FileParser {
 
     let verbose: Bool
