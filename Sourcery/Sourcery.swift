@@ -181,7 +181,7 @@ public class Sourcery {
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
                 unarchivedResult = unarchived
             }
-        }, catch: { error in
+        }, catch: { _ in
             self.track("Failed to unarchive \(artifacts) due to error, re-parsing")
         }, finallyBlock: {})
 
@@ -198,7 +198,7 @@ public class Sourcery {
 
         guard output.isDirectory else {
             let result = try allTemplates.reduce(Sourcery.generationHeader) { result, template in
-                return result + "\n" + (try generate(template, forTypes: parsingResult.types))
+                return result + "\n" + (try generate(template, forParsingResult: parsingResult))
             }
 
             try output.write(result, encoding: .utf8)
@@ -206,18 +206,40 @@ public class Sourcery {
         }
 
         try allTemplates.forEach { template in
-            let result = Sourcery.generationHeader + (try generate(template, forTypes: parsingResult.types))
+            let result = Sourcery.generationHeader + (try generate(template, forParsingResult: parsingResult))
             let outputPath = output + generatedPath(for: template.sourcePath)
+            try outputPath.write(result, encoding: .utf8)
+        }
 
-            let inline = InlineParser.parse(result)
+        track("Finished.", skipStatus: true)
+    }
 
-            try inline
+    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult) throws -> String {
+        guard watcherEnabled else {
+            let result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+            return try processInlineRanges(for: parsingResult, in: result)
+        }
+
+        var result: String = ""
+        SwiftTryCatch.try({
+            result = (try? Generator.generate(parsingResult.types, template: template, arguments: self.arguments)) ?? ""
+        }, catch: { error in
+            result = error?.description ?? ""
+        }, finallyBlock: {})
+
+        return try processInlineRanges(for: parsingResult, in: result)
+    }
+
+    private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
+        let inline = InlineParser.parse(contents)
+
+        try inline
                 .inlineRanges
                 .map { ($0, $1) }
                 .sorted { $0.0.1.location > $0.1.1.location }
                 .forEach { (key, range) in
 
-                    let generatedBody = result.bridge().substring(with: range)
+                    let generatedBody = contents.bridge().substring(with: range)
 
                     try parsingResult.inlineRanges.forEach { (filePath, ranges) in
 
@@ -228,28 +250,8 @@ public class Sourcery {
                             try path.write(updated, encoding: .utf8)
                         }
                     }
-
-            }
-
-            try outputPath.write(result, encoding: .utf8)
-        }
-
-        track("Finished.", skipStatus: true)
-    }
-
-    private func generate(_ template: Template, forTypes types: [Type]) throws -> String {
-        guard watcherEnabled else {
-            return try Generator.generate(types, template: template, arguments: self.arguments)
-        }
-
-        var result: String = ""
-        SwiftTryCatch.try({
-            result = (try? Generator.generate(types, template: template, arguments: self.arguments)) ?? ""
-        }, catch: { error in
-            result = error?.description ?? ""
-        }, finallyBlock: {})
-
-        return result
+                }
+        return contents
     }
 
     internal func generatedPath(`for` templatePath: Path) -> Path {

@@ -15,6 +15,7 @@ internal struct AnnotationsParser {
         case begin(Annotations)
         case annotations(Annotations)
         case end
+        case inlineStart
     }
 
     private struct Line {
@@ -23,6 +24,8 @@ internal struct AnnotationsParser {
             case blockStart
             case blockEnd
             case other
+            case inlineStart
+            case inlineEnd
         }
         let content: String
         let type: LineType
@@ -69,7 +72,7 @@ internal struct AnnotationsParser {
     }
 
     private static func parse(contents: String) -> [Line] {
-        var annotationsBlock = Annotations()
+        var annotationsBlock: Annotations?
         return contents.lines()
                 .map { $0.content.trimmingCharacters(in: .whitespaces) }
                 .map { line in
@@ -80,19 +83,23 @@ internal struct AnnotationsParser {
                         switch searchForAnnotations(commentLine: line) {
                         case let .begin(items):
                             type = .blockStart
-                            items.forEach { annotationsBlock[$0.key] = $0.value }
-                            break
+                            annotationsBlock = Annotations()
+                            items.forEach { annotationsBlock?[$0.key] = $0.value }
                         case let .annotations(items):
                             items.forEach { annotations[$0.key] = $0.value }
-                            break
                         case .end:
-                            type = .blockEnd
-                            annotationsBlock.removeAll()
-                            break
+                            if annotationsBlock != nil {
+                                type = .blockEnd
+                                annotationsBlock?.removeAll()
+                            } else {
+                                type = .inlineEnd
+                            }
+                        case .inlineStart:
+                            type = .inlineStart
                         }
                     }
 
-                    annotationsBlock.forEach { annotation in
+                    annotationsBlock?.forEach { annotation in
                         annotations[annotation.key] = annotation.value
                     }
 
@@ -105,8 +112,13 @@ internal struct AnnotationsParser {
     private static func searchForAnnotations(commentLine: String) -> AnnotationType {
         guard commentLine.contains("sourcery:") else { return .annotations([:]) }
 
+        if commentLine.contains("sourcery:inline:") {
+            return .inlineStart
+        }
+
         let substringRange: Range<String.CharacterView.Index>?
         let insideBlock: Bool
+
         if commentLine.contains("sourcery:begin:") {
             substringRange = commentLine
                     .range(of: "sourcery:begin:")
