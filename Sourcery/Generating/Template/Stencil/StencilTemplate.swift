@@ -30,6 +30,8 @@ final class StencilTemplate: Stencil.Template, Template {
     private static func sourceryEnvironment() -> Stencil.Environment {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
+        ext.registerFilter("snakeCaseToCamelCase", filter: Filter<String>.make({ $0.snakeCaseToCamelCase() }))
+
         ext.registerFilterWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
             return source.replacingOccurrences(of: substring, with: replacement)
         })
@@ -144,6 +146,12 @@ extension String {
         let first = String(characters.prefix(1)).capitalized
         let other = dropFirst()
         return first + other
+    }
+
+    fileprivate func snakeCaseToCamelCase() -> String {
+        return self.components(separatedBy: "_").enumerated().reduce("", { prev, current in
+            return prev + (current.offset == 0 ? current.element : current.element.capitalized)
+        })
     }
 
 }

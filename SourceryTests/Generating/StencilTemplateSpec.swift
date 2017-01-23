@@ -44,6 +44,12 @@ class StencilTemplateSpec: QuickSpec {
                 expect(generate("{{\"helloWorld\" | replace:\"foo\",\"bar\" }}")).to(equal("helloWorld"))
             }
 
+            it("generates camel case from snake case") {
+                expect(generate("{{\"hello_world\" | snakeCaseToCamelCase}}")).to(equal("helloWorld"))
+                expect(generate("{{\"\" | snakeCaseToCamelCase}}")).to(equal(""))
+                expect(generate("{{\"hello\" | snakeCaseToCamelCase}}")).to(equal("hello"))
+            }
+
         }
     }
 }
