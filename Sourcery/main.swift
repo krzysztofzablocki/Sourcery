@@ -74,7 +74,7 @@ func runCLI() {
     ) { watcherEnabled, verboseLogging, source, template, output, args in
         do {
             let start = CFAbsoluteTimeGetCurrent()
-            if let keepAlive = try Sourcery(verbose: verboseLogging, arguments: args.arguments).processFiles(source, usingTemplates: template, output: output, watcherEnabled: watcherEnabled) {
+            if let keepAlive = try Sourcery(verbose: verboseLogging, watcherEnabled: watcherEnabled, arguments: args.arguments).processFiles(source, usingTemplates: template, output: output) {
                 RunLoop.current.run()
                 _ = keepAlive
             } else {

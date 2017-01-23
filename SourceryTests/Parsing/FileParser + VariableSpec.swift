@@ -14,7 +14,7 @@ class FileParserVariableSpec: QuickSpec {
         describe("Parser") {
             describe("parseVariable") {
                 func parse(_ code: String) -> Variable? {
-                    let parser = FileParser(contents: code)
+                    guard let parser = try? FileParser(contents: code) else { fail(); return nil }
                     let code = build(code)
                     guard let substructures = code?[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable],
                           let src = substructures.first as? [String: SourceKitRepresentable] else {

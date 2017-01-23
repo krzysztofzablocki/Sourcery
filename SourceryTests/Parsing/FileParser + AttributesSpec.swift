@@ -7,10 +7,10 @@ class FileParserAttributesSpec: QuickSpec {
 
         describe("FileParser") {
 
-            let sut: FileParser = FileParser(contents: "")
+            guard let sut: FileParser = try? FileParser(contents: "") else { return fail() }
 
             func parse(_ code: String) -> [Type] {
-                let parserResult = FileParser(contents: code).parse()
+                guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
                 return Composer(verbose: false).uniqueTypes(parserResult)
             }
 
