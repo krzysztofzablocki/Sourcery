@@ -57,6 +57,7 @@
 		CD53EE681D897D2900F5886C /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE671D897D2900F5886C /* Templates */; };
 		CD666A9A1E0BEF4F0045D31A /* Diffable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD666A991E0BEF4F0045D31A /* Diffable.swift */; };
 		CD666A9C1E0BF0A10045D31A /* Diffable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD666A9B1E0BF0A10045D31A /* Diffable.generated.swift */; };
+		CD724D731E366F0A0002E632 /* PhantomProtocols.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = E291DD290C35DCDEF29742F1 /* PhantomProtocols.swift */; };
 		CD812F5A1DFDCC1A0088B2F6 /* AccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F541DFDCC1A0088B2F6 /* AccessLevel.swift */; };
 		CD812F5B1DFDCC1A0088B2F6 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F551DFDCC1A0088B2F6 /* Enum.swift */; };
 		CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD812F561DFDCC1A0088B2F6 /* Protocol.swift */; };
@@ -121,6 +122,7 @@
 			dstPath = SwiftTemplateRuntime;
 			dstSubfolderSpec = 7;
 			files = (
+				CD724D731E366F0A0002E632 /* PhantomProtocols.swift in SwiftTemplates */,
 				CDEF5F101E26A47B000DB954 /* FileParserResult.swift in SwiftTemplates */,
 				CDBEC15D1E242C710090E881 /* Attribute.swift in SwiftTemplates */,
 				C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */,

@@ -10,7 +10,7 @@ internal enum InlineParser {
         var bridged = contents.bridge()
         let commentPattern = NSRegularExpression.escapedPattern(for: "//")
         let regex = try? NSRegularExpression(
-                pattern: "(?:^\\s*?\(commentPattern).*sourcery:inline:)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern).*sourcery:end)",
+                pattern: "(?:^\\s*?\(commentPattern)\\s*?sourcery:inline:)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
                 options: [.allowCommentsAndWhitespace, .anchorsMatchLines]
         )
 

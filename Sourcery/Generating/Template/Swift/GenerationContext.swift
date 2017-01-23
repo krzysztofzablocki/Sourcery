@@ -24,8 +24,8 @@ class GenerationContext: NSObject, SourceryModel {
         self.typeByName = typeByName
         self.arguments = arguments
     }
-
-    // GenerationContext.NSCoding {
+    
+    // sourcery:inline:GenerationContext.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let typeByName: [String : Type] = aDecoder.decode(forKey: "typeByName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeByName"])); fatalError() }; self.typeByName = typeByName
@@ -40,7 +40,7 @@ class GenerationContext: NSObject, SourceryModel {
             aCoder.encode(self.arguments, forKey: "arguments")
             
         }
-        // } GenerationContext.NSCoding
+    // sourcery:end
 
     /// Lists all known classes in the project
     /// sourcery: skipEquality, skipCoding

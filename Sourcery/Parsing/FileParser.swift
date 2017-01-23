@@ -55,13 +55,18 @@ struct FileParser {
     ///   - path: Path to file.
     /// - Throws: parsing errors.
     init(verbose: Bool = false, contents: String, path: Path? = nil) {
-        let result = InlineParser.parse(contents)
+        let result: (contents: String, inlineRanges: [String: NSRange])
+        if !contents.hasPrefix(Sourcery.generationMarker) {
+            result = InlineParser.parse(contents)
+        } else {
+            result = ("", [:])
+        }
 
         self.inlineRanges = result.inlineRanges
         self.verbose = verbose
         self.contents = result.contents
         self.path = path?.string
-        self.annotations = AnnotationsParser(contents: contents)
+        self.annotations = AnnotationsParser(contents: result.contents)
     }
 
     /// Parses file under given path.
