@@ -559,6 +559,7 @@ extension FileParser {
 extension FileParser {
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {
+        // swiftlint:disable:next force_unwrapping
         var contentToParse = self.contents!
 
         // replace all processed substructures with whitespaces so that we don't process their typealiases again

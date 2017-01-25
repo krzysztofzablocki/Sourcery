@@ -190,7 +190,7 @@ extension Sourcery {
             acc.typealiases += next.typealiases
             acc.types += next.types
 
-            // swiftlint:disable:next force_unwrap
+            // swiftlint:disable:next force_unwrapping
             inlineRanges.append( (next.path!, next.inlineRanges) )
             return acc
         }
