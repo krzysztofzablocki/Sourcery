@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Quick
@@ -23,11 +23,6 @@ class TypedSpec: QuickSpec {
                 sut.typeName.tuple = tuple
 
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
-            }
-
-            it("can report closure type via KVC") {
-                let sut = AssociatedValue(typeName: TypeName("(Int) -> (Int)"))
-                expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
@@ -56,11 +51,6 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 
-            it("can report closure type via KVC") {
-                let sut = MethodParameter(typeName: TypeName("(Int) -> (Int)"))
-                expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
-            }
-
             it("can report actual type name via KVC") {
                 let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
@@ -85,11 +75,6 @@ class TypedSpec: QuickSpec {
                 sut.typeName.tuple = tuple
 
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
-            }
-
-            it("can report closure type via KVC") {
-                let sut = TupleElement(typeName: TypeName("(Int) -> (Int)"))
-                expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
@@ -118,11 +103,6 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 
-            it("can report closure type via KVC") {
-                let sut = Typealias(typeName: TypeName("(Int) -> (Int)"))
-                expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
-            }
-
             it("can report actual type name via KVC") {
                 let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
@@ -147,11 +127,6 @@ class TypedSpec: QuickSpec {
                 sut.typeName.tuple = tuple
 
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
-            }
-
-            it("can report closure type via KVC") {
-                let sut = Variable(typeName: TypeName("(Int) -> (Int)"))
-                expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
