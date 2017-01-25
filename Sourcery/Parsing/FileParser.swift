@@ -29,13 +29,14 @@ extension Method: Parsable {}
 extension MethodParameter: Parsable {}
 extension EnumCase: Parsable {}
 
-struct FileParser {
-
+final class FileParser {
     let verbose: Bool
-    let contents: String
     let path: String?
-    let annotations: AnnotationsParser
-    let inlineRanges: [String: NSRange]
+    let initialContents: String
+
+    fileprivate var contents: String!
+    fileprivate var annotations: AnnotationsParser!
+    fileprivate var inlineRanges: [String: NSRange]!
 
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0): " } ?? ""
@@ -49,25 +50,9 @@ struct FileParser {
     ///   - path: Path to file.
     /// - Throws: parsing errors.
     init(verbose: Bool = false, contents: String, path: Path? = nil) throws {
-        try Verifier.canParse(content: contents)
-
         self.verbose = verbose
         self.path = path?.string
-
-        let inline = InlineParser.parse(contents)
-        self.inlineRanges = inline.inlineRanges
-        self.contents = inline.contents
-        self.annotations = AnnotationsParser(contents: inline.contents)
-    }
-
-    /// Parses file under given path.
-    ///
-    /// - Parameters:
-    ///   - verbose: Whether it should log verbose
-    ///   - path: Path to file.
-    /// - Throws: parsing errors.
-    init(verbose: Bool = false, path: Path) throws {
-        try self.init(verbose: verbose, contents: try path.read(.utf8), path: path)
+        self.initialContents = contents
     }
 
     // MARK: - Processing
@@ -76,6 +61,11 @@ struct FileParser {
     ///
     /// - Returns: All types we could find.
     public func parse() -> FileParserResult {
+        let inline = InlineParser.parse(initialContents)
+        contents = inline.contents
+        inlineRanges = inline.inlineRanges
+        annotations = AnnotationsParser(contents: contents)
+
         let file = File(contents: contents)
         let source = Structure(file: file).dictionary
 
@@ -569,7 +559,7 @@ extension FileParser {
 extension FileParser {
 
     fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {
-        var contentToParse = self.contents
+        var contentToParse = self.contents!
 
         // replace all processed substructures with whitespaces so that we don't process their typealiases again
         for substructure in processed {
