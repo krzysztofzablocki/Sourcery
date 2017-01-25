@@ -21,7 +21,7 @@ class FileParserVariableSpec: QuickSpec {
                         fail()
                         return nil
                     }
-                    parser.parse()
+                    _ = parser.parse()
                     return parser.parseVariable(src)
                 }
 
