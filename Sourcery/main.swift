@@ -64,6 +64,9 @@ func runCLI() {
         Flag("watch",
              flag: "w",
              description: "Watch template for changes and regenerate as needed."),
+        Flag("disableCache",
+             flag: "w",
+             description: "Stops using cache."),
         Flag("verbose",
              flag: "v",
              description: "Turn on verbose logging for ignored entities"),
@@ -71,10 +74,10 @@ func runCLI() {
         Argument<Path>("templates", description: "Path to templates. File or Directory.", validator: Validators.isFileOrDirectory),
         Argument<Path>("output", description: "Path to output. File or Directory."),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
-    ) { watcherEnabled, verboseLogging, source, template, output, args in
+    ) { watcherEnabled, disableCache, verboseLogging, source, template, output, args in
         do {
             let start = CFAbsoluteTimeGetCurrent()
-            if let keepAlive = try Sourcery(verbose: verboseLogging, watcherEnabled: watcherEnabled, arguments: args.arguments).processFiles(source, usingTemplates: template, output: output) {
+            if let keepAlive = try Sourcery(verbose: verboseLogging, watcherEnabled: watcherEnabled, cacheDisabled: disableCache, arguments: args.arguments).processFiles(source, usingTemplates: template, output: output) {
                 RunLoop.current.run()
                 _ = keepAlive
             } else {

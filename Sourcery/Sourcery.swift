@@ -17,6 +17,10 @@ public class Sourcery {
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"
 
+    enum Error: Swift.Error {
+        case containsMergeConflictMarkers
+    }
+
     fileprivate let verbose: Bool
     fileprivate let watcherEnabled: Bool
     fileprivate let arguments: [String: NSObject]
@@ -129,12 +133,8 @@ public class Sourcery {
     }
 
     private func templatePaths(from: Path) throws -> [Path] {
-        guard from.isDirectory else {
-            return [from]
-        }
-
-        return try from
-                .recursiveChildren()
+        let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
+        return fileList
                 .filter {
                     $0.extension == "stencil" || $0.extension == "swifttemplate"
                 }
@@ -151,17 +151,25 @@ extension Sourcery {
 
         let cachesPath = Path.cachesDir(sourcePath: from)
 
-        guard from.isDirectory else {
-            let parserResult = try FileParser(verbose: verbose, path: from).parse()
-            return (Composer(verbose: verbose).uniqueTypes(parserResult), [(from.string, parserResult.inlineRanges)])
-        }
-
-        let sources = try from
-                .recursiveChildren()
+        let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
+        let sources = try fileList
                 .filter {
                     $0.extension == "swift"
                 }
-                .map { try FileParser(verbose: verbose, path: $0) }
+                .map {
+                    (path: $0, contents: try $0.read(.utf8))
+                }
+                .filter {
+                    let result = Verifier.canParse(content: $0.contents)
+                    if result == .containsConflictMarkers {
+                        throw Error.containsMergeConflictMarkers
+                    }
+
+                    return result == .approved
+                }
+                .map {
+                    try FileParser(verbose: verbose, contents: $0.contents, path: $0.path)
+                }
 
         var previousUpdate = 0
         var accumulator = 0
@@ -174,7 +182,7 @@ extension Sourcery {
                 self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
             }
             accumulator += 1
-                })
+        })
 
         var inlineRanges = [(file: String, ranges: [String: NSRange])]()
 
@@ -182,6 +190,7 @@ extension Sourcery {
             acc.typealiases += next.typealiases
             acc.types += next.types
 
+            // swiftlint:disable:next force_unwrap
             inlineRanges.append( (next.path!, next.inlineRanges) )
             return acc
         }
@@ -194,7 +203,7 @@ extension Sourcery {
     }
 
     private func loadOrParse(parser: FileParser, cachesPath: Path) -> FileParserResult {
-        guard let pathString = parser.path else { fatalError("Unable to retrieve FileParser.path") }
+        guard let pathString = parser.path else { fatalError("Unable to retrieve \(parser.path)") }
         let path = Path(pathString)
         let artifacts = cachesPath + "\(pathString.hash).srf"
 
@@ -205,11 +214,14 @@ extension Sourcery {
               let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
 
             let result = parser.parse()
-            let data = NSKeyedArchiver.archivedData(withRootObject: result)
-            do {
-                try artifacts.write(data)
-            } catch {
-                fatalError("Unable to save artifacts for \(path) under \(artifacts), error: \(error)")
+
+            if cacheDisabled {
+                let data = NSKeyedArchiver.archivedData(withRootObject: result)
+                do {
+                    try artifacts.write(data)
+                } catch {
+                    fatalError("Unable to save artifacts for \(path) under \(artifacts), error: \(error)")
+                }
             }
 
             return result
