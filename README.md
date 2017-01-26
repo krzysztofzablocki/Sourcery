@@ -68,7 +68,7 @@ In those scenarios usually **compiler will not generate the error for you**, whi
 
 Template used to generate equality for all types that conform to `:AutoEquatable`, allowing us to avoid writing boilerplate code.
 
-It adds `:Equality` conformance to all types, except protocols (because it would require turning them into PAT's).
+It adds `:Equatable` conformance to all types, except protocols (because it would require turning them into PAT's).
 For protocols it's just generating `func ==`.
 
 #### [Stencil template](Templates/AutoEquatable.stencil)
