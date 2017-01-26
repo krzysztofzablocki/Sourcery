@@ -66,10 +66,10 @@ In those scenarios usually **compiler will not generate the error for you**, whi
 <details>
 <summary>I want to generate `Equatable` implementation</summary>
 
-Template used to generate hashing for all types that conform to `:AutoHashable`, allowing us to avoid writing boilerplate code.
+Template used to generate equality for all types that conform to `:AutoEquatable`, allowing us to avoid writing boilerplate code.
 
-It adds `:Hashable` conformance to all types, except protocols (because it would require turning them into PAT's).
-For protocols it's just generating `var hashValue` comparator.
+It adds `:Equality` conformance to all types, except protocols (because it would require turning them into PAT's).
+For protocols it's just generating `func ==`.
 
 #### [Stencil template](Templates/AutoEquatable.stencil)
 
@@ -81,12 +81,18 @@ For protocols it's just generating `var hashValue` comparator.
 #### Example output:
 
 ```swift
-// MARK: - AdNodeViewModel AutoHashable
-extension AdNodeViewModel: Hashable {
+// MARK: - AdNodeViewModel AutoEquatable
+extension AdNodeViewModel: Equatable {}
 
-    internal var hashValue: Int {
-        return combineHashes(remoteAdView.hashValue, hidesDisclaimer.hashValue, type.hashValue, height.hashValue, attributedDisclaimer.hashValue, 0)
-    }
+internal func == (lhs: AdNodeViewModel, rhs: AdNodeViewModel) -> Bool {
+    guard lhs.remoteAdView == rhs.remoteAdView else { return false }
+    guard lhs.hidesDisclaimer == rhs.hidesDisclaimer else { return false }
+    guard lhs.type == rhs.type else { return false }
+    guard lhs.height == rhs.height else { return false }
+
+    guard lhs.attributedDisclaimer == rhs.attributedDisclaimer else { return false }
+
+    return true
 }
 ```
 </details>
