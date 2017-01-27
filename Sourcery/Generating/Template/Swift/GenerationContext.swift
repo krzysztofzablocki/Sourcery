@@ -77,6 +77,7 @@ protocol TypeConvertible {
 }
 
 extension Type: TypeConvertible {
+    /// sourcery: skipDescription, skipEquality, skipCoding
     var type: Type {
         return self
     }
