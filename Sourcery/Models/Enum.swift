@@ -25,7 +25,7 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed {
         self.init(localName: name, externalName: name, typeName: typeName, type: type)
     }
 
-    // AssociatedValue.NSCoding {
+    // sourcery:inline:AssociatedValue.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             self.localName = aDecoder.decode(forKey: "localName")
             self.externalName = aDecoder.decode(forKey: "externalName")
@@ -42,7 +42,7 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed {
             aCoder.encode(self.type, forKey: "type")
 
         }
-        // } AssociatedValue.NSCoding
+        // sourcery:end
 
 }
 
@@ -70,7 +70,7 @@ final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
         self.annotations = annotations
     }
 
-    // EnumCase.NSCoding {
+    // sourcery:inline:EnumCase.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             self.rawValue = aDecoder.decode(forKey: "rawValue")
@@ -87,7 +87,7 @@ final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
             aCoder.encode(self.annotations, forKey: "annotations")
 
         }
-        // } EnumCase.NSCoding
+        // sourcery:end
 }
 
 final class Enum: Type {
@@ -162,7 +162,7 @@ final class Enum: Type {
         }
     }
 
-    // Enum.NSCoding {
+    // sourcery:inline:Enum.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let cases: [EnumCase] = aDecoder.decode(forKey: "cases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["cases"])); fatalError() }; self.cases = cases
             self.rawTypeName = aDecoder.decode(forKey: "rawTypeName")
@@ -179,5 +179,5 @@ final class Enum: Type {
             aCoder.encode(self.rawType, forKey: "rawType")
 
         }
-        // } Enum.NSCoding
+        // sourcery:end
 }

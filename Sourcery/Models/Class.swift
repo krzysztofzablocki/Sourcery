@@ -31,7 +31,7 @@ final class Class: Type {
         )
     }
 
-    // Class.NSCoding {
+    // sourcery:inline:Class.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
         }
@@ -40,5 +40,5 @@ final class Class: Type {
             super.encode(with: aCoder)
 
         }
-        // } Class.NSCoding
+        // sourcery:end
 }

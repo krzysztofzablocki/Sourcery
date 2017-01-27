@@ -39,7 +39,7 @@ final class Struct: Type {
         )
     }
 
-    // Struct.NSCoding {
+    // sourcery:inline:Struct.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
         }
@@ -48,5 +48,5 @@ final class Struct: Type {
             super.encode(with: aCoder)
 
         }
-        // } Struct.NSCoding
+        // sourcery:end
 }

@@ -199,7 +199,7 @@ class Type: NSObject, SourceryModel, Annotated {
         type.implements.forEach { self.implements[$0.key] = $0.value }
     }
 
-    // Type.NSCoding {
+    // sourcery:inline:Type.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
@@ -242,7 +242,7 @@ class Type: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.attributes, forKey: "attributes")
 
         }
-        // } Type.NSCoding
+        // sourcery:end
 }
 
 extension Type {

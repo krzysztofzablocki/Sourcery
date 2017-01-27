@@ -26,7 +26,7 @@ import Foundation
         self.sourceryVersion = sourceryVersion
     }
 
-    // FileParserResult.NSCoding {
+    // sourcery:inline:FileParserResult.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             self.path = aDecoder.decode(forKey: "path")
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
@@ -47,5 +47,5 @@ import Foundation
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
 
         }
-        // } FileParserResult.NSCoding
+        // sourcery:end
 }
