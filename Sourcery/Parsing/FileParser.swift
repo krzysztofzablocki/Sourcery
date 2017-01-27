@@ -542,7 +542,7 @@ extension FileParser {
 
         let items = body.commaSeparated()
         return items
-            .map({ $0.trimmingCharacters(in: .whitespaces) })
+            .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
             .enumerated()
             .map {
                 let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
