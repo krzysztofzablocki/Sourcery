@@ -50,6 +50,38 @@ class ParserComposerSpec: QuickSpec {
                         expect(parse("fileprivate struct Foo {}")).to(beEmpty())
                     }
                 }
+                context("given enum containing associated values") {
+                    it("trims whitespace from associated value names") {
+                        expect(parse("enum Foo {\n case bar(\nvalue: String,\n other: Int\n)\n}"))
+                                .to(equal([
+                                    Enum(name: "Foo",
+                                         accessLevel: .internal,
+                                         isExtension: false,
+                                         inheritedTypes: [],
+                                         rawTypeName: nil,
+                                         cases: [
+                                            EnumCase(
+                                                name: "bar",
+                                                rawValue: nil,
+                                                associatedValues: [
+                                                    AssociatedValue(
+                                                        localName: "value",
+                                                        externalName: "value",
+                                                        typeName: TypeName("String")
+                                                    ),
+                                                    AssociatedValue(
+                                                        localName: "other",
+                                                        externalName: "other",
+                                                        typeName: TypeName("Int")
+                                                    )
+                                                ],
+                                                annotations: [:]
+                                            )
+                                        ]
+                                         )
+                                    ]))
+                    }
+                }
 
                 context("given enum containing rawType") {
 
