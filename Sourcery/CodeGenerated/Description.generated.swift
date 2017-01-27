@@ -143,8 +143,7 @@ extension Type {
         string += "inheritedTypes = \(self.inheritedTypes), "
         string += "containedTypes = \(self.containedTypes), "
         string += "parentName = \(self.parentName), "
-        string += "attributes = \(self.attributes), "
-        string += "type = \(self.type)"
+        string += "attributes = \(self.attributes)"
         return string
     }
 }
