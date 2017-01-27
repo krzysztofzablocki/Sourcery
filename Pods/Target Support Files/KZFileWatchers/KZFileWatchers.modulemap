@@ -1,6 +1,0 @@
-framework module KZFileWatchers {
-  umbrella header "KZFileWatchers-umbrella.h"
-
-  export *
-  module * { export * }
-}

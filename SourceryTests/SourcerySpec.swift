@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import PathKit
-import KZFileWatchers
 @testable import Sourcery
 
 private let version = "Major.Minor.Patch"
