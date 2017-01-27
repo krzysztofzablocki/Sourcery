@@ -57,7 +57,7 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
         self.annotations = annotations
     }
 
-    // Variable.NSCoding {
+    // sourcery:inline:Variable.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
@@ -84,5 +84,5 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
             aCoder.encode(self.attributes, forKey: "attributes")
 
         }
-        // } Variable.NSCoding
+        // sourcery:end
 }

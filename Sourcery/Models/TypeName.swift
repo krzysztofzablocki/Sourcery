@@ -111,7 +111,7 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
         return name
     }
 
-    // TypeName.NSCoding {
+    // sourcery:inline:TypeName.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
@@ -134,7 +134,7 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
             aCoder.encode(self.tuple, forKey: "tuple")
 
         }
-        // } TypeName.NSCoding
+        // sourcery:end
 
 }
 
@@ -151,7 +151,7 @@ final class TupleElement: NSObject, SourceryModel, Typed {
         self.type = type
     }
 
-    // TupleElement.NSCoding {
+    // sourcery:inline:TupleElement.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
@@ -166,7 +166,7 @@ final class TupleElement: NSObject, SourceryModel, Typed {
             aCoder.encode(self.type, forKey: "type")
 
         }
-        // } TupleElement.NSCoding
+        // sourcery:end
 }
 
 final class TupleType: NSObject, SourceryModel {
@@ -179,7 +179,7 @@ final class TupleType: NSObject, SourceryModel {
         self.elements = elements
     }
 
-    // TupleType.NSCoding {
+    // sourcery:inline:TupleType.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
@@ -192,5 +192,5 @@ final class TupleType: NSObject, SourceryModel {
             aCoder.encode(self.elements, forKey: "elements")
 
         }
-        // } TupleType.NSCoding
+        // sourcery:end
 }

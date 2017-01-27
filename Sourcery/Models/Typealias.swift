@@ -34,7 +34,7 @@ final class Typealias: NSObject, Typed, SourceryModel {
         self.parentName = parent?.name
     }
 
-    // Typealias.NSCoding {
+    // sourcery:inline:Typealias.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["aliasName"])); fatalError() }; self.aliasName = aliasName
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
@@ -53,5 +53,5 @@ final class Typealias: NSObject, Typed, SourceryModel {
             aCoder.encode(self.parentName, forKey: "parentName")
 
         }
-        // } Typealias.NSCoding
+        // sourcery:end
 }

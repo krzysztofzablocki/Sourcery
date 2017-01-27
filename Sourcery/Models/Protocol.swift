@@ -38,7 +38,7 @@ final class Protocol: Type {
         )
     }
 
-    // Protocol.NSCoding {
+    // sourcery:inline:Protocol.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
         }
@@ -47,5 +47,5 @@ final class Protocol: Type {
             super.encode(with: aCoder)
 
         }
-        // } Protocol.NSCoding
+        // sourcery:end
 }

@@ -50,7 +50,7 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
         }
     }
 
-    // Attribute.NSCoding {
+    // sourcery:inline:sourcery:.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
@@ -65,6 +65,6 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
             aCoder.encode(self._description, forKey: "_description")
 
         }
-        // } Attribute.NSCoding
+        // sourcery:end
 
 }

@@ -35,7 +35,7 @@ final class MethodParameter: NSObject, SourceryModel, Typed {
         self.name = name
     }
 
-    // MethodParameter.NSCoding {
+    // sourcery:inline:MethodParameter.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -52,7 +52,7 @@ final class MethodParameter: NSObject, SourceryModel, Typed {
             aCoder.encode(self.type, forKey: "type")
 
         }
-        // } MethodParameter.NSCoding
+        // sourcery:end
 }
 
 final class Method: NSObject, SourceryModel, Annotated {
@@ -153,7 +153,7 @@ final class Method: NSObject, SourceryModel, Annotated {
         self.annotations = annotations
     }
 
-    // Method.NSCoding {
+    // sourcery:inline:Method.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["selectorName"])); fatalError() }; self.selectorName = selectorName
@@ -186,5 +186,5 @@ final class Method: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.attributes, forKey: "attributes")
 
         }
-        // } Method.NSCoding
+        // sourcery:end
 }
