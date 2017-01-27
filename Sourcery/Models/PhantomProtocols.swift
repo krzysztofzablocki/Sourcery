@@ -18,4 +18,4 @@ protocol AutoDescription {}
 protocol AutoCoding {}
 
 /// Phantom protocol for NSCoding, Equatable and Diffable
-protocol SourceryModel: AutoDiffable, AutoEquatable, AutoCoding {}
+protocol SourceryModel: AutoDiffable, AutoEquatable, AutoCoding, AutoDescription {}

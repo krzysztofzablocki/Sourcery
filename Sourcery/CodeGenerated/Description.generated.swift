@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.5.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+ 
 extension AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -10,7 +11,22 @@ extension AssociatedValue {
         return string
     }
 }
-
+extension Class {
+    override var description: String {
+        var string = super.description
+        string += "kind = \(self.kind)"
+        return string
+    }
+}
+extension Enum {
+    override var description: String {
+        var string = super.description
+        string += "cases = \(self.cases), "
+        string += "rawTypeName = \(self.rawTypeName), "
+        string += "hasAssociatedValues = \(self.hasAssociatedValues)"
+        return string
+    }
+}
 extension EnumCase {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -22,7 +38,18 @@ extension EnumCase {
         return string
     }
 }
-
+extension FileParserResult {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "path = \(self.path), "
+        string += "types = \(self.types), "
+        string += "typealiases = \(self.typealiases), "
+        string += "inlineRanges = \(self.inlineRanges), "
+        string += "contentSha = \(self.contentSha), "
+        string += "sourceryVersion = \(self.sourceryVersion)"
+        return string
+    }
+}
 extension GenerationContext {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -37,7 +64,6 @@ extension GenerationContext {
         return string
     }
 }
-
 extension Method {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -56,7 +82,6 @@ extension Method {
         return string
     }
 }
-
 extension MethodParameter {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -67,7 +92,20 @@ extension MethodParameter {
         return string
     }
 }
-
+extension Protocol {
+    override var description: String {
+        var string = super.description
+        string += "kind = \(self.kind)"
+        return string
+    }
+}
+extension Struct {
+    override var description: String {
+        var string = super.description
+        string += "kind = \(self.kind)"
+        return string
+    }
+}
 extension TupleElement {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -76,7 +114,6 @@ extension TupleElement {
         return string
     }
 }
-
 extension TupleType {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -85,7 +122,6 @@ extension TupleType {
         return string
     }
 }
-
 extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -107,11 +143,11 @@ extension Type {
         string += "inheritedTypes = \(self.inheritedTypes), "
         string += "containedTypes = \(self.containedTypes), "
         string += "parentName = \(self.parentName), "
-        string += "attributes = \(self.attributes)"
+        string += "attributes = \(self.attributes), "
+        string += "type = \(self.type)"
         return string
     }
 }
-
 extension Typealias {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -122,7 +158,6 @@ extension Typealias {
         return string
     }
 }
-
 extension Variable {
     override var description: String {
         var string = "\(type(of: self)): "

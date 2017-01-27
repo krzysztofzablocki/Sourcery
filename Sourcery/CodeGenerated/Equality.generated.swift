@@ -1,55 +1,46 @@
 // Generated using Sourcery 0.5.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension AssociatedValue {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? AssociatedValue else { return false }
         if self.localName != rhs.localName { return false }
         if self.externalName != rhs.externalName { return false }
         if self.typeName != rhs.typeName { return false }
-
         return true
     }
 }
-
 extension Attribute {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Attribute else { return false }
         if self.name != rhs.name { return false }
         if self.arguments != rhs.arguments { return false }
         if self._description != rhs._description { return false }
-
         return true
     }
 }
-
 extension Class {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Class else { return false }
-
         return super.isEqual(rhs)
     }
 }
-
 extension DiffableResult {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? DiffableResult else { return false }
         if self.identifier != rhs.identifier { return false }
-
         return true
     }
 }
-
 extension Enum {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Enum else { return false }
         if self.cases != rhs.cases { return false }
         if self.rawTypeName != rhs.rawTypeName { return false }
-
         return super.isEqual(rhs)
     }
 }
-
 extension EnumCase {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? EnumCase else { return false }
@@ -57,11 +48,9 @@ extension EnumCase {
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
         if self.annotations != rhs.annotations { return false }
-
         return true
     }
 }
-
 extension FileParserResult {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? FileParserResult else { return false }
@@ -71,22 +60,18 @@ extension FileParserResult {
         if self.inlineRanges != rhs.inlineRanges { return false }
         if self.contentSha != rhs.contentSha { return false }
         if self.sourceryVersion != rhs.sourceryVersion { return false }
-
         return true
     }
 }
-
 extension GenerationContext {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? GenerationContext else { return false }
         if self.types != rhs.types { return false }
         if self.typeByName != rhs.typeByName { return false }
         if self.arguments != rhs.arguments { return false }
-
         return true
     }
 }
-
 extension Method {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Method else { return false }
@@ -101,58 +86,46 @@ extension Method {
         if self.isFailableInitializer != rhs.isFailableInitializer { return false }
         if self.annotations != rhs.annotations { return false }
         if self.attributes != rhs.attributes { return false }
-
         return true
     }
 }
-
 extension MethodParameter {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? MethodParameter else { return false }
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
-
         return true
     }
 }
-
 extension Protocol {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Protocol else { return false }
-
         return super.isEqual(rhs)
     }
 }
-
 extension Struct {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Struct else { return false }
-
         return super.isEqual(rhs)
     }
 }
-
 extension TupleElement {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TupleElement else { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
-
         return true
     }
 }
-
 extension TupleType {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TupleType else { return false }
         if self.name != rhs.name { return false }
         if self.elements != rhs.elements { return false }
-
         return true
     }
 }
-
 extension Type {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
@@ -168,35 +141,28 @@ extension Type {
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
         if self.attributes != rhs.attributes { return false }
-
         if self.kind != rhs.kind { return false }
-
         return true
     }
 }
-
 extension TypeName {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TypeName else { return false }
         if self.name != rhs.name { return false }
         if self.attributes != rhs.attributes { return false }
         if self.tuple != rhs.tuple { return false }
-
         return true
     }
 }
-
 extension Typealias {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Typealias else { return false }
         if self.aliasName != rhs.aliasName { return false }
         if self.typeName != rhs.typeName { return false }
         if self.parentName != rhs.parentName { return false }
-
         return true
     }
 }
-
 extension Variable {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Variable else { return false }
@@ -208,7 +174,6 @@ extension Variable {
         if self.writeAccess != rhs.writeAccess { return false }
         if self.annotations != rhs.annotations { return false }
         if self.attributes != rhs.attributes { return false }
-
         return true
     }
 }

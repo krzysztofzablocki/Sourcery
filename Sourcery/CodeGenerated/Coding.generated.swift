@@ -3,6 +3,7 @@
 
 import Foundation
 
+
 extension NSCoder {
 
     @nonobjc func decode(forKey: String) -> String? {
@@ -47,21 +48,17 @@ extension AssociatedValue: NSCoding {}
             self.externalName = aDecoder.decode(forKey: "externalName")
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.localName, forKey: "localName")
             aCoder.encode(self.externalName, forKey: "externalName")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
-            
         }
     // sourcery:end
 }
 */
-
 extension Attribute: NSCoding {}
 /*
     // sourcery:inline:Attribute.AutoCoding
@@ -69,20 +66,16 @@ extension Attribute: NSCoding {}
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
             guard let _description: String = aDecoder.decode(forKey: "_description") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["_description"])); fatalError() }; self._description = _description
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.arguments, forKey: "arguments")
             aCoder.encode(self._description, forKey: "_description")
-            
         }
     // sourcery:end
 }
 */
-
 /*
     // sourcery:inline:Class.AutoCoding
         required init?(coder aDecoder: NSCoder) {
@@ -91,12 +84,10 @@ extension Attribute: NSCoding {}
 
         override func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
-            
         }
     // sourcery:end
 }
 */
-
 /*
     // sourcery:inline:Enum.AutoCoding
         required init?(coder aDecoder: NSCoder) {
@@ -113,12 +104,10 @@ extension Attribute: NSCoding {}
             aCoder.encode(self.rawTypeName, forKey: "rawTypeName")
             aCoder.encode(self.hasRawType, forKey: "hasRawType")
             aCoder.encode(self.rawType, forKey: "rawType")
-            
         }
     // sourcery:end
 }
 */
-
 extension EnumCase: NSCoding {}
 /*
     // sourcery:inline:EnumCase.AutoCoding
@@ -127,21 +116,17 @@ extension EnumCase: NSCoding {}
             self.rawValue = aDecoder.decode(forKey: "rawValue")
             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.rawValue, forKey: "rawValue")
             aCoder.encode(self.associatedValues, forKey: "associatedValues")
             aCoder.encode(self.annotations, forKey: "annotations")
-            
         }
     // sourcery:end
 }
 */
-
 extension FileParserResult: NSCoding {}
 /*
     // sourcery:inline:FileParserResult.AutoCoding
@@ -152,23 +137,19 @@ extension FileParserResult: NSCoding {}
             guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineRanges"])); fatalError() }; self.inlineRanges = inlineRanges
             self.contentSha = aDecoder.decode(forKey: "contentSha")
             guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["sourceryVersion"])); fatalError() }; self.sourceryVersion = sourceryVersion
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.path, forKey: "path")
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.inlineRanges, forKey: "inlineRanges")
             aCoder.encode(self.contentSha, forKey: "contentSha")
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
-            
         }
     // sourcery:end
 }
 */
-
 extension GenerationContext: NSCoding {}
 /*
     // sourcery:inline:GenerationContext.AutoCoding
@@ -176,24 +157,21 @@ extension GenerationContext: NSCoding {}
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let typeByName: [String : Type] = aDecoder.decode(forKey: "typeByName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeByName"])); fatalError() }; self.typeByName = typeByName
             guard let arguments: [String : NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typeByName, forKey: "typeByName")
             aCoder.encode(self.arguments, forKey: "arguments")
-            
         }
     // sourcery:end
 }
 */
-
 extension Method: NSCoding {}
 /*
     // sourcery:inline:Method.AutoCoding
         required init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["selectorName"])); fatalError() }; self.selectorName = selectorName
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
@@ -205,11 +183,10 @@ extension Method: NSCoding {}
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
+            aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.selectorName, forKey: "selectorName")
             aCoder.encode(self.parameters, forKey: "parameters")
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
@@ -221,12 +198,10 @@ extension Method: NSCoding {}
             aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.attributes, forKey: "attributes")
-            
         }
     // sourcery:end
 }
 */
-
 extension MethodParameter: NSCoding {}
 /*
     // sourcery:inline:MethodParameter.AutoCoding
@@ -235,21 +210,17 @@ extension MethodParameter: NSCoding {}
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
-            
         }
     // sourcery:end
 }
 */
-
 /*
     // sourcery:inline:Protocol.AutoCoding
         required init?(coder aDecoder: NSCoder) {
@@ -258,12 +229,10 @@ extension MethodParameter: NSCoding {}
 
         override func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
-            
         }
     // sourcery:end
 }
 */
-
 /*
     // sourcery:inline:Struct.AutoCoding
         required init?(coder aDecoder: NSCoder) {
@@ -272,12 +241,10 @@ extension MethodParameter: NSCoding {}
 
         override func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
-            
         }
     // sourcery:end
 }
 */
-
 extension TupleElement: NSCoding {}
 /*
     // sourcery:inline:TupleElement.AutoCoding
@@ -285,39 +252,31 @@ extension TupleElement: NSCoding {}
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
-            
         }
     // sourcery:end
 }
 */
-
 extension TupleType: NSCoding {}
 /*
     // sourcery:inline:TupleType.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.elements, forKey: "elements")
-            
         }
     // sourcery:end
 }
 */
-
 extension Type: NSCoding {}
 /*
     // sourcery:inline:Type.AutoCoding
@@ -339,11 +298,9 @@ extension Type: NSCoding {}
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
@@ -361,12 +318,10 @@ extension Type: NSCoding {}
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.supertype, forKey: "supertype")
             aCoder.encode(self.attributes, forKey: "attributes")
-            
         }
     // sourcery:end
 }
 */
-
 extension TypeName: NSCoding {}
 /*
     // sourcery:inline:TypeName.AutoCoding
@@ -378,11 +333,9 @@ extension TypeName: NSCoding {}
             self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
             guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["unwrappedTypeName"])); fatalError() }; self.unwrappedTypeName = unwrappedTypeName
             self.tuple = aDecoder.decode(forKey: "tuple")
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
             aCoder.encode(self.attributes, forKey: "attributes")
@@ -390,12 +343,10 @@ extension TypeName: NSCoding {}
             aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
             aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
             aCoder.encode(self.tuple, forKey: "tuple")
-            
         }
     // sourcery:end
 }
 */
-
 extension Typealias: NSCoding {}
 /*
     // sourcery:inline:Typealias.AutoCoding
@@ -405,22 +356,18 @@ extension Typealias: NSCoding {}
             self.type = aDecoder.decode(forKey: "type")
             self.parent = aDecoder.decode(forKey: "parent")
             self.parentName = aDecoder.decode(forKey: "parentName")
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.aliasName, forKey: "aliasName")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.parentName, forKey: "parentName")
-            
         }
     // sourcery:end
 }
 */
-
 extension Variable: NSCoding {}
 /*
     // sourcery:inline:Variable.AutoCoding
@@ -434,11 +381,9 @@ extension Variable: NSCoding {}
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
-            
         }
 
         func encode(with aCoder: NSCoder) {
-            
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
@@ -448,7 +393,6 @@ extension Variable: NSCoding {}
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.attributes, forKey: "attributes")
-            
         }
     // sourcery:end
 }
