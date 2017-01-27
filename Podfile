@@ -5,6 +5,7 @@ target 'Sourcery' do
   use_frameworks!
 
   pod 'Stencil', :git => "git@github.com:kylef/Stencil", :commit => '99efba5'
+  pod 'StencilSwiftKit', :git => "git@github.com:SwiftGen/StencilSwiftKit", :commit => 'e9e33c6'
   pod 'Commander'
   pod 'PathKit', :git => "git@github.com:kylef/PathKit.git", :commit => 'c662c2a'
   pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => '380a5f6'
