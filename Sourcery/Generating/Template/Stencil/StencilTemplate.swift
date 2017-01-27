@@ -1,8 +1,9 @@
 import Foundation
 import Stencil
 import PathKit
+import StencilSwiftKit
 
-final class StencilTemplate: Stencil.Template, Template {
+final class StencilTemplate: StencilSwiftKit.SwiftTemplate, Template {
     private(set) var sourcePath: Path = ""
 
     convenience init(path: Path) throws {
@@ -71,7 +72,9 @@ final class StencilTemplate: Stencil.Template, Template {
 
         ext.registerBoolFilterWithArguments("annotated", filter: { (a: Annotated, annotation) in a.isAnnotated(with: annotation) })
 
-        return Stencil.Environment(extensions: [ext])
+        var extensions = stencilSwiftEnvironment().extensions
+        extensions.append(ext)
+        return Environment(extensions: extensions, templateClass: StencilTemplate.self)
     }
 }
 

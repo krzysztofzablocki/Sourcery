@@ -9,6 +9,8 @@ PODS:
     - Yams (~> 0.1)
   - Stencil (0.7.1):
     - PathKit (~> 0.7.0)
+  - StencilSwiftKit (0.0.1):
+    - Stencil (~> 0.7.0)
   - SwiftTryCatch (1.0.0)
   - SWXMLHash (3.0.3)
   - Yams (0.1.4)
@@ -21,6 +23,7 @@ DEPENDENCIES:
   - Quick
   - SourceKittenFramework (from `git@github.com:jpsim/SourceKitten`, commit `380a5f6`)
   - Stencil (from `git@github.com:kylef/Stencil`, commit `99efba5`)
+  - StencilSwiftKit (from `git@github.com:SwiftGen/StencilSwiftKit`, commit `e9e33c6`)
   - SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)
 
 EXTERNAL SOURCES:
@@ -33,6 +36,9 @@ EXTERNAL SOURCES:
   Stencil:
     :commit: 99efba5
     :git: git@github.com:kylef/Stencil
+  StencilSwiftKit:
+    :commit: e9e33c6
+    :git: git@github.com:SwiftGen/StencilSwiftKit
   SwiftTryCatch:
     :commit: 798c512
     :git: git@github.com:seanparsons/SwiftTryCatch
@@ -47,6 +53,9 @@ CHECKOUT OPTIONS:
   Stencil:
     :commit: 99efba5
     :git: git@github.com:kylef/Stencil
+  StencilSwiftKit:
+    :commit: e9e33c6
+    :git: git@github.com:SwiftGen/StencilSwiftKit
   SwiftTryCatch:
     :commit: 798c512
     :git: git@github.com:seanparsons/SwiftTryCatch
@@ -59,10 +68,11 @@ SPEC CHECKSUMS:
   Quick: 8024e4a47e6cc03a9d5245ef0948264fc6d27cff
   SourceKittenFramework: fc97eecc26d25694c6e426c6018d7107ce5f5169
   Stencil: 4177c0cabcdc40dd9be9b7f701d710d0a121023a
+  StencilSwiftKit: e2caece14b65d144da6bbe513a73b01be4833e7b
   SwiftTryCatch: 8dec58919b07ddba4f23c80e814f7e49f05da548
   SWXMLHash: 80d2529d74891bb2f15305a0b9e08f2a4f229ee7
   Yams: 4a4d2b5f0db216fab03c6abc04b7692ceff7cf5f
 
-PODFILE CHECKSUM: c4503abeba425f85f86853880dff04c03f3dfb9e
+PODFILE CHECKSUM: 64f66b5322a119fc472d9f0afa6e704060f6a315
 
 COCOAPODS: 1.2.0.beta.1
