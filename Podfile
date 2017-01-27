@@ -7,7 +7,6 @@ target 'Sourcery' do
   pod 'Stencil', :git => "git@github.com:kylef/Stencil", :commit => '99efba5'
   pod 'Commander'
   pod 'PathKit', :git => "git@github.com:kylef/PathKit.git", :commit => 'c662c2a'
-  pod 'KZFileWatchers'
   pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => '380a5f6'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
   pod 'libCommonCrypto'

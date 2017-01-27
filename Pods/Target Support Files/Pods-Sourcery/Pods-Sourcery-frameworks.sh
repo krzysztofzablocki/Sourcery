@@ -90,7 +90,6 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Commander/Commander.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/KZFileWatchers/KZFileWatchers.framework"
   install_framework "$BUILT_PRODUCTS_DIR/PathKit/PathKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SWXMLHash/SWXMLHash.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SourceKittenFramework/SourceKittenFramework.framework"
@@ -101,7 +100,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Commander/Commander.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/KZFileWatchers/KZFileWatchers.framework"
   install_framework "$BUILT_PRODUCTS_DIR/PathKit/PathKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SWXMLHash/SWXMLHash.framework"
   install_framework "$BUILT_PRODUCTS_DIR/SourceKittenFramework/SourceKittenFramework.framework"
