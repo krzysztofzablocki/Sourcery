@@ -6,18 +6,19 @@
 
 ### New Features
 
+- Added inline code generation
 - Added `isClosure` property to `TypeName` to detect closure types
 
 ### Bug Fixes
 
-- fixed parsing of associated values separater by newlines
-- fixed preserving order of inherited types
-- improved support for throwing methods in protocols
-- fixed extracting parameters of methods with closures in their bodies
-- fixed extracting method return types of tuple types
-- improved support for typealises as tuple elements types
-- method parameters with `_` argument label will now have `nil` in `argumentLabel` property
-- improved support for generic methods
+- Fixed parsing of associated values separater by newlines
+- Fixed preserving order of inherited types
+- Improved support for throwing methods in protocols
+- Fixed extracting parameters of methods with closures in their bodies
+- Fixed extracting method return types of tuple types
+- Improved support for typealises as tuple elements types
+- Method parameters with `_` argument label will now have `nil` in `argumentLabel` property
+- Improved support for generic methods
 
 ### Internal changes
 
