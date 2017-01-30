@@ -3,7 +3,7 @@ import Stencil
 import PathKit
 import StencilSwiftKit
 
-final class StencilTemplate: StencilSwiftKit.SwiftTemplate, Template {
+final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
     private(set) var sourcePath: Path = ""
 
     convenience init(path: Path) throws {

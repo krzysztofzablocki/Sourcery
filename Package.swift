@@ -13,6 +13,7 @@ let package = Package(
         .Package(url: "https://github.com/vknabel/PathKit.git", majorVersion: 0, minor: 7),
         .Package(url: "https://github.com/jpsim/SourceKitten.git", majorVersion: 0, minor: 15),
         .Package(url: "https://github.com/vknabel/SwiftTryCatch.git", majorVersion: 1, minor: 1),
-        .Package(url: "https://github.com/IBM-Swift/CommonCrypto.git", majorVersion: 0)
+        .Package(url: "https://github.com/IBM-Swift/CommonCrypto.git", majorVersion: 0),
+        .Package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", majorVersion: 0)
     ]
 )
