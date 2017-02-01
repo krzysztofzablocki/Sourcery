@@ -31,6 +31,9 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
     private static func sourceryEnvironment() -> Stencil.Environment {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
+        ext.registerFilter("snakeCaseToCamelCase", filter: Filter<String>.make({ $0.snakeCaseToCamelCase() }))
+        ext.registerFilter("camelCaseToSnakeCase", filter: Filter<String>.make({ $0.camelCaseToSnakeCase() }))
+
         ext.registerFilterWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
             return source.replacingOccurrences(of: substring, with: replacement)
         })
@@ -149,6 +152,23 @@ extension String {
         return first + other
     }
 
+    fileprivate func snakeCaseToCamelCase() -> String {
+        return self.components(separatedBy: "_").enumerated().reduce("", { prev, current in
+            return prev + (current.offset == 0 ? current.element : current.element.capitalized)
+        })
+    }
+
+    fileprivate func camelCaseToSnakeCase() -> String {
+        do {
+            let string = self as NSString
+            let regex = try NSRegularExpression(pattern: "(?<=.)([A-Z]*)([A-Z])", options: [])
+            let range = NSRange(location: 0, length: string.length)
+            return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "_$1$2").lowercased()
+
+        } catch {
+            return self
+        }
+    }
 }
 
 private struct Filter<T> {
