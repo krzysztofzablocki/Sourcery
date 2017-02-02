@@ -463,10 +463,10 @@ Available types:
 ### Custom Stencil tags and filter
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
-- `{{ name|replace:"substring","replacement }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
-- `{% if name|contains: "Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
-- `{% if name|hasPrefix: "Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.
-- `{% if name|hasSuffix: "Foo" %}`- check if `name` ends with arbitrary substring, can be negated with `!` prefix.
+- `{{ name|replace:"substring","replacement" }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
+- `{% if name|contains:"Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
+- `{% if name|hasPrefix:"Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.
+- `{% if name|hasSuffix:"Foo" %}`- check if `name` ends with arbitrary substring, can be negated with `!` prefix.
 - `static`, `instance`, `computed`, `stored`, `tuple` - can be used on Variable[s] as filter e.g. `{% for var in variables|instance %}`, can be negated with `!` prefix.
 - `static`, `instance`, `class`, `initializer` - can be used on Method[s] as filter e.g. `{% for method in allMethods|instance %}`, can be negated with `!` prefix.
 - `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter, can be negated with `!` prefix.
