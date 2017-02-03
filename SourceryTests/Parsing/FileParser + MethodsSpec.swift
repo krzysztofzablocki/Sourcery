@@ -178,14 +178,13 @@ class FileParserMethodsSpec: QuickSpec {
                     }
 
                     it("extracts tuple return type correcty") {
-                        let types = parse("class Foo { func foo() -> (Bar, Int) { } }; class Bar {}")
-                        let method = types.last?.methods.first
-
-                        let expectedTypeName = TypeName("(Bar, Int)")
-                        expectedTypeName.tuple = TupleType(name: "(Bar, Int)", elements: [
+                        let expectedTypeName = TypeName("(Bar, Int)", tuple: TupleType(name: "(Bar, Int)", elements: [
                             TupleElement(name: "0", typeName: TypeName("Bar"), type: Class(name: "Bar")),
                             TupleElement(name: "1", typeName: TypeName("Int"))
-                            ])
+                            ]))
+
+                        let types = parse("class Foo { func foo() -> (Bar, Int) { } }; class Bar {}")
+                        let method = types.last?.methods.first
 
                         expect(method?.returnTypeName).to(equal(expectedTypeName))
                     }

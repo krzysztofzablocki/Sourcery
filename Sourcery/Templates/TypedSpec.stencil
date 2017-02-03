@@ -15,10 +15,7 @@ class TypedSpec: QuickSpec {
             }
 
             it("can report tuple type via KVC") {
-                let tuple = TupleType(name: "(Int, Int)", elements: [])
-                let sut = {{ type.name }}(typeName: TypeName("(Int, Int)"))
-                sut.typeName.tuple = tuple
-
+                let sut = {{ type.name }}(typeName: TypeName("(Int, Int)", tuple: TupleType(name: "(Int, Int)", elements: [])))
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 

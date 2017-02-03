@@ -156,8 +156,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue",
-                                                                                                          typeName: TypeName("RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
                                                                             isFailableInitializer: true)],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
@@ -208,13 +207,13 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces tuple elements alias types with actual types") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("(GlobalAlias, Int)"))
-                            expectedVariable.typeName.tuple = TupleType(name: "(GlobalAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("GlobalAlias"), type: Type(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            let expectedTupleElement = expectedVariable.typeName.tuple?.elements.first
-                            expectedTupleElement?.type = Type(name: "Foo")
+                            let expectedVariable =
+                                Variable(name: "foo",
+                                         typeName: TypeName("(GlobalAlias, Int)",
+                                                            tuple: TupleType(name: "(GlobalAlias, Int)", elements: [
+                                                                TupleElement(name: "0", typeName: TypeName("GlobalAlias"), type: Type(name: "Foo")),
+                                                                TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                ])))
 
                             let types = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: (GlobalAlias, Int) }")
                             let variable = types.first?.variables.first
@@ -225,15 +224,16 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces variable alias type with actual tuple type name") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias"))
-                            expectedVariable.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedVariable.typeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedVariable =
+                                Variable(name: "foo",
+                                         typeName: TypeName("GlobalAlias",
+                                                            actualTypeName: TypeName("(Foo, Int)"),
+                                                            tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                ])))
 
-                            let type = parse(
-                                "typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { var foo: GlobalAlias }").first
+                            let type = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { var foo: GlobalAlias }").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))
@@ -254,11 +254,13 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces tuple elements alias types with actual types") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("(FooAlias, Int)"))
-                            expectedMethod.returnTypeName.tuple = TupleType(name: "(FooAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
+                            let expectedMethod =
+                                Method(name: "some()",
+                                       returnTypeName: TypeName("(FooAlias, Int)",
+                                                                tuple: TupleType(name: "(FooAlias, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> (FooAlias, Int) }")
                             let method = types.first?.methods.first
@@ -269,12 +271,14 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces method return type alias with actual tuple type name") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("GlobalAlias"))
-                            expectedMethod.returnTypeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedMethod.returnTypeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedMethod =
+                                Method(name: "some()",
+                                       returnTypeName: TypeName("GlobalAlias",
+                                                                actualTypeName: TypeName("(Foo, Int)"),
+                                                                tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some() -> GlobalAlias }")
                             let method = types.first?.methods.first
@@ -287,8 +291,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given method parameter") {
                         it("replaces method parameter type alias with actual type") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedMethodParameter.type = Class(name: "Foo")
+                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("FooAlias"), type: Class(name: "Foo"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: FooAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -298,11 +301,13 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces tuple tuple elements alias types with actual types") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("(FooAlias, Int)"))
-                            expectedMethodParameter.typeName.tuple = TupleType(name: "(FooAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
+                            let expectedMethodParameter =
+                                MethodParameter(name: "foo",
+                                                typeName: TypeName("(FooAlias, Int)",
+                                                                   tuple: TupleType(name: "(FooAlias, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: (FooAlias, Int)) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -313,12 +318,14 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces method parameter alias type with actual tuple type name") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("GlobalAlias"))
-                            expectedMethodParameter.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedMethodParameter.typeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedMethodParameter =
+                                MethodParameter(name: "foo",
+                                                typeName: TypeName("GlobalAlias",
+                                                                   actualTypeName: TypeName("(Foo, Int)"),
+                                                                   tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some(foo: GlobalAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -342,11 +349,12 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces tuple type elements alias types with actual type") {
-                            let expectedAssociatedValue = AssociatedValue(typeName: TypeName("(FooAlias, Int)"))
-                            expectedAssociatedValue.typeName.tuple = TupleType(name: "(FooAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
+                            let expectedAssociatedValue =
+                                AssociatedValue(typeName: TypeName("(FooAlias, Int)",
+                                                                   tuple: TupleType(name: "(FooAlias, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; enum Some { case optionA((FooAlias, Int)) }")
                             let associatedValue = (types.last as? Enum)?.cases.first?.associatedValues.first
@@ -357,12 +365,13 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces associated value alias type with actual tuple type name") {
-                            let expectedAssociatedValue = AssociatedValue(typeName: TypeName("GlobalAlias"))
-                            expectedAssociatedValue.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedAssociatedValue.typeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedAssociatedValue =
+                                AssociatedValue(typeName: TypeName("GlobalAlias",
+                                                                   actualTypeName: TypeName("(Foo, Int)"),
+                                                                   tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; enum Some { case optionA(GlobalAlias) }")
                             let associatedValue = (types.last as? Enum)?.cases.first?.associatedValues.first
@@ -374,8 +383,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("replaces variable alias with actual type via 3 typealiases") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("FinalAlias"))
-                        expectedVariable.type = Class(name: "Foo")
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("FinalAlias"), type: Class(name: "Foo"))
 
                         let type = parse(
                             "typealias FooAlias = Foo; typealias BarAlias = FooAlias; typealias FinalAlias = BarAlias; class Foo {}; class Bar { var foo: FinalAlias }").first
@@ -386,13 +394,13 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("replaces variable optional alias type with actual type") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias?"))
-                        expectedVariable.type = Class(name: "Foo")
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias?", actualTypeName: TypeName("Foo?")), type: Class(name: "Foo"))
 
                         let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias? }").first
                         let variable = type?.variables.first
 
                         expect(variable).to(equal(expectedVariable))
+                        expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                         expect(variable?.type).to(equal(expectedVariable.type))
                     }
 
@@ -409,15 +417,12 @@ class ParserComposerSpec: QuickSpec {
 
                     it("updates inheritedTypes with real type name") {
                         expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
-                                .to(contain([
-                                                    Class(name: "Bar", inheritedTypes: ["Foo"])
-                                            ]))
+                                .to(contain([Class(name: "Bar", inheritedTypes: ["Foo"])]))
                     }
 
                     context("given local typealias") {
                         it("replaces variable alias type with actual type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Class(name: "Foo")
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"), type: Class(name: "Foo"))
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
                             let variable = type?.variables.first
@@ -427,22 +432,20 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces variable alias type with actual contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Class(name: "Foo", parent: Type(name: "Bar"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Bar.Foo")), type: Class(name: "Foo", parent: Class(name: "Bar")))
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))
+                            expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
 
                         it("replaces variable alias type with actual foreign contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Class(name: "Foo", parent: Type(name: "FooBar"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"), type: Class(name: "Foo", parent: Type(name: "FooBar")))
 
-                            let type = parse(
-                                    "class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
+                            let type = parse("class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))

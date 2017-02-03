@@ -23,16 +23,18 @@ final class MethodParameter: NSObject, SourceryModel, Typed {
     // sourcery: skipEquality, skipDescription, skipCoding
     internal var __parserData: Any?
 
-    init(argumentLabel: String?, name: String = "", typeName: TypeName) {
+    init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
+        self.type = type
     }
 
-    init(name: String = "", typeName: TypeName) {
+    init(name: String = "", typeName: TypeName, type: Type? = nil) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
+        self.type = type
     }
 
     // sourcery:inline:MethodParameter.AutoCoding
