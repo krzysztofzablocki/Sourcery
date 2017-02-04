@@ -11,7 +11,7 @@ import SwiftTryCatch
 import Foundation
 
 public class Sourcery {
-    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.3"
+    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.4"
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"
@@ -289,7 +289,7 @@ extension Sourcery {
     }
 
     private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
-        let inline = InlineParser.parse(contents)
+        let inline = InlineParser.parse(contents, removeFromSource: true)
 
         try inline
                 .inlineRanges
@@ -309,7 +309,7 @@ extension Sourcery {
                         }
                     }
                 }
-        return contents
+        return inline.contents
     }
 
     internal func generatedPath(`for` templatePath: Path) -> Path {

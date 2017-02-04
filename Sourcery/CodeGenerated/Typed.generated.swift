@@ -1,5 +1,6 @@
-// Generated using Sourcery 0.5.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 
 extension AssociatedValue {
     var isOptional: Bool { return typeName.isOptional }
