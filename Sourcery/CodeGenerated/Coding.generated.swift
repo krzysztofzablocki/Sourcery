@@ -43,64 +43,47 @@ extension NSCoder {
 extension AssociatedValue: NSCoding {}
     // sourcery:inline:AssociatedValue.AutoCoding
     // sourcery:end
-}
 extension Attribute: NSCoding {}
     // sourcery:inline:Attribute.AutoCoding
     // sourcery:end
-}
     // sourcery:inline:Class.AutoCoding
     // sourcery:end
-}
     // sourcery:inline:Enum.AutoCoding
     // sourcery:end
-}
 extension EnumCase: NSCoding {}
     // sourcery:inline:EnumCase.AutoCoding
     // sourcery:end
-}
 extension FileParserResult: NSCoding {}
     // sourcery:inline:FileParserResult.AutoCoding
     // sourcery:end
-}
 extension GenerationContext: NSCoding {}
     // sourcery:inline:GenerationContext.AutoCoding
     // sourcery:end
-}
 extension Method: NSCoding {}
     // sourcery:inline:Method.AutoCoding
     // sourcery:end
-}
 extension MethodParameter: NSCoding {}
     // sourcery:inline:MethodParameter.AutoCoding
     // sourcery:end
-}
     // sourcery:inline:Protocol.AutoCoding
     // sourcery:end
-}
     // sourcery:inline:Struct.AutoCoding
     // sourcery:end
-}
 extension TupleElement: NSCoding {}
     // sourcery:inline:TupleElement.AutoCoding
     // sourcery:end
-}
 extension TupleType: NSCoding {}
     // sourcery:inline:TupleType.AutoCoding
     // sourcery:end
-}
 extension Type: NSCoding {}
     // sourcery:inline:Type.AutoCoding
     // sourcery:end
-}
 extension TypeName: NSCoding {}
     // sourcery:inline:TypeName.AutoCoding
     // sourcery:end
-}
 extension Typealias: NSCoding {}
     // sourcery:inline:Typealias.AutoCoding
     // sourcery:end
-}
 extension Variable: NSCoding {}
     // sourcery:inline:Variable.AutoCoding
     // sourcery:end
-}

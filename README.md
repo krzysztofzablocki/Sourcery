@@ -34,6 +34,7 @@ Using it offers many benefits:
     - [Rules:](#rules)
     - [Format:](#format)
     - [Accessing in templates:](#accessing-in-templates)
+  - [Inline code generation](#inline-code-generation)
 - [Installing](#installing)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -514,6 +515,17 @@ If you want to attribute multiple items with same attributes, you can use sectio
   var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
 {% endif %}
 ```
+
+### Inline code generation
+
+Sourcery supports inline code generation, you just need to put same markup in your code and template, e.g.
+
+```swift
+// sourcery.inline:TypeName.TemplateName
+// sourcery:end
+```
+
+Sourcery will generate the template code and then perform replacement in your source file. Inlined generated code is not parsed to avoid chicken-egg problem.
 
 ## Installing
 

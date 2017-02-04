@@ -2,7 +2,7 @@
 
 ---
 
-## Master
+## 0.5.4
 
 ### New Features
 
@@ -22,7 +22,7 @@
 
 ### Internal changes
 
-- adjusted internal templates and updated generated code 
+- adjusted internal templates and updated generated code
 - moved methods parsing related tests in a separate spec
 
 ## 0.5.3

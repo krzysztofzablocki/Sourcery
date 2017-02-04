@@ -51,5 +51,4 @@ extension NSCoder {
             {% endfor %}
         }
     // sourcery:end
-}
     {% endfor %}
