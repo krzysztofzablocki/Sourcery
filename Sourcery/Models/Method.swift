@@ -74,6 +74,10 @@ final class Method: NSObject, SourceryModel, Annotated {
     /// Name of the return type
     var returnTypeName: TypeName
 
+    var actualReturnTypeName: TypeName {
+        return returnTypeName.actualTypeName ?? returnTypeName
+    }
+
     /// Actual method return type, if known.
     // sourcery: skipEquality
     // sourcery: skipDescription

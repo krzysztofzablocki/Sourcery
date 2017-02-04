@@ -90,9 +90,11 @@ struct Composer {
 
     private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], typealiases: [String: Typealias]) -> Type? {
         let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
-        typeName.actualTypeName = actualTypeName.flatMap({ TypeName($0) })
-        typeName.tuple = parseTupleType(typeName.actualTypeName?.unwrappedTypeName ?? typeName.unwrappedTypeName)
+        if let actualTypeName = actualTypeName, actualTypeName != typeName.unwrappedTypeName {
+            typeName.actualTypeName = TypeName(actualTypeName)
+        }
 
+        typeName.tuple = parseTupleType(typeName.actualTypeName?.unwrappedTypeName ?? typeName.unwrappedTypeName)
         // recursively resolve type of each tuple element
         typeName.tuple?.elements.forEach { tupleElement in
             tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, typealiases: typealiases)
@@ -173,24 +175,71 @@ struct Composer {
     /// returns actual type name for type alias
     private func actualTypeName(for typeName: TypeName, containingType: Type? = nil, unique: [String: Type]? = nil, typealiases: [String: Typealias]) -> String? {
         let optionalPrefix = typeName.isOptional ? "?" : typeName.isImplicitlyUnwrappedOptional ? "!" : ""
-        let typeName = typeName.unwrappedTypeName
+        let unwrappedTypeName = typeName.unwrappedTypeName
+        var actualTypeName: String?
+
         // first try global typealiases
-        if let name = typealiases[typeName]?.typeName.name {
-            return name + optionalPrefix
+        if let name = typealiases[unwrappedTypeName]?.typeName.name {
+            actualTypeName = name
         }
 
-        guard let containingType = containingType else {
-            return nil
+        if let containingType = containingType {
+            //check if typealias is for one of contained types
+            if let possibleTypeName = typealiases["\(containingType.name).\(unwrappedTypeName)"]?.typeName.name {
+                let containedType = containingType.containedTypes.first(where: {
+                    $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
+                })
+
+                actualTypeName = containedType?.name ?? possibleTypeName
+            } else {
+                if let name = unique?["\(containingType.name).\(unwrappedTypeName)"]?.name {
+                    //check contained types first
+                    actualTypeName = name
+                } else {
+                    //otherwise go up contained types chain to find a type
+                    let parentTypes = containingType.parentTypes
+                    while let parent = parentTypes.next() {
+                        if let name = unique?["\(parent.name).\(unwrappedTypeName)"]?.name {
+                            actualTypeName = name
+                            break
+                        }
+                    }
+                    actualTypeName = actualTypeName ?? unwrappedTypeName
+                }
+            }
         }
 
-        //check if typealias is for one of contained types
-        if let possibleTypeName = typealiases["\(containingType.name).\(typeName)"]?.typeName.name {
-            let containedType = containingType.containedTypes.first(where: {
-                $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
-            })
-
-            let name = containedType?.name ?? possibleTypeName
-            return name + optionalPrefix
+        if var actualTypeName = actualTypeName {
+            if unwrappedTypeName.isValidTupleName() {
+                let elements = typeName.unwrappedTypeName.dropFirstAndLast().commaSeparated()
+                var actualElements = [String]()
+                for element in elements {
+                    let nameAndValue = element.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+                    if nameAndValue.count == 1 {
+                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                        actualElements.append(valueName ?? nameAndValue[0])
+                    } else {
+                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[1]), containingType: containingType, unique: unique, typealiases: typealiases)
+                        actualElements.append("\(nameAndValue[0]): \(valueName ?? nameAndValue[1])")
+                    }
+                }
+                actualTypeName = "(\(actualElements.joined(separator: ", ")))"
+            } else if unwrappedTypeName.characters.first == "[", unwrappedTypeName.characters.last == "]" {
+                let types = unwrappedTypeName.dropFirstAndLast()
+                    .colonSeparated()
+                    .map({ $0.trimmingCharacters(in: .whitespaces) })
+                if types.count == 1 {
+                    //array literal
+                    let name = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    actualTypeName = "[\(name ?? types[0])]"
+                } else {
+                    //dictionary literal
+                    let keyName = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    let valueName = self.actualTypeName(for: TypeName(types[1]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    actualTypeName = "[\(keyName ?? types[0]): \(valueName ?? types[1])]"
+                }
+            }
+            return actualTypeName + optionalPrefix
         } else {
             return nil
         }

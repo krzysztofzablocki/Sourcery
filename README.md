@@ -397,6 +397,7 @@ Available types:
 - `parameters` <- list of all method parameters
 - `returnType` <- return type, if known, for initializers - containing type
 - `returnTypeName` <- return type name (*TypeName*). Will be `Void` for methods without return value or empty string for initializers. For generic methods can include generic constraints specified with `where`, i.e. `func foo<T>(bar: T) -> T where T: Equatable` it is `T where T: Equatable`
+- `actualReturnTypeName` <- returns `returnTypeName.actualTypeName` or if it's `nil` returns `returnTypeName`
 - `unwrappedReturnTypeName` <- shorthand for `returnTypeName.unwrappedTypeName`
 - `isOptionalReturnType` <- shorthand for `returnTypeName.isOptional`
 - `isImplicitlyUnwrappedOptionalReturnType` <- shorthand for `returnTypeName. isImplicitlyUnwrappedOptional`
@@ -429,13 +430,13 @@ Available types:
 <details><summary>**TypeName**. Properties:</summary>
 
 - `name` <- type name
-- `actualTypeName` <- if given type is a typealias will contain actual type name
+- `actualTypeName` <- if given type is a typealias or contained type name will contain actual fully qualified type name
 - `unwrappedTypeName` <- returns name of the type, unwrapping the optional e.g. for variable with type `Int?` this would return `Int`, removing attributes and generic constraints
 - `isOptional` <- whether is optional
 - `isImplicitlyUnwrappedOptional` <- whether is implicitly unwrapped optional
 - `isVoid` <- whether type is Void (`Void` or `()`)
 - `isTuple` <- whether given type is a tuple
-- `tuple` <- returns information about tuple type (*TupleType*)
+- `tuple` <- returns information about tuple type (*TupleType*) based on `actualTypeName.unwrappedTypeName`
 - `isClosure` <- shorthand for `typeName.isClosure`
 - `attributes` <- type attributes, i.e. `typeName.attributes.escaping`
 
