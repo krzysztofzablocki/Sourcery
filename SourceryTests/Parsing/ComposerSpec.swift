@@ -50,6 +50,7 @@ class ParserComposerSpec: QuickSpec {
                         expect(parse("fileprivate struct Foo {}")).to(beEmpty())
                     }
                 }
+
                 context("given enum containing associated values") {
                     it("trims whitespace from associated value names") {
                         expect(parse("enum Foo {\n case bar(\nvalue: String,\n other: Int\n)\n}"))
@@ -156,8 +157,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isComputed: true,
                                                                                 isStatic: false)],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue",
-                                                                                                          typeName: TypeName("RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
                                                                             isFailableInitializer: true)],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
@@ -168,11 +168,11 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given tuple type") {
                     it("extracts elements properly") {
-                        let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))}")
+                        let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))}")
                         let variable = types.first?.variables.first
 
                         expect(variable?.typeName.tuple).to(equal(
-                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic : Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))", elements: [
+                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))", elements: [
                                 TupleElement(name: "a", typeName: TypeName("Int")),
                                 TupleElement(name: "b", typeName: TypeName("Int")),
                                 TupleElement(name: "2", typeName: TypeName("String")),
@@ -197,202 +197,224 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given variable") {
                         it("replaces variable alias type with actual type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias", actualTypeName: TypeName("Foo")))
                             expectedVariable.type = Class(name: "Foo")
 
                             let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias }").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))
+                            expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
 
                         it("replaces tuple elements alias types with actual types") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("(GlobalAlias, Int)"))
-                            expectedVariable.typeName.tuple = TupleType(name: "(GlobalAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("GlobalAlias"), type: Type(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            let expectedTupleElement = expectedVariable.typeName.tuple?.elements.first
-                            expectedTupleElement?.type = Type(name: "Foo")
+                            let expectedVariable =
+                                Variable(name: "foo",
+                                         typeName: TypeName("(GlobalAlias, Int)",
+                                                            actualTypeName: TypeName("(Foo, Int)"),
+                                                            tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Type(name: "Foo")),
+                                                                TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                ])))
 
                             let types = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: (GlobalAlias, Int) }")
                             let variable = types.first?.variables.first
                             let tupleElement = variable?.typeName.tuple?.elements.first
 
                             expect(variable).to(equal(expectedVariable))
+                            expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(tupleElement?.type).to(equal(Class(name: "Foo")))
                         }
 
                         it("replaces variable alias type with actual tuple type name") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias"))
-                            expectedVariable.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedVariable.typeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedVariable =
+                                Variable(name: "foo",
+                                         typeName: TypeName("GlobalAlias",
+                                                            actualTypeName: TypeName("(Foo, Int)"),
+                                                            tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                ])))
 
-                            let type = parse(
-                                "typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { var foo: GlobalAlias }").first
+                            let type = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { var foo: GlobalAlias }").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))
-                            expect(variable?.typeName.actualTypeName).to(equal(expectedVariable.typeName.actualTypeName))
+                            expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(variable?.typeName.isTuple).to(beTrue())
                         }
                     }
 
                     context("given method return value type") {
                         it("replaces method return type alias with actual type") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias"))
+                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> FooAlias }")
                             let method = types.first?.methods.first
 
                             expect(method).to(equal(expectedMethod))
+                            expect(method?.actualReturnTypeName).to(equal(expectedMethod.actualReturnTypeName))
                             expect(method?.returnType).to(equal(Class(name: "Foo")))
                         }
 
                         it("replaces tuple elements alias types with actual types") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("(FooAlias, Int)"))
-                            expectedMethod.returnTypeName.tuple = TupleType(name: "(FooAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
+                            let expectedMethod =
+                                Method(name: "some()",
+                                       returnTypeName: TypeName("(FooAlias, Int)",
+                                                                actualTypeName: TypeName("(Foo, Int)"),
+                                                                tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> (FooAlias, Int) }")
                             let method = types.first?.methods.first
                             let tupleElement = method?.returnTypeName.tuple?.elements.first
 
                             expect(method).to(equal(expectedMethod))
+                            expect(method?.actualReturnTypeName).to(equal(expectedMethod.actualReturnTypeName))
                             expect(tupleElement?.type).to(equal(Class(name: "Foo")))
                         }
 
                         it("replaces method return type alias with actual tuple type name") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("GlobalAlias"))
-                            expectedMethod.returnTypeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedMethod.returnTypeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedMethod =
+                                Method(name: "some()",
+                                       returnTypeName: TypeName("GlobalAlias",
+                                                                actualTypeName: TypeName("(Foo, Int)"),
+                                                                tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some() -> GlobalAlias }")
                             let method = types.first?.methods.first
 
                             expect(method).to(equal(expectedMethod))
-                            expect(method?.returnTypeName.actualTypeName).to(equal(expectedMethod.returnTypeName.actualTypeName))
+                            expect(method?.actualReturnTypeName).to(equal(expectedMethod.actualReturnTypeName))
                             expect(method?.returnTypeName.isTuple).to(beTrue())
                         }
                     }
 
                     context("given method parameter") {
                         it("replaces method parameter type alias with actual type") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedMethodParameter.type = Class(name: "Foo")
+                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: FooAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
 
                             expect(methodParameter).to(equal(expectedMethodParameter))
+                            expect(methodParameter?.actualTypeName).to(equal(expectedMethodParameter.actualTypeName))
                             expect(methodParameter?.type).to(equal(Class(name: "Foo")))
                         }
 
                         it("replaces tuple tuple elements alias types with actual types") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("(FooAlias, Int)"))
-                            expectedMethodParameter.typeName.tuple = TupleType(name: "(FooAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
+                            let expectedMethodParameter =
+                                MethodParameter(name: "foo",
+                                                typeName: TypeName("(FooAlias, Int)",
+                                                                   actualTypeName: TypeName("(Foo, Int)"),
+                                                                   tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: (FooAlias, Int)) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
                             let tupleElement = methodParameter?.typeName.tuple?.elements.first
 
                             expect(methodParameter).to(equal(expectedMethodParameter))
+                            expect(methodParameter?.actualTypeName).to(equal(expectedMethodParameter.actualTypeName))
                             expect(tupleElement?.type).to(equal(Class(name: "Foo")))
                         }
 
                         it("replaces method parameter alias type with actual tuple type name") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("GlobalAlias"))
-                            expectedMethodParameter.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedMethodParameter.typeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedMethodParameter =
+                                MethodParameter(name: "foo",
+                                                typeName: TypeName("GlobalAlias",
+                                                                   actualTypeName: TypeName("(Foo, Int)"),
+                                                                   tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some(foo: GlobalAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
 
                             expect(methodParameter).to(equal(expectedMethodParameter))
-                            expect(methodParameter?.typeName.actualTypeName).to(equal(expectedMethodParameter.typeName.actualTypeName))
+                            expect(methodParameter?.actualTypeName).to(equal(expectedMethodParameter.actualTypeName))
                             expect(methodParameter?.typeName.isTuple).to(beTrue())
                         }
                     }
 
                     context("given enum case associated value") {
                         it("replaces enum case associated value type alias with actual type") {
-                            let expectedAssociatedValue = AssociatedValue(typeName: TypeName("FooAlias"), type: Class(name: "Foo"))
+                            let expectedAssociatedValue = AssociatedValue(typeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"))
                             expectedAssociatedValue.type = Class(name: "Foo")
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; enum Some { case optionA(FooAlias) }")
                             let associatedValue = (types.last as? Enum)?.cases.first?.associatedValues.first
 
                             expect(associatedValue).to(equal(expectedAssociatedValue))
+                            expect(associatedValue?.actualTypeName).to(equal(expectedAssociatedValue.actualTypeName))
                             expect(associatedValue?.type).to(equal(Class(name: "Foo")))
                         }
 
                         it("replaces tuple type elements alias types with actual type") {
-                            let expectedAssociatedValue = AssociatedValue(typeName: TypeName("(FooAlias, Int)"))
-                            expectedAssociatedValue.typeName.tuple = TupleType(name: "(FooAlias, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("FooAlias"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
+                            let expectedAssociatedValue =
+                                AssociatedValue(typeName: TypeName("(FooAlias, Int)",
+                                                                   actualTypeName: TypeName("(Foo, Int)"),
+                                                                   tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; enum Some { case optionA((FooAlias, Int)) }")
                             let associatedValue = (types.last as? Enum)?.cases.first?.associatedValues.first
                             let tupleElement = associatedValue?.typeName.tuple?.elements.first
 
-                            expect(expectedAssociatedValue).to(equal(associatedValue))
+                            expect(associatedValue).to(equal(expectedAssociatedValue))
+                            expect(associatedValue?.actualTypeName).to(equal(expectedAssociatedValue.actualTypeName))
                             expect(tupleElement?.type).to(equal(Class(name: "Foo")))
                         }
 
                         it("replaces associated value alias type with actual tuple type name") {
-                            let expectedAssociatedValue = AssociatedValue(typeName: TypeName("GlobalAlias"))
-                            expectedAssociatedValue.typeName.tuple = TupleType(name: "(Foo, Int)", elements: [
-                                TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
-                                TupleElement(name: "1", typeName: TypeName("Int"))
-                                ])
-                            expectedAssociatedValue.typeName.actualTypeName = TypeName("(Foo, Int)")
+                            let expectedAssociatedValue =
+                                AssociatedValue(typeName: TypeName("GlobalAlias",
+                                                                   actualTypeName: TypeName("(Foo, Int)"),
+                                                                   tuple: TupleType(name: "(Foo, Int)", elements: [
+                                                                    TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
+                                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                                    ])))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; enum Some { case optionA(GlobalAlias) }")
                             let associatedValue = (types.last as? Enum)?.cases.first?.associatedValues.first
 
                             expect(associatedValue).to(equal(expectedAssociatedValue))
-                            expect(associatedValue?.typeName.actualTypeName).to(equal(expectedAssociatedValue.typeName.actualTypeName))
+                            expect(associatedValue?.actualTypeName).to(equal(expectedAssociatedValue.actualTypeName))
                             expect(associatedValue?.typeName.isTuple).to(beTrue())
                         }
                     }
 
                     it("replaces variable alias with actual type via 3 typealiases") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("FinalAlias"))
-                        expectedVariable.type = Class(name: "Foo")
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("FinalAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"))
 
                         let type = parse(
                             "typealias FooAlias = Foo; typealias BarAlias = FooAlias; typealias FinalAlias = BarAlias; class Foo {}; class Bar { var foo: FinalAlias }").first
                         let variable = type?.variables.first
 
                         expect(variable).to(equal(expectedVariable))
+                        expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                         expect(variable?.type).to(equal(expectedVariable.type))
                     }
 
                     it("replaces variable optional alias type with actual type") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias?"))
-                        expectedVariable.type = Class(name: "Foo")
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias?", actualTypeName: TypeName("Foo?")), type: Class(name: "Foo"))
 
                         let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias? }").first
                         let variable = type?.variables.first
 
                         expect(variable).to(equal(expectedVariable))
+                        expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                         expect(variable?.type).to(equal(expectedVariable.type))
                     }
 
@@ -409,45 +431,100 @@ class ParserComposerSpec: QuickSpec {
 
                     it("updates inheritedTypes with real type name") {
                         expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
-                                .to(contain([
-                                                    Class(name: "Bar", inheritedTypes: ["Foo"])
-                                            ]))
+                                .to(contain([Class(name: "Bar", inheritedTypes: ["Foo"])]))
                     }
 
                     context("given local typealias") {
                         it("replaces variable alias type with actual type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Class(name: "Foo")
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"))
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))
+                            expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
 
                         it("replaces variable alias type with actual contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Class(name: "Foo", parent: Type(name: "Bar"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Bar.Foo")), type: Class(name: "Foo", parent: Class(name: "Bar")))
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))
+                            expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
 
                         it("replaces variable alias type with actual foreign contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias"))
-                            expectedVariable.type = Class(name: "Foo", parent: Type(name: "FooBar"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("FooBar.Foo")), type: Class(name: "Foo", parent: Type(name: "FooBar")))
 
-                            let type = parse(
-                                    "class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
+                            let type = parse("class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
                             let variable = type?.variables.first
 
                             expect(variable).to(equal(expectedVariable))
+                            expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(variable?.type).to(equal(expectedVariable.type))
                         }
+                    }
+                }
+
+                context("given nested type") {
+                    it("extracts property of nested type properly") {
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName:TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none))
+                        let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
+
+                        let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: Foo? }}")
+                        let blah = types.first(where: { $0.name == "Blah" })
+                        let bar = types.first(where: { $0.name == "Blah.Bar" })
+
+                        expect(blah).to(equal(expectedBlah))
+                        expect(bar?.variables.first).to(equal(expectedVariable))
+                        expect(bar?.variables.first?.actualTypeName).to(equal(expectedVariable.actualTypeName))
+                    }
+
+                    it("extracts property of nested type array properly") {
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName:TypeName("[Blah.Foo]?")), accessLevel: (read: .internal, write: .none))
+                        let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
+
+                        let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: [Foo]? }}")
+                        let blah = types.first(where: { $0.name == "Blah" })
+                        let bar = types.first(where: { $0.name == "Blah.Bar" })
+
+                        expect(blah).to(equal(expectedBlah))
+                        expect(bar?.variables.first).to(equal(expectedVariable))
+                        expect(bar?.variables.first?.actualTypeName).to(equal(expectedVariable.actualTypeName))
+                    }
+
+                    it("extracts property of nested type dictionary properly") {
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName:TypeName("[Blah.Foo: Blah.Foo]?")), accessLevel: (read: .internal, write: .none))
+                        let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
+
+                        let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: [Foo: Foo]? }}")
+                        let blah = types.first(where: { $0.name == "Blah" })
+                        let bar = types.first(where: { $0.name == "Blah.Bar" })
+
+                        expect(blah).to(equal(expectedBlah))
+                        expect(bar?.variables.first).to(equal(expectedVariable))
+                        expect(bar?.variables.first?.actualTypeName).to(equal(expectedVariable.actualTypeName))
+                    }
+
+                    it("extracts property of nested type tuple properly") {
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("(a: Foo, _: Foo, Foo)?", actualTypeName: TypeName("(a: Blah.Foo, _: Blah.Foo, Blah.Foo)?"), tuple: TupleType(name: "(a: Blah.Foo, _: Blah.Foo, Blah.Foo)", elements: [
+                            TupleElement(name: "a", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
+                            TupleElement(name: "1", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
+                            TupleElement(name: "2", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo"))
+                            ])), accessLevel: (read: .internal, write: .none))
+                        let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
+
+                        let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: (a: Foo, _: Foo, Foo)? }}")
+                        let blah = types.first(where: { $0.name == "Blah" })
+                        let bar = types.first(where: { $0.name == "Blah.Bar" })
+
+                        expect(blah).to(equal(expectedBlah))
+                        expect(bar?.variables.first).to(equal(expectedVariable))
+                        expect(bar?.variables.first?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                     }
                 }
             }

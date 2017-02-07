@@ -19,6 +19,7 @@
 - Improved support for typealises as tuple elements types
 - Method parameters with `_` argument label will now have `nil` in `argumentLabel` property
 - Improved support for generic methods
+- Improved support for contained types
 
 ### Internal changes
 

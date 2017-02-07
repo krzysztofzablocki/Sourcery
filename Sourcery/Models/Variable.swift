@@ -41,6 +41,7 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
 
     init(name: String = "",
          typeName: TypeName,
+         type: Type? = nil,
          accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
          isComputed: Bool = false,
          isStatic: Bool = false,
@@ -49,6 +50,7 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
 
         self.name = name
         self.typeName = typeName
+        self.type = type
         self.isComputed = isComputed
         self.isStatic = isStatic
         self.readAccess = accessLevel.read.rawValue

@@ -34,11 +34,11 @@ struct Composer {
         //replace extensions for type aliases with original types
         types
                 .filter { $0.isExtension == true }
-                .forEach { $0.localName = typeName(for: $0.name, typealiases: typealiases) ?? $0.localName }
+                .forEach { $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName }
 
         //extend all types with their extensions
         types.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { typeName(for: $0, typealiases: typealiases) ?? $0 }
+            type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), typealiases: typealiases) ?? $0 }
 
             guard let current = unique[type.name] else {
                 //for unknown types we still store their extensions
@@ -89,16 +89,18 @@ struct Composer {
     }
 
     private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], typealiases: [String: Typealias]) -> Type? {
-        let name = self.typeName(for: typeName.unwrappedTypeName, containingType: containingType, typealiases: typealiases)
-        typeName.actualTypeName = name.flatMap({ TypeName($0) })
-        typeName.tuple = self.parseTupleType(name ?? typeName.name)
+        let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
+        if let actualTypeName = actualTypeName, actualTypeName != typeName.unwrappedTypeName {
+            typeName.actualTypeName = TypeName(actualTypeName)
+        }
 
+        typeName.tuple = parseTupleType(typeName.actualTypeName?.unwrappedTypeName ?? typeName.unwrappedTypeName)
         // recursively resolve type of each tuple element
         typeName.tuple?.elements.forEach { tupleElement in
             tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, typealiases: typealiases)
         }
 
-        return name.flatMap { unique[$0] } ?? unique[typeName.unwrappedTypeName]
+        return typeName.actualTypeName.flatMap({ unique[$0.unwrappedTypeName] }) ?? unique[typeName.unwrappedTypeName]
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
@@ -171,26 +173,76 @@ struct Composer {
     }
 
     /// returns actual type name for type alias
-    private func typeName(for alias: String, containingType: Type? = nil, typealiases: [String: Typealias]) -> String? {
+    private func actualTypeName(for typeName: TypeName, containingType: Type? = nil, unique: [String: Type]? = nil, typealiases: [String: Typealias]) -> String? {
+        let optionalPrefix = typeName.isOptional ? "?" : typeName.isImplicitlyUnwrappedOptional ? "!" : ""
+        let unwrappedTypeName = typeName.unwrappedTypeName
+        var actualTypeName: String?
+
         // first try global typealiases
-        if let name = typealiases[alias]?.typeName.name {
-            return name
+        if let name = typealiases[unwrappedTypeName]?.typeName.name {
+            actualTypeName = name
         }
 
-        guard let containingType = containingType,
-              let possibleTypeName = typealiases["\(containingType.name).\(alias)"]?.typeName.name else {
+        if let containingType = containingType {
+            //check if typealias is for one of contained types
+            if let possibleTypeName = typealiases["\(containingType.name).\(unwrappedTypeName)"]?.typeName.name {
+                let containedType = containingType.containedTypes.first(where: {
+                    $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
+                })
+
+                actualTypeName = containedType?.name ?? possibleTypeName
+            } else {
+                if let name = unique?["\(containingType.name).\(unwrappedTypeName)"]?.name {
+                    //check contained types first
+                    actualTypeName = name
+                } else {
+                    //otherwise go up contained types chain to find a type
+                    let parentTypes = containingType.parentTypes
+                    while let parent = parentTypes.next() {
+                        if let name = unique?["\(parent.name).\(unwrappedTypeName)"]?.name {
+                            actualTypeName = name
+                            break
+                        }
+                    }
+                    actualTypeName = actualTypeName ?? unwrappedTypeName
+                }
+            }
+        }
+
+        if var actualTypeName = actualTypeName {
+            if unwrappedTypeName.isValidTupleName() {
+                let elements = typeName.unwrappedTypeName.dropFirstAndLast().commaSeparated()
+                var actualElements = [String]()
+                for element in elements {
+                    let nameAndValue = element.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+                    if nameAndValue.count == 1 {
+                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                        actualElements.append(valueName ?? nameAndValue[0])
+                    } else {
+                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[1]), containingType: containingType, unique: unique, typealiases: typealiases)
+                        actualElements.append("\(nameAndValue[0]): \(valueName ?? nameAndValue[1])")
+                    }
+                }
+                actualTypeName = "(\(actualElements.joined(separator: ", ")))"
+            } else if unwrappedTypeName.characters.first == "[", unwrappedTypeName.characters.last == "]" {
+                let types = unwrappedTypeName.dropFirstAndLast()
+                    .colonSeparated()
+                    .map({ $0.trimmingCharacters(in: .whitespaces) })
+                if types.count == 1 {
+                    //array literal
+                    let name = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    actualTypeName = "[\(name ?? types[0])]"
+                } else {
+                    //dictionary literal
+                    let keyName = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    let valueName = self.actualTypeName(for: TypeName(types[1]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    actualTypeName = "[\(keyName ?? types[0]): \(valueName ?? types[1])]"
+                }
+            }
+            return actualTypeName + optionalPrefix
+        } else {
             return nil
         }
-
-        //check if typealias is for one of contained types
-        let containedType = containingType
-            .containedTypes
-            .filter {
-                $0.name == "\(containingType.name).\(possibleTypeName)" ||
-                    $0.name == possibleTypeName
-            }.first
-
-        return containedType?.name ?? possibleTypeName
     }
 
     private func updateTypeRelationships(types: [Type]) {

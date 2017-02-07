@@ -136,6 +136,14 @@ class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
+    var parentTypes: AnyIterator<Type> {
+        var next: Type? = self
+        return AnyIterator {
+            next = next?.parent
+            return next
+        }
+    }
+
     /// Superclass definition if any
     /// sourcery: skipEquality
     /// sourcery: skipDescription

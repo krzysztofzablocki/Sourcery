@@ -34,9 +34,11 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
     // sourcery: skipEquality
     var actualTypeName: TypeName?
 
-    init(_ name: String, attributes: [String: Attribute] = [:]) {
+    init(_ name: String, actualTypeName: TypeName? = nil, attributes: [String: Attribute] = [:], tuple: TupleType? = nil) {
         self.name = name
+        self.actualTypeName = actualTypeName
         self.attributes = attributes
+        self.tuple = tuple
 
         var name = name
         attributes.forEach {
