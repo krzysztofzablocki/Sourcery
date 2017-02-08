@@ -259,14 +259,14 @@ extension Sourcery {
                 return result + "\n" + (try generate(template, forParsingResult: parsingResult))
             }
 
-            try output.write(result, encoding: .utf8)
+            try writeIfChanged(result, to: output)
             return
         }
 
         try allTemplates.forEach { template in
             let result = Sourcery.generationHeader + (try generate(template, forParsingResult: parsingResult))
             let outputPath = output + generatedPath(for: template.sourcePath)
-            try outputPath.write(result, encoding: .utf8)
+            try writeIfChanged(result, to: outputPath)
         }
 
         track("Finished.", skipStatus: true)
@@ -305,11 +305,22 @@ extension Sourcery {
                             let path = Path(filePath)
                             let original = try path.read(.utf8)
                             let updated = original.bridge().replacingCharacters(in: range, with: generatedBody)
-                            try path.write(updated, encoding: .utf8)
+                            try writeIfChanged(updated, to: path)
                         }
                     }
                 }
         return inline.contents
+    }
+
+    fileprivate func writeIfChanged(_ content: String, to path: Path) throws {
+        guard path.exists else {
+            return try path.write(content)
+        }
+
+        let existing = try path.read(.utf8)
+        if existing != content {
+            try path.write(content)
+        }
     }
 
     internal func generatedPath(`for` templatePath: Path) -> Path {
