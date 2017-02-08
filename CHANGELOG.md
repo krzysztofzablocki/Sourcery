@@ -1,6 +1,19 @@
 # Sourcery CHANGELOG
 
 ---
+## 0.5.5
+
+### New Features
+
+- Sourcery will no longer write files if content didn't change, this improves behaviour of things depending on modification date like Xcode, Swiftlint.
+
+### Internal changes
+
+- Improved support for contained types
+
+### Bug Fixes
+
+- Fixes cache handling that got broken in 0.5.4
 
 ## 0.5.4
 
