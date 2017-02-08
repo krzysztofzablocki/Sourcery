@@ -214,7 +214,7 @@ extension Sourcery {
 
             let result = parser.parse()
 
-            if cacheDisabled {
+            if !cacheDisabled {
                 let data = NSKeyedArchiver.archivedData(withRootObject: result)
                 do {
                     try artifacts.write(data)
