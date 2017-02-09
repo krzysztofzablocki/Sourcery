@@ -144,11 +144,15 @@ internal struct AnnotationsParser {
     /// - Returns: Dictionary containing all annotations.
     static func parse(line: String) -> Annotations {
         let annotationDefinitions = line.trimmingCharacters(in: .whitespaces)
-                .components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            .components(separatedBy: ",", excludingDelimiterBetween:("", ""))
+            .map { $0.trimmingCharacters(in: .whitespaces) }
 
         var annotations = Annotations()
         annotationDefinitions.forEach { annotation in
-            let parts = annotation.components(separatedBy: "=").map { $0.trimmingCharacters(in: .whitespaces) }
+            let parts = annotation
+                .components(separatedBy: "=", excludingDelimiterBetween:("", ""))
+                .map({ $0.trimmingCharacters(in: .whitespaces) })
+
             if let name = parts.first, !name.isEmpty {
 
                 guard parts.count > 1, var value = parts.last, value.isEmpty == false else {
@@ -161,6 +165,7 @@ internal struct AnnotationsParser {
                 } else {
                     if (value.hasPrefix("'") && value.hasSuffix("'")) || (value.hasPrefix("\"") && value.hasSuffix("\"")) {
                         value = value[value.characters.index(after: value.startIndex) ..< value.characters.index(before: value.endIndex)]
+                        value = value.trimmingCharacters(in: .whitespaces)
                     }
                     annotations[name] = value as NSString
                 }
