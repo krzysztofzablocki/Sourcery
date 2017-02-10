@@ -1,6 +1,13 @@
 # Sourcery CHANGELOG
 
 ---
+
+## Master
+
+### Bug Fixes
+
+- Fixed parsing annotations with complex content
+
 ## 0.5.5
 
 ### New Features

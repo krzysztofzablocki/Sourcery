@@ -38,10 +38,10 @@ class AnnotationsParserSpec: QuickSpec {
 
                 it("extracts multi-line annotations, including numbers") {
                     let annotations = ["skipEquability": NSNumber(value: true),
-                                       "jsonKey": "json_key" as NSString,
+                                       "jsonKey": "json_key = key, json_value = value" as NSString,
                                        "thirdProperty": NSNumber(value: -3)]
 
-                    let result = parse("// sourcery: skipEquability, jsonKey = \"json_key\"\n" +
+                    let result = parse("// sourcery: skipEquability, jsonKey = \"json_key = key, json_value = value \"\n" +
                                                "// sourcery: thirdProperty = -3\n" +
                                                "var name: Int { return 2 }")
                     expect(result).to(equal(annotations))
