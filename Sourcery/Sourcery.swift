@@ -190,7 +190,7 @@ extension Sourcery {
             acc.types += next.types
 
             // swiftlint:disable:next force_unwrapping
-            inlineRanges.append( (next.path!, next.inlineRanges) )
+            inlineRanges.append((next.path!, next.inlineRanges))
             return acc
         }
 
@@ -274,7 +274,8 @@ extension Sourcery {
 
     private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult) throws -> String {
         guard watcherEnabled else {
-            let result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+            var result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+            result = try processFileRanges(for: parsingResult, in: result)
             return try processInlineRanges(for: parsingResult, in: result)
         }
 
@@ -285,14 +286,15 @@ extension Sourcery {
             result = error?.description ?? ""
         }, finallyBlock: {})
 
+        result = try processFileRanges(for: parsingResult, in: result)
         return try processInlineRanges(for: parsingResult, in: result)
     }
 
     private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
-        let inline = InlineParser.parse(contents, removeFromSource: true)
+        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: contents, removeFromSource: true)
 
         try inline
-                .inlineRanges
+                .annotatedRanges
                 .map { ($0, $1) }
                 .sorted { $0.0.1.location > $0.1.1.location }
                 .forEach { (key, range) in
@@ -310,6 +312,23 @@ extension Sourcery {
                     }
                 }
         return inline.contents
+    }
+
+    private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
+        let files = TemplateAnnotationsParser.parseAnnotations("file", contents: contents)
+
+        try files
+            .annotatedRanges
+            .map { ($0, $1) }
+            .forEach({ (filePath, range) in
+                let generatedBody = Sourcery.generationHeader + contents.bridge().substring(with: range)
+                let path = outputPath + "\(filePath).generated.swift"
+                if !path.parent().exists {
+                    try path.parent().mkpath()
+                }
+                try writeIfChanged(generatedBody, to: path)
+            })
+        return files.contents
     }
 
     fileprivate func writeIfChanged(_ content: String, to path: Path) throws {

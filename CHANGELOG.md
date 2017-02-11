@@ -4,6 +4,10 @@
 
 ## Master
 
+### New Features
+
+- Added per file code generation
+
 ### Bug Fixes
 
 - Fixed parsing annotations with complex content

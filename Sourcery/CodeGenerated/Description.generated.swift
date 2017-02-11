@@ -1,7 +1,6 @@
 // Generated using Sourcery 0.5.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
- 
 extension AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "

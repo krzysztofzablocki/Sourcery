@@ -13,7 +13,7 @@ private func build(_ source: String) -> [String: SourceKitRepresentable]? {
     return Structure(file: File(contents: source)).dictionary
 }
 
-class InlineParserSpec: QuickSpec {
+class TemplateAnnotationsParserSpec: QuickSpec {
     // swiftlint:disable function_body_length
     override func spec() {
         describe("InlineParser") {
@@ -23,10 +23,10 @@ class InlineParserSpec: QuickSpec {
                     "// sourcery:end\n"
 
             let result =
-                    InlineParser.parse(source)
+                    TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
 
             it("tracks it") {
-                expect(result.inlineRanges["Type.AutoCoding"]).to(equal(NSRange(location: 35, length: 19)))
+                expect(result.annotatedRanges["Type.AutoCoding"]).to(equal(NSRange(location: 35, length: 19)))
             }
 
             it("removes content between the markup") {

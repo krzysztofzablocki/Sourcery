@@ -5,17 +5,18 @@
 
 import Foundation
 
-internal enum InlineParser {
-    static func parse(_ contents: String, removeFromSource: Bool = true) -> (contents: String, inlineRanges: [String: NSRange]) {
+internal enum TemplateAnnotationsParser {
+
+    static func parseAnnotations(_ annotation: String, contents: String, removeFromSource: Bool = true) -> (contents: String, annotatedRanges: [String: NSRange]) {
         var bridged = contents.bridge()
         let commentPattern = NSRegularExpression.escapedPattern(for: "//")
         let regex = try? NSRegularExpression(
-                pattern: "(?:^\\s*?\(commentPattern)\\s*?sourcery:inline:)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
+                pattern: "(?:^\\s*?\(commentPattern)\\s*?sourcery:\(annotation):)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
                 options: [.allowCommentsAndWhitespace, .anchorsMatchLines]
         )
 
         var rangesToReplace = [NSRange]()
-        var inlineRanges = [String: NSRange]()
+        var annotatedRanges = [String: NSRange]()
 
         regex?.enumerateMatches(in: contents, options: [], range: bridged.entireRange) { result, _, _ in
             guard let result = result, result.numberOfRanges == 4 else {
@@ -34,7 +35,7 @@ internal enum InlineParser {
                 return NSRange(location: start, length: length)
             }()
 
-            inlineRanges[name] = rangeToReplace
+            annotatedRanges[name] = rangeToReplace
             rangesToReplace.append(rangeToReplace)
         }
 
@@ -46,6 +47,6 @@ internal enum InlineParser {
                     }
         }
 
-        return (bridged as String, inlineRanges)
+        return (bridged as String, annotatedRanges)
     }
 }
