@@ -296,6 +296,7 @@ XCTMain([
 </details>
 
 ## Writing templates
+
 *Sourcery templates are powered by [Stencil](https://github.com/kylef/Stencil)*
 
 Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
@@ -315,6 +316,17 @@ There are multiple ways to access your types:
 
 All of these properties return `Type` objects.
 
+<details><summary>**What are _known_ and _unknown_ types**</summary>
+
+Currently Sourcery only scans files from a directory that you tell it to scan. This way it can get full information about types _defined_ in these sources. These types are considered _known_ types. For each of known types Sourcery provides `Type` object. You can get it for example by its name from `types` collection. `Type` object contains information about whether type that it describes is a struct, enum, class or a protocol, what are its properties and methods, what protocols it implements and so on. This is done recursively, so if you have a class that inherits from another class (or struct that implements a protocol) and they are both known types you will have information about both of them and you will be able to access parent type's `Type` object using `type.inherits.TypeName` (or `type.implements.ProtocolName`).
+
+Everything _defined_ outside of scanned sources is considered as _unknown_ types. For such types Sourcery doesn't provide `Type` object. For that reason variables (and other "typed" types, like method parameters etc.) of such types will only contain `typeName` property, but their `type` property will be `nil`. 
+
+If you have an extension of unknown type defined in scanned sources Sourcery will create `Type` for it (it's `kind` property will be `extension`). But this object will contain only declarations defined in this extension. Several extensions of unknown type will be merged into one `Type` object the same way as extensions of known types.
+
+See #87 for details.
+</details>
+
 Available types:
 
 <details><summary>**Type**. Properties:</summary>
@@ -329,9 +341,9 @@ Available types:
 - `methods` <- list of all methods defined in this type, excluding those from protocols or inheritance
 - `allMethods` <- same principles as in `allVariables`
 - `initializers` <- list of all initializers
-- `inherits.BaseClass` => info whether type inherits from known base class
-- `implements.Protocol` => info whether type implements known protocol
-- `based.BaseClassOrProtocol` => info whether type implements or inherits from `BaseClassOrProtocol` (all type names encountered, even those that Sourcery didn't scan)
+- `inherits.BaseClass` => if type is a class and it inherits from a known class named `BaseClass` this property returns `Type` object for `BaseClass`, otherwise returns `nil`
+- `implements.Protocol` => if type implements a known protocol named `Protocol` this property returns `Type` object for `Protocol`, otherwise returns `nil`
+- `based.BaseClassOrProtocol` => if type either implements a protocol or inherits from a class named `BaseClassOrProtocol` this property returns `BaseClassOrProtocol` itself, otherwise returns `nil`. All type names encountered, even those that Sourcery didn't scan
 - `containedTypes` <- list of types contained within this type
 - `parentName` <- list of parent type (for contained ones)
 - `attributes` <- type attributes, i.e. `type.attributes.objc`
