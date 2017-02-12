@@ -1,7 +1,6 @@
 // Generated using Sourcery 0.5.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
-
 extension AssociatedValue {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? AssociatedValue else { return false }

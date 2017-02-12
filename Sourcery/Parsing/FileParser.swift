@@ -61,9 +61,9 @@ final class FileParser {
     ///
     /// - Returns: All types we could find.
     public func parse() -> FileParserResult {
-        let inline = InlineParser.parse(initialContents)
+        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents)
         contents = inline.contents
-        inlineRanges = inline.inlineRanges
+        inlineRanges = inline.annotatedRanges
         annotations = AnnotationsParser(contents: contents)
 
         let file = File(contents: contents)

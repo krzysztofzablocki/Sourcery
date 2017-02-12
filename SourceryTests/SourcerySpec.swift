@@ -32,8 +32,8 @@ class SourcerySpecTests: QuickSpec {
                             "// sourcery:end\n" +
                             "}", in: sourcePath)
 
-                        update(code: "// sourcery:inline:Foo.Inlined \n" +
-                            "// Line One\n" +
+                        update(code: "// Line One\n" +
+                            "// sourcery:inline:Foo.Inlined \n" +
                             "var property = 2\n" +
                             "// Line Three\n" +
                             "// sourcery:end", in: templatePath)
@@ -44,7 +44,6 @@ class SourcerySpecTests: QuickSpec {
                     it("replaces placeholder with generated code") {
                         let expectedResult = "class Foo { \n" +
                                 "// sourcery:inline:Foo.Inlined\n" +
-                                "// Line One\n" +
                                 "var property = 2\n" +
                                 "// Line Three\n" +
                                 "// sourcery:end\n" +
@@ -57,7 +56,58 @@ class SourcerySpecTests: QuickSpec {
                     it("removes code from within generated template") {
                         let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
                         "// DO NOT EDIT\n\n" +
+                        "// Line One\n" +
                         "// sourcery:inline:Foo.Inlined\n" +
+                        "// sourcery:end\n"
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                    }
+                }
+
+                describe("using per file generation") {
+                    let templatePath = outputDir + Path("FakeTemplate.stencil")
+                    let sourcePath = outputDir + Path("Source.swift")
+                    func update(code: String, in path: Path) { guard let _ = try? path.write(code) else { fatalError() } }
+
+                    beforeEach {
+                        update(code: "class Foo { }", in: sourcePath)
+
+                        update(code:
+                            "// Line One\n" +
+                            "{% for type in types.all %}" +
+                            "// sourcery:file:Generated/{{ type.name }}\n" +
+                            "extension {{ type.name }} {\n" +
+                            "var property = 2\n" +
+                            "// Line Three\n" +
+                            "}\n" +
+                            "// sourcery:end\n" +
+                            "{% endfor %}", in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(sourcePath, usingTemplates: templatePath, output: outputDir) }.toNot(throwError())
+                    }
+
+                    it("replaces placeholder with generated code") {
+                        let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
+                            "// DO NOT EDIT\n\n" +
+                            "extension Foo {\n" +
+                            "var property = 2\n" +
+                            "// Line Three\n" +
+                        "}\n"
+
+                        let generatedPath = outputDir + Path("Generated/Foo.generated.swift")
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
+                    it("removes code from within generated template") {
+                        let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
+                            "// DO NOT EDIT\n\n" +
+                            "// Line One\n" +
+                            "// sourcery:file:Generated/Foo\n" +
                         "// sourcery:end\n"
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)

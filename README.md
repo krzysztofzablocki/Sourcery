@@ -35,6 +35,7 @@ Using it offers many benefits:
     - [Format:](#format)
     - [Accessing in templates:](#accessing-in-templates)
   - [Inline code generation](#inline-code-generation)
+  - [Per file code generation](#per-file-code-generation)
 - [Installing](#installing)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -522,11 +523,37 @@ If you want to attribute multiple items with same attributes, you can use sectio
 Sourcery supports inline code generation, you just need to put same markup in your code and template, e.g.
 
 ```swift
-// sourcery.inline:TypeName.TemplateName
+// in template:
+
+{% for type in types.all %}
+// sourcery:inline:{{ type.name }}.TemplateName
 // sourcery:end
+{% endfor %}
+
+// in source code:
+
+class MyType {
+
+// sourcery:inline:MyType.TemplateName
+// sourcery:end
+
+}
 ```
 
 Sourcery will generate the template code and then perform replacement in your source file. Inlined generated code is not parsed to avoid chicken-egg problem.
+
+### Per file code generation
+
+Sourcery supports generating code in a separate file per type, you just need to put `file` annotation in a template, e.g.
+
+```swift
+{% for type in types.all %}
+// sourcery:file:Generated/{{ type.name}}+TemplateName
+// sourcery:end
+{% endfor %}
+```
+
+Sourcery will generate the template code and then write its annotated parts to corresponding files. In example above it will create `Generated/<type name>+TemplateName.generated.swift` file for each of scanned types.
 
 ## Installing
 
