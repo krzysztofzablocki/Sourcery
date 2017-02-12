@@ -544,7 +544,7 @@ Sourcery will generate the template code and then perform replacement in your so
 
 ### Per file code generation
 
-Sourcery supporte generating code in a separate file per type, you just need to put `file` annotation in a template, e.g.
+Sourcery supports generating code in a separate file per type, you just need to put `file` annotation in a template, e.g.
 
 ```swift
 {% for type in types.all %}
