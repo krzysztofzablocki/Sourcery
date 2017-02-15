@@ -22,7 +22,7 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
 extension {{ type.name }}{% if not type.kind == "protocol" %}: Hashable{% endif %} {
     {% if type.supertype.based.Hashable or type.supertype.implements.AutoHashable %} THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable {% endif %}
     {{ type.accessLevel }} var hashValue: Int {
-        return combineHashes([{% for variable in type.variables %}{% if not variable.isStatic and not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
+        return combineHashes([{% for variable in type.storedVariables %}{% if not variable.isStatic and not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
     }
 }
 {% endif %}{% endfor %}
