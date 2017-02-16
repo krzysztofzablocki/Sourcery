@@ -2,7 +2,7 @@
 
 ---
 
-## Master
+## 0.5.6
 
 ### New Features
 
@@ -11,6 +11,7 @@
 ### Bug Fixes
 
 - Fixed parsing annotations with complex content
+- Fixed inline parser using wrong caching logic
 
 ## 0.5.5
 
