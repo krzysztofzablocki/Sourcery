@@ -83,7 +83,7 @@ final class FileParser {
         let types = parseTypes(source, processed: &processedGlobalTypes)
 
         let typealiases = parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
-        return FileParserResult(path: path, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: contents.sha256() ?? "", sourceryVersion: Sourcery.version)
+        return FileParserResult(path: path, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Sourcery.version)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {

@@ -208,7 +208,7 @@ extension Sourcery {
 
         guard !cacheDisabled,
               artifacts.exists,
-              let contentSha = parser.parseContentsIfNeeded().sha256(),
+              let contentSha = parser.initialContents.sha256(),
               let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
 
             let result = parser.parse()
