@@ -1,6 +1,10 @@
 # Sourcery CHANGELOG
 
 ---
+## 0.5.7
+
+### Bug Fixes
+- Cache initial file contents, including the inline generated ranges so that they are always up to date
 
 ## 0.5.6
 
