@@ -57,14 +57,24 @@ final class FileParser {
 
     // MARK: - Processing
 
-    /// Parses given file context.
-    ///
-    /// - Returns: All types we could find.
-    public func parse() -> FileParserResult {
+    public func parseContentsIfNeeded() -> String {
+        guard annotations == nil else {
+            // already loaded
+            return contents
+        }
+
         let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents)
         contents = inline.contents
         inlineRanges = inline.annotatedRanges
         annotations = AnnotationsParser(contents: contents)
+        return contents
+    }
+
+    /// Parses given file context.
+    ///
+    /// - Returns: All types we could find.
+    public func parse() -> FileParserResult {
+        _ = parseContentsIfNeeded()
 
         let file = File(contents: contents)
         let source = Structure(file: file).dictionary
