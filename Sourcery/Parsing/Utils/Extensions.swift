@@ -37,8 +37,13 @@ extension String {
 
     /// Wraps brackets if needed to make a valid type name
     func bracketsBalancing() -> String {
-        let wrapped = "(\(self))"
-        return wrapped.isValidTupleName() || !bracketsBalanced() ? wrapped : self
+        if hasPrefix("(") && hasSuffix(")") {
+            let unwrapped = dropFirstAndLast()
+            return unwrapped.commaSeparated().count == 1 ? unwrapped.bracketsBalancing() : self
+        } else {
+            let wrapped = "(\(self))"
+            return wrapped.isValidTupleName() || !bracketsBalanced() ? wrapped : self
+        }
     }
 
     /// Returns true if given string can represent a valid tuple type name
@@ -46,6 +51,14 @@ extension String {
         guard hasPrefix("(") && hasSuffix(")") else { return false }
         let trimmedBracketsName = dropFirstAndLast()
         return trimmedBracketsName.bracketsBalanced() && trimmedBracketsName.commaSeparated().count > 1
+    }
+
+    func isValidArrayName() -> Bool {
+        if hasPrefix("Array<") { return true }
+        if hasPrefix("[") && hasSuffix("]") {
+            return dropFirstAndLast().colonSeparated().count == 1
+        }
+        return false
     }
 
     func isValidClosureName() -> Bool {

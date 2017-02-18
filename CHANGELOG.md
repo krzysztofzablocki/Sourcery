@@ -1,6 +1,13 @@
 # Sourcery CHANGELOG
 
 ---
+
+## Master
+
+### New Features
+
+- Added parsing array types
+
 ## 0.5.7
 
 ### Bug Fixes

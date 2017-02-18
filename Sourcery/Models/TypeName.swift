@@ -34,11 +34,17 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
     // sourcery: skipEquality
     var actualTypeName: TypeName?
 
-    init(_ name: String, actualTypeName: TypeName? = nil, attributes: [String: Attribute] = [:], tuple: TupleType? = nil) {
+    init(_ name: String,
+         actualTypeName: TypeName? = nil,
+         attributes: [String: Attribute] = [:],
+         tuple: TupleType? = nil,
+         array: ArrayType? = nil) {
+
         self.name = name
         self.actualTypeName = actualTypeName
         self.attributes = attributes
         self.tuple = tuple
+        self.array = array
 
         var name = name
         attributes.forEach {
@@ -56,19 +62,22 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
             self.isImplicitlyUnwrappedOptional = false
             self.isOptional = false
         } else {
+            name = name.bracketsBalancing()
             let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
             let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
             self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
             self.isOptional = isOptional
 
             if isOptional {
+                let unwrappedTypeName: String
                 if name.hasSuffix("?") || name.hasSuffix("!") {
-                    self.unwrappedTypeName = String(name.characters.dropLast())
+                    unwrappedTypeName = String(name.characters.dropLast())
                 } else if name.hasPrefix("Optional<") {
-                    self.unwrappedTypeName = name.drop(first: "Optional<".characters.count, last: 1)
+                    unwrappedTypeName = name.drop(first: "Optional<".characters.count, last: 1)
                 } else {
-                    self.unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
+                    unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
                 }
+                self.unwrappedTypeName = unwrappedTypeName.bracketsBalancing()
             } else {
                 self.unwrappedTypeName = name
             }
@@ -92,22 +101,32 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
     }
 
     var isTuple: Bool {
-        if let actualTypeName = actualTypeName?.name {
+        if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidTupleName()
         } else {
-            return name.isValidTupleName()
-        }
-    }
-
-    var isClosure: Bool {
-        if let actualTypeName = actualTypeName?.name {
-            return actualTypeName.isValidClosureName()
-        } else {
-            return name.isValidClosureName()
+            return unwrappedTypeName.isValidTupleName()
         }
     }
 
     var tuple: TupleType?
+
+    var isArray: Bool {
+        if let actualTypeName = actualTypeName?.unwrappedTypeName {
+            return actualTypeName.isValidArrayName()
+        } else {
+            return unwrappedTypeName.isValidArrayName()
+        }
+    }
+
+    var array: ArrayType?
+
+    var isClosure: Bool {
+        if let actualTypeName = actualTypeName?.unwrappedTypeName {
+            return actualTypeName.isValidClosureName()
+        } else {
+            return unwrappedTypeName.isValidClosureName()
+        }
+    }
 
     override var description: String {
         return name
@@ -122,6 +141,7 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
             self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
             guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["unwrappedTypeName"])); fatalError() }; self.unwrappedTypeName = unwrappedTypeName
             self.tuple = aDecoder.decode(forKey: "tuple")
+            self.array = aDecoder.decode(forKey: "array")
         }
 
         func encode(with aCoder: NSCoder) {
@@ -132,6 +152,7 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
             aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
             aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
             aCoder.encode(self.tuple, forKey: "tuple")
+            aCoder.encode(self.array, forKey: "array")
         }
         // sourcery:end
 
@@ -186,4 +207,30 @@ final class TupleType: NSObject, SourceryModel {
             aCoder.encode(self.elements, forKey: "elements")
         }
      // sourcery:end
+}
+
+final class ArrayType: NSObject, SourceryModel {
+    let name: String
+    let elementTypeName: TypeName
+    var elementType: Type?
+
+    init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
+        self.name = name
+        self.elementTypeName = elementTypeName
+        self.elementType = elementType
+    }
+
+    // sourcery:inline:ArrayType.AutoCoding
+        required init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elementTypeName"])); fatalError() }; self.elementTypeName = elementTypeName
+            self.elementType = aDecoder.decode(forKey: "elementType")
+        }
+
+        func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.elementTypeName, forKey: "elementTypeName")
+            aCoder.encode(self.elementType, forKey: "elementType")
+        }
+    // sourcery:end
 }

@@ -24,6 +24,11 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
             }
 
+            it("can report array type via KVC") {
+                let sut = {{ type.name }}(typeName: TypeName("[Int]"))
+                expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
+            }
+
             it("can report actual type name via KVC") {
                 let sut = AssociatedValue(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))

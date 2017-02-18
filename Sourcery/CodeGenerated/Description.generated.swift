@@ -1,6 +1,15 @@
-// Generated using Sourcery 0.5.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+extension ArrayType {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(self.name), "
+        string += "elementTypeName = \(self.elementTypeName), "
+        string += "elementType = \(self.elementType)"
+        return string
+    }
+}
 extension AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -70,6 +79,7 @@ extension Method {
         string += "parameters = \(self.parameters), "
         string += "shortName = \(self.shortName), "
         string += "returnTypeName = \(self.returnTypeName), "
+        string += "actualReturnTypeName = \(self.actualReturnTypeName), "
         string += "throws = \(self.throws), "
         string += "accessLevel = \(self.accessLevel), "
         string += "isStatic = \(self.isStatic), "
@@ -142,6 +152,7 @@ extension Type {
         string += "inheritedTypes = \(self.inheritedTypes), "
         string += "containedTypes = \(self.containedTypes), "
         string += "parentName = \(self.parentName), "
+        string += "parentTypes = \(self.parentTypes), "
         string += "attributes = \(self.attributes)"
         return string
     }

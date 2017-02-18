@@ -380,6 +380,7 @@ Available types:
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
 - `isClosure` <- shorthand for `typeName.isClosure`
+- `isArray` <- shorthand for `typeName.isArray`
 
 </details>
 
@@ -396,6 +397,7 @@ Available types:
 - `isStatic` <- whether is static variable
 - `isTuple` <- shorthand for `typeName.isTuple`
 - `isClosure` <- shorthand for `typeName.isClosure`
+- `isArray` <- shorthand for `typeName.isArray`
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
 - `attributes` <- variable attributes, i.e. `var.attributes.NSManaged`
@@ -437,6 +439,7 @@ Available types:
 - `isImplicitlyUnwrappedOptional` <- shorthand for `typeName. isImplicitlyUnwrappedOptional `
 - `isTuple` <- shorthand for `typeName.isTuple`
 - `isClosure` <- shorthand for `typeName.isClosure`
+- `isArray` <- shorthand for `typeName.isArray`
 - `typeAttributes` <- parameter's type attributes, shorthand for `typeName.attributes`, i.e. `param.typeAttributes.escaping`
 
 </details>
@@ -452,13 +455,14 @@ Available types:
 - `isTuple` <- whether given type is a tuple
 - `tuple` <- returns information about tuple type (*TupleType*) based on `actualTypeName.unwrappedTypeName`
 - `isClosure` <- shorthand for `typeName.isClosure`
+- `isArray` <- shorthand for `typeName.isArray`
 - `attributes` <- type attributes, i.e. `typeName.attributes.escaping`
 
 </details>
 
 <details><summary>**TupleType**. Properties:</summary>
 
-- `name` <- element name
+- `name` <- type name
 - `elements` <- returns tuple elements information (*TupleElement*)
 
 </details>
@@ -472,6 +476,14 @@ Available types:
 - `isOptional` <- shorthand for `typeName.isOptional`
 - `isTuple` <- shorthand for `typeName.isTuple`
 - `isClosure` <- shorthand for `typeName.isClosure`
+
+</details>
+
+<details><summary>**ArrayType**. Properties:</summary>
+
+- `name` <- type name
+- `elementType` <- array element type, if known
+- `elementTypeName` <- array element type name (*TypeName*)
 
 </details>
 
