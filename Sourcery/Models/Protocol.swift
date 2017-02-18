@@ -38,6 +38,12 @@ final class Protocol: Type {
         )
     }
 
+    override func extend(_ type: Type) {
+        type.variables = type.variables.filter({ v in !variables.contains(where: { $0.name == v.name && $0.isStatic == v.isStatic }) })
+        type.methods = type.methods.filter({ !methods.contains($0) })
+        super.extend(type)
+    }
+
     // sourcery:inline:Protocol.AutoCoding
         required init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)

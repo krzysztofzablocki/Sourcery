@@ -22,7 +22,7 @@ class FileParserVariableSpec: QuickSpec {
                         return nil
                     }
                     _ = parser.parse()
-                    return parser.parseVariable(src)
+                    return parser.parseVariable(src, containedInProtocol: false)
                 }
 
                 it("ignores private variables") {

@@ -380,6 +380,13 @@ class FileParserSpec: QuickSpec {
                                 Protocol(name: "Foo")
                                 ]))
                     }
+
+                    it("does not consider protocol variables as computed") {
+                        expect(parse("protocol Foo { var some: Int { get } }"))
+                            .to(equal([
+                                Protocol(name: "Foo", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: false)])
+                                ]))
+                    }
                 }
             }
         }
