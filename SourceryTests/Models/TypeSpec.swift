@@ -9,14 +9,18 @@ class TypeSpec: QuickSpec {
             let staticVariable = Variable(name: "staticVar", typeName: TypeName("Int"), isStatic: true)
             let computedVariable = Variable(name: "variable", typeName: TypeName("Int"), isComputed: true)
             let storedVariable = Variable(name: "otherVariable", typeName: TypeName("Int"), isComputed: false)
-            let supertypeVariable = Variable(name: "supertypeVariable", typeName: TypeName("Int"), isComputed: false)
+            let supertypeVariable = Variable(name: "supertypeVariable", typeName: TypeName("Int"), isComputed: true)
+            let superTypeMethod = Method(name: "doSomething()")
+            let overrideMethod = superTypeMethod
+            let overrideVariable = supertypeVariable
             let initializer = Method(name: "init()")
             let parentType = Type(name: "Parent")
-            let superTypeMethod = Method(name: "doSomething()")
-            let superType = Type(name: "Supertype", variables: [supertypeVariable], methods: [superTypeMethod])
+            let protocolType = Type(name: "Protocol", variables: [Variable(name: "supertypeVariable", typeName: TypeName("Int"))], methods: [superTypeMethod])
+            let superType = Type(name: "Supertype", variables: [supertypeVariable], methods: [superTypeMethod], inheritedTypes: ["Protocol"])
+            superType.implements["Protocol"] = protocolType
 
             beforeEach {
-                sut = Type(name: "Foo", parent: parentType, variables: [storedVariable, computedVariable, staticVariable], methods: [initializer], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])
+                sut = Type(name: "Foo", parent: parentType, variables: [storedVariable, computedVariable, staticVariable, overrideVariable], methods: [initializer, overrideMethod], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])
                 sut?.supertype = superType
             }
 
@@ -45,7 +49,7 @@ class TypeSpec: QuickSpec {
             }
 
             it("filters computed variables") {
-                expect(sut?.computedVariables).to(equal([computedVariable]))
+                expect(sut?.computedVariables).to(equal([computedVariable, overrideVariable]))
             }
 
             it("filters stored variables") {
@@ -53,7 +57,7 @@ class TypeSpec: QuickSpec {
             }
 
             it("filters instance variables") {
-                expect(sut?.instanceVariables).to(equal([storedVariable, computedVariable]))
+                expect(sut?.instanceVariables).to(equal([storedVariable, computedVariable, overrideVariable]))
             }
 
             it("filters initializers") {
@@ -61,11 +65,11 @@ class TypeSpec: QuickSpec {
             }
 
             it("flattens methods from supertype") {
-                expect(sut?.allMethods).to(equal([initializer, superTypeMethod]))
+                expect(sut?.allMethods).to(equal([initializer, overrideMethod]))
             }
 
             it("flattens variables from supertype") {
-                expect(sut?.allVariables).to(equal([storedVariable, computedVariable, staticVariable, supertypeVariable]))
+                expect(sut?.allVariables).to(equal([storedVariable, computedVariable, staticVariable, overrideVariable]))
             }
 
             describe("isGeneric") {
@@ -103,7 +107,16 @@ class TypeSpec: QuickSpec {
 
                     sut?.extend(type)
 
-                    expect(sut?.variables).to(equal([storedVariable, computedVariable, staticVariable, extraVariable]))
+                    expect(sut?.variables).to(equal([storedVariable, computedVariable, staticVariable, overrideVariable, extraVariable]))
+                }
+
+                it("does not duplicate variables with protocol extension") {
+                    let aExtension = Type(name: "Foo", isExtension: true, variables: [Variable(name: "variable", typeName: TypeName("Int"), isComputed: true)])
+                    let aProtocol = Protocol(name: "Foo", variables: [Variable(name: "variable", typeName: TypeName("Int"))])
+
+                    aProtocol.extend(aExtension)
+
+                    expect(aProtocol.variables).to(equal([Variable(name: "variable", typeName: TypeName("Int"))]))
                 }
 
                 it("adds methods") {
@@ -112,7 +125,16 @@ class TypeSpec: QuickSpec {
 
                     sut?.extend(type)
 
-                    expect(sut?.methods).to(equal([initializer, extraMethod]))
+                    expect(sut?.methods).to(equal([initializer, overrideMethod, extraMethod]))
+                }
+
+                it("does not duplicate methods with protocol extension") {
+                    let aExtension = Type(name: "Foo", isExtension: true, methods: [Method(name: "foo()")])
+                    let aProtocol = Protocol(name: "Foo", methods: [Method(name: "foo()")])
+
+                    aProtocol.extend(aExtension)
+
+                    expect(aProtocol.methods).to(equal([Method(name: "foo()")]))
                 }
 
                 it("adds annotations") {
@@ -147,7 +169,7 @@ class TypeSpec: QuickSpec {
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Type(name: "Foo", parent: parentType, accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable, staticVariable], methods: [initializer], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
+                        expect(sut).to(equal(Type(name: "Foo", parent: parentType, accessLevel: .internal, isExtension: false, variables: [storedVariable, computedVariable, staticVariable, overrideVariable], methods: [initializer, overrideMethod], inheritedTypes: ["NSObject"], annotations: ["something": NSNumber(value: 161)])))
                     }
                 }
 

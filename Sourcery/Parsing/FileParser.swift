@@ -88,7 +88,7 @@ final class FileParser {
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
         var types = [Type]()
-        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source in
+        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, containingIn in
             let type: Type
 
             switch kind {
@@ -108,9 +108,9 @@ final class FileParser {
             case .enumelement:
                 return parseEnumCase(source)
             case .varInstance:
-                return parseVariable(source)
+                return parseVariable(source, containedInProtocol: containingIn is Protocol)
             case .varStatic, .varClass:
-                return parseVariable(source, isStatic: true)
+                return parseVariable(source, containedInProtocol: containingIn is Protocol, isStatic: true)
             case .varLocal:
                 //! Don't log local / param vars
                 return nil
@@ -137,7 +137,7 @@ final class FileParser {
     }
 
     /// Walks all declarations in the source
-    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
+    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable], Any?) -> Any?) {
         if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
             for substructure in substructures {
                 if let source = substructure as? [String: SourceKitRepresentable] {
@@ -149,13 +149,13 @@ final class FileParser {
     }
 
     /// Walks single declaration in the source, recursively processing containing types
-    private func walkDeclaration(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable]) -> Any?) {
+    private func walkDeclaration(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable], Any?) -> Any?) {
         var declaration = containingIn
 
         let inheritedTypes = extractInheritedTypes(source: source)
 
         if let requirements = parseTypeRequirements(source) {
-            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source)
+            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source, containingIn?.0)
             if let foundDeclaration = foundDeclaration, let containingIn = containingIn {
                 processContainedDeclaration(foundDeclaration, within: containingIn)
             }
@@ -366,7 +366,7 @@ extension FileParser {
         }
     }
 
-    internal func parseVariable(_ source: [String: SourceKitRepresentable], isStatic: Bool = false) -> Variable? {
+    internal func parseVariable(_ source: [String: SourceKitRepresentable], containedInProtocol: Bool, isStatic: Bool = false) -> Variable? {
         guard let (name, _, accesibility) = parseTypeRequirements(source),
             accesibility != .private && accesibility != .fileprivate else { return nil }
 
@@ -398,7 +398,7 @@ extension FileParser {
         var computed = false
 
         //! if there is body it might be computed
-        if let bodylength = source[SwiftDocKey.bodyLength.rawValue] as? Int64 {
+        if !containedInProtocol, let bodylength = source[SwiftDocKey.bodyLength.rawValue] as? Int64 {
             computed = bodylength > 0
         }
 
