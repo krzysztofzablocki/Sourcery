@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension AssociatedValue {
@@ -8,6 +8,7 @@ extension AssociatedValue {
     var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
+    var isArray: Bool { return typeName.isArray }
 }
 extension MethodParameter {
     var isOptional: Bool { return typeName.isOptional }
@@ -16,6 +17,7 @@ extension MethodParameter {
     var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
+    var isArray: Bool { return typeName.isArray }
 }
 extension TupleElement {
     var isOptional: Bool { return typeName.isOptional }
@@ -24,6 +26,7 @@ extension TupleElement {
     var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
+    var isArray: Bool { return typeName.isArray }
 }
 extension Typealias {
     var isOptional: Bool { return typeName.isOptional }
@@ -32,6 +35,7 @@ extension Typealias {
     var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
+    var isArray: Bool { return typeName.isArray }
 }
 extension Variable {
     var isOptional: Bool { return typeName.isOptional }
@@ -40,4 +44,5 @@ extension Variable {
     var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
+    var isArray: Bool { return typeName.isArray }
 }

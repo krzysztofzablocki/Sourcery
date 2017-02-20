@@ -33,9 +33,21 @@ class TypeNameSpec: QuickSpec {
                 }
             }
 
+            context("given type wrapped with extra closures") {
+                it("unwraps it completely") {
+                    expect(TypeName("(Int)").unwrappedTypeName).to(equal("Int"))
+                    expect(TypeName("((Int)?)").unwrappedTypeName).to(equal("Int"))
+                    expect(TypeName("(Int, Int)").unwrappedTypeName).to(equal("(Int, Int)"))
+                    expect(TypeName("((Int))").unwrappedTypeName).to(equal("Int"))
+                    expect(TypeName("((Int, Int))").unwrappedTypeName).to(equal("(Int, Int)"))
+                    expect(TypeName("((Int, Int) -> ())").unwrappedTypeName).to(equal("(Int, Int) -> ()"))
+                }
+            }
+
             context("given tuple type") {
                 it("reports tuple correctly") {
                     expect(TypeName("(Int, Int)").isTuple).to(beTrue())
+                    expect(TypeName("(Int, Int)?").isTuple).to(beTrue())
                     expect(TypeName("(Int)").isTuple).to(beFalse())
                     expect(TypeName("Int").isTuple).to(beFalse())
                     expect(TypeName("(Int) -> (Int)").isTuple).to(beFalse())
@@ -46,9 +58,17 @@ class TypeNameSpec: QuickSpec {
                 }
             }
 
+            context("given array type") {
+                it("reports array correctly") {
+                    expect(TypeName("[Int]").isArray).to(beTrue())
+                    expect(TypeName("[[Int]]").isArray).to(beTrue())
+                }
+            }
+
             context("given closure type") {
                 it("reports closure correctly") {
                     expect(TypeName("() -> ()").isClosure).to(beTrue())
+                    expect(TypeName("(() -> ())?").isClosure).to(beTrue())
                     expect(TypeName("(Int, Int) -> ()").isClosure).to(beTrue())
                     expect(TypeName("() -> (Int, Int)").isClosure).to(beTrue())
                     expect(TypeName("() -> (Int) -> (Int)").isClosure).to(beTrue())

@@ -168,19 +168,47 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given tuple type") {
                     it("extracts elements properly") {
-                        let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))}")
+                        let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))}")
                         let variable = types.first?.variables.first
 
                         expect(variable?.typeName.tuple).to(equal(
-                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int))", elements: [
+                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))", elements: [
                                 TupleElement(name: "a", typeName: TypeName("Int")),
                                 TupleElement(name: "b", typeName: TypeName("Int")),
                                 TupleElement(name: "2", typeName: TypeName("String")),
                                 TupleElement(name: "3", typeName: TypeName("Float")),
                                 TupleElement(name: "literal", typeName: TypeName("[String: [String: Int]]")),
                                 TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>")),
-                                TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)"))
+                                TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)")),
+                                TupleElement(name: "tuple", typeName: TypeName("(Int, Int)", tuple:
+                                    TupleType(name: "(Int, Int)", elements: [
+                                        TupleElement(name: "0", typeName: TypeName("Int")),
+                                        TupleElement(name: "1", typeName: TypeName("Int"))
+                                        ])))
                                 ])
+                        ))
+                    }
+                }
+
+                context("given array type") {
+                    it("extracts element type properly") {
+                        let types = parse("struct Foo { var array: [Int]; var arrayOfTuples: [(Int, Int)]; var arrayOfArrays: [[Int]], var arrayOfClosures: [()->()] }")
+                        let variables = types.first?.variables
+                        expect(variables?[0].typeName.array).to(equal(
+                            ArrayType(name: "[Int]", elementTypeName: TypeName("Int"))
+                        ))
+                        expect(variables?[1].typeName.array).to(equal(
+                            ArrayType(name: "[(Int, Int)]", elementTypeName: TypeName("(Int, Int)", tuple:
+                                TupleType(name: "(Int, Int)", elements: [
+                                    TupleElement(name: "0", typeName: TypeName("Int")),
+                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                    ])))
+                        ))
+                        expect(variables?[2].typeName.array).to(equal(
+                            ArrayType(name: "[[Int]]", elementTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int"))))
+                        ))
+                        expect(variables?[3].typeName.array).to(equal(
+                            ArrayType(name: "[()->()]", elementTypeName: TypeName("()->()"))
                         ))
                     }
                 }
@@ -487,6 +515,7 @@ class ParserComposerSpec: QuickSpec {
                     it("extracts property of nested type array properly") {
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName:TypeName("[Blah.Foo]?")), accessLevel: (read: .internal, write: .none))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
+                        expectedVariable.typeName.array = ArrayType(name: "[Blah.Foo]?", elementTypeName: TypeName("Blah.Foo"), elementType: Struct(name: "Foo", parent: expectedBlah))
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: [Foo]? }}")
                         let blah = types.first(where: { $0.name == "Blah" })
@@ -511,7 +540,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type tuple properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("(a: Foo, _: Foo, Foo)?", actualTypeName: TypeName("(a: Blah.Foo, _: Blah.Foo, Blah.Foo)?"), tuple: TupleType(name: "(a: Blah.Foo, _: Blah.Foo, Blah.Foo)", elements: [
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("(a: Foo, _: Foo, Foo)?", actualTypeName: TypeName("(a: Blah.Foo, _: Blah.Foo, Blah.Foo)?"), tuple: TupleType(name: "(a: Blah.Foo, _: Blah.Foo, Blah.Foo)?", elements: [
                             TupleElement(name: "a", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
                             TupleElement(name: "1", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
                             TupleElement(name: "2", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo"))

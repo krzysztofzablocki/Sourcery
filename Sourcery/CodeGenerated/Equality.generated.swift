@@ -1,6 +1,15 @@
-// Generated using Sourcery 0.5.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+extension ArrayType {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ArrayType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elementTypeName != rhs.elementTypeName { return false }
+        if self.elementType != rhs.elementType { return false }
+        return true
+    }
+}
 extension AssociatedValue {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? AssociatedValue else { return false }
@@ -150,6 +159,7 @@ extension TypeName {
         if self.name != rhs.name { return false }
         if self.attributes != rhs.attributes { return false }
         if self.tuple != rhs.tuple { return false }
+        if self.array != rhs.array { return false }
         return true
     }
 }

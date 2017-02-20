@@ -94,13 +94,18 @@ struct Composer {
             typeName.actualTypeName = TypeName(actualTypeName)
         }
 
-        typeName.tuple = parseTupleType(typeName.actualTypeName?.unwrappedTypeName ?? typeName.unwrappedTypeName)
-        // recursively resolve type of each tuple element
-        typeName.tuple?.elements.forEach { tupleElement in
-            tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, typealiases: typealiases)
+        let lookupName = typeName.actualTypeName ?? typeName
+        if let array = parseArrayType(lookupName) {
+            typeName.array = array
+            array.elementType = resolveType(typeName: array.elementTypeName, containingType: containingType, unique: unique, typealiases: typealiases)
+        } else if let tuple = parseTupleType(lookupName) {
+            typeName.tuple = tuple
+            // recursively resolve type of each tuple element
+            tuple.elements.forEach { tupleElement in
+                tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, typealiases: typealiases)
+            }
         }
-
-        return typeName.actualTypeName.flatMap({ unique[$0.unwrappedTypeName] }) ?? unique[typeName.unwrappedTypeName]
+        return unique[lookupName.unwrappedTypeName]
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
@@ -279,12 +284,29 @@ struct Composer {
         }
     }
 
-    fileprivate func parseTupleType(_ name: String) -> TupleType? {
-        guard name.isValidTupleName() else { return nil }
-        return TupleType(name: name, elements: parseTupleElements(name))
+    fileprivate func parseArrayType(_ typeName: TypeName) -> ArrayType? {
+        let name = typeName.unwrappedTypeName
+        guard name.isValidArrayName() else { return nil }
+        return ArrayType(name: typeName.name, elementTypeName: parseArrayElementType(typeName))
     }
 
-    fileprivate func parseTupleElements(_ name: String) -> [TupleElement] {
+    fileprivate func parseArrayElementType(_ typeName: TypeName) -> TypeName {
+        let name = typeName.unwrappedTypeName
+        if name.hasSuffix("Array<") {
+            return TypeName(name.drop(first: 6, last: 1))
+        } else {
+            return TypeName(name.dropFirstAndLast())
+        }
+    }
+
+    fileprivate func parseTupleType(_ typeName: TypeName) -> TupleType? {
+        let name = typeName.unwrappedTypeName
+        guard name.isValidTupleName() else { return nil }
+        return TupleType(name: typeName.name, elements: parseTupleElements(typeName))
+    }
+
+    fileprivate func parseTupleElements(_ typeName: TypeName) -> [TupleElement] {
+        let name = typeName.unwrappedTypeName
         let trimmedBracketsName = name.dropFirstAndLast()
         return trimmedBracketsName
             .commaSeparated()

@@ -1,6 +1,19 @@
-// Generated using Sourcery 0.5.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+extension ArrayType: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? ArrayType else {
+            results.append("Incorrect type <expected: ArrayType, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: rhs.elementTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "elementType").trackDifference(actual: self.elementType, expected: rhs.elementType))
+        return results
+    }
+}
 extension AssociatedValue: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -206,6 +219,7 @@ extension TypeName: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: rhs.attributes))
         results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: rhs.tuple))
+        results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: rhs.array))
         return results
     }
 }
