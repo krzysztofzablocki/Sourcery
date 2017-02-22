@@ -542,6 +542,16 @@ If you want to attribute multiple items with same attributes, you can use sectio
 {% endif %}
 ```
 
+#### Checking for existance of at least one annotation:
+
+Sometimes it is desirable to only generate code if there's at least one field annotated.
+
+```swift
+{% if type.variables|annotated:"jsonKey" %}{% for var in type.variables|instance|annotated:"jsonKey" %}
+  var local{{ var.name|capitalize }} = json["{{ var.annotations.jsonKey }}"] as? {{ var.typeName }}
+{% endfor %}{% endif %}
+```
+
 ### Inline code generation
 
 Sourcery supports inline code generation, you just need to put same markup in your code and template, e.g.
