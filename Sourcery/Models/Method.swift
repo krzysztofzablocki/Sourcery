@@ -20,7 +20,7 @@ final class MethodParameter: NSObject, SourceryModel, Typed {
     var typeAttributes: [String: Attribute] { return typeName.attributes }
 
     /// Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     internal var __parserData: Any?
 
     init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil) {
@@ -128,7 +128,7 @@ final class Method: NSObject, SourceryModel, Annotated {
     let attributes: [String: Attribute]
 
     /// Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     internal var __parserData: Any?
 
     init(name: String,

@@ -7,6 +7,7 @@
 ### New Features
 
 - Added parsing array types
+- Added support for JavaScript templates (using EJS)
 
 ### Bug Fixes
 

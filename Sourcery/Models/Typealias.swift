@@ -1,5 +1,6 @@
 import Foundation
 
+// sourcery: skipJSExport
 final class Typealias: NSObject, Typed, SourceryModel {
     /// New typealias name
     let aliasName: String

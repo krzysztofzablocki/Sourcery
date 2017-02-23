@@ -27,7 +27,6 @@ xcuserdata/
 ## Other
 *.moved-aside
 *.xcuserstate
-TypedSpec.generated.swift
 
 ## Obj-C/Swift specific
 *.hmap
