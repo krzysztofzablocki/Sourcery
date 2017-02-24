@@ -8,6 +8,10 @@
 
 - Added parsing array types
 
+### Bug Fixes
+
+- Fixed duplicated methods and variables in `allMethods` and `allVariables`
+
 ## 0.5.7
 
 ### Bug Fixes
