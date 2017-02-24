@@ -8,6 +8,10 @@
 
 - Added parsing array types
 
+### Bug Fixes
+
+- Fixed escaping variables with reserved names
+
 ## 0.5.7
 
 ### Bug Fixes
