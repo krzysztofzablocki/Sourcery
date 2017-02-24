@@ -41,22 +41,37 @@ class Type: NSObject, SourceryModel, Annotated {
     /// All variables associated with this type, including those from parent or protocols
     /// sourcery: skipEquality, skipDescription
     var allVariables: [Variable] {
-        return flattenAll { $0.variables }
+        return flattenAll({
+            return $0.variables
+            //return ($0 is Protocol) ? [] : $0.variables
+        }, filter: { all, extracted in
+            !all.contains(where: { $0.name == extracted.name && $0.isStatic == extracted.isStatic })
+        })
     }
 
     /// All methods associated with this type, including those from parent or protocols
     /// sourcery: skipEquality, skipDescription
     var allMethods: [Method] {
-        return flattenAll { $0.methods }
+        return flattenAll({ $0.methods })
     }
 
-    private func flattenAll<T>(extraction: (Type) -> [T]) -> [T] {
+    private func flattenAll<T>(_ extraction: @escaping (Type) -> [T], filter: (([T], T) -> Bool)? = nil) -> [T] {
         let all = NSMutableOrderedSet()
         all.addObjects(from: extraction(self))
 
-        _ = supertype.flatMap { all.addObjects(from: extraction($0)) }
-        inherits.values.forEach { all.addObjects(from: extraction($0)) }
-        implements.values.forEach { all.addObjects(from: extraction($0)) }
+        let filteredExtraction = { (target: Type) -> [T] in
+            if let filter = filter {
+                // swiftlint:disable:next force_cast
+                let all = all.array as! [T]
+                let extracted = extraction(target).filter({ filter(all, $0) })
+                return extracted
+            } else {
+                return extraction(target)
+            }
+        }
+
+        inherits.values.forEach { all.addObjects(from: filteredExtraction($0)) }
+        implements.values.forEach { all.addObjects(from: filteredExtraction($0)) }
 
         return all.array.flatMap { $0 as? T }
     }

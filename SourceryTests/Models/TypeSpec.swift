@@ -15,7 +15,7 @@ class TypeSpec: QuickSpec {
             let overrideVariable = supertypeVariable
             let initializer = Method(name: "init()")
             let parentType = Type(name: "Parent")
-            let protocolType = Type(name: "Protocol", variables: [Variable(name: "supertypeVariable", typeName: TypeName("Int"))], methods: [superTypeMethod])
+            let protocolType = Type(name: "Protocol", variables: [Variable(name: "supertypeVariable", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none))], methods: [superTypeMethod])
             let superType = Type(name: "Supertype", variables: [supertypeVariable], methods: [superTypeMethod], inheritedTypes: ["Protocol"])
             superType.implements["Protocol"] = protocolType
 
@@ -70,6 +70,7 @@ class TypeSpec: QuickSpec {
 
             it("flattens variables from supertype") {
                 expect(sut?.allVariables).to(equal([storedVariable, computedVariable, staticVariable, overrideVariable]))
+                expect(superType.allVariables).to(equal([supertypeVariable]))
             }
 
             describe("isGeneric") {
