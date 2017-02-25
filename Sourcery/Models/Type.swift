@@ -184,6 +184,7 @@ class Type: NSObject, SourceryModel, Annotated {
          annotations: [String: NSObject] = [:],
          isGeneric: Bool = false) {
 
+        let name = name.trimmingCharacters(in: CharacterSet(charactersIn: "`"))
         self.localName = name
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension

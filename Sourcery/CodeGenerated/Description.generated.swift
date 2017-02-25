@@ -80,7 +80,7 @@ extension Method {
         string += "shortName = \(self.shortName), "
         string += "returnTypeName = \(self.returnTypeName), "
         string += "actualReturnTypeName = \(self.actualReturnTypeName), "
-        string += "throws = \(self.throws), "
+        string += "`throws` = \(self.`throws`), "
         string += "accessLevel = \(self.accessLevel), "
         string += "isStatic = \(self.isStatic), "
         string += "isClass = \(self.isClass), "
