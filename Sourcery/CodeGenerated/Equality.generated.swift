@@ -87,7 +87,7 @@ extension Method {
         if self.selectorName != rhs.selectorName { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
-        if self.throws != rhs.throws { return false }
+        if self.`throws` != rhs.`throws` { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isStatic != rhs.isStatic { return false }
         if self.isClass != rhs.isClass { return false }
