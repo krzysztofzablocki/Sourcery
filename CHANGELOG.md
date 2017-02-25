@@ -11,6 +11,7 @@
 ### Bug Fixes
 
 - Fixed escaping variables with reserved names
+- Fixed duplicated methods and variables in `allMethods` and `allVariables`
 
 ## 0.5.7
 
