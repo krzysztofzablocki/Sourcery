@@ -214,11 +214,11 @@ class FileParserSpec: QuickSpec {
                     it("extracts cases with special names") {
                         expect(parse("enum Foo { case `default`; case `for`(something: Int, else: Float, `default`: Bool) }"))
                                 .to(equal([
-                                                  Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [EnumCase(name: "default"), EnumCase(name: "for", associatedValues:
+                                                  Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [EnumCase(name: "`default`"), EnumCase(name: "`for`", associatedValues:
                                                   [
                                                           AssociatedValue(name: "something", typeName: TypeName("Int")),
                                                           AssociatedValue(name: "else", typeName: TypeName("Float")),
-                                                          AssociatedValue(name: "default", typeName: TypeName("Bool"))
+                                                          AssociatedValue(name: "`default`", typeName: TypeName("Bool"))
                                                   ])])
                                           ]))
                     }
