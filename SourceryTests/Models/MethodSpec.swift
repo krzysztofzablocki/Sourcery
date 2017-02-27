@@ -84,21 +84,10 @@ class MethodSpec: QuickSpec {
 
         describe("MethodParameter") {
 
-            context("given optional parameter type with short syntax") {
-                it("reports type as optional") {
-                    expect(MethodParameter(name: "foo", typeName: TypeName("Int?")).isOptional).to(beTrue())
-                }
-                it("reports non-optional type for unwrappedTypeName") {
-                    expect(MethodParameter(name: "foo", typeName: TypeName("Int?")).unwrappedTypeName).to(equal("Int"))
-                }
-            }
-
-            context("given optional parameter type with long syntax") {
-                it("reports type as optional") {
-                    expect(MethodParameter(name: "foo", typeName: TypeName("Optional<Int>")).isOptional).to(beTrue())
-                }
-                it("reports non-optional type for unwrappedTypeName") {
-                    expect(MethodParameter(name: "foo", typeName: TypeName("Optional<Int>")).unwrappedTypeName).to(equal("Int"))
+            context("given method parameter with attributes") {
+                it("returns unwrapped type name") {
+                    let sut = MethodParameter(typeName: TypeName("@escaping ConversationApiResponse", attributes: ["escaping": Attribute(name:"escaping")]))
+                    expect(sut.unwrappedTypeName).to(equal("ConversationApiResponse"))
                 }
             }
 
