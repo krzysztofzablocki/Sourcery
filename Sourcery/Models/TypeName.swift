@@ -48,8 +48,8 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
 
         var name = name
         attributes.forEach {
-            let trim = CharacterSet(charactersIn: "@\($0.key)")
-            name = name.trimmingCharacters(in: trim.union(.whitespaces))
+            name = name.trimmingPrefix($0.value.description)
+                .trimmingCharacters(in: .whitespaces)
         }
 
         if let genericConstraint = name.range(of: "where") {

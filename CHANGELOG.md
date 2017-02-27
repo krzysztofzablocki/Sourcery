@@ -12,6 +12,7 @@
 
 - Fixed escaping variables with reserved names
 - Fixed duplicated methods and variables in `allMethods` and `allVariables`
+- Fixed trimming attributes in type names
 
 ## 0.5.7
 
