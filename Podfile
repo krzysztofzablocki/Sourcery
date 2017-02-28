@@ -4,10 +4,10 @@
 target 'Sourcery' do
   use_frameworks!
 
-  pod 'Stencil', :git => "git@github.com:kylef/Stencil", :commit => '99efba5'
-  pod 'StencilSwiftKit', :git => "git@github.com:SwiftGen/StencilSwiftKit", :commit => '4cecc56'
+  pod 'Stencil', '~> 0.8.0'
+  pod 'StencilSwiftKit', '~> 1.0.0’
   pod 'Commander'
-  pod 'PathKit', :git => "git@github.com:kylef/PathKit.git", :commit => 'c662c2a'
+  pod 'PathKit'
   pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => '380a5f6'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
   pod 'libCommonCrypto'

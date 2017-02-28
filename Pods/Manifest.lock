@@ -2,15 +2,15 @@ PODS:
   - Commander (0.6.0)
   - libCommonCrypto (0.1.1)
   - Nimble (5.1.1)
-  - PathKit (0.7.1)
+  - PathKit (0.8.0)
   - Quick (1.0.0)
   - SourceKittenFramework (0.16.0):
     - SWXMLHash (~> 3.0)
     - Yams (~> 0.1)
-  - Stencil (0.7.1):
-    - PathKit (~> 0.7.0)
-  - StencilSwiftKit (0.0.1):
-    - Stencil (~> 0.7.0)
+  - Stencil (0.8.0):
+    - PathKit (~> 0.8.0)
+  - StencilSwiftKit (1.0.0):
+    - Stencil (~> 0.8.0)
   - SwiftTryCatch (1.0.0)
   - SWXMLHash (3.0.3)
   - Yams (0.1.4)
@@ -19,43 +19,25 @@ DEPENDENCIES:
   - Commander
   - libCommonCrypto
   - Nimble
-  - PathKit (from `git@github.com:kylef/PathKit.git`, commit `c662c2a`)
+  - PathKit
   - Quick
   - SourceKittenFramework (from `git@github.com:jpsim/SourceKitten`, commit `380a5f6`)
-  - Stencil (from `git@github.com:kylef/Stencil`, commit `99efba5`)
-  - StencilSwiftKit (from `git@github.com:SwiftGen/StencilSwiftKit`, commit `4cecc56`)
+  - Stencil (~> 0.8.0)
+  - StencilSwiftKit (~> 1.0.0)
   - SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)
 
 EXTERNAL SOURCES:
-  PathKit:
-    :commit: c662c2a
-    :git: git@github.com:kylef/PathKit.git
   SourceKittenFramework:
     :commit: 380a5f6
     :git: git@github.com:jpsim/SourceKitten
-  Stencil:
-    :commit: 99efba5
-    :git: git@github.com:kylef/Stencil
-  StencilSwiftKit:
-    :commit: 4cecc56
-    :git: git@github.com:SwiftGen/StencilSwiftKit
   SwiftTryCatch:
     :commit: 798c512
     :git: git@github.com:seanparsons/SwiftTryCatch
 
 CHECKOUT OPTIONS:
-  PathKit:
-    :commit: c662c2a
-    :git: git@github.com:kylef/PathKit.git
   SourceKittenFramework:
     :commit: 380a5f6
     :git: git@github.com:jpsim/SourceKitten
-  Stencil:
-    :commit: 99efba5
-    :git: git@github.com:kylef/Stencil
-  StencilSwiftKit:
-    :commit: 4cecc56
-    :git: git@github.com:SwiftGen/StencilSwiftKit
   SwiftTryCatch:
     :commit: 798c512
     :git: git@github.com:seanparsons/SwiftTryCatch
@@ -64,15 +46,15 @@ SPEC CHECKSUMS:
   Commander: fba7c96c9e787ecc8ebe0737be875e1e18ef47ff
   libCommonCrypto: 8bc2f53375ef9815ddd9dd663e110e1cced41747
   Nimble: 415e3aa3267e7bc2c96b05fa814ddea7bb686a29
-  PathKit: 81fe9770b9c5b345c658da9c90f35a2bbae203c0
+  PathKit: dcab05d701474011aae0e40cf892298a831f63d6
   Quick: 8024e4a47e6cc03a9d5245ef0948264fc6d27cff
   SourceKittenFramework: fc97eecc26d25694c6e426c6018d7107ce5f5169
-  Stencil: 4177c0cabcdc40dd9be9b7f701d710d0a121023a
-  StencilSwiftKit: e2caece14b65d144da6bbe513a73b01be4833e7b
+  Stencil: 6669684db0262e6eb316ce233e7e02d6df0a6cd9
+  StencilSwiftKit: 131bdb0b90b87664651011d922d50418d8d92e0c
   SwiftTryCatch: 8dec58919b07ddba4f23c80e814f7e49f05da548
   SWXMLHash: 80d2529d74891bb2f15305a0b9e08f2a4f229ee7
   Yams: 4a4d2b5f0db216fab03c6abc04b7692ceff7cf5f
 
-PODFILE CHECKSUM: 0f0cd45769922c6570dc364a4caa44a3befbf2b2
+PODFILE CHECKSUM: 4149ebec7d7430062ff93d689441989a7453158b
 
 COCOAPODS: 1.2.0.beta.1
