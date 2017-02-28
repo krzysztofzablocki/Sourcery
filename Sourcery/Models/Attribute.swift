@@ -1,8 +1,10 @@
 import Foundation
 
-class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
+class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
     let name: String
     let arguments: [String: NSObject]
+
+    // sourcery: skipJSExport
     let _description: String
 
     init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {

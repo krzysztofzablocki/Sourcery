@@ -107,6 +107,8 @@ public class Sourcery {
         return try templatePaths(from: from).map {
             if $0.extension == "swifttemplate" {
                 return try SwiftTemplate(path: $0)
+            } else if $0.extension == "js" {
+                return try JavaScriptTemplate(path: $0)
             } else {
                 return try StencilTemplate(path: $0)
             }
@@ -135,7 +137,7 @@ public class Sourcery {
         let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
         return fileList
                 .filter {
-                    $0.extension == "stencil" || $0.extension == "swifttemplate"
+                    $0.extension == "stencil" || $0.extension == "swifttemplate" || $0.extension == "js"
                 }
     }
 }

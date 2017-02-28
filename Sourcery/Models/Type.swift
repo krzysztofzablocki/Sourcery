@@ -9,12 +9,14 @@ import Foundation
 class Type: NSObject, SourceryModel, Annotated {
 
     /// All local typealiases
+    // sourcery: skipJSExport
     var typealiases: [String: Typealias] {
         didSet {
             typealiases.values.forEach { $0.parent = self }
         }
     }
 
+    // sourcery: skipJSExport
     internal var isExtension: Bool
 
     // sourcery: forceEquality
@@ -151,6 +153,7 @@ class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
+    // sourcery: skipJSExport
     var parentTypes: AnyIterator<Type> {
         var next: Type? = self
         return AnyIterator {
@@ -166,9 +169,8 @@ class Type: NSObject, SourceryModel, Annotated {
 
     var attributes: [String: Attribute]
 
-    /// sourcery: skipEquality
     /// Underlying parser data, never to be used by anything else
-    /// sourcery: skipDescription, skipEquality, skipCoding
+    // sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
     internal var __parserData: Any?
 
     init(name: String = "",
@@ -268,7 +270,7 @@ class Type: NSObject, SourceryModel, Annotated {
 
 extension Type {
 
-    // sourcery: skipDescription
+    // sourcery: skipDescription, skipJSExport
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol
         return !isNotClass && !isExtension

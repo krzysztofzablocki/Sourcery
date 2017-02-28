@@ -298,7 +298,11 @@ XCTMain([
 
 ## Writing templates
 
-*Sourcery templates are powered by [Stencil](https://github.com/kylef/Stencil)*
+Sourcery supports several types of templates:
+
+- [Stencil](https://github.com/kylef/Stencil) templates
+- [Swift](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate) templates
+- [JavaScript](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js) templates (using [EJS](http://ejs.co))
 
 Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
 you can open template side-by-side with generated code and see it change live.

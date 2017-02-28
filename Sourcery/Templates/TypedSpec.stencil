@@ -30,7 +30,7 @@ class TypedSpec: QuickSpec {
             }
 
             it("can report actual type name via KVC") {
-                let sut = AssociatedValue(typeName: TypeName("Alias"))
+                let sut = {{ type.name }}(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
 
                 sut.typeName.actualTypeName = TypeName("Int")

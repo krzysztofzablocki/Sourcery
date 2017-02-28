@@ -8,6 +8,7 @@
 
 import Foundation
 
+// sourcery: skipJSExport
 @objc final class FileParserResult: NSObject, SourceryModel {
     var path: String?
     var types = [Type]()

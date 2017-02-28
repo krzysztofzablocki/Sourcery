@@ -57,7 +57,7 @@ final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
     }
 
     /// Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     internal var __parserData: Any?
 
     init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {

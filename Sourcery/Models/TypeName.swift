@@ -27,7 +27,7 @@ protocol Typed {
     var unwrappedTypeName: String { get }
 }
 
-final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable {
+final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
     let name: String
 
     /// Actual type name if given type name is type alias

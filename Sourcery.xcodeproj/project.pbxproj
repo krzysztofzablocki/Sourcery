@@ -10,7 +10,13 @@
 		0906124D1E2BC43500BA0937 /* FileParser + MethodsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */; };
 		0911DAF01E1D90D1001FF3EB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAEF1E1D90D1001FF3EB /* Extensions.swift */; };
 		0911DAF21E212817001FF3EB /* Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF11E212817001FF3EB /* Annotations.swift */; };
+		0926CE1D1E5F9D8000C0D099 /* JSExport.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0926CE1B1E5F996B00C0D099 /* JSExport.generated.swift */; };
 		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
+		09618B3C1E61EEE100B49D5F /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B3B1E61EEE100B49D5F /* JavaScriptTemplate.swift */; };
+		09618B421E620D8600B49D5F /* ejsbundle.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejsbundle.js */; };
+		09618B441E620E3200B49D5F /* JSExport.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B431E620E3200B49D5F /* JSExport.js */; };
+		09618B4A1E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */; };
+		09618B4F1E662B0A00B49D5F /* JavaScriptTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 09618B4E1E662B0A00B49D5F /* JavaScriptTemplates */; };
 		0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA601E0341400084F702 /* ProtocolSpec.swift */; };
 		0967DA681E0488170084F702 /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA671E0488170084F702 /* Method.swift */; };
 		097E11EE1E05E76900FEB751 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11ED1E05E76900FEB751 /* Typealias.swift */; };
@@ -166,7 +172,13 @@
 		0911DAEF1E1D90D1001FF3EB /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0911DAF11E212817001FF3EB /* Annotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotations.swift; sourceTree = "<group>"; };
 		0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameSpec.swift; sourceTree = "<group>"; };
+		0926CE1B1E5F996B00C0D099 /* JSExport.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSExport.generated.swift; sourceTree = "<group>"; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
+		09618B3B1E61EEE100B49D5F /* JavaScriptTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JavaScriptTemplate.swift; sourceTree = "<group>"; };
+		09618B411E620D8600B49D5F /* ejsbundle.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejsbundle.js; sourceTree = "<group>"; };
+		09618B431E620E3200B49D5F /* JSExport.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JSExport.js; sourceTree = "<group>"; };
+		09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JavaScriptTemplateSpecs.swift; sourceTree = "<group>"; };
+		09618B4E1E662B0A00B49D5F /* JavaScriptTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JavaScriptTemplates; sourceTree = "<group>"; };
 		0967DA601E0341400084F702 /* ProtocolSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolSpec.swift; sourceTree = "<group>"; };
 		0967DA671E0488170084F702 /* Method.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Method.swift; sourceTree = "<group>"; };
 		097E11ED1E05E76900FEB751 /* Typealias.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
@@ -176,7 +188,7 @@
 		098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + AttributesSpec.swift"; sourceTree = "<group>"; };
 		098442741E2241F10051E1A1 /* Attribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		09B1DD381E219D95009228EE /* TypedSpec.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TypedSpec.stencil; sourceTree = "<group>"; };
-		09B1DD3A1E219EA3009228EE /* TypedSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedSpec.generated.swift; sourceTree = "<group>"; };
+		09B1DD3A1E219EA3009228EE /* TypedSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypedSpec.generated.swift; path = ../../Sourcery/CodeGenerated/TypedSpec.generated.swift; sourceTree = "<group>"; };
 		09C6B0D11E11BA2500246CDF /* Class.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Class.swift; sourceTree = "<group>"; };
 		09C6B0D31E11C1C500246CDF /* ClassSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassSpec.swift; sourceTree = "<group>"; };
 		3825CA349BD2B2AAB9605E7F /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
@@ -282,6 +294,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		09618B3A1E61EEC800B49D5F /* JavaScript */ = {
+			isa = PBXGroup;
+			children = (
+				09618B3B1E61EEE100B49D5F /* JavaScriptTemplate.swift */,
+				09618B411E620D8600B49D5F /* ejsbundle.js */,
+			);
+			path = JavaScript;
+			sourceTree = "<group>";
+		};
 		8E9D92C3AA77031D4D09801C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -385,6 +406,7 @@
 				CD666A9B1E0BF0A10045D31A /* Diffable.generated.swift */,
 				CD812F611DFDCDA10088B2F6 /* Equality.generated.swift */,
 				CD812F661DFDD3990088B2F6 /* Description.generated.swift */,
+				0926CE1B1E5F996B00C0D099 /* JSExport.generated.swift */,
 			);
 			path = CodeGenerated;
 			sourceTree = "<group>";
@@ -398,6 +420,7 @@
 				097E11F81E0F01BD00FEB751 /* Diffable.stencil */,
 				CDF68B731E1C137E007C5396 /* Typed.stencil */,
 				09B1DD381E219D95009228EE /* TypedSpec.stencil */,
+				09618B431E620E3200B49D5F /* JSExport.js */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -441,6 +464,7 @@
 		E291D36844A70DF851656DE8 /* Stub */ = {
 			isa = PBXGroup;
 			children = (
+				09618B4E1E662B0A00B49D5F /* JavaScriptTemplates */,
 				C894A1B21E19328E0098327C /* SwiftTemplates */,
 				CDE812EE1E112CC700F1FF97 /* Performance-Code */,
 				CD475D6E1DE9B98B009AD8B0 /* Result */,
@@ -512,6 +536,7 @@
 			isa = PBXGroup;
 			children = (
 				C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */,
+				09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */,
 				E291D0D4A5AF091CD15550FD /* StencilTemplateSpec.swift */,
 			);
 			path = Generating;
@@ -520,6 +545,7 @@
 		E291DC91111A3AB71706291C /* Template */ = {
 			isa = PBXGroup;
 			children = (
+				09618B3A1E61EEC800B49D5F /* JavaScript */,
 				C894A1AB1E1931500098327C /* Swift */,
 				E291D9983C09B59A00BC9213 /* Stencil */,
 				E291DC7064748459115A1660 /* Template.swift */,
@@ -628,6 +654,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09618B441E620E3200B49D5F /* JSExport.js in Resources */,
+				09618B421E620D8600B49D5F /* ejsbundle.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +664,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD53EE681D897D2900F5886C /* Templates in Resources */,
+				09618B4F1E662B0A00B49D5F /* JavaScriptTemplates in Resources */,
 				CD475D6F1DE9B98B009AD8B0 /* Result in Resources */,
 				CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */,
 				C894A1B31E19328E0098327C /* SwiftTemplates in Resources */,
@@ -762,6 +791,7 @@
 				0911DAF01E1D90D1001FF3EB /* Extensions.swift in Sources */,
 				E291D5ABECEE3435131D8D05 /* FileParser.swift in Sources */,
 				0967DA681E0488170084F702 /* Method.swift in Sources */,
+				09618B3C1E61EEE100B49D5F /* JavaScriptTemplate.swift in Sources */,
 				CD9C459D1DFAF76D00161C2C /* main.swift in Sources */,
 				CD812F5B1DFDCC1A0088B2F6 /* Enum.swift in Sources */,
 				CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */,
@@ -772,6 +802,7 @@
 				C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */,
 				CD812F621DFDCDA10088B2F6 /* Equality.generated.swift in Sources */,
 				E291D8C0F0FE5B3DF91025CC /* Generator.swift in Sources */,
+				0926CE1D1E5F9D8000C0D099 /* JSExport.generated.swift in Sources */,
 				C894A1AD1E1931500098327C /* GenerationContext.swift in Sources */,
 				C894A1A61E1930990098327C /* Coding.generated.swift in Sources */,
 				CD812F5A1DFDCC1A0088B2F6 /* AccessLevel.swift in Sources */,
@@ -822,6 +853,7 @@
 				098442731E21BF850051E1A1 /* FileParser + AttributesSpec.swift in Sources */,
 				C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */,
 				E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */,
+				09618B4A1E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift in Sources */,
 				E291DCD43D41B7F8D7AAF7B9 /* DiffableSpec.swift in Sources */,
 				E291D90EC943AC5CBA99899A /* ComposerSpec.swift in Sources */,
 				E291D7114BA1479EC337A070 /* FileParserSpec.swift in Sources */,
