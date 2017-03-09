@@ -312,18 +312,18 @@ struct Composer {
     fileprivate func parseDictionaryKeyType(_ typeName: TypeName) -> TypeName {
         let name = typeName.unwrappedTypeName
         if name.hasPrefix("Dictionary<") {
-            return TypeName(name.drop(first: 11, last: 1).commaSeparated()[0])
+            return TypeName(name.drop(first: 11, last: 1).commaSeparated()[0].stripped())
         } else {
-            return TypeName(name.dropFirstAndLast().colonSeparated()[0])
+            return TypeName(name.dropFirstAndLast().colonSeparated()[0].stripped())
         }
     }
 
     fileprivate func parseDictionaryValueType(_ typeName: TypeName) -> TypeName {
         let name = typeName.unwrappedTypeName
         if name.hasPrefix("Dictionary<") {
-            return TypeName(name.drop(first: 11, last: 1).commaSeparated()[1])
+            return TypeName(name.drop(first: 11, last: 1).commaSeparated()[1].stripped())
         } else {
-            return TypeName(name.dropFirstAndLast().colonSeparated()[1])
+            return TypeName(name.dropFirstAndLast().colonSeparated()[1].stripped())
         }
     }
 

@@ -275,10 +275,10 @@ final class DictionaryType: NSObject, SourceryModel {
 
         func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.keyTypeName, forKey: "keyTypeName")
-            aCoder.encode(self.keyType, forKey: "keyType")
             aCoder.encode(self.valueTypeName, forKey: "valueTypeName")
             aCoder.encode(self.valueType, forKey: "valueType")
+            aCoder.encode(self.keyTypeName, forKey: "keyTypeName")
+            aCoder.encode(self.keyType, forKey: "keyType")
         }
     // sourcery:end
 }
