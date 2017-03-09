@@ -9,6 +9,7 @@ extension AssociatedValue {
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
     var isArray: Bool { return typeName.isArray }
+    var isDictionary: Bool { return typeName.isDictionary }
 }
 extension MethodParameter {
     var isOptional: Bool { return typeName.isOptional }
@@ -18,6 +19,7 @@ extension MethodParameter {
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
     var isArray: Bool { return typeName.isArray }
+    var isDictionary: Bool { return typeName.isDictionary }
 }
 extension TupleElement {
     var isOptional: Bool { return typeName.isOptional }
@@ -27,6 +29,7 @@ extension TupleElement {
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
     var isArray: Bool { return typeName.isArray }
+    var isDictionary: Bool { return typeName.isDictionary }
 }
 extension Typealias {
     var isOptional: Bool { return typeName.isOptional }
@@ -36,6 +39,7 @@ extension Typealias {
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
     var isArray: Bool { return typeName.isArray }
+    var isDictionary: Bool { return typeName.isDictionary }
 }
 extension Variable {
     var isOptional: Bool { return typeName.isOptional }
@@ -45,4 +49,5 @@ extension Variable {
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
     var isArray: Bool { return typeName.isArray }
+    var isDictionary: Bool { return typeName.isDictionary }
 }

@@ -62,6 +62,15 @@ class TypeNameSpec: QuickSpec {
                 it("reports array correctly") {
                     expect(TypeName("[Int]").isArray).to(beTrue())
                     expect(TypeName("[[Int]]").isArray).to(beTrue())
+                    expect(TypeName("[[Int: Int]]").isArray).to(beTrue())
+                }
+            }
+
+            context("given dictionary type") {
+                it("reports dictionary correctly") {
+                    expect(TypeName("[Int: Int]").isDictionary).to(beTrue())
+                    expect(TypeName("[[Int]: [Int]]").isDictionary).to(beTrue())
+                    expect(TypeName("[Int: [Int: Int]]").isDictionary).to(beTrue())
                 }
             }
 

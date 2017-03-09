@@ -124,9 +124,9 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
 
     var isDictionary: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
-            return actualTypeName.isValidArrayName()
+            return actualTypeName.isValidDictionaryName()
         } else {
-            return unwrappedTypeName.isValidArrayName()
+            return unwrappedTypeName.isValidDictionaryName()
         }
     }
 
