@@ -120,6 +120,16 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
 
     var array: ArrayType?
 
+    var isDictionary: Bool {
+        if let actualTypeName = actualTypeName?.unwrappedTypeName {
+            return actualTypeName.isValidArrayName()
+        } else {
+            return unwrappedTypeName.isValidArrayName()
+        }
+    }
+
+    var dictionary: DictionaryType?
+
     var isClosure: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidClosureName()
@@ -231,6 +241,40 @@ final class ArrayType: NSObject, SourceryModel {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.elementTypeName, forKey: "elementTypeName")
             aCoder.encode(self.elementType, forKey: "elementType")
+        }
+    // sourcery:end
+}
+
+final class DictionaryType: NSObject, SourceryModel {
+    let name: String
+    let valueTypeName: TypeName
+    var valueType: Type?
+    let keyTypeName: TypeName
+    var keyType: Type?
+
+    init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
+        self.name = name
+        self.valueTypeName = valueTypeName
+        self.valueType = valueType
+        self.keyTypeName = keyTypeName
+        self.keyType = keyType
+    }
+
+    // sourcery:inline:DictionaryType.AutoCoding
+        required init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let valueTypeName: TypeName = aDecoder.decode(forKey: "valueTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["valueTypeName"])); fatalError() }; self.valueTypeName = valueTypeName
+            self.valueType = aDecoder.decode(forKey: "valueType")
+            guard let keyTypeName: TypeName = aDecoder.decode(forKey: "keyTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["keyTypeName"])); fatalError() }; self.keyTypeName = keyTypeName
+            self.keyType = aDecoder.decode(forKey: "keyType")
+        }
+
+        func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.keyTypeName, forKey: "keyTypeName")
+            aCoder.encode(self.keyType, forKey: "keyType")
+            aCoder.encode(self.valueTypeName, forKey: "valueTypeName")
+            aCoder.encode(self.valueType, forKey: "valueType")
         }
     // sourcery:end
 }
