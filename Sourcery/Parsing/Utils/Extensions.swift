@@ -61,6 +61,14 @@ extension String {
         return false
     }
 
+    func isValidDictionaryName() -> Bool {
+        if hasPrefix("Dictionary<") { return true }
+        if hasPrefix("[") && contains(":") && hasSuffix("]") {
+            return dropFirstAndLast().colonSeparated().count == 2
+        }
+        return false
+    }
+
     func isValidClosureName() -> Bool {
         return components(separatedBy: "->", excludingDelimiterBetween: ("(", ")")).count > 1
     }

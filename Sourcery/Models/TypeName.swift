@@ -38,13 +38,15 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
          actualTypeName: TypeName? = nil,
          attributes: [String: Attribute] = [:],
          tuple: TupleType? = nil,
-         array: ArrayType? = nil) {
+         array: ArrayType? = nil,
+         dictionary: DictionaryType? = nil) {
 
         self.name = name
         self.actualTypeName = actualTypeName
         self.attributes = attributes
         self.tuple = tuple
         self.array = array
+        self.dictionary = dictionary
 
         var name = name
         attributes.forEach {
