@@ -213,6 +213,35 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given dictionary type") {
+                    it("extracts key type properly") {
+                        let types = parse("struct Foo { var dictionary: [Int: String]; var dictionaryOfArrays: [[Int]: [String]]; var dicitonaryOfDictionaries: [Int: [Int: String]]; var dictionaryOfTuples: [Int: (String, String)]; var dictionaryOfClojures: [Int: ()->()] }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.dictionary).to(equal(
+                            DictionaryType(name: "[Int: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("Int"))
+                        ))
+                        expect(variables?[1].typeName.dictionary).to(equal(
+                            DictionaryType(name: "[[Int]: [String]]",
+                                           valueTypeName: TypeName("[String]", array: ArrayType(name: "[String]", elementTypeName: TypeName("String"))),
+                                           keyTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int"))))
+                        ))
+                        expect(variables?[2].typeName.dictionary).to(equal(
+                            DictionaryType(name: "[Int: [Int: String]]",
+                                           valueTypeName: TypeName("[Int: String]", dictionary: DictionaryType(name: "[Int: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("Int"))),
+                                           keyTypeName: TypeName("Int"))
+                        ))
+                        expect(variables?[3].typeName.dictionary).to(equal(
+                            DictionaryType(name: "[Int: (String, String)]",
+                                           valueTypeName: TypeName("(String, String)", tuple: TupleType(name: "(String, String)", elements: [TupleElement(name: "0", typeName: TypeName("String")), TupleElement(name: "1", typeName: TypeName("String"))])),
+                                           keyTypeName: TypeName("Int"))
+                        ))
+                        expect(variables?[4].typeName.dictionary).to(equal(
+                            DictionaryType(name: "[Int: ()->()]", valueTypeName: TypeName("()->()"), keyTypeName: TypeName("Int"))
+                        ))
+                    }
+                }
+
                 context("given typealiases") {
 
                     it("sets typealias type") {
