@@ -154,6 +154,7 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
             guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["unwrappedTypeName"])); fatalError() }; self.unwrappedTypeName = unwrappedTypeName
             self.tuple = aDecoder.decode(forKey: "tuple")
             self.array = aDecoder.decode(forKey: "array")
+            self.dictionary = aDecoder.decode(forKey: "dictionary")
         }
 
         func encode(with aCoder: NSCoder) {
@@ -165,6 +166,7 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
             aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
             aCoder.encode(self.tuple, forKey: "tuple")
             aCoder.encode(self.array, forKey: "array")
+            aCoder.encode(self.dictionary, forKey: "dictionary")
         }
         // sourcery:end
 

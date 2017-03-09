@@ -67,10 +67,18 @@ class TypeNameSpec: QuickSpec {
             }
 
             context("given dictionary type") {
-                it("reports dictionary correctly") {
-                    expect(TypeName("[Int: Int]").isDictionary).to(beTrue())
-                    expect(TypeName("[[Int]: [Int]]").isDictionary).to(beTrue())
-                    expect(TypeName("[Int: [Int: Int]]").isDictionary).to(beTrue())
+                context("as name") {
+                    it("reports dictionary correctly") {
+                        expect(TypeName("[Int: Int]").isDictionary).to(beTrue())
+                        expect(TypeName("[[Int]: [Int]]").isDictionary).to(beTrue())
+                        expect(TypeName("[Int: [Int: Int]]").isDictionary).to(beTrue())
+                    }
+                }
+
+                context("as actual type") {
+                    it("reports dictionary correctly") {
+                        expect(TypeName("MyCustomDictionaryAlias", actualTypeName: TypeName("[Int: Int]")).isDictionary).to(beTrue())
+                    }
                 }
             }
 
