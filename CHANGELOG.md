@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Added flag to check if `TypeName` is dictionary
+
 ## 0.5.8
 
 ### New Features
