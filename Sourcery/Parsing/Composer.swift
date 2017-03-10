@@ -306,24 +306,18 @@ struct Composer {
     fileprivate func parseDictionaryType(_ typeName: TypeName) -> DictionaryType? {
         let name = typeName.unwrappedTypeName
         guard name.isValidDictionaryName() else { return nil }
-        return DictionaryType(name: typeName.name, valueTypeName: parseDictionaryValueType(typeName), keyTypeName: parseDictionaryKeyType(typeName))
+        let keyValueType: (keyType: TypeName, valueType: TypeName) = parseDictionaryKeyValueType(typeName)
+        return DictionaryType(name: typeName.name, valueTypeName: keyValueType.valueType, keyTypeName: keyValueType.keyType)
     }
 
-    fileprivate func parseDictionaryKeyType(_ typeName: TypeName) -> TypeName {
+    fileprivate func parseDictionaryKeyValueType(_ typeName: TypeName) -> (keyType: TypeName, valueType: TypeName) {
         let name = typeName.unwrappedTypeName
         if name.hasPrefix("Dictionary<") {
-            return TypeName(name.drop(first: 11, last: 1).commaSeparated()[0].stripped())
+            let types = name.drop(first: 11, last: 1).commaSeparated()
+            return (TypeName(types[0].stripped()), TypeName(types[1].stripped()))
         } else {
-            return TypeName(name.dropFirstAndLast().colonSeparated()[0].stripped())
-        }
-    }
-
-    fileprivate func parseDictionaryValueType(_ typeName: TypeName) -> TypeName {
-        let name = typeName.unwrappedTypeName
-        if name.hasPrefix("Dictionary<") {
-            return TypeName(name.drop(first: 11, last: 1).commaSeparated()[1].stripped())
-        } else {
-            return TypeName(name.dropFirstAndLast().colonSeparated()[1].stripped())
+            let types = name.dropFirstAndLast().colonSeparated()
+            return (TypeName(types[0].stripped()), TypeName(types[1].stripped()))
         }
     }
 
