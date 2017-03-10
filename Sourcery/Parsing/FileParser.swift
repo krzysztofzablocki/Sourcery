@@ -250,28 +250,10 @@ final class FileParser {
 // MARK: - Details parsing
 extension FileParser {
 
-    fileprivate static let reservedKeywords = ["associatedtype", "class", "deinit", "enum", "extension",
-                                               "fileprivate", "func", "import", "init", "inout", "internal",
-                                               "let", "open", "operator", "private", "protocol", "public",
-                                               "static", "struct", "subscript", "typealias", "var", "break",
-                                               "case", "continue", "default", "defer", "do", "else",
-                                               "fallthrough", "for", "guard", "if", "in", "repeat", "return",
-                                               "switch", "where", "while", "as", "Any", "catch", "false", "is",
-                                               "nil", "rethrows", "super", "self", "Self", "throw", "throws",
-                                               "true", "try", "_", "#available", "#colorLiteral", "#column",
-                                               "#else", "#elseif", "#endif", "#file", "#fileLiteral",
-                                               "#function", "#if", "#imageLiteral", "#line", "#selector",
-                                               "#sourceLocation", "associativity", "convenience", "dynamic",
-                                               "didSet", "final", "get", "infix", "indirect", "lazy", "left",
-                                               "mutating", "none", "nonmutating", "optional", "override",
-                                               "postfix", "precedence", "prefix", "Protocol", "required",
-                                               "right", "set", "Type", "unowned", "weak", "willSet"]
-
     fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
         guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }),
               var name = dict[SwiftDocKey.name.rawValue] as? String else { return nil }
-
-        if FileParser.reservedKeywords.contains(name) {
+        if extract(.name, from: dict)?.hasPrefix("`") == true {
             name = "`\(name)`"
         }
 
