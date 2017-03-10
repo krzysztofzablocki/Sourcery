@@ -7,4 +7,5 @@ extension {{ type.name }} {
     var isTuple: Bool { return typeName.isTuple }
     var isClosure: Bool { return typeName.isClosure }
     var isArray: Bool { return typeName.isArray }
+    var isDictionary: Bool { return typeName.isDictionary }
 }{% endfor %}

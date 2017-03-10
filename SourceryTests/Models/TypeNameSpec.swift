@@ -60,8 +60,39 @@ class TypeNameSpec: QuickSpec {
 
             context("given array type") {
                 it("reports array correctly") {
+                    expect(TypeName("Array<Int>").isArray).to(beTrue())
                     expect(TypeName("[Int]").isArray).to(beTrue())
                     expect(TypeName("[[Int]]").isArray).to(beTrue())
+                    expect(TypeName("[[Int: Int]]").isArray).to(beTrue())
+                }
+
+                it("reports dictionary correctly") {
+                    expect(TypeName("[Int]").isDictionary).to(beFalse())
+                    expect(TypeName("[[Int]]").isDictionary).to(beFalse())
+                    expect(TypeName("[[Int: Int]]").isDictionary).to(beFalse())
+                }
+            }
+
+            context("given dictionary type") {
+                context("as name") {
+                    it("reports dictionary correctly") {
+                        expect(TypeName("Dictionary<Int, Int>").isDictionary).to(beTrue())
+                        expect(TypeName("[Int: Int]").isDictionary).to(beTrue())
+                        expect(TypeName("[[Int]: [Int]]").isDictionary).to(beTrue())
+                        expect(TypeName("[Int: [Int: Int]]").isDictionary).to(beTrue())
+                    }
+
+                    it("reports array correctly") {
+                        expect(TypeName("[Int: Int]").isArray).to(beFalse())
+                        expect(TypeName("[[Int]: [Int]]").isArray).to(beFalse())
+                        expect(TypeName("[Int: [Int: Int]]").isArray).to(beFalse())
+                    }
+                }
+
+                context("as actual type") {
+                    it("reports dictionary correctly") {
+                        expect(TypeName("MyCustomDictionaryAlias", actualTypeName: TypeName("[Int: Int]")).isDictionary).to(beTrue())
+                    }
                 }
             }
 

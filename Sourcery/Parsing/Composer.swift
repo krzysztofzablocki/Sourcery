@@ -98,6 +98,10 @@ struct Composer {
         if let array = parseArrayType(lookupName) {
             typeName.array = array
             array.elementType = resolveType(typeName: array.elementTypeName, containingType: containingType, unique: unique, typealiases: typealiases)
+        } else if let dictionary = parseDictionaryType(lookupName) {
+            typeName.dictionary = dictionary
+            dictionary.valueType = resolveType(typeName: dictionary.valueTypeName, containingType: containingType, unique: unique, typealiases: typealiases)
+            dictionary.keyType = resolveType(typeName: dictionary.keyTypeName, containingType: containingType, unique: unique, typealiases: typealiases)
         } else if let tuple = parseTupleType(lookupName) {
             typeName.tuple = tuple
             // recursively resolve type of each tuple element
@@ -296,6 +300,24 @@ struct Composer {
             return TypeName(name.drop(first: 6, last: 1))
         } else {
             return TypeName(name.dropFirstAndLast())
+        }
+    }
+
+    fileprivate func parseDictionaryType(_ typeName: TypeName) -> DictionaryType? {
+        let name = typeName.unwrappedTypeName
+        guard name.isValidDictionaryName() else { return nil }
+        let keyValueType: (keyType: TypeName, valueType: TypeName) = parseDictionaryKeyValueType(typeName)
+        return DictionaryType(name: typeName.name, valueTypeName: keyValueType.valueType, keyTypeName: keyValueType.keyType)
+    }
+
+    fileprivate func parseDictionaryKeyValueType(_ typeName: TypeName) -> (keyType: TypeName, valueType: TypeName) {
+        let name = typeName.unwrappedTypeName
+        if name.hasPrefix("Dictionary<") {
+            let types = name.drop(first: 11, last: 1).commaSeparated()
+            return (TypeName(types[0].stripped()), TypeName(types[1].stripped()))
+        } else {
+            let types = name.dropFirstAndLast().colonSeparated()
+            return (TypeName(types[0].stripped()), TypeName(types[1].stripped()))
         }
     }
 

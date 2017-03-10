@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -7,6 +7,17 @@ extension ArrayType {
         if self.name != rhs.name { return false }
         if self.elementTypeName != rhs.elementTypeName { return false }
         if self.elementType != rhs.elementType { return false }
+        return true
+    }
+}
+extension DictionaryType {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DictionaryType else { return false }
+        if self.name != rhs.name { return false }
+        if self.valueTypeName != rhs.valueTypeName { return false }
+        if self.valueType != rhs.valueType { return false }
+        if self.keyTypeName != rhs.keyTypeName { return false }
+        if self.keyType != rhs.keyType { return false }
         return true
     }
 }

@@ -2,6 +2,20 @@ import Foundation
 
 extension String {
 
+    /// Removes leading and trailing whitespace from str. Returns false if str was not altered.
+    @discardableResult
+    mutating func strip() -> Bool {
+        let strippedString = stripped()
+        guard strippedString != self else { return false }
+        self = strippedString
+        return true
+    }
+
+    /// Returns a copy of str with leading and trailing whitespace removed.
+    func stripped() -> String {
+        return String(self.trimmingCharacters(in: .whitespaces))
+    }
+
     @discardableResult
     mutating func trimPrefix(_ prefix: String) -> Bool {
         guard hasPrefix(prefix) else { return false }
@@ -57,6 +71,14 @@ extension String {
         if hasPrefix("Array<") { return true }
         if hasPrefix("[") && hasSuffix("]") {
             return dropFirstAndLast().colonSeparated().count == 1
+        }
+        return false
+    }
+
+    func isValidDictionaryName() -> Bool {
+        if hasPrefix("Dictionary<") { return true }
+        if hasPrefix("[") && contains(":") && hasSuffix("]") {
+            return dropFirstAndLast().colonSeparated().count == 2
         }
         return false
     }

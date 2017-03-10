@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -7,6 +7,17 @@ extension ArrayType {
         string += "name = \(self.name), "
         string += "elementTypeName = \(self.elementTypeName), "
         string += "elementType = \(self.elementType)"
+        return string
+    }
+}
+extension DictionaryType {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(self.name), "
+        string += "valueTypeName = \(self.valueTypeName), "
+        string += "valueType = \(self.valueType)"
+        string += "keyTypeName = \(self.keyTypeName), "
+        string += "keyType = \(self.keyType)"
         return string
     }
 }
