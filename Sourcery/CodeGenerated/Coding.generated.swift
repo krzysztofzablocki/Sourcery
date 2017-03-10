@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -41,6 +41,9 @@ extension NSCoder {
 
 extension ArrayType: NSCoding {}
     // sourcery:inline:ArrayType.AutoCoding
+    // sourcery:end
+extension DictionaryType: NSCoding {}
+    // sourcery:inline:DictionaryType.AutoCoding
     // sourcery:end
 extension AssociatedValue: NSCoding {}
     // sourcery:inline:AssociatedValue.AutoCoding

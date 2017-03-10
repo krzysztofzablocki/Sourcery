@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import JavaScriptCore
@@ -10,6 +10,16 @@ import JavaScriptCore
 }
 
 extension ArrayType: ArrayTypeAutoJSExport {}
+
+@objc protocol DictionaryTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var valueTypeName: TypeName { get }
+    var valueType: Type? { get }
+    var keyTypeName: TypeName { get }
+    var keyType: Type? { get }
+}
+
+extension DictionaryType: DictionaryTypeAutoJSExport {}
 
 @objc protocol AssociatedValueAutoJSExport: JSExport {
     var localName: String? { get }
