@@ -190,7 +190,7 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
-                context("given array type") {
+                context("given literal array type") {
                     it("extracts element type properly") {
                         let types = parse("struct Foo { var array: [Int]; var arrayOfTuples: [(Int, Int)]; var arrayOfArrays: [[Int]], var arrayOfClosures: [()->()] }")
                         let variables = types.first?.variables
@@ -209,6 +209,29 @@ class ParserComposerSpec: QuickSpec {
                         ))
                         expect(variables?[3].typeName.array).to(equal(
                             ArrayType(name: "[()->()]", elementTypeName: TypeName("()->()"))
+                        ))
+                    }
+                }
+
+                context("given generic array type") {
+                    it("extracts element type properly") {
+                        let types = parse("struct Foo { var array: Array<Int>; var arrayOfTuples: Array<(Int, Int)>; var arrayOfArrays: Array<Array<Int>>, var arrayOfClosures: Array<()->()> }")
+                        let variables = types.first?.variables
+                        expect(variables?[0].typeName.array).to(equal(
+                            ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int"))
+                        ))
+                        expect(variables?[1].typeName.array).to(equal(
+                            ArrayType(name: "Array<(Int, Int)>", elementTypeName: TypeName("(Int, Int)", tuple:
+                                TupleType(name: "(Int, Int)", elements: [
+                                    TupleElement(name: "0", typeName: TypeName("Int")),
+                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                    ])))
+                        ))
+                        expect(variables?[2].typeName.array).to(equal(
+                            ArrayType(name: "Array<Array<Int>>", elementTypeName: TypeName("Array<Int>", array: ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int"))))
+                        ))
+                        expect(variables?[3].typeName.array).to(equal(
+                            ArrayType(name: "Array<()->()>", elementTypeName: TypeName("()->()"))
                         ))
                     }
                 }
