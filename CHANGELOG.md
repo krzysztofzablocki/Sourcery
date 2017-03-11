@@ -7,7 +7,8 @@
 ### New Features
 
 - Added flag to check if `TypeName` is dictionary
-- Added support for multiple sources and templates paths
+- Added support for multiple sources and templates paths, sources, templates and output paths now should be provided with `--sources`, `--templates` and `--output` options
+- Added support for YAML file configuration
 
 ### Bug Fixes
 
