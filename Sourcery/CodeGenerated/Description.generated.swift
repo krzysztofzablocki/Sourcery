@@ -10,17 +10,6 @@ extension ArrayType {
         return string
     }
 }
-extension DictionaryType {
-    override var description: String {
-        var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
-        string += "valueTypeName = \(self.valueTypeName), "
-        string += "valueType = \(self.valueType)"
-        string += "keyTypeName = \(self.keyTypeName), "
-        string += "keyType = \(self.keyType)"
-        return string
-    }
-}
 extension AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
@@ -34,6 +23,17 @@ extension Class {
     override var description: String {
         var string = super.description
         string += "kind = \(self.kind)"
+        return string
+    }
+}
+extension DictionaryType {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(self.name), "
+        string += "valueTypeName = \(self.valueTypeName), "
+        string += "valueType = \(self.valueType), "
+        string += "keyTypeName = \(self.keyTypeName), "
+        string += "keyType = \(self.keyType)"
         return string
     }
 }

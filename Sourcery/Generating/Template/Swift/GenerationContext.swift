@@ -8,6 +8,7 @@
 
 import Foundation
 
+// sourcery: skipJSExport
 class GenerationContext: NSObject, SourceryModel {
     let types: [Type]
     let typeByName: [String : Type]
@@ -77,7 +78,7 @@ protocol TypeConvertible {
 }
 
 extension Type: TypeConvertible {
-    /// sourcery: skipDescription, skipEquality, skipCoding
+    /// sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
     var type: Type {
         return self
     }

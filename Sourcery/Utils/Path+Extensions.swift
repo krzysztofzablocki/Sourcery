@@ -27,4 +27,15 @@ extension Path {
         }
         return path
     }
+
+    var isTemplateFile: Bool {
+        return self.extension == "stencil" ||
+            self.extension == "swifttemplate" ||
+            self.extension == "js"
+    }
+
+    var isSwiftSourceFile: Bool {
+        return self.extension == "swift"
+    }
+
 }

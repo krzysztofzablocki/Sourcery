@@ -26,7 +26,7 @@ public class Sourcery {
     fileprivate let cacheDisabled: Bool
 
     fileprivate var status = ""
-    fileprivate var templatesPath: Path = ""
+    fileprivate var templatesPaths: [Path] = []
     fileprivate var outputPath: Path = ""
 
     /// Creates Sourcery processor
@@ -48,62 +48,67 @@ public class Sourcery {
     ///   - output: Path to output source code to.
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ sources: Path, usingTemplates templatesPath: Path, output: Path) throws -> [FolderWatcher.Local]? {
-        self.templatesPath = templatesPath
+    public func processFiles(_ sources: [Path], usingTemplates templatesPaths: [Path], output: Path) throws -> [FolderWatcher.Local]? {
+        self.templatesPaths = templatesPaths
         self.outputPath = output
 
         var result = try parse(from: sources)
-        try generate(templatePath: templatesPath, output: output, parsingResult: result)
+        try generate(templatesPaths, output: output, parsingResult: result)
 
         guard watcherEnabled else {
             return nil
         }
 
         track("Starting watching sources.", skipStatus: true)
-        let sourceWatcher = FolderWatcher.Local(path: sources.string) { events in
-            let events = events
-                .filter { $0.flags.contains(.isFile) && $0.path.hasSuffix(".swift") }
 
-            var shouldRegenerate = false
-            for event in events {
-                guard let file = try? String(contentsOfFile: event.path, encoding: .utf8) else { continue }
-                if !file.hasPrefix(Sourcery.generationMarker) {
-                    shouldRegenerate = true
-                    break
+        let sourceWatchers = sources.map({ source in
+            return FolderWatcher.Local(path: source.string) { events in
+                let events = events
+                    .filter { $0.flags.contains(.isFile) && Path($0.path).isSwiftSourceFile }
+
+                var shouldRegenerate = false
+                for event in events {
+                    guard let file = try? String(contentsOfFile: event.path, encoding: .utf8) else { continue }
+                    if !file.hasPrefix(Sourcery.generationMarker) {
+                        shouldRegenerate = true
+                        break
+                    }
+                }
+
+                if shouldRegenerate {
+                    do {
+                        self.track("Source changed: ", terminator: "")
+                        result = try self.parse(from: sources)
+                        _ = try self.generate(templatesPaths, output: output, parsingResult: result)
+                    } catch {
+                        self.track(error)
+                    }
                 }
             }
-
-            if shouldRegenerate {
-                do {
-                    self.track("Source changed: ", terminator: "")
-                    result = try self.parse(from: sources)
-                    _ = try self.generate(templatePath: templatesPath, output: output, parsingResult: result)
-                } catch {
-                    self.track(error)
-                }
-            }
-        }
+        })
 
         track("Starting watching templates.", skipStatus: true)
 
-        let templateWatcher = FolderWatcher.Local(path: templatesPath.string) { events in
-            let events = events
-                .filter { $0.flags.contains(.isFile) && $0.path.hasSuffix(".stencil") }
+        let templateWatchers = templatesPaths.map({ templatesPath in
+            return FolderWatcher.Local(path: templatesPath.string) { events in
+                let events = events
+                    .filter { $0.flags.contains(.isFile) && Path($0.path).isTemplateFile }
 
-            if !events.isEmpty {
-                do {
-                    self.track("Templates changed: ", terminator: "")
-                    _ = try self.generate(templatePath: templatesPath, output: output, parsingResult: result)
-                } catch {
-                    self.track(error)
+                if !events.isEmpty {
+                    do {
+                        self.track("Templates changed: ", terminator: "")
+                        _ = try self.generate([templatesPath], output: output, parsingResult: result)
+                    } catch {
+                        self.track(error)
+                    }
                 }
             }
-        }
+        })
 
-        return [sourceWatcher, templateWatcher]
+        return Array([sourceWatchers, templateWatchers].joined())
     }
 
-    fileprivate func templates(from: Path) throws -> [Template] {
+    fileprivate func templates(from: [Path]) throws -> [Template] {
         return try templatePaths(from: from).map {
             if $0.extension == "swifttemplate" {
                 return try SwiftTemplate(path: $0)
@@ -115,7 +120,7 @@ public class Sourcery {
         }
     }
 
-    fileprivate func outputPaths(from: Path, output: Path) throws -> [Path] {
+    fileprivate func outputPaths(from: [Path], output: Path) throws -> [Path] {
         return try templatePaths(from: from).map { output + generatedPath(for: $0) }
     }
 
@@ -128,18 +133,19 @@ public class Sourcery {
         guard watcherEnabled && !skipStatus else { return }
         status = String(describing: message) + terminator
 
-        _ = try? outputPaths(from: templatesPath, output: outputPath).forEach { path in
+        _ = try? outputPaths(from: templatesPaths, output: outputPath).forEach { path in
             _ = try? path.write(Sourcery.generationHeader + "STATUS:\n" + status, encoding: .utf8)
         }
     }
 
-    private func templatePaths(from: Path) throws -> [Path] {
-        let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
-        return fileList
-                .filter {
-                    $0.extension == "stencil" || $0.extension == "swifttemplate" || $0.extension == "js"
-                }
+    private func templatePaths(from: [Path]) throws -> [Path] {
+        let paths = try from.map { (from) -> [Path] in
+            let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
+            return fileList.filter { $0.isTemplateFile }
+        }
+        return Array(paths.joined())
     }
+
 }
 
 // MARK: - Parsing
@@ -147,19 +153,18 @@ public class Sourcery {
 extension Sourcery {
     typealias ParsingResult = (types: [Type], inlineRanges: [(file: String, ranges: [String: NSRange])])
 
-    fileprivate func parse(from: Path) throws -> ParsingResult {
+    fileprivate func parse(from: [Path]) throws -> ParsingResult {
         self.track("Scanning sources...", terminator: "")
+        var inlineRanges = [(file: String, ranges: [String: NSRange])]()
+        var allResults = [FileParserResult]()
 
-        let cachesPath = Path.cachesDir(sourcePath: from)
+        try from.forEach { from in
+            let cachesPath = Path.cachesDir(sourcePath: from)
 
-        let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
-        let sources = try fileList
-                .filter {
-                    $0.extension == "swift"
-                }
-                .map {
-                    (path: $0, contents: try $0.read(.utf8))
-                }
+            let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
+            let sources = try fileList
+                .filter { $0.isSwiftSourceFile }
+                .map { (path: $0, contents: try $0.read(.utf8)) }
                 .filter {
                     let result = Verifier.canParse(content: $0.contents)
                     if result == .containsConflictMarkers {
@@ -170,24 +175,25 @@ extension Sourcery {
                 }
                 .map {
                     try FileParser(verbose: verbose, contents: $0.contents, path: $0.path)
-                }
-
-        var previousUpdate = 0
-        var accumulator = 0
-        let step = sources.count / 10 // every 10%
-
-        let results = sources.parallelMap({ self.loadOrParse(parser: $0, cachesPath: cachesPath) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
-            if accumulator > previousUpdate + step {
-                previousUpdate = accumulator
-                let percentage = accumulator * 100 / sources.count
-                self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
             }
-            accumulator += 1
-        })
 
-        var inlineRanges = [(file: String, ranges: [String: NSRange])]()
+            var previousUpdate = 0
+            var accumulator = 0
+            let step = sources.count / 10 // every 10%
 
-        let parserResult = results.reduce(FileParserResult(path: nil, types: [], typealiases: [])) { acc, next in
+            let results = sources.parallelMap({ self.loadOrParse(parser: $0, cachesPath: cachesPath) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+                if accumulator > previousUpdate + step {
+                    previousUpdate = accumulator
+                    let percentage = accumulator * 100 / sources.count
+                    self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
+                }
+                accumulator += 1
+                })
+
+            allResults.append(contentsOf: results)
+        }
+
+        let parserResult = allResults.reduce(FileParserResult(path: nil, types: [], typealiases: [])) { acc, next in
             acc.typealiases += next.typealiases
             acc.types += next.types
 
@@ -247,9 +253,10 @@ extension Sourcery {
 
 // MARK: - Generation
 extension Sourcery {
-    fileprivate func generate(templatePath: Path, output: Path, parsingResult: ParsingResult) throws {
+
+    fileprivate func generate(_ templatePaths: [Path], output: Path, parsingResult: ParsingResult) throws {
         track("Loading templates...", terminator: "")
-        let allTemplates = try templates(from: templatePath)
+        let allTemplates = try templates(from: templatePaths)
         track("Loaded \(allTemplates.count) templates.")
 
         track("Generating code...", terminator: "")

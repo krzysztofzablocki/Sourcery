@@ -11,16 +11,6 @@ import JavaScriptCore
 
 extension ArrayType: ArrayTypeAutoJSExport {}
 
-@objc protocol DictionaryTypeAutoJSExport: JSExport {
-    var name: String { get }
-    var valueTypeName: TypeName { get }
-    var valueType: Type? { get }
-    var keyTypeName: TypeName { get }
-    var keyType: Type? { get }
-}
-
-extension DictionaryType: DictionaryTypeAutoJSExport {}
-
 @objc protocol AssociatedValueAutoJSExport: JSExport {
     var localName: String? { get }
     var externalName: String? { get }
@@ -69,6 +59,16 @@ extension Attribute: AttributeAutoJSExport {}
 }
 
 extension Class: ClassAutoJSExport {}
+
+@objc protocol DictionaryTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var valueTypeName: TypeName { get }
+    var valueType: Type? { get }
+    var keyTypeName: TypeName { get }
+    var keyType: Type? { get }
+}
+
+extension DictionaryType: DictionaryTypeAutoJSExport {}
 
 @objc protocol EnumAutoJSExport: JSExport {
     var kind: String { get }
@@ -267,6 +267,8 @@ extension Type: TypeAutoJSExport {}
     var tuple: TupleType? { get }
     var isArray: Bool { get }
     var array: ArrayType? { get }
+    var isDictionary: Bool { get }
+    var dictionary: DictionaryType? { get }
     var isClosure: Bool { get }
     var description: String { get }
 }

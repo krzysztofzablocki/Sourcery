@@ -7,6 +7,11 @@
 ### New Features
 
 - Added flag to check if `TypeName` is dictionary
+- Added support for multiple sources and templates paths
+
+### Bug Fixes
+
+- Fixed observing swift and js templates
 
 ## 0.5.8
 
