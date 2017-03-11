@@ -8,6 +8,10 @@
 
 - Added flag to check if `TypeName` is dictionary
 
+### Bug Fixes
+
+- Fixed parsing generic array types
+
 ## 0.5.8
 
 ### New Features

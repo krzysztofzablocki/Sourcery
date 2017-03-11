@@ -296,7 +296,7 @@ struct Composer {
 
     fileprivate func parseArrayElementType(_ typeName: TypeName) -> TypeName {
         let name = typeName.unwrappedTypeName
-        if name.hasSuffix("Array<") {
+        if name.hasPrefix("Array<") {
             return TypeName(name.drop(first: 6, last: 1))
         } else {
             return TypeName(name.dropFirstAndLast())
