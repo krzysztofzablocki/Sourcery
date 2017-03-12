@@ -229,7 +229,7 @@
 		CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sourcery+PerformanceSpec.swift"; sourceTree = "<group>"; };
 		CDE812EE1E112CC700F1FF97 /* Performance-Code */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Performance-Code"; sourceTree = "<group>"; };
 		CDEF5F0E1E26A471000DB954 /* FileParserResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileParserResult.swift; sourceTree = "<group>"; };
-		CDF5E71C1E671B8500664763 /* TypedSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypedSpec.generated.swift; path = ../../Sourcery/CodeGenerated/TypedSpec.generated.swift; sourceTree = "<group>"; };
+		CDF5E71C1E671B8500664763 /* TypedSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedSpec.generated.swift; sourceTree = "<group>"; };
 		CDF68B731E1C137E007C5396 /* Typed.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Typed.stencil; sourceTree = "<group>"; };
 		CDF68B751E1C143D007C5396 /* Typed.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Typed.generated.swift; sourceTree = "<group>"; };
 		D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sourcery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
