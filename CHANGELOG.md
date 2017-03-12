@@ -11,6 +11,7 @@
 ### Bug Fixes
 
 - Fixed parsing generic array types
+- Fixed using dictionary in annotations
 
 ## 0.5.8
 
