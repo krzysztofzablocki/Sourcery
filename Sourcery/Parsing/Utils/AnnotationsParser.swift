@@ -144,7 +144,7 @@ internal struct AnnotationsParser {
     /// - Returns: Dictionary containing all annotations.
     static func parse(line: String) -> Annotations {
         let annotationDefinitions = line.trimmingCharacters(in: .whitespaces)
-            .components(separatedBy: ",", excludingDelimiterBetween:("", ""))
+            .commaSeparated()
             .map { $0.trimmingCharacters(in: .whitespaces) }
 
         var annotations = Annotations()
