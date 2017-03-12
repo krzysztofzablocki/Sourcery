@@ -322,8 +322,11 @@ extension Sourcery {
             .annotatedRanges
             .map { ($0, $1) }
             .forEach({ (filePath, range) in
-                let generatedBody = Sourcery.generationHeader + contents.bridge().substring(with: range)
-                let path = outputPath + "\(filePath).generated.swift"
+                var generatedBody = contents.bridge().substring(with: range)
+                let path = outputPath + (Path(filePath).extension == nil ? "\(filePath).generated.swift" : filePath)
+                if path.extension == "swift" {
+                    generatedBody = Sourcery.generationHeader + generatedBody
+                }
                 if !path.parent().exists {
                     try path.parent().mkpath()
                 }

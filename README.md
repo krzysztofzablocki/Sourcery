@@ -593,6 +593,8 @@ Sourcery supports generating code in a separate file per type, you just need to 
 
 Sourcery will generate the template code and then write its annotated parts to corresponding files. In example above it will create `Generated/<type name>+TemplateName.generated.swift` file for each of scanned types.
 
+If you add an extension to the file name Sourcery will not append `generated.swift` extension.
+
 ## Installing
 
 <details>

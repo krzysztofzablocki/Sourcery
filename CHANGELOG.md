@@ -7,6 +7,7 @@
 ### New Features
 
 - Added flag to check if `TypeName` is dictionary
+- Added generation non-swift files using `sourcery:file` annotation
 
 ### Bug Fixes
 
