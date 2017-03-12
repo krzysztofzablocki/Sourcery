@@ -8,6 +8,7 @@
 
 import Foundation
 
+// sourcery: skipJSExport
 class GenerationContext: NSObject, SourceryModel {
     let types: [Type]
     let typeByName: [String : Type]
@@ -41,33 +42,33 @@ class GenerationContext: NSObject, SourceryModel {
 
     /// Lists all known classes in the project
     /// sourcery: skipEquality, skipCoding
-    lazy var classes: [Class] = {
+    var classes: [Class] {
         return self.types.classes
-    }()
+    }
 
     /// lists all known types, excluding protocols
     /// sourcery: skipEquality, skipCoding
-    lazy var all: [Type] = {
+    var all: [Type] {
         return self.types.all
-    }()
+    }
 
     /// Lists all known protocols
     /// sourcery: skipEquality, skipCoding
-    lazy var protocols: [Protocol] = {
+    var protocols: [Protocol] {
         return self.types.protocols
-    }()
+    }
 
     /// Lists all known structs
     /// sourcery: skipEquality, skipCoding
-    lazy var structs: [Struct] = {
+    var structs: [Struct] {
         return self.types.structs
-    }()
+    }
 
     /// Lists all known enums
     /// sourcery: skipEquality, skipCoding
-    lazy var enums: [Enum] = {
+    var enums: [Enum] {
         return self.types.enums
-    }()
+    }
 }
 
 protocol TypeConvertible {
@@ -77,7 +78,7 @@ protocol TypeConvertible {
 }
 
 extension Type: TypeConvertible {
-    /// sourcery: skipDescription, skipEquality, skipCoding
+    /// sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
     var type: Type {
         return self
     }

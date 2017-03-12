@@ -42,9 +42,6 @@ extension NSCoder {
 extension ArrayType: NSCoding {}
     // sourcery:inline:ArrayType.AutoCoding
     // sourcery:end
-extension DictionaryType: NSCoding {}
-    // sourcery:inline:DictionaryType.AutoCoding
-    // sourcery:end
 extension AssociatedValue: NSCoding {}
     // sourcery:inline:AssociatedValue.AutoCoding
     // sourcery:end
@@ -52,6 +49,9 @@ extension Attribute: NSCoding {}
     // sourcery:inline:Attribute.AutoCoding
     // sourcery:end
     // sourcery:inline:Class.AutoCoding
+    // sourcery:end
+extension DictionaryType: NSCoding {}
+    // sourcery:inline:DictionaryType.AutoCoding
     // sourcery:end
     // sourcery:inline:Enum.AutoCoding
     // sourcery:end

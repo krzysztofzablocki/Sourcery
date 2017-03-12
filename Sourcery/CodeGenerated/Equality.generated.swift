@@ -10,17 +10,6 @@ extension ArrayType {
         return true
     }
 }
-extension DictionaryType {
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? DictionaryType else { return false }
-        if self.name != rhs.name { return false }
-        if self.valueTypeName != rhs.valueTypeName { return false }
-        if self.valueType != rhs.valueType { return false }
-        if self.keyTypeName != rhs.keyTypeName { return false }
-        if self.keyType != rhs.keyType { return false }
-        return true
-    }
-}
 extension AssociatedValue {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? AssociatedValue else { return false }
@@ -43,6 +32,17 @@ extension Class {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Class else { return false }
         return super.isEqual(rhs)
+    }
+}
+extension DictionaryType {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DictionaryType else { return false }
+        if self.name != rhs.name { return false }
+        if self.valueTypeName != rhs.valueTypeName { return false }
+        if self.valueType != rhs.valueType { return false }
+        if self.keyTypeName != rhs.keyTypeName { return false }
+        if self.keyType != rhs.keyType { return false }
+        return true
     }
 }
 extension DiffableResult {
@@ -171,6 +171,7 @@ extension TypeName {
         if self.attributes != rhs.attributes { return false }
         if self.tuple != rhs.tuple { return false }
         if self.array != rhs.array { return false }
+        if self.dictionary != rhs.dictionary { return false }
         return true
     }
 }

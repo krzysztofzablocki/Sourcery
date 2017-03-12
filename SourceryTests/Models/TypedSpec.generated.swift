@@ -1,5 +1,6 @@
 // Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 import Quick
 import Nimble
 @testable import Sourcery

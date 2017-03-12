@@ -168,17 +168,17 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given tuple type") {
                     it("extracts elements properly") {
-                        let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))}")
+                        let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))}")
                         let variable = types.first?.variables.first
 
                         expect(variable?.typeName.tuple).to(equal(
-                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Int]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))", elements: [
+                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))", elements: [
                                 TupleElement(name: "a", typeName: TypeName("Int")),
                                 TupleElement(name: "b", typeName: TypeName("Int")),
                                 TupleElement(name: "2", typeName: TypeName("String")),
                                 TupleElement(name: "3", typeName: TypeName("Float")),
-                                TupleElement(name: "literal", typeName: TypeName("[String: [String: Int]]")),
-                                TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>")),
+                                TupleElement(name: "literal", typeName: TypeName("[String: [String: Float]]", dictionary: DictionaryType(name: "[String: [String: Float]]", valueTypeName: TypeName("[String: Float]", dictionary: DictionaryType(name: "[String: Float]", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
+                                TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>", dictionary: DictionaryType(name: "Dictionary<String, Dictionary<String, Float>>", valueTypeName: TypeName("Dictionary<String, Float>", dictionary: DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
                                 TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)")),
                                 TupleElement(name: "tuple", typeName: TypeName("(Int, Int)", tuple:
                                     TupleType(name: "(Int, Int)", elements: [
@@ -608,7 +608,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type dictionary properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName:TypeName("[Blah.Foo: Blah.Foo]?")), accessLevel: (read: .internal, write: .none))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: TypeName("[Blah.Foo: Blah.Foo]?"), dictionary: DictionaryType(name: "[Blah.Foo: Blah.Foo]?", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: Struct(name: "Blah")), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: Struct(name: "Blah")))), accessLevel: (read: .internal, write: .none))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: [Foo: Foo]? }}")

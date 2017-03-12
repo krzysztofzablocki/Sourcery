@@ -7,10 +7,13 @@
 ### New Features
 
 - Added flag to check if `TypeName` is dictionary
-- Added generation non-swift files using `sourcery:file` annotation
+- Added support for multiple sources and templates paths, sources, templates and output paths now should be provided with `--sources`, `--templates` and `--output` options
+- Added support for YAML file configuration
+- Added generation of non-swift files using `sourcery:file` annotation
 
 ### Bug Fixes
 
+- Fixed observing swift and js templates
 - Fixed parsing generic array types
 - Fixed using dictionary in annotations
 

@@ -14,21 +14,6 @@ extension ArrayType: Diffable {
         return results
     }
 }
-extension DictionaryType: Diffable {
-    func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let rhs = object as? DictionaryType else {
-            results.append("Incorrect type <expected: DictionaryType, received: \(type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
-        results.append(contentsOf: DiffableResult(identifier: "valueTypeName").trackDifference(actual: self.valueTypeName, expected: rhs.valueTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "valueType").trackDifference(actual: self.valueType, expected: rhs.valueType))
-        results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: rhs.keyTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "keyType").trackDifference(actual: self.keyType, expected: rhs.keyType))
-        return results
-    }
-}
 extension AssociatedValue: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -63,6 +48,21 @@ extension Class {
             return results
         }
         results.append(contentsOf: super.diffAgainst(object))
+        return results
+    }
+}
+extension DictionaryType: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? DictionaryType else {
+            results.append("Incorrect type <expected: DictionaryType, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "valueTypeName").trackDifference(actual: self.valueTypeName, expected: rhs.valueTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "valueType").trackDifference(actual: self.valueType, expected: rhs.valueType))
+        results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: rhs.keyTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "keyType").trackDifference(actual: self.keyType, expected: rhs.keyType))
         return results
     }
 }
@@ -235,6 +235,7 @@ extension TypeName: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: rhs.attributes))
         results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: rhs.tuple))
         results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: rhs.array))
+        results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: rhs.dictionary))
         return results
     }
 }
