@@ -323,7 +323,12 @@ extension Sourcery {
             .map { ($0, $1) }
             .forEach({ (filePath, range) in
                 let generatedBody = Sourcery.generationHeader + contents.bridge().substring(with: range)
-                let path = outputPath + "\(filePath).generated.swift"
+                let path: Path
+                if Path(filePath).extension != nil {
+                    path = outputPath + filePath
+                } else {
+                    path = outputPath + "\(filePath).generated.swift"
+                }
                 if !path.parent().exists {
                     try path.parent().mkpath()
                 }
