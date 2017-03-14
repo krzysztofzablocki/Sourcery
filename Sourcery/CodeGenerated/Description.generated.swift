@@ -61,6 +61,7 @@ extension FileParserResult {
     override var description: String {
         var string = "\(type(of: self)): "
         string += "path = \(self.path), "
+        string += "module = \(self.module), "
         string += "types = \(self.types), "
         string += "typealiases = \(self.typealiases), "
         string += "inlineRanges = \(self.inlineRanges), "
@@ -145,6 +146,7 @@ extension TupleType {
 extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
+        string += "module = \(self.module), "
         string += "typealiases = \(self.typealiases), "
         string += "isExtension = \(self.isExtension), "
         string += "kind = \(self.kind), "

@@ -8,6 +8,8 @@ import Foundation
 /// Defines Swift Type
 class Type: NSObject, SourceryModel, Annotated {
 
+    var module: String?
+
     /// All local typealiases
     // sourcery: skipJSExport
     var typealiases: [String: Typealias] {
@@ -29,6 +31,11 @@ class Type: NSObject, SourceryModel, Annotated {
     var name: String {
         guard let parentName = parent?.name else { return localName }
         return "\(parentName).\(localName)"
+    }
+
+    var fullName: String {
+        guard let module = module else { return name }
+        return "\(module).\(name)"
     }
 
     /// Is this type generic?
@@ -227,6 +234,7 @@ class Type: NSObject, SourceryModel, Annotated {
 
     // sourcery:inline:Type.AutoCoding
         required init?(coder aDecoder: NSCoder) {
+            self.module = aDecoder.decode(forKey: "module")
             guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
@@ -247,6 +255,7 @@ class Type: NSObject, SourceryModel, Annotated {
         }
 
         func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.module, forKey: "module")
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")

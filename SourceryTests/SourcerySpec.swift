@@ -38,7 +38,7 @@ class SourcerySpecTests: QuickSpec {
                             "// Line Three\n" +
                             "// sourcery:end", in: templatePath)
 
-                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles([sourcePath], usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
                     }
 
                     it("replaces placeholder with generated code") {
@@ -86,7 +86,7 @@ class SourcerySpecTests: QuickSpec {
                             "// sourcery:end\n" +
                             "{% endfor %}", in: templatePath)
 
-                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles([sourcePath], usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
                     }
 
                     it("replaces placeholder with generated code") {
@@ -126,7 +126,7 @@ class SourcerySpecTests: QuickSpec {
 
                         _ = try? targetPath.delete()
 
-                        expect { try Sourcery(cacheDisabled: true).processFiles([Stubs.resultDirectory] + Path("Basic.swift"), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.resultDirectory] + Path("Basic.swift")), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
 
                         expect(targetPath.exists).to(beFalse())
                     }
@@ -136,13 +136,13 @@ class SourcerySpecTests: QuickSpec {
 
                         update(code: "\n\n<<<<<\n", in: sourcePath)
 
-                        expect { try Sourcery(cacheDisabled: true).processFiles([sourcePath], usingTemplates: [templatePath], output: outputDir) }.to(throwError())
+                        expect { try Sourcery(cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.to(throwError())
                     }
                 }
 
                 context("without a watcher") {
                     it("creates expected output file") {
-                        expect { try Sourcery(cacheDisabled: true).processFiles([Stubs.sourceDirectory], usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
 
                         let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                         expect(result.flatMap { $0.withoutWhitespaces }).to(equal(expectedResult?.withoutWhitespaces))
@@ -157,7 +157,7 @@ class SourcerySpecTests: QuickSpec {
                     it("re-generates on template change") {
                         updateTemplate(code: "Found {{ types.enums.count }} Enums")
 
-                        expect { watcher = try Sourcery(watcherEnabled: true, cacheDisabled: true).processFiles([Stubs.sourceDirectory], usingTemplates: [tmpTemplate], output: outputDir) }.toNot(throwError())
+                        expect { watcher = try Sourcery(watcherEnabled: true, cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [tmpTemplate], output: outputDir) }.toNot(throwError())
 
                         //! Change the template
                         updateTemplate(code: "Found {{ types.all.count }} Types")
@@ -175,7 +175,7 @@ class SourcerySpecTests: QuickSpec {
                     let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8).withoutWhitespaces
 
                     it("joins code generated code into single file") {
-                        expect { try Sourcery(cacheDisabled: true).processFiles([Stubs.sourceDirectory], usingTemplates: [Stubs.templateDirectory], output: outputFile) }.toNot(throwError())
+                        expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [Stubs.templateDirectory], output: outputFile) }.toNot(throwError())
 
                         let result = try? outputFile.read(.utf8)
                         expect(result.flatMap { $0.withoutWhitespaces }).to(equal(expectedResult?.withoutWhitespaces))
@@ -188,7 +188,7 @@ class SourcerySpecTests: QuickSpec {
                         let generated = templateNames.map { outputDir + Sourcery().generatedPath(for: Stubs.templateDirectory + "\($0).stencil") }
                         let expected = templateNames.map { Stubs.resultDirectory + Path("\($0).swift") }
 
-                        expect { try Sourcery(cacheDisabled: true).processFiles([Stubs.sourceDirectory], usingTemplates: [Stubs.templateDirectory], output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [Stubs.templateDirectory], output: outputDir) }.toNot(throwError())
 
                         for (idx, outputPath) in generated.enumerated() {
                             let output = try? outputPath.read(.utf8)
