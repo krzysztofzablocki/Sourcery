@@ -38,19 +38,18 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
 extension {{ type.name }}: Equatable {}
 {{ type.accessLevel }} func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
     switch (lhs, rhs) {
-        {% for case in type.cases %}
-        {% if case.hasAssociatedValue %} case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)): {% else %} case (.{{ case.name }}, .{{ case.name }}): {% endif %}
-            {% ifnot case.hasAssociatedValue %} return true {% else %}
-                {% if case.associatedValues.count == 1 %}
-                    return lhs == rhs
-                {% else %}
-                    {% for associated in case.associatedValues %} if lhs.{{ associated.externalName }} != rhs.{{ associated.externalName }} { return false }
-                    {% endfor %} return true
-                    {% endif %}
-            {% endif %}
-
-        {% endfor %}
-        default: return false
+    {% for case in type.cases %}
+    {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)): {% else %} case (.{{ case.name }}, .{{ case.name }}): {% endif %}
+        {% ifnot case.hasAssociatedValue %} return true {% else %}
+        {% if case.associatedValues.count == 1 %}
+        return lhs == rhs
+        {% else %}
+        {% for associated in case.associatedValues %}if lhs.{{ associated.externalName }} != rhs.{{ associated.externalName }} { return false }
+        {% endfor %}return true
+        {% endif %}
+        {% endif %}
+    {% endfor %}
+    default: return false
     }
 }
 {% endfor %}

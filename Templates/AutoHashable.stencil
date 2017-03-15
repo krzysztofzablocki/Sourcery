@@ -29,26 +29,26 @@ extension {{ type.name }}{% if not type.kind == "protocol" %}: Hashable{% endif 
 
 // MARK: - AutoHashable for Enums
 {% for type in types.implementing.AutoHashable|enum %}
+
 // MARK: - {{ type.name }} AutoHashable
 extension {{ type.name }}: Hashable {
     {{ type.accessLevel }} var hashValue: Int {
         switch self {
-            {% for case in type.cases %}
-            {% if case.hasAssociatedValue %} case .{{ case.name }}(let data): {% else %} case .{{ case.name }}: {% endif %}
-                {% ifnot case.hasAssociatedValue %}
-                    {% if type.computedVariables.count == 0 %}
-                        return {{ forloop.counter }}.hashValue
-                    {% else %}
-                        return combineHashes([{{ forloop.counter }}, {% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %}])
-                    {% endif %}
-                {% else %}
-                    {% if case.associatedValues.count == 1 %}
-                        return combineHashes([{{ forloop.counter }}, data.hashValue])
-                    {% else %}
-                        return combineHashes([{{ forloop.counter }}, {% for associated in case.associatedValues %}data.{{ associated.externalName }}.hashValue{% if not forloop.last %}, {% endif %}{% endfor %}{% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %}])
-                    {% endif %}
-                {% endif %}
-
+        {% for case in type.cases %}
+        {% if case.hasAssociatedValue %}case .{{ case.name }}(let data): {% else %} case .{{ case.name }}: {% endif %}
+            {% ifnot case.hasAssociatedValue %}
+            {% if type.computedVariables.count == 0 %}
+            return {{ forloop.counter }}.hashValue
+            {% else %}
+            return combineHashes([{{ forloop.counter }}, {% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %}])
+            {% endif %}
+            {% else %}
+            {% if case.associatedValues.count == 1 %}
+            return combineHashes([{{ forloop.counter }}, data.hashValue])
+            {% else %}
+            return combineHashes([{{ forloop.counter }}, {% for associated in case.associatedValues %}data.{{ associated.externalName }}.hashValue{% if not forloop.last %}, {% endif %}{% endfor %}{% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %}])
+            {% endif %}
+            {% endif %}
             {% endfor %}
         }
     }
