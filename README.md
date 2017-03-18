@@ -650,6 +650,21 @@ args:
   <name>: <value>
 ```
 
+You can provide either sources paths or targets to scan:
+
+```yaml
+project:
+  file:
+    <path to xcodeproj file>
+  root:
+    <path to project sources root>
+  target:
+    name: <target name>
+    module: <module name> //required if different from target name
+```
+
+You can use several `project` objects to scan targets from different projects.
+
 Options:
 
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.

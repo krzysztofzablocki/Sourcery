@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Added support for scanning multiple targets
+
 ## 0.5.9
 
 ### New Features
