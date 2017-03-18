@@ -1,17 +1,8 @@
 import Xcode
 
+extension String: Error {}
+
 extension XCProjectFile {
-
-    enum Error: Swift.Error, CustomStringConvertible {
-        case missingTarget(String)
-
-        var description: String {
-            switch self {
-            case let .missingTarget(target):
-                return "Missing target \(target)."
-            }
-        }
-    }
 
     convenience init(path: String) throws {
         try self.init(xcodeprojURL: URL(fileURLWithPath: path))
@@ -20,7 +11,7 @@ extension XCProjectFile {
     func sourceFilesPaths(targetName: String, sourceRoot: String) throws -> [Path] {
         let allTargets = project.targets
         guard let target = allTargets.filter({ $0.name == targetName }).first else {
-            throw Error.missingTarget(targetName)
+            throw "Missing target \(targetName)."
         }
 
         let sourceFileRefs = target.buildPhases

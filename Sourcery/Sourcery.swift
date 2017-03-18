@@ -66,10 +66,10 @@ public class Sourcery {
             case let .projects(projects):
                 var paths = [Path]()
                 var modules = [String]()
-                for project in projects {
-                    for target in project.targets {
+                try projects.forEach { project in
+                    try project.targets.forEach { target in
                         let files: [Path] = try project.file.sourceFilesPaths(targetName: target.name, sourceRoot: project.root.string)
-                        for file in files {
+                        files.forEach { file in
                             paths.append(file)
                             modules.append(target.module)
                         }
