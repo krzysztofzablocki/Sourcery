@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import JavaScriptCore
@@ -36,6 +36,7 @@ extension Attribute: AttributeAutoJSExport {}
     var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -82,6 +83,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -157,6 +159,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -187,6 +190,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -235,6 +239,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var kind: String { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }

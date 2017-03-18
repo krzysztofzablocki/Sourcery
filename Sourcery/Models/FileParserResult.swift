@@ -26,7 +26,7 @@ import Foundation
     var contentSha: String?
     var sourceryVersion: String
 
-    init(path: String?, module: String?, types: [Type], typealiases: [Typealias], inlineRanges: [String: NSRange] = [:], contentSha: String = "", sourceryVersion: String = "") {
+    init(path: String?, module: String?, types: [Type], typealiases: [Typealias] = [], inlineRanges: [String: NSRange] = [:], contentSha: String = "", sourceryVersion: String = "") {
         self.path = path
         self.module = module
         self.types = types

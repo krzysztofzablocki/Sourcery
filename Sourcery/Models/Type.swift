@@ -33,7 +33,8 @@ class Type: NSObject, SourceryModel, Annotated {
         return "\(parentName).\(localName)"
     }
 
-    var fullName: String {
+    // sourcery: skipDescription
+    var globalName: String {
         guard let module = module else { return name }
         return "\(module).\(name)"
     }
