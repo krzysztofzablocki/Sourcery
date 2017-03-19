@@ -1,3 +1,3 @@
-[submodule "Sourcery/Xcode.swift"]
-	path = Sourcery/Xcode.swift
-	url = https://github.com/mac-cain13/Xcode.swift.git
+[submodule "Xcode.swift"]
+	path = Xcode.swift
+	url = https://github.com/ilyapuchka/Xcode.swift.git 
