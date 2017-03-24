@@ -594,6 +594,32 @@ class MyType {
 
 Sourcery will generate the template code and then perform replacement in your source file. Inlined generated code is not parsed to avoid chicken-egg problem.
 
+#### Automatic inline code generation
+
+To avoid having to place the markup in your source files, you can use `inline:auto`:
+
+```swift
+// in template:
+
+{% for type in types.all %}
+// sourcery:inline:auto:{{ type.name }}
+// sourcery:end
+{% endfor %}
+
+// in source code:
+
+class MyType {}
+
+// after running Sourcery:
+
+class MyType {
+// sourcery:inline:auto:MyType
+// sourcery:end
+}
+```
+
+The needed markup will be automatically added at the end of the type.
+
 ### Per file code generation
 
 Sourcery supports generating code in a separate file per type, you just need to put `file` annotation in a template, e.g.

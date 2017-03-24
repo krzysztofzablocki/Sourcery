@@ -111,6 +111,8 @@
 		E291DE1CB3B72BAA22DEDEDA /* StencilTemplateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D0D4A5AF091CD15550FD /* StencilTemplateSpec.swift */; };
 		E291DF1320ACA969F7A8CBAE /* AnnotationsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DCDA23F3C1A44331A245 /* AnnotationsParser.swift */; };
 		E291DF22F03C87C646576942 /* AnnotationsParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DCF0A8E779EC67C9A37E /* AnnotationsParserSpec.swift */; };
+		F24C39151E85304100BC1F3A /* TypeDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24C39141E85304100BC1F3A /* TypeDefinition.swift */; };
+		F2AA8A841E8549FD00E66BDC /* TypeDefinition.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = F24C39141E85304100BC1F3A /* TypeDefinition.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +132,7 @@
 			dstPath = SwiftTemplateRuntime;
 			dstSubfolderSpec = 7;
 			files = (
+				F2AA8A841E8549FD00E66BDC /* TypeDefinition.swift in SwiftTemplates */,
 				CD724D731E366F0A0002E632 /* PhantomProtocols.swift in SwiftTemplates */,
 				CDEF5F101E26A47B000DB954 /* FileParserResult.swift in SwiftTemplates */,
 				CDBEC15D1E242C710090E881 /* Attribute.swift in SwiftTemplates */,
@@ -265,6 +268,7 @@
 		E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorSpec.swift; sourceTree = "<group>"; };
 		E291DF48D4FBBB43C1F7EF8A /* TypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeSpec.swift; sourceTree = "<group>"; };
 		E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposerSpec.swift; sourceTree = "<group>"; };
+		F24C39141E85304100BC1F3A /* TypeDefinition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeDefinition.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -396,6 +400,7 @@
 				098442741E2241F10051E1A1 /* Attribute.swift */,
 				CDEF5F0E1E26A471000DB954 /* FileParserResult.swift */,
 				E291DD290C35DCDEF29742F1 /* PhantomProtocols.swift */,
+				F24C39141E85304100BC1F3A /* TypeDefinition.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -798,6 +803,7 @@
 				CD9C459D1DFAF76D00161C2C /* main.swift in Sources */,
 				CD812F5B1DFDCC1A0088B2F6 /* Enum.swift in Sources */,
 				CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */,
+				F24C39151E85304100BC1F3A /* TypeDefinition.swift in Sources */,
 				09C61F9F1E749DFC005EA58A /* Yams+Extensions.swift in Sources */,
 				09C6B0D21E11BA2500246CDF /* Class.swift in Sources */,
 				CDEF5F0F1E26A471000DB954 /* FileParserResult.swift in Sources */,

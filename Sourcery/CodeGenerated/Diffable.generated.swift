@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType: Diffable {
@@ -221,6 +221,19 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: rhs.containedTypes))
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: rhs.parentName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: rhs.attributes))
+        return results
+    }
+}
+extension TypeDefinition: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? TypeDefinition else {
+            results.append("Incorrect type <expected: TypeDefinition, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: rhs.path))
+        results.append(contentsOf: DiffableResult(identifier: "bodyOffset").trackDifference(actual: self.bodyOffset, expected: rhs.bodyOffset))
+        results.append(contentsOf: DiffableResult(identifier: "bodyLength").trackDifference(actual: self.bodyLength, expected: rhs.bodyLength))
         return results
     }
 }

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -165,6 +165,17 @@ extension Type {
         string += "parentName = \(self.parentName), "
         string += "parentTypes = \(self.parentTypes), "
         string += "attributes = \(self.attributes)"
+        return string
+    }
+}
+extension TypeDefinition {
+    override var description: String {
+        var string = "\(type(of: self)): "
+        string += "path = \(self.path), "
+        string += "bodyOffset = \(self.bodyOffset), "
+        string += "bodyStartPosition = \(self.bodyStartPosition), "
+        string += "bodyLength = \(self.bodyLength), "
+        string += "bodyEndPosition = \(self.bodyEndPosition)"
         return string
     }
 }

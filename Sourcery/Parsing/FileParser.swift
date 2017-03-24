@@ -129,6 +129,7 @@ final class FileParser {
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.setSource(source)
+            type.definition = makeTypeDefinition(source: source)
             types.append(type)
             return type
         }
@@ -213,6 +214,16 @@ final class FileParser {
         default:
             break
         }
+    }
+
+    private func makeTypeDefinition(source: [String: SourceKitRepresentable]) -> TypeDefinition? {
+        guard let range = Substring.body.range(for: source),
+            let path = path
+            else {
+                return nil
+        }
+
+        return TypeDefinition(path: path, bodyOffset: Int(range.offset), bodyLength: Int(range.length))
     }
 
     private func finishedParsing(types: [Type]) -> [Type] {

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
@@ -82,6 +82,9 @@ extension TupleType: NSCoding {}
     // sourcery:end
 extension Type: NSCoding {}
     // sourcery:inline:Type.AutoCoding
+    // sourcery:end
+extension TypeDefinition: NSCoding {}
+    // sourcery:inline:TypeDefinition.AutoCoding
     // sourcery:end
 extension TypeName: NSCoding {}
     // sourcery:inline:TypeName.AutoCoding
