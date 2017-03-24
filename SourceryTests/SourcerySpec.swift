@@ -67,6 +67,36 @@ class SourcerySpecTests: QuickSpec {
                     }
                 }
 
+                describe("using automatic inline generation") {
+                    let templatePath = outputDir + Path("FakeTemplate.stencil")
+                    let sourcePath = outputDir + Path("Source.swift")
+                    func update(code: String, in path: Path) { guard let _ = try? path.write(code) else { fatalError() } }
+
+                    beforeEach {
+                        update(code: "class Foo {}", in: sourcePath)
+
+                        update(code: "// Line One\n" +
+                            "// sourcery:inline:auto:Foo\n" +
+                            "var property = 2\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end", in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles([sourcePath], usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                    }
+
+                    it("adds generated code") {
+                        let expectedResult = "class Foo {\n" +
+                            "// sourcery:inline:auto:Foo\n" +
+                            "var property = 2\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                        "}"
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+                }
+
                 describe("using per file generation") {
                     let templatePath = outputDir + Path("FakeTemplate.stencil")
                     let sourcePath = outputDir + Path("Source.swift")

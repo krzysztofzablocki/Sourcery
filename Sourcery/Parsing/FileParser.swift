@@ -129,6 +129,7 @@ final class FileParser {
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.setSource(source)
+            type.definition = makeTypeDefinition(source: source)
             types.append(type)
             return type
         }
@@ -213,6 +214,17 @@ final class FileParser {
         default:
             break
         }
+    }
+
+    private func makeTypeDefinition(source: [String: SourceKitRepresentable]) -> TypeDefinition? {
+        guard let bodyOffset = source[SwiftDocKey.bodyOffset.rawValue] as? Int64,
+            let bodyLength = source[SwiftDocKey.bodyLength.rawValue] as? Int64,
+            let path = path
+            else {
+                return nil
+        }
+
+        return TypeDefinition(path: path, bodyOffset: Int(bodyOffset), bodyLength: Int(bodyLength))
     }
 
     private func finishedParsing(types: [Type]) -> [Type] {

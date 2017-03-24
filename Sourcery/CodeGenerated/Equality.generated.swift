@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -161,6 +161,15 @@ extension Type {
         if self.parentName != rhs.parentName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.kind != rhs.kind { return false }
+        return true
+    }
+}
+extension TypeDefinition {
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TypeDefinition else { return false }
+        if self.path != rhs.path { return false }
+        if self.bodyOffset != rhs.bodyOffset { return false }
+        if self.bodyLength != rhs.bodyLength { return false }
         return true
     }
 }
