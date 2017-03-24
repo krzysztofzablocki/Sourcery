@@ -217,14 +217,13 @@ final class FileParser {
     }
 
     private func makeTypeDefinition(source: [String: SourceKitRepresentable]) -> TypeDefinition? {
-        guard let bodyOffset = source[SwiftDocKey.bodyOffset.rawValue] as? Int64,
-            let bodyLength = source[SwiftDocKey.bodyLength.rawValue] as? Int64,
+        guard let range = Substring.body.range(for: source),
             let path = path
             else {
                 return nil
         }
 
-        return TypeDefinition(path: path, bodyOffset: Int(bodyOffset), bodyLength: Int(bodyLength))
+        return TypeDefinition(path: path, bodyOffset: Int(range.offset), bodyLength: Int(range.length))
     }
 
     private func finishedParsing(types: [Type]) -> [Type] {
