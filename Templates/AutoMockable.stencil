@@ -3,7 +3,7 @@
 class {{ type.name }}Mock: {{ type.name }} {
 
     {% for variable in type.allVariables %}
-    var {{ variable.name }}: {{ variable.typeName }}
+    var {{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if variable.isArray %} = []{% endif %}{% if variable.isDictionary %} = [:]{% endif %}{% endif %}
     {% endfor %}
 
     {% for method in type.allMethods %}

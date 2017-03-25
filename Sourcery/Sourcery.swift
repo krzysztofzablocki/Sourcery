@@ -308,6 +308,7 @@ extension Sourcery {
                 .forEach { (key, range) in
 
                     let generatedBody = contents.bridge().substring(with: range)
+                    var didProcess = false
 
                     try parsingResult.inlineRanges.forEach { (filePath, ranges) in
 
@@ -316,7 +317,23 @@ extension Sourcery {
                             let original = try path.read(.utf8)
                             let updated = original.bridge().replacingCharacters(in: range, with: generatedBody)
                             try writeIfChanged(updated, to: path)
+                            didProcess = true
                         }
+                    }
+
+                    // Process automatic inline ranges
+                    if !didProcess && key.hasPrefix("auto:") {
+                        let autoTypeName = key.trimmingPrefix("auto:")
+
+                        guard let type = parsingResult.types.first(where: { $0.name == autoTypeName }), let definition = type.definition else {
+                            return
+                        }
+
+                        let path = Path(definition.path)
+                        var definitionFile = try path.read(.utf8)
+                        let index = definitionFile.index(definitionFile.startIndex, offsetBy: definition.bodyEndPosition)
+                        definitionFile.insert(contentsOf: "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n".characters, at: index)
+                        try writeIfChanged(definitionFile, to: path)
                     }
                 }
         return inline.contents
