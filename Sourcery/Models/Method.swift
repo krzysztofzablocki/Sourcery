@@ -85,7 +85,15 @@ final class Method: NSObject, SourceryModel, Annotated {
         return name.range(of: "(").map({ name.substring(to: $0.lowerBound) }) ?? name
     }
 
-    /// Name of the return type
+    /// Method name without arguments names, parenthesis and generic types, i.e. `foo`
+    var callName: String {
+        return shortName.range(of: "<").map({ shortName.substring(to: $0.lowerBound) }) ?? shortName
+    }
+
+    /// Method parameters
+    var parameters: [MethodParameter]
+
+    /// Return value type name
     var returnTypeName: TypeName
 
     var actualReturnTypeName: TypeName {
