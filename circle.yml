@@ -4,6 +4,8 @@ machine:
   environment:
     XCODE_WORKSPACE: Sourcery.xcworkspace
     XCODE_SCHEME: Sourcery
+  post:
+      - ln -s /Applications/Xcode-8.2.app /Applications/Xcode.app
 
 checkout:
   post:
