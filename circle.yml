@@ -7,11 +7,6 @@ machine:
   post:
       - ln -s /Applications/Xcode-8.2.app /Applications/Xcode.app
 
-checkout:
-  post:
-      - git submodule sync  
-      - git submodule update --init
-
 test:
   override:
       - set -o pipefail
