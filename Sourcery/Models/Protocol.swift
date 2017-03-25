@@ -9,10 +9,10 @@
 import Foundation
 
 /// Describes Swift protocol
-final class Protocol: Type {
+public final class Protocol: Type {
 
     /// Returns "protocol"
-    override var kind: String { return "protocol" }
+    public override var kind: String { return "protocol" }
 
     override init(name: String = "",
                   parent: Type? = nil,
@@ -48,11 +48,13 @@ final class Protocol: Type {
     }
 
     // sourcery:inline:Protocol.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
         }
 
-        override func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
         }
         // sourcery:end

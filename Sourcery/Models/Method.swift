@@ -4,22 +4,24 @@ import Foundation
 typealias SourceryMethod = Method
 
 /// Describes method parameter
-final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
-    var argumentLabel: String?
+    public var argumentLabel: String?
 
     /// Parameter internal name
-    let name: String
+    public let name: String
 
     /// Parameter type name
-    let typeName: TypeName
+    public let typeName: TypeName
 
-    /// Parameter type, if known
     // sourcery: skipEquality, skipDescription
-    var type: Type?
+    /// Parameter type, if known
+    public internal(set) var type: Type?
 
     /// Parameter type attributes, i.e. `@escaping`
-    var typeAttributes: [String: Attribute] { return typeName.attributes }
+    public var typeAttributes: [String: Attribute] {
+        return typeName.attributes
+    }
 
     /// Method parameter default value expression
     var defaultValue: String?
@@ -50,7 +52,8 @@ final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     }
 
     // sourcery:inline:MethodParameter.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
@@ -59,7 +62,8 @@ final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
@@ -71,77 +75,77 @@ final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 }
 
 /// Describes method
-final class Method: NSObject, SourceryModel, Annotated {
+public final class Method: NSObject, SourceryModel, Annotated {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T) where T: Equatable`
-    let name: String
+    public let name: String
 
-    /// Method name including arguments names, i.e. `foo(bar:)`
     // sourcery: skipDescription
-    let selectorName: String
+    /// Method name including arguments names, i.e. `foo(bar:)`
+    public let selectorName: String
 
     /// Method name without arguments names and parenthesis, i.e. `foo<t>`
-    var shortName: String {
+    public var shortName: String {
         return name.range(of: "(").map({ name.substring(to: $0.lowerBound) }) ?? name
     }
 
     /// Method name without arguments names, parenthesis and generic types, i.e. `foo`
-    var callName: String {
+    public var callName: String {
         return shortName.range(of: "<").map({ shortName.substring(to: $0.lowerBound) }) ?? shortName
     }
 
     /// Method parameters
-    var parameters: [MethodParameter]
+    public var parameters: [MethodParameter]
 
     /// Return value type name
-    var returnTypeName: TypeName
+    public var returnTypeName: TypeName
 
     /// Actual return value type name, if it is a typealias
-    var actualReturnTypeName: TypeName {
+    public var actualReturnTypeName: TypeName {
         return returnTypeName.actualTypeName ?? returnTypeName
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Actual return value type, if known
-    // sourcery: skipEquality, skipDescription
-    var returnType: Type?
+    public internal(set) var returnType: Type?
 
-    /// Whether return value type is optional
     // sourcery: skipEquality, skipDescription
-    var isOptionalReturnType: Bool {
+    /// Whether return value type is optional
+    public var isOptionalReturnType: Bool {
         return returnTypeName.isOptional || isFailableInitializer
     }
 
-    /// Whether return value type is implicitly unwrapped optional
     // sourcery: skipEquality, skipDescription
-    var isImplicitlyUnwrappedOptionalReturnType: Bool {
+    /// Whether return value type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptionalReturnType: Bool {
         return returnTypeName.isImplicitlyUnwrappedOptional
     }
 
-    /// Return value type name without attributes and optional type information
     // sourcery: skipEquality, skipDescription
-    var unwrappedReturnTypeName: String {
+    /// Return value type name without attributes and optional type information
+    public var unwrappedReturnTypeName: String {
         return returnTypeName.unwrappedTypeName
     }
 
     /// Whether method throws or rethrows
-    let `throws`: Bool
+    public let `throws`: Bool
 
     /// Method access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
-    let accessLevel: String
+    public let accessLevel: String
 
     /// Whether method is a static method
-    let isStatic: Bool
+    public let isStatic: Bool
 
     /// Whether method is a class method
-    let isClass: Bool
+    public let isClass: Bool
 
     /// Whether method is a constructor
-    var isInitializer: Bool {
+    public var isInitializer: Bool {
         return selectorName.hasPrefix("init(")
     }
 
     /// Whether method is a failable initializer
-    let isFailableInitializer: Bool
+    public let isFailableInitializer: Bool
 
     /// Whether method is a convenience initializer
     public var isConvenienceInitialiser: Bool {
@@ -149,10 +153,10 @@ final class Method: NSObject, SourceryModel, Annotated {
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    let annotations: [String: NSObject]
+    public let annotations: [String: NSObject]
 
     /// Method attributes, i.e. `@discardableResult`
-    let attributes: [String: Attribute]
+    public let attributes: [String: Attribute]
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
@@ -184,7 +188,8 @@ final class Method: NSObject, SourceryModel, Annotated {
     }
 
     // sourcery:inline:Method.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["selectorName"])); fatalError() }; self.selectorName = selectorName
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
@@ -199,7 +204,8 @@ final class Method: NSObject, SourceryModel, Annotated {
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.selectorName, forKey: "selectorName")
             aCoder.encode(self.parameters, forKey: "parameters")

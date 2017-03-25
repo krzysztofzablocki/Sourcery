@@ -40,12 +40,14 @@ extension NSCoder {
 {% for type in types.implementing.AutoCoding|class %}
 {% if not type.supertype.implements.AutoCoding %}extension {{ type.name }}: NSCoding {}{% endif %}
     // sourcery:inline:{{ type.name }}.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required {{ type.accessLevel }} init?(coder aDecoder: NSCoder) {
             {% for variable in type.storedVariables|!annotated:"skipCoding" %}{% if variable.typeName.name == "Bool" or variable.typeName.name == "Int" %}self.{{variable.name}} = aDecoder.decode(forKey: "{{variable.name}}"){% else %}{% if not variable.typeName.isOptional %}guard let {{variable.name}}: {{ variable.typeName.unwrappedTypeName }} = aDecoder.decode(forKey: "{{variable.name}}") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["{{ variable.name }}"])); fatalError() }; self.{{variable.name}} = {{variable.name}}{% else %}self.{{variable.name}} = aDecoder.{% if variable.typeName.unwrappedTypeName == "Any" %}decodeObject{% else %}decode{% endif %}(forKey: "{{variable.name}}"){% endif %}{% endif %}
             {% endfor %}{% if type.supertype.implements.AutoCoding %}super.init(coder: aDecoder){% endif %}
         }
 
-        {% if type.supertype.implements.AutoCoding %}override {% endif %}func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        {% if type.supertype.implements.AutoCoding %}override {% endif %}{{ type.accessLevel }} func encode(with aCoder: NSCoder) {
             {% if type.supertype.implements.AutoCoding %}super.encode(with: aCoder){% endif %}
             {% for variable in type.storedVariables|!annotated:"skipCoding" %}aCoder.encode(self.{{variable.name}}, forKey: "{{variable.name}}")
             {% endfor %}

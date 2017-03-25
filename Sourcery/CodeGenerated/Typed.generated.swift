@@ -2,52 +2,92 @@
 // DO NOT EDIT
 
 extension AssociatedValue {
-    var isOptional: Bool { return typeName.isOptional }
-    var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    var isTuple: Bool { return typeName.isTuple }
-    var isClosure: Bool { return typeName.isClosure }
-    var isArray: Bool { return typeName.isArray }
-    var isDictionary: Bool { return typeName.isDictionary }
+    /// Whether type is optional
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if given type name is a typealias
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a dictionary
+    public var isDictionary: Bool { return typeName.isDictionary }
 }
 extension MethodParameter {
-    var isOptional: Bool { return typeName.isOptional }
-    var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    var isTuple: Bool { return typeName.isTuple }
-    var isClosure: Bool { return typeName.isClosure }
-    var isArray: Bool { return typeName.isArray }
-    var isDictionary: Bool { return typeName.isDictionary }
+    /// Whether type is optional
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if given type name is a typealias
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a dictionary
+    public var isDictionary: Bool { return typeName.isDictionary }
 }
 extension TupleElement {
-    var isOptional: Bool { return typeName.isOptional }
-    var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    var isTuple: Bool { return typeName.isTuple }
-    var isClosure: Bool { return typeName.isClosure }
-    var isArray: Bool { return typeName.isArray }
-    var isDictionary: Bool { return typeName.isDictionary }
+    /// Whether type is optional
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if given type name is a typealias
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a dictionary
+    public var isDictionary: Bool { return typeName.isDictionary }
 }
 extension Typealias {
-    var isOptional: Bool { return typeName.isOptional }
-    var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    var isTuple: Bool { return typeName.isTuple }
-    var isClosure: Bool { return typeName.isClosure }
-    var isArray: Bool { return typeName.isArray }
-    var isDictionary: Bool { return typeName.isDictionary }
+    /// Whether type is optional
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if given type name is a typealias
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a dictionary
+    public var isDictionary: Bool { return typeName.isDictionary }
 }
 extension Variable {
-    var isOptional: Bool { return typeName.isOptional }
-    var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    var isTuple: Bool { return typeName.isTuple }
-    var isClosure: Bool { return typeName.isClosure }
-    var isArray: Bool { return typeName.isArray }
-    var isDictionary: Bool { return typeName.isDictionary }
+    /// Whether type is optional
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if given type name is a typealias
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a dictionary
+    public var isDictionary: Bool { return typeName.isDictionary }
 }

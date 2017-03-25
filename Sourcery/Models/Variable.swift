@@ -6,29 +6,29 @@
 import Foundation
 
 /// Defines variable
-final class Variable: NSObject, SourceryModel, Typed, Annotated {
+public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Variable name
-    let name: String
+    public let name: String
 
     /// Variable type name
-    var typeName: TypeName
+    public let typeName: TypeName
 
-    /// Variable type, if known
     // sourcery: skipEquality, skipDescription
-    var type: Type?
+    /// Variable type, if known
+    public internal(set) var type: Type?
 
     /// Whether variable is computed
-    let isComputed: Bool
+    public let isComputed: Bool
 
     /// Whether variable is static
-    let isStatic: Bool
+    public let isStatic: Bool
 
     /// Variable read access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
-    let readAccess: String
+    public let readAccess: String
 
     /// Variable write access, i.e. `internal`, `private`, `fileprivate`, `public`, `open`.
     /// For immutable variables this value is empty string
-    let writeAccess: String
+    public let writeAccess: String
 
     /// Whether variable is mutable or not
     var isMutable: Bool {
@@ -39,10 +39,10 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
     var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    var annotations: [String: NSObject] = [:]
+    public internal(set) var annotations: [String: NSObject] = [:]
 
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
-    var attributes: [String: Attribute]
+    public internal(set) var attributes: [String: Attribute]
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
@@ -71,7 +71,8 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
     }
 
     // sourcery:inline:Variable.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
@@ -84,7 +85,8 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")

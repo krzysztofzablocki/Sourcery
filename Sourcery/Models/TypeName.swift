@@ -6,31 +6,31 @@
 import Foundation
 
 /// Descibes typed declaration, i.e. variable, method parameter, tuple element, enum case associated value
-protocol Typed {
+public protocol Typed {
 
+    // sourcery: skipEquality, skipDescription
     /// Type, if known
-    // sourcery: skipEquality, skipDescription
-    var type: Type? { get set }
+    var type: Type? { get }
 
-    /// Type name
     // sourcery: skipEquality, skipDescription
+    /// Type name
     var typeName: TypeName { get }
 
-    /// Whether type is optional
     // sourcery: skipEquality, skipDescription
+    /// Whether type is optional
     var isOptional: Bool { get }
 
-    /// Whether type is implicitly unwrapped optional
     // sourcery: skipEquality, skipDescription
+    /// Whether type is implicitly unwrapped optional
     var isImplicitlyUnwrappedOptional: Bool { get }
 
-    /// Type name without attributes and optional type information
     // sourcery: skipEquality, skipDescription
+    /// Type name without attributes and optional type information
     var unwrappedTypeName: String { get }
 }
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     init(_ name: String,
          actualTypeName: TypeName? = nil,
@@ -85,35 +85,35 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
     }
 
     /// Type name
-    let name: String
+    public let name: String
 
-    /// Actual type name if given type name is a typealias
     // sourcery: skipEquality
-    var actualTypeName: TypeName?
+    /// Actual type name if given type name is a typealias
+    public var actualTypeName: TypeName?
 
     /// Type name attributes, i.e. `@escaping`
-    let attributes: [String: Attribute]
+    public let attributes: [String: Attribute]
 
+    // sourcery: skipEquality
     /// Whether type is optional
-    // sourcery: skipEquality
-    let isOptional: Bool
+    public let isOptional: Bool
 
+    // sourcery: skipEquality
     /// Whether type is implicitly unwrapped optional
-    // sourcery: skipEquality
-    let isImplicitlyUnwrappedOptional: Bool
+    public let isImplicitlyUnwrappedOptional: Bool
 
+    // sourcery: skipEquality
     /// Type name without attributes and optional type information
-    // sourcery: skipEquality
-    let unwrappedTypeName: String
+    public let unwrappedTypeName: String
 
-    /// Whether type is void (`Void` or `()`)
     // sourcery: skipEquality
-    var isVoid: Bool {
+    /// Whether type is void (`Void` or `()`)
+    public var isVoid: Bool {
         return name == "Void" || name == "()" || unwrappedTypeName == "Void"
     }
 
     /// Whether type is a tuple
-    var isTuple: Bool {
+    public var isTuple: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidTupleName()
         } else {
@@ -122,10 +122,10 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
     }
 
     /// Tuple type data
-    var tuple: TupleType?
+    public var tuple: TupleType?
 
     /// Whether type is an array
-    var isArray: Bool {
+    public var isArray: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidArrayName()
         } else {
@@ -134,10 +134,10 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
     }
 
     /// Array type data
-    var array: ArrayType?
+    public var array: ArrayType?
 
     /// Whether type is a dictionary
-    var isDictionary: Bool {
+    public var isDictionary: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidDictionaryName()
         } else {
@@ -146,10 +146,10 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
     }
 
     /// Dictionary type data
-    var dictionary: DictionaryType?
+    public var dictionary: DictionaryType?
 
     /// Whether type is a closure
-    var isClosure: Bool {
+    public var isClosure: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidClosureName()
         } else {
@@ -157,12 +157,13 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
         }
     }
 
-    override var description: String {
+    public override var description: String {
         return name
     }
 
     // sourcery:inline:TypeName.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -174,7 +175,8 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
             self.dictionary = aDecoder.decode(forKey: "dictionary")
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
             aCoder.encode(self.attributes, forKey: "attributes")
@@ -190,17 +192,17 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
 }
 
 /// Describes tuple type element
-final class TupleElement: NSObject, SourceryModel, Typed {
+public final class TupleElement: NSObject, SourceryModel, Typed {
 
     /// Tuple type element name
-    let name: String
+    public let name: String
 
     /// Tuple type element type name
-    let typeName: TypeName
+    public let typeName: TypeName
 
-    /// Tuple type element type, if known
     // sourcery: skipEquality, skipDescription
-    var type: Type?
+    /// Tuple type element type, if known
+    public internal(set) var type: Type?
 
     init(name: String = "", typeName: TypeName, type: Type? = nil) {
         self.name = name
@@ -209,13 +211,15 @@ final class TupleElement: NSObject, SourceryModel, Typed {
     }
 
     // sourcery:inline:TupleElement.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
@@ -224,13 +228,13 @@ final class TupleElement: NSObject, SourceryModel, Typed {
 }
 
 /// Describes tuple type
-final class TupleType: NSObject, SourceryModel {
+public final class TupleType: NSObject, SourceryModel {
 
     /// Type name
-    let name: String
+    public let name: String
 
     /// Tuple elements
-    let elements: [TupleElement]
+    public let elements: [TupleElement]
 
     init(name: String, elements: [TupleElement]) {
         self.name = name
@@ -238,12 +242,14 @@ final class TupleType: NSObject, SourceryModel {
     }
 
     // sourcery:inline:TupleType.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.elements, forKey: "elements")
         }
@@ -251,16 +257,16 @@ final class TupleType: NSObject, SourceryModel {
 }
 
 /// Describes array type
-final class ArrayType: NSObject, SourceryModel {
+public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name
-    let name: String
+    public let name: String
 
     /// Array element type name
-    let elementTypeName: TypeName
+    public let elementTypeName: TypeName
 
     /// Array element type, if known
-    var elementType: Type?
+    public internal(set) var elementType: Type?
 
     init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
         self.name = name
@@ -269,13 +275,15 @@ final class ArrayType: NSObject, SourceryModel {
     }
 
     // sourcery:inline:ArrayType.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elementTypeName"])); fatalError() }; self.elementTypeName = elementTypeName
             self.elementType = aDecoder.decode(forKey: "elementType")
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.elementTypeName, forKey: "elementTypeName")
             aCoder.encode(self.elementType, forKey: "elementType")
@@ -284,22 +292,22 @@ final class ArrayType: NSObject, SourceryModel {
 }
 
 /// Describes dictionary type
-final class DictionaryType: NSObject, SourceryModel {
+public final class DictionaryType: NSObject, SourceryModel {
 
     /// Type name
-    let name: String
+    public let name: String
 
     /// Dictionary value type name
-    let valueTypeName: TypeName
+    public let valueTypeName: TypeName
 
     /// Dictionary value type, if known
-    var valueType: Type?
+    public internal(set) var valueType: Type?
 
     /// Dictionary key type name
-    let keyTypeName: TypeName
+    public let keyTypeName: TypeName
 
     /// Dictionary key type, if known
-    var keyType: Type?
+    public internal(set) var keyType: Type?
 
     init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
         self.name = name
@@ -310,7 +318,8 @@ final class DictionaryType: NSObject, SourceryModel {
     }
 
     // sourcery:inline:DictionaryType.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let valueTypeName: TypeName = aDecoder.decode(forKey: "valueTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["valueTypeName"])); fatalError() }; self.valueTypeName = valueTypeName
             self.valueType = aDecoder.decode(forKey: "valueType")
@@ -318,7 +327,8 @@ final class DictionaryType: NSObject, SourceryModel {
             self.keyType = aDecoder.decode(forKey: "keyType")
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.valueTypeName, forKey: "valueTypeName")
             aCoder.encode(self.valueType, forKey: "valueType")

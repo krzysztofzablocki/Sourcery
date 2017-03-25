@@ -6,22 +6,22 @@
 import Foundation
 
 /// Defines enum case associated value
-final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
 
     /// Associated value local name. 
     /// This is a name to be used to construct enum case value
-    let localName: String?
+    public let localName: String?
 
     /// Associated value external name
     /// This is a name to be used to access value in value-bindig
-    let externalName: String?
+    public let externalName: String?
 
     /// Associated value type name
-    let typeName: TypeName
+    public let typeName: TypeName
 
-    /// Associated value type, if known
     // sourcery: skipEquality, skipDescription
-    var type: Type?
+    /// Associated value type, if known
+    public internal(set) var type: Type?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
@@ -39,7 +39,8 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, An
     }
 
     // sourcery:inline:AssociatedValue.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             self.localName = aDecoder.decode(forKey: "localName")
             self.externalName = aDecoder.decode(forKey: "externalName")
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
@@ -47,7 +48,8 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, An
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.localName, forKey: "localName")
             aCoder.encode(self.externalName, forKey: "externalName")
             aCoder.encode(self.typeName, forKey: "typeName")
@@ -59,21 +61,21 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, An
 }
 
 /// Defines enum case
-final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
 
     /// Enum case name
-    let name: String
+    public let name: String
 
     /// Enum case raw value, if any
-    let rawValue: String?
+    public let rawValue: String?
 
     /// Enum case associated values
-    let associatedValues: [AssociatedValue]
+    public let associatedValues: [AssociatedValue]
 
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    var annotations: [String: NSObject] = [:]
+    public internal(set) var annotations: [String: NSObject] = [:]
 
-    var hasAssociatedValue: Bool {
+    /// Whether enum case has associated value
+    public var hasAssociatedValue: Bool {
         return !associatedValues.isEmpty
     }
 
@@ -89,14 +91,16 @@ final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
     }
 
     // sourcery:inline:EnumCase.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             self.rawValue = aDecoder.decode(forKey: "rawValue")
             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.rawValue, forKey: "rawValue")
             aCoder.encode(self.associatedValues, forKey: "associatedValues")
@@ -106,14 +110,14 @@ final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
 }
 
 /// Defines Swift enum
-final class Enum: Type {
+public final class Enum: Type {
 
-    /// Returns "enum"
     // sourcery: skipDescription
-    override var kind: String { return "enum" }
+    /// Returns "enum"
+    public override var kind: String { return "enum" }
 
     /// Enum cases
-    internal(set) var cases: [EnumCase]
+    public internal(set) var cases: [EnumCase]
 
     /// Enum raw value type name, if any
     internal(set) var rawTypeName: TypeName? {
@@ -133,12 +137,12 @@ final class Enum: Type {
     // sourcery: skipDescription, skipEquality
     private(set) var hasRawType: Bool
 
-    /// Enum raw value type, if any
     // sourcery: skipDescription, skipEquality
-    var rawType: Type?
+    /// Enum raw value type, if any
+    public internal(set) var rawType: Type?
 
     // sourcery: skipEquality, skipDescription, skipCoding
-    override var based: [String : String] {
+    public override var based: [String : String] {
         didSet {
             if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
                 based[rawTypeName.name] = nil
@@ -147,7 +151,7 @@ final class Enum: Type {
     }
 
     /// Whether enum contains any associated values
-    var hasAssociatedValues: Bool {
+    public var hasAssociatedValues: Bool {
         for entry in cases {
             if entry.hasAssociatedValue { return true }
         }
@@ -182,7 +186,8 @@ final class Enum: Type {
     }
 
     // sourcery:inline:Enum.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let cases: [EnumCase] = aDecoder.decode(forKey: "cases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["cases"])); fatalError() }; self.cases = cases
             self.rawTypeName = aDecoder.decode(forKey: "rawTypeName")
             self.hasRawType = aDecoder.decode(forKey: "hasRawType")
@@ -190,7 +195,8 @@ final class Enum: Type {
             super.init(coder: aDecoder)
         }
 
-        override func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
             aCoder.encode(self.cases, forKey: "cases")
             aCoder.encode(self.rawTypeName, forKey: "rawTypeName")

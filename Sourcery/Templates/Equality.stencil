@@ -1,6 +1,7 @@
 {% for type in types.implementing.AutoEquatable|class %}
 extension {{ type.name }} {
-    override func isEqual(_ object: Any?) -> Bool {
+    /// :nodoc:
+    override {{ type.accessLevel }} func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? {{ type.name }} else { return false }
         {% for variable in type.storedVariables|!annotated:"skipEquality" %}if self.{{ variable.name }} != rhs.{{ variable.name }} { return false }
         {% endfor %}
