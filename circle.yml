@@ -5,6 +5,11 @@ machine:
     XCODE_WORKSPACE: Sourcery.xcworkspace
     XCODE_SCHEME: Sourcery
 
+checkout:
+  post:
+      - git submodule sync  
+      - git submodule update --init
+
 test:
   override:
       - set -o pipefail
