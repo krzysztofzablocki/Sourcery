@@ -404,6 +404,7 @@ Available types:
 - `isArray` <- shorthand for `typeName.isArray`
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
+- `isMutable` <- whether variable is mutable or not
 - `attributes` <- variable attributes, i.e. `var.attributes.NSManaged`
 - `annotations` <- dictionary with configured [annotations](#source-annotations)
 

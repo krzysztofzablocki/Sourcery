@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Added `isMutable` property for `Variable`
+
 ## 0.5.9
 
 ### New Features
