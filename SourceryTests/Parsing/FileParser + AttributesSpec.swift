@@ -15,9 +15,10 @@ class FileParserAttributesSpec: QuickSpec {
             }
 
             it("extracts type attributes") {
-                expect(sut.parseTypeAttributes("@autoclosure @escaping (@escaping ()->())->()"))
+                expect(sut.parseTypeAttributes("@autoclosure @convention(swift) @escaping (@escaping ()->())->()"))
                     .to(equal([
                         "escaping": Attribute(name: "escaping"),
+                        "convention": Attribute(name: "convention", arguments: ["swift": NSNumber(value: true)], description: "@convention(swift)"),
                         "autoclosure": Attribute(name: "autoclosure")
                         ]))
             }

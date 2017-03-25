@@ -14,7 +14,7 @@ class GenerationContext: NSObject, SourceryModel {
     let typeByName: [String : Type]
     let arguments: [String : NSObject]
 
-    init(types: [Type], arguments: [String: NSObject]) {
+    init(types: [Type], arguments: [String: NSObject] = [:]) {
         var typeByName = [String: Type]()
 
         types.forEach { type in
@@ -41,31 +41,31 @@ class GenerationContext: NSObject, SourceryModel {
     // sourcery:end
 
     /// Lists all known classes in the project
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var classes: [Class] {
         return self.types.classes
     }
 
     /// lists all known types, excluding protocols
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var all: [Type] {
         return self.types.all
     }
 
     /// Lists all known protocols
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var protocols: [Protocol] {
         return self.types.protocols
     }
 
     /// Lists all known structs
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var structs: [Struct] {
         return self.types.structs
     }
 
     /// Lists all known enums
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var enums: [Enum] {
         return self.types.enums
     }
@@ -78,7 +78,7 @@ protocol TypeConvertible {
 }
 
 extension Type: TypeConvertible {
-    /// sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
+    // sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
     var type: Type {
         return self
     }

@@ -1,5 +1,6 @@
 import Foundation
 
+/// Descibes Swift class
 // sourcery: skipDescription
 final class Class: Type {
     override var kind: String { return "class" }

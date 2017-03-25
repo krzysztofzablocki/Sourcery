@@ -1,9 +1,9 @@
 import Foundation
 
-/// sourcery: this will not appear under Bar
+// sourcery: this will not appear under Bar
 
 /// Documentation for bar
-/// sourcery: showComment
+// sourcery: showComment
 /// other documentation
 class Bar: Foo, AutoEquatable {
     var parent: Foo? = nil

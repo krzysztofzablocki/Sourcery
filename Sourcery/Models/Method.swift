@@ -3,6 +3,7 @@ import Foundation
 //typealias used to avoid types ambiguty in tests
 typealias SourceryMethod = Method
 
+/// Describes method parameter
 final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     var argumentLabel: String?
@@ -13,10 +14,11 @@ final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter type name
     let typeName: TypeName
 
-    /// Actual parameter type, if known
+    /// Parameter type, if known
     // sourcery: skipEquality, skipDescription
     var type: Type?
 
+    /// Parameter type attributes, i.e. `@escaping`
     var typeAttributes: [String: Attribute] { return typeName.attributes }
 
     /// Method parameter default value expression
@@ -68,19 +70,17 @@ final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         // sourcery:end
 }
 
+/// Describes method
 final class Method: NSObject, SourceryModel, Annotated {
 
-    /// Full method name
+    /// Full method name, including generic constraints, i.e. `foo<T>(bar: T) where T: Equatable`
     let name: String
 
     /// Method name including arguments names, i.e. `foo(bar:)`
     // sourcery: skipDescription
     let selectorName: String
 
-    /// All method parameters
-    var parameters: [MethodParameter]
-
-    /// Method name without arguments names and parenthesis
+    /// Method name without arguments names and parenthesis, i.e. `foo<t>`
     var shortName: String {
         return name.range(of: "(").map({ name.substring(to: $0.lowerBound) }) ?? name
     }
@@ -96,52 +96,51 @@ final class Method: NSObject, SourceryModel, Annotated {
     /// Return value type name
     var returnTypeName: TypeName
 
+    /// Actual return value type name, if it is a typealias
     var actualReturnTypeName: TypeName {
         return returnTypeName.actualTypeName ?? returnTypeName
     }
 
-    /// Actual method return type, if known.
-    // sourcery: skipEquality
-    // sourcery: skipDescription
-    //weak to avoid reference cycle between type and its initializers
-    weak var returnType: Type?
+    /// Actual return value type, if known
+    // sourcery: skipEquality, skipDescription
+    var returnType: Type?
 
-    // sourcery: skipEquality
-    // sourcery: skipDescription
+    /// Whether return value type is optional
+    // sourcery: skipEquality, skipDescription
     var isOptionalReturnType: Bool {
         return returnTypeName.isOptional || isFailableInitializer
     }
 
-    // sourcery: skipEquality
-    // sourcery: skipDescription
+    /// Whether return value type is implicitly unwrapped optional
+    // sourcery: skipEquality, skipDescription
     var isImplicitlyUnwrappedOptionalReturnType: Bool {
         return returnTypeName.isImplicitlyUnwrappedOptional
     }
 
-    // sourcery: skipEquality
-    // sourcery: skipDescription
+    /// Return value type name without attributes and optional type information
+    // sourcery: skipEquality, skipDescription
     var unwrappedReturnTypeName: String {
         return returnTypeName.unwrappedTypeName
     }
 
-    /// Whether this method throws or rethrows
+    /// Whether method throws or rethrows
     let `throws`: Bool
 
-    /// Method access level
+    /// Method access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
     let accessLevel: String
 
-    /// Whether this is a static method
+    /// Whether method is a static method
     let isStatic: Bool
 
-    /// Whether this is a class method
+    /// Whether method is a class method
     let isClass: Bool
 
-    /// Whether this is a constructor
+    /// Whether method is a constructor
     var isInitializer: Bool {
         return selectorName.hasPrefix("init(")
     }
 
-    /// Whether this is a failable initializer
+    /// Whether method is a failable initializer
     let isFailableInitializer: Bool
 
     /// Whether method is a convenience initializer
@@ -152,9 +151,10 @@ final class Method: NSObject, SourceryModel, Annotated {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     let annotations: [String: NSObject]
 
+    /// Method attributes, i.e. `@discardableResult`
     let attributes: [String: Attribute]
 
-    /// Underlying parser data, never to be used by anything else
+    // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     internal var __parserData: Any?
 

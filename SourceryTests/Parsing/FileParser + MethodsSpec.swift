@@ -142,14 +142,14 @@ class FileParserMethodsSpec: QuickSpec {
                 }
 
                 context("given generic method") {
-                    it("extracts class method properly") {
-                        let types = parse("class Foo { func foo<T: Equatable>() -> Bar? where T: Equatable { }; func fooBar<T>(bar: T) where T: Equatable { } }; class Bar {}")
+                    func assertMethods(_ types: [Type]) {
                         let foo = types.last?.methods.first
                         let fooBar = types.last?.methods.last
 
                         expect(foo?.name).to(equal("foo<T: Equatable>()"))
                         expect(foo?.selectorName).to(equal("foo()"))
                         expect(foo?.shortName).to(equal("foo<T: Equatable>"))
+                        expect(foo?.callName).to(equal("foo"))
                         expect(foo?.returnTypeName).to(equal(TypeName("Bar? where T: Equatable")))
                         expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
                         expect(foo?.returnType).to(equal(Class(name: "Bar")))
@@ -157,29 +157,20 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
                         expect(fooBar?.selectorName).to(equal("fooBar(bar:)"))
                         expect(fooBar?.shortName).to(equal("fooBar<T>"))
+                        expect(fooBar?.callName).to(equal("fooBar"))
                         expect(fooBar?.returnTypeName).to(equal(TypeName("where T: Equatable")))
                         expect(fooBar?.unwrappedReturnTypeName).to(equal("Void"))
                         expect(fooBar?.returnType).to(beNil())
                     }
 
+                    it("extracts class method properly") {
+                        let types = parse("class Foo { func foo<T: Equatable>() -> Bar? where T: Equatable { }; func fooBar<T>(bar: T) where T: Equatable { } }; class Bar {}")
+                        assertMethods(types)
+                    }
+
                     it("extracts protocol method properly") {
                         let types = parse("protocol Foo { func foo<T: Equatable>() -> Bar? where T: Equatable ; func fooBar<T>(bar: T) where T: Equatable }; class Bar {}")
-                        let foo = types.last?.methods.first
-                        let fooBar = types.last?.methods.last
-
-                        expect(foo?.name).to(equal("foo<T: Equatable>()"))
-                        expect(foo?.selectorName).to(equal("foo()"))
-                        expect(foo?.shortName).to(equal("foo<T: Equatable>"))
-                        expect(foo?.returnTypeName).to(equal(TypeName("Bar? where T: Equatable")))
-                        expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
-                        expect(foo?.returnType).to(equal(Class(name: "Bar")))
-
-                        expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
-                        expect(fooBar?.selectorName).to(equal("fooBar(bar:)"))
-                        expect(fooBar?.shortName).to(equal("fooBar<T>"))
-                        expect(fooBar?.returnTypeName).to(equal(TypeName("where T: Equatable")))
-                        expect(fooBar?.unwrappedReturnTypeName).to(equal("Void"))
-                        expect(fooBar?.returnType).to(beNil())
+                        assertMethods(types)
                     }
                 }
 

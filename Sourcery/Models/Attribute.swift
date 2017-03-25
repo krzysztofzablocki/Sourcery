@@ -1,7 +1,12 @@
 import Foundation
 
+/// Defines Swift attribute
 class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+
+    /// Attribute name
     let name: String
+
+    /// Attribute arguments
     let arguments: [String: NSObject]
 
     // sourcery: skipJSExport
@@ -10,7 +15,7 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport
     init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name
         self.arguments = arguments
-        self._description = "@\(name)"
+        self._description = description ?? "@\(name)"
     }
 
     override var description: String {

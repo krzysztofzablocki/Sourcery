@@ -5,13 +5,22 @@
 
 import Foundation
 
+/// Defines enum case associated value
 final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
+
+    /// Associated value local name. 
+    /// This is a name to be used to construct enum case value
     let localName: String?
+
+    /// Associated value external name
+    /// This is a name to be used to access value in value-bindig
     let externalName: String?
+
+    /// Associated value type name
     let typeName: TypeName
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Associated value type, if known
+    // sourcery: skipEquality, skipDescription
     var type: Type?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
@@ -49,10 +58,16 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, An
 
 }
 
+/// Defines enum case
 final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
 
+    /// Enum case name
     let name: String
+
+    /// Enum case raw value, if any
     let rawValue: String?
+
+    /// Enum case associated values
     let associatedValues: [AssociatedValue]
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
@@ -62,7 +77,7 @@ final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
         return !associatedValues.isEmpty
     }
 
-    /// Underlying parser data, never to be used by anything else
+    // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     internal var __parserData: Any?
 
@@ -90,14 +105,17 @@ final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
         // sourcery:end
 }
 
+/// Defines Swift enum
 final class Enum: Type {
-    /// sourcery: skipDescription
+
+    /// Returns "enum"
+    // sourcery: skipDescription
     override var kind: String { return "enum" }
 
     /// Enum cases
     internal(set) var cases: [EnumCase]
 
-    /// Raw type of the enum
+    /// Enum raw value type name, if any
     internal(set) var rawTypeName: TypeName? {
         didSet {
             if let rawTypeName = rawTypeName {
@@ -115,10 +133,11 @@ final class Enum: Type {
     // sourcery: skipDescription, skipEquality
     private(set) var hasRawType: Bool
 
+    /// Enum raw value type, if any
     // sourcery: skipDescription, skipEquality
     var rawType: Type?
 
-    /// sourcery: skipEquality, skipDescription, skipCoding
+    // sourcery: skipEquality, skipDescription, skipCoding
     override var based: [String : String] {
         didSet {
             if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
@@ -127,7 +146,7 @@ final class Enum: Type {
         }
     }
 
-    /// Checks whether enum contains any associated values
+    /// Whether enum contains any associated values
     var hasAssociatedValues: Bool {
         for entry in cases {
             if entry.hasAssociatedValue { return true }

@@ -8,7 +8,10 @@
 
 import Foundation
 
+/// Describes Swift protocol
 final class Protocol: Type {
+
+    /// Returns "protocol"
     override var kind: String { return "protocol" }
 
     override init(name: String = "",

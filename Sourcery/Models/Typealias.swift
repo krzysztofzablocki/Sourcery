@@ -2,10 +2,10 @@ import Foundation
 
 // sourcery: skipJSExport
 final class Typealias: NSObject, Typed, SourceryModel {
-    /// New typealias name
+    // New typealias name
     let aliasName: String
 
-    /// Target name
+    // Target name
     let typeName: TypeName
 
     // sourcery: skipEquality, skipDescription

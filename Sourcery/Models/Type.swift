@@ -5,12 +5,12 @@
 
 import Foundation
 
-/// Defines Swift Type
+/// Defines Swift type
 class Type: NSObject, SourceryModel, Annotated {
 
     var module: String?
 
-    /// All local typealiases
+    // All local typealiases
     // sourcery: skipJSExport
     var typealiases: [String: Typealias] {
         didSet {
@@ -21,13 +21,14 @@ class Type: NSObject, SourceryModel, Annotated {
     // sourcery: skipJSExport
     internal var isExtension: Bool
 
+    /// Kind of type declaration, i.e. `enum`, `struct`, `class`, `protocol` or `extension`
     // sourcery: forceEquality
     var kind: String { return isExtension ? "extension" : "unknown" }
 
-    /// What is the type access level?
+    /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
     let accessLevel: String
 
-    /// Name in global scope
+    /// Type name in global scope. For inner types includes the name of its containing type, i.e. `Type.Inner`
     var name: String {
         guard let parentName = parent?.name else { return localName }
         return "\(parentName).\(localName)"
@@ -39,17 +40,19 @@ class Type: NSObject, SourceryModel, Annotated {
         return "\(module).\(name)"
     }
 
-    /// Is this type generic?
+    /// Whether type is generic
     var isGeneric: Bool
 
-    /// Name in parent scope
+    /// Name in its own scope.
     var localName: String
 
-    /// Variables defined in this type only, excluding those from parent or protocols
+    /// Variables defined in this type only, inluding variables defined in extensions, 
+    /// but excluding those from superclasses (for classes only) and protocols
     var variables: [Variable]
 
-    /// All variables associated with this type, including those from parent or protocols
-    /// sourcery: skipEquality, skipDescription
+    /// All variables defined for this type, including variables defined in extensions,
+    /// in superclasses (for classes only) and protocols
+    // sourcery: skipEquality, skipDescription
     var allVariables: [Variable] {
         return flattenAll({
             return $0.variables
@@ -59,8 +62,13 @@ class Type: NSObject, SourceryModel, Annotated {
         })
     }
 
-    /// All methods associated with this type, including those from parent or protocols
-    /// sourcery: skipEquality, skipDescription
+    /// Methods defined in this type only, inluding methods defined in extensions,
+    /// but excluding those from superclasses (for classes only) and protocols
+    var methods: [Method]
+
+    /// All methods defined for this type, including methods defined in extensions,
+    /// in superclasses (for classes only) and protocols
+    // sourcery: skipEquality, skipDescription
     var allMethods: [Method] {
         return flattenAll({ $0.methods })
     }
@@ -86,15 +94,12 @@ class Type: NSObject, SourceryModel, Annotated {
         return all.array.flatMap { $0 as? T }
     }
 
-    /// All methods defined by this type, excluding those from parent or protocols
-    var methods: [Method]
-
-    /// All initializers defined by this type
+    /// All initializers defined in this type
     var initializers: [Method] {
         return methods.filter { $0.isInitializer }
     }
 
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alternative = 2
+    /// Type annotations, grouped by name
     var annotations: [String: NSObject] = [:]
 
     /// Static variables defined in this type
@@ -107,17 +112,17 @@ class Type: NSObject, SourceryModel, Annotated {
         return variables.filter { !$0.isStatic }
     }
 
-    /// All computed instance variables defined in this type
+    /// Computed instance variables defined in this type
     var computedVariables: [Variable] {
         return variables.filter { $0.isComputed && !$0.isStatic }
     }
 
-    /// Only stored instance variables defined in this type
+    /// Stored instance variables defined in this type
     var storedVariables: [Variable] {
         return variables.filter { !$0.isComputed && !$0.isStatic }
     }
 
-    /// Types / Protocols names we inherit from, in order of definition
+    /// Names of types this type inherits from (for classes only) and protocols it implements, in order of definition
     var inheritedTypes: [String] {
         didSet {
             based.removeAll()
@@ -127,19 +132,16 @@ class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
-    /// contains all base types inheriting from given BaseClass or implementing given Protocol, even not known by Sourcery
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Names of types or protocols this type inherits from, including unknown (not scanned) types
+    // sourcery: skipEquality, skipDescription
     var based = [String: String]()
 
-    /// contains all types inheriting from known BaseClass
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Types this type inherits from (only for classes)
+    // sourcery: skipEquality, skipDescription
     var inherits = [String: Type]()
 
-    /// contains all types implementing known BaseProtocol
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Protocols this type implements
+    // sourcery: skipEquality, skipDescription
     var implements = [String: Type]()
 
     /// Contained types
@@ -149,12 +151,11 @@ class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
-    /// Parent name
+    /// Name of parent type (for container types only)
     private(set) var parentName: String?
 
-    /// Parent type
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Parent type, if known (for container types only)
+    // sourcery: skipEquality, skipDescription
     var parent: Type? {
         didSet {
             parentName = parent?.name
@@ -170,14 +171,14 @@ class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
-    /// Superclass definition if any
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    // Superclass type, if known (only for classes)
+    // sourcery: skipEquality, skipDescription
     var supertype: Type?
 
+    /// Type attributes, i.e. `@objc`
     var attributes: [String: Attribute]
 
-    /// Underlying parser data, never to be used by anything else
+    // Underlying parser data, never to be used by anything else
     // sourcery: skipDescription, skipEquality, skipJSExport
     internal var __parserData: Any?
     /// Path to file where the type is defined
@@ -223,9 +224,6 @@ class Type: NSObject, SourceryModel, Annotated {
         })
     }
 
-    /// Extends this type with an extension
-    ///
-    /// - Parameter type: Extension of this type
     func extend(_ type: Type) {
         self.variables += type.variables
         self.methods += type.methods

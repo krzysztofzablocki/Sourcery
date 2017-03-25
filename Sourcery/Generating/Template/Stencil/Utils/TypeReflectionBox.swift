@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Reflection Container that will play well with Stencil templating
+/// Provides access to parsed types in templates
 final class TypesReflectionBox: NSObject {
     private let types: [Type]
 
@@ -14,32 +14,33 @@ final class TypesReflectionBox: NSObject {
         super.init()
     }
 
-    /// Lists all known classes in the project
+    /// All known classes
     lazy var classes: [Class] = {
         return self.types.flatMap { $0 as? Class }
     }()
 
-    /// lists all known types, excluding protocols
+    /// All known types, excluding protocols
     lazy var all: [Type] = {
         return self.types.filter { !($0 is Protocol) }
     }()
 
-    /// Lists all known protocols
+    /// All known protocols
     lazy var protocols: [Protocol] = {
         return self.types.flatMap { $0 as? Protocol }
     }()
 
-    /// Lists all known structs
+    /// All known structs
     lazy var structs: [Struct] = {
         return self.types.flatMap { $0 as? Struct }
     }()
 
-    /// Lists all known enums
+    /// All known enums
     lazy var enums: [Enum] = {
         return self.types.flatMap { $0 as? Enum }
     }()
 
-    /// Lists all encountered types, even if they are not known e.g. Apple or 3rd party frameworks
+    /// Types based on any other type, grouped by its name, even if they are not known e.g. Apple or 3rd party frameworks
+    /// `types.based.MyType` returns list of types based on `MyType`
     lazy var based: [String: [Type]] = {
         var content = [String: [Type]]()
         self.types.forEach { type in
@@ -52,7 +53,8 @@ final class TypesReflectionBox: NSObject {
         return content
     }()
 
-    /// Contains reference to types inheriting from any known class
+    /// Classes inheriting from any known class, grouped by its name
+    /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
     lazy var inheriting: [String: [Type]] = {
         var content = [String: [Type]]()
         self.classes.forEach { type in
@@ -65,7 +67,8 @@ final class TypesReflectionBox: NSObject {
         return content
     }()
 
-    /// Contains reference to types implementing any known protocol
+    /// Types implementing known protocol, grouped by its name
+    /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
     lazy var implementing: [String: [Type]] = {
         var content = [String: [Type]]()
         self.types.forEach { type in

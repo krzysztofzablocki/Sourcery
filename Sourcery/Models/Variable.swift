@@ -5,8 +5,7 @@
 
 import Foundation
 
-/// Defines a variable
-
+/// Defines variable
 final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Variable name
     let name: String
@@ -14,20 +13,21 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Variable type name
     var typeName: TypeName
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Variable type, if known
+    // sourcery: skipEquality, skipDescription
     var type: Type?
 
-    /// Whether is computed
+    /// Whether variable is computed
     let isComputed: Bool
 
-    /// Whether this is static variable
+    /// Whether variable is static
     let isStatic: Bool
 
-    /// Read access
+    /// Variable read access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
     let readAccess: String
 
-    /// Write access
+    /// Variable write access, i.e. `internal`, `private`, `fileprivate`, `public`, `open`.
+    /// For immutable variables this value is empty string
     let writeAccess: String
 
     /// Whether variable is mutable or not
@@ -41,9 +41,10 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
+    /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
     var attributes: [String: Attribute]
 
-    /// Underlying parser data, never to be used by anything else
+    // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     internal var __parserData: Any?
 

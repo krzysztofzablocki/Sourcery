@@ -8,8 +8,11 @@
 
 import Foundation
 
-/// sourcery: skipDescription
+/// Describes Swift struct
+// sourcery: skipDescription
 final class Struct: Type {
+
+    /// Returns "struct"
     override var kind: String { return "struct" }
 
     override init(name: String = "",

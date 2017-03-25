@@ -5,34 +5,32 @@
 
 import Foundation
 
+/// Descibes typed declaration, i.e. variable, method parameter, tuple element, enum case associated value
 protocol Typed {
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+
+    /// Type, if known
+    // sourcery: skipEquality, skipDescription
     var type: Type? { get set }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Type name
+    // sourcery: skipEquality, skipDescription
     var typeName: TypeName { get }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Whether type is optional
+    // sourcery: skipEquality, skipDescription
     var isOptional: Bool { get }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Whether type is implicitly unwrapped optional
+    // sourcery: skipEquality, skipDescription
     var isImplicitlyUnwrappedOptional: Bool { get }
 
-    /// sourcery: skipEquality
-    /// sourcery: skipDescription
+    /// Type name without attributes and optional type information
+    // sourcery: skipEquality, skipDescription
     var unwrappedTypeName: String { get }
 }
 
+/// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
 final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
-    let name: String
-
-    /// Actual type name if given type name is type alias
-    // sourcery: skipEquality
-    var actualTypeName: TypeName?
 
     init(_ name: String,
          actualTypeName: TypeName? = nil,
@@ -86,22 +84,35 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
         }
     }
 
+    /// Type name
+    let name: String
+
+    /// Actual type name if given type name is a typealias
+    // sourcery: skipEquality
+    var actualTypeName: TypeName?
+
+    /// Type name attributes, i.e. `@escaping`
     let attributes: [String: Attribute]
 
+    /// Whether type is optional
     // sourcery: skipEquality
     let isOptional: Bool
 
+    /// Whether type is implicitly unwrapped optional
     // sourcery: skipEquality
     let isImplicitlyUnwrappedOptional: Bool
 
+    /// Type name without attributes and optional type information
     // sourcery: skipEquality
     let unwrappedTypeName: String
 
+    /// Whether type is void (`Void` or `()`)
     // sourcery: skipEquality
     var isVoid: Bool {
         return name == "Void" || name == "()" || unwrappedTypeName == "Void"
     }
 
+    /// Whether type is a tuple
     var isTuple: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidTupleName()
@@ -110,8 +121,10 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
         }
     }
 
+    /// Tuple type data
     var tuple: TupleType?
 
+    /// Whether type is an array
     var isArray: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidArrayName()
@@ -120,8 +133,10 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
         }
     }
 
+    /// Array type data
     var array: ArrayType?
 
+    /// Whether type is a dictionary
     var isDictionary: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidDictionaryName()
@@ -130,8 +145,10 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
         }
     }
 
+    /// Dictionary type data
     var dictionary: DictionaryType?
 
+    /// Whether type is a closure
     var isClosure: Bool {
         if let actualTypeName = actualTypeName?.unwrappedTypeName {
             return actualTypeName.isValidClosureName()
@@ -172,10 +189,16 @@ final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSE
 
 }
 
+/// Describes tuple type element
 final class TupleElement: NSObject, SourceryModel, Typed {
+
+    /// Tuple type element name
     let name: String
+
+    /// Tuple type element type name
     let typeName: TypeName
 
+    /// Tuple type element type, if known
     // sourcery: skipEquality, skipDescription
     var type: Type?
 
@@ -200,9 +223,13 @@ final class TupleElement: NSObject, SourceryModel, Typed {
      // sourcery:end
 }
 
+/// Describes tuple type
 final class TupleType: NSObject, SourceryModel {
+
+    /// Type name
     let name: String
 
+    /// Tuple elements
     let elements: [TupleElement]
 
     init(name: String, elements: [TupleElement]) {
@@ -223,9 +250,16 @@ final class TupleType: NSObject, SourceryModel {
      // sourcery:end
 }
 
+/// Describes array type
 final class ArrayType: NSObject, SourceryModel {
+
+    /// Type name
     let name: String
+
+    /// Array element type name
     let elementTypeName: TypeName
+
+    /// Array element type, if known
     var elementType: Type?
 
     init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
@@ -249,11 +283,22 @@ final class ArrayType: NSObject, SourceryModel {
     // sourcery:end
 }
 
+/// Describes dictionary type
 final class DictionaryType: NSObject, SourceryModel {
+
+    /// Type name
     let name: String
+
+    /// Dictionary value type name
     let valueTypeName: TypeName
+
+    /// Dictionary value type, if known
     var valueType: Type?
+
+    /// Dictionary key type name
     let keyTypeName: TypeName
+
+    /// Dictionary key type, if known
     var keyType: Type?
 
     init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
