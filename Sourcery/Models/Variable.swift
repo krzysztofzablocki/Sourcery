@@ -31,12 +31,12 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     public let writeAccess: String
 
     /// Whether variable is mutable or not
-    var isMutable: Bool {
+    public var isMutable: Bool {
         return writeAccess != AccessLevel.none.rawValue
     }
 
     /// Method parameter default value expression
-    var defaultValue: String?
+    public internal(set) var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public internal(set) var annotations: [String: NSObject] = [:]

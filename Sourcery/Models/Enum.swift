@@ -12,7 +12,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
     /// This is a name to be used to construct enum case value
     public let localName: String?
 
-    /// Associated value external name
+    /// Associated value external name.
     /// This is a name to be used to access value in value-bindig
     public let externalName: String?
 
@@ -24,7 +24,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
     public internal(set) var type: Type?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    var annotations: [String: NSObject] = [:]
+    public internal(set) var annotations: [String: NSObject] = [:]
 
     init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
         self.localName = localName
@@ -72,6 +72,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     /// Enum case associated values
     public let associatedValues: [AssociatedValue]
 
+    /// Enum case annotations
     public internal(set) var annotations: [String: NSObject] = [:]
 
     /// Whether enum case has associated value
@@ -138,10 +139,11 @@ public final class Enum: Type {
     private(set) var hasRawType: Bool
 
     // sourcery: skipDescription, skipEquality
-    /// Enum raw value type, if any
+    /// Enum raw value type, if known
     public internal(set) var rawType: Type?
 
     // sourcery: skipEquality, skipDescription, skipCoding
+    /// Names of types or protocols this type inherits from, including unknown (not scanned) types
     public override var based: [String : String] {
         didSet {
             if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {

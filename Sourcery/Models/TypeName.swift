@@ -84,12 +84,12 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         }
     }
 
-    /// Type name
+    /// Type name used in declaration
     public let name: String
 
     // sourcery: skipEquality
     /// Actual type name if given type name is a typealias
-    public var actualTypeName: TypeName?
+    public internal(set) var actualTypeName: TypeName?
 
     /// Type name attributes, i.e. `@escaping`
     public let attributes: [String: Attribute]
@@ -146,7 +146,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
     }
 
     /// Dictionary type data
-    public var dictionary: DictionaryType?
+    public internal(set) var dictionary: DictionaryType?
 
     /// Whether type is a closure
     public var isClosure: Bool {
@@ -157,6 +157,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         }
     }
 
+    /// Returns value of `name` property.
     public override var description: String {
         return name
     }
@@ -194,14 +195,14 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
 /// Describes tuple type element
 public final class TupleElement: NSObject, SourceryModel, Typed {
 
-    /// Tuple type element name
+    /// Tuple element name
     public let name: String
 
-    /// Tuple type element type name
+    /// Tuple element type name
     public let typeName: TypeName
 
     // sourcery: skipEquality, skipDescription
-    /// Tuple type element type, if known
+    /// Tuple element type, if known
     public internal(set) var type: Type?
 
     init(name: String = "", typeName: TypeName, type: Type? = nil) {
@@ -230,7 +231,7 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
 /// Describes tuple type
 public final class TupleType: NSObject, SourceryModel {
 
-    /// Type name
+    /// Type name used in declaration
     public let name: String
 
     /// Tuple elements
@@ -259,7 +260,7 @@ public final class TupleType: NSObject, SourceryModel {
 /// Describes array type
 public final class ArrayType: NSObject, SourceryModel {
 
-    /// Type name
+    /// Type name used in declaration
     public let name: String
 
     /// Array element type name
@@ -294,7 +295,7 @@ public final class ArrayType: NSObject, SourceryModel {
 /// Describes dictionary type
 public final class DictionaryType: NSObject, SourceryModel {
 
-    /// Type name
+    /// Type name used in declaration
     public let name: String
 
     /// Dictionary value type name

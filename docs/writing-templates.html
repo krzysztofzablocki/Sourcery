@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Writing templates  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Writing templates  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Sourcery Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Writing templates  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="installing.html">Installing</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="usage.html">Usage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="writing-templates.html">Writing templates</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Examples.html">Examples</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="equatable.html">Equatable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="hashable.html">Hashable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="enum-cases.html">Enum cases</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="lenses.html">Lenses</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="mocks.html">Mocks</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="diffable.html">Diffable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="linuxmain.html">LinuxMain</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Types.html">Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/TypesReflectionBox.html">TypesReflectionBox</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Protocol.html">Protocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Class.html">Class</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Struct.html">Struct</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AssociatedValue.html">AssociatedValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/MethodParameter.html">MethodParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleElement.html">TupleElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ArrayType.html">ArrayType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/DictionaryType.html">DictionaryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Attribute.html">Attribute</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Annotated.html">Annotated</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Typed.html">Typed</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <a href='#writing-templates' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='writing-templates'>Writing templates</h2>
+
+<p>Sourcery supports several types of templates:</p>
+
+<ul>
+<li><a href="https://github.com/kylef/Stencil">Stencil</a> templates</li>
+<li><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate">Swift</a> templates</li>
+<li><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js">JavaScript</a> templates (using <a href="http://ejs.co">EJS</a>)</li>
+</ul>
+
+<p>Dicsovered types can be accessed in templates via <code>type</code> variable of <code>TypeReflectionBox</code> type. For example you can access all classes using <code>types.classes</code>.</p>
+
+<blockquote>
+<p>Tip: Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
+you can open template side-by-side with generated code and see it change live.</p>
+</blockquote>
+<a href='#what-are-em-known-em-and-em-unknown-em-types' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='what-are-em-known-em-and-em-unknown-em-types'>What are <em>known</em> and <em>unknown</em> types</h2>
+
+<p>Currently Sourcery only scans files from paths or targets that you tell it to scan. This way it can get full information about types <em>defined</em> in these sources. These types are considered <em>known</em> types. For each of known types Sourcery provides <code>Type</code> object. You can get it for example by its name from <code>types</code> collection. <code>Type</code> object contains information about whether type that it describes is a struct, enum, class or a protocol, what are its properties and methods, what protocols it implements and so on. This is done recursively, so if you have a class that inherits from another class (or struct that implements a protocol) and they are both known types you will have information about both of them and you will be able to access parent type&rsquo;s <code>Type</code> object using <code>type.inherits.TypeName</code> (or <code>type.implements.ProtocolName</code>).</p>
+
+<p>Everything <em>defined</em> outside of scanned sources is considered as <em>unknown</em> types. For such types Sourcery doesn&rsquo;t provide <code>Type</code> object. For that reason variables (and other <q>typed</q> types, like method parameters etc.) of such types will only contain <code>typeName</code> property, but their <code>type</code> property will be <code>nil</code>.</p>
+
+<p>If you have an extension of unknown type defined in scanned sources Sourcery will create <code>Type</code> for it (it&rsquo;s <code>kind</code> property will be <code>extension</code>). But this object will contain only declarations defined in this extension. Several extensions of unknown type will be merged into one <code>Type</code> object the same way as extensions of known types.</p>
+
+<p>See <a href="https://github.com/krzysztofzablocki/Sourcery/issues/87">#87</a> for details.</p>
+<a href='#custom-stencil-tags-and-filters' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='custom-stencil-tags-and-filters'>Custom Stencil tags and filters</h2>
+
+<ul>
+<li><code>{{ name|upperFirst }}</code> - makes first letter in <code>name</code> uppercase</li>
+<li><code>{{ name|replace:&quot;substring&quot;,&quot;replacement&quot; }}</code> - replaces occurances of <code>substring</code> with <code>replacement</code> in <code>name</code> (case sensitive)</li>
+<li><code>{% if name|contains:&quot;Foo&quot; %}</code> - check if <code>name</code> contains arbitrary substring, can be negated with <code>!</code> prefix.</li>
+<li><code>{% if name|hasPrefix:&quot;Foo&quot; %}</code>- check if <code>name</code> starts with arbitrary substring, can be negated with <code>!</code> prefix.</li>
+<li><code>{% if name|hasSuffix:&quot;Foo&quot; %}</code>- check if <code>name</code> ends with arbitrary substring, can be negated with <code>!</code> prefix.</li>
+<li><code>static</code>, <code>instance</code>, <code>computed</code>, <code>stored</code>, <code>tuple</code> - can be used on Variable[s] as filter e.g. <code>{% for var in variables|instance %}</code>, can be negated with <code>!</code> prefix.</li>
+<li><code>static</code>, <code>instance</code>, <code>class</code>, <code>initializer</code> - can be used on Method[s] as filter e.g. <code>{% for method in allMethods|instance %}</code>, can be negated with <code>!</code> prefix.</li>
+<li><code>enum</code>, <code>class</code>, <code>struct</code>, <code>protocol</code> - can be used for Type[s] as filter, can be negated with <code>!</code> prefix.</li>
+<li><code>based</code>, <code>implements</code>, <code>inherits</code> - can be used for Type[s], Variable[s], Associated value[s], can be negated with <code>!</code> prefix.</li>
+<li><code>count</code> - can be used to get count of filtered array</li>
+<li><code>annotated</code> - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. <code>{% for var in variable|annotated: \&quot;skipDescription\&quot;%}</code>, can be negated with <code>!</code> prefix.</li>
+<li><code>public</code>, <code>open</code>, <code>internal</code>, <code>private</code>, <code>fileprivate</code> - can be used on Type[s] and Method[s] to filter by access level, can be negated with <code>!</code> prefix.</li>
+<li><code>publicGet</code>, <code>publicSet</code>, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with <code>!</code> prefix</li>
+</ul>
+<a href='#using-source-annotations' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='using-source-annotations'>Using Source Annotations</h2>
+
+<p>Sourcery supports annotating your classes and variables with special annotations, similar to how attributes work in Rust / Java</p>
+<pre class="highlight swift"><code><span class="c1">// sourcery: skipPersistence</span>
+<span class="c1">// sourcery: anotherAnnotation = 232, yetAnotherAnnotation = "value"</span>
+<span class="c1">/// Some documentation comment</span>
+<span class="k">var</span> <span class="nv">precomputedHash</span><span class="p">:</span> <span class="kt">Int</span>
+</code></pre>
+
+<p>If you want to attribute multiple items with same attributes, you can use section annotations <code>sourcery:begin</code> and <code>sourcery:end</code>:</p>
+<pre class="highlight swift"><code><span class="c1">// sourcery:begin: skipEquality, skipPersistence</span>
+  <span class="k">var</span> <span class="nv">firstVariable</span><span class="p">:</span> <span class="kt">Int</span>
+  <span class="k">var</span> <span class="nv">secondVariable</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="c1">// sourcery:end</span>
+</code></pre>
+<a href='#rules' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='rules'>Rules:</h4>
+
+<ul>
+<li>Multiple annotations can occur on the same line</li>
+<li>You can add multiline annotations</li>
+<li>You can interleave annotations with documentation</li>
+<li>Sourcery scans all <code>sourcery:</code> annotations in the given comment block above the source until first non-comment/doc line</li>
+<li>Using <code>/*</code> and <code>*/</code> for annotation comment you can put it on the same line with your code. This is usefull for annotating methods parameters, enum case associated values. All such annotations should be placed in one comment block. When using inline annotations for enum cases, cases must be separated with <code>;</code></li>
+</ul>
+<a href='#format' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='format'>Format:</h4>
+
+<ul>
+<li>simple entry, e.g. <code>sourcery: skipPersistence</code></li>
+<li>key = number, e.g. <code>sourcery: another = 123</code></li>
+<li>key = string, e.g. <code>sourcery: jsonKey = &quot;json_key&quot;</code></li>
+</ul>
+<a href='#accessing-in-templates' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='accessing-in-templates'>Accessing in templates:</h4>
+<pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">variable</span><span class="o">|!</span><span class="nv">annotatated</span><span class="p">:</span><span class="n">skipPersistence</span> <span class="o">%</span><span class="p">}</span>
+  <span class="k">var</span> <span class="nv">local</span><span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="o">|</span><span class="n">capitalize</span> <span class="p">}}</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s">"{{ variable.annotations.jsonKey }}"</span><span class="p">]</span> <span class="k">as?</span> <span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">typeName</span> <span class="p">}}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+</code></pre>
+<a href='#checking-for-existance-of-at-least-one-annotation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='checking-for-existance-of-at-least-one-annotation'>Checking for existance of at least one annotation:</h4>
+
+<p>Sometimes it is desirable to only generate code if there&rsquo;s at least one field annotated.</p>
+<pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">type</span><span class="o">.</span><span class="n">variables</span><span class="o">|</span><span class="nv">annotated</span><span class="p">:</span><span class="s">"jsonKey"</span> <span class="o">%</span><span class="p">}{</span><span class="o">%</span> <span class="k">for</span> <span class="k">var</span> <span class="nv">in</span> <span class="n">type</span><span class="o">.</span><span class="n">variables</span><span class="o">|</span><span class="n">instance</span><span class="o">|</span><span class="nv">annotated</span><span class="p">:</span><span class="s">"jsonKey"</span> <span class="o">%</span><span class="p">}</span>
+  <span class="k">var</span> <span class="nv">local</span><span class="p">{{</span> <span class="kd">var</span><span class="o">.</span><span class="n">name</span><span class="o">|</span><span class="n">capitalize</span> <span class="p">}}</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s">"{{ var.annotations.jsonKey }}"</span><span class="p">]</span> <span class="k">as?</span> <span class="p">{{</span> <span class="kd">var</span><span class="o">.</span><span class="n">typeName</span> <span class="p">}}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+</code></pre>
+<a href='#inline-code-generation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='inline-code-generation'>Inline code generation</h2>
+
+<p>Sourcery supports inline code generation, you just need to put same markup in your code and template, e.g.</p>
+<pre class="highlight swift"><code><span class="c1">// in template:</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">type</span> <span class="k">in</span> <span class="n">types</span><span class="o">.</span><span class="n">all</span> <span class="o">%</span><span class="p">}</span>
+<span class="c1">// sourcery:inline:{{ type.name }}.TemplateName</span>
+<span class="c1">// sourcery:end</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="c1">// in source code:</span>
+
+<span class="kd">class</span> <span class="kt">MyType</span> <span class="p">{</span>
+
+<span class="c1">// sourcery:inline:MyType.TemplateName</span>
+<span class="c1">// sourcery:end</span>
+
+<span class="p">}</span>
+</code></pre>
+
+<p>Sourcery will generate the template code and then perform replacement in your source file by matching annotation comments. Inlined generated code is not parsed to avoid chicken-egg problem.</p>
+<a href='#automatic-inline-code-generation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='automatic-inline-code-generation'>Automatic inline code generation</h4>
+
+<p>To avoid having to place the markup in your source files, you can use <code>inline:auto:{{ type.name }}</code>:</p>
+<pre class="highlight swift"><code><span class="c1">// in template:</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">type</span> <span class="k">in</span> <span class="n">types</span><span class="o">.</span><span class="n">all</span> <span class="o">%</span><span class="p">}</span>
+<span class="c1">// sourcery:inline:auto:{{ type.name }}</span>
+<span class="c1">// sourcery:end</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="c1">// in source code:</span>
+
+<span class="kd">class</span> <span class="kt">MyType</span> <span class="p">{}</span>
+
+<span class="c1">// after running Sourcery:</span>
+
+<span class="kd">class</span> <span class="kt">MyType</span> <span class="p">{</span>
+<span class="c1">// sourcery:inline:auto:MyType</span>
+<span class="c1">// sourcery:end</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>The needed markup will be automatically added at the end of the type declaration body.</p>
+<a href='#per-file-code-generation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='per-file-code-generation'>Per file code generation</h2>
+
+<p>Sourcery supports generating code in a separate file per type, you just need to put <code>file</code> annotation in a template, e.g.</p>
+<pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">type</span> <span class="k">in</span> <span class="n">types</span><span class="o">.</span><span class="n">all</span> <span class="o">%</span><span class="p">}</span>
+<span class="c1">// sourcery:file:Generated/{{ type.name}}+TemplateName</span>
+<span class="c1">// sourcery:end</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+</code></pre>
+
+<p>Sourcery will generate the template code and then write its annotated parts to corresponding files. In example above it will create <code>Generated/&lt;type name&gt;+TemplateName.generated.swift</code> file for each of scanned types.</p>
+
+<p>If you add an extension to the file name Sourcery will not append <code>generated.swift</code> extension.</p>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2016 Pixle. All rights reserved.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

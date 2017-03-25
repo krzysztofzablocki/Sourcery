@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Sourcery  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Sourcery  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Sourcery Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Sourcery  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="installing.html">Installing</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="usage.html">Usage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="writing-templates.html">Writing templates</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Examples.html">Examples</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="equatable.html">Equatable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="hashable.html">Hashable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="enum-cases.html">Enum cases</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="lenses.html">Lenses</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="mocks.html">Mocks</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="diffable.html">Diffable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="linuxmain.html">LinuxMain</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Types.html">Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/TypesReflectionBox.html">TypesReflectionBox</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Protocol.html">Protocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Class.html">Class</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Struct.html">Struct</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AssociatedValue.html">AssociatedValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/MethodParameter.html">MethodParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleElement.html">TupleElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ArrayType.html">ArrayType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/DictionaryType.html">DictionaryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Attribute.html">Attribute</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Annotated.html">Annotated</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Typed.html">Typed</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <a href='#what-is-sourcery' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='what-is-sourcery'>What is Sourcery?</h2>
+
+<p><em><strong>Sourcery</strong> scans your source code, applies your personal templates and generates Swift code for you, allowing you to use meta-programming techniques to save time and decrease potential mistakes.</em></p>
+
+<p>Using it offers many benefits:</p>
+
+<ul>
+<li>Write less repetitive code and make it easy to adhere to <a href="https://en.wikipedia.org/wiki/Don&#x27;t_repeat_yourself">DRY principle</a>.</li>
+<li>It allows you to create better code, one that would be hard to maintain without it, e.g. <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/Diffable.stencil">performing automatic property level difference in tests</a></li>
+<li>Limits the risk of introducing human error when refactoring.</li>
+<li>Sourcery <strong>doesn&rsquo;t use runtime tricks</strong>, in fact, it allows you to leverage compiler, even more, creating more safety.</li>
+<li><strong>Immediate feedback:</strong> Sourcery features built-in daemon support, enabling you to write your templates in real-time side-by-side with generated code.</li>
+</ul>
+
+<p><strong>Sourcery is so meta that it is used to code-generate its boilerplate code</strong></p>
+<a href='#why' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='why'>Why?</h2>
+
+<p>Swift features very limited runtime and no meta-programming features. Which leads our projects to contain boilerplate code.</p>
+
+<p>Sourcery exists to allow Swift developers to stop doing the same thing over and over again while still maintaining strong typing, preventing bugs and leveraging compiler.</p>
+
+<p>Have you ever?</p>
+
+<ul>
+<li>Had to write equatable/hashable?</li>
+<li>Had to write NSCoding support?</li>
+<li>Had to implement JSON serialization?</li>
+<li>Wanted to use Lenses?</li>
+</ul>
+
+<p>If you did then you probably found yourself writing repetitive code to deal with those scenarios, does this feel right?</p>
+
+<p>Even worse, if you ever add a new property to a type all of those implementations have to be updated, or you will end up with bugs.
+In those scenarios usually <strong>compiler will not generate the error for you</strong>, which leads to error prone code.</p>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2016 Pixle. All rights reserved.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

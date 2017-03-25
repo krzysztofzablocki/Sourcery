@@ -14,6 +14,7 @@
 - Added annotations for enum case associated values and method parameters
 - Added `isConvenienceInitializer` property for `Method`
 - Added `defaultValue` for variables and method parameters
+- Added docs generated with jazzy
 
 ### Fixed
 

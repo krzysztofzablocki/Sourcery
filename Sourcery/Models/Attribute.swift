@@ -1,6 +1,6 @@
 import Foundation
 
-/// Defines Swift attribute
+/// Describes Swift attribute
 public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// Attribute name
@@ -18,7 +18,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         self._description = description ?? "@\(name)"
     }
 
-    /// :nodoc:
+    /// Attribute description that can be used in a template.
     public override var description: String {
         return _description
     }

@@ -19,10 +19,11 @@ public class Type: NSObject, SourceryModel, Annotated {
     }
 
     // sourcery: skipJSExport
+    /// Whether declaration is an extension of some type
     public internal(set) var isExtension: Bool
 
-    /// Kind of type declaration, i.e. `enum`, `struct`, `class`, `protocol` or `extension`
     // sourcery: forceEquality
+    /// Kind of type declaration, i.e. `enum`, `struct`, `class`, `protocol` or `extension`
     public var kind: String { return isExtension ? "extension" : "unknown" }
 
     /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
@@ -43,16 +44,16 @@ public class Type: NSObject, SourceryModel, Annotated {
     /// Whether type is generic
     public internal(set) var isGeneric: Bool
 
-    /// Name in its own scope.
+    /// Type name in its own scope.
     public internal(set) var localName: String
 
-    /// Variables defined in this type only, inluding variables defined in extensions, 
-    /// but excluding those from superclasses (for classes only) and protocols
+    /// Variables defined in this type only, inluding variables defined in its extensions,
+    /// but not including variables inherited from superclasses (for classes only) and protocols
     public internal(set) var variables: [Variable]
 
+    // sourcery: skipEquality, skipDescription
     /// All variables defined for this type, including variables defined in extensions,
     /// in superclasses (for classes only) and protocols
-    // sourcery: skipEquality, skipDescription
     public var allVariables: [Variable] {
         return flattenAll({
             return $0.variables
@@ -62,13 +63,13 @@ public class Type: NSObject, SourceryModel, Annotated {
         })
     }
 
-    /// Methods defined in this type only, inluding methods defined in extensions,
-    /// but excluding those from superclasses (for classes only) and protocols
+    /// Methods defined in this type only, inluding methods defined in its extensions,
+    /// but not including methods inherited from superclasses (for classes only) and protocols
     public internal(set) var methods: [Method]
 
+    // sourcery: skipEquality, skipDescription
     /// All methods defined for this type, including methods defined in extensions,
     /// in superclasses (for classes only) and protocols
-    // sourcery: skipEquality, skipDescription
     public var allMethods: [Method] {
         return flattenAll({ $0.methods })
     }
@@ -131,16 +132,16 @@ public class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
-    /// Names of types or protocols this type inherits from, including unknown (not scanned) types
     // sourcery: skipEquality, skipDescription
+    /// Names of types or protocols this type inherits from, including unknown (not scanned) types
     public internal(set) var based = [String: String]()
 
-    /// Types this type inherits from (only for classes)
     // sourcery: skipEquality, skipDescription
+    /// Types this type inherits from (only for classes)
     public internal(set) var inherits = [String: Type]()
 
-    /// Protocols this type implements
     // sourcery: skipEquality, skipDescription
+    /// Protocols this type implements
     public internal(set) var implements = [String: Type]()
 
     /// Contained types
@@ -150,11 +151,11 @@ public class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
-    /// Name of parent type (for container types only)
+    /// Name of parent type (for contained types only)
     public private(set) var parentName: String?
 
-    /// Parent type, if known (for container types only)
     // sourcery: skipEquality, skipDescription
+    /// Parent type, if known (for contained types only)
     public var parent: Type? {
         didSet {
             parentName = parent?.name
@@ -170,8 +171,8 @@ public class Type: NSObject, SourceryModel, Annotated {
         }
     }
 
-    // Superclass type, if known (only for classes)
     // sourcery: skipEquality, skipDescription
+    /// Superclass type, if known (only for classes)
     public internal(set) var supertype: Type?
 
     /// Type attributes, i.e. `@objc`
@@ -180,7 +181,7 @@ public class Type: NSObject, SourceryModel, Annotated {
     // Underlying parser data, never to be used by anything else
     // sourcery: skipDescription, skipEquality, skipJSExport
     var __parserData: Any?
-    /// Path to file where the type is defined
+    // Path to file where the type is defined
     // sourcery: skipDescription, skipEquality, skipJSExport
     var __path: String?
 
@@ -233,7 +234,6 @@ public class Type: NSObject, SourceryModel, Annotated {
         type.implements.forEach { self.implements[$0.key] = $0.value }
     }
 
-    /// :nodoc:
     // sourcery:inline:Type.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {

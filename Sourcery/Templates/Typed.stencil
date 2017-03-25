@@ -1,19 +1,19 @@
 {% for type in types.implementing.Typed %}
 extension {{ type.name }} {
-    /// Whether type is optional
-    public var isOptional: Bool { return typeName.isOptional }
-    /// Whether type is implicitly unwrapped optional
-    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    /// Type name without attributes and optional type information
-    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    /// Actual type name if given type name is a typealias
-    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    /// Whether type is a tuple
-    public var isTuple: Bool { return typeName.isTuple }
-    /// Whether type is a closure
-    public var isClosure: Bool { return typeName.isClosure }
-    /// Whether type is an array
-    public var isArray: Bool { return typeName.isArray }
-    /// Whether type is a dictionary
-    public var isDictionary: Bool { return typeName.isDictionary }
+    /// Whether type is optional. Shorthand for `typeName.isOptional`
+    {{ type.accessLevel }} var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
+    {{ type.accessLevel }} var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
+    {{ type.accessLevel }} var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
+    {{ type.accessLevel }} var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
+    {{ type.accessLevel }} var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure. Shorthand for `typeName.isClosure`
+    {{ type.accessLevel }} var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array. Shorthand for `typeName.isArray`
+    {{ type.accessLevel }} var isArray: Bool { return typeName.isArray }
+    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
+    {{ type.accessLevel }} var isDictionary: Bool { return typeName.isDictionary }
 }{% endfor %}

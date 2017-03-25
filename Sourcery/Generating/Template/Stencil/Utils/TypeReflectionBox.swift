@@ -6,8 +6,8 @@
 import Foundation
 
 /// Provides access to parsed types in templates
-final class TypesReflectionBox: NSObject {
-    private let types: [Type]
+public final class TypesReflectionBox: NSObject {
+    let types: [Type]
 
     init(types: [Type]) {
         self.types = types
@@ -15,33 +15,33 @@ final class TypesReflectionBox: NSObject {
     }
 
     /// All known classes
-    lazy var classes: [Class] = {
+    public lazy var classes: [Class] = {
         return self.types.flatMap { $0 as? Class }
     }()
 
     /// All known types, excluding protocols
-    lazy var all: [Type] = {
+    public lazy var all: [Type] = {
         return self.types.filter { !($0 is Protocol) }
     }()
 
     /// All known protocols
-    lazy var protocols: [Protocol] = {
+    public lazy var protocols: [Protocol] = {
         return self.types.flatMap { $0 as? Protocol }
     }()
 
     /// All known structs
-    lazy var structs: [Struct] = {
+    public lazy var structs: [Struct] = {
         return self.types.flatMap { $0 as? Struct }
     }()
 
     /// All known enums
-    lazy var enums: [Enum] = {
+    public lazy var enums: [Enum] = {
         return self.types.flatMap { $0 as? Enum }
     }()
 
-    /// Types based on any other type, grouped by its name, even if they are not known e.g. Apple or 3rd party frameworks
+    /// Types based on any other type, grouped by its name, even if they are not known.
     /// `types.based.MyType` returns list of types based on `MyType`
-    lazy var based: [String: [Type]] = {
+    public lazy var based: [String: [Type]] = {
         var content = [String: [Type]]()
         self.types.forEach { type in
             type.based.keys.forEach { name in
@@ -53,9 +53,9 @@ final class TypesReflectionBox: NSObject {
         return content
     }()
 
-    /// Classes inheriting from any known class, grouped by its name
+    /// Classes inheriting from any known class, grouped by its name.
     /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
-    lazy var inheriting: [String: [Type]] = {
+    public lazy var inheriting: [String: [Type]] = {
         var content = [String: [Type]]()
         self.classes.forEach { type in
             type.inherits.keys.forEach { name in
@@ -67,9 +67,9 @@ final class TypesReflectionBox: NSObject {
         return content
     }()
 
-    /// Types implementing known protocol, grouped by its name
+    /// Types implementing known protocol, grouped by its name.
     /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
-    lazy var implementing: [String: [Type]] = {
+    public lazy var implementing: [String: [Type]] = {
         var content = [String: [Type]]()
         self.types.forEach { type in
             type.implements.keys.forEach { name in

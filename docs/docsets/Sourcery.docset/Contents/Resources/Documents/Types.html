@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Types  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Types  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Sourcery Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Types  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="installing.html">Installing</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="usage.html">Usage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="writing-templates.html">Writing templates</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Examples.html">Examples</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="equatable.html">Equatable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="hashable.html">Hashable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="enum-cases.html">Enum cases</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="lenses.html">Lenses</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="mocks.html">Mocks</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="diffable.html">Diffable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="linuxmain.html">LinuxMain</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Types.html">Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/TypesReflectionBox.html">TypesReflectionBox</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Protocol.html">Protocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Class.html">Class</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Struct.html">Struct</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AssociatedValue.html">AssociatedValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/MethodParameter.html">MethodParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleElement.html">TupleElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ArrayType.html">ArrayType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/DictionaryType.html">DictionaryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Attribute.html">Attribute</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Annotated.html">Annotated</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Typed.html">Typed</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Types</h1>
+            
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery18TypesReflectionBox"></a>
+                    <a name="//apple_ref/swift/Class/TypesReflectionBox" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery18TypesReflectionBox">TypesReflectionBox</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Provides access to parsed types in templates</p>
+
+                        <a href="Classes/TypesReflectionBox.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypesReflectionBox</span><span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery4Type"></a>
+                    <a name="//apple_ref/swift/Class/Type" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery4Type">Type</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines Swift type</p>
+
+                        <a href="Classes/Type.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery8Protocol"></a>
+                    <a name="//apple_ref/swift/Class/Protocol" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery8Protocol">Protocol</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes Swift protocol</p>
+
+                        <a href="Classes/Protocol.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Protocol</span><span class="p">:</span> <span class="k">Type</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery5Class"></a>
+                    <a name="//apple_ref/swift/Class/Class" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery5Class">Class</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Descibes Swift class</p>
+
+                        <a href="Classes/Class.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Class</span><span class="p">:</span> <span class="k">Type</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery6Struct"></a>
+                    <a name="//apple_ref/swift/Class/Struct" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery6Struct">Struct</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes Swift struct</p>
+
+                        <a href="Classes/Struct.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Struct</span><span class="p">:</span> <span class="k">Type</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery4Enum"></a>
+                    <a name="//apple_ref/swift/Class/Enum" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery4Enum">Enum</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines Swift enum</p>
+
+                        <a href="Classes/Enum.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Enum</span><span class="p">:</span> <span class="k">Type</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery8EnumCase"></a>
+                    <a name="//apple_ref/swift/Class/EnumCase" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery8EnumCase">EnumCase</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines enum case</p>
+
+                        <a href="Classes/EnumCase.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">EnumCase</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery15AssociatedValue"></a>
+                    <a name="//apple_ref/swift/Class/AssociatedValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery15AssociatedValue">AssociatedValue</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines enum case associated value</p>
+
+                        <a href="Classes/AssociatedValue.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedValue</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery8Variable"></a>
+                    <a name="//apple_ref/swift/Class/Variable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery8Variable">Variable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines variable</p>
+
+                        <a href="Classes/Variable.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Variable</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery6Method"></a>
+                    <a name="//apple_ref/swift/Class/Method" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery6Method">Method</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes method</p>
+
+                        <a href="Classes/Method.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery15MethodParameter"></a>
+                    <a name="//apple_ref/swift/Class/MethodParameter" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery15MethodParameter">MethodParameter</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes method parameter</p>
+
+                        <a href="Classes/MethodParameter.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">MethodParameter</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery8TypeName"></a>
+                    <a name="//apple_ref/swift/Class/TypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery8TypeName">TypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes name of the type used in typed declaration (variable, method parameter or return value etc.)</p>
+
+                        <a href="Classes/TypeName.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypeName</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">AutoCoding</span><span class="p">,</span> <span class="kt">AutoEquatable</span><span class="p">,</span> <span class="kt">AutoDiffable</span><span class="p">,</span> <span class="kt">AutoJSExport</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery9TupleType"></a>
+                    <a name="//apple_ref/swift/Class/TupleType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery9TupleType">TupleType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes tuple type</p>
+
+                        <a href="Classes/TupleType.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleType</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery12TupleElement"></a>
+                    <a name="//apple_ref/swift/Class/TupleElement" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery12TupleElement">TupleElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes tuple type element</p>
+
+                        <a href="Classes/TupleElement.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleElement</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery9ArrayType"></a>
+                    <a name="//apple_ref/swift/Class/ArrayType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery9ArrayType">ArrayType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes array type</p>
+
+                        <a href="Classes/ArrayType.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ArrayType</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery14DictionaryType"></a>
+                    <a name="//apple_ref/swift/Class/DictionaryType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery14DictionaryType">DictionaryType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes dictionary type</p>
+
+                        <a href="Classes/DictionaryType.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">DictionaryType</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C8Sourcery9Attribute"></a>
+                    <a name="//apple_ref/swift/Class/Attribute" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C8Sourcery9Attribute">Attribute</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes Swift attribute</p>
+
+                        <a href="Classes/Attribute.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Attribute</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">AutoCoding</span><span class="p">,</span> <span class="kt">AutoEquatable</span><span class="p">,</span> <span class="kt">AutoDiffable</span><span class="p">,</span> <span class="kt">AutoJSExport</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2016 Pixle. All rights reserved.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

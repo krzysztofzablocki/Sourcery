@@ -98,8 +98,9 @@ extension Method {
     override public var description: String {
         var string = "\(type(of: self)): "
         string += "name = \(String(describing: self.name)), "
-        string += "parameters = \(String(describing: self.parameters)), "
         string += "shortName = \(String(describing: self.shortName)), "
+        string += "callName = \(String(describing: self.callName)), "
+        string += "parameters = \(String(describing: self.parameters)), "
         string += "returnTypeName = \(String(describing: self.returnTypeName)), "
         string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
         string += "`throws` = \(String(describing: self.`throws`)), "
