@@ -325,7 +325,7 @@ All of these properties return `Type` objects.
 
 Currently Sourcery only scans files from a directory that you tell it to scan. This way it can get full information about types _defined_ in these sources. These types are considered _known_ types. For each of known types Sourcery provides `Type` object. You can get it for example by its name from `types` collection. `Type` object contains information about whether type that it describes is a struct, enum, class or a protocol, what are its properties and methods, what protocols it implements and so on. This is done recursively, so if you have a class that inherits from another class (or struct that implements a protocol) and they are both known types you will have information about both of them and you will be able to access parent type's `Type` object using `type.inherits.TypeName` (or `type.implements.ProtocolName`).
 
-Everything _defined_ outside of scanned sources is considered as _unknown_ types. For such types Sourcery doesn't provide `Type` object. For that reason variables (and other "typed" types, like method parameters etc.) of such types will only contain `typeName` property, but their `type` property will be `nil`. 
+Everything _defined_ outside of scanned sources is considered as _unknown_ types. For such types Sourcery doesn't provide `Type` object. For that reason variables (and other "typed" types, like method parameters etc.) of such types will only contain `typeName` property, but their `type` property will be `nil`.
 
 If you have an extension of unknown type defined in scanned sources Sourcery will create `Type` for it (it's `kind` property will be `extension`). But this object will contain only declarations defined in this extension. Several extensions of unknown type will be merged into one `Type` object the same way as extensions of known types.
 
@@ -385,6 +385,7 @@ Available types:
 - `isTuple` <- shorthand for `typeName.isTuple`
 - `isClosure` <- shorthand for `typeName.isClosure`
 - `isArray` <- shorthand for `typeName.isArray`
+- `isDictionary` <- shorthand for `typeName.isDictionary`
 
 </details>
 
@@ -402,6 +403,7 @@ Available types:
 - `isTuple` <- shorthand for `typeName.isTuple`
 - `isClosure` <- shorthand for `typeName.isClosure`
 - `isArray` <- shorthand for `typeName.isArray`
+- `isDictionary` <- shorthand for `typeName.isDictionary`
 - `readAccess` <- what is the protection access for reading?
 - `writeAccess` <- what is the protection access for writing?
 - `attributes` <- variable attributes, i.e. `var.attributes.NSManaged`
@@ -444,6 +446,7 @@ Available types:
 - `isTuple` <- shorthand for `typeName.isTuple`
 - `isClosure` <- shorthand for `typeName.isClosure`
 - `isArray` <- shorthand for `typeName.isArray`
+- `isDictionary` <- shorthand for `typeName.isDictionary`
 - `typeAttributes` <- parameter's type attributes, shorthand for `typeName.attributes`, i.e. `param.typeAttributes.escaping`
 
 </details>
@@ -458,8 +461,9 @@ Available types:
 - `isVoid` <- whether type is Void (`Void` or `()`)
 - `isTuple` <- whether given type is a tuple
 - `tuple` <- returns information about tuple type (*TupleType*) based on `actualTypeName.unwrappedTypeName`
-- `isClosure` <- shorthand for `typeName.isClosure`
-- `isArray` <- shorthand for `typeName.isArray`
+- `isClosure` <- whether given type is a clojure
+- `isArray` <- whether given type is an array
+- `isDictionary` <- whether given type is a dictonary
 - `attributes` <- type attributes, i.e. `typeName.attributes.escaping`
 
 </details>
@@ -488,6 +492,16 @@ Available types:
 - `name` <- type name
 - `elementType` <- array element type, if known
 - `elementTypeName` <- array element type name (*TypeName*)
+
+</details>
+
+<details><summary>**DictionaryType**. Properties:</summary>
+
+- `name` <- type name
+- `valueType` <- dictionary value type, if known
+- `valueTypeName` <- dictionary value type name (*TypeName*)
+- `keyType` <- dictionary key type, if known
+- `keyTypeName` <- dictionary key type name (*TypeName*)
 
 </details>
 
@@ -579,6 +593,32 @@ class MyType {
 ```
 
 Sourcery will generate the template code and then perform replacement in your source file. Inlined generated code is not parsed to avoid chicken-egg problem.
+
+#### Automatic inline code generation
+
+To avoid having to place the markup in your source files, you can use `inline:auto`:
+
+```swift
+// in template:
+
+{% for type in types.all %}
+// sourcery:inline:auto:{{ type.name }}
+// sourcery:end
+{% endfor %}
+
+// in source code:
+
+class MyType {}
+
+// after running Sourcery:
+
+class MyType {
+// sourcery:inline:auto:MyType
+// sourcery:end
+}
+```
+
+The needed markup will be automatically added at the end of the type.
 
 ### Per file code generation
 

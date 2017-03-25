@@ -226,6 +226,19 @@ extension Type: Diffable {
         return results
     }
 }
+extension TypeDefinition: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? TypeDefinition else {
+            results.append("Incorrect type <expected: TypeDefinition, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: rhs.path))
+        results.append(contentsOf: DiffableResult(identifier: "bodyOffset").trackDifference(actual: self.bodyOffset, expected: rhs.bodyOffset))
+        results.append(contentsOf: DiffableResult(identifier: "bodyLength").trackDifference(actual: self.bodyLength, expected: rhs.bodyLength))
+        return results
+    }
+}
 extension TypeName: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()

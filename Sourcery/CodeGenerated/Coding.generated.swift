@@ -83,6 +83,9 @@ extension TupleType: NSCoding {}
 extension Type: NSCoding {}
     // sourcery:inline:Type.AutoCoding
     // sourcery:end
+extension TypeDefinition: NSCoding {}
+    // sourcery:inline:TypeDefinition.AutoCoding
+    // sourcery:end
 extension TypeName: NSCoding {}
     // sourcery:inline:TypeName.AutoCoding
     // sourcery:end

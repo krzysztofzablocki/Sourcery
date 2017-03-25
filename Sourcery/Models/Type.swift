@@ -177,6 +177,10 @@ class Type: NSObject, SourceryModel, Annotated {
 
     var attributes: [String: Attribute]
 
+    /// The definition in which the type is declared
+    // sourcery: skipEquality, skipDescription, skipJSExport
+    var definition: TypeDefinition?
+
     /// Underlying parser data, never to be used by anything else
     // sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
     internal var __parserData: Any?
@@ -253,6 +257,7 @@ class Type: NSObject, SourceryModel, Annotated {
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            self.definition = aDecoder.decode(forKey: "definition")
         }
 
         func encode(with aCoder: NSCoder) {
@@ -274,6 +279,7 @@ class Type: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.supertype, forKey: "supertype")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.definition, forKey: "definition")
         }
     // sourcery:end
 }
