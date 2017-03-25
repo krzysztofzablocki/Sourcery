@@ -17,7 +17,9 @@ protocol Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult
 }
 
+/// :nodoc:
 extension NSRange: Diffable, Equatable {
+    /// :nodoc:
     public static func == (lhs: NSRange, rhs: NSRange) -> Bool {
         return NSEqualRanges(lhs, rhs)
     }

@@ -8,7 +8,7 @@ import Stencil
 import PathKit
 import SwiftTryCatch
 
-public class Sourcery {
+class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.9"
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
