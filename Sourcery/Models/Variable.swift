@@ -30,6 +30,11 @@ final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Write access
     let writeAccess: String
 
+    /// Whether variable is mutable or not
+    var isMutable: Bool {
+        return writeAccess != AccessLevel.none.rawValue
+    }
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     var annotations: [String: NSObject] = [:]
 
