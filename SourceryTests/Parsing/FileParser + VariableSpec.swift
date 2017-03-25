@@ -30,6 +30,13 @@ class FileParserVariableSpec: QuickSpec {
                     expect(parse("fileprivate var name: String")).to(beNil())
                 }
 
+                it("reports variable mutability") {
+                    expect(parse("var name: String")?.isMutable).to(beTrue())
+                    expect(parse("let name: String")?.isMutable).to(beFalse())
+                    expect(parse("private(set) var name: String")?.isMutable).to(beTrue())
+                    expect(parse("var name: String { return \"\" }")?.isMutable).to(beFalse())
+                }
+
                 it("extracts standard property correctly") {
                     expect(parse("var name: String")).to(equal(Variable(name: "name", typeName: TypeName("String"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
