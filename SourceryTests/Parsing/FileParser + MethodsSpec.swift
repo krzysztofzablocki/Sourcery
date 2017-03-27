@@ -18,13 +18,6 @@ class FileParserMethodsSpec: QuickSpec {
                     return Composer(verbose: false).uniqueTypes(parserResult)
                 }
 
-                it("ignores private methods") {
-                    expect(parse("class Foo { private func foo() }"))
-                        .to(equal([Class(name: "Foo", methods: [])]))
-                    expect(parse("class Foo { fileprivate func foo() }"))
-                        .to(equal([Class(name: "Foo", methods: [])]))
-                }
-
                 it("extracts methods properly") {
                     expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {}; func fooVoid() {} }")).to(equal([
                         Class(name: "Foo", methods: [
