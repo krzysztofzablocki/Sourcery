@@ -77,7 +77,7 @@ internal struct AnnotationsParser {
                 .map { $0.content.trimmingCharacters(in: .whitespaces) }
                 .map { line in
                     var annotations = Annotations()
-                    let isComment = line.hasPrefix("//")
+                    let isComment = line.hasPrefix("//") || line.hasPrefix("/*")
                     var type: Line.LineType = isComment ? .comment : .other
                     if isComment {
                         switch searchForAnnotations(commentLine: line) {
@@ -116,26 +116,32 @@ internal struct AnnotationsParser {
             return .inlineStart
         }
 
-        let substringRange: Range<String.CharacterView.Index>?
+        let lowerBound: String.CharacterView.Index?
+        let upperBound: String.CharacterView.Index?
         let insideBlock: Bool
 
         if commentLine.contains("sourcery:begin:") {
-            substringRange = commentLine
-                    .range(of: "sourcery:begin:")
+            lowerBound = commentLine.range(of: "sourcery:begin:")?.upperBound
+            upperBound = commentLine.characters.indices.endIndex
             insideBlock = true
         } else if commentLine.contains("sourcery:end") {
             return .end
         } else {
-            substringRange = commentLine
-                    .range(of: "sourcery:")
             insideBlock = false
+            lowerBound = commentLine.range(of: "sourcery:")?.upperBound
+            if commentLine.hasPrefix("/*") {
+                upperBound = commentLine.range(of: "*/")?.lowerBound
+            } else {
+                upperBound = commentLine.characters.indices.endIndex
+            }
         }
 
-        guard let range = substringRange else { return .annotations([:]) }
-
-        let annotations = AnnotationsParser.parse(line: commentLine.substring(from: range.upperBound))
-
-        return insideBlock ? .begin(annotations) : .annotations(annotations)
+        if let lowerBound = lowerBound, let upperBound = upperBound {
+            let annotations = AnnotationsParser.parse(line: commentLine.substring(with: lowerBound ..< upperBound))
+            return insideBlock ? .begin(annotations) : .annotations(annotations)
+        } else {
+            return .annotations([:])
+        }
     }
 
     /// Parses annotations from the given line

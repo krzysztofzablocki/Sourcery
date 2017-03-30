@@ -19,16 +19,16 @@ class AnnotationsParserSpec: QuickSpec {
                 }
 
                 it("extracts single annotation") {
-                    let annotations = ["skipEquability": NSNumber(value: true)]
+                    let annotations = ["skipEquality": NSNumber(value: true)]
 
-                    expect(parse("skipEquability")).to(equal(annotations))
+                    expect(parse("skipEquality")).to(equal(annotations))
                 }
 
                 it("extracts multiple annotations on the same line") {
-                    let annotations = ["skipEquability": NSNumber(value: true),
+                    let annotations = ["skipEquality": NSNumber(value: true),
                                        "jsonKey": "json_key" as NSString]
 
-                    expect(parse("skipEquability, jsonKey = \"json_key\"")).to(equal(annotations))
+                    expect(parse("skipEquality, jsonKey = \"json_key\"")).to(equal(annotations))
                 }
             }
             describe("parse(content:)") {
@@ -36,13 +36,18 @@ class AnnotationsParserSpec: QuickSpec {
                     return AnnotationsParser(contents: content).all
                 }
 
+                it("extracts inline annotations") {
+                    let result = parse("/* sourcery: skipEquality */var name: Int { return 2 }")
+                    expect(result).to(equal(["skipEquality": NSNumber(value: true)]))
+                }
+
                 it("extracts multi-line annotations, including numbers") {
-                    let annotations = ["skipEquability": NSNumber(value: true),
+                    let annotations = ["skipEquality": NSNumber(value: true),
                                        "placeholder": "geo:37.332112,-122.0329753?q=1 Infinite Loop" as NSString,
                                        "jsonKey": "[\"json_key\": key, \"json_value\": value]" as NSString,
                                        "thirdProperty": NSNumber(value: -3)]
 
-                    let result = parse("// sourcery: skipEquability, jsonKey = [\"json_key\": key, \"json_value\": value]\n" +
+                    let result = parse("// sourcery: skipEquality, jsonKey = [\"json_key\": key, \"json_value\": value]\n" +
                                                "// sourcery: thirdProperty = -3\n" +
                                                "// sourcery: placeholder = \"geo:37.332112,-122.0329753?q=1 Infinite Loop\"\n" +
                                                "var name: Int { return 2 }")
