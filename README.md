@@ -169,7 +169,7 @@ Create a class called `ProtocolNameMock` in which it will...
 **For each function:**
  - Implement the function
  - Add a `functionCalled` boolean to check if the function was called
- - Add a `functionRecievedArguments` tuple to check the arguments that were passed to the function
+ - Add a `functionReceivedArguments` tuple to check the arguments that were passed to the function
  - Add a `functionReturnValue` variable and return it when the function is called.
 
 **For each variable:**
@@ -188,15 +188,15 @@ Create a class called `ProtocolNameMock` in which it will...
 class MockableServiceMock: MockableService {
     //MARK: - functionWithArguments
     var functionWithArgumentsCalled = false
-    var functionWithArgumentsRecievedArguments: (firstArgument: String, onComplete: (String)-> Void)?
+    var functionWithArgumentsReceivedArguments: (firstArgument: String, onComplete: (String)-> Void)?
 
     //MARK: - functionWithCallback
     var functionWithCallbackCalled = false
-    var functionWithCallbackRecievedArguments: (firstArgument: String, onComplete: (String)-> Void)?
+    var functionWithCallbackReceivedArguments: (firstArgument: String, onComplete: (String)-> Void)?
 
     func functionWithCallback(_ firstArgument: String, onComplete: @escaping (String)-> Void) {
         functionWithCallbackCalled = true
-        functionWithCallbackRecievedArguments = (firstArgument: firstArgument, onComplete: onComplete)
+        functionWithCallbackReceivedArguments = (firstArgument: firstArgument, onComplete: onComplete)
     }
   ...
 ```
