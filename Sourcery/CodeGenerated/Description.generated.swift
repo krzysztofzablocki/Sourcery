@@ -13,9 +13,10 @@ extension ArrayType {
 extension AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "localName = \(String(describing: self.localName)), "
-        string += "externalName = \(String(describing: self.externalName)), "
-        string += "typeName = \(String(describing: self.typeName))"
+        string += "localName = \(self.localName), "
+        string += "externalName = \(self.externalName), "
+        string += "annotations = \(self.annotations), "
+        string += "typeName = \(self.typeName)"
         return string
     }
 }

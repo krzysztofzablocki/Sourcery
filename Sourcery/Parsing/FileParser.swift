@@ -557,22 +557,31 @@ extension FileParser {
         return items
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
             .enumerated()
-            .map {
-                let nameAndType = $1.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
-                let defaultName: String? = $0 == 0 && items.count == 1 ? nil : "\($0)"
+            .map { index, body in
+                var body = body
+                let annotations = AnnotationsParser(contents: body).all
+                let bodyLines = body.lines()
+                if bodyLines.count > 1 {
+                    body = bodyLines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator:"")
+                }
+                if let annotationStart = body.range(of: "/*")?.lowerBound, let annotationEnd = body.range(of: "*/")?.upperBound {
+                    body = body.replacingCharacters(in: annotationStart ..< annotationEnd, with: "")
+                }
+                let nameAndType = body.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
+                let defaultName: String? = index == 0 && items.count == 1 ? nil : "\(index)"
 
                 guard nameAndType.count == 2 else {
-                    let typeName = TypeName($1, attributes: parseTypeAttributes($1))
-                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
+                    let typeName = TypeName(body, attributes: parseTypeAttributes(body))
+                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName, annotations: annotations)
                 }
                 guard nameAndType[0] != "_" else {
                     let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
-                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName)
+                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName, annotations: annotations)
                 }
                 let localName = nameAndType[0]
                 let externalName = items.count > 1 ? localName : defaultName
                 let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
-                return AssociatedValue(localName: localName, externalName: externalName, typeName: typeName)
+                return AssociatedValue(localName: localName, externalName: externalName, typeName: typeName, annotations: annotations)
         }
     }
 

@@ -5,7 +5,7 @@
 
 import Foundation
 
-final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed {
+final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
     let localName: String?
     let externalName: String?
     let typeName: TypeName
@@ -14,15 +14,19 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed {
     /// sourcery: skipDescription
     var type: Type?
 
-    init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil) {
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    var annotations: [String: NSObject] = [:]
+
+    init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
         self.localName = localName
         self.externalName = externalName
         self.typeName = typeName
         self.type = type
+        self.annotations = annotations
     }
 
-    convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil) {
-        self.init(localName: name, externalName: name, typeName: typeName, type: type)
+    convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
+        self.init(localName: name, externalName: name, typeName: typeName, type: type, annotations: annotations)
     }
 
     // sourcery:inline:AssociatedValue.AutoCoding
@@ -31,6 +35,7 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed {
             self.externalName = aDecoder.decode(forKey: "externalName")
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
+            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
         func encode(with aCoder: NSCoder) {
@@ -38,6 +43,7 @@ final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed {
             aCoder.encode(self.externalName, forKey: "externalName")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.annotations, forKey: "annotations")
         }
         // sourcery:end
 

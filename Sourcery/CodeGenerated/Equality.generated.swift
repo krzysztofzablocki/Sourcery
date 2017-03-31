@@ -16,6 +16,7 @@ extension AssociatedValue {
         if self.localName != rhs.localName { return false }
         if self.externalName != rhs.externalName { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.annotations != rhs.annotations { return false }
         return true
     }
 }
