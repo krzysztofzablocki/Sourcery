@@ -10,6 +10,8 @@
 - Added `isMutable` property for `Variable`
 - Added support for scanning multiple targets
 - Added access level filters and disabled filtering private declarations
+- Added support for inline comments for annotations with `/*` and `*/`
+- Added annotations for enum case associated values and method parameters
 
 ## 0.5.9
 

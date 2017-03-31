@@ -16,6 +16,7 @@ extension ArrayType: ArrayTypeAutoJSExport {}
     var externalName: String? { get }
     var typeName: TypeName { get }
     var type: Type? { get }
+    var annotations: [String: NSObject] { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -147,6 +148,7 @@ extension Method: MethodAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var typeAttributes: [String: Attribute] { get }
+    var annotations: [String: NSObject] { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }

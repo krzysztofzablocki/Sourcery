@@ -116,6 +116,7 @@ extension MethodParameter {
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.annotations != rhs.annotations { return false }
         return true
     }
 }

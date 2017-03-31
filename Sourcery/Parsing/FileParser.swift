@@ -128,7 +128,7 @@ final class FileParser {
             }
 
             type.isGeneric = isGeneric(source: source)
-            type.annotations = annotations.from(source)
+            type.annotations = parseAnnotations(from: source)
             type.attributes = parseDeclarationAttributes(source)
             type.setSource(source)
             type.definition = makeTypeDefinition(source: source)
@@ -423,7 +423,7 @@ extension FileParser {
             computed = false
         }
 
-        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
+        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
         variable.setSource(source)
 
         return variable
@@ -435,8 +435,15 @@ extension FileParser {
 extension FileParser {
 
     internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> Method? {
-        guard let (name, kind, accesibility) = parseTypeRequirements(source),
-            let fullName = extract(.name, from: source) else { return nil }
+        let requirements = parseTypeRequirements(source)
+        guard
+            let kind = requirements?.kind,
+            let accessibility = requirements?.accessibility,
+            var name = requirements?.name,
+            var fullName = extract(.name, from: source) else { return nil }
+
+        fullName = fullName.strippingComments()
+        name = name.strippingComments()
 
         let isStatic = kind == .functionMethodStatic
         let isClass = kind == .functionMethodClass
@@ -492,7 +499,7 @@ extension FileParser {
             }
         }
 
-        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accesibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
+        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
         method.setSource(source)
 
         return method
@@ -502,8 +509,20 @@ extension FileParser {
         guard let (name, _, _) = parseTypeRequirements(source),
             let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
 
+        let annotations: [String: NSObject]
+        if var body = extract(.keyPrefix, from: source) {
+            if let comma = body.range(of: ",", options: [.backwards])?.upperBound {
+                body = body.substring(from: comma)
+            } else if let parenthesis = body.range(of: "(", options: [.backwards])?.upperBound {
+                body = body.substring(from: parenthesis)
+            }
+            annotations = AnnotationsParser(contents: body).all
+        } else {
+            annotations = [:]
+        }
+
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
-        let parameter = MethodParameter(name: name, typeName: typeName)
+        let parameter = MethodParameter(name: name, typeName: typeName, annotations: annotations)
         parameter.setSource(source)
         return parameter
     }
@@ -539,7 +558,22 @@ extension FileParser {
              print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
+        let annotations: [String: NSObject]
+        if var body = extract(.keyPrefix, from: source) {
+            if let semicolon = body.range(of: ";", options: [.backwards])?.upperBound {
+                body = body.substring(from: semicolon)
+            } else if let comma = body.range(of: ",", options: [.backwards])?.upperBound {
+                body = body.substring(from: comma)
+            } else if let brace = body.range(of: "{", options: [.backwards])?.upperBound {
+                body = body.substring(from: brace)
+            }
+
+            annotations = AnnotationsParser(contents: body).all
+        } else {
+            annotations = [:]
+        }
+
+        let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations)
         enumCase.setSource(source)
         return enumCase
     }
@@ -558,15 +592,8 @@ extension FileParser {
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
             .enumerated()
             .map { index, body in
-                var body = body
                 let annotations = AnnotationsParser(contents: body).all
-                let bodyLines = body.lines()
-                if bodyLines.count > 1 {
-                    body = bodyLines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator:"")
-                }
-                if let annotationStart = body.range(of: "/*")?.lowerBound, let annotationEnd = body.range(of: "*/")?.upperBound {
-                    body = body.replacingCharacters(in: annotationStart ..< annotationEnd, with: "")
-                }
+                let body = body.strippingComments()
                 let nameAndType = body.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
                 let defaultName: String? = index == 0 && items.count == 1 ? nil : "\(index)"
 
@@ -730,6 +757,40 @@ extension FileParser {
 
 }
 
+// MARK: - Annotations
+
+extension FileParser {
+
+    func parseAnnotations(from source: [String: SourceKitRepresentable], fromKeyword: String? = nil) -> Annotations {
+        guard let prefix = extract(.keyPrefix, from: source),
+            let keyRange = Substring.key.range(for: source),
+            let keyLocation = self.contents.location(fromByteOffset: Int(keyRange.offset)),
+            let keyLine = self.contents.lineAndCharacter(forCharacterOffset: keyLocation) else {
+
+            return self.annotations.from(source)
+        }
+
+        let annotationStart: NSRange = prefix.bridge().range(of: "/*", options: [.backwards])
+        guard annotationStart.location != NSNotFound,
+            let annotationStartLine = self.contents.lineAndCharacter(forCharacterOffset: annotationStart.location),
+            annotationStartLine.line == keyLine.line else {
+
+            return self.annotations.from(source)
+        }
+
+        if let fromKeyword = fromKeyword {
+            let keywordStart = prefix.bridge().range(of: fromKeyword, options: [.backwards])
+
+            guard keywordStart.location != NSNotFound && keywordStart.location > annotationStart.location else {
+                return self.annotations.from(source)
+            }
+        }
+
+        return AnnotationsParser(contents: prefix.bridge().substring(from: annotationStart.location)).all
+    }
+
+}
+
 // MARK: - Helpres
 extension FileParser {
 
@@ -757,4 +818,28 @@ extension FileParser {
         return contents.bridge().substringWithByteRange(start: from.offset, length: to.offset + to.length - from.offset)
     }
 
+}
+
+extension String {
+    
+    func strippingComments() -> String {
+        var finished: Bool
+        var stripped = self
+        repeat {
+            finished = true
+            let lines = stripped.lines()
+            if lines.count > 1 {
+                stripped = lines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator:"")
+                finished = false
+            }
+            if let annotationStart = stripped.range(of: "/*")?.lowerBound, let annotationEnd = stripped.range(of: "*/")?.upperBound {
+                stripped = stripped.replacingCharacters(in: annotationStart ..< annotationEnd, with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                finished = false
+            }
+        } while !finished
+        
+        return stripped
+    }
+    
 }
