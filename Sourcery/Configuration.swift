@@ -1,5 +1,9 @@
 import Foundation
-import Xcode
+#if COCOAPODS
+import XcodeEdit
+#else
+import XcKit
+#endif
 
 struct Project {
     let file: XCProjectFile

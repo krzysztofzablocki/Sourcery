@@ -20,7 +20,6 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - SourceryTests/Stub
   - *.generated.swift
   - *.stencil
-  - Xcode.swift
 
 type_body_length:
   - 700 #warning

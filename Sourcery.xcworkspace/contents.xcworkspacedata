@@ -5,9 +5,6 @@
       location = "group:Sourcery.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Xcode.swift/Xcode/Xcode.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>

@@ -29,7 +29,6 @@
 		09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		09C61F9F1E749DFC005EA58A /* Yams+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61F9E1E749DFC005EA58A /* Yams+Extensions.swift */; };
-		09C61FA41E760FF2005EA58A /* Xcode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09C61FA31E760FF2005EA58A /* Xcode.framework */; };
 		09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		09C6B0D21E11BA2500246CDF /* Class.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D11E11BA2500246CDF /* Class.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
@@ -282,7 +281,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09C61FA41E760FF2005EA58A /* Xcode.framework in Frameworks */,
 				985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -81,7 +81,7 @@ class SourcerySpecTests: QuickSpec {
                             "// Line Three\n" +
                             "// sourcery:end", in: templatePath)
 
-                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles([sourcePath], usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
                     }
 
                     it("adds generated code") {

@@ -1,5 +1,11 @@
 import Foundation
-import Xcode
+#if COCOAPODS
+import XcodeEdit
+typealias XcodePath = XcodeEdit.Path
+#else
+import XcKit
+typealias XcodePath = XcKit.Path
+#endif
 
 extension String: Error {}
 
@@ -30,7 +36,7 @@ extension XCProjectFile {
 
 }
 
-private func pathResolver(sourceRoot: String) -> (Xcode.Path) -> Path? {
+private func pathResolver(sourceRoot: String) -> (XcodePath) -> Path? {
     return { path in
         switch path {
         case let .absolute(absolutePath):

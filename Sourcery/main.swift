@@ -10,7 +10,11 @@ import Foundation
 import Commander
 import PathKit
 import Yams
-import Xcode
+#if COCOAPODS
+import XcodeEdit
+#else
+import XcKit
+#endif
 
 extension Path: ArgumentConvertible {
     public init(parser: ArgumentParser) throws {
