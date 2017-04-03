@@ -9,7 +9,7 @@ target 'Sourcery' do
   pod 'Commander'
   pod 'PathKit'
   pod 'XcodeEdit', '~> 1.0'
-  pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => '380a5f6'
+  pod 'SourceKittenFramework', '~> 0.17' 
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
   pod 'libCommonCrypto'
 

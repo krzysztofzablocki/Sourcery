@@ -110,7 +110,7 @@ func runCLI() {
             let configuration: Configuration
 
             let yamlPath: Path = ".sourcery.yml"
-            if let yaml = try? Yams.Node(string: yamlPath.read()).flatten(), let dict = yaml as? [String: Any] {
+            if let dict = try Yams.load(yaml: String(contentsOfFile: yamlPath.read(), encoding: .utf8)) as? [String: Any] {
                 configuration = Configuration(dict: dict)
             } else {
                 configuration = Configuration(sources: sources,

@@ -17,7 +17,7 @@ struct DynamicLinkLibrary {
             return unsafeBitCast(sym, to: T.self)
         }
         let errorString = String(validatingUTF8: dlerror())
-        fatalError("Finding symbol \(symbol) failed: \(errorString)")
+        fatalError("Finding symbol \(symbol) failed: \(errorString ?? "unknown error")")
     }
 }
 

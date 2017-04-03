@@ -28,7 +28,6 @@
 		09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */; };
 		09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
-		09C61F9F1E749DFC005EA58A /* Yams+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61F9E1E749DFC005EA58A /* Yams+Extensions.swift */; };
 		09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		09C6B0D21E11BA2500246CDF /* Class.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D11E11BA2500246CDF /* Class.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
@@ -195,7 +194,6 @@
 		098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + AttributesSpec.swift"; sourceTree = "<group>"; };
 		098442741E2241F10051E1A1 /* Attribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		09B1DD381E219D95009228EE /* TypedSpec.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TypedSpec.stencil; sourceTree = "<group>"; };
-		09C61F9E1E749DFC005EA58A /* Yams+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Yams+Extensions.swift"; sourceTree = "<group>"; };
 		09C61FA31E760FF2005EA58A /* Xcode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Xcode.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Sourcery-gbqvopozrlnehjdzvxfvrvqwyvsg/Build/Products/Debug/Xcode.framework"; sourceTree = "<group>"; };
 		09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Xcode+Extensions.swift"; sourceTree = "<group>"; };
 		09C6B0D11E11BA2500246CDF /* Class.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Class.swift; sourceTree = "<group>"; };
@@ -533,7 +531,6 @@
 				E291D6548CB0B086F0574D1B /* Array+Parallel.swift */,
 				C8E88CAF1E20579100102D17 /* Path+Extensions.swift */,
 				E291D0EF57C42E4A4B502F43 /* Sha.swift */,
-				09C61F9E1E749DFC005EA58A /* Yams+Extensions.swift */,
 				09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */,
 			);
 			path = Utils;
@@ -812,7 +809,6 @@
 				CD812F5B1DFDCC1A0088B2F6 /* Enum.swift in Sources */,
 				CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */,
 				F24C39151E85304100BC1F3A /* TypeDefinition.swift in Sources */,
-				09C61F9F1E749DFC005EA58A /* Yams+Extensions.swift in Sources */,
 				09C6B0D21E11BA2500246CDF /* Class.swift in Sources */,
 				CDEF5F0F1E26A471000DB954 /* FileParserResult.swift in Sources */,
 				CD812F5D1DFDCC1A0088B2F6 /* Struct.swift in Sources */,

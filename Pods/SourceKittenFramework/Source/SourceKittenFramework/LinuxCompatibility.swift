@@ -9,8 +9,11 @@
 import Foundation
 
 #if os(Linux)
+#if swift(>=3.1)
+#else
 public typealias Process = Task
 public typealias NSRegularExpression = RegularExpression
+#endif
 
 extension CharacterSet {
     public func bridge() -> NSCharacterSet {
@@ -22,9 +25,12 @@ extension TextCheckingResult {
         return range(at: index)
     }
 }
+#if swift(>=3.1)
+#else
 extension NSString {
     public var isAbsolutePath: Bool { return absolutePath }
 }
+#endif
 extension Dictionary {
     public func bridge() -> NSDictionary {
         return NSDictionary(dictionary: self)

@@ -39,7 +39,7 @@ extension Dictionary {
     }
 
     fileprivate func map<OutValue>(transform: (Value) throws -> (OutValue)) rethrows -> [Key: OutValue] {
-        return [Key: OutValue](try map { (k, v) in (k, try transform(v)) })
+        return [Key: OutValue](try map { (k, v) in (k, try transform(v)) }) // swiftlint:disable:this variable_name
     }
 }
 

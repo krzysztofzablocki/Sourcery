@@ -6,6 +6,8 @@
 //  Copyright © 2016 SourceKitten. All rights reserved.
 //
 
+// swiftlint:disable variable_name
+
 /// Swift declaration kinds.
 /// Found in `strings SourceKitService | grep source.lang.swift.stmt.`.
 public enum StatementKind: String, SwiftLangSyntax {
@@ -47,7 +49,7 @@ extension StatementKind {
     public static var Guard: StatementKind { fatalError() }
 
     @available(*, unavailable, renamed: "if")
-    public static var If: StatementKind { fatalError() } // swiftlint:disable:this variable_name
+    public static var If: StatementKind { fatalError() }
 
     @available(*, unavailable, renamed: "repeatWhile")
     public static var RepeatWhile: StatementKind { fatalError() }

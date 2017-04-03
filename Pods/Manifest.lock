@@ -4,17 +4,17 @@ PODS:
   - Nimble (5.1.1)
   - PathKit (0.8.0)
   - Quick (1.0.0)
-  - SourceKittenFramework (0.16.0):
+  - SourceKittenFramework (0.17.1):
     - SWXMLHash (~> 3.0)
-    - Yams (~> 0.1)
+    - Yams (~> 0.3)
   - Stencil (0.8.0):
     - PathKit (~> 0.8.0)
   - StencilSwiftKit (1.0.0):
     - Stencil (~> 0.8.0)
   - SwiftTryCatch (1.0.0)
-  - SWXMLHash (3.0.3)
+  - SWXMLHash (3.0.4)
   - XcodeEdit (1.0.0)
-  - Yams (0.1.4)
+  - Yams (0.3.0)
 
 DEPENDENCIES:
   - Commander
@@ -22,24 +22,18 @@ DEPENDENCIES:
   - Nimble
   - PathKit
   - Quick
-  - SourceKittenFramework (from `git@github.com:jpsim/SourceKitten`, commit `380a5f6`)
+  - SourceKittenFramework (~> 0.17)
   - Stencil (~> 0.8.0)
   - StencilSwiftKit (~> 1.0.0)
   - SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)
   - XcodeEdit (~> 1.0)
 
 EXTERNAL SOURCES:
-  SourceKittenFramework:
-    :commit: 380a5f6
-    :git: git@github.com:jpsim/SourceKitten
   SwiftTryCatch:
     :commit: 798c512
     :git: git@github.com:seanparsons/SwiftTryCatch
 
 CHECKOUT OPTIONS:
-  SourceKittenFramework:
-    :commit: 380a5f6
-    :git: git@github.com:jpsim/SourceKitten
   SwiftTryCatch:
     :commit: 798c512
     :git: git@github.com:seanparsons/SwiftTryCatch
@@ -50,14 +44,14 @@ SPEC CHECKSUMS:
   Nimble: 415e3aa3267e7bc2c96b05fa814ddea7bb686a29
   PathKit: dcab05d701474011aae0e40cf892298a831f63d6
   Quick: 8024e4a47e6cc03a9d5245ef0948264fc6d27cff
-  SourceKittenFramework: fc97eecc26d25694c6e426c6018d7107ce5f5169
+  SourceKittenFramework: d2b4be9f2aa65648bab455dafc510e048341cf7a
   Stencil: 6669684db0262e6eb316ce233e7e02d6df0a6cd9
   StencilSwiftKit: 131bdb0b90b87664651011d922d50418d8d92e0c
   SwiftTryCatch: 8dec58919b07ddba4f23c80e814f7e49f05da548
-  SWXMLHash: 80d2529d74891bb2f15305a0b9e08f2a4f229ee7
+  SWXMLHash: 29d20b84692fc319ea8ed933058fe7d8d005139b
   XcodeEdit: 35c213ce807063332a26857d816639dd9fbdaa9e
-  Yams: 4a4d2b5f0db216fab03c6abc04b7692ceff7cf5f
+  Yams: b17f33d61fb167d0434ebef6ed94ccaedfebf18c
 
-PODFILE CHECKSUM: 55cec4e63a1004d7814023047428c2baf7678635
+PODFILE CHECKSUM: 2707a8f3d9abef954ea54614603bff0402d3cc60
 
 COCOAPODS: 1.2.0.beta.3

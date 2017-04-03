@@ -35,7 +35,6 @@ public extension XMLIndexerDeserializable {
     }
 }
 
-
 // MARK: - XMLElementDeserializable
 
 /// Provides XMLElement deserialization / type transformation support
@@ -282,7 +281,6 @@ public extension XMLIndexer {
         }
     }
 
-
     // MARK: - XMLIndexerDeserializable
 
     /**
@@ -353,7 +351,7 @@ public extension XMLIndexer {
         case .Stream(let opStream):
             return try opStream.findElements().value()
         default:
-            throw XMLDeserializationError.NodeIsInvalid(node: self)
+            return nil
         }
     }
 
@@ -454,7 +452,6 @@ public enum XMLDeserializationError: Error, CustomStringConvertible {
         }
     }
 }
-
 
 // MARK: - Common types deserialization
 
