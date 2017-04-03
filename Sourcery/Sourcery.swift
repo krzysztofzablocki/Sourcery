@@ -242,7 +242,7 @@ extension Sourcery {
     }
 
     private func loadOrParse(parser: FileParser, cachesPath: Path) -> FileParserResult {
-        guard let pathString = parser.path else { fatalError("Unable to retrieve \(parser.path)") }
+        guard let pathString = parser.path else { fatalError("Unable to retrieve \(String(describing: parser.path))") }
         let path = Path(pathString)
         let artifacts = cachesPath + "\(pathString.hash).srf"
 
