@@ -80,10 +80,10 @@
       "version": "1.1.0"
     },
     {
-      "package": "XcKit",
+      "package": "XcodeEdit",
       "reason": null,
       "repositoryURL": "https://github.com/tomlokhorst/XcodeEdit.git",
-      "version": "0.4.0"
+      "version": "1.0.0"
     },
     {
       "package": "Yams",

@@ -1,11 +1,7 @@
 import Foundation
-#if COCOAPODS
 import XcodeEdit
+
 typealias XcodePath = XcodeEdit.Path
-#else
-import XcKit
-typealias XcodePath = XcKit.Path
-#endif
 
 extension String: Error {}
 
