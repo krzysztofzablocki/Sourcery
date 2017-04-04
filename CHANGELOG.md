@@ -9,6 +9,7 @@
 - Added support for inline code generation without requiring explicit `// sourcery:inline` comments in the source files. To use, use `sourcery:inline:auto` in a template: `// sourcery:inline:auto:MyType`
 - Added `isMutable` property for `Variable`
 - Added support for scanning multiple targets
+- Added access level filters and disabled filtering private declarations
 
 ## 0.5.9
 

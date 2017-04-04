@@ -87,15 +87,8 @@ struct Composer {
             }
         }
 
-        let filteredTypes = unique.values.filter {
-            let accessLevel = AccessLevel(rawValue: $0.accessLevel)
-            let isPrivate = accessLevel == .private || accessLevel == .fileprivate
-            if isPrivate && self.verbose { print("Skipping \($0.kind) \($0.name) as it is private") }
-            return !isPrivate
-        }.sorted { $0.name < $1.name }
-
-        updateTypeRelationships(types: filteredTypes)
-        return filteredTypes
+        updateTypeRelationships(types: Array(unique.values))
+        return unique.values.sorted { $0.name < $1.name }
     }
 
     private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {

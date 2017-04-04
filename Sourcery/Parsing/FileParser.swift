@@ -383,8 +383,7 @@ extension FileParser {
     }
 
     internal func parseVariable(_ source: [String: SourceKitRepresentable], containedInProtocol: Bool, isStatic: Bool = false) -> Variable? {
-        guard let (name, _, accesibility) = parseTypeRequirements(source),
-            accesibility != .private && accesibility != .fileprivate else { return nil }
+        guard let (name, _, accesibility) = parseTypeRequirements(source) else { return nil }
 
         var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
 
@@ -437,8 +436,7 @@ extension FileParser {
 
     internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> Method? {
         guard let (name, kind, accesibility) = parseTypeRequirements(source),
-            let fullName = extract(.name, from: source),
-            accesibility != .private && accesibility != .fileprivate else { return nil }
+            let fullName = extract(.name, from: source) else { return nil }
 
         let isStatic = kind == .functionMethodStatic
         let isClass = kind == .functionMethodClass
@@ -620,11 +618,6 @@ extension FileParser {
                     continue
             }
 
-            if index > 0,
-                let accessLevel = extract(tokens[index - 1], contents: contents).flatMap(AccessLevel.init),
-                accessLevel == .private || accessLevel == .fileprivate {
-                continue
-            }
             guard let alias = extract(tokens[index + 1], contents: contents) else {
                 continue
             }

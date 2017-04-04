@@ -43,6 +43,12 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         ext.registerBoolFilter("stored", filter: { (v: Variable) in !v.isComputed && !v.isStatic })
         ext.registerBoolFilter("tuple", filter: { (v: Variable) in v.isTuple })
 
+        ext.registerAccessLevelFilters(.open)
+        ext.registerAccessLevelFilters(.public)
+        ext.registerAccessLevelFilters(.private)
+        ext.registerAccessLevelFilters(.fileprivate)
+        ext.registerAccessLevelFilters(.internal)
+
         ext.registerBoolFilterOrWithArguments("based",
                                               filter: { (t: Type, name: String) in t.based[name] != nil },
                                               other: { (t: Typed, name: String) in t.type?.based[name] != nil })
@@ -130,6 +136,21 @@ extension Stencil.Extension {
     public func registerBoolFilterOr<U, V>(_ name: String, filter: @escaping (U) -> Bool, other: @escaping (V) -> Bool) {
         registerFilter(name, filter: FilterOr.make(filter, other: other))
         registerFilter("!\(name)", filter: FilterOr.make({ !filter($0) }, other: { !other($0) }))
+    }
+
+    func registerAccessLevelFilters(_ accessLevel: AccessLevel) {
+        registerBoolFilterOr(accessLevel.rawValue,
+                             filter: { (t: Type) in t.accessLevel == accessLevel.rawValue && t.accessLevel != AccessLevel.none.rawValue },
+                             other: { (m: Method) in m.accessLevel == accessLevel.rawValue && m.accessLevel != AccessLevel.none.rawValue }
+        )
+        registerBoolFilterOr("!\(accessLevel.rawValue)",
+                             filter: { (t: Type) in t.accessLevel != accessLevel.rawValue && t.accessLevel != AccessLevel.none.rawValue },
+                             other: { (m: Method) in m.accessLevel != accessLevel.rawValue && m.accessLevel != AccessLevel.none.rawValue }
+        )
+        registerBoolFilter("\(accessLevel.rawValue)Get", filter: { (v: Variable) in v.readAccess == accessLevel.rawValue && v.readAccess != AccessLevel.none.rawValue })
+        registerBoolFilter("!\(accessLevel.rawValue)Get", filter: { (v: Variable) in v.readAccess != accessLevel.rawValue && v.readAccess != AccessLevel.none.rawValue })
+        registerBoolFilter("\(accessLevel.rawValue)Set", filter: { (v: Variable) in v.writeAccess == accessLevel.rawValue && v.writeAccess != AccessLevel.none.rawValue })
+        registerBoolFilter("!\(accessLevel.rawValue)Set", filter: { (v: Variable) in v.writeAccess != accessLevel.rawValue && v.writeAccess != AccessLevel.none.rawValue })
     }
 
 }

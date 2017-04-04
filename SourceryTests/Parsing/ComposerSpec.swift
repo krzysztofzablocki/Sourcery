@@ -24,33 +24,6 @@ class ParserComposerSpec: QuickSpec {
                     return Composer(verbose: false).uniqueTypes(parserResult)
                 }
 
-                context("given private types") {
-                    it("ignores private protocols") {
-                        expect(parse("private protocol Foo {}")).to(beEmpty())
-                        expect(parse("fileprivate protocol Foo {}")).to(beEmpty())
-                    }
-
-                    it("ignores extension for private type") {
-                        expect(parse("private struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())
-                        expect(parse("fileprivate struct Foo {}; extension Foo { var x: Int { return 0 } }")).to(beEmpty())
-                    }
-
-                    it("ignores private classes") {
-                        expect(parse("private class Foo {}")).to(beEmpty())
-                        expect(parse("fileprivate class Foo {}")).to(beEmpty())
-                    }
-
-                    it("ignores private enums") {
-                        expect(parse("private enum Foo {}")).to(beEmpty())
-                        expect(parse("fileprivate enum Foo {}")).to(beEmpty())
-                    }
-
-                    it("ignores private structs") {
-                        expect(parse("private struct Foo {}")).to(beEmpty())
-                        expect(parse("fileprivate struct Foo {}")).to(beEmpty())
-                    }
-                }
-
                 context("given enum containing associated values") {
                     it("trims whitespace from associated value names") {
                         expect(parse("enum Foo {\n case bar(\nvalue: String,\n other: Int\n)\n}"))

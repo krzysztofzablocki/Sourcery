@@ -14,7 +14,7 @@ class GeneratorSpec: QuickSpec {
             let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
 
             let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
-            let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .public), isComputed: false)
+            let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .private), isComputed: false)
             fooVar.type = fooType
             let barVar = Variable(name: "bar", typeName: TypeName("Bar"), accessLevel: (read: .public, write: .public), isComputed: false)
             barVar.type = barType
@@ -27,7 +27,7 @@ class GeneratorSpec: QuickSpec {
             ]
 
             complexType.methods = [
-                Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))]),
+                Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], accessLevel: .public),
                 Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true),
                 Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true)
             ]
@@ -44,7 +44,7 @@ class GeneratorSpec: QuickSpec {
                         ]),
                     Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
-                    Class(name: "ProjectClass", accessLevel: .none),
+                    Class(name: "ProjectClass", accessLevel: .open),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
                     Protocol(name: "KnownProtocol", variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true)]),
                     Protocol(name: "AlternativeProtocol"),
@@ -146,6 +146,24 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{{ type.Complex.allMethods|static|count }}")).to(equal("1"))
                     expect(generate("{{ type.Complex.allMethods|initializer|count }}")).to(equal("0"))
                     expect(generate("{{ type.Complex.allMethods|count }}")).to(equal("3"))
+                }
+
+                it("can use access level filter on type") {
+                    expect(generate("{{ types.all|public|count }}")).to(equal("3"))
+                    expect(generate("{{ types.all|open|count }}")).to(equal("1"))
+                    expect(generate("{{ types.all|!private|!fileprivate|!internal|count }}")).to(equal("4"))
+                }
+
+                it("can use access level filter on method") {
+                    expect(generate("{{ type.Complex.methods|public|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.methods|private|count }}")).to(equal("0"))
+                    expect(generate("{{ type.Complex.methods|internal|count }}")).to(equal("2"))
+                }
+
+                it("can use access level filter on variable") {
+                    expect(generate("{{ type.Complex.variables|publicGet|count }}")).to(equal("2"))
+                    expect(generate("{{ type.Complex.variables|publicSet|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.variables|privateSet|count }}")).to(equal("1"))
                 }
 
                 context("given tuple variable") {

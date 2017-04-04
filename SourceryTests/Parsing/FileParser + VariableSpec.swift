@@ -25,11 +25,6 @@ class FileParserVariableSpec: QuickSpec {
                     return parser.parseVariable(src, containedInProtocol: false)
                 }
 
-                it("ignores private variables") {
-                    expect(parse("private var name: String")).to(beNil())
-                    expect(parse("fileprivate var name: String")).to(beNil())
-                }
-
                 it("reports variable mutability") {
                     expect(parse("var name: String")?.isMutable).to(beTrue())
                     expect(parse("let name: String")?.isMutable).to(beFalse())

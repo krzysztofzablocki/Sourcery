@@ -169,7 +169,7 @@ Create a class called `ProtocolNameMock` in which it will...
 **For each function:**
  - Implement the function
  - Add a `functionCalled` boolean to check if the function was called
- - Add a `functionRecievedArguments` tuple to check the arguments that were passed to the function
+ - Add a `functionReceivedArguments` tuple to check the arguments that were passed to the function
  - Add a `functionReturnValue` variable and return it when the function is called.
 
 **For each variable:**
@@ -188,15 +188,15 @@ Create a class called `ProtocolNameMock` in which it will...
 class MockableServiceMock: MockableService {
     //MARK: - functionWithArguments
     var functionWithArgumentsCalled = false
-    var functionWithArgumentsRecievedArguments: (firstArgument: String, onComplete: (String)-> Void)?
+    var functionWithArgumentsReceivedArguments: (firstArgument: String, onComplete: (String)-> Void)?
 
     //MARK: - functionWithCallback
     var functionWithCallbackCalled = false
-    var functionWithCallbackRecievedArguments: (firstArgument: String, onComplete: (String)-> Void)?
+    var functionWithCallbackReceivedArguments: (firstArgument: String, onComplete: (String)-> Void)?
 
     func functionWithCallback(_ firstArgument: String, onComplete: @escaping (String)-> Void) {
         functionWithCallbackCalled = true
-        functionWithCallbackRecievedArguments = (firstArgument: firstArgument, onComplete: onComplete)
+        functionWithCallbackReceivedArguments = (firstArgument: firstArgument, onComplete: onComplete)
     }
   ...
 ```
@@ -519,6 +519,8 @@ Available types:
 - `based`, `implements`, `inherits` - can be used for Type[s], Variable[s], Associated value[s], can be negated with `!` prefix.
 - `count` - can be used to get count of filtered array
 - `annotated` - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. `{% for var in variable|annotated: \"skipDescription\"%}`, can be negated with `!` prefix.
+- `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
+- `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
 
 ### Using Source Annotations
 
