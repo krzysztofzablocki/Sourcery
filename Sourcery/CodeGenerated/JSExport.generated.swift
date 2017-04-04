@@ -303,6 +303,7 @@ extension TypeName: TypeNameAutoJSExport {}
     var isStatic: Bool { get }
     var readAccess: String { get }
     var writeAccess: String { get }
+    var isMutable: Bool { get }
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
     var isOptional: Bool { get }
