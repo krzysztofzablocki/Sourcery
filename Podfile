@@ -8,7 +8,8 @@ target 'Sourcery' do
   pod 'StencilSwiftKit', '~> 1.0.0'
   pod 'Commander'
   pod 'PathKit'
-  pod 'SourceKittenFramework', :git => "git@github.com:jpsim/SourceKitten", :commit => '380a5f6'
+  pod 'XcodeEdit', '~> 1.0'
+  pod 'SourceKittenFramework', '~> 0.17' 
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
   pod 'libCommonCrypto'
 

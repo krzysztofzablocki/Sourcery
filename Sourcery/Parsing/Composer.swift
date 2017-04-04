@@ -23,24 +23,34 @@ struct Composer {
     /// - Returns: Final types and extensions of unknown types.
     func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
         var unique = [String: Type]()
+        var modules = [String: [String: Type]]()
         let types = parserResult.types
         let typealiases = self.typealiasesByNames(parserResult)
 
         //map all known types to their names
         types
-                .filter { $0.isExtension == false}
-                .forEach { unique[$0.name] = $0 }
+            .filter { $0.isExtension == false}
+            .forEach {
+                unique[$0.name] = $0
+                if let module = $0.module {
+                    var typesByModules = modules[module] ?? [:]
+                    typesByModules[$0.name] = $0
+                    modules[module] = typesByModules
+                }
+        }
 
         //replace extensions for type aliases with original types
         types
-                .filter { $0.isExtension == true }
-                .forEach { $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName }
+            .filter { $0.isExtension == true }
+            .forEach { $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName }
 
         //extend all types with their extensions
         types.forEach { type in
             type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), typealiases: typealiases) ?? $0 }
 
-            guard let current = unique[type.name] else {
+            let uniqueType = unique[type.name] ?? typeFromModule(type.name, modules: modules)
+
+            guard let current = uniqueType else {
                 //for unknown types we still store their extensions
                 unique[type.name] = type
 
@@ -54,11 +64,11 @@ struct Composer {
             if current == type { return }
 
             current.extend(type)
-            unique[type.name] = current
+            unique[current.name] = current
         }
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
+            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         }
 
         for (_, type) in unique {
@@ -81,7 +91,7 @@ struct Composer {
         return unique.values.sorted { $0.name < $1.name }
     }
 
-    private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], typealiases: [String: Typealias]) -> Type? {
+    private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
         let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
         if let actualTypeName = actualTypeName, actualTypeName != typeName.unwrappedTypeName {
             typeName.actualTypeName = TypeName(actualTypeName)
@@ -90,19 +100,20 @@ struct Composer {
         let lookupName = typeName.actualTypeName ?? typeName
         if let array = parseArrayType(lookupName) {
             typeName.array = array
-            array.elementType = resolveType(typeName: array.elementTypeName, containingType: containingType, unique: unique, typealiases: typealiases)
+            array.elementType = resolveType(typeName: array.elementTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         } else if let dictionary = parseDictionaryType(lookupName) {
             typeName.dictionary = dictionary
-            dictionary.valueType = resolveType(typeName: dictionary.valueTypeName, containingType: containingType, unique: unique, typealiases: typealiases)
-            dictionary.keyType = resolveType(typeName: dictionary.keyTypeName, containingType: containingType, unique: unique, typealiases: typealiases)
+            dictionary.valueType = resolveType(typeName: dictionary.valueTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+            dictionary.keyType = resolveType(typeName: dictionary.keyTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         } else if let tuple = parseTupleType(lookupName) {
             typeName.tuple = tuple
             // recursively resolve type of each tuple element
             tuple.elements.forEach { tupleElement in
-                tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, typealiases: typealiases)
+                tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
             }
         }
         return unique[lookupName.unwrappedTypeName]
+            ?? typeFromModule(lookupName.unwrappedTypeName, modules: modules)
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
@@ -245,6 +256,14 @@ struct Composer {
         } else {
             return nil
         }
+    }
+
+    private func typeFromModule(_ name: String, modules: [String: [String: Type]]) -> Type? {
+        guard name.contains(".") else { return nil }
+        let nameComponents = name.components(separatedBy: ".")
+        let moduleName = nameComponents[0]
+        let typeName = nameComponents.suffix(from: 1).joined(separator: ".")
+        return modules[moduleName]?[typeName]
     }
 
     private func updateTypeRelationships(types: [Type]) {

@@ -8,8 +8,6 @@ import Stencil
 import PathKit
 import SwiftTryCatch
 
-import Foundation
-
 public class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.9"
     public static let generationMarker: String = "// Generated using Sourcery"
@@ -33,7 +31,7 @@ public class Sourcery {
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
     /// - Parameter arguments: Additional arguments to pass to templates.
-    public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, arguments: [String: NSObject] = [:]) {
+    init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
@@ -48,12 +46,43 @@ public class Sourcery {
     ///   - output: Path to output source code to.
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ sources: [Path], usingTemplates templatesPaths: [Path], output: Path) throws -> [FolderWatcher.Local]? {
+    func processFiles(_ source: Source, usingTemplates templatesPaths: [Path], output: Path) throws -> [FolderWatcher.Local]? {
         self.templatesPaths = templatesPaths
         self.outputPath = output
 
-        var result = try parse(from: sources)
-        try generate(templatesPaths, output: output, parsingResult: result)
+        let watchPaths: [Path]
+        switch source {
+        case let .sources(paths):
+            watchPaths = paths
+        case let .projects(projects):
+            watchPaths = projects.map({ $0.root })
+        }
+
+        let process: (Source) throws -> ParsingResult = { source in
+            var result: ParsingResult
+            switch source {
+            case let .sources(paths):
+                result = try self.parse(from: paths, modules: nil)
+            case let .projects(projects):
+                var paths = [Path]()
+                var modules = [String]()
+                try projects.forEach { project in
+                    try project.targets.forEach { target in
+                        let files: [Path] = try project.file.sourceFilesPaths(targetName: target.name, sourceRoot: project.root.string)
+                        files.forEach { file in
+                            paths.append(file)
+                            modules.append(target.module)
+                        }
+                    }
+                }
+                result = try self.parse(from: paths, modules: modules)
+            }
+
+            try self.generate(templatesPaths, output: output, parsingResult: result)
+            return result
+        }
+
+        var result = try process(source)
 
         guard watcherEnabled else {
             return nil
@@ -61,8 +90,8 @@ public class Sourcery {
 
         track("Starting watching sources.", skipStatus: true)
 
-        let sourceWatchers = sources.map({ source in
-            return FolderWatcher.Local(path: source.string) { events in
+        let sourceWatchers = watchPaths.map({ watchPath in
+            return FolderWatcher.Local(path: watchPath.string) { events in
                 let events = events
                     .filter { $0.flags.contains(.isFile) && Path($0.path).isSwiftSourceFile }
 
@@ -78,8 +107,7 @@ public class Sourcery {
                 if shouldRegenerate {
                     do {
                         self.track("Source changed: ", terminator: "")
-                        result = try self.parse(from: sources)
-                        _ = try self.generate(templatesPaths, output: output, parsingResult: result)
+                        result = try process(source)
                     } catch {
                         self.track(error)
                     }
@@ -97,7 +125,7 @@ public class Sourcery {
                 if !events.isEmpty {
                     do {
                         self.track("Templates changed: ", terminator: "")
-                        _ = try self.generate([templatesPath], output: output, parsingResult: result)
+                        try self.generate([templatesPath], output: output, parsingResult: result)
                     } catch {
                         self.track(error)
                     }
@@ -153,12 +181,16 @@ public class Sourcery {
 extension Sourcery {
     typealias ParsingResult = (types: [Type], inlineRanges: [(file: String, ranges: [String: NSRange])])
 
-    fileprivate func parse(from: [Path]) throws -> ParsingResult {
+    fileprivate func parse(from: [Path], modules: [String]?) throws -> ParsingResult {
+        if let modules = modules {
+            precondition(from.count == modules.count, "There should be module for each file to parse")
+        }
+
         self.track("Scanning sources...", terminator: "")
         var inlineRanges = [(file: String, ranges: [String: NSRange])]()
         var allResults = [FileParserResult]()
 
-        try from.forEach { from in
+        try from.enumerated().forEach { index, from in
             let cachesPath = Path.cachesDir(sourcePath: from)
 
             let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
@@ -174,7 +206,7 @@ extension Sourcery {
                     return result == .approved
                 }
                 .map {
-                    try FileParser(verbose: verbose, contents: $0.contents, path: $0.path)
+                    try FileParser(verbose: verbose, contents: $0.contents, path: $0.path, module: modules?[index])
             }
 
             var previousUpdate = 0
@@ -193,7 +225,7 @@ extension Sourcery {
             allResults.append(contentsOf: results)
         }
 
-        let parserResult = allResults.reduce(FileParserResult(path: nil, types: [], typealiases: [])) { acc, next in
+        let parserResult = allResults.reduce(FileParserResult(path: nil, module: nil, types: [], typealiases: [])) { acc, next in
             acc.typealiases += next.typealiases
             acc.types += next.types
 
@@ -210,7 +242,7 @@ extension Sourcery {
     }
 
     private func loadOrParse(parser: FileParser, cachesPath: Path) -> FileParserResult {
-        guard let pathString = parser.path else { fatalError("Unable to retrieve \(parser.path)") }
+        guard let pathString = parser.path else { fatalError("Unable to retrieve \(String(describing: parser.path))") }
         let path = Path(pathString)
         let artifacts = cachesPath + "\(pathString.hash).srf"
 

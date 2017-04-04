@@ -101,6 +101,7 @@ extension FileParserResult: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: rhs.path))
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: rhs.module))
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: rhs.types))
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: rhs.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "inlineRanges").trackDifference(actual: self.inlineRanges, expected: rhs.inlineRanges))
@@ -209,6 +210,7 @@ extension Type: Diffable {
             results.append("Incorrect type <expected: Type, received: \(type(of: object))>")
             return results
         }
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: rhs.module))
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: rhs.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: rhs.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: rhs.accessLevel))

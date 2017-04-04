@@ -10,6 +10,7 @@ import Foundation
 import Commander
 import PathKit
 import Yams
+import XcodeEdit
 
 extension Path: ArgumentConvertible {
     public init(parser: ArgumentParser) throws {
@@ -65,32 +66,21 @@ fileprivate enum Validators {
     }
 }
 
-struct Configuration {
-
-    let sources: [Path]
-    let templates: [Path]
-    let output: Path
-    let args: [String: NSObject]
-
-    init(dict: [String: Any]) {
-        let sources = (dict["sources"] as? [String])?.map({ Path($0) }) ?? []
-        let templates = (dict["templates"] as? [String])?.map({ Path($0) }) ?? []
-        let output = (dict["output"] as? String).map({ Path($0) }) ?? "."
-        let args = dict["args"] as? [String: NSObject] ?? [:]
-
-        self.init(sources: sources, templates: templates, output: output, args: args)
-    }
-
-    init(sources: [Path], templates: [Path], output: Path, args: [String: NSObject]) {
-        self.sources = sources
-        self.templates = templates
-        self.output = output
-        self.args = args
-    }
+extension Configuration {
 
     func validate() {
-        _ = sources.map(Validators.isFileOrDirectory(path:))
+        guard !source.isEmpty else {
+            print("No sources provided.")
+            exit(3)
+        }
+        if case let .sources(sources) = source {
+            _ = sources.map(Validators.isFileOrDirectory(path:))
+        }
         _ = templates.map(Validators.isFileOrDirectory(path:))
+        guard !templates.isEmpty else {
+            print("No templates provided.")
+            exit(3)
+        }
         _ = Validators.isFileOrDirectory(path:output)
     }
 
@@ -116,7 +106,7 @@ func runCLI() {
             let configuration: Configuration
 
             let yamlPath: Path = ".sourcery.yml"
-            if let yaml = try? Yams.Node(string: yamlPath.read()).flatten(), let dict = yaml as? [String: Any] {
+            if let dict = try Yams.load(yaml: String(contentsOfFile: yamlPath.read(), encoding: .utf8)) as? [String: Any] {
                 configuration = Configuration(dict: dict)
             } else {
                 configuration = Configuration(sources: sources,
@@ -128,7 +118,7 @@ func runCLI() {
             configuration.validate()
 
             let start = CFAbsoluteTimeGetCurrent()
-            if let keepAlive = try Sourcery(verbose: verboseLogging, watcherEnabled: watcherEnabled, cacheDisabled: disableCache, arguments: configuration.args).processFiles(configuration.sources, usingTemplates: configuration.templates, output: configuration.output) {
+            if let keepAlive = try Sourcery(verbose: verboseLogging, watcherEnabled: watcherEnabled, cacheDisabled: disableCache, arguments: configuration.args).processFiles(configuration.source, usingTemplates: configuration.templates, output: configuration.output) {
                 RunLoop.current.run()
                 _ = keepAlive
             } else {

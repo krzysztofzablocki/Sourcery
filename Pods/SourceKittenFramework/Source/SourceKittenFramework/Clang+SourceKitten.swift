@@ -39,11 +39,11 @@ struct ClangIndex {
     }
 }
 
-struct ClangAvailability {
-    let alwaysDeprecated: Bool
-    let alwaysUnavailable: Bool
-    let deprecationMessage: String?
-    let unavailableMessage: String?
+public struct ClangAvailability {
+    public let alwaysDeprecated: Bool
+    public let alwaysUnavailable: Bool
+    public let deprecationMessage: String?
+    public let unavailableMessage: String?
 }
 
 extension CXString: CustomStringConvertible {

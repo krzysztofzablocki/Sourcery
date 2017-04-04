@@ -74,6 +74,7 @@ extension FileParserResult {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? FileParserResult else { return false }
         if self.path != rhs.path { return false }
+        if self.module != rhs.module { return false }
         if self.types != rhs.types { return false }
         if self.typealiases != rhs.typealiases { return false }
         if self.inlineRanges != rhs.inlineRanges { return false }
@@ -148,6 +149,7 @@ extension TupleType {
 extension Type {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
+        if self.module != rhs.module { return false }
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }

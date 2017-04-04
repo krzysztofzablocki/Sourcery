@@ -516,6 +516,7 @@ internal func libraryWrapperForModule(_ module: String, loadPath: String, linuxP
 
 // MARK: - migration support
 extension Request {
+    // swiftlint:disable identifier_name
     @available(*, unavailable, renamed: "editorOpen(file:)")
     public static func EditorOpen(_: File) -> Request { fatalError() }
 

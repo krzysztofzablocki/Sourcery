@@ -6,15 +6,15 @@ extension ArrayType {
         var string = "\(type(of: self)): "
         string += "name = \(self.name), "
         string += "elementTypeName = \(self.elementTypeName), "
-        string += "elementType = \(self.elementType)"
+        string += "elementType = \(String(describing: self.elementType))"
         return string
     }
 }
 extension AssociatedValue {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "localName = \(self.localName), "
-        string += "externalName = \(self.externalName), "
+        string += "localName = \(String(describing: self.localName)), "
+        string += "externalName = \(String(describing: self.externalName)), "
         string += "typeName = \(self.typeName)"
         return string
     }
@@ -31,9 +31,9 @@ extension DictionaryType {
         var string = "\(type(of: self)): "
         string += "name = \(self.name), "
         string += "valueTypeName = \(self.valueTypeName), "
-        string += "valueType = \(self.valueType), "
+        string += "valueType = \(String(describing: self.valueType)), "
         string += "keyTypeName = \(self.keyTypeName), "
-        string += "keyType = \(self.keyType)"
+        string += "keyType = \(String(describing: self.keyType))"
         return string
     }
 }
@@ -41,7 +41,7 @@ extension Enum {
     override var description: String {
         var string = super.description
         string += "cases = \(self.cases), "
-        string += "rawTypeName = \(self.rawTypeName), "
+        string += "rawTypeName = \(String(describing: self.rawTypeName)), "
         string += "hasAssociatedValues = \(self.hasAssociatedValues)"
         return string
     }
@@ -50,7 +50,7 @@ extension EnumCase {
     override var description: String {
         var string = "\(type(of: self)): "
         string += "name = \(self.name), "
-        string += "rawValue = \(self.rawValue), "
+        string += "rawValue = \(String(describing: self.rawValue)), "
         string += "associatedValues = \(self.associatedValues), "
         string += "annotations = \(self.annotations), "
         string += "hasAssociatedValue = \(self.hasAssociatedValue)"
@@ -60,11 +60,12 @@ extension EnumCase {
 extension FileParserResult {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "path = \(self.path), "
+        string += "path = \(String(describing: self.path)), "
+        string += "module = \(String(describing: self.module)), "
         string += "types = \(self.types), "
         string += "typealiases = \(self.typealiases), "
         string += "inlineRanges = \(self.inlineRanges), "
-        string += "contentSha = \(self.contentSha), "
+        string += "contentSha = \(String(describing: self.contentSha)), "
         string += "sourceryVersion = \(self.sourceryVersion)"
         return string
     }
@@ -105,8 +106,8 @@ extension Method {
 extension MethodParameter {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "argumentLabel = \(self.argumentLabel), "
-        string += "name = \(self.name), "
+        string += "argumentLabel = \(String(describing: self.argumentLabel)), "
+        string += "name = \(String(describing: self.name)), "
         string += "typeName = \(self.typeName), "
         string += "typeAttributes = \(self.typeAttributes)"
         return string
@@ -145,6 +146,7 @@ extension TupleType {
 extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
+        string += "module = \(String(describing: self.module)), "
         string += "typealiases = \(self.typealiases), "
         string += "isExtension = \(self.isExtension), "
         string += "kind = \(self.kind), "
@@ -162,7 +164,7 @@ extension Type {
         string += "storedVariables = \(self.storedVariables), "
         string += "inheritedTypes = \(self.inheritedTypes), "
         string += "containedTypes = \(self.containedTypes), "
-        string += "parentName = \(self.parentName), "
+        string += "parentName = \(String(describing: self.parentName)), "
         string += "parentTypes = \(self.parentTypes), "
         string += "attributes = \(self.attributes)"
         return string
@@ -184,7 +186,7 @@ extension Typealias {
         var string = "\(type(of: self)): "
         string += "aliasName = \(self.aliasName), "
         string += "typeName = \(self.typeName), "
-        string += "parentName = \(self.parentName), "
+        string += "parentName = \(String(describing: self.parentName)), "
         string += "name = \(self.name)"
         return string
     }

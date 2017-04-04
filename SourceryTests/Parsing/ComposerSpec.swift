@@ -610,6 +610,48 @@ class ParserComposerSpec: QuickSpec {
                         expect(bar?.variables.first?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                     }
                 }
+
+                context("given type name with module name") {
+                    func parseModules(_ modules: (name: String?, contents: String)...) -> [Type] {
+                        let moduleResults = modules.flatMap {
+                            try? FileParser(contents: $0.contents, module: $0.name).parse()
+                        }
+
+                        let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], typealiases: [])) { acc, next in
+                            acc.typealiases += next.typealiases
+                            acc.types += next.types
+                            return acc
+                        }
+
+                        return Composer().uniqueTypes(parserResult)
+                    }
+
+                    it("extends type with extension") {
+                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)])
+                        expectedBar.module = "MyModule"
+
+                        let types = parseModules(
+                            (name: "MyModule", contents: "struct Bar {}"),
+                            (name: nil, contents: "extension MyModule.Bar { var foo: Int { return 0 } }")
+                        )
+
+                        expect(types).to(equal([expectedBar]))
+                    }
+
+                    it("resolves variable type") {
+                        let expectedBar = Struct(name: "Bar")
+                        expectedBar.module = "MyModule"
+                        let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar)])
+
+                        let types = parseModules(
+                            (name: "MyModule", contents: "struct Bar {}"),
+                            (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
+                        )
+
+                        expect(types).to(equal([expectedBar, expectedFoo]))
+                        expect(types.last?.variables.first?.type).to(equal(expectedBar))
+                    }
+                }
             }
         }
     }

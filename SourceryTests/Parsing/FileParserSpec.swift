@@ -125,7 +125,7 @@ class FileParserSpec: QuickSpec {
 
                 context("given typealias") {
                     func parse(_ code: String) -> FileParserResult {
-                        guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return FileParserResult(path: nil, types: [], typealiases: []) }
+                        guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return FileParserResult(path: nil, module: nil, types: [], typealiases: []) }
                         return parserResult
                     }
 

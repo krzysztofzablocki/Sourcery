@@ -32,6 +32,7 @@ extension EnumCase: Parsable {}
 final class FileParser {
     let verbose: Bool
     let path: String?
+    let module: String?
     let initialContents: String
 
     fileprivate var contents: String!
@@ -49,9 +50,10 @@ final class FileParser {
     ///   - contents: Contents to parse.
     ///   - path: Path to file.
     /// - Throws: parsing errors.
-    init(verbose: Bool = false, contents: String, path: Path? = nil) throws {
+    init(verbose: Bool = false, contents: String, path: Path? = nil, module: String? = nil) throws {
         self.verbose = verbose
         self.path = path?.string
+        self.module = module
         self.initialContents = contents
     }
 
@@ -83,7 +85,7 @@ final class FileParser {
         let types = parseTypes(source, processed: &processedGlobalTypes)
 
         let typealiases = parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
-        return FileParserResult(path: path, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Sourcery.version)
+        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Sourcery.version)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {

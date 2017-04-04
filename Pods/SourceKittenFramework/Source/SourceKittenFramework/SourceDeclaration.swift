@@ -32,34 +32,34 @@ public func insertMarks(declarations: [SourceDeclaration], limit: NSRange? = nil
 
 /// Represents a source code declaration.
 public struct SourceDeclaration {
-    let type: ObjCDeclarationKind
-    let location: SourceLocation
-    let extent: (start: SourceLocation, end: SourceLocation)
-    let name: String?
-    let usr: String?
-    let declaration: String?
-    let documentation: Documentation?
-    let commentBody: String?
-    var children: [SourceDeclaration]
-    let swiftDeclaration: String?
-    let availability: ClangAvailability?
+    public let type: ObjCDeclarationKind
+    public let location: SourceLocation
+    public let extent: (start: SourceLocation, end: SourceLocation)
+    public let name: String?
+    public let usr: String?
+    public let declaration: String?
+    public let documentation: Documentation?
+    public let commentBody: String?
+    public var children: [SourceDeclaration]
+    public let swiftDeclaration: String?
+    public let availability: ClangAvailability?
 
     /// Range
-    var range: NSRange {
+    public var range: NSRange {
         return extent.start.range(toEnd: extent.end)
     }
 
     /// Returns the USR for the auto-generated getter for this property.
     ///
     /// - warning: can only be invoked if `type == .Property`.
-    var getterUSR: String {
+    public var getterUSR: String {
         return accessorUSR(getter: true)
     }
 
     /// Returns the USR for the auto-generated setter for this property.
     ///
     /// - warning: can only be invoked if `type == .Property`.
-    var setterUSR: String {
+    public var setterUSR: String {
         return accessorUSR(getter: false)
     }
 

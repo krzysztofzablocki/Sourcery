@@ -33,8 +33,10 @@ extension Attribute: AttributeAutoJSExport {}
 
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
+    var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -78,8 +80,10 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawType: Type? { get }
     var based: [String : String] { get }
     var hasAssociatedValues: Bool { get }
+    var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -152,8 +156,10 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 
 @objc protocol ProtocolAutoJSExport: JSExport {
     var kind: String { get }
+    var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -181,8 +187,10 @@ extension Protocol: ProtocolAutoJSExport {}
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
+    var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
@@ -227,9 +235,11 @@ extension TupleElement: TupleElementAutoJSExport {}
 extension TupleType: TupleTypeAutoJSExport {}
 
 @objc protocol TypeAutoJSExport: JSExport {
+    var module: String? { get }
     var kind: String { get }
     var accessLevel: String { get }
     var name: String { get }
+    var globalName: String { get }
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }

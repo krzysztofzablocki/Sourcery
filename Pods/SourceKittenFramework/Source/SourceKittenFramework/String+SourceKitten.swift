@@ -232,15 +232,15 @@ extension NSString {
     - parameter characterSet: Character set to check for membership.
     */
     public func trimmingTrailingCharacters(in characterSet: CharacterSet) -> String {
-        if length == 0 {
+        guard length > 0 else {
             return ""
         }
-        var charBuffer = [unichar](repeating: 0, count: length)
-        getCharacters(&charBuffer, range: NSRange(location: 0, length: charBuffer.count))
-        for newLength in (1...length).reversed() {
-            if !characterSet.contains(UnicodeScalar(charBuffer[newLength - 1])!) {
-                return substring(with: NSRange(location: 0, length: newLength))
+        var unicodeScalars = self.bridge().unicodeScalars
+        while let scalar = unicodeScalars.last {
+            if !characterSet.contains(scalar) {
+                return String(unicodeScalars)
             }
+            unicodeScalars.removeLast()
         }
         return ""
     }

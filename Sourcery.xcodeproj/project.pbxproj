@@ -12,6 +12,7 @@
 		0911DAF21E212817001FF3EB /* Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF11E212817001FF3EB /* Annotations.swift */; };
 		0926CE1D1E5F9D8000C0D099 /* JSExport.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0926CE1B1E5F996B00C0D099 /* JSExport.generated.swift */; };
 		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
+		094415C81E78A46A00ABE04A /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094415C71E78A46A00ABE04A /* Configuration.swift */; };
 		09618B3C1E61EEE100B49D5F /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B3B1E61EEE100B49D5F /* JavaScriptTemplate.swift */; };
 		09618B421E620D8600B49D5F /* ejsbundle.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejsbundle.js */; };
 		09618B441E620E3200B49D5F /* JSExport.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B431E620E3200B49D5F /* JSExport.js */; };
@@ -27,7 +28,7 @@
 		09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */; };
 		09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
-		09C61F9F1E749DFC005EA58A /* Yams+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61F9E1E749DFC005EA58A /* Yams+Extensions.swift */; };
+		09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		09C6B0D21E11BA2500246CDF /* Class.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D11E11BA2500246CDF /* Class.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
@@ -178,6 +179,7 @@
 		0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameSpec.swift; sourceTree = "<group>"; };
 		0926CE1B1E5F996B00C0D099 /* JSExport.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSExport.generated.swift; sourceTree = "<group>"; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
+		094415C71E78A46A00ABE04A /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		09618B3B1E61EEE100B49D5F /* JavaScriptTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JavaScriptTemplate.swift; sourceTree = "<group>"; };
 		09618B411E620D8600B49D5F /* ejsbundle.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejsbundle.js; sourceTree = "<group>"; };
 		09618B431E620E3200B49D5F /* JSExport.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JSExport.js; sourceTree = "<group>"; };
@@ -192,7 +194,8 @@
 		098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + AttributesSpec.swift"; sourceTree = "<group>"; };
 		098442741E2241F10051E1A1 /* Attribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		09B1DD381E219D95009228EE /* TypedSpec.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TypedSpec.stencil; sourceTree = "<group>"; };
-		09C61F9E1E749DFC005EA58A /* Yams+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Yams+Extensions.swift"; sourceTree = "<group>"; };
+		09C61FA31E760FF2005EA58A /* Xcode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Xcode.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Sourcery-gbqvopozrlnehjdzvxfvrvqwyvsg/Build/Products/Debug/Xcode.framework"; sourceTree = "<group>"; };
+		09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Xcode+Extensions.swift"; sourceTree = "<group>"; };
 		09C6B0D11E11BA2500246CDF /* Class.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Class.swift; sourceTree = "<group>"; };
 		09C6B0D31E11C1C500246CDF /* ClassSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassSpec.swift; sourceTree = "<group>"; };
 		3825CA349BD2B2AAB9605E7F /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
@@ -294,6 +297,7 @@
 		003958827841F12BBF99EB67 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				09C61FA31E760FF2005EA58A /* Xcode.framework */,
 				D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */,
 				6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */,
 			);
@@ -360,6 +364,7 @@
 				E291DB249799066B169A0F41 /* Parsing */,
 				E291DB64F90A7CCCD66B3801 /* Generating */,
 				E291DB6A95BAECDB6E978A76 /* Sourcery.swift */,
+				094415C71E78A46A00ABE04A /* Configuration.swift */,
 				CD754C951D853F000082B512 /* Info.plist */,
 				CD9C459C1DFAF76D00161C2C /* main.swift */,
 			);
@@ -526,7 +531,7 @@
 				E291D6548CB0B086F0574D1B /* Array+Parallel.swift */,
 				C8E88CAF1E20579100102D17 /* Path+Extensions.swift */,
 				E291D0EF57C42E4A4B502F43 /* Sha.swift */,
-				09C61F9E1E749DFC005EA58A /* Yams+Extensions.swift */,
+				09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -804,7 +809,6 @@
 				CD812F5B1DFDCC1A0088B2F6 /* Enum.swift in Sources */,
 				CD812F5C1DFDCC1A0088B2F6 /* Protocol.swift in Sources */,
 				F24C39151E85304100BC1F3A /* TypeDefinition.swift in Sources */,
-				09C61F9F1E749DFC005EA58A /* Yams+Extensions.swift in Sources */,
 				09C6B0D21E11BA2500246CDF /* Class.swift in Sources */,
 				CDEF5F0F1E26A471000DB954 /* FileParserResult.swift in Sources */,
 				CD812F5D1DFDCC1A0088B2F6 /* Struct.swift in Sources */,
@@ -815,6 +819,7 @@
 				0926CE1D1E5F9D8000C0D099 /* JSExport.generated.swift in Sources */,
 				C894A1AD1E1931500098327C /* GenerationContext.swift in Sources */,
 				C894A1A61E1930990098327C /* Coding.generated.swift in Sources */,
+				094415C81E78A46A00ABE04A /* Configuration.swift in Sources */,
 				CD812F5A1DFDCC1A0088B2F6 /* AccessLevel.swift in Sources */,
 				E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */,
 				CDF68B761E1C143D007C5396 /* Typed.generated.swift in Sources */,
@@ -835,6 +840,7 @@
 				CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */,
 				E291D33EA3BB6FC777B3950E /* FolderWatcher.swift in Sources */,
 				E291D9FBE0B751C3C898E5B6 /* Array+Parallel.swift in Sources */,
+				09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */,
 				E291D5EA18C2B12217A59EC9 /* Sha.swift in Sources */,
 				E291DA2409438D3B0DA5F3BB /* InlineParser.swift in Sources */,
 				E291DC4E4F6338FFFB67DA41 /* PhantomProtocols.swift in Sources */,

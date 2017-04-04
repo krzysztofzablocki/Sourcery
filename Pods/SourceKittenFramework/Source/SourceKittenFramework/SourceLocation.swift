@@ -14,10 +14,10 @@ import Clang_C
 import Foundation
 
 public struct SourceLocation {
-    let file: String
-    let line: UInt32
-    let column: UInt32
-    let offset: UInt32
+    public let file: String
+    public let line: UInt32
+    public let column: UInt32
+    public let offset: UInt32
 
     public func range(toEnd end: SourceLocation) -> NSRange {
         return NSRange(location: Int(offset), length: Int(end.offset - offset))
