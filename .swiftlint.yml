@@ -13,6 +13,10 @@ opt_in_rules: # some rules are only opt-in
   - empty_count
   - conditional_binding_cascade
 
+included:
+  - Sourcery
+  - SourceryTests
+
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Carthage
   - Pods
