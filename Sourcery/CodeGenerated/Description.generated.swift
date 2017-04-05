@@ -4,8 +4,8 @@
 extension ArrayType {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
-        string += "elementTypeName = \(self.elementTypeName), "
+        string += "name = \(String(describing: self.name)), "
+        string += "elementTypeName = \(String(describing: self.elementTypeName)), "
         string += "elementType = \(String(describing: self.elementType))"
         return string
     }
@@ -15,24 +15,24 @@ extension AssociatedValue {
         var string = "\(type(of: self)): "
         string += "localName = \(String(describing: self.localName)), "
         string += "externalName = \(String(describing: self.externalName)), "
-        string += "typeName = \(self.typeName)"
+        string += "typeName = \(String(describing: self.typeName))"
         return string
     }
 }
 extension Class {
     override var description: String {
         var string = super.description
-        string += "kind = \(self.kind)"
+        string += "kind = \(String(describing: self.kind))"
         return string
     }
 }
 extension DictionaryType {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
-        string += "valueTypeName = \(self.valueTypeName), "
+        string += "name = \(String(describing: self.name)), "
+        string += "valueTypeName = \(String(describing: self.valueTypeName)), "
         string += "valueType = \(String(describing: self.valueType)), "
-        string += "keyTypeName = \(self.keyTypeName), "
+        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
         string += "keyType = \(String(describing: self.keyType))"
         return string
     }
@@ -40,20 +40,20 @@ extension DictionaryType {
 extension Enum {
     override var description: String {
         var string = super.description
-        string += "cases = \(self.cases), "
+        string += "cases = \(String(describing: self.cases)), "
         string += "rawTypeName = \(String(describing: self.rawTypeName)), "
-        string += "hasAssociatedValues = \(self.hasAssociatedValues)"
+        string += "hasAssociatedValues = \(String(describing: self.hasAssociatedValues))"
         return string
     }
 }
 extension EnumCase {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
+        string += "name = \(String(describing: self.name)), "
         string += "rawValue = \(String(describing: self.rawValue)), "
-        string += "associatedValues = \(self.associatedValues), "
-        string += "annotations = \(self.annotations), "
-        string += "hasAssociatedValue = \(self.hasAssociatedValue)"
+        string += "associatedValues = \(String(describing: self.associatedValues)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "hasAssociatedValue = \(String(describing: self.hasAssociatedValue))"
         return string
     }
 }
@@ -62,44 +62,44 @@ extension FileParserResult {
         var string = "\(type(of: self)): "
         string += "path = \(String(describing: self.path)), "
         string += "module = \(String(describing: self.module)), "
-        string += "types = \(self.types), "
-        string += "typealiases = \(self.typealiases), "
-        string += "inlineRanges = \(self.inlineRanges), "
+        string += "types = \(String(describing: self.types)), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "inlineRanges = \(String(describing: self.inlineRanges)), "
         string += "contentSha = \(String(describing: self.contentSha)), "
-        string += "sourceryVersion = \(self.sourceryVersion)"
+        string += "sourceryVersion = \(String(describing: self.sourceryVersion))"
         return string
     }
 }
 extension GenerationContext {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "types = \(self.types), "
-        string += "typeByName = \(self.typeByName), "
-        string += "arguments = \(self.arguments), "
-        string += "classes = \(self.classes), "
-        string += "all = \(self.all), "
-        string += "protocols = \(self.protocols), "
-        string += "structs = \(self.structs), "
-        string += "enums = \(self.enums)"
+        string += "types = \(String(describing: self.types)), "
+        string += "typeByName = \(String(describing: self.typeByName)), "
+        string += "arguments = \(String(describing: self.arguments)), "
+        string += "classes = \(String(describing: self.classes)), "
+        string += "all = \(String(describing: self.all)), "
+        string += "protocols = \(String(describing: self.protocols)), "
+        string += "structs = \(String(describing: self.structs)), "
+        string += "enums = \(String(describing: self.enums))"
         return string
     }
 }
 extension Method {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
-        string += "parameters = \(self.parameters), "
-        string += "shortName = \(self.shortName), "
-        string += "returnTypeName = \(self.returnTypeName), "
-        string += "actualReturnTypeName = \(self.actualReturnTypeName), "
-        string += "`throws` = \(self.`throws`), "
-        string += "accessLevel = \(self.accessLevel), "
-        string += "isStatic = \(self.isStatic), "
-        string += "isClass = \(self.isClass), "
-        string += "isInitializer = \(self.isInitializer), "
-        string += "isFailableInitializer = \(self.isFailableInitializer), "
-        string += "annotations = \(self.annotations), "
-        string += "attributes = \(self.attributes)"
+        string += "name = \(String(describing: self.name)), "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "shortName = \(String(describing: self.shortName)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "isStatic = \(String(describing: self.isStatic)), "
+        string += "isClass = \(String(describing: self.isClass)), "
+        string += "isInitializer = \(String(describing: self.isInitializer)), "
+        string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "attributes = \(String(describing: self.attributes))"
         return string
     }
 }
@@ -108,38 +108,38 @@ extension MethodParameter {
         var string = "\(type(of: self)): "
         string += "argumentLabel = \(String(describing: self.argumentLabel)), "
         string += "name = \(String(describing: self.name)), "
-        string += "typeName = \(self.typeName), "
-        string += "typeAttributes = \(self.typeAttributes)"
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "typeAttributes = \(String(describing: self.typeAttributes))"
         return string
     }
 }
 extension Protocol {
     override var description: String {
         var string = super.description
-        string += "kind = \(self.kind)"
+        string += "kind = \(String(describing: self.kind))"
         return string
     }
 }
 extension Struct {
     override var description: String {
         var string = super.description
-        string += "kind = \(self.kind)"
+        string += "kind = \(String(describing: self.kind))"
         return string
     }
 }
 extension TupleElement {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
-        string += "typeName = \(self.typeName)"
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName))"
         return string
     }
 }
 extension TupleType {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
-        string += "elements = \(self.elements)"
+        string += "name = \(String(describing: self.name)), "
+        string += "elements = \(String(describing: self.elements))"
         return string
     }
 }
@@ -147,61 +147,62 @@ extension Type {
     override var description: String {
         var string = "\(type(of: self)): "
         string += "module = \(String(describing: self.module)), "
-        string += "typealiases = \(self.typealiases), "
-        string += "isExtension = \(self.isExtension), "
-        string += "kind = \(self.kind), "
-        string += "accessLevel = \(self.accessLevel), "
-        string += "name = \(self.name), "
-        string += "isGeneric = \(self.isGeneric), "
-        string += "localName = \(self.localName), "
-        string += "variables = \(self.variables), "
-        string += "methods = \(self.methods), "
-        string += "initializers = \(self.initializers), "
-        string += "annotations = \(self.annotations), "
-        string += "staticVariables = \(self.staticVariables), "
-        string += "instanceVariables = \(self.instanceVariables), "
-        string += "computedVariables = \(self.computedVariables), "
-        string += "storedVariables = \(self.storedVariables), "
-        string += "inheritedTypes = \(self.inheritedTypes), "
-        string += "containedTypes = \(self.containedTypes), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "isExtension = \(String(describing: self.isExtension)), "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "localName = \(String(describing: self.localName)), "
+        string += "variables = \(String(describing: self.variables)), "
+        string += "methods = \(String(describing: self.methods)), "
+        string += "initializers = \(String(describing: self.initializers)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "staticVariables = \(String(describing: self.staticVariables)), "
+        string += "instanceVariables = \(String(describing: self.instanceVariables)), "
+        string += "computedVariables = \(String(describing: self.computedVariables)), "
+        string += "storedVariables = \(String(describing: self.storedVariables)), "
+        string += "inheritedTypes = \(String(describing: self.inheritedTypes)), "
+        string += "containedTypes = \(String(describing: self.containedTypes)), "
         string += "parentName = \(String(describing: self.parentName)), "
-        string += "parentTypes = \(self.parentTypes), "
-        string += "attributes = \(self.attributes)"
+        string += "parentTypes = \(String(describing: self.parentTypes)), "
+        string += "attributes = \(String(describing: self.attributes))"
         return string
     }
 }
 extension TypeDefinition {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "path = \(self.path), "
-        string += "bodyOffset = \(self.bodyOffset), "
-        string += "bodyStartPosition = \(self.bodyStartPosition), "
-        string += "bodyLength = \(self.bodyLength), "
-        string += "bodyEndPosition = \(self.bodyEndPosition)"
+        string += "path = \(String(describing: self.path)), "
+        string += "bodyOffset = \(String(describing: self.bodyOffset)), "
+        string += "bodyStartPosition = \(String(describing: self.bodyStartPosition)), "
+        string += "bodyLength = \(String(describing: self.bodyLength)), "
+        string += "bodyEndPosition = \(String(describing: self.bodyEndPosition))"
         return string
     }
 }
 extension Typealias {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "aliasName = \(self.aliasName), "
-        string += "typeName = \(self.typeName), "
+        string += "aliasName = \(String(describing: self.aliasName)), "
+        string += "typeName = \(String(describing: self.typeName)), "
         string += "parentName = \(String(describing: self.parentName)), "
-        string += "name = \(self.name)"
+        string += "name = \(String(describing: self.name))"
         return string
     }
 }
 extension Variable {
     override var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(self.name), "
-        string += "typeName = \(self.typeName), "
-        string += "isComputed = \(self.isComputed), "
-        string += "isStatic = \(self.isStatic), "
-        string += "readAccess = \(self.readAccess), "
-        string += "writeAccess = \(self.writeAccess), "
-        string += "annotations = \(self.annotations), "
-        string += "attributes = \(self.attributes)"
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "isComputed = \(String(describing: self.isComputed)), "
+        string += "isStatic = \(String(describing: self.isStatic)), "
+        string += "readAccess = \(String(describing: self.readAccess)), "
+        string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "isMutable = \(String(describing: self.isMutable)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "attributes = \(String(describing: self.attributes))"
         return string
     }
 }
