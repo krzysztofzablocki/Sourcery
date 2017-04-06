@@ -22,8 +22,6 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Pods
   - Packages
   - SourceryTests/Stub
-  - *.generated.swift
-  - *.stencil
 
 type_body_length:
   - 700 #warning
@@ -53,6 +51,6 @@ custom_rules:
 
   explicit_failure_calls:
     name: "Avoid asserting 'false'"
-    regex: "((assert|precondition)\(false)"
+    regex: '((assert|precondition)\(false)'
     message: "Use assertionFailure() or preconditionFailure() instead."
     severity: warning
