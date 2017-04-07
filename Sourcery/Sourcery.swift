@@ -357,15 +357,15 @@ extension Sourcery {
                     if !didProcess && key.hasPrefix("auto:") {
                         let autoTypeName = key.trimmingPrefix("auto:")
 
-                        guard let type = parsingResult.types.first(where: { $0.name == autoTypeName }), let definition = type.definition else {
-                            return
+                        let contentToInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
+
+                        guard let type = parsingResult.types.first(where: { $0.name == autoTypeName }),
+                            let path = type.path,
+                            let contents = try type.appendingBody(with: contentToInsert) else {
+                                return
                         }
 
-                        let path = Path(definition.path)
-                        var definitionFile = try path.read(.utf8)
-                        let index = definitionFile.index(definitionFile.startIndex, offsetBy: definition.bodyEndPosition)
-                        definitionFile.insert(contentsOf: "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n".characters, at: index)
-                        try writeIfChanged(definitionFile, to: path)
+                        try writeIfChanged(contents, to: path)
                     }
                 }
         return inline.contents

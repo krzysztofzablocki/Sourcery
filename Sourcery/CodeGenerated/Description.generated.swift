@@ -170,17 +170,6 @@ extension Type {
         return string
     }
 }
-extension TypeDefinition {
-    override var description: String {
-        var string = "\(type(of: self)): "
-        string += "path = \(String(describing: self.path)), "
-        string += "bodyOffset = \(String(describing: self.bodyOffset)), "
-        string += "bodyStartPosition = \(String(describing: self.bodyStartPosition)), "
-        string += "bodyLength = \(String(describing: self.bodyLength)), "
-        string += "bodyEndPosition = \(String(describing: self.bodyEndPosition))"
-        return string
-    }
-}
 extension Typealias {
     override var description: String {
         var string = "\(type(of: self)): "

@@ -11,20 +11,53 @@ protocol Parsable: class {
     var __parserData: Any? { get set }
 }
 
-private extension Parsable {
+extension Parsable {
     /// Source structure used by the parser
     var __underlyingSource: [String: SourceKitRepresentable] {
         return (__parserData as? [String: SourceKitRepresentable]) ?? [:]
     }
 
     /// sets underlying source
-    func setSource(_ source: [String: SourceKitRepresentable]) {
+    fileprivate func setSource(_ source: [String: SourceKitRepresentable]) {
         __parserData = source
     }
 }
 
+protocol Definition: Parsable {
+    var __path: String? { get set }
+}
+
+extension Definition {
+
+    var path: Path? {
+        return __path.map({ Path($0) })
+    }
+
+    var bodyBytesRange: (offset: Int64, length: Int64)? {
+        return Substring.body.range(for: __underlyingSource)
+    }
+
+    func bodyRange(_ contents: String) -> NSRange? {
+        guard let bytesRange = bodyBytesRange else { return nil }
+        return contents.bridge().byteRangeToNSRange(start: Int(bytesRange.offset), length: Int(bytesRange.length))
+    }
+
+    func contents() throws -> String? {
+        return try path?.read(.utf8)
+    }
+
+    func appendingBody(with contentsToInsert: String) throws -> String? {
+        guard let contents = try self.contents() else { return nil }
+        guard let range = bodyRange(contents) else { return nil }
+
+        let rangeToInsert = NSRange(location: NSMaxRange(range), length: 0)
+        return contents.bridge().replacingCharacters(in: rangeToInsert, with: contentsToInsert)
+    }
+
+}
+
 extension Variable: Parsable {}
-extension Type: Parsable {}
+extension Type: Definition {}
 extension Method: Parsable {}
 extension MethodParameter: Parsable {}
 extension EnumCase: Parsable {}
@@ -131,7 +164,7 @@ final class FileParser {
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.setSource(source)
-            type.definition = makeTypeDefinition(source: source)
+            type.__path = path
             types.append(type)
             return type
         }
@@ -216,16 +249,6 @@ final class FileParser {
         default:
             break
         }
-    }
-
-    private func makeTypeDefinition(source: [String: SourceKitRepresentable]) -> TypeDefinition? {
-        guard let range = Substring.body.range(for: source),
-            let path = path
-            else {
-                return nil
-        }
-
-        return TypeDefinition(path: path, bodyOffset: Int(range.offset), bodyLength: Int(range.length))
     }
 
     private func finishedParsing(types: [Type]) -> [Type] {
