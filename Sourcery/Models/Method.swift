@@ -3,7 +3,7 @@ import Foundation
 //typealias used to avoid types ambiguty in tests
 typealias SourceryMethod = Method
 
-final class MethodParameter: NSObject, SourceryModel, Typed {
+final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     var argumentLabel: String?
 
@@ -19,22 +19,27 @@ final class MethodParameter: NSObject, SourceryModel, Typed {
 
     var typeAttributes: [String: Attribute] { return typeName.attributes }
 
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    var annotations: [String: NSObject] = [:]
+
     /// Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     internal var __parserData: Any?
 
-    init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil) {
+    init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
         self.type = type
+        self.annotations = annotations
     }
 
-    init(name: String = "", typeName: TypeName, type: Type? = nil) {
+    init(name: String = "", typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
         self.type = type
+        self.annotations = annotations
     }
 
     // sourcery:inline:MethodParameter.AutoCoding
@@ -43,6 +48,7 @@ final class MethodParameter: NSObject, SourceryModel, Typed {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
+            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
         func encode(with aCoder: NSCoder) {
@@ -50,6 +56,7 @@ final class MethodParameter: NSObject, SourceryModel, Typed {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.annotations, forKey: "annotations")
         }
         // sourcery:end
 }

@@ -55,7 +55,10 @@ internal struct AnnotationsParser {
     /// - Parameter source: Source to extract annotations for.
     /// - Returns: All annotations associated with given source.
     func from(_ source: [String: SourceKitRepresentable]) -> Annotations {
-        guard let range = Substring.key.range(for: source), let lineInfo = location(fromByteOffset: Int(range.offset)).flatMap({ contents.lineAndCharacter(forCharacterOffset: $0) }) else { return [:] }
+        guard let range = Substring.key.range(for: source),
+            let location = contents.location(fromByteOffset: Int(range.offset)),
+            let lineInfo = contents.lineAndCharacter(forCharacterOffset: location)
+            else { return [:] }
 
         var annotations = Annotations()
         for line in lines[0..<lineInfo.line-1].reversed() {
@@ -77,7 +80,7 @@ internal struct AnnotationsParser {
                 .map { $0.content.trimmingCharacters(in: .whitespaces) }
                 .map { line in
                     var annotations = Annotations()
-                    let isComment = line.hasPrefix("//")
+                    let isComment = line.hasPrefix("//") || line.hasPrefix("/*")
                     var type: Line.LineType = isComment ? .comment : .other
                     if isComment {
                         switch searchForAnnotations(commentLine: line) {
@@ -116,26 +119,32 @@ internal struct AnnotationsParser {
             return .inlineStart
         }
 
-        let substringRange: Range<String.CharacterView.Index>?
+        let lowerBound: String.CharacterView.Index?
+        let upperBound: String.CharacterView.Index?
         let insideBlock: Bool
 
         if commentLine.contains("sourcery:begin:") {
-            substringRange = commentLine
-                    .range(of: "sourcery:begin:")
+            lowerBound = commentLine.range(of: "sourcery:begin:")?.upperBound
+            upperBound = commentLine.characters.indices.endIndex
             insideBlock = true
         } else if commentLine.contains("sourcery:end") {
             return .end
         } else {
-            substringRange = commentLine
-                    .range(of: "sourcery:")
             insideBlock = false
+            lowerBound = commentLine.range(of: "sourcery:")?.upperBound
+            if commentLine.hasPrefix("//") {
+                upperBound = commentLine.characters.indices.endIndex
+            } else {
+                upperBound = commentLine.range(of: "*/")?.lowerBound
+            }
         }
 
-        guard let range = substringRange else { return .annotations([:]) }
-
-        let annotations = AnnotationsParser.parse(line: commentLine.substring(from: range.upperBound))
-
-        return insideBlock ? .begin(annotations) : .annotations(annotations)
+        if let lowerBound = lowerBound, let upperBound = upperBound {
+            let annotations = AnnotationsParser.parse(line: commentLine.substring(with: lowerBound ..< upperBound))
+            return insideBlock ? .begin(annotations) : .annotations(annotations)
+        } else {
+            return .annotations([:])
+        }
     }
 
     /// Parses annotations from the given line
@@ -175,9 +184,13 @@ internal struct AnnotationsParser {
         return annotations
     }
 
+}
+
+extension String {
+
     //! this isn't exposed in SourceKitten so we create our own variant
-    private func location(fromByteOffset byteOffset: Int) -> Int? {
-        let lines = contents.lines()
+    func location(fromByteOffset byteOffset: Int) -> Int? {
+        let lines = self.lines()
         if lines.isEmpty {
             return 0
         }
@@ -198,4 +211,5 @@ internal struct AnnotationsParser {
         let utf16Diff = line.content.utf16.distance(from: line.content.utf16.startIndex, to: endUTF16index)
         return line.range.location + utf16Diff
     }
+
 }

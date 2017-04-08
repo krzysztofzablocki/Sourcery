@@ -15,7 +15,8 @@ extension AssociatedValue {
         var string = "\(type(of: self)): "
         string += "localName = \(String(describing: self.localName)), "
         string += "externalName = \(String(describing: self.externalName)), "
-        string += "typeName = \(String(describing: self.typeName))"
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "annotations = \(String(describing: self.annotations))"
         return string
     }
 }
@@ -109,7 +110,8 @@ extension MethodParameter {
         string += "argumentLabel = \(String(describing: self.argumentLabel)), "
         string += "name = \(String(describing: self.name)), "
         string += "typeName = \(String(describing: self.typeName)), "
-        string += "typeAttributes = \(String(describing: self.typeAttributes))"
+        string += "typeAttributes = \(String(describing: self.typeAttributes)), "
+        string += "annotations = \(String(describing: self.annotations))"
         return string
     }
 }

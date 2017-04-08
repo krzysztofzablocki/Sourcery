@@ -218,10 +218,40 @@ class FileParserMethodsSpec: QuickSpec {
                     }
                 }
 
-                it("extracts sourcery annotations") {
+                it("extracts method annotations") {
                     expect(parse("class Foo {\n // sourcery: annotation\nfunc foo() }")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "foo()", annotations: ["annotation": NSNumber(value: true)])
+                            ])
+                        ]))
+                }
+
+                it("extracts method inline annotations") {
+                    expect(parse("class Foo {\n /* sourcery: annotation */func foo() }")).to(equal([
+                        Class(name: "Foo", methods: [
+                            Method(name: "foo()", annotations: ["annotation": NSNumber(value: true)])
+                            ])
+                        ]))
+                }
+
+                it("extracts parameter annotations") {
+                    expect(parse("class Foo {\n func foo(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) }")).to(equal([
+                        Class(name: "Foo", methods: [
+                            Method(name: "foo(a: Int,b: Int)", selectorName: "foo(a:b:)", parameters: [
+                                MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
+                                MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
+                                ])
+                            ])
+                        ]))
+                }
+
+                it("extracts parameter inline annotations") {
+                    expect(parse("class Foo {\nfunc foo(/* sourcery: annotationA */a: Int, /* sourcery: annotationB*/b: Int) }")).to(equal([
+                        Class(name: "Foo", methods: [
+                            Method(name: "foo(a: Int, b: Int)", selectorName: "foo(a:b:)", parameters: [
+                                MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
+                                MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
+                                ])
                             ])
                         ]))
                 }

@@ -527,19 +527,19 @@ Available types:
 Sourcery supports annotating your classes and variables with special annotations, similar how attributes work in Rust / Java
 
 ```swift
-/// sourcery: skipPersistence
+// sourcery: skipPersistence
 /// Some documentation comment
-/// sourcery: anotherAnnotation = 232, yetAnotherAnnotation = "value"
+// sourcery: anotherAnnotation = 232, yetAnotherAnnotation = "value"
 /// Documentation
 var precomputedHash: Int
 ```
 
 If you want to attribute multiple items with same attributes, you can use section annotations:
 ```swift
-/// sourcery:begin: skipEquality, skipPersistence
+// sourcery:begin: skipEquality, skipPersistence
   var firstVariable: Int
   var secondVariable: Int
-/// sourcery:end
+// sourcery:end
 ```
 
 #### Rules:
@@ -548,6 +548,7 @@ If you want to attribute multiple items with same attributes, you can use sectio
 - You can add multiline annotations
 - You can interleave annotations with documentation
 - Sourcery scans all `sourcery:` annotations in the given comment block above the source until first non-comment/doc line
+- Using `/*` and `*/` for annotation comment you can put it on the same line with your code. This is usefull for annotating methods parameters, enum case associated values. All such annotations should be placed in one comment block. When using inline annotations for enum cases, cases must be separated with `;`
 
 #### Format:
 
