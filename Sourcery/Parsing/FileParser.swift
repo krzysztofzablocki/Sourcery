@@ -708,16 +708,23 @@ extension FileParser {
 extension FileParser {
 
     internal func parseDeclarationAttributes(_ source: [String: SourceKitRepresentable]) -> [String: Attribute] {
-        guard let prefix = extract(.keyPrefix, from: source) else { return [:] }
+        guard var prefix = extract(.keyPrefix, from: source)?.bridge() else { return [:] }
         if let attributesValue = source["key.attributes"] as? [[String: String]] {
             var ranges = [NSRange]()
             attributesValue.map({ $0.values }).joined()
-                .flatMap({ Attribute.Identifier(rawValue: $0.replacingOccurrences(of: "source.decl.attribute.", with: "")) })
+                .flatMap(Attribute.Identifier.init(identifier:))
                 .forEach {
-                    ranges.append(prefix.bridge().range(of: $0.description, options: .backwards))
+                    let attributeRange = prefix.range(of: $0.description, options: .backwards)
+
+                    // we expect all attributes to be prefixed with `@`
+                    // but `convenience` attribute does not need it...
+                    if $0 == Attribute.Identifier.convenience {
+                        prefix = prefix.replacingCharacters(in: attributeRange, with: "@\($0)") as NSString
+                    }
+                    ranges.append(attributeRange)
             }
             guard let location = ranges.min(by: { $0.location < $1.location })?.location else { return [:] }
-            return parseAttributes(prefix.bridge().substring(from: location - 1))
+            return parseAttributes(prefix.substring(from: location))
         }
         return [:]
     }
@@ -736,10 +743,8 @@ extension FileParser {
             guard let attributeString = $0.trimmingCharacters(in: .whitespaces)
                 .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
 
-            let name: String
             if let openIndex = attributeString.characters.index(of: "(") {
-
-                name = String(attributeString.characters.prefix(upTo: openIndex))
+                let name = String(attributeString.characters.prefix(upTo: openIndex))
 
                 let chars = attributeString.characters
                 let startIndex = chars.index(openIndex, offsetBy: 1)
@@ -749,7 +754,8 @@ extension FileParser {
 
                 return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")
             } else {
-                return Attribute(name: attributeString)
+                guard let identifier = Attribute.Identifier.from(string: attributeString) else { return nil }
+                return Attribute(name: identifier.name, description: identifier.description)
             }
         }
         _attributes.forEach { attributes[$0.name] = $0 }
@@ -844,7 +850,7 @@ extension FileParser {
 }
 
 extension String {
-    
+
     func strippingComments() -> String {
         var finished: Bool
         var stripped = self
@@ -861,8 +867,8 @@ extension String {
                 finished = false
             }
         } while !finished
-        
+
         return stripped
     }
-    
+
 }

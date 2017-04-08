@@ -18,6 +18,7 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport
     }
 
     enum Identifier: String {
+        case convenience
         case available
         case discardableResult
         case GKInspectable = "gkinspectable"
@@ -34,7 +35,28 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport
         case convention
         case escaping
 
-        var description: String {
+        init?(identifier: String) {
+            self.init(rawValue: identifier.replacingOccurrences(of: "source.decl.attribute.", with: ""))
+        }
+
+        static func from(string: String) -> Identifier? {
+            switch string {
+            case "GKInspectable":
+                return Identifier.GKInspectable
+            case "objc":
+                return .objc
+            case "IBOutlet":
+                return .IBOutlet
+            case "IBInspectable":
+                return .IBInspectable
+            case "IBDesignable":
+                return .IBDesignable
+            default:
+                return Identifier(rawValue: string)
+            }
+        }
+
+        var name: String {
             switch self {
             case .GKInspectable:
                 return "GKInspectable"
@@ -50,6 +72,16 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport
                 return rawValue
             }
         }
+
+        var description: String {
+            switch self {
+            case .convenience:
+                return "convenience"
+            default:
+                return "@\(name)"
+            }
+        }
+
     }
 
     // sourcery:inline:sourcery:.AutoCoding
