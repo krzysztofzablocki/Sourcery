@@ -168,15 +168,6 @@ extension Type {
         return true
     }
 }
-extension TypeDefinition {
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TypeDefinition else { return false }
-        if self.path != rhs.path { return false }
-        if self.bodyOffset != rhs.bodyOffset { return false }
-        if self.bodyLength != rhs.bodyLength { return false }
-        return true
-    }
-}
 extension TypeName {
     override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TypeName else { return false }

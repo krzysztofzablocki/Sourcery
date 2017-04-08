@@ -267,16 +267,6 @@ extension TupleType: TupleTypeAutoJSExport {}
 
 extension Type: TypeAutoJSExport {}
 
-@objc protocol TypeDefinitionAutoJSExport: JSExport {
-    var path: String { get }
-    var bodyOffset: Int { get }
-    var bodyStartPosition: Int { get }
-    var bodyLength: Int { get }
-    var bodyEndPosition: Int { get }
-}
-
-extension TypeDefinition: TypeDefinitionAutoJSExport {}
-
 @objc protocol TypeNameAutoJSExport: JSExport {
     var name: String { get }
     var actualTypeName: TypeName? { get }
