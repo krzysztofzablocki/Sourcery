@@ -46,12 +46,10 @@ extension Definition {
         return try path?.read(.utf8)
     }
 
-    func appendingBody(with contentsToInsert: String) throws -> String? {
+    func rangeToAppendBody() throws -> NSRange? {
         guard let contents = try self.contents() else { return nil }
         guard let range = bodyRange(contents) else { return nil }
-
-        let rangeToInsert = NSRange(location: NSMaxRange(range), length: 0)
-        return contents.bridge().replacingCharacters(in: rangeToInsert, with: contentsToInsert)
+        return NSRange(location: NSMaxRange(range), length: 0)
     }
 
 }

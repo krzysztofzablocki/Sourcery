@@ -14,6 +14,10 @@
 - Added annotations for enum case associated values and method parameters
 - Added `isConvenienceInitializer` property for `Method`
 
+### Fixed
+
+- Inserting multiple inline code block in one file
+
 ## 0.5.9
 
 ### New Features
