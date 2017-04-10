@@ -37,10 +37,20 @@ class FileParserVariableSpec: QuickSpec {
                 }
 
                 context("given variable with initial value") {
+                    it("extracts default value") {
+                        expect(parse("var name: String = String()")?.defaultValue).to(equal("String()"))
+                        expect(parse("var name = Parent.Children.init()")?.defaultValue).to(equal("Parent.Children.init()"))
+                        expect(parse("var name = [[1, 2], [1, 2]]")?.defaultValue).to(equal("[[1, 2], [1, 2]]"))
+                        expect(parse("var name = { return 0 }()")?.defaultValue).to(equal("{ return 0 }()"))
+                        expect(parse("var name = \t\n { return 0 }() \t\n")?.defaultValue).to(equal("{ return 0 }()"))
+                        expect(parse("var name: Int = \t\n { return 0 }() \t\n")?.defaultValue).to(equal("{ return 0 }()"))
+                    }
+
                     it("extracts property with default initializer correctly") {
                         expect(parse("var name = String()")?.typeName).to(equal(TypeName("String")))
                         expect(parse("var name = Parent.Children.init()")?.typeName).to(equal(TypeName("Parent.Children")))
                         expect(parse("var name: String? = String()")?.typeName).to(equal(TypeName("String?")))
+                        expect(parse("var name = { return 0 }() ")?.typeName).toNot(equal(TypeName("{ return 0 }")))
                     }
 
                     it("extracts property with literal value correctrly") {

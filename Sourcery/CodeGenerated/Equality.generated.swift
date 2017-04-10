@@ -116,6 +116,7 @@ extension MethodParameter {
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         return true
     }
@@ -197,6 +198,7 @@ extension Variable {
         if self.isStatic != rhs.isStatic { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         if self.attributes != rhs.attributes { return false }
         return true
