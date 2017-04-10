@@ -55,6 +55,11 @@ class FileParserAttributesSpec: QuickSpec {
                     "discardableResult": Attribute(name: "discardableResult"),
                     "objc": Attribute(name: "objc", arguments: ["some": NSNumber(value: true)], description: "@objc(some)")
                     ]))
+
+                expect(parse("class Foo { @nonobjc convenience init() {} }").first?.initializers.first?.attributes).to(equal([
+                    "nonobjc": Attribute(name: "nonobjc"),
+                    "convenience": Attribute(name: "convenience", description: "convenience")
+                    ]))
             }
 
             it("extracts method parameter attributes") {

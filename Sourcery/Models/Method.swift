@@ -129,6 +129,11 @@ final class Method: NSObject, SourceryModel, Annotated {
     /// Whether this is a failable initializer
     let isFailableInitializer: Bool
 
+    /// Whether method is a convenience initializer
+    public var isConvenienceInitialiser: Bool {
+        return attributes[Attribute.Identifier.convenience.name] != nil
+    }
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     let annotations: [String: NSObject]
 
