@@ -26,6 +26,7 @@ Using it offers many benefits:
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Why?](#why)
 - [Installing](#installing)
 - [Usage](#usage)
   - [Command line options](#command-line-options)
@@ -37,6 +38,24 @@ Using it offers many benefits:
 - [Other Libraries / Tools](#other-libraries--tools)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Why?
+
+Swift features very limited runtime and no meta-programming features. Which leads our projects to contain boilerplate code.
+
+Sourcery exists to allow Swift developers to stop doing the same thing over and over again while still maintaining strong typing, preventing bugs and leveraging compiler.
+
+Have you ever?
+
+- Had to write equatable/hashable?
+- Had to write NSCoding support?
+- Had to implement JSON serialization?
+- Wanted to use Lenses?
+
+If you did then you probably found yourself writing repetitive code to deal with those scenarios, does this feel right?
+
+Even worse, if you ever add a new property to a type all of those implementations have to be updated, or you will end up with bugs.
+In those scenarios usually **compiler will not generate the error for you**, which leads to error prone code.
 
 ## Installing
 
