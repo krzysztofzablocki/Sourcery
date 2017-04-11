@@ -118,6 +118,27 @@ class FileParserMethodsSpec: QuickSpec {
 
                     }
 
+                    context("given parameter default value") {
+                        it("extracts simple default value") {
+                            expect(parse("class Foo { func foo(a: Int? = nil) {} }")).to(equal([
+                                Class(name: "Foo", methods: [
+                                    Method(name: "foo(a: Int? = nil)", selectorName: "foo(a:)", parameters: [
+                                        MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("Int?"), defaultValue: "nil")
+                                        ], returnTypeName: TypeName("Void"))
+                                    ])
+                                ]))
+                        }
+
+                        it("extracts complex default value") {
+                            expect(parse("class Foo { func foo(a: Int? = \n\t{ return nil } \n\t ) {} }")).to(equal([
+                                Class(name: "Foo", methods: [
+                                    Method(name: "foo(a: Int? = \t{ return nil } \t )", selectorName: "foo(a:)", parameters: [
+                                        MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("Int?"), defaultValue: "{ return nil }")
+                                        ], returnTypeName: TypeName("Void"))
+                                    ])
+                                ]))
+                        }
+                    }
                 }
 
                 context("given generic method") {

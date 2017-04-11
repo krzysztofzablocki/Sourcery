@@ -61,6 +61,7 @@ extension MethodParameter: Parsable {}
 extension EnumCase: Parsable {}
 
 final class FileParser {
+
     let verbose: Bool
     let path: String?
     let module: String?
@@ -313,6 +314,9 @@ extension FileParser {
 
     private func inferType(from string: String) -> String? {
         let string = string.trimmingCharacters(in: .whitespaces)
+        // probably lazy property or default value with closure,
+        // we expect explicit type, as we don't know return type
+        guard !(string.hasPrefix("{") && string.hasSuffix(")")) else { return nil }
 
         var inferredType: String
         if string == "nil" {
@@ -444,7 +448,8 @@ extension FileParser {
             computed = false
         }
 
-        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
+        let defaultValue = extractDefaultValue(type: maybeType, from: source)
+        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
         variable.setSource(source)
 
         return variable
@@ -543,7 +548,8 @@ extension FileParser {
         }
 
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
-        let parameter = MethodParameter(name: name, typeName: typeName, annotations: annotations)
+        let defaultValue = extractDefaultValue(type: type, from: source)
+        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations)
         parameter.setSource(source)
         return parameter
     }
@@ -845,6 +851,16 @@ extension FileParser {
         return contents.bridge().substringWithByteRange(start: from.offset, length: to.offset + to.length - from.offset)
     }
 
+    fileprivate func extractDefaultValue(type: String?, from source: [String: SourceKitRepresentable]) -> String? {
+        guard var nameSuffix = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
+        if nameSuffix.trimPrefix(":") {
+            nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let type = type, nameSuffix.trimPrefix(type) else { return nil }
+        }
+        nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard nameSuffix.trimPrefix("=") else { return nil }
+        return nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }
 
 extension String {

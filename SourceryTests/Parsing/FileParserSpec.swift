@@ -69,7 +69,7 @@ class FileParserSpec: QuickSpec {
                                 .to(equal([
                                     Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
                                         Variable.init(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true),
-                                        Variable.init(name: "y", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, isStatic: true)
+                                        Variable.init(name: "y", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, isStatic: true, defaultValue: "0")
                                         ])
                                     ]))
                     }

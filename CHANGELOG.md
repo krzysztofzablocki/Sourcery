@@ -13,6 +13,7 @@
 - Added support for inline comments for annotations with `/*` and `*/`
 - Added annotations for enum case associated values and method parameters
 - Added `isConvenienceInitializer` property for `Method`
+- Added `defaultValue` for variables and method parameters
 
 ### Fixed
 

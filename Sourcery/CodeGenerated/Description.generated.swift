@@ -99,6 +99,7 @@ extension Method {
         string += "isClass = \(String(describing: self.isClass)), "
         string += "isInitializer = \(String(describing: self.isInitializer)), "
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
+        string += "isConvenienceInitialiser = \(String(describing: self.isConvenienceInitialiser)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string
@@ -111,6 +112,7 @@ extension MethodParameter {
         string += "name = \(String(describing: self.name)), "
         string += "typeName = \(String(describing: self.typeName)), "
         string += "typeAttributes = \(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations))"
         return string
     }
@@ -192,6 +194,7 @@ extension Variable {
         string += "readAccess = \(String(describing: self.readAccess)), "
         string += "writeAccess = \(String(describing: self.writeAccess)), "
         string += "isMutable = \(String(describing: self.isMutable)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string

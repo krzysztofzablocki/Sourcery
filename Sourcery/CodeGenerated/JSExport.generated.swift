@@ -136,6 +136,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isClass: Bool { get }
     var isInitializer: Bool { get }
     var isFailableInitializer: Bool { get }
+    var isConvenienceInitialiser: Bool { get }
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
 }
@@ -148,6 +149,7 @@ extension Method: MethodAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var typeAttributes: [String: Attribute] { get }
+    var defaultValue: String? { get }
     var annotations: [String: NSObject] { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -296,6 +298,7 @@ extension TypeName: TypeNameAutoJSExport {}
     var readAccess: String { get }
     var writeAccess: String { get }
     var isMutable: Bool { get }
+    var defaultValue: String? { get }
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
     var isOptional: Bool { get }
