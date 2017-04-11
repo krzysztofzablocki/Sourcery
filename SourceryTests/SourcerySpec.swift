@@ -6,6 +6,7 @@ import PathKit
 private let version = "Major.Minor.Patch"
 
 class SourcerySpecTests: QuickSpec {
+    // swiftlint:disable:next function_body_length
     override func spec() {
         describe ("Sourcery") {
             var outputDir = Path("/tmp")
@@ -65,6 +66,52 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? generatedPath.read(.utf8)
                         expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
                     }
+
+                    it("inline multiple generated code blocks correctly") {
+                        update(code: "class Foo { \n" +
+                            "// sourcery:inline:Foo.Inlined\n" +
+                            "\n" +
+                            "// This will be replaced\n" +
+                            "Last line\n" +
+                            "// sourcery:end\n" +
+                            "}\n\n" +
+                            "class Bar { \n" +
+                            "// sourcery:inline:Bar.Inlined\n" +
+                            "\n" +
+                            "// This will be replaced\n" +
+                            "Last line\n" +
+                            "// sourcery:end\n" +
+                            "}", in: sourcePath)
+
+                        update(code: "// Line One\n" +
+                            "// sourcery:inline:Bar.Inlined \n" +
+                            "var property = bar\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                            "// Line One\n" +
+                            "// sourcery:inline:Foo.Inlined \n" +
+                            "var property = foo\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end", in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+
+                        let expectedResult = "class Foo { \n" +
+                            "// sourcery:inline:Foo.Inlined\n" +
+                            "var property = foo\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                            "}\n\n" +
+                            "class Bar { \n" +
+                            "// sourcery:inline:Bar.Inlined\n" +
+                            "var property = bar\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                            "}"
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
                 }
 
                 describe("using automatic inline generation") {
@@ -72,7 +119,7 @@ class SourcerySpecTests: QuickSpec {
                     let sourcePath = outputDir + Path("Source.swift")
                     func update(code: String, in path: Path) { guard let _ = try? path.write(code) else { fatalError() } }
 
-                    beforeEach {
+                    it("insert generated code in the end of type body") {
                         update(code: "class Foo {}", in: sourcePath)
 
                         update(code: "// Line One\n" +
@@ -82,15 +129,47 @@ class SourcerySpecTests: QuickSpec {
                             "// sourcery:end", in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
-                    }
 
-                    it("adds generated code") {
                         let expectedResult = "class Foo {\n" +
                             "// sourcery:inline:auto:Foo\n" +
                             "var property = 2\n" +
                             "// Line Three\n" +
                             "// sourcery:end\n" +
                         "}"
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
+                    it("insert generated code in multiple types") {
+                        update(code: "class Foo {}\n\nclass Bar {}", in: sourcePath)
+
+                        update(code: "// Line One\n" +
+                            "// sourcery:inline:auto:Bar\n" +
+                            "var property = bar\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end" +
+                            "\n" +
+                            "// Line One\n" +
+                            "// sourcery:inline:auto:Foo\n" +
+                            "var property = foo\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end", in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+
+                        let expectedResult = "class Foo {\n" +
+                            "// sourcery:inline:auto:Foo\n" +
+                            "var property = foo\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                            "}\n\n" +
+                            "class Bar {\n" +
+                            "// sourcery:inline:auto:Bar\n" +
+                            "var property = bar\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                            "}"
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))

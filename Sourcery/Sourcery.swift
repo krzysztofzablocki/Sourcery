@@ -333,41 +333,40 @@ extension Sourcery {
     private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
         let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: contents, removeFromSource: true)
 
-        try inline
-                .annotatedRanges
-                .map { ($0, $1) }
-                .sorted { $0.0.1.location > $0.1.1.location }
-                .forEach { (key, range) in
+        typealias MappedInlineAnnotations = (
+            range: NSRange,
+            filePath: Path,
+            rangeInFile: NSRange,
+            toInsert: String
+        )
 
-                    let generatedBody = contents.bridge().substring(with: range)
-                    var didProcess = false
+        try inline.annotatedRanges
+            .map { (key: $0, range: $1) }
+            .flatMap { (key, range) -> MappedInlineAnnotations? in
+                let generatedBody = contents.bridge().substring(with: range)
 
-                    try parsingResult.inlineRanges.forEach { (filePath, ranges) in
+                guard let (filePath, ranges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {
+                    guard key.hasPrefix("auto:") else { return nil }
+                    let autoTypeName = key.trimmingPrefix("auto:")
+                    let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
-                        if let range = ranges[key] {
-                            let path = Path(filePath)
-                            let original = try path.read(.utf8)
-                            let updated = original.bridge().replacingCharacters(in: range, with: generatedBody)
-                            try writeIfChanged(updated, to: path)
-                            didProcess = true
-                        }
+                    guard let definition = parsingResult.types.first(where: { $0.name == autoTypeName }),
+                        let path = definition.path,
+                        let rangeInFile = try definition.rangeToAppendBody() else {
+                            return nil
                     }
-
-                    // Process automatic inline ranges
-                    if !didProcess && key.hasPrefix("auto:") {
-                        let autoTypeName = key.trimmingPrefix("auto:")
-
-                        let contentToInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
-
-                        guard let type = parsingResult.types.first(where: { $0.name == autoTypeName }),
-                            let path = type.path,
-                            let contents = try type.appendingBody(with: contentToInsert) else {
-                                return
-                        }
-
-                        try writeIfChanged(contents, to: path)
-                    }
+                    return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
                 }
+                return MappedInlineAnnotations(range, Path(filePath), ranges[key]!, generatedBody)
+            }
+            .sorted { lhs, rhs in
+                return lhs.rangeInFile.location > rhs.rangeInFile.location
+            }.forEach { (_, path, rangeInFile, toInsert) in
+                let content = try path.read(.utf8)
+                let updated = content.bridge().replacingCharacters(in: rangeInFile, with: toInsert)
+                try writeIfChanged(updated, to: path)
+        }
+
         return inline.contents
     }
 
