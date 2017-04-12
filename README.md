@@ -506,7 +506,7 @@ Available types:
 
 </details>
 
-### Custom Stencil tags and filter
+### Custom Stencil tags and filters
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
 - `{{ name|replace:"substring","replacement" }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
@@ -521,6 +521,8 @@ Available types:
 - `annotated` - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. `{% for var in variable|annotated: \"skipDescription\"%}`, can be negated with `!` prefix.
 - `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
 - `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
+
+Plus all the filters from [StencilSwiftKit](https://github.com/SwiftGen/StencilSwiftKit).
 
 ### Using Source Annotations
 
