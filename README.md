@@ -506,7 +506,7 @@ Available types:
 
 </details>
 
-### Custom Stencil tags and filter
+### Custom Stencil tags and filters
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
 - `{{ name|replace:"substring","replacement" }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
