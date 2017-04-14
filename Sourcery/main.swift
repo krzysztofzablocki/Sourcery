@@ -98,11 +98,14 @@ func runCLI() {
         Flag("verbose",
              flag: "v",
              description: "Turn on verbose logging for ignored entities"),
+        Flag("prune",
+             flag: "p",
+             description: "Remove empty generated files"),
         VariadicOption<Path>("sources", description: "Path to a source swift files"),
         VariadicOption<Path>("templates", description: "Path to templates. File or Directory."),
         Option<Path>("output", ".", description: "Path to output. Directory. Default is current path."),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, sources, templates, output, args in
+    ) { watcherEnabled, disableCache, verboseLogging, prune, sources, templates, output, args in
         do {
             let configuration: Configuration
 
@@ -119,7 +122,12 @@ func runCLI() {
             configuration.validate()
 
             let start = CFAbsoluteTimeGetCurrent()
-            if let keepAlive = try Sourcery(verbose: verboseLogging, watcherEnabled: watcherEnabled, cacheDisabled: disableCache, arguments: configuration.args).processFiles(configuration.source, usingTemplates: configuration.templates, output: configuration.output) {
+            let sourcery = Sourcery(verbose: verboseLogging,
+                                    watcherEnabled: watcherEnabled,
+                                    cacheDisabled: disableCache,
+                                    prune: prune,
+                                    arguments: configuration.args)
+            if let keepAlive = try sourcery.processFiles(configuration.source, usingTemplates: configuration.templates, output: configuration.output) {
                 RunLoop.current.run()
                 _ = keepAlive
             } else {

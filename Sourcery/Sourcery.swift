@@ -22,6 +22,7 @@ class Sourcery {
     fileprivate let watcherEnabled: Bool
     fileprivate let arguments: [String: NSObject]
     fileprivate let cacheDisabled: Bool
+    fileprivate let prune: Bool
 
     fileprivate var status = ""
     fileprivate var templatesPaths: [Path] = []
@@ -31,11 +32,12 @@ class Sourcery {
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
     /// - Parameter arguments: Additional arguments to pass to templates.
-    init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, arguments: [String: NSObject] = [:]) {
+    init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, prune: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
         self.cacheDisabled = cacheDisabled
+        self.prune = prune
     }
 
     /// Processes source files and generates corresponding code.
@@ -304,9 +306,19 @@ extension Sourcery {
         }
 
         try allTemplates.forEach { template in
-            let result = Sourcery.generationHeader + (try generate(template, forParsingResult: parsingResult))
             let outputPath = output + generatedPath(for: template.sourcePath)
-            try writeIfChanged(result, to: outputPath)
+            let result = try generate(template, forParsingResult: parsingResult)
+
+            if !result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                try writeIfChanged(Sourcery.generationHeader + result, to: outputPath)
+            } else {
+                if prune && outputPath.exists {
+                    track("Removing \(outputPath) as it is empty.")
+                    do { try outputPath.delete() } catch { track("\(error)") }
+                } else {
+                    track("Skipping \(outputPath) as it is empty.")
+                }
+            }
         }
 
         track("Finished.", skipStatus: true)
@@ -379,13 +391,22 @@ extension Sourcery {
             .forEach({ (filePath, range) in
                 var generatedBody = contents.bridge().substring(with: range)
                 let path = outputPath + (Path(filePath).extension == nil ? "\(filePath).generated.swift" : filePath)
-                if path.extension == "swift" {
-                    generatedBody = Sourcery.generationHeader + generatedBody
+                if !generatedBody.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    if path.extension == "swift" {
+                        generatedBody = Sourcery.generationHeader + generatedBody
+                    }
+                    if !path.parent().exists {
+                        try path.parent().mkpath()
+                    }
+                    try writeIfChanged(generatedBody, to: path)
+                } else {
+                    if prune && outputPath.exists {
+                        track("Removing \(path) as it is empty.")
+                        do { try outputPath.delete() } catch { track("\(error)") }
+                    } else {
+                        track("Skipping \(path) as it is empty.")
+                    }
                 }
-                if !path.parent().exists {
-                    try path.parent().mkpath()
-                }
-                try writeIfChanged(generatedBody, to: path)
             })
         return files.contents
     }

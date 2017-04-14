@@ -11,7 +11,7 @@ internal enum TemplateAnnotationsParser {
         var bridged = contents.bridge()
         let commentPattern = NSRegularExpression.escapedPattern(for: "//")
         let regex = try? NSRegularExpression(
-                pattern: "(?:^\\s*?\(commentPattern)\\s*?sourcery:\(annotation):)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
+                pattern: "(^\\s*?\(commentPattern)\\s*?sourcery:\(annotation):)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
                 options: [.allowCommentsAndWhitespace, .anchorsMatchLines]
         )
 
@@ -19,24 +19,26 @@ internal enum TemplateAnnotationsParser {
         var annotatedRanges = [String: NSRange]()
 
         regex?.enumerateMatches(in: contents, options: [], range: bridged.entireRange) { result, _, _ in
-            guard let result = result, result.numberOfRanges == 4 else {
+            guard let result = result, result.numberOfRanges == 5 else {
                 return
             }
 
-            let nameRange = result.rangeAt(1)
-            let startLineRange = result.rangeAt(2)
-            let endLineRange = result.rangeAt(3)
+            let annotationStartRange = result.rangeAt(1)
+            let nameRange = result.rangeAt(2)
+            let startLineRange = result.rangeAt(3)
+            let endLineRange = result.rangeAt(4)
 
             let name = bridged.substring(with: nameRange)
 
-            let rangeToReplace: NSRange = {
-                let start = startLineRange.location
-                let length = endLineRange.location - start
-                return NSRange(location: start, length: length)
-            }()
+            annotatedRanges[name] = NSRange(
+                location: startLineRange.location,
+                length: endLineRange.location - startLineRange.location
+            )
 
-            annotatedRanges[name] = rangeToReplace
-            rangesToReplace.append(rangeToReplace)
+            rangesToReplace.append(NSRange(
+                location: annotationStartRange.location,
+                length: NSMaxRange(endLineRange) - annotationStartRange.location
+            ))
         }
 
         if removeFromSource {

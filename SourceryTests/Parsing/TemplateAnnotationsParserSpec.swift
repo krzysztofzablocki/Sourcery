@@ -30,11 +30,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
             }
 
             it("removes content between the markup") {
-                let expected =
-                                "// sourcery:inline:Type.AutoCoding\n" +
-                                "// sourcery:end\n"
-
-                expect(result.contents).to(equal(expected))
+                expect(result.contents).to(equal("\n"))
             }
         }
     }
