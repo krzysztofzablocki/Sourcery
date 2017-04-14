@@ -15,7 +15,7 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
 - `--verbose` [default: false] - Turn on verbose logging for ignored entities
 - `--disableCahce` [default: false] - Turn off caching of parsed data
-
+- `--prune` [default: false] - Prune empty generated files
 
 ### Configuration file
 
