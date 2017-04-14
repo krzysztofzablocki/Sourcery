@@ -226,6 +226,7 @@ final class TupleType: NSObject, SourceryModel {
 final class ArrayType: NSObject, SourceryModel {
     let name: String
     let elementTypeName: TypeName
+    // sourcery: skipEquality, skipDescription
     var elementType: Type?
 
     init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
@@ -251,9 +252,13 @@ final class ArrayType: NSObject, SourceryModel {
 
 final class DictionaryType: NSObject, SourceryModel {
     let name: String
+
     let valueTypeName: TypeName
+    // sourcery: skipEquality, skipDescription
     var valueType: Type?
+
     let keyTypeName: TypeName
+    // sourcery: skipEquality, skipDescription
     var keyType: Type?
 
     init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
