@@ -37,6 +37,8 @@ See [#87](https://github.com/krzysztofzablocki/Sourcery/issues/87) for details.
 - `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
 - `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
 
+Plus all the filters from [StencilSwiftKit](https://github.com/SwiftGen/StencilSwiftKit).
+
 ## Using Source Annotations
 
 Sourcery supports annotating your classes and variables with special annotations, similar to how attributes work in Rust / Java

@@ -6,8 +6,7 @@ extension ArrayType {
     override public var description: String {
         var string = "\(type(of: self)): "
         string += "name = \(String(describing: self.name)), "
-        string += "elementTypeName = \(String(describing: self.elementTypeName)), "
-        string += "elementType = \(String(describing: self.elementType))"
+        string += "elementTypeName = \(String(describing: self.elementTypeName))"
         return string
     }
 }
@@ -36,9 +35,7 @@ extension DictionaryType {
         var string = "\(type(of: self)): "
         string += "name = \(String(describing: self.name)), "
         string += "valueTypeName = \(String(describing: self.valueTypeName)), "
-        string += "valueType = \(String(describing: self.valueType)), "
-        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
-        string += "keyType = \(String(describing: self.keyType))"
+        string += "keyTypeName = \(String(describing: self.keyTypeName))"
         return string
     }
 }

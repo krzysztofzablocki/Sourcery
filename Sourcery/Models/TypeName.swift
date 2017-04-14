@@ -266,6 +266,7 @@ public final class ArrayType: NSObject, SourceryModel {
     /// Array element type name
     public let elementTypeName: TypeName
 
+    // sourcery: skipEquality, skipDescription
     /// Array element type, if known
     public internal(set) var elementType: Type?
 
@@ -301,12 +302,14 @@ public final class DictionaryType: NSObject, SourceryModel {
     /// Dictionary value type name
     public let valueTypeName: TypeName
 
+    // sourcery: skipEquality, skipDescription
     /// Dictionary value type, if known
     public internal(set) var valueType: Type?
 
     /// Dictionary key type name
     public let keyTypeName: TypeName
 
+    // sourcery: skipEquality, skipDescription
     /// Dictionary key type, if known
     public internal(set) var keyType: Type?
 

@@ -10,7 +10,6 @@ extension ArrayType: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
         results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: rhs.elementTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "elementType").trackDifference(actual: self.elementType, expected: rhs.elementType))
         return results
     }
 }
@@ -61,9 +60,7 @@ extension DictionaryType: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
         results.append(contentsOf: DiffableResult(identifier: "valueTypeName").trackDifference(actual: self.valueTypeName, expected: rhs.valueTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "valueType").trackDifference(actual: self.valueType, expected: rhs.valueType))
         results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: rhs.keyTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "keyType").trackDifference(actual: self.keyType, expected: rhs.keyType))
         return results
     }
 }

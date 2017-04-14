@@ -7,7 +7,6 @@ extension ArrayType {
         guard let rhs = object as? ArrayType else { return false }
         if self.name != rhs.name { return false }
         if self.elementTypeName != rhs.elementTypeName { return false }
-        if self.elementType != rhs.elementType { return false }
         return true
     }
 }
@@ -45,9 +44,7 @@ extension DictionaryType {
         guard let rhs = object as? DictionaryType else { return false }
         if self.name != rhs.name { return false }
         if self.valueTypeName != rhs.valueTypeName { return false }
-        if self.valueType != rhs.valueType { return false }
         if self.keyTypeName != rhs.keyTypeName { return false }
-        if self.keyType != rhs.keyType { return false }
         return true
     }
 }
