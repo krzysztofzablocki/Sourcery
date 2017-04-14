@@ -1,8 +1,10 @@
 import Foundation
 
 // sourcery: skipDescription
-final class Class: Type {
-    override var kind: String { return "class" }
+/// Descibes Swift class
+public final class Class: Type {
+    /// Returns "class"
+    public override var kind: String { return "class" }
 
     override init(name: String = "",
                   parent: Type? = nil,
@@ -32,11 +34,13 @@ final class Class: Type {
     }
 
     // sourcery:inline:Class.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
         }
 
-        override func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
         }
         // sourcery:end

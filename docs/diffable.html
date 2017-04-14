@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Diffable  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Diffable  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Sourcery Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Diffable  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="installing.html">Installing</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="usage.html">Usage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="writing-templates.html">Writing templates</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Examples.html">Examples</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="equatable.html">Equatable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="hashable.html">Hashable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="enum-cases.html">Enum cases</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="lenses.html">Lenses</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="mocks.html">Mocks</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="diffable.html">Diffable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="linuxmain.html">LinuxMain</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Types.html">Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/TypesReflectionBox.html">TypesReflectionBox</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Protocol.html">Protocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Class.html">Class</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Struct.html">Struct</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AssociatedValue.html">AssociatedValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/MethodParameter.html">MethodParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleElement.html">TupleElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ArrayType.html">ArrayType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/DictionaryType.html">DictionaryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Attribute.html">Attribute</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Annotated.html">Annotated</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Typed.html">Typed</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <a href='#i-want-to-have-diffing-in-tests' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='i-want-to-have-diffing-in-tests'>I want to have diffing in tests</h2>
+
+<p>Template used to generate much better output when using equality in tests, instead of having to read wall of text it&rsquo;s used to generate precise property level differences. This template uses <a href="../../Sourcery/Models/Diffable.swift">Sourcery Diffable implementation</a></p>
+
+<p>from this:
+<img width="600" alt="before" src="https://cloud.githubusercontent.com/assets/1468993/21425370/0e3dd990-c849-11e6-877a-6dc80ae8f039.png"></p>
+
+<p>to this:
+<img width="373" alt="after" src="https://cloud.githubusercontent.com/assets/1468993/21425376/11e9ad94-c849-11e6-882a-e7927a3b2b08.png"></p>
+<a href='#a-href-https-github-com-krzysztofzablocki-sourcery-blob-master-sourcery-templates-diffable-stencil-stencil-template-a' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='a-href-https-github-com-krzysztofzablocki-sourcery-blob-master-sourcery-templates-diffable-stencil-stencil-template-a'><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/Diffable.stencil">Stencil Template</a></h3>
+<a href='#available-annotations' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='available-annotations'>Available annotations:</h4>
+
+<ul>
+<li><code>skipEquality</code> allows you to skip variable from being compared.</li>
+</ul>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2016 Pixle. All rights reserved.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

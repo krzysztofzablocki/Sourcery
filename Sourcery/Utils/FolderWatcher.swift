@@ -8,9 +8,9 @@
 
 import Foundation
 
-public enum FolderWatcher {
+enum FolderWatcher {
 
-    public struct Event {
+    struct Event {
         let path: String
         let flags: Flag
 
@@ -63,7 +63,7 @@ public enum FolderWatcher {
         }
     }
 
-    public class Local {
+    class Local {
         private let path: String
         private var stream: FSEventStreamRef!
         private let closure: (_ events: [Event]) -> Void

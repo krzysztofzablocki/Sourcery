@@ -1,8 +1,13 @@
 import Foundation
 
-class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
-    let name: String
-    let arguments: [String: NSObject]
+/// Describes Swift attribute
+public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+
+    /// Attribute name
+    public let name: String
+
+    /// Attribute arguments
+    public let arguments: [String: NSObject]
 
     // sourcery: skipJSExport
     let _description: String
@@ -10,10 +15,11 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport
     init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name
         self.arguments = arguments
-        self._description = "@\(name)"
+        self._description = description ?? "@\(name)"
     }
 
-    override var description: String {
+    /// Attribute description that can be used in a template.
+    public override var description: String {
         return _description
     }
 
@@ -85,14 +91,16 @@ class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport
     }
 
     // sourcery:inline:sourcery:.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
             guard let _description: String = aDecoder.decode(forKey: "_description") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["_description"])); fatalError() }; self._description = _description
 
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
 
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.arguments, forKey: "arguments")

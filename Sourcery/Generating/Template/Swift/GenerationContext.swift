@@ -14,7 +14,7 @@ class GenerationContext: NSObject, SourceryModel {
     let typeByName: [String : Type]
     let arguments: [String : NSObject]
 
-    init(types: [Type], arguments: [String: NSObject]) {
+    init(types: [Type], arguments: [String: NSObject] = [:]) {
         var typeByName = [String: Type]()
 
         types.forEach { type in
@@ -27,13 +27,15 @@ class GenerationContext: NSObject, SourceryModel {
     }
 
     // sourcery:inline:GenerationContext.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required internal init?(coder aDecoder: NSCoder) {
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let typeByName: [String : Type] = aDecoder.decode(forKey: "typeByName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeByName"])); fatalError() }; self.typeByName = typeByName
             guard let arguments: [String : NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        internal func encode(with aCoder: NSCoder) {
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typeByName, forKey: "typeByName")
             aCoder.encode(self.arguments, forKey: "arguments")
@@ -41,31 +43,31 @@ class GenerationContext: NSObject, SourceryModel {
     // sourcery:end
 
     /// Lists all known classes in the project
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var classes: [Class] {
         return self.types.classes
     }
 
     /// lists all known types, excluding protocols
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var all: [Type] {
         return self.types.all
     }
 
     /// Lists all known protocols
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var protocols: [Protocol] {
         return self.types.protocols
     }
 
     /// Lists all known structs
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var structs: [Struct] {
         return self.types.structs
     }
 
     /// Lists all known enums
-    /// sourcery: skipEquality, skipCoding
+    // sourcery: skipEquality, skipCoding
     var enums: [Enum] {
         return self.types.enums
     }
@@ -78,7 +80,7 @@ protocol TypeConvertible {
 }
 
 extension Type: TypeConvertible {
-    /// sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
+    // sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
     var type: Type {
         return self
     }

@@ -8,9 +8,12 @@
 
 import Foundation
 
-/// sourcery: skipDescription
-final class Struct: Type {
-    override var kind: String { return "struct" }
+// sourcery: skipDescription
+/// Describes Swift struct
+public final class Struct: Type {
+
+    /// Returns "struct"
+    public override var kind: String { return "struct" }
 
     override init(name: String = "",
                   parent: Type? = nil,
@@ -40,11 +43,13 @@ final class Struct: Type {
     }
 
     // sourcery:inline:Struct.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
         }
 
-        override func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
         }
         // sourcery:end

@@ -123,7 +123,7 @@ extension Stencil.Extension {
         registerFilterWithArguments("!\(name)", filter: Filter.make({ !filter($0, $1) }))
     }
 
-    public func registerBoolFilter<U>(_ name: String, filter: @escaping (U) -> Bool) {
+    func registerBoolFilter<U>(_ name: String, filter: @escaping (U) -> Bool) {
         registerFilter(name, filter: Filter.make(filter))
         registerFilter("!\(name)", filter: Filter.make({ !filter($0) }))
     }
@@ -133,7 +133,7 @@ extension Stencil.Extension {
         registerFilterWithArguments("!\(name)", filter: FilterOr.make({ !filter($0, $1) }, other: { !other($0, $1) }))
     }
 
-    public func registerBoolFilterOr<U, V>(_ name: String, filter: @escaping (U) -> Bool, other: @escaping (V) -> Bool) {
+    func registerBoolFilterOr<U, V>(_ name: String, filter: @escaping (U) -> Bool, other: @escaping (V) -> Bool) {
         registerFilter(name, filter: FilterOr.make(filter, other: other))
         registerFilter("!\(name)", filter: FilterOr.make({ !filter($0) }, other: { !other($0) }))
     }

@@ -2,10 +2,10 @@ import Foundation
 
 // sourcery: skipJSExport
 final class Typealias: NSObject, Typed, SourceryModel {
-    /// New typealias name
+    // New typealias name
     let aliasName: String
 
-    /// Target name
+    // Target name
     let typeName: TypeName
 
     // sourcery: skipEquality, skipDescription
@@ -36,7 +36,8 @@ final class Typealias: NSObject, Typed, SourceryModel {
     }
 
     // sourcery:inline:Typealias.AutoCoding
-        required init?(coder aDecoder: NSCoder) {
+        /// :nodoc:
+        required internal init?(coder aDecoder: NSCoder) {
             guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["aliasName"])); fatalError() }; self.aliasName = aliasName
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
@@ -44,7 +45,8 @@ final class Typealias: NSObject, Typed, SourceryModel {
             self.parentName = aDecoder.decode(forKey: "parentName")
         }
 
-        func encode(with aCoder: NSCoder) {
+        /// :nodoc:
+        internal func encode(with aCoder: NSCoder) {
             aCoder.encode(self.aliasName, forKey: "aliasName")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")

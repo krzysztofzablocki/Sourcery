@@ -13,6 +13,7 @@ import Yams
 import XcodeEdit
 
 extension Path: ArgumentConvertible {
+    /// :nodoc:
     public init(parser: ArgumentParser) throws {
         if let path = parser.shift() {
             self.init(path)
@@ -131,7 +132,7 @@ func runCLI() {
         }.run(Sourcery.version)
 }
 
-public var inUnitTests = NSClassFromString("XCTest") != nil
+var inUnitTests = NSClassFromString("XCTest") != nil
 
 #if os(macOS)
 import AppKit

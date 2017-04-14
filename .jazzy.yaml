@@ -1,0 +1,45 @@
+author: Krzysztof Zabłocki
+author_url: https://twitter.com/merowing_
+module: Sourcery
+module_version: 0.5.9
+github_url: https://github.com/krzysztofzablocki/Sourcery
+copyright: 'Copyright © 2016 Pixle. All rights reserved.'
+readme: About.md
+documentation: guides/*.md
+
+custom_categories:
+  - name: Guides
+    children:
+      - Installing
+      - Usage
+      - Writing templates
+
+  - name: Examples
+    children:
+      - Equatable
+      - Hashable
+      - Enum cases
+      - Lenses
+      - Mocks
+      - Diffable
+      - LinuxMain
+
+  - name: Types
+    children:
+      - TypesReflectionBox 
+      - Type
+      - Protocol
+      - Class
+      - Struct
+      - Enum
+      - EnumCase
+      - AssociatedValue
+      - Variable 
+      - Method
+      - MethodParameter
+      - TypeName
+      - TupleType
+      - TupleElement
+      - ArrayType
+      - DictionaryType
+      - Attribute
