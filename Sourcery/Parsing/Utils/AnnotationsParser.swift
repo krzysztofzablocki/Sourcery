@@ -46,7 +46,11 @@ internal struct AnnotationsParser {
     /// returns all annotations in the contents
     var all: Annotations {
         var all = Annotations()
-        lines.forEach { $0.annotations.forEach { all[$0.key] = $0.value } }
+        lines.forEach {
+            $0.annotations.forEach {
+                AnnotationsParser.append(key: $0.key, value: $0.value, to: &all)
+            }
+        }
         return all
     }
 
@@ -63,9 +67,8 @@ internal struct AnnotationsParser {
         var annotations = Annotations()
         for line in lines[0..<lineInfo.line-1].reversed() {
             line.annotations.forEach { annotation in
-                annotations[annotation.key] = annotation.value
+                AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
             }
-
             if line.type != .comment {
                 break
             }
@@ -165,23 +168,36 @@ internal struct AnnotationsParser {
             if let name = parts.first, !name.isEmpty {
 
                 guard parts.count > 1, var value = parts.last, value.isEmpty == false else {
-                    annotations[name] = NSNumber(value: true)
+                    append(key: name, value: NSNumber(value: true), to: &annotations)
                     return
                 }
 
                 if let number = Float(value) {
-                    annotations[name] = NSNumber(value: number)
+                    append(key: name, value: NSNumber(value: number), to: &annotations)
                 } else {
                     if (value.hasPrefix("'") && value.hasSuffix("'")) || (value.hasPrefix("\"") && value.hasSuffix("\"")) {
                         value = value[value.characters.index(after: value.startIndex) ..< value.characters.index(before: value.endIndex)]
                         value = value.trimmingCharacters(in: .whitespaces)
                     }
-                    annotations[name] = value as NSString
+                    append(key: name, value: value as NSString, to: &annotations)
                 }
             }
         }
 
         return annotations
+    }
+
+    static func append(key: String, value: NSObject, to annotations: inout Annotations) {
+        if let oldValue = annotations[key] {
+            if var array = oldValue as? [NSObject] {
+                array.append(value)
+                annotations[key] = array as NSObject
+            } else {
+                annotations[key] = [oldValue, value] as NSObject
+            }
+        } else {
+            annotations[key] = value
+        }
     }
 
 }
