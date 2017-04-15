@@ -19,6 +19,7 @@
 ### Fixed
 
 - Inserting multiple inline code block in one file
+- Suppress warnings when compiling swift templates
 
 ## 0.5.9
 
