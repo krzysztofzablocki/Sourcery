@@ -24,6 +24,11 @@ class AnnotationsParserSpec: QuickSpec {
                     expect(parse("skipEquality")).to(equal(annotations))
                 }
 
+                it("extracts repeated annotations into array") {
+                    let parsedAnnotations = parse("implements = \"Service1\", implements = \"Service2\"")
+                    expect(parsedAnnotations["implements"] as? [String]).to(equal(["Service1", "Service2"]))
+                }
+
                 it("extracts multiple annotations on the same line") {
                     let annotations = ["skipEquality": NSNumber(value: true),
                                        "jsonKey": "json_key" as NSString]
@@ -52,6 +57,11 @@ class AnnotationsParserSpec: QuickSpec {
                                                "// sourcery: placeholder = \"geo:37.332112,-122.0329753?q=1 Infinite Loop\"\n" +
                                                "var name: Int { return 2 }")
                     expect(result).to(equal(annotations))
+                }
+
+                it("extracts repeated annotations into array") {
+                    let parsedAnnotations = parse("// sourcery: implements = \"Service1\"\n// sourcery: implements = \"Service2\"")
+                    expect(parsedAnnotations["implements"] as? [String]).to(equal(["Service1", "Service2"]))
                 }
 
                 it("extracts annotations interleaved with comments") {
