@@ -99,7 +99,7 @@ extension Array where Element: TypeConvertible {
 
     /// Filters protocols
     var protocols: [Protocol] {
-        return self.all.flatMap { $0 as? Protocol }
+        return self.flatMap { $0 as? Protocol }
     }
 
     /// Filters structs

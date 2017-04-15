@@ -19,6 +19,7 @@
 ### Fixed
 
 - Inserting multiple inline code block in one file
+- Accessing protocols in Swift templates
 
 ## 0.5.9
 
