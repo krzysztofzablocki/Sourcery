@@ -1,6 +1,6 @@
 [![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=shield)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
 [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery)
-[![docs](docs/badge.svg)](https://github.com/krzysztofzablocki/Sourcery/blob/master/docs/index.html)
+[![docs](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/badge.svg)](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
@@ -143,7 +143,7 @@ You can use several `project` or `target` objects to scan multiple targets from 
 - Source annotations
 - Inline and per file code generation
 
-For more information please read [DOCUMENTATION](https://github.com/krzysztofzablocki/Sourcery/blob/master/docs/index.html).
+For more information please read [DOCUMENTATION](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html).
 
 ## Contributing
 
