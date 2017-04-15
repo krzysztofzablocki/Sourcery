@@ -101,6 +101,7 @@ extension Method {
         string += "returnTypeName = \(String(describing: self.returnTypeName)), "
         string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
         string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "`rethrows` = \(String(describing: self.`rethrows`)), "
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "isStatic = \(String(describing: self.isStatic)), "
         string += "isClass = \(String(describing: self.isClass)), "

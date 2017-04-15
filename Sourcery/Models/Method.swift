@@ -77,7 +77,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 /// Describes method
 public final class Method: NSObject, SourceryModel, Annotated {
 
-    /// Full method name, including generic constraints, i.e. `foo<T>(bar: T) where T: Equatable`
+    /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
 
     // sourcery: skipDescription
@@ -97,7 +97,7 @@ public final class Method: NSObject, SourceryModel, Annotated {
     /// Method parameters
     public internal(set) var parameters: [MethodParameter]
 
-    /// Return value type name used in declaration
+    /// Return value type name used in declaration, including generic constraints, i.e. `where T: Equatable`
     public internal(set) var returnTypeName: TypeName
 
     /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
@@ -127,8 +127,11 @@ public final class Method: NSObject, SourceryModel, Annotated {
         return returnTypeName.unwrappedTypeName
     }
 
-    /// Whether method throws or rethrows
+    /// Whether method throws
     public let `throws`: Bool
+
+    /// Whether method rethrows
+    public let `rethrows`: Bool
 
     /// Method access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
     public let accessLevel: String
@@ -167,6 +170,7 @@ public final class Method: NSObject, SourceryModel, Annotated {
          parameters: [MethodParameter] = [],
          returnTypeName: TypeName = TypeName("Void"),
          throws: Bool = false,
+         rethrows: Bool = false,
          accessLevel: AccessLevel = .internal,
          isStatic: Bool = false,
          isClass: Bool = false,
@@ -179,6 +183,7 @@ public final class Method: NSObject, SourceryModel, Annotated {
         self.parameters = parameters
         self.returnTypeName = returnTypeName
         self.throws = `throws`
+        self.rethrows = `rethrows`
         self.accessLevel = accessLevel.rawValue
         self.isStatic = isStatic
         self.isClass = isClass
@@ -196,6 +201,7 @@ public final class Method: NSObject, SourceryModel, Annotated {
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             self.isClass = aDecoder.decode(forKey: "isClass")
@@ -212,6 +218,7 @@ public final class Method: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
             aCoder.encode(self.returnType, forKey: "returnType")
             aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.`rethrows`, forKey: "`rethrows`")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.isClass, forKey: "isClass")

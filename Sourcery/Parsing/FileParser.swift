@@ -483,6 +483,7 @@ extension FileParser {
 
         var returnTypeName: String = "Void"
         var `throws` = false
+        var `rethrows` = false
 
         if name.hasPrefix("init(") {
             returnTypeName = ""
@@ -514,7 +515,8 @@ extension FileParser {
             }
 
             if var nameSuffix = nameSuffix {
-                `throws` = nameSuffix.trimPrefix("throws") || nameSuffix.trimPrefix("rethrows")
+                `throws` = nameSuffix.trimPrefix("throws")
+                `rethrows` = nameSuffix.trimPrefix("rethrows")
                 nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
 
                 if nameSuffix.trimPrefix("->") {
@@ -525,7 +527,7 @@ extension FileParser {
             }
         }
 
-        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
+        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
         method.setSource(source)
 
         return method
