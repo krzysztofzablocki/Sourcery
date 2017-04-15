@@ -190,9 +190,11 @@ internal struct AnnotationsParser {
     static func append(key: String, value: NSObject, to annotations: inout Annotations) {
         if let oldValue = annotations[key] {
             if var array = oldValue as? [NSObject] {
-                array.append(value)
-                annotations[key] = array as NSObject
-            } else {
+                if !array.contains(value) {
+                    array.append(value)
+                    annotations[key] = array as NSObject
+                }
+            } else if oldValue != value {
                 annotations[key] = [oldValue, value] as NSObject
             }
         } else {
