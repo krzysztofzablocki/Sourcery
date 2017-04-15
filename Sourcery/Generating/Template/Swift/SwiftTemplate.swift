@@ -97,7 +97,13 @@ class SwiftTemplate: Template {
             assert(diff.isEmpty)
         #endif
 
-        let arguments = [mainFile.description] + runtimeFiles + ["-Onone", "-module-name", "Sourcery"] + ["-o"] + [binaryFile.description]
+        let arguments = [mainFile.description] +
+            runtimeFiles + [
+                "-suppress-warnings",
+                "-Onone",
+                "-module-name", "Sourcery",
+                "-o", binaryFile.description
+        ]
 
         let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
                                             arguments: arguments,

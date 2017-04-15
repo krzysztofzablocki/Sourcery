@@ -57,14 +57,27 @@ class SourcerySpecTests: QuickSpec {
                     it("removes code from within generated template") {
                         let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
                         "// DO NOT EDIT\n\n" +
-                        "// Line One\n" +
-                        "// sourcery:inline:Foo.Inlined\n" +
-                        "// sourcery:end\n"
+                        "// Line One\n"
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
 
                         let result = try? generatedPath.read(.utf8)
                         expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                    }
+
+                    it("does not create generated file with empty content") {
+                        update(code:
+                            "// sourcery:inline:Foo.Inlined \n" +
+                                "var property = 2\n" +
+                                "// Line Three\n" +
+                            "// sourcery:end\n", in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result).to(beNil())
                     }
 
                     it("inline multiple generated code blocks correctly") {
@@ -215,15 +228,29 @@ class SourcerySpecTests: QuickSpec {
                     it("removes code from within generated template") {
                         let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
                             "// DO NOT EDIT\n\n" +
-                            "// Line One\n" +
-                            "// sourcery:file:Generated/Foo\n" +
-                        "// sourcery:end\n"
+                            "// Line One\n"
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
 
                         let result = try? generatedPath.read(.utf8)
                         expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
                     }
+
+                    it("does not create generated file with empty content") {
+                        update(code:
+                                "{% for type in types.all %}" +
+                                "// sourcery:file:Generated/{{ type.name }}\n" +
+                                "// sourcery:end\n" +
+                            "{% endfor %}", in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+
+                        let generatedPath = outputDir + Path("Generated/Foo.generated.swift")
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result).to(beNil())
+                    }
+
                 }
 
                 context("given a restricted file") {
