@@ -132,6 +132,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
     var unwrappedReturnTypeName: String { get }
     var `throws`: Bool { get }
+    var `rethrows`: Bool { get }
     var accessLevel: String { get }
     var isStatic: Bool { get }
     var isClass: Bool { get }

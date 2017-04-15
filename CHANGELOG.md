@@ -17,6 +17,7 @@
 - Added docs generated with jazzy
 - Sourcery now will not create empty files and will remove existing generated files with empty content if CLI flag `prune` is set to `true` (`false` by default)
 - Sourcery now will remove inline annotation comments from generated code.
+- Added `rethrows` property to `Method`
 
 ### Fixed
 
