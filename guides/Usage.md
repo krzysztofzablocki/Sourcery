@@ -14,7 +14,7 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces. Arguments are accessible in templates via `argument.name`
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
 - `--verbose` [default: false] - Turn on verbose logging for ignored entities
-- `--disableCahce` [default: false] - Turn off caching of parsed data
+- `--disableCache` [default: false] - Turn off caching of parsed data
 - `--prune` [default: false] - Prune empty generated files
 
 ### Configuration file
