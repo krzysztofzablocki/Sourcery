@@ -142,13 +142,7 @@
             
             <a href='#writing-templates' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='writing-templates'>Writing templates</h2>
 
-<p>Sourcery supports several types of templates:</p>
-
-<ul>
-<li><a href="https://github.com/kylef/Stencil">Stencil</a> templates</li>
-<li><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate">Swift</a> templates</li>
-<li><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js">JavaScript</a> templates (using <a href="http://ejs.co">EJS</a>)</li>
-</ul>
+<p>Sourcery supports templates written in Stencil, Swift and even JavaScript.</p>
 
 <p>Dicsovered types can be accessed in templates via <code>type</code> variable of <code>TypeReflectionBox</code> type. For example you can access all classes using <code>types.classes</code>.</p>
 
@@ -165,7 +159,13 @@ you can open template side-by-side with generated code and see it change live.</
 <p>If you have an extension of unknown type defined in scanned sources Sourcery will create <code>Type</code> for it (it&rsquo;s <code>kind</code> property will be <code>extension</code>). But this object will contain only declarations defined in this extension. Several extensions of unknown type will be merged into one <code>Type</code> object the same way as extensions of known types.</p>
 
 <p>See <a href="https://github.com/krzysztofzablocki/Sourcery/issues/87">#87</a> for details.</p>
-<a href='#custom-stencil-tags-and-filters' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='custom-stencil-tags-and-filters'>Custom Stencil tags and filters</h2>
+<a href='#stencil-templates' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='stencil-templates'>Stencil templates</h2>
+
+<p><a href="http://stencil.fuller.li/en/latest/">Stencil</a> is a simple and powerful template language for Swift. It provides a syntax similar to Django and Mustache.
+Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwiftKit">StencilSwiftKit</a> so you have access to additional nodes and filteres defined there.</p>
+
+<p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/Equality.stencil">Equality.stencil</a></p>
+<a href='#custom-stencil-tags-and-filters' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='custom-stencil-tags-and-filters'>Custom Stencil tags and filters</h3>
 
 <ul>
 <li><code>{{ name|upperFirst }}</code> - makes first letter in <code>name</code> uppercase</li>
@@ -182,8 +182,35 @@ you can open template side-by-side with generated code and see it change live.</
 <li><code>public</code>, <code>open</code>, <code>internal</code>, <code>private</code>, <code>fileprivate</code> - can be used on Type[s] and Method[s] to filter by access level, can be negated with <code>!</code> prefix.</li>
 <li><code>publicGet</code>, <code>publicSet</code>, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with <code>!</code> prefix</li>
 </ul>
+<a href='#swift-templates' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='swift-templates'>Swift templates</h2>
 
-<p>Plus all the filters from <a href="https://github.com/SwiftGen/StencilSwiftKit">StencilSwiftKit</a>.</p>
+<p>Swift templates syntax is very similar to EJS:</p>
+
+<ul>
+<li>Control flow with <code>&lt;% %&gt;</code></li>
+<li>Output value withn <code>&lt;%= %&gt;</code></li>
+<li>Trim extra new line after control flow tag with <code>-%&gt;</code></li>
+<li>Trim <em>all</em> whitespaces before/after control flow tag with <code>&lt;%_</code> and <code>_%&gt;</code></li>
+<li>Use <code>&lt;%# %&gt;</code> for comments</li>
+</ul>
+
+<p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate">Equality.swifttemplate</a></p>
+
+<p>Template:</p>
+<pre class="highlight swift"><code><span class="o">&lt;%</span> <span class="k">for</span> <span class="n">type</span> <span class="k">in</span> <span class="n">types</span><span class="o">.</span><span class="n">all</span> <span class="p">{</span> <span class="o">-%&gt;</span>
+  <span class="o">&lt;%</span><span class="n">_</span> <span class="o">%&gt;&lt;%=</span> <span class="n">type</span><span class="o">.</span><span class="n">name</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span> <span class="p">}</span> <span class="o">%&gt;</span>
+</code></pre>
+
+<p>Output:</p>
+<pre class="highlight swift"><code><span class="kt">Foo</span>
+<span class="kt">Bar</span>
+</code></pre>
+<a href='#javascript-templates' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='javascript-templates'>JavaScript templates</h2>
+
+<p>JavaScript templates are powered by <a href="http://ejs.co">EJS</a> and support all the features available in this templates engine except files includes.</p>
+
+<p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js">Equality.js</a></p>
 <a href='#using-source-annotations' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='using-source-annotations'>Using Source Annotations</h2>
 
 <p>Sourcery supports annotating your classes and variables with special annotations, similar to how attributes work in Rust / Java</p>
