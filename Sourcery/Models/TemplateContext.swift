@@ -78,6 +78,7 @@ public final class Types: NSObject, SourceryModel {
     // sourcery:end
 
     // sourcery: skipDescription, skipEquality, skipCoding
+    /// :nodoc:
     public lazy internal(set) var typesByName: [String: Type] = {
         var typesByName = [String: Type]()
         self.types.forEach { typesByName[$0.name] = $0 }

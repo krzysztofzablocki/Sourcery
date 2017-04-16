@@ -71,7 +71,7 @@
             <a href="Types.html">Types</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Classes/TypesReflectionBox.html">TypesReflectionBox</a>
+                <a href="Classes/Types.html">Types</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/Type.html">Type</a>
@@ -144,7 +144,13 @@
 
 <p>Sourcery supports templates written in Stencil, Swift and even JavaScript.</p>
 
-<p>Dicsovered types can be accessed in templates via <code>type</code> variable of <code>TypeReflectionBox</code> type. For example you can access all classes using <code>types.classes</code>.</p>
+<p>Dicsovered types can be accessed in templates via global context with following properties:</p>
+
+<ul>
+<li><code>types: Types</code> - access collections of types, i.e. <code>types.implementing.AutoCoding</code>. See <a href="Classes/Types.html">Types</a>.</li>
+<li><code>type: [String: Type]</code> - access types by their names, i.e. <code>type.MyType</code></li>
+<li><code>arguments: [String: NSObject]</code> - access additional parameters passed with <code>--args</code> command line flag or set in <code>.sourcery.yml</code> file</li>
+</ul>
 
 <blockquote>
 <p>Tip: Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
