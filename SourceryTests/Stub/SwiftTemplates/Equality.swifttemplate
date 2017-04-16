@@ -1,11 +1,16 @@
-<% for type in types.classes { %>
-    extension <%= type.name %>: Equatable {}
+<% for type in types.classes { -%>
+    <%_ %><%# this is a comment -%>
+extension <%= type.name %>: Equatable {}
 
-    <% if type.annotations["showComment"] != nil { %> // <%= type.name %> has Annotations <% } %>
+<%_ if type.annotations["showComment"] != nil { -%>
+<% _%> // <%= type.name %> has Annotations
 
-        func == (lhs: <%= type.name %>, rhs: <%= type.name %>) -> Bool {
-    <% for variable in type.variables { %> if lhs.<%= variable.name %> != rhs.<%= variable.name %> { return false }
-        <% } %>
-        return true
-    }
-<% } %>
+<% } -%>
+func == (lhs: <%= type.name %>, rhs: <%= type.name %>) -> Bool {
+<%_ for variable in type.variables { -%>
+    if lhs.<%= variable.name %> != rhs.<%= variable.name %> { return false }
+<%_ } %>
+    return true
+}
+
+<% } -%>
