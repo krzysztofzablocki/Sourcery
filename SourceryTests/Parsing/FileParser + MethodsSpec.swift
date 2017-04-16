@@ -25,7 +25,7 @@ class FileParserMethodsSpec: QuickSpec {
                                 MethodParameter(name: "some", typeName: TypeName("Int"))
                                 ], returnTypeName: TypeName("Bar"), throws: true),
                             Method(name: "foo()", returnTypeName: TypeName("Foo")),
-                            Method(name: "fooBar()", returnTypeName: TypeName("Void"), throws: true),
+                            Method(name: "fooBar()", returnTypeName: TypeName("Void"), throws: false, rethrows: true),
                             Method(name: "fooVoid()", returnTypeName: TypeName("Void"))
                             ])
                         ]))
@@ -39,7 +39,7 @@ class FileParserMethodsSpec: QuickSpec {
                                     MethodParameter(name: "some", typeName: TypeName("Int"))
                                     ], returnTypeName: TypeName("Bar"), throws: true),
                                 Method(name: "foo()", returnTypeName: TypeName("Foo")),
-                                Method(name: "fooBar()", returnTypeName: TypeName("Void"), throws: true),
+                                Method(name: "fooBar()", returnTypeName: TypeName("Void"), throws: false, rethrows: true),
                                 Method(name: "fooVoid()", returnTypeName: TypeName("Void"))
                                 ])
                             ]))

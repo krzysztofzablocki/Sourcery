@@ -117,13 +117,13 @@ Sourcery will generate the template code and then perform replacement in your so
 
 #### Automatic inline code generation
 
-To avoid having to place the markup in your source files, you can use `inline:auto:{{ type.name }}`:
+To avoid having to place the markup in your source files, you can use `inline:auto:{{ type.name }}.TemplateName`:
 
 ```swift
 // in template:
 
 {% for type in types.all %}
-// sourcery:inline:auto:{{ type.name }}
+// sourcery:inline:auto:{{ type.name }}.TemplateName
 // sourcery:end
 {% endfor %}
 
@@ -134,12 +134,12 @@ class MyType {}
 // after running Sourcery:
 
 class MyType {
-// sourcery:inline:auto:MyType
+// sourcery:inline:auto:MyType.TemplateName
 // sourcery:end
 }
 ```
 
-The needed markup will be automatically added at the end of the type declaration body.
+The needed markup will be automatically added at the end of the type declaration body. After first parse Sourcery will work with generated code annotated with `inline:auto` the same way as annotated with `inline`, so you can even move these blocks of code anywhere in the same file.
 
 ## Per file code generation
 

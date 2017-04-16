@@ -343,7 +343,7 @@ extension Sourcery {
     }
 
     private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
-        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: contents, removeFromSource: true)
+        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: contents)
 
         typealias MappedInlineAnnotations = (
             range: NSRange,
@@ -359,7 +359,7 @@ extension Sourcery {
 
                 guard let (filePath, ranges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {
                     guard key.hasPrefix("auto:") else { return nil }
-                    let autoTypeName = key.trimmingPrefix("auto:")
+                    let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".")[0]
                     let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
                     guard let definition = parsingResult.types.first(where: { $0.name == autoTypeName }),
