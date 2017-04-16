@@ -106,8 +106,8 @@ class SwiftTemplate: Template {
         return sourceFile.joined(separator: "")
     }
 
-    func render(types: [Type], arguments: [String: NSObject]) throws -> String {
-        let context = GenerationContext(types: types, arguments: arguments)
+    func render(types: Types, arguments: [String: NSObject]) throws -> String {
+        let context = TemplateContext(types: types, arguments: arguments)
         let swiftCode = try SwiftTemplate.generateSwiftCode(templateContent: try sourcePath.read(), path: sourcePath)
 
         let compilationDir = Path.cleanTemporaryDir(name: "build")
@@ -119,7 +119,7 @@ class SwiftTemplate: Template {
         let mainFile = compilationDir + Path("main.swift")
         let binaryFile = compilationDir + Path("bin")
 
-        let runableCode = "extension GenerationContext {\n\n override func generate() {" + swiftCode + "\n }\n\n}\nrun();"
+        let runableCode = "extension TemplateContext {\n\n override func generate() {" + swiftCode + "\n }\n\n}\nrun();"
 
         try mainFile.write(runableCode)
 

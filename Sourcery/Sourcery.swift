@@ -181,7 +181,7 @@ class Sourcery {
 // MARK: - Parsing
 
 extension Sourcery {
-    typealias ParsingResult = (types: [Type], inlineRanges: [(file: String, ranges: [String: NSRange])])
+    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange])])
 
     fileprivate func parse(from: [Path], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
@@ -240,7 +240,7 @@ extension Sourcery {
         let types = Composer(verbose: verbose).uniqueTypes(parserResult)
 
         track("Found \(types.count) types.")
-        return (types, inlineRanges)
+        return (Types(types: types), inlineRanges)
     }
 
     private func loadOrParse(parser: FileParser, cachesPath: Path) -> FileParserResult {
@@ -362,7 +362,7 @@ extension Sourcery {
                     let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".")[0]
                     let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
-                    guard let definition = parsingResult.types.first(where: { $0.name == autoTypeName }),
+                    guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
                         let path = definition.path,
                         let rangeInFile = try definition.rangeToAppendBody() else {
                             return nil

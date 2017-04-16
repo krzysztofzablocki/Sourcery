@@ -90,16 +90,6 @@ extension FileParserResult {
         return true
     }
 }
-extension GenerationContext {
-    /// :nodoc:
-    override internal func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenerationContext else { return false }
-        if self.types != rhs.types { return false }
-        if self.typeByName != rhs.typeByName { return false }
-        if self.arguments != rhs.arguments { return false }
-        return true
-    }
-}
 extension Method {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -143,6 +133,15 @@ extension Struct {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Struct else { return false }
         return super.isEqual(rhs)
+    }
+}
+extension TemplateContext {
+    /// :nodoc:
+    override internal func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TemplateContext else { return false }
+        if self.types != rhs.types { return false }
+        if self.arguments != rhs.arguments { return false }
+        return true
     }
 }
 extension TupleElement {
@@ -203,6 +202,14 @@ extension Typealias {
         if self.aliasName != rhs.aliasName { return false }
         if self.typeName != rhs.typeName { return false }
         if self.parentName != rhs.parentName { return false }
+        return true
+    }
+}
+extension Types {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Types else { return false }
+        if self.types != rhs.types { return false }
         return true
     }
 }

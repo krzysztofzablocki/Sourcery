@@ -15,17 +15,9 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment())
     }
 
-    func render(types: [Type], arguments: [String: NSObject]) throws -> String {
-        var typesByName = [String: Type]()
-        types.forEach { typesByName[$0.name] = $0 }
-
-        let context: [String: Any] = [
-                "types": TypesReflectionBox(types: types),
-                "type": typesByName,
-                "argument": arguments
-        ]
-
-        return try super.render(context)
+    func render(types: Types, arguments: [String: NSObject]) throws -> String {
+        let context = TemplateContext(types: types, arguments: arguments)
+        return try super.render(context.stencilContext)
     }
 
     private static func sourceryEnvironment() -> Stencil.Environment {

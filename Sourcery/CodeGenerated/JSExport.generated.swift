@@ -222,6 +222,15 @@ extension Protocol: ProtocolAutoJSExport {}
 
 extension Struct: StructAutoJSExport {}
 
+@objc protocol TemplateContextAutoJSExport: JSExport {
+    var types: Types { get }
+    var arguments: [String: NSObject] { get }
+    var stencilContext: [String: Any] { get }
+    var jsContext: [String: Any] { get }
+}
+
+extension TemplateContext: TemplateContextAutoJSExport {}
+
 @objc protocol TupleElementAutoJSExport: JSExport {
     var name: String { get }
     var typeName: TypeName { get }

@@ -9,7 +9,7 @@ class StencilTemplateSpec: QuickSpec {
         describe("StencilTemplate") {
 
             func generate(_ template: String) -> String {
-                return (try? Generator.generate([], template: StencilTemplate(templateString: template))) ?? ""
+                return (try? Generator.generate(Types(types: []), template: StencilTemplate(templateString: template))) ?? ""
             }
 
             it("generates uppercase") {
