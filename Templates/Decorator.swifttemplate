@@ -1,4 +1,4 @@
-<%# Constrcuts full method declaration string -%>
+<%# Constructs full method declaration string -%>
 <%
 func methodDeclaration(_ method: Method) -> String {
     var result = method.name
@@ -10,7 +10,7 @@ func methodDeclaration(_ method: Method) -> String {
     return result + " -> \(method.returnTypeName)"
 }
 -%>
-<%# Constrcuts method call string passing in parameters with their local names -%>
+<%# Constructs method call string passing in parameters with their local names -%>
 <%
 func methodCall(_ method: Method) -> String {
     let params = method.parameters.map({
