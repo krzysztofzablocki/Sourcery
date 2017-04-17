@@ -660,15 +660,20 @@ extension FileParser {
                 contentToParse = contentToParse.bridge().replacingOccurrences(of: substring, with: replacement)
             }
         }
-        // `()` is not recognized as type identifier token
-        contentToParse = contentToParse.replacingOccurrences(of: "()", with: "(Void)")
+
+        // `()` is not recognized as type identifier token, this needs to be delayed otherwise we will break byteRanges
+        let voidReplaced: (String) -> String = { string in
+            return string.replacingOccurrences(of: "()", with: "(Void)")
+        }
 
         guard containingType != nil else {
-            return parseTypealiases(SyntaxMap(file: File(contents: contentToParse)).tokens, contents: contentToParse)
+            let contents = voidReplaced(contentToParse)
+            return parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
         }
 
         if let body = extract(.body, from: source, contents: contentToParse) {
-            return parseTypealiases(SyntaxMap(file: File(contents: body)).tokens, contents: body)
+            let contents = voidReplaced(body)
+            return parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
         } else {
             return []
         }
