@@ -23,7 +23,7 @@ class FileParserSpec: QuickSpec {
                         let templatePath = Stubs.errorsDirectory + Path("localized-error.swift")
                         guard let content = try? templatePath.read(.utf8) else { return fail() }
 
-                        parse(content)
+                        _ = parse(content)
                     }
                 }
 
