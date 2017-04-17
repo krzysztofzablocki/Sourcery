@@ -75,21 +75,6 @@ extension FileParserResult {
         return string
     }
 }
-extension GenerationContext {
-    /// :nodoc:
-    override internal var description: String {
-        var string = "\(type(of: self)): "
-        string += "types = \(String(describing: self.types)), "
-        string += "typeByName = \(String(describing: self.typeByName)), "
-        string += "arguments = \(String(describing: self.arguments)), "
-        string += "classes = \(String(describing: self.classes)), "
-        string += "all = \(String(describing: self.all)), "
-        string += "protocols = \(String(describing: self.protocols)), "
-        string += "structs = \(String(describing: self.structs)), "
-        string += "enums = \(String(describing: self.enums))"
-        return string
-    }
-}
 extension Method {
     /// :nodoc:
     override public var description: String {
@@ -139,6 +124,16 @@ extension Struct {
     override public var description: String {
         var string = super.description
         string += "kind = \(String(describing: self.kind))"
+        return string
+    }
+}
+extension TemplateContext {
+    /// :nodoc:
+    override internal var description: String {
+        var string = "\(type(of: self)): "
+        string += "types = \(String(describing: self.types)), "
+        string += "arguments = \(String(describing: self.arguments)), "
+        string += "stencilContext = \(String(describing: self.stencilContext))"
         return string
     }
 }
@@ -196,6 +191,14 @@ extension Typealias {
         string += "typeName = \(String(describing: self.typeName)), "
         string += "parentName = \(String(describing: self.parentName)), "
         string += "name = \(String(describing: self.name))"
+        return string
+    }
+}
+extension Types {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "types = \(String(describing: self.types))"
         return string
     }
 }

@@ -28,6 +28,10 @@
 - Accessing protocols in Swift templates
 - Crash that would happen sometimes when parsing typealiases
 
+### Internal changes
+
+- Replaced `TypeReflectionBox` and `GenerationContext` types with common `TemplateContext`.
+
 ## 0.5.9
 
 ### New Features

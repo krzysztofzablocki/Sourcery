@@ -12,7 +12,7 @@ func run() {
     let path = ProcessInfo().arguments[1]
 
     // swiftlint:disable:next force_cast
-    let context = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! GenerationContext
+    let context = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! TemplateContext
     context.generate()
 }
 

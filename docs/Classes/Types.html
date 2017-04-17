@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>TypesReflectionBox Class Reference</title>
+    <title>Types Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/TypesReflectionBox" class="dashAnchor"></a>
-    <a title="TypesReflectionBox Class Reference"></a>
+    <a name="//apple_ref/swift/Class/Types" class="dashAnchor"></a>
+    <a title="Types Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery Docs</a> (100% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        TypesReflectionBox Class Reference
+        Types Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -72,7 +72,7 @@
             <a href="../Types.html">Types</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Classes/TypesReflectionBox.html">TypesReflectionBox</a>
+                <a href="../Classes/Types.html">Types</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/Type.html">Type</a>
@@ -140,14 +140,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>TypesReflectionBox</h1>
+            <h1>Types</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypesReflectionBox</span><span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Types</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
 
                 </div>
               </div>
-            <p>Provides access to parsed types in templates</p>
+            <p>Collection of scanned types for accessing in templates</p>
 
           </section>
           <section class="section task-group-section">
@@ -156,36 +156,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox7classesGSaCS_5Class_"></a>
-                    <a name="//apple_ref/swift/Property/classes" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox7classesGSaCS_5Class_">classes</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>All known classes</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">classes</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Class.html">Class</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox3allGSaCS_4Type_"></a>
+                    <a name="/s:vC8Sourcery5Types3allGSaCS_4Type_"></a>
                     <a name="//apple_ref/swift/Property/all" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox3allGSaCS_4Type_">all</a>
+                    <a class="token" href="#/s:vC8Sourcery5Types3allGSaCS_4Type_">all</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -200,7 +173,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">all</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">all</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span></code></pre>
 
                         </div>
                       </div>
@@ -210,9 +183,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox9protocolsGSaCS_8Protocol_"></a>
+                    <a name="/s:vC8Sourcery5Types9protocolsGSaCS_8Protocol_"></a>
                     <a name="//apple_ref/swift/Property/protocols" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox9protocolsGSaCS_8Protocol_">protocols</a>
+                    <a class="token" href="#/s:vC8Sourcery5Types9protocolsGSaCS_8Protocol_">protocols</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -227,7 +200,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">protocols</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocols</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
 
                         </div>
                       </div>
@@ -237,9 +210,36 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox7structsGSaCS_6Struct_"></a>
+                    <a name="/s:vC8Sourcery5Types7classesGSaCS_5Class_"></a>
+                    <a name="//apple_ref/swift/Property/classes" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC8Sourcery5Types7classesGSaCS_5Class_">classes</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All known classes</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">classes</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Class.html">Class</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC8Sourcery5Types7structsGSaCS_6Struct_"></a>
                     <a name="//apple_ref/swift/Property/structs" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox7structsGSaCS_6Struct_">structs</a>
+                    <a class="token" href="#/s:vC8Sourcery5Types7structsGSaCS_6Struct_">structs</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -254,7 +254,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">structs</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Struct.html">Struct</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">structs</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Struct.html">Struct</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
 
                         </div>
                       </div>
@@ -264,9 +264,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox5enumsGSaCS_4Enum_"></a>
+                    <a name="/s:vC8Sourcery5Types5enumsGSaCS_4Enum_"></a>
                     <a name="//apple_ref/swift/Property/enums" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox5enumsGSaCS_4Enum_">enums</a>
+                    <a class="token" href="#/s:vC8Sourcery5Types5enumsGSaCS_4Enum_">enums</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -281,7 +281,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">enums</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Enum.html">Enum</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">enums</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Enum.html">Enum</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
 
                         </div>
                       </div>
@@ -291,9 +291,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox5basedGVs10DictionarySSGSaCS_4Type__"></a>
+                    <a name="/s:vC8Sourcery5Types5basedGVs10DictionarySSGSaCS_4Type__"></a>
                     <a name="//apple_ref/swift/Property/based" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox5basedGVs10DictionarySSGSaCS_4Type__">based</a>
+                    <a class="token" href="#/s:vC8Sourcery5Types5basedGVs10DictionarySSGSaCS_4Type__">based</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -309,7 +309,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">based</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">based</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]]</span> <span class="o">=</span></code></pre>
 
                         </div>
                       </div>
@@ -319,9 +319,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox10inheritingGVs10DictionarySSGSaCS_4Type__"></a>
+                    <a name="/s:vC8Sourcery5Types10inheritingGVs10DictionarySSGSaCS_4Type__"></a>
                     <a name="//apple_ref/swift/Property/inheriting" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox10inheritingGVs10DictionarySSGSaCS_4Type__">inheriting</a>
+                    <a class="token" href="#/s:vC8Sourcery5Types10inheritingGVs10DictionarySSGSaCS_4Type__">inheriting</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -337,7 +337,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">inheriting</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">inheriting</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]]</span> <span class="o">=</span></code></pre>
 
                         </div>
                       </div>
@@ -347,9 +347,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC8Sourcery18TypesReflectionBox12implementingGVs10DictionarySSGSaCS_4Type__"></a>
+                    <a name="/s:vC8Sourcery5Types12implementingGVs10DictionarySSGSaCS_4Type__"></a>
                     <a name="//apple_ref/swift/Property/implementing" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC8Sourcery18TypesReflectionBox12implementingGVs10DictionarySSGSaCS_4Type__">implementing</a>
+                    <a class="token" href="#/s:vC8Sourcery5Types12implementingGVs10DictionarySSGSaCS_4Type__">implementing</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -365,7 +365,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">implementing</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">implementing</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]]</span> <span class="o">=</span></code></pre>
 
                         </div>
                       </div>

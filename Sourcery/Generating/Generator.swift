@@ -7,7 +7,7 @@ import Foundation
 import Stencil
 
 enum Generator {
-    static func generate(_ types: [Type], template: Template, arguments: [String: NSObject] = [:]) throws -> String {
+    static func generate(_ types: Types, template: Template, arguments: [String: NSObject] = [:]) throws -> String {
         return try template.render(types: types, arguments: arguments)
     }
 }

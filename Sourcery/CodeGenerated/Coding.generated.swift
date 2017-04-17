@@ -51,11 +51,11 @@ extension EnumCase: NSCoding {}
 
 extension FileParserResult: NSCoding {}
 
-extension GenerationContext: NSCoding {}
-
 extension Method: NSCoding {}
 
 extension MethodParameter: NSCoding {}
+
+extension TemplateContext: NSCoding {}
 
 extension TupleElement: NSCoding {}
 
@@ -66,5 +66,7 @@ extension Type: NSCoding {}
 extension TypeName: NSCoding {}
 
 extension Typealias: NSCoding {}
+
+extension Types: NSCoding {}
 
 extension Variable: NSCoding {}
