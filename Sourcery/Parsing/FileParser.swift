@@ -588,11 +588,16 @@ extension FileParser {
         }
 
         let annotations: [String: NSObject]
-        if var body = extract(.keyPrefix, from: source) {
+        if var body = extract(.keyPrefix, from: source)?.trimmingSuffix("case") {
+            // search backwards for possible enum cases separators
             if let semicolon = body.range(of: ";", options: [.backwards])?.upperBound {
                 body = body.substring(from: semicolon)
             } else if let comma = body.range(of: ",", options: [.backwards])?.upperBound {
                 body = body.substring(from: comma)
+            } else if let parenthesis = body.range(of: ")", options: [.backwards])?.upperBound {
+                body = body.substring(from: parenthesis)
+            } else if let `case` = body.range(of: "case", options: [.backwards])?.upperBound {
+                body = body.substring(from: `case`)
             } else if let brace = body.range(of: "{", options: [.backwards])?.upperBound {
                 body = body.substring(from: brace)
             }
