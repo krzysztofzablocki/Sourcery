@@ -20,6 +20,7 @@
 - Added `rethrows` property to `Method`
 - Allow duplicated annotations to be agregated into array
 - Added ejs-style tags to control whitespaces and new lines in swift templates
+- Added CLI option to provide path to config file
 
 ### Bug Fixes
 

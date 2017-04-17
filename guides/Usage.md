@@ -10,7 +10,8 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 
 - `--sources` - Path to a source swift files. You can provide multiple paths using multiple `--sources` option.
 - `--templates` - Path to templates. File or Directory. You can provide multiple paths using multiple `--templates` options.
-- `--output` - Path to output. File or Directory.
+- `--output` - Path to output. File or Directory. Default is current path.
+- `--config` - Path to config file. Directory. Default is current path.
 - `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces. Arguments are accessible in templates via `argument.name`
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
 - `--verbose` [default: false] - Turn on verbose logging for ignored entities
