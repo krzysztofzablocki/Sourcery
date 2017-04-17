@@ -65,6 +65,14 @@ fileprivate enum Validators {
 
         return path
     }
+
+    static func isWriteable(path: Path) -> Path {
+        if path.exists && !path.isWritable {
+            print("'\(path)' isn't writeable.")
+            exit(2)
+        }
+        return path
+    }
 }
 
 extension Configuration {
@@ -82,7 +90,7 @@ extension Configuration {
             print("No templates provided.")
             exit(3)
         }
-        _ = Validators.isFileOrDirectory(path:output)
+        _ = Validators.isWriteable(path: output)
     }
 
 }
