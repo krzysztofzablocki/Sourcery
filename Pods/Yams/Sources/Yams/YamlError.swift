@@ -33,14 +33,14 @@ public enum YamlError: Swift.Error {
 
     public struct Mark: CustomStringConvertible {
         public let line: Int, column: Int
-        public var description: String { return "\(line):\(column)" }
+        public var description: String { return "\(line + 1):\(column + 1)" }
     }
 
     public struct Context: CustomStringConvertible {
         public let text: String
         public let mark: Mark
         public var description: String {
-            return text + " in line \(mark.line), column \(mark.column)\n"
+            return text + " in line \(mark.line + 1), column \(mark.column + 1)\n"
         }
     }
 }
@@ -107,7 +107,7 @@ extension YamlError: CustomStringConvertible {
             guard let (mark, contents) = markAndSnippet(from: yaml, byteOffset)
                 else { return "\(problem) at byte offset: \(byteOffset), value: \(value)" }
             return "\(mark): error: reader: \(problem):\n" + contents.endingWithNewLine
-                + String(repeating: " ", count: mark.column - 1) + "^"
+                + String(repeating: " ", count: mark.column) + "^"
         case let .scanner(context, problem, mark, yaml):
             return "\(mark): error: scanner: \(context)\(problem):\n" + snippet(from: yaml, mark)
         case let .parser(context, problem, mark, yaml):

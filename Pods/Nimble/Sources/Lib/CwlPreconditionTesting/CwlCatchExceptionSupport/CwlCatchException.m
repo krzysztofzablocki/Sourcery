@@ -1,6 +1,6 @@
 //
-//  CwlCatchException.h
-//  CwlCatchException
+//  CwlCatchException.m
+//  CwlAssertionTesting
 //
 //  Created by Matt Gallagher on 2016/01/10.
 //  Copyright © 2016 Matt Gallagher ( http://cocoawithlove.com ). All rights reserved.
@@ -18,13 +18,20 @@
 //  IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "CwlCatchException.h"
 
-//! Project version number for CwlCatchException.
-FOUNDATION_EXPORT double CwlCatchExceptionVersionNumber;
-
-//! Project version string for CwlCatchException.
-FOUNDATION_EXPORT const unsigned char CwlCatchExceptionVersionString[];
-
+#if !SWIFT_PACKAGE && NON_SWIFT_PACKAGE
 __attribute__((visibility("hidden")))
-NSException* __nullable catchExceptionOfKind(Class __nonnull type, __attribute__((noescape)) void (^ __nonnull inBlock)());
+#endif
+NSException* catchExceptionOfKind(Class __nonnull type, __attribute__((noescape)) void (^ __nonnull inBlock)()) {
+	@try {
+		inBlock();
+	} @catch (NSException *exception) {
+		if ([exception isKindOfClass:type]) {
+			return exception;
+		} else {
+			@throw;
+		}
+	}
+	return nil;
+}

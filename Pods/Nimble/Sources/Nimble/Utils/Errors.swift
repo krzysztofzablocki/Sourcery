@@ -12,11 +12,7 @@ internal func setFailureMessageForError<T: Error>(
     failureMessage.postfixMessage = "\(postfixMessageVerb) error"
 
     if let error = error {
-        if let error = error as? CustomDebugStringConvertible {
-            failureMessage.postfixMessage += " <\(error.debugDescription)>"
-        } else {
-            failureMessage.postfixMessage += " <\(error)>"
-        }
+        failureMessage.postfixMessage += " <\(error)>"
     } else if errorType != nil || closure != nil {
         failureMessage.postfixMessage += " from type <\(T.self)>"
     }
@@ -44,8 +40,7 @@ internal func errorMatchesExpectedError<T: Error>(
 internal func errorMatchesExpectedError<T: Error>(
     _ actualError: Error,
     expectedError: T) -> Bool
-    where T: Equatable
-{
+    where T: Equatable {
     if let actualError = actualError as? T {
         return actualError == expectedError
     }
