@@ -18,6 +18,15 @@ class FileParserSpec: QuickSpec {
                     return Composer(verbose: false).uniqueTypes(parserResult)
                 }
 
+                describe("regression files") {
+                    it("doesnt crash on localized strings") {
+                        let templatePath = Stubs.errorsDirectory + Path("localized-error.swift")
+                        guard let content = try? templatePath.read(.utf8) else { return fail() }
+
+                        parse(content)
+                    }
+                }
+
                 context("given it has sourcery annotations") {
                     it("extracts annotation block") {
                         let annotations = [
