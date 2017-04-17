@@ -31,38 +31,78 @@ class SwiftTemplate: Template {
         self.sourcePath = path
     }
 
+    enum Command {
+        case output(String)
+        case controlFlow(String)
+        case outputEncoded(String)
+    }
+
     fileprivate static func generateSwiftCode(templateContent _templateContent: String, path: Path) throws -> String {
         let templateContent = "<%%>" + _templateContent
 
         let components = templateContent.components(separatedBy: Delimiters.open)
 
         var sourceFile = [String]()
+        var commands = [Command]()
 
-        let line = {
+        let currentLineNumber = {
             return sourceFile.joined(separator: "").numberOfLineSeparators
         }
 
         for component in components.suffix(from: 1) {
             guard let endIndex = component.range(of: Delimiters.close) else {
-                throw SwiftTemplateParsingError.unmatchedOpening(path: path, line: line())
+                throw SwiftTemplateParsingError.unmatchedOpening(path: path, line: currentLineNumber())
             }
 
-            let code = component.substring(to: endIndex.lowerBound)
-            if code.hasPrefix("=") {
-                let codeStartIndex = code.index(code.startIndex, offsetBy: 1)
-                let realCode = code.substring(from: codeStartIndex)
-                sourceFile.append("\n print(\"\\(" + realCode + ")\", terminator: \"\");")
+            var code = component.substring(to: endIndex.lowerBound)
+            let shouldTrimTrailingNewLines = code.trimSuffix("-")
+            let shouldTrimLeadingWhitespaces = code.trimPrefix("_")
+            let shouldTrimTrailingWhitespaces = code.trimSuffix("_")
+
+            // string after closing tag
+            var encodedPart = component.substring(from: endIndex.upperBound)
+            if shouldTrimTrailingNewLines {
+                // we trim only new line caused by script tag, not all of leading new lines in string after tag
+                encodedPart = encodedPart.replacingOccurrences(of: "^\\n{1}", with: "", options: .regularExpression, range: nil)
+            }
+            if shouldTrimTrailingWhitespaces {
+                // trim all leading whitespaces in string after tag
+                encodedPart = encodedPart.replacingOccurrences(of: "^[\\h\\t]*", with: "", options: .regularExpression, range: nil)
+            }
+            if shouldTrimLeadingWhitespaces {
+                if case .outputEncoded(let code)? = commands.last {
+                    // trim all trailing white spaces in previously enqued code string
+                    let trimmed = code.replacingOccurrences(of: "[\\h\\t]*$", with: "", options: .regularExpression, range: nil)
+                    _ = commands.popLast()
+                    commands.append(.outputEncoded(trimmed))
+                }
+            }
+
+            if code.trimPrefix("=") {
+                commands.append(.output(code))
             } else {
-                sourceFile.append(code)
+                if !code.hasPrefix("#") && !code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    commands.append(.controlFlow(code))
+                }
             }
 
-            let encodedPart = component.substring(from: endIndex.upperBound)
-            sourceFile.append(("\n print(\"") + encodedPart.stringEncoded + "\", terminator: \"\");")
-            for _ in 0 ..< encodedPart.numberOfLineSeparators {
-                sourceFile.append("\n")
+            if !encodedPart.isEmpty {
+                commands.append(.outputEncoded(encodedPart))
             }
         }
 
+        for command in commands {
+            switch command {
+            case let .output(code):
+                sourceFile.append("\n  print(\"\\(" + code + ")\", terminator: \"\");")
+            case let .controlFlow(code):
+                sourceFile.append("\n \(code)")
+            case let .outputEncoded(code):
+                if !code.isEmpty {
+                    sourceFile.append(("\n  print(\"") + code.stringEncoded + "\", terminator: \"\");")
+                }
+            }
+        }
         return sourceFile.joined(separator: "")
     }
 
@@ -79,7 +119,7 @@ class SwiftTemplate: Template {
         let mainFile = compilationDir + Path("main.swift")
         let binaryFile = compilationDir + Path("bin")
 
-        let runableCode = "extension GenerationContext { override func generate() { " + swiftCode + " } }; run();"
+        let runableCode = "extension GenerationContext {\n\n override func generate() {" + swiftCode + "\n }\n\n}\nrun();"
 
         try mainFile.write(runableCode)
 

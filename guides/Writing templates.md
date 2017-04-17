@@ -1,10 +1,6 @@
 ## Writing templates
 
-Sourcery supports several types of templates:
-
-- [Stencil](https://github.com/kylef/Stencil) templates
-- [Swift](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate) templates
-- [JavaScript](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js) templates (using [EJS](http://ejs.co))
+Sourcery supports templates written in Stencil, Swift and even JavaScript.
 
 Dicsovered types can be accessed in templates via `type` variable of `TypeReflectionBox` type. For example you can access all classes using `types.classes`.
 
@@ -21,7 +17,14 @@ If you have an extension of unknown type defined in scanned sources Sourcery wil
 
 See [#87](https://github.com/krzysztofzablocki/Sourcery/issues/87) for details.
 
-## Custom Stencil tags and filters
+## Stencil templates
+
+[Stencil](http://stencil.fuller.li/en/latest/) is a simple and powerful template language for Swift. It provides a syntax similar to Django and Mustache.
+Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/StencilSwiftKit) so you have access to additional nodes and filteres defined there.
+
+**Example**: [Equality.stencil](https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/Equality.stencil)
+
+### Custom Stencil tags and filters
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
 - `{{ name|replace:"substring","replacement" }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
@@ -37,7 +40,38 @@ See [#87](https://github.com/krzysztofzablocki/Sourcery/issues/87) for details.
 - `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
 - `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
 
-Plus all the filters from [StencilSwiftKit](https://github.com/SwiftGen/StencilSwiftKit).
+## Swift templates
+
+Swift templates syntax is very similar to EJS:
+
+- Control flow with `<% %>`
+- Output value withn `<%= %>`
+- Trim extra new line after control flow tag with `-%>`
+- Trim _all_ whitespaces before/after control flow tag with `<%_` and `_%>`
+- Use `<%# %>` for comments
+
+**Example**: [Equality.swifttemplate](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate)
+
+Template:
+
+```swift
+<% for type in types.all { -%>
+  <%_ %><%= type.name %>
+<% } %>
+```
+
+Output:
+
+```swift
+Foo
+Bar
+```
+
+## JavaScript templates
+
+JavaScript templates are powered by [EJS](http://ejs.co) and support all the features available in this templates engine except files includes.
+
+**Example**: [Equality.js](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js)
 
 ## Using Source Annotations
 

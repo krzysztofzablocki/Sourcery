@@ -148,16 +148,16 @@
 <p>The easiest way to download the tool right now is to just grab a newest <code>.zip</code> distribution from <a href="https://github.com/krzysztofzablocki/Sourcery/releases">releases tab</a>.</p></li>
 <li><p><em>Via CocoaPods</em></p>
 
-<p>If you&rsquo;re using CocoaPods, you can simply add pod &lsquo;Sourcery&rsquo; to your Podfile.</p>
+<p>If you&rsquo;re using CocoaPods, you can simply add <code>pod &#39;Sourcery&#39;</code> to your Podfile.</p>
 
 <p>This will download the Sourcery binaries and dependencies in <code>Pods/</code>.
-You just need to add <code>$PODS_ROOT/Sourcery/bin/sourcery {source} {templates} {output}</code> in your Script Build Phases.</p></li>
+You just need to add <code>$PODS_ROOT/Sourcery/bin/sourcery --sources &lt;sources path&gt; --templates &lt;templates path&gt; --output &lt;output path&gt;</code> in your Script Build Phases.</p></li>
 <li><p><em>Via Swift Package Manager</em></p>
 
 <p>If you&rsquo;re using SwiftPM, you can simply add &lsquo;Sourcery&rsquo; to your manifest.</p>
 
 <p>Sourcery is placed in <code>Packages</code>.
-After your first <code>swift build</code>, you can run <code>.build/debug/sourcery {source} {templates} {output}</code>.</p></li>
+After your first <code>swift build</code>, you can run <code>.build/debug/sourcery --sources &lt;sources path&gt; --templates &lt;templates path&gt; --output &lt;output path&gt;</code>.</p></li>
 <li><p><em>From Source</em></p>
 
 <p>You can clone it from the repo and just run <code>Sourcery.xcworkspace</code>.</p></li>

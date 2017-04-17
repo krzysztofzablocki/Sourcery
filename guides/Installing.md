@@ -6,17 +6,17 @@
 
 - _Via CocoaPods_
 
-	If you're using CocoaPods, you can simply add pod 'Sourcery' to your Podfile.
+	If you're using CocoaPods, you can simply add `pod 'Sourcery'` to your Podfile.
 
 	This will download the Sourcery binaries and dependencies in `Pods/`.
-You just need to add `$PODS_ROOT/Sourcery/bin/sourcery {source} {templates} {output}` in your Script Build Phases.
+You just need to add `$PODS_ROOT/Sourcery/bin/sourcery --sources <sources path> --templates <templates path> --output <output path>` in your Script Build Phases.
 
 - _Via Swift Package Manager_
 
 	If you're using SwiftPM, you can simply add 'Sourcery' to your manifest.
 
 	Sourcery is placed in `Packages`.
-After your first `swift build`, you can run `.build/debug/sourcery {source} {templates} {output}`.
+After your first `swift build`, you can run `.build/debug/sourcery --sources <sources path> --templates <templates path> --output <output path>`.
 
 - _From Source_
 

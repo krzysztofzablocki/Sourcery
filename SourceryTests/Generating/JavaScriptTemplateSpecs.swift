@@ -12,13 +12,13 @@ class JavaScriptTemplateTests: QuickSpec {
             }()
 
             let templatePath = Stubs.jsTemplates + Path("Equality.js")
-            let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8).withoutWhitespaces
+            let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
             it("generates correct output") {
                 expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result.flatMap { $0.withoutWhitespaces }).to(equal(expectedResult?.withoutWhitespaces))
+                expect(result).to(equal(expectedResult))
             }
         }
     }

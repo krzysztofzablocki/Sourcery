@@ -28,6 +28,13 @@ extension String {
         return String(characters.suffix(characters.count - prefix.characters.count))
     }
 
+    @discardableResult
+    mutating func trimSuffix(_ suffix: String) -> Bool {
+        guard hasSuffix(suffix) else { return false }
+        self = String(characters.prefix(characters.count - suffix.characters.count))
+        return true
+    }
+
     func trimmingSuffix(_ suffix: String) -> String {
         guard hasSuffix(suffix) else { return self }
         return String(characters.prefix(characters.count - suffix.characters.count))
