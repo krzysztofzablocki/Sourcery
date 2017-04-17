@@ -1,6 +1,6 @@
 //
-//  CwlCatchException.swift
-//  CwlAssertionTesting
+//  CwlCatchException.h
+//  CwlCatchException
 //
 //  Created by Matt Gallagher on 2016/01/10.
 //  Copyright © 2016 Matt Gallagher ( http://cocoawithlove.com ). All rights reserved.
@@ -18,15 +18,15 @@
 //  IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 
-import Foundation
+#import <Foundation/Foundation.h>
 
-// We can't simply cast to Self? in the catchInBlock method so we need this generic function wrapper to do the conversion for us. Mildly annoying.
-private func catchReturnTypeConverter<T: NSException>(_ type: T.Type, block: () -> Void) -> T? {
-	return catchExceptionOfKind(type, block) as? T
-}
+//! Project version number for CwlCatchException.
+FOUNDATION_EXPORT double CwlCatchExceptionVersionNumber;
 
-extension NSException {
-	public static func catchException(in block: () -> Void) -> Self? {
-		return catchReturnTypeConverter(self, block: block)
-	}
-}
+//! Project version string for CwlCatchException.
+FOUNDATION_EXPORT const unsigned char CwlCatchExceptionVersionString[];
+
+#if !SWIFT_PACKAGE && NON_SWIFT_PACKAGE
+__attribute__((visibility("hidden")))
+#endif
+NSException* __nullable catchExceptionOfKind(Class __nonnull type, __attribute__((noescape)) void (^ __nonnull inBlock)());

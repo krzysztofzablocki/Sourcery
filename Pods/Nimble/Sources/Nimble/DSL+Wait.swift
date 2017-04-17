@@ -15,7 +15,7 @@ internal class NMBWait: NSObject {
         timeout: TimeInterval,
         file: FileString = #file,
         line: UInt = #line,
-        action: @escaping (@escaping () -> Void) -> Void) -> Void {
+        action: @escaping (@escaping () -> Void) -> Void) {
             return throwableUntil(timeout: timeout, file: file, line: line) { done in
                 action(done)
             }
@@ -26,7 +26,7 @@ internal class NMBWait: NSObject {
         timeout: TimeInterval,
         file: FileString = #file,
         line: UInt = #line,
-        action: @escaping (@escaping () -> Void) throws -> Void) -> Void {
+        action: @escaping (@escaping () -> Void) throws -> Void) {
             let awaiter = NimbleEnvironment.activeInstance.awaiter
             let leeway = timeout / 2.0
             let result = awaiter.performBlock { (done: @escaping (ErrorResult) -> Void) throws -> Void in
@@ -39,7 +39,7 @@ internal class NMBWait: NSObject {
                     )
                     capture.tryBlock {
                         do {
-                            try action() {
+                            try action {
                                 done(.none)
                             }
                         } catch let e {
@@ -70,13 +70,13 @@ internal class NMBWait: NSObject {
             }
     }
 
-    #if _runtime(_ObjC)
-    @objc(untilFile:line:action:)
-    internal class func until(_ file: FileString = #file, line: UInt = #line, action: @escaping (() -> Void) -> Void) -> Void {
+    #if SWIFT_PACKAGE
+    internal class func until(_ file: FileString = #file, line: UInt = #line, action: @escaping (() -> Void) -> Void) {
         until(timeout: 1, file: file, line: line, action: action)
     }
     #else
-    internal class func until(_ file: FileString = #file, line: UInt = #line, action: @escaping (() -> Void) -> Void) -> Void {
+    @objc(untilFile:line:action:)
+    internal class func until(_ file: FileString = #file, line: UInt = #line, action: @escaping (() -> Void) -> Void) {
         until(timeout: 1, file: file, line: line, action: action)
     }
     #endif
@@ -93,6 +93,6 @@ internal func blockedRunLoopErrorMessageFor(_ fnName: String, leeway: TimeInterv
 /// 
 /// This function manages the main run loop (`NSRunLoop.mainRunLoop()`) while this function
 /// is executing. Any attempts to touch the run loop may cause non-deterministic behavior.
-public func waitUntil(timeout: TimeInterval = 1, file: FileString = #file, line: UInt = #line, action: @escaping (@escaping () -> Void) -> Void) -> Void {
+public func waitUntil(timeout: TimeInterval = 1, file: FileString = #file, line: UInt = #line, action: @escaping (@escaping () -> Void) -> Void) {
     NMBWait.until(timeout: timeout, file: file, line: line, action: action)
 }

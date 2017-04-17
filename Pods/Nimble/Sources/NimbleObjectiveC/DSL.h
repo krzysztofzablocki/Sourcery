@@ -186,6 +186,8 @@ NIMBLE_EXPORT_INLINE id<NMBMatcher> beginWith(id itemElementOrSubstring) {
     DEFINE_OVERLOAD(unsigned long, @(expectedValue))
     DEFINE_OVERLOAD(int, @(expectedValue))
     DEFINE_OVERLOAD(unsigned int, @(expectedValue))
+    DEFINE_OVERLOAD(float, @(expectedValue))
+    DEFINE_OVERLOAD(double, @(expectedValue))
     DEFINE_OVERLOAD(long long, @(expectedValue))
     DEFINE_OVERLOAD(unsigned long long, @(expectedValue))
     DEFINE_OVERLOAD(char, @(expectedValue))
@@ -321,6 +323,10 @@ NIMBLE_EXPORT id<NMBMatcher> NMB_containWithNilTermination(id itemOrSubstring, .
 #ifndef NIMBLE_DISABLE_SHORT_SYNTAX
 #define contain(...) NMB_contain(__VA_ARGS__)
 #endif
+
+NIMBLE_EXPORT id<NMBMatcher> NMB_containElementSatisfying(BOOL(^predicate)(id));
+NIMBLE_SHORT(id<NMBMatcher> containElementSatisfying(BOOL(^predicate)(id)),
+             NMB_containElementSatisfying(predicate));
 
 NIMBLE_EXPORT id<NMBMatcher> NMB_endWith(id itemElementOrSubstring);
 NIMBLE_SHORT(id<NMBMatcher> endWith(id itemElementOrSubstring),

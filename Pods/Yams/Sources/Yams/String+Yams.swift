@@ -14,8 +14,8 @@ extension String {
     /// line number, column and contents at utf8 offset.
     ///
     /// - Parameter offset: Int
-    /// - Returns: lineNumber: line number start from 1,
-    ///            column: utf16 column start from 1,
+    /// - Returns: lineNumber: line number start from 0,
+    ///            column: utf16 column start from 0,
     ///            contents: substring of line
     func utf8LineNumberColumnAndContents(at offset: Int) -> LineNumberColumnAndContents? {
         guard let index = utf8
@@ -27,8 +27,8 @@ extension String {
     /// line number, column and contents at utf16 offset.
     ///
     /// - Parameter offset: Int
-    /// - Returns: lineNumber: line number start from 1,
-    ///            column: utf16 column start from 1,
+    /// - Returns: lineNumber: line number start from 0,
+    ///            column: utf16 column start from 0,
     ///            contents: substring of line
     func utf16LineNumberColumnAndContents(at offset: Int) -> LineNumberColumnAndContents? {
         guard let index = utf16
@@ -40,8 +40,8 @@ extension String {
     /// line number, column and contents at Index.
     ///
     /// - Parameter index: String.Index
-    /// - Returns: lineNumber: line number start from 1,
-    ///            column: utf16 column start from 1,
+    /// - Returns: lineNumber: line number start from 0,
+    ///            column: utf16 column start from 0,
     ///            contents: substring of line
     func lineNumberColumnAndContents(at index: Index) -> LineNumberColumnAndContents {
         assert((startIndex..<endIndex).contains(index))
@@ -58,8 +58,8 @@ extension String {
         let utf16StartIndex = outStartIndex.samePosition(in: utf16)
         let utf16Index = index.samePosition(in: utf16)
         return (
-            number + 1,
-            utf16.distance(from: utf16StartIndex, to: utf16Index) + 1,
+            number,
+            utf16.distance(from: utf16StartIndex, to: utf16Index),
             substring(with: outStartIndex..<outEndIndex)
         )
     }
