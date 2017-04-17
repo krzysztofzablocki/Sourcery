@@ -111,13 +111,14 @@ func runCLI() {
              description: "Remove empty generated files"),
         VariadicOption<Path>("sources", description: "Path to a source swift files"),
         VariadicOption<Path>("templates", description: "Path to templates. File or Directory."),
-        Option<Path>("output", ".", description: "Path to output. Directory. Default is current path."),
+        Option<Path>("output", ".", description: "Path to output. File or Directory. Default is current path."),
+        Option<Path>("config", ".", description: "Path to config file. Directory. Default is current path."),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, prune, sources, templates, output, args in
+    ) { watcherEnabled, disableCache, verboseLogging, prune, sources, templates, output, configPath, args in
         do {
             let configuration: Configuration
 
-            let yamlPath: Path = ".sourcery.yml"
+            let yamlPath: Path = configPath + ".sourcery.yml"
             if yamlPath.exists, let dict = try Yams.load(yaml: yamlPath.read()) as? [String: Any] {
                 configuration = Configuration(dict: dict)
             } else {
