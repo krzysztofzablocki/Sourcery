@@ -20,11 +20,12 @@
 - Added `rethrows` property to `Method`
 - Allow duplicated annotations to be agregated into array
 
-### Fixed
+### Bug Fixes
 
 - Inserting multiple inline code block in one file
 - Suppress warnings when compiling swift templates
 - Accessing protocols in Swift templates
+- Crash that would happen sometimes when parsing typealiases
 
 ## 0.5.9
 
