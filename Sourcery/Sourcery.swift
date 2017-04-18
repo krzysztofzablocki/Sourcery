@@ -141,7 +141,8 @@ class Sourcery {
     fileprivate func templates(from: [Path]) throws -> [Template] {
         return try templatePaths(from: from).map {
             if $0.extension == "swifttemplate" {
-                return try SwiftTemplate(path: $0)
+                let cachePath = cacheDisabled ? nil : Path.cachesDir(sourcePath: $0)
+                return try SwiftTemplate(path: $0, cachePath: cachePath)
             } else if $0.extension == "js" {
                 return try JavaScriptTemplate(path: $0)
             } else {

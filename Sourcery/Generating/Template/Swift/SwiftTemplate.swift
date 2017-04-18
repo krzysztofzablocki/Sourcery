@@ -8,6 +8,7 @@
 
 import Foundation
 import PathKit
+import SwiftTryCatch
 
 fileprivate enum SwiftTemplateParsingError: Error {
     case unmatchedOpening(path: Path, line: Int)
@@ -26,9 +27,11 @@ fileprivate struct ProcessResult {
 
 class SwiftTemplate: Template {
     let sourcePath: Path
+    let cachePath: Path?
 
-    init(path: Path) throws {
+    init(path: Path, cachePath: Path?) throws {
         self.sourcePath = path
+        self.cachePath = cachePath
     }
 
     enum Command {
@@ -109,20 +112,9 @@ class SwiftTemplate: Template {
     func render(types: Types, arguments: [String: NSObject]) throws -> String {
         let context = TemplateContext(types: types, arguments: arguments)
         let swiftCode = try SwiftTemplate.generateSwiftCode(templateContent: try sourcePath.read(), path: sourcePath)
-
-        let compilationDir = Path.cleanTemporaryDir(name: "build")
-
-        let runtimeFiles = try SwiftTemplate.swiftTemplatesRuntime.children().map { file in
-            return file.description
-        }
-
-        let mainFile = compilationDir + Path("main.swift")
-        let binaryFile = compilationDir + Path("bin")
-
         let runableCode = "extension TemplateContext {\n\n override func generate() {" + swiftCode + "\n }\n\n}\nrun();"
 
-        try mainFile.write(runableCode)
-
+        let compilationDir = Path.cleanTemporaryDir(name: "build")
         let serializedContextPath = compilationDir + Path("context.bin")
 
         let serializedContext = NSKeyedArchiver.archivedData(withRootObject: context)
@@ -137,24 +129,57 @@ class SwiftTemplate: Template {
             assert(diff.isEmpty)
         #endif
 
-        let arguments = [mainFile.description] +
-            runtimeFiles + [
-                "-suppress-warnings",
-                "-Onone",
-                "-module-name", "Sourcery",
-                "-o", binaryFile.description
-        ]
+        var binaryFile: Path!
 
-        let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
-                                            arguments: arguments,
-                                            environment: [:])
+        let cachedMainFile = cachePath.map({ $0 + Path("main.swift") })
+        let cachedBinaryFile = cachePath.map({ $0 + Path("bin") })
+        SwiftTryCatch.try({
+            if let cachedMainFile = cachedMainFile, cachedMainFile.exists,
+                let cachedContents: String = try? cachedMainFile.read(),
+                cachedContents == runableCode,
+                let cachedBinaryFile = cachedBinaryFile, cachedBinaryFile.exists {
+                binaryFile = cachedBinaryFile
+            }
+        }, catch: { _ in }, finallyBlock: {})
 
-        if !compilationResult.error.isEmpty {
-            #if DEBUG
-                let command = "/usr/bin/swiftc " + arguments.map { "\"\($0)\"" }.joined(separator: " ")
-                print(command)
-            #endif
-            throw SwiftTemplateParsingError.compilationError(path: binaryFile, error: compilationResult.error)
+        if binaryFile == nil {
+
+            let runtimeFiles = try SwiftTemplate.swiftTemplatesRuntime.children().map { file in
+                return file.description
+            }
+
+            let mainFile = compilationDir + Path("main.swift")
+            binaryFile = compilationDir + Path("bin")
+
+            try mainFile.write(runableCode)
+            if let cachedMainFile = cachedMainFile {
+                try? cachedMainFile.write(runableCode)
+            }
+
+            let arguments = [mainFile.description] +
+                runtimeFiles + [
+                    "-suppress-warnings",
+                    "-Onone",
+                    "-module-name", "Sourcery",
+                    "-o", binaryFile.description
+            ]
+
+            let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
+                                                           arguments: arguments,
+                                                           environment: [:])
+
+            if !compilationResult.error.isEmpty {
+                #if DEBUG
+                    let command = "/usr/bin/swiftc " + arguments.map { "\"\($0)\"" }.joined(separator: " ")
+                    print(command)
+                #endif
+                throw SwiftTemplateParsingError.compilationError(path: binaryFile, error: compilationResult.error)
+            }
+
+            if let cachedBinaryFile = cachedBinaryFile {
+                try? cachedBinaryFile.delete()
+                try? binaryFile.copy(cachedBinaryFile)
+            }
         }
 
         let result = try Process.runCommand(path: binaryFile.description,
