@@ -48,7 +48,7 @@ struct CustomArguments: ArgumentConvertible {
 fileprivate enum Validators {
     static func isReadable(path: Path) -> Path {
         if !path.isReadable {
-            print("'\(path)' does not exist or is not readable.")
+            Log.error("'\(path)' does not exist or is not readable.")
             exit(1)
         }
 
@@ -59,7 +59,7 @@ fileprivate enum Validators {
         _ = isReadable(path: path)
 
         if !(path.isDirectory || path.isFile) {
-            print("'\(path)' isn't a directory or proper file.")
+            Log.error("'\(path)' isn't a directory or proper file.")
             exit(2)
         }
 
@@ -68,7 +68,7 @@ fileprivate enum Validators {
 
     static func isWriteable(path: Path) -> Path {
         if path.exists && !path.isWritable {
-            print("'\(path)' isn't writeable.")
+            Log.error("'\(path)' isn't writeable.")
             exit(2)
         }
         return path
@@ -79,7 +79,7 @@ extension Configuration {
 
     func validate() {
         guard !source.isEmpty else {
-            print("No sources provided.")
+            Log.error("No sources provided.")
             exit(3)
         }
         if case let .sources(sources) = source {
@@ -87,7 +87,7 @@ extension Configuration {
         }
         _ = templates.map(Validators.isFileOrDirectory(path:))
         guard !templates.isEmpty else {
-            print("No templates provided.")
+            Log.error("No templates provided.")
             exit(3)
         }
         _ = Validators.isWriteable(path: output)
@@ -140,10 +140,10 @@ func runCLI() {
                 RunLoop.current.run()
                 _ = keepAlive
             } else {
-                print("Processing time \(CFAbsoluteTimeGetCurrent() - start) seconds")
+                Log.info("Processing time \(CFAbsoluteTimeGetCurrent() - start) seconds")
             }
         } catch {
-            print(error)
+            Log.error("\(error)")
             exit(4)
         }
         }.run(Sourcery.version)

@@ -57,7 +57,7 @@ struct Composer {
                 let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
                         ": \(type.inheritedTypes.joined(separator: ", "))"
 
-                if verbose { print("Found \"extension \(type.name)\(inheritanceClause)\" of type for which we don't have original type definition information") }
+                if verbose { Log.warning("Found \"extension \(type.name)\(inheritanceClause)\" of type for which we don't have original type definition information") }
                 return
             }
 

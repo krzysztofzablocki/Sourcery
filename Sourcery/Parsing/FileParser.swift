@@ -155,7 +155,7 @@ final class FileParser {
             case .varParameter:
                 return parseParameter(source)
             default:
-                if verbose { print("\(logPrefix)Unsupported entry \"\(access) \(kind) \(name)\"") }
+                if verbose { Log.warning("\(logPrefix)Unsupported entry \"\(access) \(kind) \(name)\"") }
                 return nil
             }
 
@@ -568,7 +568,7 @@ extension FileParser {
         var rawValue: String? = nil
 
         guard let keyString = extract(.key, from: source), let nameRange = keyString.range(of: name) else {
-            print("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")
+            Log.warning("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")
             return nil
         }
 
@@ -584,7 +584,7 @@ extension FileParser {
         case (nil, nil):
             break
         default:
-             print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
+             Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
         let annotations: [String: NSObject]
