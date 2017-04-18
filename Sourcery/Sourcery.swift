@@ -9,7 +9,7 @@ import PathKit
 import SwiftTryCatch
 
 class Sourcery {
-    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.5.9"
+    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.6.0"
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"
