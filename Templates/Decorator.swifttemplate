@@ -1,0 +1,81 @@
+<%# Constructs full method declaration string -%>
+<%
+func methodDeclaration(_ method: Method) -> String {
+    var result = method.name
+    if method.throws {
+        result = result + " throws"
+    } else if method.rethrows {
+        result = result + " rethrows"
+    }
+    return result + " -> \(method.returnTypeName)"
+}
+-%>
+<%# Constructs method call string passing in parameters with their local names -%>
+<%
+func methodCall(_ method: Method) -> String {
+    let params = method.parameters.map({
+        if let label = $0.argumentLabel {
+            return "\(label): \($0.name)"
+        } else {
+            return $0.name
+        }
+    }).joined(separator: ", ")
+    var result = "decorated.\(method.callName)(\(params))"
+
+    if method.throws {
+        result = "try " + result
+    }
+    if !method.returnTypeName.isVoid {
+        result = "return " + result
+    }
+    return result
+}
+-%>
+<% for type in types.all {
+    guard let protocolToDecorate = type.annotations["decorate"] as? String else { continue }
+    if let aProtocol = types.protocols.first(where: { $0.name == protocolToDecorate }) { -%>
+
+    // sourcery:inline:auto:<%= type.name %>.autoDecorated
+    <%= type.accessLevel %> private(set) var decorated: <%= aProtocol.name %>
+
+    <%= type.accessLevel %> init(decorated: <%= aProtocol.name %>) {
+        self.decorated = decorated
+    }
+
+    <%_ for property in aProtocol.variables { -%>
+    <%= type.accessLevel %> var <%= property.name %>: <%= property.typeName %> {
+        <%_ if property.writeAccess != "" { -%>
+        get {
+            <% if let decorateGet = type.annotations["decorateGet"] { %><%= decorateGet %>
+            <%_ } -%>
+            return decorated.<%= property.name %>
+        }
+        set {
+            <% if let decorateSet = type.annotations["decorateSet"] { %><%= decorateSet %>
+            <%_ } -%>
+            decorated.<%= property.name %> = newValue
+        }
+        <%_ } else { -%>
+        <% if let decorateGet = type.annotations["decorateGet"] { %><%= decorateGet %>
+        <%_ } -%>
+        return decorated.<%= property.name %>
+        <%_ } -%>
+    }
+
+    <%_ } -%>
+    <%_ -%>
+    <%_ for method in aProtocol.methods {
+            let implements = type.methods.contains(where: { $0.name == method.name && $0.returnTypeName.name == method.returnTypeName.name })
+            guard !implements else { continue } -%>
+    <%= type.accessLevel %> func <%= methodDeclaration(method) %> {
+        <% if let decorateMethod = type.annotations["decorateMethod"] { %><%= decorateMethod %>
+        <%_ } -%>
+        <%= methodCall(method) %>
+    }
+
+<%      } %>
+    // sourcery:end
+
+<%    }
+}
+%>
