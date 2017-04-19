@@ -29,7 +29,8 @@ final class JavaScriptTemplate: Template {
         }
 
         let rethrow: @convention(block) (NSDictionary, String, String, String) -> Void = { error, source, filename, lineno in
-            errorContent += "// error parsing \(filename):\(lineno)\n"
+            errorContent += "// Error parsing \(filename):\(lineno)\n"
+            errorContent += "// \(error["message"] as? String ?? "")"
         }
 
         jsContext.setObject(template, forKeyedSubscript: "template" as NSString)
@@ -38,8 +39,15 @@ final class JavaScriptTemplate: Template {
         jsContext.setObject(rethrow, forKeyedSubscript: "rethrow" as NSString)
         jsContext.setObject(sourcePath.lastComponent, forKeyedSubscript: "templateName" as NSString)
         jsContext.evaluateScript("var window = this; \(ejs)")
-        let content = jsContext.objectForKeyedSubscript("content").toString()
-        return errorContent + (content ?? "")
+
+        let content: String
+        if let contentObject = jsContext.objectForKeyedSubscript("content"), contentObject.isString {
+            content = contentObject.toString()
+        } else {
+            content = ""
+        }
+
+        return errorContent + content
     }
 
 }
