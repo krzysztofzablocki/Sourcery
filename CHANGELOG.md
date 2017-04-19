@@ -2,6 +2,13 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Added support for includes in EJS templates (for example: `<%- include('myTemplate.js') %>`)
+- Errors during EJS template compilation / parsing are reported
+
 ## 0.6.0
 
 ### New Features
