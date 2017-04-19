@@ -278,7 +278,7 @@ extension Sourcery {
                                   unarchivedResult = unarchived
                               }
                           }, catch: { _ in
-            self.track("Failed to unarchive \(artifacts) due to error, re-parsing")
+            Log.warning("Failed to unarchive \(artifacts) due to error, re-parsing")
         }, finallyBlock: {})
 
         return unarchivedResult
@@ -313,10 +313,10 @@ extension Sourcery {
                 try writeIfChanged(Sourcery.generationHeader + result, to: outputPath)
             } else {
                 if prune && outputPath.exists {
-                    track("Removing \(outputPath) as it is empty.")
+                    Log.info("Removing \(outputPath) as it is empty.")
                     do { try outputPath.delete() } catch { track("\(error)") }
                 } else {
-                    track("Skipping \(outputPath) as it is empty.")
+                    Log.info("Skipping \(outputPath) as it is empty.")
                 }
             }
         }

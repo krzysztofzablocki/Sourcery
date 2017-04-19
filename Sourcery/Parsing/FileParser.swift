@@ -108,6 +108,9 @@ final class FileParser {
     public func parse() -> FileParserResult {
         _ = parseContentsIfNeeded()
 
+        if let path = path {
+            Log.info("Processing file \(path)")
+        }
         let file = File(contents: contents)
         let source = Structure(file: file).dictionary
 
