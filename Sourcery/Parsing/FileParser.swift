@@ -62,7 +62,6 @@ extension EnumCase: Parsable {}
 
 final class FileParser {
 
-    let verbose: Bool
     let path: String?
     let module: String?
     let initialContents: String
@@ -72,7 +71,7 @@ final class FileParser {
     fileprivate var inlineRanges: [String: NSRange]!
 
     fileprivate var logPrefix: String {
-        return path.flatMap { "\($0): " } ?? ""
+        return path.flatMap { "\($0):" } ?? ""
     }
 
     /// Parses given contents.
@@ -82,8 +81,7 @@ final class FileParser {
     ///   - contents: Contents to parse.
     ///   - path: Path to file.
     /// - Throws: parsing errors.
-    init(verbose: Bool = false, contents: String, path: Path? = nil, module: String? = nil) throws {
-        self.verbose = verbose
+    init(contents: String, path: Path? = nil, module: String? = nil) throws {
         self.path = path?.string
         self.module = module
         self.initialContents = contents
@@ -155,7 +153,7 @@ final class FileParser {
             case .varParameter:
                 return parseParameter(source)
             default:
-                if verbose { Log.warning("\(logPrefix)Unsupported entry \"\(access) \(kind) \(name)\"") }
+                Log.warning("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
             }
 

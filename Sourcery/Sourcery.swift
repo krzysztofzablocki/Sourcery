@@ -208,7 +208,7 @@ extension Sourcery {
                     return result == .approved
                 }
                 .map {
-                    try FileParser(verbose: verbose, contents: $0.contents, path: $0.path, module: modules?[index])
+                    try FileParser(contents: $0.contents, path: $0.path, module: modules?[index])
             }
 
             var previousUpdate = 0
@@ -237,7 +237,7 @@ extension Sourcery {
         }
 
         //! All files have been scanned, time to join extensions with base class
-        let types = Composer(verbose: verbose).uniqueTypes(parserResult)
+        let types = Composer().uniqueTypes(parserResult)
 
         track("Found \(types.count) types.")
         return (Types(types: types), inlineRanges)
