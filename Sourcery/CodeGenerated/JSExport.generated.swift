@@ -32,13 +32,6 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
 
 extension Attribute: AttributeAutoJSExport {}
 
-@objc protocol BasedTypesCollectionAutoJSExport: JSExport {
-    var all: [Type] { get }
-    var types: [String: [Type]] { get }
-}
-
-extension BasedTypesCollection: BasedTypesCollectionAutoJSExport {}
-
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var module: String? { get }
@@ -125,20 +118,6 @@ extension Enum: EnumAutoJSExport {}
 }
 
 extension EnumCase: EnumCaseAutoJSExport {}
-
-@objc protocol ImplementingTypesCollectionAutoJSExport: JSExport {
-    var all: [Type] { get }
-    var types: [String: [Type]] { get }
-}
-
-extension ImplementingTypesCollection: ImplementingTypesCollectionAutoJSExport {}
-
-@objc protocol InheritingTypesCollectionAutoJSExport: JSExport {
-    var all: [Type] { get }
-    var types: [String: [Type]] { get }
-}
-
-extension InheritingTypesCollection: InheritingTypesCollectionAutoJSExport {}
 
 @objc protocol MethodAutoJSExport: JSExport {
     var name: String { get }
@@ -322,8 +301,6 @@ extension Type: TypeAutoJSExport {}
 extension TypeName: TypeNameAutoJSExport {}
 
 @objc protocol TypesCollectionAutoJSExport: JSExport {
-    var all: [Type] { get }
-    var types: [String: [Type]] { get }
 }
 
 extension TypesCollection: TypesCollectionAutoJSExport {}

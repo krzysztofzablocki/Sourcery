@@ -20,25 +20,32 @@ final class JavaScriptTemplate: Template {
         let path = Bundle(for: JavaScriptTemplate.self).path(forResource: "ejsbundle", ofType: "js")!
         let ejs = try String(contentsOfFile: path, encoding: .utf8)
 
-        jsContext.exceptionHandler = {
-            Log.error($0)
+        var error: Swift.Error?
+        jsContext.exceptionHandler = { _, exception in
+            error = exception?.toString() ?? "Unknown JavaScript error"
         }
-        let logError: @convention(block) (JSValue) -> Void = { error in
-            Log.error(error.toString())
-        }
-        jsContext.setObject(logError, forKeyedSubscript: "logError" as NSString)
         jsContext.setObject(template, forKeyedSubscript: "template" as NSString)
         jsContext.setObject(context.jsContext, forKeyedSubscript: "templateContext" as NSString)
 
-        let valueForUndefinedKey: @convention(block) (TypesCollection, String) -> Any? = { target, key in
-            return target.value(forUndefinedKey: key)
+        let valueForKey: @convention(block) (TypesCollection, String) -> Any? = { target, key in
+            do {
+                return try target.valueForKey(target, key)
+            } catch let _error {
+                error = _error
+                return nil
+            }
         }
-        jsContext.setObject(valueForUndefinedKey, forKeyedSubscript: "valueForUndefinedKey" as NSString)
-        jsContext.evaluateScript("templateContext.types.implementing = new Proxy(templateContext.types.implementing, { get: valueForUndefinedKey })")
-        jsContext.evaluateScript("templateContext.types.inheriting = new Proxy(templateContext.types.inheriting, { get: valueForUndefinedKey })")
-        jsContext.evaluateScript("templateContext.types.based = new Proxy(templateContext.types.based, { get: valueForUndefinedKey })")
+        jsContext.setObject(valueForKey, forKeyedSubscript: "valueForKey" as NSString)
+        jsContext.evaluateScript("templateContext.types.implementing = new Proxy(templateContext.types.implementing, { get: valueForKey })")
+        jsContext.evaluateScript("templateContext.types.inheriting = new Proxy(templateContext.types.inheriting, { get: valueForKey })")
+        jsContext.evaluateScript("templateContext.types.based = new Proxy(templateContext.types.based, { get: valueForKey })")
 
         jsContext.evaluateScript("var window = this; \(ejs)")
+
+        if let error = error {
+            throw "\(sourcePath): \(error)"
+        }
+
         let content = jsContext.objectForKeyedSubscript("content").toString()
         return content ?? ""
     }

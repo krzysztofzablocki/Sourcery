@@ -1,3 +1,5 @@
+import Darwin
+
 enum Log {
 
     enum Level: Int {
@@ -10,6 +12,7 @@ enum Log {
 
     static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
+        fputs("\(message)", stderr)
     }
 
     static func warning(_ message: Any) {
@@ -26,3 +29,5 @@ enum Log {
     }
 
 }
+
+extension String: Error {}

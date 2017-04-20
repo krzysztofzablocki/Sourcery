@@ -156,7 +156,7 @@ final class FileParser {
             case .varParameter:
                 return parseParameter(source)
             default:
-                Log.warning("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
+                Log.info("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
             }
 
