@@ -57,7 +57,6 @@ public class Type: NSObject, SourceryModel, Annotated {
     public var allVariables: [Variable] {
         return flattenAll({
             return $0.variables
-            //return ($0 is Protocol) ? [] : $0.variables
         }, filter: { all, extracted in
             !all.contains(where: { $0.name == extracted.name && $0.isStatic == extracted.isStatic })
         })
@@ -107,9 +106,24 @@ public class Type: NSObject, SourceryModel, Annotated {
         return variables.filter { $0.isStatic }
     }
 
+    /// Static variables defined in this type
+    public var staticMethods: [Method] {
+        return methods.filter({ $0.isStatic })
+    }
+
+    /// Class method defined in this type
+    public var classMethods: [Method] {
+        return methods.filter({ $0.isClass })
+    }
+
     /// Instance variables defined in this type
     public var instanceVariables: [Variable] {
         return variables.filter { !$0.isStatic }
+    }
+
+    /// Instance method defined in this type
+    public var instanceMethods: [Method] {
+        return methods.filter({ !$0.isStatic && !$0.isClass })
     }
 
     /// Computed instance variables defined in this type
