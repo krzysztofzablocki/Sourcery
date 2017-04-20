@@ -9,6 +9,11 @@ final class TemplateContext: NSObject, SourceryModel {
     let types: Types
     let arguments: [String: NSObject]
 
+    // sourcery: skipDescription
+    var type: [String: NSObject] {
+        return types.typesByName
+    }
+
     init(types: Types, arguments: [String: NSObject]) {
         self.types = types
         self.arguments = arguments
