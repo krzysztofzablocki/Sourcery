@@ -90,6 +90,35 @@ struct Composer {
         updateTypeRelationships(types: Array(unique.values))
         return unique.values.sorted { $0.name < $1.name }
     }
+    
+    private func resolveGenerics(typeName: TypeName, unique: [String: Type]) {
+        let genericSplit = typeName.unwrappedTypeName.characters.split(separator: "<")
+        
+        guard genericSplit.count == 2 else {
+            return
+        }
+        
+        let typeCharacters = genericSplit[0]
+        var genericCharacters = genericSplit[1]
+        
+        guard genericCharacters.count > 1, genericCharacters.removeLast() == ">" else {
+            return
+        }
+        
+        let genericTypeStrings = genericCharacters.split(separator: ",").map { characters in
+            return String(characters).trimmingCharacters(in: [" "])
+        }
+        
+        let genericTypeNames = genericTypeStrings.flatMap { genericTypeName in
+            return TypeName(genericTypeName)
+        }
+        
+        let genericTypes = genericTypeStrings.flatMap { genericTypeName in
+            return unique[genericTypeName]
+        }
+        
+        typeName.generic = GenericType(name: String(typeCharacters), referencedTypes: genericTypes, referencedTypeNames: genericTypeNames)
+    }
 
     private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
         let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
@@ -99,33 +128,8 @@ struct Composer {
 
         let lookupName = typeName.actualTypeName ?? typeName
         
-        if lookupName.generic == nil && lookupName.isGeneric {
-            let genericSplit = lookupName.unwrappedTypeName.characters.split(separator: "<")
-            
-            guard genericSplit.count == 2 else {
-                return nil
-            }
-            
-            let typeCharacters = genericSplit[0]
-            var genericCharacters = genericSplit[1]
-            
-            guard genericCharacters.count > 1, genericCharacters.removeLast() == ">" else {
-                return nil
-            }
-            
-            let genericTypeStrings = genericCharacters.split(separator: ",").map { characters in
-                return String(characters).trimmingCharacters(in: [" "])
-            }
-            
-            let genericTypeNames = genericTypeStrings.flatMap { genericTypeName in
-                return TypeName(genericTypeName)
-            }
-            
-            let genericTypes = genericTypeStrings.flatMap { genericTypeName in
-                return unique[genericTypeName]
-            }
-            
-            lookupName.generic = GenericType(name: String(typeCharacters), referencedTypes: genericTypes, referencedTypeNames: genericTypeNames)
+        if lookupName.isGeneric, lookupName.generic == nil {
+            resolveGenerics(typeName: lookupName, unique: unique)
         }
         
         if let array = parseArrayType(lookupName) {

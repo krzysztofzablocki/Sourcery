@@ -120,10 +120,10 @@ extension Enum: EnumAutoJSExport {}
 extension EnumCase: EnumCaseAutoJSExport {}
 
 
-
 @objc protocol GenericTypeAutoJSExport: JSExport {
     var name: String { get }
     var referencedTypes: [Type] { get }
+    var referencedTypeNames: [TypeName] { get }
 }
 
 extension GenericType: GenericTypeAutoJSExport {}

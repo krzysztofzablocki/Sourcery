@@ -91,22 +91,11 @@ extension FileParserResult {
         return true
     }
 }
-extension GenerationContext {
-    /// :nodoc:
-    override internal func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenerationContext else { return false }
-        if self.types != rhs.types { return false }
-        if self.typeByName != rhs.typeByName { return false }
-        if self.arguments != rhs.arguments { return false }
-        return true
-    }
-}
 extension GenericType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? GenericType else { return false }
         if self.name != rhs.name { return false }
-        if self.referencedTypes != rhs.referencedTypes { return false }
         return true
     }
 }

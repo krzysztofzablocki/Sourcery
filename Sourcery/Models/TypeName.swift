@@ -69,9 +69,10 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
             self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
             self.isOptional = isOptional
-
+            
+            var unwrappedTypeName: String
+            
             if isOptional {
-                let unwrappedTypeName: String
                 if name.hasSuffix("?") || name.hasSuffix("!") {
                     unwrappedTypeName = String(name.characters.dropLast())
                 } else if name.hasPrefix("Optional<") {
@@ -79,12 +80,13 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
                 } else {
                     unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
                 }
-                self.unwrappedTypeName = unwrappedTypeName.bracketsBalancing()
-                self.isGeneric = unwrappedTypeName.contains("<") && unwrappedTypeName.characters.last == ">"
+                unwrappedTypeName = unwrappedTypeName.bracketsBalancing()
             } else {
-                self.unwrappedTypeName = name
-                self.isGeneric = name.contains("<") && name.characters.last == ">"
+                unwrappedTypeName = name
             }
+            
+            self.unwrappedTypeName = unwrappedTypeName
+            self.isGeneric = unwrappedTypeName.contains("<") && unwrappedTypeName.characters.last == ">"
         }
     }
 

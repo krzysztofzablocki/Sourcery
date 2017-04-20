@@ -109,19 +109,6 @@ extension FileParserResult: Diffable {
         return results
     }
 }
-extension GenerationContext: Diffable {
-    func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let rhs = object as? GenerationContext else {
-            results.append("Incorrect type <expected: GenerationContext, received: \(type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: rhs.types))
-        results.append(contentsOf: DiffableResult(identifier: "typeByName").trackDifference(actual: self.typeByName, expected: rhs.typeByName))
-        results.append(contentsOf: DiffableResult(identifier: "arguments").trackDifference(actual: self.arguments, expected: rhs.arguments))
-        return results
-    }
-}
 extension GenericType: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -130,7 +117,6 @@ extension GenericType: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
-        results.append(contentsOf: DiffableResult(identifier: "referencedTypes").trackDifference(actual: self.referencedTypes, expected: rhs.referencedTypes))
         return results
     }
 }
