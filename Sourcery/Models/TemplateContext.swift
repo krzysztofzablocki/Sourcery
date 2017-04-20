@@ -118,46 +118,87 @@ public final class Types: NSObject, SourceryModel {
     // sourcery: skipDescription, skipEquality, skipCoding
     /// Types based on any other type, grouped by its name, even if they are not known.
     /// `types.based.MyType` returns list of types based on `MyType`
-    public lazy internal(set) var based: [String: [Type]] = {
-        var content = [String: [Type]]()
-        self.types.forEach { type in
-            type.based.keys.forEach { name in
-                var list = content[name] ?? [Type]()
-                list.append(type)
-                content[name] = list
-            }
-        }
-        return content
+    public lazy internal(set) var based: BasedTypesCollection = {
+        BasedTypesCollection(types: self.types)
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// Classes inheriting from any known class, grouped by its name.
     /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
-    public lazy internal(set) var inheriting: [String: [Type]] = {
-        var content = [String: [Type]]()
-        self.classes.forEach { type in
-            type.inherits.keys.forEach { name in
-                var list = content[name] ?? [Type]()
-                list.append(type)
-                content[name] = list
-            }
-        }
-        return content
+    public lazy internal(set) var inheriting: InheritingTypesCollection = {
+        InheritingTypesCollection(types: self.types)
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// Types implementing known protocol, grouped by its name.
     /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
-    public lazy internal(set) var implementing: [String: [Type]] = {
+    public lazy internal(set) var implementing: ImplementingTypesCollection = {
+        ImplementingTypesCollection(types: self.types)
+    }()
+
+}
+
+public class TypesCollection: NSObject, AutoJSExport {
+
+    let all: [Type]
+    let types: [String: [Type]]
+
+    init(types: [Type], collection: (Type) -> [String]) {
+        self.all = types
         var content = [String: [Type]]()
-        self.types.forEach { type in
-            type.implements.keys.forEach { name in
+        self.all.forEach { type in
+            collection(type).forEach { name in
                 var list = content[name] ?? [Type]()
                 list.append(type)
                 content[name] = list
             }
         }
-        return content
-    }()
+        self.types = content
+    }
 
+}
+
+public class ImplementingTypesCollection: TypesCollection {
+
+    init(types: [Type]) {
+        super.init(types: types, collection: { Array($0.implements.keys) })
+    }
+
+    public override func value(forUndefinedKey key: String) -> Any? {
+        guard all.first(where: { $0.name == key }) != nil else {
+            Log.error("Unknown type \(key)")
+            return []
+        }
+        return types[key]
+    }
+}
+
+public class InheritingTypesCollection: TypesCollection {
+
+    init(types: [Type]) {
+        super.init(types: types, collection: { Array($0.inherits.keys) })
+    }
+
+    public override func value(forUndefinedKey key: String) -> Any? {
+        guard all.first(where: { $0.name == key }) != nil else {
+            Log.error("Unknown type \(key)")
+            return []
+        }
+        return types[key]
+    }
+}
+
+public class BasedTypesCollection: TypesCollection {
+
+    init(types: [Type]) {
+        super.init(types: types, collection: { Array($0.based.keys) })
+    }
+
+    public override func value(forUndefinedKey key: String) -> Any? {
+        guard all.first(where: { $0.name == key }) != nil else {
+            Log.error("Unknown type \(key)")
+            return []
+        }
+        return types[key]
+    }
 }
