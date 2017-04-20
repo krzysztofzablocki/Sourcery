@@ -2,6 +2,13 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Paths in config file are now relative to config file path by default, absolute paths should start with `/`
+
+
 ## 0.6.0
 
 ### New Features
