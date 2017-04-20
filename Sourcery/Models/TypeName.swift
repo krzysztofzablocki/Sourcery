@@ -82,11 +82,21 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
                 self.unwrappedTypeName = name
             }
         }
+        
+        if let characters = self.unwrappedTypeName.characters.split(separator: "<").first {
+            self.baseTypeName = String(characters)
+        } else {
+            self.baseTypeName = ""
+            
+        }
     }
 
     /// Type name used in declaration
     public let name: String
-
+    
+    /// Type name without the generics
+    public var baseTypeName: String
+    
     // sourcery: skipEquality
     /// Actual type name if given type name is a typealias
     public internal(set) var actualTypeName: TypeName?
@@ -171,6 +181,9 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             self.isOptional = aDecoder.decode(forKey: "isOptional")
             self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
             guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["unwrappedTypeName"])); fatalError() }; self.unwrappedTypeName = unwrappedTypeName
+            
+            guard let baseTypeName: String = aDecoder.decode(forKey: "baseTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["baseTypeName"])); fatalError() }; self.baseTypeName = baseTypeName
+            
             self.tuple = aDecoder.decode(forKey: "tuple")
             self.array = aDecoder.decode(forKey: "array")
             self.dictionary = aDecoder.decode(forKey: "dictionary")
@@ -184,6 +197,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             aCoder.encode(self.isOptional, forKey: "isOptional")
             aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
             aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
+            aCoder.encode(self.baseTypeName, forKey: "baseTypeName")
             aCoder.encode(self.tuple, forKey: "tuple")
             aCoder.encode(self.array, forKey: "array")
             aCoder.encode(self.dictionary, forKey: "dictionary")

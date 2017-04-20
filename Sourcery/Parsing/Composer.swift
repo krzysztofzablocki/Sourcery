@@ -112,7 +112,8 @@ struct Composer {
                 tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
             }
         }
-        return unique[lookupName.unwrappedTypeName]
+        
+        return unique[lookupName.unwrappedTypeName] ?? unique[lookupName.baseTypeName]
             ?? typeFromModule(lookupName.unwrappedTypeName, modules: modules)
     }
 
