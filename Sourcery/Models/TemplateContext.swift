@@ -10,7 +10,7 @@ final class TemplateContext: NSObject, SourceryModel {
     let arguments: [String: NSObject]
 
     // sourcery: skipDescription
-    var type: [String: NSObject] {
+    var type: [String: Type] {
         return types.typesByName
     }
 

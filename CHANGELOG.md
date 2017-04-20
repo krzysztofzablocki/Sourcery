@@ -6,6 +6,12 @@
 
 ### New Features
 
+- Added some convenience accessors for classic, static and instance methods, and types and contained types grouped by names
+
+## 0.6
+
+### New Features
+
 - Added support for inline code generation without requiring explicit `// sourcery:inline` comments in the source files. To use, use `sourcery:inline:auto` in a template: `// sourcery:inline:auto:MyType.TemplateName`
 - Added `isMutable` property for `Variable`
 - Added support for scanning multiple targets

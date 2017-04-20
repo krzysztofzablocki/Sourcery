@@ -106,12 +106,12 @@ public class Type: NSObject, SourceryModel, Annotated {
         return variables.filter { $0.isStatic }
     }
 
-    /// Static variables defined in this type
+    /// Static methods defined in this type
     public var staticMethods: [Method] {
         return methods.filter({ $0.isStatic })
     }
 
-    /// Class method defined in this type
+    /// Class methods defined in this type
     public var classMethods: [Method] {
         return methods.filter({ $0.isClass })
     }
@@ -121,7 +121,7 @@ public class Type: NSObject, SourceryModel, Annotated {
         return variables.filter { !$0.isStatic }
     }
 
-    /// Instance method defined in this type
+    /// Instance methods defined in this type
     public var instanceMethods: [Method] {
         return methods.filter({ !$0.isStatic && !$0.isClass })
     }
