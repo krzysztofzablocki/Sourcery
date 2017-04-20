@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension AssociatedValue {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }

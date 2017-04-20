@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension ArrayType: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -105,6 +106,19 @@ extension FileParserResult: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "inlineRanges").trackDifference(actual: self.inlineRanges, expected: rhs.inlineRanges))
         results.append(contentsOf: DiffableResult(identifier: "contentSha").trackDifference(actual: self.contentSha, expected: rhs.contentSha))
         results.append(contentsOf: DiffableResult(identifier: "sourceryVersion").trackDifference(actual: self.sourceryVersion, expected: rhs.sourceryVersion))
+        return results
+    }
+}
+extension GenerationContext: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? GenerationContext else {
+            results.append("Incorrect type <expected: GenerationContext, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: rhs.types))
+        results.append(contentsOf: DiffableResult(identifier: "typeByName").trackDifference(actual: self.typeByName, expected: rhs.typeByName))
+        results.append(contentsOf: DiffableResult(identifier: "arguments").trackDifference(actual: self.arguments, expected: rhs.arguments))
         return results
     }
 }
@@ -234,6 +248,7 @@ extension TypeName: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "baseTypeName").trackDifference(actual: self.baseTypeName, expected: rhs.baseTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: rhs.attributes))
         results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: rhs.tuple))
         results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: rhs.array))

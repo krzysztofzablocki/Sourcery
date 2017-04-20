@@ -176,14 +176,12 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let baseTypeName: String = aDecoder.decode(forKey: "baseTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["baseTypeName"])); fatalError() }; self.baseTypeName = baseTypeName
             self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             self.isOptional = aDecoder.decode(forKey: "isOptional")
             self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
             guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["unwrappedTypeName"])); fatalError() }; self.unwrappedTypeName = unwrappedTypeName
-            
-            guard let baseTypeName: String = aDecoder.decode(forKey: "baseTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["baseTypeName"])); fatalError() }; self.baseTypeName = baseTypeName
-            
             self.tuple = aDecoder.decode(forKey: "tuple")
             self.array = aDecoder.decode(forKey: "array")
             self.dictionary = aDecoder.decode(forKey: "dictionary")
@@ -192,12 +190,12 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.baseTypeName, forKey: "baseTypeName")
             aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.isOptional, forKey: "isOptional")
             aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
             aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
-            aCoder.encode(self.baseTypeName, forKey: "baseTypeName")
             aCoder.encode(self.tuple, forKey: "tuple")
             aCoder.encode(self.array, forKey: "array")
             aCoder.encode(self.dictionary, forKey: "dictionary")

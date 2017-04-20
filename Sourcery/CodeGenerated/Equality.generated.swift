@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension ArrayType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -87,6 +88,16 @@ extension FileParserResult {
         if self.inlineRanges != rhs.inlineRanges { return false }
         if self.contentSha != rhs.contentSha { return false }
         if self.sourceryVersion != rhs.sourceryVersion { return false }
+        return true
+    }
+}
+extension GenerationContext {
+    /// :nodoc:
+    override internal func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenerationContext else { return false }
+        if self.types != rhs.types { return false }
+        if self.typeByName != rhs.typeByName { return false }
+        if self.arguments != rhs.arguments { return false }
         return true
     }
 }
@@ -188,6 +199,7 @@ extension TypeName {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TypeName else { return false }
         if self.name != rhs.name { return false }
+        if self.baseTypeName != rhs.baseTypeName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.tuple != rhs.tuple { return false }
         if self.array != rhs.array { return false }

@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+ 
 extension ArrayType {
     /// :nodoc:
     override public var description: String {
@@ -72,6 +73,21 @@ extension FileParserResult {
         string += "inlineRanges = \(String(describing: self.inlineRanges)), "
         string += "contentSha = \(String(describing: self.contentSha)), "
         string += "sourceryVersion = \(String(describing: self.sourceryVersion))"
+        return string
+    }
+}
+extension GenerationContext {
+    /// :nodoc:
+    override internal var description: String {
+        var string = "\(type(of: self)): "
+        string += "types = \(String(describing: self.types)), "
+        string += "typeByName = \(String(describing: self.typeByName)), "
+        string += "arguments = \(String(describing: self.arguments)), "
+        string += "classes = \(String(describing: self.classes)), "
+        string += "all = \(String(describing: self.all)), "
+        string += "protocols = \(String(describing: self.protocols)), "
+        string += "structs = \(String(describing: self.structs)), "
+        string += "enums = \(String(describing: self.enums))"
         return string
     }
 }
