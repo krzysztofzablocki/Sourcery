@@ -113,13 +113,19 @@ struct Composer {
                 return nil
             }
             
-            let genericTypes = genericCharacters.split(separator: ",").map { characters in
+            let genericTypeStrings = genericCharacters.split(separator: ",").map { characters in
                 return String(characters).trimmingCharacters(in: [" "])
             }
             
-            lookupName.generic = GenericType(name: String(typeCharacters), referencedTypes: genericTypes.flatMap { genericTypeName in
+            let genericTypeNames = genericTypeStrings.flatMap { genericTypeName in
+                return TypeName(genericTypeName)
+            }
+            
+            let genericTypes = genericTypeStrings.flatMap { genericTypeName in
                 return unique[genericTypeName]
-            })
+            }
+            
+            lookupName.generic = GenericType(name: String(typeCharacters), referencedTypes: genericTypes, referencedTypeNames: genericTypeNames)
         }
         
         if let array = parseArrayType(lookupName) {

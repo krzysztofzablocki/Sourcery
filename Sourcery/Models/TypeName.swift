@@ -33,6 +33,7 @@ public protocol Typed {
 public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     init(_ name: String,
+         generic: GenericType? = nil,
          actualTypeName: TypeName? = nil,
          attributes: [String: Attribute] = [:],
          tuple: TupleType? = nil,
@@ -213,10 +214,12 @@ public final class GenericType: NSObject, SourceryModel {
     public let name: String
     
     public let referencedTypes: [Type]
+    public let referencedTypeNames: [TypeName]
     
-    public init?(name: String, referencedTypes: [Type]) {
+    public init?(name: String, referencedTypes: [Type], referencedTypeNames: [TypeName]) {
         self.name = name
         self.referencedTypes = referencedTypes
+        self.referencedTypeNames = referencedTypeNames
     }
     
     // sourcery:inline:GenericType.AutoCoding
@@ -224,12 +227,14 @@ public final class GenericType: NSObject, SourceryModel {
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let referencedTypes: [Type] = aDecoder.decode(forKey: "referencedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["referencedTypes"])); fatalError() }; self.referencedTypes = referencedTypes
+            guard let referencedTypeNames: [TypeName] = aDecoder.decode(forKey: "referencedTypeNames") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["referencedTypeNames"])); fatalError() }; self.referencedTypeNames = referencedTypeNames
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.referencedTypes, forKey: "referencedTypes")
+            aCoder.encode(self.referencedTypeNames, forKey: "referencedTypeNames")
         }
     
     // sourcery:end
