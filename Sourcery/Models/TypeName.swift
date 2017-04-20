@@ -213,7 +213,12 @@ public final class GenericType: NSObject, SourceryModel {
     /// `Array<Int>`'s GenericType.name is `Array`
     public let name: String
     
+    // sourcery: skipEquality, skipDescription
+    /// The types referenced between `<` and `>` generics in the right order
     public let referencedTypes: [Type]
+    
+    // sourcery: skipEquality, skipDescription
+    /// The TypeNames referenced between `<` and `>` generics in the right order
     public let referencedTypeNames: [TypeName]
     
     public init?(name: String, referencedTypes: [Type], referencedTypeNames: [TypeName]) {
