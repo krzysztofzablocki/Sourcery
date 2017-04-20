@@ -161,9 +161,16 @@ public class Type: NSObject, SourceryModel, Annotated {
     /// Contained types
     public internal(set) var containedTypes: [Type] {
         didSet {
-            containedTypes.forEach { $0.parent = self }
+            containedTypes.forEach {
+                containedType[$0.localName] = $0
+                $0.parent = self
+            }
         }
     }
+
+    // sourcery: skipEquality, skipDescription
+    /// Contained types groupd by their names
+    public private(set) var containedType: [String: Type] = [:]
 
     /// Name of parent type (for contained types only)
     public private(set) var parentName: String?
@@ -228,7 +235,10 @@ public class Type: NSObject, SourceryModel, Annotated {
         self.isGeneric = isGeneric
 
         super.init()
-        containedTypes.forEach { $0.parent = self }
+        containedTypes.forEach {
+            containedType[$0.localName] = $0
+            $0.parent = self
+        }
         inheritedTypes.forEach { name in
             self.based[name] = name
         }
@@ -265,6 +275,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
             guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["implements"])); fatalError() }; self.implements = implements
             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedTypes"])); fatalError() }; self.containedTypes = containedTypes
+            guard let containedType: [String: Type] = aDecoder.decode(forKey: "containedType") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedType"])); fatalError() }; self.containedType = containedType
             self.parentName = aDecoder.decode(forKey: "parentName")
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
@@ -289,6 +300,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.inherits, forKey: "inherits")
             aCoder.encode(self.implements, forKey: "implements")
             aCoder.encode(self.containedTypes, forKey: "containedTypes")
+            aCoder.encode(self.containedType, forKey: "containedType")
             aCoder.encode(self.parentName, forKey: "parentName")
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.supertype, forKey: "supertype")
