@@ -9,16 +9,10 @@
     return fn(context, null, function(path, d) {
       let template = include(path);
       return renderTemplate(template, d, path);
-     }, function(error,source,filename,lineno) {
-      rethrow({message: error.message}, source, filename, lineno);
-    });
+     });
   }
   
-  try {
-    global.content = renderTemplate(template, templateContext, templateName);
-  } catch (e) {
-    global.content = "// Error compiling/rendering EJS template\n// " + e.message;
-  }
+  global.content = renderTemplate(template, templateContext, templateName);
   
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"ejs":2}],2:[function(require,module,exports){

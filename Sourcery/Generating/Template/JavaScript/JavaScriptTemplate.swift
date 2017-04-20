@@ -1,6 +1,20 @@
 import JavaScriptCore
 import PathKit
 
+struct JavaScriptTemplateError: Error, CustomStringConvertible {
+    var exception: JSValue?
+
+    init(_ exception: JSValue?) {
+        self.exception = exception
+    }
+
+    var description: String {
+        let message = exception?.forProperty("message").toString() ?? "no message"
+
+        return message
+    }
+}
+
 final class JavaScriptTemplate: Template {
 
     let sourcePath: Path
@@ -20,7 +34,7 @@ final class JavaScriptTemplate: Template {
         let path = Bundle(for: JavaScriptTemplate.self).path(forResource: "ejsbundle", ofType: "js")!
         let ejs = try String(contentsOfFile: path, encoding: .utf8)
 
-        var errorContent = ""
+        var error: JavaScriptTemplateError?
 
         let include: @convention(block) (String) -> String? = { [unowned self] path in
             let path = self.sourcePath.parent() + Path(path)
@@ -28,17 +42,20 @@ final class JavaScriptTemplate: Template {
             return includedTemplate
         }
 
-        let rethrow: @convention(block) (NSDictionary, String, String, String) -> Void = { error, source, filename, lineno in
-            errorContent += "// Error parsing \(filename):\(lineno)\n"
-            errorContent += "// \(error["message"] as? String ?? "")"
+        let exceptionHandler: (JSContext?, JSValue?) -> Void = { context, exception in
+            error = JavaScriptTemplateError(exception)
         }
 
         jsContext.setObject(template, forKeyedSubscript: "template" as NSString)
         jsContext.setObject(context.jsContext, forKeyedSubscript: "templateContext" as NSString)
         jsContext.setObject(include, forKeyedSubscript: "include" as NSString)
-        jsContext.setObject(rethrow, forKeyedSubscript: "rethrow" as NSString)
         jsContext.setObject(sourcePath.lastComponent, forKeyedSubscript: "templateName" as NSString)
+        jsContext.exceptionHandler = exceptionHandler
         jsContext.evaluateScript("var window = this; \(ejs)")
+
+        if let error = error {
+            throw error
+        }
 
         let content: String
         if let contentObject = jsContext.objectForKeyedSubscript("content"), contentObject.isString {
@@ -47,7 +64,7 @@ final class JavaScriptTemplate: Template {
             content = ""
         }
 
-        return errorContent + content
+        return content
     }
 
 }
