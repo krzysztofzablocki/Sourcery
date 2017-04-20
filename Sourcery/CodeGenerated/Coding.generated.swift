@@ -56,6 +56,8 @@ extension FileParserResult: NSCoding {}
 
 extension GenerationContext: NSCoding {}
 
+extension GenericType: NSCoding {}
+
 extension Method: NSCoding {}
 
 extension MethodParameter: NSCoding {}

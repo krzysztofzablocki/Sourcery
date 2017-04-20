@@ -91,6 +91,15 @@ extension GenerationContext {
         return string
     }
 }
+extension GenericType {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "referencedTypes = \(String(describing: self.referencedTypes))"
+        return string
+    }
+}
 extension Method {
     /// :nodoc:
     override public var description: String {

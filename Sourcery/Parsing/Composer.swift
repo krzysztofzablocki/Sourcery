@@ -98,6 +98,30 @@ struct Composer {
         }
 
         let lookupName = typeName.actualTypeName ?? typeName
+        
+        if lookupName.generic == nil && lookupName.isGeneric {
+            let genericSplit = lookupName.unwrappedTypeName.characters.split(separator: "<")
+            
+            guard genericSplit.count == 2 else {
+                return nil
+            }
+            
+            let typeCharacters = genericSplit[0]
+            var genericCharacters = genericSplit[1]
+            
+            guard genericCharacters.count > 1, genericCharacters.removeLast() == ">" else {
+                return nil
+            }
+            
+            let genericTypes = genericCharacters.split(separator: ",").map { characters in
+                return String(characters).trimmingCharacters(in: [" "])
+            }
+            
+            lookupName.generic = GenericType(name: String(typeCharacters), referencedTypes: genericTypes.flatMap { genericTypeName in
+                return unique[genericTypeName]
+            })
+        }
+        
         if let array = parseArrayType(lookupName) {
             typeName.array = array
             array.elementType = resolveType(typeName: array.elementTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
@@ -113,8 +137,7 @@ struct Composer {
             }
         }
         
-        return unique[lookupName.unwrappedTypeName] ?? unique[lookupName.baseTypeName]
-            ?? typeFromModule(lookupName.unwrappedTypeName, modules: modules)
+        return unique[lookupName.unwrappedTypeName] ?? unique[lookupName.generic?.name ?? ""] ?? typeFromModule(lookupName.unwrappedTypeName, modules: modules)
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?

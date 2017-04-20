@@ -122,6 +122,18 @@ extension GenerationContext: Diffable {
         return results
     }
 }
+extension GenericType: Diffable {
+    func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let rhs = object as? GenericType else {
+            results.append("Incorrect type <expected: GenericType, received: \(type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
+        results.append(contentsOf: DiffableResult(identifier: "referencedTypes").trackDifference(actual: self.referencedTypes, expected: rhs.referencedTypes))
+        return results
+    }
+}
 extension Method: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -248,7 +260,8 @@ extension TypeName: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
-        results.append(contentsOf: DiffableResult(identifier: "baseTypeName").trackDifference(actual: self.baseTypeName, expected: rhs.baseTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "generic").trackDifference(actual: self.generic, expected: rhs.generic))
+        results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: rhs.isGeneric))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: rhs.attributes))
         results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: rhs.tuple))
         results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: rhs.array))

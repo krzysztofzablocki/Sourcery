@@ -61,6 +61,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             self.unwrappedTypeName = "Void"
             self.isImplicitlyUnwrappedOptional = false
             self.isOptional = false
+            self.isGeneric = false
         } else {
             name = name.bracketsBalancing()
             let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
@@ -78,24 +79,22 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
                     unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
                 }
                 self.unwrappedTypeName = unwrappedTypeName.bracketsBalancing()
+                self.isGeneric = unwrappedTypeName.contains("<") && unwrappedTypeName.characters.last == ">"
             } else {
                 self.unwrappedTypeName = name
+                self.isGeneric = name.contains("<") && name.characters.last == ">"
             }
-        }
-        
-        if let characters = self.unwrappedTypeName.characters.split(separator: "<").first {
-            self.baseTypeName = String(characters)
-        } else {
-            self.baseTypeName = ""
-            
         }
     }
 
     /// Type name used in declaration
     public let name: String
     
-    /// Type name without the generics
-    public var baseTypeName: String
+    /// The generics of this TypeName
+    public internal(set) var generic: GenericType?
+    
+    /// Whether this TypeName is generic
+    public let isGeneric: Bool
     
     // sourcery: skipEquality
     /// Actual type name if given type name is a typealias
@@ -176,7 +175,8 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let baseTypeName: String = aDecoder.decode(forKey: "baseTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["baseTypeName"])); fatalError() }; self.baseTypeName = baseTypeName
+            self.generic = aDecoder.decode(forKey: "generic")
+            self.isGeneric = aDecoder.decode(forKey: "isGeneric")
             self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             self.isOptional = aDecoder.decode(forKey: "isOptional")
@@ -190,7 +190,8 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.baseTypeName, forKey: "baseTypeName")
+            aCoder.encode(self.generic, forKey: "generic")
+            aCoder.encode(self.isGeneric, forKey: "isGeneric")
             aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.isOptional, forKey: "isOptional")
@@ -203,6 +204,37 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         // sourcery:end
 
 }
+
+/// Descibes Swift class
+public final class GenericType: NSObject, SourceryModel {
+    /// the name of the base type.
+    ///
+    /// `Array<Int>`'s GenericType.name is `Array`
+    public let name: String
+    
+    public let referencedTypes: [Type]
+    
+    public init?(name: String, referencedTypes: [Type]) {
+        self.name = name
+        self.referencedTypes = referencedTypes
+    }
+    
+    // sourcery:inline:GenericType.AutoCoding
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let referencedTypes: [Type] = aDecoder.decode(forKey: "referencedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["referencedTypes"])); fatalError() }; self.referencedTypes = referencedTypes
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.referencedTypes, forKey: "referencedTypes")
+        }
+    
+    // sourcery:end
+}
+
 
 /// Describes tuple type element
 public final class TupleElement: NSObject, SourceryModel, Typed {
