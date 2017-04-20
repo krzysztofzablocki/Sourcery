@@ -73,7 +73,7 @@ Bar
 
 ## JavaScript templates
 
-JavaScript templates are powered by [EJS](http://ejs.co) and support all the features available in this templates engine except files includes.
+JavaScript templates are powered by [EJS](http://ejs.co) and support all the features available in this template engine.
 
 **Example**: [Equality.js](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js)
 
