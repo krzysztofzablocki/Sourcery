@@ -13,6 +13,12 @@ final class JavaScriptTemplate: Template {
         jsContext = context
     }
 
+    init(templateString: String) {
+        self.template = templateString
+        sourcePath = ""
+        jsContext = JSContext()
+    }
+
     func render(types: Types, arguments: [String : NSObject]) throws -> String {
         let context = TemplateContext(types: types, arguments: arguments)
 
@@ -29,7 +35,7 @@ final class JavaScriptTemplate: Template {
 
         let valueForKey: @convention(block) (TypesCollection, String) -> Any? = { target, key in
             do {
-                return try target.valueForKey(target, key)
+                return try target.types(forKey: key)
             } catch let _error {
                 error = _error
                 return nil

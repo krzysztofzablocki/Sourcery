@@ -44,6 +44,15 @@ class StencilTemplateSpec: QuickSpec {
                 expect(generate("{{\"helloWorld\" | replace:\"foo\",\"bar\" }}")).to(equal("helloWorld"))
             }
 
+            it("rethrows template parsing errors") {
+                expect {
+                    try Generator.generate(Types(types: []), template: StencilTemplate(templateString: "{% tag %}"))
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal(": Unknown template tag 'tag'"))
+                    }))
+            }
+
         }
     }
 }

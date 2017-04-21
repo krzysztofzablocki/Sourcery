@@ -121,13 +121,8 @@ public final class Types: NSObject, SourceryModel {
     public lazy internal(set) var based: TypesCollection = {
         TypesCollection(
             types: self.types,
-            collection: { Array($0.based.keys) },
-            valueForKey: { (collection: TypesCollection, key: String) -> Any? in
-                guard collection.all.first(where: { $0.name == key }) != nil else {
-                    throw "Unknown type \(key)"
-                }
-                return collection.types[key]
-        })
+            collection: { Array($0.based.keys) }
+        )
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
@@ -137,11 +132,10 @@ public final class Types: NSObject, SourceryModel {
         TypesCollection(
             types: self.types,
             collection: { Array($0.inherits.keys) },
-            valueForKey: { (collection: TypesCollection, key: String) -> Any? in
-                guard collection.all.first(where: { $0.name == key }) != nil else {
-                    throw "Unknown type \(key)"
+            validate: { type in
+                guard type is Class else {
+                    throw "\(type.name) is a not a class and should be used with `implementing` or `based`"
                 }
-                return collection.types[key]
             })
     }()
 
@@ -152,11 +146,10 @@ public final class Types: NSObject, SourceryModel {
         TypesCollection(
             types: self.types,
             collection: { Array($0.implements.keys) },
-            valueForKey: { (collection: TypesCollection, key: String) -> Any? in
-                guard collection.all.first(where: { $0.name == key }) != nil else {
-                    throw "Unknown type \(key)"
+            validate: { type in
+                guard type is Protocol else {
+                    throw "\(type.name) is a class and should be used with `inheriting` or `based`"
                 }
-                return collection.types[key]
         })
     }()
 
@@ -168,10 +161,10 @@ public class TypesCollection: NSObject, AutoJSExport {
     // sourcery:begin: skipJSExport
     let all: [Type]
     let types: [String: [Type]]
-    let valueForKey: (TypesCollection, String) throws -> Any?
+    let validate: ((Type) throws -> Void)?
     // sourcery:end
 
-    init(types: [Type], collection: (Type) -> [String], valueForKey: @escaping (TypesCollection, String) throws -> Any?) {
+    init(types: [Type], collection: (Type) -> [String], validate: ((Type) throws -> Void)? = nil) {
         self.all = types
         var content = [String: [Type]]()
         self.all.forEach { type in
@@ -182,13 +175,23 @@ public class TypesCollection: NSObject, AutoJSExport {
             }
         }
         self.types = content
-        self.valueForKey = valueForKey
+        self.validate = validate
+    }
+
+    func types(forKey key: String) throws -> [Type]? {
+        if let validate = validate {
+            guard let type = all.first(where: { $0.name == key }) else {
+                throw "Unknown type \(key), should be used with `based`"
+            }
+            try validate(type)
+        }
+        return types[key]
     }
 
     /// :nodoc:
     public override func value(forKey key: String) -> Any? {
         do {
-            return try valueForKey(self, key)
+            return try types(forKey: key)
         } catch {
             Log.error(error)
             return nil

@@ -13,6 +13,7 @@
 		0926CE1D1E5F9D8000C0D099 /* JSExport.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0926CE1B1E5F996B00C0D099 /* JSExport.generated.swift */; };
 		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
 		094415C81E78A46A00ABE04A /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094415C71E78A46A00ABE04A /* Configuration.swift */; };
+		0948553B1EA93FB200241D95 /* Log.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 0979D5B41EA692F00070F1F7 /* Log.swift */; };
 		09618B3C1E61EEE100B49D5F /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B3B1E61EEE100B49D5F /* JavaScriptTemplate.swift */; };
 		09618B421E620D8600B49D5F /* ejsbundle.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejsbundle.js */; };
 		09618B441E620E3200B49D5F /* JSExport.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B431E620E3200B49D5F /* JSExport.js */; };
@@ -154,6 +155,7 @@
 				C894A1C31E1989D30098327C /* TypeName.swift in SwiftTemplates */,
 				C8E88CAE1E204ED500102D17 /* Extensions.swift in SwiftTemplates */,
 				09F64DA51EA40A310039FF80 /* TemplateContext.swift in SwiftTemplates */,
+				0948553B1EA93FB200241D95 /* Log.swift in SwiftTemplates */,
 			);
 			name = SwiftTemplates;
 			runOnlyForDeploymentPostprocessing = 0;
