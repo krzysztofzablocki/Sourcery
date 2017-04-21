@@ -92,7 +92,7 @@ struct Composer {
     }
     
     private func resolveGenerics(typeName: TypeName, unique: [String: Type]) {
-        let genericSplit = typeName.unwrappedTypeName.characters.split(separator: "<")
+        let genericSplit = typeName.unwrappedTypeName.characters.split(separator: "<", maxSplits: 1)
         
         guard genericSplit.count == 2 else {
             return
@@ -105,12 +105,39 @@ struct Composer {
             return
         }
         
-        let genericTypeStrings = genericCharacters.split(separator: ",").map { characters in
-            return String(characters).trimmingCharacters(in: [" "])
+        var genericTypeStrings = [String]()
+        
+        var subGenericsCounter = 0
+        var characterBuffer = [Character]()
+        
+        for character in genericCharacters {
+            switch character {
+            case "<":
+                characterBuffer.append(character)
+                subGenericsCounter += 1
+            case ">":
+                characterBuffer.append(character)
+                subGenericsCounter -= 1
+            case ",":
+                if subGenericsCounter == 0 {
+                    genericTypeStrings.append(String(characterBuffer).trimmingCharacters(in: [" "]))
+                    characterBuffer = []
+                } else {
+                    characterBuffer.append(character)
+                }
+            default:
+                characterBuffer.append(character)
+            }
         }
         
-        let genericTypeNames = genericTypeStrings.flatMap { genericTypeName in
-            return TypeName(genericTypeName)
+        if characterBuffer.count > 0 {
+            genericTypeStrings.append(String(characterBuffer).trimmingCharacters(in: [" "]))
+        }
+        
+        let genericTypeNames = genericTypeStrings.flatMap { genericTypeName -> TypeName in
+            let typeName = TypeName(genericTypeName)
+            resolveGenerics(typeName: typeName, unique: unique)
+            return typeName
         }
         
         let genericTypes = genericTypeStrings.flatMap { genericTypeName in

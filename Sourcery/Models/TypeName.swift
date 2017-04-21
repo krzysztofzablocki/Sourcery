@@ -41,6 +41,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
          dictionary: DictionaryType? = nil) {
 
         self.name = name
+        self.generic = generic
         self.actualTypeName = actualTypeName
         self.attributes = attributes
         self.tuple = tuple
