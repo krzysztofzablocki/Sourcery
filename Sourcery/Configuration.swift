@@ -1,5 +1,6 @@
 import Foundation
 import XcodeEdit
+import PathKit
 
 struct Project {
     let file: XCProjectFile
@@ -71,10 +72,18 @@ struct Configuration {
     let output: Path
     let args: [String: NSObject]
 
-    init(dict: [String: Any]) {
+    init(dict: [String: Any], relativePath: Path) {
         self.source = Source(dict: dict)
-        self.templates = (dict["templates"] as? [String])?.map({ Path($0) }) ?? []
-        self.output = (dict["output"] as? String).map({ Path($0) }) ?? "."
+        let makePath = { (str: String) -> Path in
+            let path = Path(str)
+            if path.isAbsolute {
+                return path
+            } else {
+                return (relativePath + path).absolute()
+            }
+        }
+        self.templates = (dict["templates"] as? [String])?.map(makePath) ?? []
+        self.output = (dict["output"] as? String).map(makePath) ?? "."
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 

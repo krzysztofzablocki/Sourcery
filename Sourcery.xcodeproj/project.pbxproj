@@ -202,7 +202,6 @@
 		67BC066E18D9BE38229EEFA2 /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C894A1A51E1930990098327C /* Coding.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coding.generated.swift; sourceTree = "<group>"; };
-		C894A1AC1E1931500098327C /* GenerationContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerationContext.swift; sourceTree = "<group>"; };
 		C894A1AE1E19326C0098327C /* SwiftTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplate.swift; sourceTree = "<group>"; };
 		C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftTemplate+Runtime.swift"; sourceTree = "<group>"; };
 		C894A1B21E19328E0098327C /* SwiftTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SwiftTemplates; sourceTree = "<group>"; };
@@ -326,7 +325,6 @@
 			children = (
 				C894A1AE1E19326C0098327C /* SwiftTemplate.swift */,
 				C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */,
-				C894A1AC1E1931500098327C /* GenerationContext.swift */,
 			);
 			path = Swift;
 			sourceTree = "<group>";

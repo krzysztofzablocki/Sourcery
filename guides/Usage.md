@@ -49,3 +49,5 @@ project:
 ```
 
 You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects.
+
+> Note: Paths in configuration file are by default relative to configuration file path. If you want to specify absolute path start it with `/`.
