@@ -223,7 +223,7 @@ public final class GenericType: NSObject, SourceryModel {
     /// The TypeNames referenced between `<` and `>` generics in the right order
     public let referencedTypeNames: [TypeName]
     
-    public init?(name: String, referencedTypes: [Type], referencedTypeNames: [TypeName]) {
+    public init(name: String, referencedTypes: [Type] = [], referencedTypeNames: [TypeName] = []) {
         self.name = name
         self.referencedTypes = referencedTypes
         self.referencedTypeNames = referencedTypeNames

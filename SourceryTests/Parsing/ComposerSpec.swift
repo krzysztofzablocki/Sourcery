@@ -151,7 +151,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "2", typeName: TypeName("String")),
                                 TupleElement(name: "3", typeName: TypeName("Float")),
                                 TupleElement(name: "literal", typeName: TypeName("[String: [String: Float]]", dictionary: DictionaryType(name: "[String: [String: Float]]", valueTypeName: TypeName("[String: Float]", dictionary: DictionaryType(name: "[String: Float]", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
-                                TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>", dictionary: DictionaryType(name: "Dictionary<String, Dictionary<String, Float>>", valueTypeName: TypeName("Dictionary<String, Float>", dictionary: DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
+                                TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>", generic: GenericType(name: "Dictionary", referencedTypeNames: [TypeName("String"), TypeName("Dictionary<String, Float>", generic: GenericType(name: "Dictionary", referencedTypeNames: [TypeName("String"), TypeName("Float")]))]), dictionary: DictionaryType(name: "Dictionary<String, Dictionary<String, Float>>", valueTypeName: TypeName("Dictionary<String, Float>", dictionary: DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
                                 TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)")),
                                 TupleElement(name: "tuple", typeName: TypeName("(Int, Int)", tuple:
                                     TupleType(name: "(Int, Int)", elements: [
@@ -201,7 +201,7 @@ class ParserComposerSpec: QuickSpec {
                                     ])))
                         ))
                         expect(variables?[2].typeName.array).to(equal(
-                            ArrayType(name: "Array<Array<Int>>", elementTypeName: TypeName("Array<Int>", array: ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int"))))
+                            ArrayType(name: "Array<Array<Int>>", elementTypeName: TypeName("Array<Int>", generic: GenericType(name: "Array", referencedTypeNames: [TypeName("Int")]), array: ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int"))))
                         ))
                         expect(variables?[3].typeName.array).to(equal(
                             ArrayType(name: "Array<()->()>", elementTypeName: TypeName("()->()"))
