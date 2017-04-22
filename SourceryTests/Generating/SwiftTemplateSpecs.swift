@@ -28,6 +28,27 @@ class SwiftTemplateTests: QuickSpec {
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
             }
+
+            it("rethrows template parsing errors") {
+                let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
+                expect {
+                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
+                    }
+                    .to(throwError(closure: { (error) in
+                        let path = Path.cleanTemporaryDir(name: "build") + "main.swift"
+                        expect("\(error)").to(equal("\(path):4:3: error: use of unresolved identifier \'invalid\'\n  invalid \n  ^~~~~~~\n"))
+                    }))
+            }
+
+            it("rethrows template runtime errors") {
+                let templatePath = Stubs.swiftTemplates + Path("Runtime.swifttemplate")
+                expect {
+                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal("\(templatePath): Unknown type Some, should be used with `based`"))
+                    }))
+            }
         }
     }
 }

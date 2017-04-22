@@ -7,11 +7,8 @@ import Foundation
 
 /// Responsible for composing results of `FileParser`.
 struct Composer {
-    let verbose: Bool
 
-    init(verbose: Bool = false) {
-        self.verbose = verbose
-    }
+    init() {}
 
     /// Performs final processing of discovered types:
     /// - extends types with their corresponding extensions;
@@ -57,7 +54,7 @@ struct Composer {
                 let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
                         ": \(type.inheritedTypes.joined(separator: ", "))"
 
-                if verbose { print("Found \"extension \(type.name)\(inheritanceClause)\" of type for which we don't have original type definition information") }
+                Log.info("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
                 return
             }
 

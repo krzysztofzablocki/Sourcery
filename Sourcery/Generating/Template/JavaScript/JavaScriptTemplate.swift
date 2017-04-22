@@ -13,6 +13,12 @@ final class JavaScriptTemplate: Template {
         jsContext = context
     }
 
+    init(templateString: String) {
+        self.template = templateString
+        sourcePath = ""
+        jsContext = JSContext()
+    }
+
     func render(types: Types, arguments: [String : NSObject]) throws -> String {
         let context = TemplateContext(types: types, arguments: arguments)
 
@@ -20,9 +26,32 @@ final class JavaScriptTemplate: Template {
         let path = Bundle(for: JavaScriptTemplate.self).path(forResource: "ejsbundle", ofType: "js")!
         let ejs = try String(contentsOfFile: path, encoding: .utf8)
 
+        var error: Swift.Error?
+        jsContext.exceptionHandler = { _, exception in
+            error = exception?.toString() ?? "Unknown JavaScript error"
+        }
         jsContext.setObject(template, forKeyedSubscript: "template" as NSString)
         jsContext.setObject(context.jsContext, forKeyedSubscript: "templateContext" as NSString)
+
+        let valueForKey: @convention(block) (TypesCollection, String) -> Any? = { target, key in
+            do {
+                return try target.types(forKey: key)
+            } catch let _error {
+                error = _error
+                return nil
+            }
+        }
+        jsContext.setObject(valueForKey, forKeyedSubscript: "valueForKey" as NSString)
+        jsContext.evaluateScript("templateContext.types.implementing = new Proxy(templateContext.types.implementing, { get: valueForKey })")
+        jsContext.evaluateScript("templateContext.types.inheriting = new Proxy(templateContext.types.inheriting, { get: valueForKey })")
+        jsContext.evaluateScript("templateContext.types.based = new Proxy(templateContext.types.based, { get: valueForKey })")
+
         jsContext.evaluateScript("var window = this; \(ejs)")
+
+        if let error = error {
+            throw "\(sourcePath): \(error)"
+        }
+
         let content = jsContext.objectForKeyedSubscript("content").toString()
         return content ?? ""
     }

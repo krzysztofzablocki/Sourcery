@@ -62,7 +62,6 @@ extension EnumCase: Parsable {}
 
 final class FileParser {
 
-    let verbose: Bool
     let path: String?
     let module: String?
     let initialContents: String
@@ -72,7 +71,7 @@ final class FileParser {
     fileprivate var inlineRanges: [String: NSRange]!
 
     fileprivate var logPrefix: String {
-        return path.flatMap { "\($0): " } ?? ""
+        return path.flatMap { "\($0):" } ?? ""
     }
 
     /// Parses given contents.
@@ -82,8 +81,7 @@ final class FileParser {
     ///   - contents: Contents to parse.
     ///   - path: Path to file.
     /// - Throws: parsing errors.
-    init(verbose: Bool = false, contents: String, path: Path? = nil, module: String? = nil) throws {
-        self.verbose = verbose
+    init(contents: String, path: Path? = nil, module: String? = nil) throws {
         self.path = path?.string
         self.module = module
         self.initialContents = contents
@@ -110,6 +108,9 @@ final class FileParser {
     public func parse() -> FileParserResult {
         _ = parseContentsIfNeeded()
 
+        if let path = path {
+            Log.info("Processing file \(path)")
+        }
         let file = File(contents: contents)
         let source = Structure(file: file).dictionary
 
@@ -155,7 +156,7 @@ final class FileParser {
             case .varParameter:
                 return parseParameter(source)
             default:
-                if verbose { print("\(logPrefix)Unsupported entry \"\(access) \(kind) \(name)\"") }
+                Log.info("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
             }
 
@@ -568,7 +569,7 @@ extension FileParser {
         var rawValue: String? = nil
 
         guard let keyString = extract(.key, from: source), let nameRange = keyString.range(of: name) else {
-            print("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")
+            Log.warning("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")
             return nil
         }
 
@@ -584,7 +585,7 @@ extension FileParser {
         case (nil, nil):
             break
         default:
-             print("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
+             Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
         let annotations: [String: NSObject]
