@@ -169,6 +169,7 @@ class SwiftTemplate: Template {
         let arguments = [mainFile.description] +
             runtimeFiles + [
                 "-suppress-warnings",
+                "-whole-module-optimization",
                 "-Onone",
                 "-module-name", "Sourcery",
                 "-o", binaryFile.description
