@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import JavaScriptCore
@@ -47,7 +47,10 @@ extension Attribute: AttributeAutoJSExport {}
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
     var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
@@ -55,6 +58,7 @@ extension Attribute: AttributeAutoJSExport {}
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
     var parentName: String? { get }
     var parent: Type? { get }
     var supertype: Type? { get }
@@ -94,13 +98,17 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
     var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
     var parentName: String? { get }
     var parent: Type? { get }
     var supertype: Type? { get }
@@ -175,7 +183,10 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
     var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
@@ -183,6 +194,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
     var parentName: String? { get }
     var parent: Type? { get }
     var supertype: Type? { get }
@@ -206,7 +218,10 @@ extension Protocol: ProtocolAutoJSExport {}
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
     var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
@@ -214,6 +229,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
     var parentName: String? { get }
     var parent: Type? { get }
     var supertype: Type? { get }
@@ -225,6 +241,7 @@ extension Struct: StructAutoJSExport {}
 @objc protocol TemplateContextAutoJSExport: JSExport {
     var types: Types { get }
     var arguments: [String: NSObject] { get }
+    var type: [String: Type] { get }
     var stencilContext: [String: Any] { get }
     var jsContext: [String: Any] { get }
 }
@@ -264,7 +281,10 @@ extension TupleType: TupleTypeAutoJSExport {}
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
     var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
     var inheritedTypes: [String] { get }
@@ -272,6 +292,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
     var parentName: String? { get }
     var parent: Type? { get }
     var supertype: Type? { get }

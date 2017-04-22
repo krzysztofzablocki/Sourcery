@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.5.9 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -172,7 +172,10 @@ extension Type {
         string += "initializers = \(String(describing: self.initializers)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "staticVariables = \(String(describing: self.staticVariables)), "
+        string += "staticMethods = \(String(describing: self.staticMethods)), "
+        string += "classMethods = \(String(describing: self.classMethods)), "
         string += "instanceVariables = \(String(describing: self.instanceVariables)), "
+        string += "instanceMethods = \(String(describing: self.instanceMethods)), "
         string += "computedVariables = \(String(describing: self.computedVariables)), "
         string += "storedVariables = \(String(describing: self.storedVariables)), "
         string += "inheritedTypes = \(String(describing: self.inheritedTypes)), "
