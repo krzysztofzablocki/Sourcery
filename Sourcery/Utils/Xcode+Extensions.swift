@@ -3,8 +3,6 @@ import XcodeEdit
 
 typealias XcodePath = XcodeEdit.Path
 
-extension String: Error {}
-
 extension XCProjectFile {
 
     convenience init(path: String) throws {

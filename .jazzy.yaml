@@ -23,6 +23,7 @@ custom_categories:
       - Mocks
       - Diffable
       - LinuxMain
+      - Decorator
 
   - name: Types
     children:

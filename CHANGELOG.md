@@ -6,6 +6,20 @@
 
 ### New Features
 
+- Paths in config file are now relative to config file path by default, absolute paths should start with `/`
+- Improved logging and error reporting, added `--quiet` CLI option, added runtime errors for using invalid types in `implementing` and `inheriting`
+
+
+## 0.6.0
+
+### New Features
+
+- Added some convenience accessors for classic, static and instance methods, and types and contained types grouped by names
+
+## 0.6
+
+### New Features
+
 - Added support for inline code generation without requiring explicit `// sourcery:inline` comments in the source files. To use, use `sourcery:inline:auto` in a template: `// sourcery:inline:auto:MyType.TemplateName`
 - Added `isMutable` property for `Variable`
 - Added support for scanning multiple targets

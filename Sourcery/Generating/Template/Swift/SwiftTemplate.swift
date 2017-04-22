@@ -10,11 +10,6 @@ import Foundation
 import PathKit
 import SwiftTryCatch
 
-fileprivate enum SwiftTemplateParsingError: Error {
-    case unmatchedOpening(path: Path, line: Int)
-    case compilationError(path: Path, error: String)
-}
-
 fileprivate enum Delimiters {
     static let open = "<%"
     static let close = "%>"
@@ -47,7 +42,7 @@ class SwiftTemplateParser {
 
         for component in components.suffix(from: 1) {
             guard let endIndex = component.range(of: Delimiters.close) else {
-                throw SwiftTemplateParsingError.unmatchedOpening(path: sourcePath, line: currentLineNumber())
+                throw "\(path):\(currentLineNumber()) Error while parsing template. Unmatched <%"
             }
 
             var code = component.substring(to: endIndex.lowerBound)
@@ -161,7 +156,7 @@ class SwiftTemplateParser {
                 let command = "/usr/bin/swiftc " + arguments.map { "\"\($0)\"" }.joined(separator: " ")
                 print(command)
             #endif
-            throw SwiftTemplateParsingError.compilationError(path: binaryFile, error: compilationResult.error)
+            throw compilationResult.error
         }
 
         return binaryFile
@@ -240,6 +235,11 @@ class SwiftTemplate: NSObject, NSCoding, Template {
 
         let result = try Process.runCommand(path: binaryPath.description,
                                             arguments: [serializedContextPath.description])
+
+        if !result.error.isEmpty {
+            throw "\(sourcePath): \(result.error)"
+        }
+
         return result.output
     }
 
@@ -252,17 +252,6 @@ fileprivate extension SwiftTemplate {
 
     static var swiftTemplatesRuntime: Path {
         return resourcesPath + Path("SwiftTemplateRuntime")
-    }
-}
-
-extension SwiftTemplateParsingError: CustomStringConvertible {
-    var description: String {
-        switch self {
-        case let .unmatchedOpening(path, line):
-            return "\(path):\(line) Error while parsing template. Unmatched <%"
-        case let .compilationError(_, error):
-            return error
-        }
     }
 }
 
