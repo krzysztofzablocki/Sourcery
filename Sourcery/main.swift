@@ -106,7 +106,7 @@ func runCLI() {
         Flag("verbose",
              flag: "v",
              description: "Turn on verbose logging"),
-        Flag("quite",
+        Flag("quiet",
              flag: "q",
              description: "Turn off any logging, only emmit errors"),
         Flag("prune",
@@ -117,9 +117,9 @@ func runCLI() {
         Option<Path>("output", ".", description: "Path to output. File or Directory. Default is current path."),
         Option<Path>("config", ".", description: "Path to config file. Directory. Default is current path."),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, quite, prune, sources, templates, output, configPath, args in
+    ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, sources, templates, output, configPath, args in
         do {
-            Log.level = verboseLogging ? .verbose : quite ? .errors : .warnings
+            Log.level = verboseLogging ? .verbose : quiet ? .errors : .warnings
             let configuration: Configuration
 
             let yamlPath: Path = configPath + ".sourcery.yml"
