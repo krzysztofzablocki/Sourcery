@@ -70,9 +70,9 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
             self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
             self.isOptional = isOptional
-            
+
             var unwrappedTypeName: String
-            
+
             if isOptional {
                 if name.hasSuffix("?") || name.hasSuffix("!") {
                     unwrappedTypeName = String(name.characters.dropLast())
@@ -85,7 +85,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             } else {
                 unwrappedTypeName = name
             }
-            
+
             self.unwrappedTypeName = unwrappedTypeName
             self.isGeneric = unwrappedTypeName.contains("<") && unwrappedTypeName.characters.last == ">"
         }
@@ -93,13 +93,13 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
 
     /// Type name used in declaration
     public let name: String
-    
+
     /// The generics of this TypeName
     public internal(set) var generic: GenericType?
-    
+
     /// Whether this TypeName is generic
     public let isGeneric: Bool
-    
+
     // sourcery: skipEquality
     /// Actual type name if given type name is a typealias
     public internal(set) var actualTypeName: TypeName?
@@ -215,21 +215,21 @@ public final class GenericType: NSObject, SourceryModel {
     ///
     /// `Array<Int>`'s GenericType.name is `Array`
     public let name: String
-    
+
     // sourcery: skipEquality, skipDescription
     /// The types referenced between `<` and `>` generics in the right order
     public let referencedTypes: [Type]
-    
+
     // sourcery: skipEquality, skipDescription
     /// The TypeNames referenced between `<` and `>` generics in the right order
     public let referencedTypeNames: [TypeName]
-    
+
     public init(name: String, referencedTypes: [Type] = [], referencedTypeNames: [TypeName] = []) {
         self.name = name
         self.referencedTypes = referencedTypes
         self.referencedTypeNames = referencedTypeNames
     }
-    
+
     // sourcery:inline:GenericType.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
@@ -244,10 +244,9 @@ public final class GenericType: NSObject, SourceryModel {
             aCoder.encode(self.referencedTypes, forKey: "referencedTypes")
             aCoder.encode(self.referencedTypeNames, forKey: "referencedTypeNames")
         }
-    
+
     // sourcery:end
 }
-
 
 /// Describes tuple type element
 public final class TupleElement: NSObject, SourceryModel, Typed {

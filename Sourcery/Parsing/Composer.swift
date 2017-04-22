@@ -90,26 +90,26 @@ struct Composer {
         updateTypeRelationships(types: Array(unique.values))
         return unique.values.sorted { $0.name < $1.name }
     }
-    
+
     private func resolveGenerics(typeName: TypeName, unique: [String: Type]) {
         let genericSplit = typeName.unwrappedTypeName.characters.split(separator: "<", maxSplits: 1)
-        
+
         guard genericSplit.count == 2 else {
             return
         }
-        
+
         let typeCharacters = genericSplit[0]
         var genericCharacters = genericSplit[1]
-        
+
         guard genericCharacters.count > 1, genericCharacters.removeLast() == ">" else {
             return
         }
-        
+
         var genericTypeStrings = [String]()
-        
+
         var subGenericsCounter = 0
         var characterBuffer = [Character]()
-        
+
         for character in genericCharacters {
             switch character {
             case "<":
@@ -129,21 +129,21 @@ struct Composer {
                 characterBuffer.append(character)
             }
         }
-        
-        if characterBuffer.count > 0 {
+
+        if !characterBuffer.isEmpty {
             genericTypeStrings.append(String(characterBuffer).trimmingCharacters(in: [" "]))
         }
-        
+
         let genericTypeNames = genericTypeStrings.flatMap { genericTypeName -> TypeName in
             let typeName = TypeName(genericTypeName)
             resolveGenerics(typeName: typeName, unique: unique)
             return typeName
         }
-        
+
         let genericTypes = genericTypeStrings.flatMap { genericTypeName in
             return unique[genericTypeName]
         }
-        
+
         typeName.generic = GenericType(name: String(typeCharacters), referencedTypes: genericTypes, referencedTypeNames: genericTypeNames)
     }
 
@@ -154,11 +154,11 @@ struct Composer {
         }
 
         let lookupName = typeName.actualTypeName ?? typeName
-        
+
         if lookupName.isGeneric, lookupName.generic == nil {
             resolveGenerics(typeName: lookupName, unique: unique)
         }
-        
+
         if let array = parseArrayType(lookupName) {
             typeName.array = array
             array.elementType = resolveType(typeName: array.elementTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
@@ -173,7 +173,7 @@ struct Composer {
                 tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
             }
         }
-        
+
         return unique[lookupName.unwrappedTypeName] ?? unique[lookupName.generic?.name ?? ""] ?? typeFromModule(lookupName.unwrappedTypeName, modules: modules)
     }
 

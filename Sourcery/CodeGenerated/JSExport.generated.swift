@@ -119,7 +119,6 @@ extension Enum: EnumAutoJSExport {}
 
 extension EnumCase: EnumCaseAutoJSExport {}
 
-
 @objc protocol GenericTypeAutoJSExport: JSExport {
     var name: String { get }
     var referencedTypes: [Type] { get }
@@ -199,7 +198,6 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 }
 
 extension Protocol: ProtocolAutoJSExport {}
-
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
@@ -312,8 +310,6 @@ extension Type: TypeAutoJSExport {}
 
 extension TypeName: TypeNameAutoJSExport {}
 
-
-
 @objc protocol VariableAutoJSExport: JSExport {
     var name: String { get }
     var typeName: TypeName { get }
@@ -332,5 +328,3 @@ extension TypeName: TypeNameAutoJSExport {}
 }
 
 extension Variable: VariableAutoJSExport {}
-
-

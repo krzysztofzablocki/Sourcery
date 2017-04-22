@@ -3,7 +3,6 @@
 
 import Foundation
 
-
 extension NSCoder {
 
     @nonobjc func decode(forKey: String) -> String? {
@@ -46,9 +45,7 @@ extension AssociatedValue: NSCoding {}
 
 extension Attribute: NSCoding {}
 
-
 extension DictionaryType: NSCoding {}
-
 
 extension EnumCase: NSCoding {}
 
@@ -59,8 +56,6 @@ extension GenericType: NSCoding {}
 extension Method: NSCoding {}
 
 extension MethodParameter: NSCoding {}
-
-
 
 extension TemplateContext: NSCoding {}
 
@@ -77,4 +72,3 @@ extension Typealias: NSCoding {}
 extension Types: NSCoding {}
 
 extension Variable: NSCoding {}
-
