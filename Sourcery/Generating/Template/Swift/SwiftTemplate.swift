@@ -20,15 +20,28 @@ fileprivate struct ProcessResult {
     let error: String
 }
 
-class SwiftTemplateParser {
+class SwiftTemplate: Template {
 
-    enum Command {
-        case output(String)
-        case controlFlow(String)
-        case outputEncoded(String)
+    let sourcePath: Path
+    let cachePath: Path?
+    let code: String
+
+    private lazy var buildDir: Path = Path.cleanTemporaryDir(name: "build")
+
+    init(path: Path, cachePath: Path? = nil) throws {
+        self.sourcePath = path
+        self.cachePath = cachePath
+        self.code = try SwiftTemplate.parse(sourcePath: path)
     }
 
     static func parse(sourcePath: Path) throws -> String {
+
+        enum Command {
+            case output(String)
+            case controlFlow(String)
+            case outputEncoded(String)
+        }
+
         let templateContent = try "<%%>" + sourcePath.read()
 
         let components = templateContent.components(separatedBy: Delimiters.open)
@@ -42,7 +55,7 @@ class SwiftTemplateParser {
 
         for component in components.suffix(from: 1) {
             guard let endIndex = component.range(of: Delimiters.close) else {
-                throw "\(path):\(currentLineNumber()) Error while parsing template. Unmatched <%"
+                throw "\(sourcePath):\(currentLineNumber()) Error while parsing template. Unmatched <%"
             }
 
             var code = component.substring(to: endIndex.lowerBound)
@@ -99,37 +112,46 @@ class SwiftTemplateParser {
         return code
     }
 
-    static func loadOrBuild(template: SwiftTemplate, buildDir: Path, cachePath: Path?) throws -> Path {
-        var binaryFile: Path!
+    func render(types: Types, arguments: [String: NSObject]) throws -> String {
+        let binaryPath: Path
 
-        let cachedTemplateFile = cachePath.map({ $0 + "\(template.sourcePath.string.hash).srf" })
-        let cachedBinaryFile = cachePath.map({ $0 + Path("bin") })
-
-        if let cachedTemplateFile = cachedTemplateFile, cachedTemplateFile.exists,
-            let cachedBinaryFile = cachedBinaryFile, cachedBinaryFile.exists,
-            let cachedTemplate = SwiftTemplate.load(path: cachedTemplateFile),
-            cachedTemplate.contentSha == template.contentSha {
-
-            return cachedBinaryFile
-        }
-
-        binaryFile = try compile(template: template, buildDir: buildDir)
-
-        if let cachedTemplateFile = cachedTemplateFile,
-            let cachedBinaryFile = cachedBinaryFile {
-            do {
-                let data = NSKeyedArchiver.archivedData(withRootObject: template)
-                try cachedTemplateFile.write(data)
-                try binaryFile.copy(cachedBinaryFile)
-            } catch {
-                try? cachePath?.delete()
+        if let cachePath = cachePath, let hash = code.sha256() {
+            binaryPath = cachePath + hash
+            if !binaryPath.exists {
+                try? cachePath.delete() // clear old cache
+                try cachePath.mkdir()
+                try build().move(binaryPath)
             }
+        } else {
+            try binaryPath = build()
         }
 
-        return binaryFile
+        let context = TemplateContext(types: types, arguments: arguments)
+
+        let serializedContextPath = buildDir + "context.bin"
+        let data = NSKeyedArchiver.archivedData(withRootObject: context)
+        try serializedContextPath.write(data)
+
+        #if DEBUG
+            // this is a sanity check, deserialized object should be equal to initial object
+            let diff = context.diffAgainst(NSKeyedUnarchiver.unarchiveObject(with: data))
+            if !diff.isEmpty {
+                print(diff.description)
+            }
+            assert(diff.isEmpty)
+        #endif
+
+        let result = try Process.runCommand(path: binaryPath.description,
+                                            arguments: [serializedContextPath.description])
+
+        if !result.error.isEmpty {
+            throw "\(sourcePath): \(result.error)"
+        }
+
+        return result.output
     }
 
-    static func compile(template: SwiftTemplate, buildDir: Path) throws -> Path {
+    func build() throws -> Path {
         let runtimeFiles = try SwiftTemplate.swiftTemplatesRuntime.children().map { file in
             return file.description
         }
@@ -137,7 +159,7 @@ class SwiftTemplateParser {
         let mainFile = buildDir + Path("main.swift")
         let binaryFile = buildDir + Path("bin")
 
-        try mainFile.write(template.code)
+        try mainFile.write(code)
 
         let arguments = [mainFile.description] +
             runtimeFiles + [
@@ -159,88 +181,9 @@ class SwiftTemplateParser {
             throw compilationResult.error
         }
 
+        try? mainFile.delete()
+
         return binaryFile
-    }
-
-}
-
-class SwiftTemplate: NSObject, NSCoding, Template {
-
-    var sourcePath: Path
-    let code: String
-    let contentSha: String?
-
-    private lazy var buildDir: Path = Path.cleanTemporaryDir(name: "build")
-
-    private(set) var binaryPath: Path!
-
-    init(code: String, sourcePath: Path) {
-        self.code = code
-        self.sourcePath = sourcePath
-        self.contentSha = code.sha256()
-    }
-
-    init(path: Path, cachePath: Path?) throws {
-        sourcePath = path
-        code = try SwiftTemplateParser.parse(sourcePath: path)
-        contentSha = code.sha256()
-        super.init()
-
-        binaryPath = try SwiftTemplateParser.loadOrBuild(template: self, buildDir: buildDir, cachePath: cachePath)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        guard
-            let code = aDecoder.decodeObject(forKey: "code") as? String,
-            let sourcePath = aDecoder.decodeObject(forKey: "sourcePath") as? String else
-        {
-            return nil
-        }
-
-        self.code = code
-        self.sourcePath = Path(sourcePath)
-        self.contentSha = aDecoder.decodeObject(forKey: "contentSha") as? String
-    }
-
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(code, forKey: "code")
-        aCoder.encode(sourcePath.string, forKey: "sourcePath")
-        aCoder.encode(contentSha, forKey: "contentSha")
-    }
-
-    /// Loads template from provided path
-    static func load(path: Path) -> SwiftTemplate? {
-        var template: SwiftTemplate?
-        SwiftTryCatch.try({
-            template = NSKeyedUnarchiver.unarchiveObject(withFile: path.string) as? SwiftTemplate
-        }, catch: { _ in }, finallyBlock: {})
-        return template
-    }
-
-    func render(types: Types, arguments: [String: NSObject]) throws -> String {
-        let context = TemplateContext(types: types, arguments: arguments)
-
-        let serializedContextPath = buildDir + Path("context.bin")
-        let data = NSKeyedArchiver.archivedData(withRootObject: context)
-        try serializedContextPath.write(data)
-        
-        #if DEBUG
-            // this is a sanity check, deserialized object should be equal to initial object
-            let diff = context.diffAgainst(NSKeyedUnarchiver.unarchiveObject(with: data))
-            if !diff.isEmpty {
-                print(diff.description)
-            }
-            assert(diff.isEmpty)
-        #endif
-
-        let result = try Process.runCommand(path: binaryPath.description,
-                                            arguments: [serializedContextPath.description])
-
-        if !result.error.isEmpty {
-            throw "\(sourcePath): \(result.error)"
-        }
-
-        return result.output
     }
 
 }
