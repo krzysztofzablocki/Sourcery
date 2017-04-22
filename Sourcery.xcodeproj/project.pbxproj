@@ -40,7 +40,6 @@
 		C836FCFE1E22A921006066F5 /* Annotations.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 0911DAF11E212817001FF3EB /* Annotations.swift */; };
 		C894A1A61E1930990098327C /* Coding.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1A51E1930990098327C /* Coding.generated.swift */; };
 		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
-		C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
 		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
 		C894A1B91E1989D30098327C /* AccessLevel.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F541DFDCC1A0088B2F6 /* AccessLevel.swift */; };
@@ -54,7 +53,6 @@
 		C894A1C11E1989D30098327C /* Diffable.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD666A991E0BEF4F0045D31A /* Diffable.swift */; };
 		C894A1C21E1989D30098327C /* Method.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = 0967DA671E0488170084F702 /* Method.swift */; };
 		C894A1C31E1989D30098327C /* TypeName.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = E291D86E6DD88E4A47D9BBD6 /* TypeName.swift */; };
-		C894A1C41E1989DA0098327C /* SwiftTemplate+Runtime.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */; };
 		C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = C894A1A51E1930990098327C /* Coding.generated.swift */; };
 		C8E88CAB1E204E4900102D17 /* Description.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD812F661DFDD3990088B2F6 /* Description.generated.swift */; };
 		C8E88CAC1E204E5000102D17 /* Diffable.generated.swift in SwiftTemplates */ = {isa = PBXBuildFile; fileRef = CD666A9B1E0BF0A10045D31A /* Diffable.generated.swift */; };
@@ -138,7 +136,6 @@
 				CDBEC15D1E242C710090E881 /* Attribute.swift in SwiftTemplates */,
 				C894A1C71E198DE70098327C /* Coding.generated.swift in SwiftTemplates */,
 				C8E88CAB1E204E4900102D17 /* Description.generated.swift in SwiftTemplates */,
-				C894A1C41E1989DA0098327C /* SwiftTemplate+Runtime.swift in SwiftTemplates */,
 				C894A1B91E1989D30098327C /* AccessLevel.swift in SwiftTemplates */,
 				C894A1BA1E1989D30098327C /* Enum.swift in SwiftTemplates */,
 				C8E88CAD1E204E8400102D17 /* Typed.generated.swift in SwiftTemplates */,
@@ -207,7 +204,6 @@
 		6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C894A1A51E1930990098327C /* Coding.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coding.generated.swift; sourceTree = "<group>"; };
 		C894A1AE1E19326C0098327C /* SwiftTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplate.swift; sourceTree = "<group>"; };
-		C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftTemplate+Runtime.swift"; sourceTree = "<group>"; };
 		C894A1B21E19328E0098327C /* SwiftTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SwiftTemplates; sourceTree = "<group>"; };
 		C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplateSpecs.swift; sourceTree = "<group>"; };
 		C894A1B61E19381A0098327C /* Coding.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Coding.stencil; sourceTree = "<group>"; };
@@ -328,7 +324,6 @@
 			isa = PBXGroup;
 			children = (
 				C894A1AE1E19326C0098327C /* SwiftTemplate.swift */,
-				C894A1AF1E19326C0098327C /* SwiftTemplate+Runtime.swift */,
 			);
 			path = Swift;
 			sourceTree = "<group>";
@@ -814,7 +809,6 @@
 				CDEF5F0F1E26A471000DB954 /* FileParserResult.swift in Sources */,
 				CD812F5D1DFDCC1A0088B2F6 /* Struct.swift in Sources */,
 				C8E88CB01E20579100102D17 /* Path+Extensions.swift in Sources */,
-				C894A1B11E19326C0098327C /* SwiftTemplate+Runtime.swift in Sources */,
 				CD812F621DFDCDA10088B2F6 /* Equality.generated.swift in Sources */,
 				E291D8C0F0FE5B3DF91025CC /* Generator.swift in Sources */,
 				0926CE1D1E5F9D8000C0D099 /* JSExport.generated.swift in Sources */,

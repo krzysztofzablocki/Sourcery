@@ -108,7 +108,12 @@ class SwiftTemplate: Template {
             }
         }
         let contents = sourceFile.joined(separator: "")
-        let code = "extension TemplateContext {\n\n override func generate() {" + contents + "\n }\n\n}\nrun();"
+        let code = "import Foundation\n\n" +
+            "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
+            "let path = ProcessInfo().arguments[1]\n" +
+            "let context = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! TemplateContext\n" +
+            "context.generate()"
+
         return code
     }
 

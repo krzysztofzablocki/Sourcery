@@ -36,7 +36,7 @@ class SwiftTemplateTests: QuickSpec {
                     }
                     .to(throwError(closure: { (error) in
                         let path = Path.cleanTemporaryDir(name: "build") + "main.swift"
-                        expect("\(error)").to(equal("\(path):4:3: error: use of unresolved identifier \'invalid\'\n  invalid \n  ^~~~~~~\n"))
+                        expect("\(error)").to(equal("\(path):5:13: error: expected expression in list of expressions\n  print(\"\\( )\", terminator: \"\");\n            ^\n"))
                     }))
             }
 
