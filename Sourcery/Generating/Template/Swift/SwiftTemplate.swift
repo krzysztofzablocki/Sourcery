@@ -129,6 +129,7 @@ class SwiftTemplate: Template {
                 try? cachePath.delete() // clear old cache
                 try cachePath.mkdir()
                 try build().move(binaryPath)
+                try copyFramework(to: cachePath.parent())
             }
         } else {
             try binaryPath = build()
@@ -139,15 +140,6 @@ class SwiftTemplate: Template {
         let serializedContextPath = buildDir + "context.bin"
         let data = NSKeyedArchiver.archivedData(withRootObject: context)
         try serializedContextPath.write(data)
-
-        #if DEBUG
-            // this is a sanity check, deserialized object should be equal to initial object
-            let diff = context.diffAgainst(NSKeyedUnarchiver.unarchiveObject(with: data))
-            if !diff.isEmpty {
-                print(diff.description)
-            }
-            assert(diff.isEmpty)
-        #endif
 
         let result = try Process.runCommand(path: binaryPath.description,
                                             arguments: [serializedContextPath.description])
@@ -160,21 +152,19 @@ class SwiftTemplate: Template {
     }
 
     func build() throws -> Path {
-        let runtimeFiles = try SwiftTemplate.swiftTemplatesRuntime.children().map { file in
-            return file.description
-        }
-
         let mainFile = buildDir + Path("main.swift")
         let binaryFile = buildDir + Path("bin")
 
+        try copyFramework(to: buildDir.parent())
         try mainFile.write(code)
 
         let arguments = [mainFile.description] +
-            runtimeFiles + [
+            [
                 "-suppress-warnings",
-                "-whole-module-optimization",
                 "-Onone",
-                "-module-name", "Sourcery",
+                "-module-name", "main",
+                "-target", "x86_64-apple-macosx10.10",
+                "-F", ".",
                 "-o", binaryFile.description
         ]
 
@@ -190,9 +180,30 @@ class SwiftTemplate: Template {
             throw compilationResult.error
         }
 
+        let linkingResult = try Process.runCommand(path: "/usr/bin/install_name_tool",
+                                                   arguments: [
+                                                    "-add_rpath",
+                                                    "@executable_path/../",
+                                                    binaryFile.description])
+        if !linkingResult.error.isEmpty {
+            throw linkingResult.error
+        }
+
         try? mainFile.delete()
 
         return binaryFile
+    }
+
+    private func copyFramework(to path: Path) throws {
+        let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryFramework.framework"
+
+        let copyFramework = try Process.runCommand(path: "/usr/bin/rsync", arguments: [
+            "-av", sourceryFramework.description, path.description
+            ])
+
+        if !copyFramework.error.isEmpty {
+            throw copyFramework.error
+        }
     }
 
 }
@@ -202,9 +213,14 @@ fileprivate extension SwiftTemplate {
         return Bundle(for: Sourcery.self).resourcePath.flatMap { Path($0) }!
     }
 
+    static var frameworksPath: Path {
+        return Bundle(for: Sourcery.self).privateFrameworksPath.flatMap { Path($0) }!
+    }
+
     static var swiftTemplatesRuntime: Path {
         return resourcesPath + Path("SwiftTemplateRuntime")
     }
+
 }
 
 // swiftlint:disable:next force_try
