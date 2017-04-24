@@ -63,7 +63,7 @@ extension EnumCase {
 }
 extension FileParserResult {
     /// :nodoc:
-    override internal var description: String {
+    override public var description: String {
         var string = "\(type(of: self)): "
         string += "path = \(String(describing: self.path)), "
         string += "module = \(String(describing: self.module)), "
@@ -129,7 +129,7 @@ extension Struct {
 }
 extension TemplateContext {
     /// :nodoc:
-    override internal var description: String {
+    override public var description: String {
         var string = "\(type(of: self)): "
         string += "types = \(String(describing: self.types)), "
         string += "arguments = \(String(describing: self.arguments)), "
@@ -188,7 +188,7 @@ extension Type {
 }
 extension Typealias {
     /// :nodoc:
-    override internal var description: String {
+    override public var description: String {
         var string = "\(type(of: self)): "
         string += "aliasName = \(String(describing: self.aliasName)), "
         string += "typeName = \(String(describing: self.typeName)), "

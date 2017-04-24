@@ -6,6 +6,7 @@
 import Foundation
 import SourceKittenFramework
 import PathKit
+import SourceryFramework
 
 protocol Parsable: class {
     var __parserData: Any? { get set }
@@ -56,7 +57,7 @@ extension Definition {
 
 extension Variable: Parsable {}
 extension Type: Definition {}
-extension Method: Parsable {}
+extension SourceryMethod: Parsable {}
 extension MethodParameter: Parsable {}
 extension EnumCase: Parsable {}
 
@@ -143,9 +144,9 @@ final class FileParser {
             case .enumelement:
                 return parseEnumCase(source)
             case .varInstance:
-                return parseVariable(source, containedInProtocol: containingIn is Protocol)
+                return parseVariable(source, containedInProtocol: containingIn is SourceryProtocol)
             case .varStatic, .varClass:
-                return parseVariable(source, containedInProtocol: containingIn is Protocol, isStatic: true)
+                return parseVariable(source, containedInProtocol: containingIn is SourceryProtocol, isStatic: true)
             case .varLocal:
                 //! Don't log local / param vars
                 return nil
@@ -211,7 +212,7 @@ final class FileParser {
         switch containing.declaration {
         case let containingType as Type:
             process(declaration: declaration, containedIn: containingType)
-        case let containingMethod as Method:
+        case let containingMethod as SourceryMethod:
             process(declaration: declaration, containedIn: (containingMethod, containing.source))
         default: break
         }
@@ -221,7 +222,7 @@ final class FileParser {
         switch (type, declaration) {
         case let (_, variable as Variable):
             type.variables += [variable]
-        case let (_, method as Method):
+        case let (_, method as SourceryMethod):
             if method.isInitializer {
                 method.returnTypeName = TypeName(type.name)
             }
@@ -236,7 +237,7 @@ final class FileParser {
         }
     }
 
-    private func process(declaration: Any, containedIn: (method: Method, source: [String: SourceKitRepresentable])) {
+    private func process(declaration: Any, containedIn: (method: SourceryMethod, source: [String: SourceKitRepresentable])) {
         switch declaration {
         case let (parameter as MethodParameter):
             //add only parameters that are in range of method name 
@@ -461,7 +462,7 @@ extension FileParser {
 // MARK: - Methods
 extension FileParser {
 
-    internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> Method? {
+    internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> SourceryMethod? {
         let requirements = parseTypeRequirements(source)
         guard
             let kind = requirements?.kind,

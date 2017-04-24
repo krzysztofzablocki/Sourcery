@@ -1,25 +1,25 @@
 import Darwin
 
-enum Log {
+public enum Log {
 
-    enum Level: Int {
+    public enum Level: Int {
         case errors
         case warnings
         case verbose
     }
 
-    static var level: Level = .warnings
+    public static var level: Level = .warnings
 
-    static func error(_ message: Any) {
+    public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
         fputs("\(message)", stderr)
     }
 
-    static func warning(_ message: Any) {
+    public static func warning(_ message: Any) {
         log(level: .warnings, "warning: \(message)")
     }
 
-    static func info(_ message: Any) {
+    public static func info(_ message: Any) {
         log(level: .verbose, message)
     }
 

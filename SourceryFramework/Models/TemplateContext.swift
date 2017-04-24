@@ -5,35 +5,35 @@
 
 import Foundation
 
-final class TemplateContext: NSObject, SourceryModel {
-    let types: Types
-    let arguments: [String: NSObject]
+public final class TemplateContext: NSObject, SourceryModel {
+    public let types: Types
+    public let arguments: [String: NSObject]
 
     // sourcery: skipDescription
-    var type: [String: Type] {
+    public var type: [String: Type] {
         return types.typesByName
     }
 
-    init(types: Types, arguments: [String: NSObject]) {
+    public init(types: Types, arguments: [String: NSObject]) {
         self.types = types
         self.arguments = arguments
     }
 
     // sourcery:inline:TemplateContext.AutoCoding
         /// :nodoc:
-        required internal init?(coder aDecoder: NSCoder) {
+        required public init?(coder aDecoder: NSCoder) {
             guard let types: Types = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
         }
 
         /// :nodoc:
-        internal func encode(with aCoder: NSCoder) {
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.arguments, forKey: "arguments")
         }
     // sourcery:end
 
-    var stencilContext: [String: Any] {
+    public var stencilContext: [String: Any] {
         return [
             "types": types,
             "type": types.typesByName,
@@ -42,7 +42,7 @@ final class TemplateContext: NSObject, SourceryModel {
     }
 
     // sourcery: skipDescription, skipEquality
-    var jsContext: [String: Any] {
+    public var jsContext: [String: Any] {
         return [
             "types": [
                 "all": types.all,
@@ -64,9 +64,9 @@ final class TemplateContext: NSObject, SourceryModel {
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
 public final class Types: NSObject, SourceryModel {
-    let types: [Type]
+    public let types: [Type]
 
-    init(types: [Type]) {
+    public init(types: [Type]) {
         self.types = types
     }
 
@@ -183,7 +183,7 @@ public class TypesCollection: NSObject, AutoJSExport {
         self.validate = validate
     }
 
-    func types(forKey key: String) throws -> [Type]? {
+    public func types(forKey key: String) throws -> [Type]? {
         if let validate = validate {
             guard let type = all.first(where: { $0.name == key }) else {
                 throw "Unknown type \(key), should be used with `based`"

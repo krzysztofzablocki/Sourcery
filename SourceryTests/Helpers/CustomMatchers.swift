@@ -3,8 +3,8 @@
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
 
-@testable
-import Sourcery
+@testable import Sourcery
+@testable import SourceryFramework
 
 import Nimble
 import Quick

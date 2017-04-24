@@ -6,7 +6,7 @@
 import Foundation
 
 /// Defines the Access Level
-enum AccessLevel: String {
+public enum AccessLevel: String {
     case `internal`
     case `private`
     case `fileprivate`
@@ -14,7 +14,7 @@ enum AccessLevel: String {
     case `open`
     case none
 
-    var rawValue: String {
+    public var rawValue: String {
         switch self {
         case .internal:
             return "internal"

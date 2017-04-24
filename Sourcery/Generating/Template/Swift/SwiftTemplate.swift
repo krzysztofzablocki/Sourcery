@@ -9,6 +9,7 @@
 import Foundation
 import PathKit
 import SwiftTryCatch
+import SourceryFramework
 
 fileprivate enum Delimiters {
     static let open = "<%"
@@ -108,7 +109,9 @@ class SwiftTemplate: Template {
             }
         }
         let contents = sourceFile.joined(separator: "")
-        let code = "import Foundation\n\n" +
+        let code = "import Foundation\n" +
+            "import SourceryFramework\n" +
+            "\n" +
             "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
             "let path = ProcessInfo().arguments[1]\n" +
             "let context = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! TemplateContext\n" +

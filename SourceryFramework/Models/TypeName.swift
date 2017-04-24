@@ -32,7 +32,7 @@ public protocol Typed {
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
 public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
-    init(_ name: String,
+    public init(_ name: String,
          actualTypeName: TypeName? = nil,
          attributes: [String: Attribute] = [:],
          tuple: TupleType? = nil,
@@ -89,7 +89,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
 
     // sourcery: skipEquality
     /// Actual type name if given type name is a typealias
-    public internal(set) var actualTypeName: TypeName?
+    public var actualTypeName: TypeName?
 
     /// Type name attributes, i.e. `@escaping`
     public let attributes: [String: Attribute]
@@ -146,7 +146,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
     }
 
     /// Dictionary type data
-    public internal(set) var dictionary: DictionaryType?
+    public var dictionary: DictionaryType?
 
     /// Whether type is a closure
     public var isClosure: Bool {
@@ -203,9 +203,9 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
 
     // sourcery: skipEquality, skipDescription
     /// Tuple element type, if known
-    public internal(set) var type: Type?
+    public var type: Type?
 
-    init(name: String = "", typeName: TypeName, type: Type? = nil) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil) {
         self.name = name
         self.typeName = typeName
         self.type = type
@@ -237,7 +237,7 @@ public final class TupleType: NSObject, SourceryModel {
     /// Tuple elements
     public let elements: [TupleElement]
 
-    init(name: String, elements: [TupleElement]) {
+    public init(name: String, elements: [TupleElement]) {
         self.name = name
         self.elements = elements
     }
@@ -268,9 +268,9 @@ public final class ArrayType: NSObject, SourceryModel {
 
     // sourcery: skipEquality, skipDescription
     /// Array element type, if known
-    public internal(set) var elementType: Type?
+    public var elementType: Type?
 
-    init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
+    public init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
         self.name = name
         self.elementTypeName = elementTypeName
         self.elementType = elementType
@@ -304,16 +304,16 @@ public final class DictionaryType: NSObject, SourceryModel {
 
     // sourcery: skipEquality, skipDescription
     /// Dictionary value type, if known
-    public internal(set) var valueType: Type?
+    public var valueType: Type?
 
     /// Dictionary key type name
     public let keyTypeName: TypeName
 
     // sourcery: skipEquality, skipDescription
     /// Dictionary key type, if known
-    public internal(set) var keyType: Type?
+    public var keyType: Type?
 
-    init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
+    public init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
         self.name = name
         self.valueTypeName = valueTypeName
         self.valueType = valueType

@@ -1,21 +1,12 @@
-//
-//  Struct.swift
-//  Sourcery
-//
-//  Created by Krzysztof Zablocki on 13/09/2016.
-//  Copyright © 2016 Pixle. All rights reserved.
-//
-
 import Foundation
 
 // sourcery: skipDescription
-/// Describes Swift struct
-public final class Struct: Type {
+/// Descibes Swift class
+@objc(SwiftClass) public final class Class: Type {
+    /// Returns "class"
+    public override var kind: String { return "class" }
 
-    /// Returns "struct"
-    public override var kind: String { return "struct" }
-
-    override init(name: String = "",
+    public override init(name: String = "",
                   parent: Type? = nil,
                   accessLevel: AccessLevel = .internal,
                   isExtension: Bool = false,
@@ -42,7 +33,7 @@ public final class Struct: Type {
         )
     }
 
-    // sourcery:inline:Struct.AutoCoding
+    // sourcery:inline:Class.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)

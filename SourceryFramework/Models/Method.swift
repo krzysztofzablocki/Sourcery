@@ -1,12 +1,12 @@
 import Foundation
 
 //typealias used to avoid types ambiguty in tests
-typealias SourceryMethod = Method
+public typealias SourceryMethod = Method
 
 /// Describes method parameter
 public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
-    public internal(set) var argumentLabel: String?
+    public var argumentLabel: String?
 
     /// Parameter internal name
     public let name: String
@@ -16,7 +16,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
-    public internal(set) var type: Type?
+    public var type: Type?
 
     /// Parameter type attributes, i.e. `@escaping`
     public var typeAttributes: [String: Attribute] {
@@ -24,16 +24,16 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     }
 
     /// Method parameter default value expression
-    public internal(set) var defaultValue: String?
+    public var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public internal(set) var annotations: [String: NSObject] = [:]
+    public var annotations: [String: NSObject] = [:]
 
     /// Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    internal var __parserData: Any?
+    public var __parserData: Any?
 
-    init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -42,7 +42,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         self.annotations = annotations
     }
 
-    init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -75,7 +75,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 }
 
 /// Describes method
-public final class Method: NSObject, SourceryModel, Annotated {
+@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -95,10 +95,10 @@ public final class Method: NSObject, SourceryModel, Annotated {
     }
 
     /// Method parameters
-    public internal(set) var parameters: [MethodParameter]
+    public var parameters: [MethodParameter]
 
     /// Return value type name used in declaration, including generic constraints, i.e. `where T: Equatable`
-    public internal(set) var returnTypeName: TypeName
+    public var returnTypeName: TypeName
 
     /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
     public var actualReturnTypeName: TypeName {
@@ -107,7 +107,7 @@ public final class Method: NSObject, SourceryModel, Annotated {
 
     // sourcery: skipEquality, skipDescription
     /// Actual return value type, if known
-    public internal(set) var returnType: Type?
+    public var returnType: Type?
 
     // sourcery: skipEquality, skipDescription
     /// Whether return value type is optional
@@ -163,9 +163,9 @@ public final class Method: NSObject, SourceryModel, Annotated {
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    internal var __parserData: Any?
+    public var __parserData: Any?
 
-    init(name: String,
+    public init(name: String,
          selectorName: String? = nil,
          parameters: [MethodParameter] = [],
          returnTypeName: TypeName = TypeName("Void"),

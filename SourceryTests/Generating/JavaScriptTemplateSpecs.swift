@@ -3,6 +3,7 @@ import Quick
 import Nimble
 import PathKit
 @testable import Sourcery
+@testable import SourceryFramework
 
 class JavaScriptTemplateTests: QuickSpec {
     override func spec() {

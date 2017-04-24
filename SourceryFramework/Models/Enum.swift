@@ -21,12 +21,12 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 
     // sourcery: skipEquality, skipDescription
     /// Associated value type, if known
-    public internal(set) var type: Type?
+    public var type: Type?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public internal(set) var annotations: [String: NSObject] = [:]
+    public var annotations: [String: NSObject] = [:]
 
-    init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
+    public init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
         self.localName = localName
         self.externalName = externalName
         self.typeName = typeName
@@ -73,7 +73,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     public let associatedValues: [AssociatedValue]
 
     /// Enum case annotations
-    public internal(set) var annotations: [String: NSObject] = [:]
+    public var annotations: [String: NSObject] = [:]
 
     /// Whether enum case has associated value
     public var hasAssociatedValue: Bool {
@@ -82,9 +82,9 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    internal var __parserData: Any?
+    public var __parserData: Any?
 
-    init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {
+    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {
         self.name = name
         self.rawValue = rawValue
         self.associatedValues = associatedValues
@@ -118,10 +118,10 @@ public final class Enum: Type {
     public override var kind: String { return "enum" }
 
     /// Enum cases
-    public internal(set) var cases: [EnumCase]
+    public var cases: [EnumCase]
 
     /// Enum raw value type name, if any
-    internal(set) var rawTypeName: TypeName? {
+    public var rawTypeName: TypeName? {
         didSet {
             if let rawTypeName = rawTypeName {
                 hasRawType = true
@@ -136,11 +136,11 @@ public final class Enum: Type {
     }
 
     // sourcery: skipDescription, skipEquality
-    private(set) var hasRawType: Bool
+    public private(set) var hasRawType: Bool
 
     // sourcery: skipDescription, skipEquality
     /// Enum raw value type, if known
-    public internal(set) var rawType: Type?
+    public var rawType: Type?
 
     // sourcery: skipEquality, skipDescription, skipCoding
     /// Names of types or protocols this type inherits from, including unknown (not scanned) types
@@ -161,7 +161,7 @@ public final class Enum: Type {
         return false
     }
 
-    init(name: String = "",
+    public init(name: String = "",
          parent: Type? = nil,
          accessLevel: AccessLevel = .internal,
          isExtension: Bool = false,

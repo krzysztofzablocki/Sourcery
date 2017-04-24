@@ -8,6 +8,7 @@ import Nimble
 import PathKit
 import SourceKittenFramework
 @testable import Sourcery
+@testable import SourceryFramework
 
 class AnnotationsParserSpec: QuickSpec {
     // swiftlint:disable function_body_length

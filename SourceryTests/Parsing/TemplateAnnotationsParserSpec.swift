@@ -8,6 +8,7 @@ import Nimble
 import PathKit
 import SourceKittenFramework
 @testable import Sourcery
+@testable import SourceryFramework
 
 private func build(_ source: String) -> [String: SourceKitRepresentable]? {
     return Structure(file: File(contents: source)).dictionary
