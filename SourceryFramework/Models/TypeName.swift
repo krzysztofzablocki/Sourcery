@@ -32,6 +32,7 @@ public protocol Typed {
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
 public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
+    /// :nodoc:
     public init(_ name: String,
          actualTypeName: TypeName? = nil,
          attributes: [String: Attribute] = [:],
@@ -205,6 +206,7 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
     /// Tuple element type, if known
     public var type: Type?
 
+    /// :nodoc:
     public init(name: String = "", typeName: TypeName, type: Type? = nil) {
         self.name = name
         self.typeName = typeName
@@ -237,6 +239,7 @@ public final class TupleType: NSObject, SourceryModel {
     /// Tuple elements
     public let elements: [TupleElement]
 
+    /// :nodoc:
     public init(name: String, elements: [TupleElement]) {
         self.name = name
         self.elements = elements
@@ -270,6 +273,7 @@ public final class ArrayType: NSObject, SourceryModel {
     /// Array element type, if known
     public var elementType: Type?
 
+    /// :nodoc:
     public init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
         self.name = name
         self.elementTypeName = elementTypeName
@@ -313,6 +317,7 @@ public final class DictionaryType: NSObject, SourceryModel {
     /// Dictionary key type, if known
     public var keyType: Type?
 
+    /// :nodoc:
     public init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
         self.name = name
         self.valueTypeName = valueTypeName

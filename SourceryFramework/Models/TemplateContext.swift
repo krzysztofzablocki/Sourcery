@@ -5,6 +5,7 @@
 
 import Foundation
 
+/// :nodoc:
 public final class TemplateContext: NSObject, SourceryModel {
     public let types: Types
     public let arguments: [String: NSObject]
@@ -62,6 +63,7 @@ public final class TemplateContext: NSObject, SourceryModel {
 }
 
 extension ProcessInfo {
+    /// :nodoc:
     public var context: TemplateContext! {
         return NSKeyedUnarchiver.unarchiveObject(withFile: arguments[1]) as? TemplateContext
     }
@@ -70,8 +72,11 @@ extension ProcessInfo {
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
 public final class Types: NSObject, SourceryModel {
+
+    /// :nodoc:
     public let types: [Type]
 
+    /// :nodoc:
     public init(types: [Type]) {
         self.types = types
     }

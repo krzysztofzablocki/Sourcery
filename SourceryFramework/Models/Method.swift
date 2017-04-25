@@ -31,8 +31,10 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     /// Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    /// :nodoc:
     public var __parserData: Any?
 
+    /// :nodoc:
     public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
@@ -42,6 +44,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         self.annotations = annotations
     }
 
+    /// :nodoc:
     public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
         self.typeName = typeName
         self.argumentLabel = name
@@ -163,8 +166,10 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    /// :nodoc:
     public var __parserData: Any?
 
+    /// :nodoc:
     public init(name: String,
          selectorName: String? = nil,
          parameters: [MethodParameter] = [],

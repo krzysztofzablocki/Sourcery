@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Defines the Access Level
+/// :nodoc:
 public enum AccessLevel: String {
     case `internal` = "internal"
     case `private` = "private"

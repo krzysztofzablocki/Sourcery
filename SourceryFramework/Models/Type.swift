@@ -8,10 +8,12 @@ import Foundation
 /// Defines Swift type
 public class Type: NSObject, SourceryModel, Annotated {
 
+    /// :nodoc:
     public var module: String?
 
     // All local typealiases
     // sourcery: skipJSExport
+    /// :nodoc:
     public var typealiases: [String: Typealias] {
         didSet {
             typealiases.values.forEach { $0.parent = self }
@@ -184,6 +186,7 @@ public class Type: NSObject, SourceryModel, Annotated {
     }
 
     // sourcery: skipJSExport
+    /// :nodoc:
     public var parentTypes: AnyIterator<Type> {
         var next: Type? = self
         return AnyIterator {
@@ -201,11 +204,14 @@ public class Type: NSObject, SourceryModel, Annotated {
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipDescription, skipEquality, skipJSExport
+    /// :nodoc:
     public var __parserData: Any?
     // Path to file where the type is defined
     // sourcery: skipDescription, skipEquality, skipJSExport
+    /// :nodoc:
     public var __path: String?
 
+    /// :nodoc:
     public init(name: String = "",
          parent: Type? = nil,
          accessLevel: AccessLevel = .internal,
@@ -248,6 +254,7 @@ public class Type: NSObject, SourceryModel, Annotated {
         })
     }
 
+    /// :nodoc:
     public func extend(_ type: Type) {
         self.variables += type.variables
         self.methods += type.methods

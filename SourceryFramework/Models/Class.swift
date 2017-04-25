@@ -6,6 +6,7 @@ import Foundation
     /// Returns "class"
     public override var kind: String { return "class" }
 
+    /// :nodoc:
     public override init(name: String = "",
                   parent: Type? = nil,
                   accessLevel: AccessLevel = .internal,

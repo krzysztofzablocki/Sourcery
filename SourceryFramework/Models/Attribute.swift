@@ -12,6 +12,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
     // sourcery: skipJSExport
     let _description: String
 
+    /// :nodoc:
     public init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name
         self.arguments = arguments
@@ -23,6 +24,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         return _description
     }
 
+    /// :nodoc:
     public enum Identifier: String {
         case convenience
         case available

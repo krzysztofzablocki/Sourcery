@@ -48,8 +48,10 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    /// :nodoc:
     public var __parserData: Any?
 
+    /// :nodoc:
     public init(name: String = "",
          typeName: TypeName,
          type: Type? = nil,

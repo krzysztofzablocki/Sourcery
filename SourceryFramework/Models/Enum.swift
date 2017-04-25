@@ -26,6 +26,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: [String: NSObject] = [:]
 
+    /// :nodoc:
     public init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, annotations: [String: NSObject] = [:]) {
         self.localName = localName
         self.externalName = externalName
@@ -82,8 +83,10 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    /// :nodoc:
     public var __parserData: Any?
 
+    /// :nodoc:
     public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:]) {
         self.name = name
         self.rawValue = rawValue
@@ -136,6 +139,7 @@ public final class Enum: Type {
     }
 
     // sourcery: skipDescription, skipEquality
+    /// :nodoc:
     public private(set) var hasRawType: Bool
 
     // sourcery: skipDescription, skipEquality
@@ -161,6 +165,7 @@ public final class Enum: Type {
         return false
     }
 
+    /// :nodoc:
     public init(name: String = "",
          parent: Type? = nil,
          accessLevel: AccessLevel = .internal,

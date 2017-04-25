@@ -16,6 +16,7 @@ public final class Protocol: Type {
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
 
+    /// :nodoc:
     public override init(name: String = "",
                   parent: Type? = nil,
                   accessLevel: AccessLevel = .internal,
@@ -43,6 +44,7 @@ public final class Protocol: Type {
         )
     }
 
+    /// :nodoc:
     override public func extend(_ type: Type) {
         type.variables = type.variables.filter({ v in !variables.contains(where: { $0.name == v.name && $0.isStatic == v.isStatic }) })
         type.methods = type.methods.filter({ !methods.contains($0) })

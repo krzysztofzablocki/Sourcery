@@ -8,6 +8,7 @@
 
 - Paths in config file are now relative to config file path by default, absolute paths should start with `/`
 - Improved logging and error reporting, added `--quiet` CLI option, added runtime errors for using invalid types in `implementing` and `inheriting`
+- Improved swift templates performance
 
 
 ## 0.6.0
