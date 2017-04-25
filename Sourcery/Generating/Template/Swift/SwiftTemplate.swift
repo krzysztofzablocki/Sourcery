@@ -113,9 +113,7 @@ class SwiftTemplate: Template {
             "import SourceryFramework\n" +
             "\n" +
             "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
-            "let path = ProcessInfo().arguments[1]\n" +
-            "let context = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! TemplateContext\n" +
-            "context.generate()"
+            "ProcessInfo().context!.generate()"
 
         return code
     }
@@ -173,10 +171,6 @@ class SwiftTemplate: Template {
                                                        environment: [:])
 
         if !compilationResult.error.isEmpty {
-            #if DEBUG
-                let command = "/usr/bin/swiftc " + arguments.map { "\"\($0)\"" }.joined(separator: " ")
-                print(command)
-            #endif
             throw compilationResult.error
         }
 
@@ -209,16 +203,9 @@ class SwiftTemplate: Template {
 }
 
 fileprivate extension SwiftTemplate {
-    static var resourcesPath: Path {
-        return Bundle(for: Sourcery.self).resourcePath.flatMap { Path($0) }!
-    }
 
     static var frameworksPath: Path {
         return Bundle(for: Sourcery.self).privateFrameworksPath.flatMap { Path($0) }!
-    }
-
-    static var swiftTemplatesRuntime: Path {
-        return resourcesPath + Path("SwiftTemplateRuntime")
     }
 
 }
@@ -252,6 +239,7 @@ private extension Process {
         let outHandle = outputPipe.fileHandleForReading
         let errorHandle = errorPipe.fileHandleForReading
 
+        Log.info(path + " " + arguments.map { "\"\($0)\"" }.joined(separator: " "))
         task.launch()
 
         let outputData = outHandle.readDataToEndOfFile()

@@ -18,7 +18,7 @@ public final class TemplateContext: NSObject, SourceryModel {
         self.types = types
         self.arguments = arguments
     }
-
+    
     // sourcery:inline:TemplateContext.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
@@ -61,6 +61,12 @@ public final class TemplateContext: NSObject, SourceryModel {
 
 }
 
+extension ProcessInfo {
+    public var context: TemplateContext! {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: arguments[1]) as? TemplateContext
+    }
+}
+
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
 public final class Types: NSObject, SourceryModel {
@@ -69,7 +75,7 @@ public final class Types: NSObject, SourceryModel {
     public init(types: [Type]) {
         self.types = types
     }
-
+    
     // sourcery:inline:Types.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
