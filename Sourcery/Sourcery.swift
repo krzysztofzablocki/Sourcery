@@ -142,7 +142,7 @@ class Sourcery {
         return try templatePaths(from: from).map {
             if $0.extension == "swifttemplate" {
                 return try SwiftTemplate(path: $0)
-            } else if $0.extension == "js" {
+            } else if $0.extension == "ejs" {
                 return try JavaScriptTemplate(path: $0)
             } else {
                 return try StencilTemplate(path: $0)

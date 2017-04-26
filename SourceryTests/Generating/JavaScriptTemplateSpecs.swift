@@ -12,7 +12,7 @@ class JavaScriptTemplateTests: QuickSpec {
             }()
 
             it("generates correct output") {
-                let templatePath = Stubs.jsTemplates + Path("Equality.js")
+                let templatePath = Stubs.jsTemplates + Path("Equality.ejs")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
                 expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
@@ -22,7 +22,7 @@ class JavaScriptTemplateTests: QuickSpec {
             }
 
             it("handles includes") {
-                let templatePath = Stubs.jsTemplates + Path("Includes.js")
+                let templatePath = Stubs.jsTemplates + Path("Includes.ejs")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
 
                 expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())

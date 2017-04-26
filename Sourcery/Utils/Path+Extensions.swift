@@ -33,7 +33,7 @@ extension Path {
     var isTemplateFile: Bool {
         return self.extension == "stencil" ||
             self.extension == "swifttemplate" ||
-            self.extension == "js"
+            self.extension == "ejs"
     }
 
     var isSwiftSourceFile: Bool {
