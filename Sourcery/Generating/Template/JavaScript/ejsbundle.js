@@ -3,13 +3,18 @@
   
   let ejs = require('ejs');
   
-  function renderTemplate(source, context, filename) {
+  function renderTemplate(source, context, filename, folder) {
     let fn = ejs.compile(source, {client: true, filename});
     
     return fn(context, null, function(path, d) {
       let data = Object.assign({}, context, d);
-      let template = include(path);
-      return renderTemplate(template, data, path);
+      
+      if (folder) {
+        path = `${folder}/${path}`;
+      }
+      
+      let { template, basePath } = include(path);
+      return renderTemplate(template, data, path, basePath);
      });
   }
   

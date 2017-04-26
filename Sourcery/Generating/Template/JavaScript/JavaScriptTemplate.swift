@@ -36,7 +36,7 @@ final class JavaScriptTemplate: Template {
 
         var error: JavaScriptTemplateError?
 
-        let include: @convention(block) (String) -> String? = { [unowned self] path in
+        let include: @convention(block) (String) -> [String:String] = { [unowned self] path in
             let path = self.sourcePath.parent() + Path(path)
             var includedTemplate: String? = try? path.read()
 
@@ -45,7 +45,13 @@ final class JavaScriptTemplate: Template {
                 includedTemplate = try? Path(path.string + ".ejs").read()
             }
 
-            return includedTemplate
+            var templateDictionary = [String: String]()
+            templateDictionary["template"] = includedTemplate
+            if path.components.count > 1 {
+                templateDictionary["basePath"] = Path(components: path.components.dropLast()).string
+            }
+
+            return templateDictionary
         }
 
         let exceptionHandler: (JSContext?, JSValue?) -> Void = { context, exception in
