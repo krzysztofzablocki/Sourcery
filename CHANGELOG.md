@@ -11,6 +11,7 @@
 
 ### Internal changes
 
+- Improved `AutoMockable.stencil` to support protocols with `init` methods
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`
 - Add the `lowerFirst` filter for Stencil templates.
 
