@@ -38,7 +38,13 @@ final class JavaScriptTemplate: Template {
 
         let include: @convention(block) (String) -> String? = { [unowned self] path in
             let path = self.sourcePath.parent() + Path(path)
-            let includedTemplate: String? = try? path.read()
+            var includedTemplate: String? = try? path.read()
+
+            /// The template extension may be omitted, so try to read again by adding it if a template was not found
+            if includedTemplate == nil, path.extension != "ejs" {
+                includedTemplate = try? Path(path.string + ".ejs").read()
+            }
+
             return includedTemplate
         }
 
