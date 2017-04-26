@@ -12,6 +12,7 @@
 ### Internal changes
 
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`
+- Add the `lowerFirst` filter for Stencil templates.
 
 ## 0.6.0
 
