@@ -31,6 +31,7 @@ final class JavaScriptTemplate: Template {
             error = exception?.toString() ?? "Unknown JavaScript error"
         }
         jsContext.setObject(template, forKeyedSubscript: "template" as NSString)
+        jsContext.setObject(sourcePath.lastComponent, forKeyedSubscript: "templateName" as NSString)
         jsContext.setObject(context.jsContext, forKeyedSubscript: "templateContext" as NSString)
 
         let valueForKey: @convention(block) (TypesCollection, String) -> Any? = { target, key in
@@ -45,6 +46,26 @@ final class JavaScriptTemplate: Template {
         jsContext.evaluateScript("templateContext.types.implementing = new Proxy(templateContext.types.implementing, { get: valueForKey })")
         jsContext.evaluateScript("templateContext.types.inheriting = new Proxy(templateContext.types.inheriting, { get: valueForKey })")
         jsContext.evaluateScript("templateContext.types.based = new Proxy(templateContext.types.based, { get: valueForKey })")
+
+        let include: @convention(block) (String) -> [String:String] = { [unowned self] requestedPath in
+            let requestedPath = Path(requestedPath)
+            let path = self.sourcePath.parent() + requestedPath
+            var includedTemplate: String? = try? path.read()
+
+            /// The template extension may be omitted, so try to read again by adding it if a template was not found
+            if includedTemplate == nil, path.extension != "ejs" {
+                includedTemplate = try? Path(path.string + ".ejs").read()
+            }
+
+            var templateDictionary = [String: String]()
+            templateDictionary["template"] = includedTemplate
+            if requestedPath.components.count > 1 {
+                templateDictionary["basePath"] = Path(components: requestedPath.components.dropLast()).string
+            }
+
+            return templateDictionary
+        }
+        jsContext.setObject(include, forKeyedSubscript: "include" as NSString)
 
         jsContext.evaluateScript("var window = this; \(ejs)")
 
