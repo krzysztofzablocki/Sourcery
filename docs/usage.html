@@ -153,11 +153,12 @@
 <ul>
 <li><code>--sources</code> - Path to a source swift files. You can provide multiple paths using multiple <code>--sources</code> option.</li>
 <li><code>--templates</code> - Path to templates. File or Directory. You can provide multiple paths using multiple <code>--templates</code> options.</li>
-<li><code>--output</code> - Path to output. File or Directory. Default is current path.</li>
-<li><code>--config</code> - Path to config file. Directory. Default is current path.</li>
+<li><code>--output</code> [default: current path] - Path to output. File or Directory.</li>
+<li><code>--config</code> [default: current path] - Path to config file. Directory.</li>
 <li><code>--args</code> - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit <code>true</code> value. Arguments should be separated with <code>,</code> without spaces. Arguments are accessible in templates via <code>argument.name</code></li>
 <li><code>--watch</code> [default: false] - Watch both code and template folders for changes and regenerate automatically.</li>
-<li><code>--verbose</code> [default: false] - Turn on verbose logging for ignored entities</li>
+<li><code>--verbose</code> [default: false] - Turn on verbose logging</li>
+<li><code>--quiet</code> [default: false] - Turn off any logging, only emmit errors</li>
 <li><code>--disableCache</code> [default: false] - Turn off caching of parsed data</li>
 <li><code>--prune</code> [default: false] - Prune empty generated files</li>
 </ul>
@@ -188,6 +189,10 @@
 </code></pre>
 
 <p>You can use several <code>project</code> or <code>target</code> objects to scan multiple targets from one project or to scan multiple projects.</p>
+
+<blockquote>
+<p>Note: Paths in configuration file are by default relative to configuration file path. If you want to specify absolute path start it with <code>/</code>.</p>
+</blockquote>
 
           </section>
         </section>

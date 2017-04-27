@@ -11,7 +11,7 @@ class FileParserAttributesSpec: QuickSpec {
 
             func parse(_ code: String) -> [Type] {
                 guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
-                return Composer(verbose: false).uniqueTypes(parserResult)
+                return Composer().uniqueTypes(parserResult)
             }
 
             it("extracts type attributes") {

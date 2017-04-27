@@ -8,10 +8,9 @@ Generate `count` and `allCases` for any enumeration that is marked with `AutoCas
 
 ```swift
 extension BetaSettingsGroup {
-  static var count: Int { return 8 }
+  static let count: Int = return 8
 
-  static var allCases: [BetaSettingsGroup] {
-    return [
+  static let allCases: [BetaSettingsGroup] = [
       .featuresInDevelopment,
       .advertising,
       .analytics,
@@ -21,6 +20,5 @@ extension BetaSettingsGroup {
       .tech,
       .appInformation
     ]
-  }
 }
 ```

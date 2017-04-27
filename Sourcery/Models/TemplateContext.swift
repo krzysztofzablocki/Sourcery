@@ -9,6 +9,11 @@ final class TemplateContext: NSObject, SourceryModel {
     let types: Types
     let arguments: [String: NSObject]
 
+    // sourcery: skipDescription
+    var type: [String: Type] {
+        return types.typesByName
+    }
+
     init(types: Types, arguments: [String: NSObject]) {
         self.types = types
         self.arguments = arguments
@@ -118,46 +123,89 @@ public final class Types: NSObject, SourceryModel {
     // sourcery: skipDescription, skipEquality, skipCoding
     /// Types based on any other type, grouped by its name, even if they are not known.
     /// `types.based.MyType` returns list of types based on `MyType`
-    public lazy internal(set) var based: [String: [Type]] = {
-        var content = [String: [Type]]()
-        self.types.forEach { type in
-            type.based.keys.forEach { name in
-                var list = content[name] ?? [Type]()
-                list.append(type)
-                content[name] = list
-            }
-        }
-        return content
+    public lazy internal(set) var based: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.based.keys) }
+        )
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// Classes inheriting from any known class, grouped by its name.
     /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
-    public lazy internal(set) var inheriting: [String: [Type]] = {
-        var content = [String: [Type]]()
-        self.classes.forEach { type in
-            type.inherits.keys.forEach { name in
-                var list = content[name] ?? [Type]()
-                list.append(type)
-                content[name] = list
-            }
-        }
-        return content
+    public lazy internal(set) var inheriting: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.inherits.keys) },
+            validate: { type in
+                guard type is Class else {
+                    throw "\(type.name) is a not a class and should be used with `implementing` or `based`"
+                }
+            })
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// Types implementing known protocol, grouped by its name.
     /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
-    public lazy internal(set) var implementing: [String: [Type]] = {
+    public lazy internal(set) var implementing: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.implements.keys) },
+            validate: { type in
+                guard type is Protocol else {
+                    throw "\(type.name) is a class and should be used with `inheriting` or `based`"
+                }
+        })
+    }()
+
+}
+
+/// :nodoc:
+public class TypesCollection: NSObject, AutoJSExport {
+
+    // sourcery:begin: skipJSExport
+    let all: [Type]
+    let types: [String: [Type]]
+    let validate: ((Type) throws -> Void)?
+    // sourcery:end
+
+    init(types: [Type], collection: (Type) -> [String], validate: ((Type) throws -> Void)? = nil) {
+        self.all = types
         var content = [String: [Type]]()
-        self.types.forEach { type in
-            type.implements.keys.forEach { name in
+        self.all.forEach { type in
+            collection(type).forEach { name in
                 var list = content[name] ?? [Type]()
                 list.append(type)
                 content[name] = list
             }
         }
-        return content
-    }()
+        self.types = content
+        self.validate = validate
+    }
+
+    func types(forKey key: String) throws -> [Type]? {
+        if let validate = validate {
+            guard let type = all.first(where: { $0.name == key }) else {
+                throw "Unknown type \(key), should be used with `based`"
+            }
+            try validate(type)
+        }
+        return types[key]
+    }
+
+    /// :nodoc:
+    public override func value(forKey key: String) -> Any? {
+        do {
+            return try types(forKey: key)
+        } catch {
+            Log.error(error)
+            return nil
+        }
+    }
+
+    /// :nodoc:
+    public subscript(_ key: String) -> Any? {
+        return value(forKey: key)
+    }
 
 }

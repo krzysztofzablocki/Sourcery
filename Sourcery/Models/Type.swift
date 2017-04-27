@@ -57,7 +57,6 @@ public class Type: NSObject, SourceryModel, Annotated {
     public var allVariables: [Variable] {
         return flattenAll({
             return $0.variables
-            //return ($0 is Protocol) ? [] : $0.variables
         }, filter: { all, extracted in
             !all.contains(where: { $0.name == extracted.name && $0.isStatic == extracted.isStatic })
         })
@@ -107,9 +106,24 @@ public class Type: NSObject, SourceryModel, Annotated {
         return variables.filter { $0.isStatic }
     }
 
+    /// Static methods defined in this type
+    public var staticMethods: [Method] {
+        return methods.filter({ $0.isStatic })
+    }
+
+    /// Class methods defined in this type
+    public var classMethods: [Method] {
+        return methods.filter({ $0.isClass })
+    }
+
     /// Instance variables defined in this type
     public var instanceVariables: [Variable] {
         return variables.filter { !$0.isStatic }
+    }
+
+    /// Instance methods defined in this type
+    public var instanceMethods: [Method] {
+        return methods.filter({ !$0.isStatic && !$0.isClass })
     }
 
     /// Computed instance variables defined in this type
@@ -147,9 +161,16 @@ public class Type: NSObject, SourceryModel, Annotated {
     /// Contained types
     public internal(set) var containedTypes: [Type] {
         didSet {
-            containedTypes.forEach { $0.parent = self }
+            containedTypes.forEach {
+                containedType[$0.localName] = $0
+                $0.parent = self
+            }
         }
     }
+
+    // sourcery: skipEquality, skipDescription
+    /// Contained types groupd by their names
+    public private(set) var containedType: [String: Type] = [:]
 
     /// Name of parent type (for contained types only)
     public private(set) var parentName: String?
@@ -214,7 +235,10 @@ public class Type: NSObject, SourceryModel, Annotated {
         self.isGeneric = isGeneric
 
         super.init()
-        containedTypes.forEach { $0.parent = self }
+        containedTypes.forEach {
+            containedType[$0.localName] = $0
+            $0.parent = self
+        }
         inheritedTypes.forEach { name in
             self.based[name] = name
         }
@@ -251,6 +275,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
             guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["implements"])); fatalError() }; self.implements = implements
             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedTypes"])); fatalError() }; self.containedTypes = containedTypes
+            guard let containedType: [String: Type] = aDecoder.decode(forKey: "containedType") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedType"])); fatalError() }; self.containedType = containedType
             self.parentName = aDecoder.decode(forKey: "parentName")
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
@@ -275,6 +300,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.inherits, forKey: "inherits")
             aCoder.encode(self.implements, forKey: "implements")
             aCoder.encode(self.containedTypes, forKey: "containedTypes")
+            aCoder.encode(self.containedType, forKey: "containedType")
             aCoder.encode(self.parentName, forKey: "parentName")
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.supertype, forKey: "supertype")

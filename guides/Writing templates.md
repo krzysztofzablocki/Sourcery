@@ -4,8 +4,8 @@ Sourcery supports templates written in Stencil, Swift and even JavaScript.
 
 Dicsovered types can be accessed in templates via global context with following properties:
 
- - `types: Types` - access collections of types, i.e. `types.implementing.AutoCoding`. See [Types](Classes/Types.html).
- - `type: [String: Type]` - access types by their names, i.e. `type.MyType`
+ - `types: Types` - access collections of types, i.e. `types.implementing.AutoCoding` (`types.implementing["AutoCoding"]` in swift templates). See [Types](Classes/Types.html).
+ - `type: [String: Type]` - access types by their names, i.e. `type.MyType` (`type["MyType"]` in swift templates)
  - `arguments: [String: NSObject]` - access additional parameters passed with `--args` command line flag or set in `.sourcery.yml` file
 
 > Tip: Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
@@ -31,6 +31,7 @@ Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/S
 ### Custom Stencil tags and filters
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
+- `{{ name|lowerFirst }}` - makes first letter in `name` lowercase
 - `{{ name|replace:"substring","replacement" }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
 - `{% if name|contains:"Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
 - `{% if name|hasPrefix:"Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.

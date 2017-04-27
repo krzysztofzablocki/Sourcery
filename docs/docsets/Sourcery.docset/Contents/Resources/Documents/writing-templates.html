@@ -150,8 +150,8 @@
 <p>Dicsovered types can be accessed in templates via global context with following properties:</p>
 
 <ul>
-<li><code>types: Types</code> - access collections of types, i.e. <code>types.implementing.AutoCoding</code>. See <a href="Classes/Types.html">Types</a>.</li>
-<li><code>type: [String: Type]</code> - access types by their names, i.e. <code>type.MyType</code></li>
+<li><code>types: Types</code> - access collections of types, i.e. <code>types.implementing.AutoCoding</code> (<code>types.implementing[&quot;AutoCoding&quot;]</code> in swift templates). See <a href="Classes/Types.html">Types</a>.</li>
+<li><code>type: [String: Type]</code> - access types by their names, i.e. <code>type.MyType</code> (<code>type[&quot;MyType&quot;]</code> in swift templates)</li>
 <li><code>arguments: [String: NSObject]</code> - access additional parameters passed with <code>--args</code> command line flag or set in <code>.sourcery.yml</code> file</li>
 </ul>
 
@@ -178,6 +178,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 
 <ul>
 <li><code>{{ name|upperFirst }}</code> - makes first letter in <code>name</code> uppercase</li>
+<li><code>{{ name|lowerFirst }}</code> - makes first letter in <code>name</code> lowercase</li>
 <li><code>{{ name|replace:&quot;substring&quot;,&quot;replacement&quot; }}</code> - replaces occurances of <code>substring</code> with <code>replacement</code> in <code>name</code> (case sensitive)</li>
 <li><code>{% if name|contains:&quot;Foo&quot; %}</code> - check if <code>name</code> contains arbitrary substring, can be negated with <code>!</code> prefix.</li>
 <li><code>{% if name|hasPrefix:&quot;Foo&quot; %}</code>- check if <code>name</code> starts with arbitrary substring, can be negated with <code>!</code> prefix.</li>

@@ -16,6 +16,10 @@ class StencilTemplateSpec: QuickSpec {
                 expect(generate("{{\"helloWorld\" | upperFirst }}")).to(equal("HelloWorld"))
             }
 
+            it("generates lowercase") {
+                expect(generate("{{\"HelloWorld\" | lowerFirst }}")).to(equal("helloWorld"))
+            }
+
             it("checks for string in name") {
                 expect(generate("{{ \"FooBar\" | contains:\"oo\" }}")).to(equal("true"))
                 expect(generate("{{ \"FooBar\" | contains:\"xx\" }}")).to(equal("false"))
@@ -42,6 +46,15 @@ class StencilTemplateSpec: QuickSpec {
                 expect(generate("{{\"helloWorldhelloWorld\" | replace:\"hello\",\"hola\" }}")).to(equal("holaWorldholaWorld"))
                 expect(generate("{{\"helloWorld\" | replace:\"hello\",\"\" }}")).to(equal("World"))
                 expect(generate("{{\"helloWorld\" | replace:\"foo\",\"bar\" }}")).to(equal("helloWorld"))
+            }
+
+            it("rethrows template parsing errors") {
+                expect {
+                    try Generator.generate(Types(types: []), template: StencilTemplate(templateString: "{% tag %}"))
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal(": Unknown template tag 'tag'"))
+                    }))
             }
 
         }

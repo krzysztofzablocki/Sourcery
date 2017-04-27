@@ -1,6 +1,5 @@
 sources:
   - Sourcery/Models
-  - Sourcery/Generating/Template/Swift/GenerationContext.swift
 templates:
   - Sourcery/Templates
 output:

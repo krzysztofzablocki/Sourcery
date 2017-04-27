@@ -17,12 +17,17 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
 
     func render(types: Types, arguments: [String: NSObject]) throws -> String {
         let context = TemplateContext(types: types, arguments: arguments)
-        return try super.render(context.stencilContext)
+        do {
+            return try super.render(context.stencilContext)
+        } catch {
+            throw "\(sourcePath): \(error)"
+        }
     }
 
     private static func sourceryEnvironment() -> Stencil.Environment {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
+        ext.registerFilter("lowerFirst", filter: Filter<String>.make({ $0.lowerFirst() }))
         ext.registerFilterWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
             return source.replacingOccurrences(of: substring, with: replacement)
         })
@@ -162,6 +167,11 @@ extension String {
         return first + other
     }
 
+    fileprivate func lowerFirst() -> String {
+        let first = String(characters.prefix(1)).lowercased()
+        let other = dropFirst()
+        return first + other
+    }
 }
 
 private struct Filter<T> {

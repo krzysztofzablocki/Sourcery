@@ -35,7 +35,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
         return writeAccess != AccessLevel.none.rawValue
     }
 
-    /// Method parameter default value expression
+    /// Variable default value expression
     public internal(set) var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
