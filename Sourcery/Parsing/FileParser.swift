@@ -435,19 +435,15 @@ extension FileParser {
             typeName = TypeName("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
         }
 
-        var writeAccessibility = AccessLevel.none
-        var computed = false
-
-        //! if there is body it might be computed
-        if !containedInProtocol, let bodylength = source[SwiftDocKey.bodyLength.rawValue] as? Int64 {
-            computed = bodylength > 0
-        }
-
-        //! but if there is a setter, then it's not computed for sure
-        if let setter = source["key.setter_accessibility"] as? String {
-            writeAccessibility = AccessLevel(rawValue: setter.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "")) ?? .none
-            computed = false
-        }
+        let setter = source["key.setter_accessibility"] as? String
+        let body = extract(Substring.body, from: source) ?? ""
+        let constant = extract(Substring.key, from: source)?.hasPrefix("let") == true
+        let hasPropertyObservers = body.hasPrefix("didSet") || body.hasPrefix("willSet")
+        let computed = !containedInProtocol && (
+            (setter == nil && !constant) ||
+            (setter != nil && !body.isEmpty && hasPropertyObservers == false)
+        )
+        let writeAccessibility = setter.flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "")) }) ?? .none
 
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
         let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
