@@ -1,5 +1,3 @@
-import Cocoa
-
 {% for type in types.based.AutoMockable %}{% if type.kind == 'protocol' %}
 {% if not type.name == "AutoMockable" %}
 class {{ type.name }}Mock: {{ type.name }} {
