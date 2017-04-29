@@ -141,7 +141,7 @@ final class FileParser {
                  .extensionEnum:
                 type = Type(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
             case .enumelement:
-                return parseEnumCase(source)
+                return parseEnumCase(source, containingIn: containingIn as? Enum)
             case .varInstance:
                 return parseVariable(source, containedInProtocol: containingIn is Protocol)
             case .varStatic, .varClass:
@@ -558,7 +558,7 @@ extension FileParser {
 // MARK: - Enums
 extension FileParser {
 
-    fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable]) -> EnumCase? {
+    fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable], containingIn: Enum?) -> EnumCase? {
         guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
 
         var associatedValues: [AssociatedValue] = []
@@ -585,18 +585,32 @@ extension FileParser {
         }
 
         let annotations: [String: NSObject]
-        if var body = extract(.keyPrefix, from: source)?.trimmingSuffix("case") {
+        let enumRange = containingIn.flatMap { Substring.body.range(for: $0.__underlyingSource) }
+        let enumCaseRange = Substring.keyPrefix.range(for: source)
+
+        var searchRange: (offset: Int64, length: Int64)? = nil
+        if let enumCaseRange = enumCaseRange {
+            if let enumRange = enumRange, enumRange.offset > enumCaseRange.offset {
+                let range = (offset: enumRange.offset, length: enumCaseRange.length - (enumRange.offset - enumCaseRange.offset))
+                searchRange = range.length > 0 ? range : enumCaseRange
+            } else {
+                searchRange = enumCaseRange
+            }
+        }
+
+        if let searchRange = searchRange, var body = extract(from: searchRange)?.trimmingSuffix("case") {
             // search backwards for possible enum cases separators
-            if let semicolon = body.range(of: ";", options: [.backwards])?.upperBound {
-                body = body.substring(from: semicolon)
-            } else if let comma = body.range(of: ",", options: [.backwards])?.upperBound {
-                body = body.substring(from: comma)
-            } else if let parenthesis = body.range(of: ")", options: [.backwards])?.upperBound {
-                body = body.substring(from: parenthesis)
-            } else if let `case` = body.range(of: "case", options: [.backwards])?.upperBound {
-                body = body.substring(from: `case`)
-            } else if let brace = body.range(of: "{", options: [.backwards])?.upperBound {
-                body = body.substring(from: brace)
+
+            let ranges = [
+                body.range(of: ";", options: [.backwards])?.upperBound,
+                body.range(of: ",", options: [.backwards])?.upperBound,
+                body.range(of: ")", options: [.backwards])?.upperBound,
+                body.range(of: "case", options: [.backwards])?.upperBound,
+                body.range(of: "{", options: [.backwards])?.upperBound,
+            ].flatMap { $0 }
+
+            if let maxRange = ranges.max(by: >) {
+                body = body.substring(from: maxRange)
             }
 
             annotations = AnnotationsParser(contents: body).all
@@ -835,6 +849,11 @@ extension FileParser {
 
 // MARK: - Helpres
 extension FileParser {
+
+    fileprivate func extract(from range: (offset: Int64, length: Int64)) -> String? {
+        let substring = self.contents.substringWithByteRange(start: Int(range.offset), length: Int(range.length))
+        return substring?.isEmpty == true ? nil : substring?.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable]) -> String? {
         return substringIdentifier.extract(from: source, contents: self.contents)
