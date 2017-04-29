@@ -40,4 +40,12 @@ extension Path {
         return !self.isDirectory && self.extension == "swift"
     }
 
+    init(_ string: String, relativeTo relativePath: Path) {
+        var path = Path(string)
+        if !path.isAbsolute {
+            path = (relativePath + path).absolute()
+        }
+        self.init(path.string)
+    }
+
 }

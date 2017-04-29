@@ -20,9 +20,9 @@ struct Project {
         }
     }
 
-    init?(dict: [String: Any]) {
+    init?(dict: [String: Any], relativePath: Path) {
         guard let file = dict["file"] as? String,
-            let project = try? XCProjectFile(path: file),
+            let project = try? XCProjectFile(path: Path(file, relativeTo: relativePath).string),
             let root = dict["root"] as? String else {
                 return nil
         }
@@ -44,13 +44,13 @@ enum Source {
     case projects([Project])
     case sources([Path])
 
-    init(dict: [String: Any]) {
+    init(dict: [String: Any], relativePath: Path) {
         if let projects = dict["project"] as? [[String: Any]] {
-            self = .projects(projects.flatMap(Project.init(dict:)))
+            self = .projects(projects.flatMap({ Project.init(dict: $0, relativePath: relativePath) }))
         } else if let project = dict["project"] as? [String: Any] {
-            self = .projects([Project(dict: project)].flatMap({ $0 }))
+            self = .projects([Project(dict: project, relativePath: relativePath)].flatMap({ $0 }))
         } else {
-            let sources = (dict["sources"] as? [String])?.map({ Path($0) }) ?? []
+            let sources = (dict["sources"] as? [String])?.map({ Path($0, relativeTo: relativePath) }) ?? []
             self = .sources(sources)
         }
     }
@@ -73,17 +73,9 @@ struct Configuration {
     let args: [String: NSObject]
 
     init(dict: [String: Any], relativePath: Path) {
-        self.source = Source(dict: dict)
-        let makePath = { (str: String) -> Path in
-            let path = Path(str)
-            if path.isAbsolute {
-                return path
-            } else {
-                return (relativePath + path).absolute()
-            }
-        }
-        self.templates = (dict["templates"] as? [String])?.map(makePath) ?? []
-        self.output = (dict["output"] as? String).map(makePath) ?? "."
+        self.source = Source(dict: dict, relativePath: relativePath)
+        self.templates = (dict["templates"] as? [String])?.map({ Path($0, relativeTo: relativePath) }) ?? []
+        self.output = (dict["output"] as? String).map({ Path($0, relativeTo: relativePath) }) ?? "."
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 
