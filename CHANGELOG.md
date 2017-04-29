@@ -17,6 +17,7 @@
 
 ### Internal changes
 
+- Improved `AutoMockable.stencil` to support protocols with `init` methods
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`
 
 ## 0.6.0
