@@ -152,7 +152,11 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "3", typeName: TypeName("Float")),
                                 TupleElement(name: "literal", typeName: TypeName("[String: [String: Float]]", dictionary: DictionaryType(name: "[String: [String: Float]]", valueTypeName: TypeName("[String: Float]", dictionary: DictionaryType(name: "[String: Float]", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
                                 TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>", dictionary: DictionaryType(name: "Dictionary<String, Dictionary<String, Float>>", valueTypeName: TypeName("Dictionary<String, Float>", dictionary: DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
-                                TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)")),
+                                TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)", closure: ClosureType(name: "(Int) -> (Int -> Int)", parameters: [
+                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                    ], returnTypeName: TypeName("(Int -> Int)", closure: ClosureType(name: "(Int) -> Int", parameters: [
+                                        MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                        ], returnTypeName: TypeName("Int")))))),
                                 TupleElement(name: "tuple", typeName: TypeName("(Int, Int)", tuple:
                                     TupleType(name: "(Int, Int)", elements: [
                                         TupleElement(name: "0", typeName: TypeName("Int")),
@@ -181,7 +185,7 @@ class ParserComposerSpec: QuickSpec {
                             ArrayType(name: "[[Int]]", elementTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int"))))
                         ))
                         expect(variables?[3].typeName.array).to(equal(
-                            ArrayType(name: "[()->()]", elementTypeName: TypeName("()->()"))
+                            ArrayType(name: "[()->()]", elementTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))))
                         ))
                     }
                 }
@@ -204,7 +208,7 @@ class ParserComposerSpec: QuickSpec {
                             ArrayType(name: "Array<Array<Int>>", elementTypeName: TypeName("Array<Int>", array: ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int"))))
                         ))
                         expect(variables?[3].typeName.array).to(equal(
-                            ArrayType(name: "Array<()->()>", elementTypeName: TypeName("()->()"))
+                            ArrayType(name: "Array<()->()>", elementTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))))
                         ))
                     }
                 }
@@ -233,7 +237,7 @@ class ParserComposerSpec: QuickSpec {
                                            keyTypeName: TypeName("Int"))
                         ))
                         expect(variables?[4].typeName.dictionary).to(equal(
-                            DictionaryType(name: "Dictionary<Int, ()->()>", valueTypeName: TypeName("()->()"), keyTypeName: TypeName("Int"))
+                            DictionaryType(name: "Dictionary<Int, ()->()>", valueTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))), keyTypeName: TypeName("Int"))
                         ))
                     }
                 }
@@ -262,7 +266,90 @@ class ParserComposerSpec: QuickSpec {
                                            keyTypeName: TypeName("Int"))
                         ))
                         expect(variables?[4].typeName.dictionary).to(equal(
-                            DictionaryType(name: "[Int: ()->()]", valueTypeName: TypeName("()->()"), keyTypeName: TypeName("Int"))
+                            DictionaryType(name: "[Int: ()->()]", valueTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))), keyTypeName: TypeName("Int"))
+                        ))
+                    }
+                }
+
+                context("given closure type") {
+                    it("extracts closure return type") {
+                        let types = parse("struct Foo { var closure: () -> \n Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() -> Int", parameters: [], returnTypeName: TypeName("Int"))
+                        ))
+                    }
+
+                    it("extracts throws return type") {
+                        let types = parse("struct Foo { var closure: () throws -> Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() throws -> Int", parameters: [], returnTypeName: TypeName("Int"), throws: true)
+                        ))
+                    }
+
+                    it("extracts void return type") {
+                        let types = parse("struct Foo { var closure: () -> Void }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() -> Void", parameters: [], returnTypeName: TypeName("Void"))
+                        ))
+                    }
+
+                    it("extracts () return type") {
+                        let types = parse("struct Foo { var closure: () -> () }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))
+                        ))
+                    }
+
+                    it("extracts complex closure type") {
+                        let types = parse("struct Foo { var closure: () -> Int throws -> Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() -> Int throws -> Int", parameters: [], returnTypeName: TypeName("Int throws -> Int", closure: ClosureType(name: "(Int) throws -> Int", parameters: [
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                ], returnTypeName: TypeName("Int"), throws: true
+                            )))
+                        ))
+                    }
+
+                    it("extracts () parameters") {
+                        let types = parse("struct Foo { var closure: () -> Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() -> Int", parameters: [], returnTypeName: TypeName("Int"))
+                        ))
+                    }
+
+                    it("extracts Void parameters") {
+                        let types = parse("struct Foo { var closure: (Void) -> Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "(Void) -> Int", parameters: [], returnTypeName: TypeName("Int"))
+                        ))
+                    }
+
+                    it("extracts parameters") {
+                        let types = parse("struct Foo { var closure: (Int, Int -> Int) -> Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "(Int, Int -> Int) -> Int", parameters: [
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int")),
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int -> Int", closure: ClosureType(name: "(Int) -> Int", parameters: [
+                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                    ], returnTypeName: TypeName("Int"))))
+                                ], returnTypeName: TypeName("Int")
+                            )
                         ))
                     }
                 }
