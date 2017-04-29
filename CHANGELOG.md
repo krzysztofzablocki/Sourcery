@@ -11,6 +11,7 @@
 - Added support for includes in EJS templates (for example: `<%- include('myTemplate.js') %>`)
 - Add the `lowerFirst` filter for Stencil templates.
 - Added `isRequired` property for `Method`
+- Improved parsing of closure types
 
 ### Bug fixes
 
