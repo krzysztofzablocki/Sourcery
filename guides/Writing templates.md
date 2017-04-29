@@ -31,6 +31,7 @@ Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/S
 ### Custom Stencil tags and filters
 
 - `{{ name|upperFirst }}` - makes first letter in `name` uppercase
+- `{{ name|lowerFirst }}` - makes first letter in `name` lowercase
 - `{{ name|replace:"substring","replacement" }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
 - `{% if name|contains:"Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
 - `{% if name|hasPrefix:"Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.
@@ -73,7 +74,7 @@ Bar
 
 ## JavaScript templates
 
-JavaScript templates are powered by [EJS](http://ejs.co) and support all the features available in this templates engine except files includes.
+JavaScript templates are powered by [EJS](http://ejs.co) and support all the features available in this template engine.
 
 **Example**: [Equality.js](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js)
 

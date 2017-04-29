@@ -1,12 +1,10 @@
 {% for enum in types.implementing.AutoCases|enum %}
 extension {{ enum.name }} {
-  static var count: Int { return {{ enum.cases.count }} }
+  static let count: Int = {{ enum.cases.count }}
   {% if not enum.hasAssociatedValues %}
-  static var allCases: [{{ enum.name }}] {
-    return [
-      {% for case in enum.cases %}.{{ case.name }} {% if not forloop.last %},{% endif %}
-      {% endfor %}]
-  }
+  static let allCases: [{{ enum.name }}] = [
+  {% for case in enum.cases %}  .{{ case.name }}{% if not forloop.last %},{% endif %}
+  {% endfor %}]
   {% endif %}
 }
 {% endfor %}

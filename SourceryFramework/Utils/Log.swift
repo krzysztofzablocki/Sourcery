@@ -1,4 +1,5 @@
 import Darwin
+import Foundation
 
 public enum Log {
 
@@ -12,7 +13,10 @@ public enum Log {
 
     public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
-        fputs("\(message)", stderr)
+        // to return error when running swift templates which is done in a different process
+        if ProcessInfo().processName == "bin" {
+            fputs("\(message)", stderr)
+        }
     }
 
     public static func warning(_ message: Any) {

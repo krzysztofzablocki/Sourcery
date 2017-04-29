@@ -17,6 +17,10 @@ class StencilTemplateSpec: QuickSpec {
                 expect(generate("{{\"helloWorld\" | upperFirst }}")).to(equal("HelloWorld"))
             }
 
+            it("generates lowercase") {
+                expect(generate("{{\"HelloWorld\" | lowerFirst }}")).to(equal("helloWorld"))
+            }
+
             it("checks for string in name") {
                 expect(generate("{{ \"FooBar\" | contains:\"oo\" }}")).to(equal("true"))
                 expect(generate("{{ \"FooBar\" | contains:\"xx\" }}")).to(equal("false"))

@@ -141,14 +141,22 @@ class Sourcery {
 
     fileprivate func templates(from: [Path]) throws -> [Template] {
         return try templatePaths(from: from).map {
-            if $0.extension == "swifttemplate" {
-                let cachePath = cacheDisabled ? nil : Path.cachesDir(sourcePath: $0)
-                return try SwiftTemplate(path: $0, cachePath: cachePath)
-            } else if $0.extension == "js" {
-                return try JavaScriptTemplate(path: $0)
-            } else {
-                return try StencilTemplate(path: $0)
-            }
+            #if SWIFT_PACKAGE
+                if $0.extension == "swifttemplate" || $0.extension == "ejs" {
+                    throw "Swift and JavaScript templates are not supported when using Sourcery built with Swift Package Manager yet. Please use only Stencil templates. See https://github.com/krzysztofzablocki/Sourcery/issues/244 for details."
+                } else {
+                    return try StencilTemplate(path: $0)
+                }
+            #else
+                if $0.extension == "swifttemplate" {
+                    let cachePath = cacheDisabled ? nil : Path.cachesDir(sourcePath: $0)
+                    return try SwiftTemplate(path: $0, cachePath: cachePath)
+                } else if $0.extension == "ejs" {
+                    return try JavaScriptTemplate(path: $0)
+                } else {
+                    return try StencilTemplate(path: $0)
+                }
+            #endif
         }
     }
 

@@ -92,7 +92,7 @@ extension Method {
         string += "isClass = \(String(describing: self.isClass)), "
         string += "isInitializer = \(String(describing: self.isInitializer)), "
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
-        string += "isConvenienceInitialiser = \(String(describing: self.isConvenienceInitialiser)), "
+        string += "isConvenienceInitializer = \(String(describing: self.isConvenienceInitializer)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string

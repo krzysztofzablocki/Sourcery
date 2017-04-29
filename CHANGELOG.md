@@ -8,8 +8,20 @@
 
 - Paths in config file are now relative to config file path by default, absolute paths should start with `/`
 - Improved logging and error reporting, added `--quiet` CLI option, added runtime errors for using invalid types in `implementing` and `inheriting`
+- Added support for includes in EJS templates (for example: `<%- include('myTemplate.js') %>`)
+- Add the `lowerFirst` filter for Stencil templates.
+- Added `isRequired` property for `Method`
 - Improved swift templates performance
 
+### Bug fixes
+
+- Fixed detecting computed properties
+- Fixed typo in `isConvenienceInitialiser` property
+
+### Internal changes
+
+- Improved `AutoMockable.stencil` to support protocols with `init` methods
+- Improved `AutoCases.stencil` to use `let` instead of computed `var`
 
 ## 0.6.0
 
