@@ -162,6 +162,11 @@ public final class Method: NSObject, SourceryModel, Annotated {
         return attributes[Attribute.Identifier.convenience.name] != nil
     }
 
+    /// Whether method is required
+    public var isRequired: Bool {
+        return attributes[Attribute.Identifier.required.name] != nil
+    }
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: [String: NSObject]
 

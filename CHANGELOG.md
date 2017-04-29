@@ -10,13 +10,11 @@
 - Improved logging and error reporting, added `--quiet` CLI option, added runtime errors for using invalid types in `implementing` and `inheriting`
 - Added support for includes in EJS templates (for example: `<%- include('myTemplate.js') %>`)
 - Add the `lowerFirst` filter for Stencil templates.
+- Added `isRequired` property for `Method`
 
 ### Bug fixes
 
 - Fixed detecting computed properties
-
-### Bug fixes
-
 - Fixed typo in `isConvenienceInitialiser` property
 
 ### Internal changes

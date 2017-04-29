@@ -25,6 +25,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 
     enum Identifier: String {
         case convenience
+        case required
         case available
         case discardableResult
         case GKInspectable = "gkinspectable"
