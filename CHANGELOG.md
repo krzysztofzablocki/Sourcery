@@ -11,6 +11,10 @@
 - Added support for includes in EJS templates (for example: `<%- include('myTemplate.js') %>`)
 - Add the `lowerFirst` filter for Stencil templates.
 
+### Bug fixes
+
+- Fixed detecting computed properties
+
 ### Internal changes
 
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`

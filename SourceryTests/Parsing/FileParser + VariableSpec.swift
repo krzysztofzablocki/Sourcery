@@ -104,18 +104,15 @@ class FileParserVariableSpec: QuickSpec {
 
                 it("extracts computed property correctly") {
                     expect(parse("var name: Int { return 2 }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)))
+                    expect(parse("let name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: false)))
+                    expect(parse("var name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: Int { get { return 0 } set {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: true)))
+                    expect(parse("var name: Int { willSet { } }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: Int { didSet {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
                 it("extracts generic property correctly") {
                     expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", typeName: TypeName("Observable<Int>"), accessLevel: (read: .internal, write: .none), isComputed: false)))
-                }
-
-                it("extracts property with didSet correctly") {
-                    expect(parse(
-                            "var name: Int? {\n" +
-                                    "didSet { _ = 2 }\n" +
-                                    "willSet { _ = 4 }\n" +
-                                    "}")).to(equal(Variable(name: "name", typeName: TypeName("Int?"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
                 context("given it has sourcery annotations") {
