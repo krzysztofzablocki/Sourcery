@@ -15,6 +15,10 @@
 
 - Fixed detecting computed properties
 
+### Bug fixes
+
+- Fixed typo in `isConvenienceInitialiser` property
+
 ### Internal changes
 
 - Improved `AutoMockable.stencil` to support protocols with `init` methods

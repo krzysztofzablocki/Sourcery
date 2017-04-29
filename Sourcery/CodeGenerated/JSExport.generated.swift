@@ -146,7 +146,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isClass: Bool { get }
     var isInitializer: Bool { get }
     var isFailableInitializer: Bool { get }
-    var isConvenienceInitialiser: Bool { get }
+    var isConvenienceInitializer: Bool { get }
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
 }
