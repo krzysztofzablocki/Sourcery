@@ -16,6 +16,10 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
     return Int(bitPattern: lhs)
 }
 
+{% macro combineVariableHashes variables %}
+  return combineHashes([{% for variable in variables %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
+{% endmacro %}
+
 // MARK: - AutoHashable for classes, protocols, structs
 {% for type in types.implementing.AutoHashable %}{% if not type.kind == "enum" %}
 // MARK: - {{ type.name }} AutoHashable
@@ -23,9 +27,9 @@ extension {{ type.name }}{% if not type.kind == "protocol" %}: Hashable{% endif 
     {% if type.supertype.based.Hashable or type.supertype.implements.AutoHashable %} THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable {% endif %}
     {{ type.accessLevel }} var hashValue: Int {
         {% if not type.kind == "protocol" %}
-        return combineHashes([{% for variable in type.storedVariables %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
+        {% call combineVariableHashes type.storedVariables %}
         {% else %}
-        return combineHashes([{% for variable in type.computedVariables %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
+        {% call combineVariableHashes type.computedVariables %}
         {% endif %}
     }
 }
