@@ -95,20 +95,31 @@ struct Composer {
         }
 
         let lookupName = typeName.actualTypeName ?? typeName
+
+        let resolveTypeWithName = { (typeName: TypeName) -> Type? in
+            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+        }
+
         if let array = parseArrayType(lookupName) {
             typeName.array = array
-            array.elementType = resolveType(typeName: array.elementTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+            array.elementType = resolveTypeWithName(array.elementTypeName)
         } else if let dictionary = parseDictionaryType(lookupName) {
             typeName.dictionary = dictionary
-            dictionary.valueType = resolveType(typeName: dictionary.valueTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-            dictionary.keyType = resolveType(typeName: dictionary.keyTypeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+            dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName)
+            dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName)
         } else if let tuple = parseTupleType(lookupName) {
             typeName.tuple = tuple
-            // recursively resolve type of each tuple element
             tuple.elements.forEach { tupleElement in
-                tupleElement.type = resolveType(typeName: tupleElement.typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+                tupleElement.type = resolveTypeWithName(tupleElement.typeName)
             }
+        } else if let closure = parseClosureType(lookupName) {
+            typeName.closure = closure
+            closure.returnType = resolveTypeWithName(closure.returnTypeName)
+            closure.parameters.forEach({ parameter in
+                parameter.type = resolveTypeWithName(parameter.typeName)
+            })
         }
+
         return unique[lookupName.unwrappedTypeName]
             ?? typeFromModule(lookupName.unwrappedTypeName, modules: modules)
     }
@@ -356,6 +367,57 @@ struct Composer {
                 }
                 let typeName = TypeName(nameAndType[1])
                 return TupleElement(name: nameAndType[0], typeName: typeName)
+        }
+    }
+
+    fileprivate func parseClosureType(_ typeName: TypeName) -> ClosureType? {
+        let name = typeName.unwrappedTypeName
+        guard name.isValidClosureName() else { return nil }
+
+        let closureTypeComponents = name.components(separatedBy: "->", excludingDelimiterBetween: ("(", ")"))
+
+        let returnType = closureTypeComponents.suffix(from: 1)
+            .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+            .joined(separator: " -> ")
+        let returnTypeName = TypeName(returnType)
+
+        var parametersString = closureTypeComponents[0].trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let `throws` = parametersString.trimSuffix("throws")
+        parametersString = parametersString.trimmingCharacters(in: .whitespacesAndNewlines)
+        if parametersString.trimPrefix("(") { parametersString.trimSuffix(")") }
+        parametersString = parametersString.trimmingCharacters(in: .whitespacesAndNewlines)
+        let parameters = parseClosureParameters(parametersString)
+
+        let composedName = "(\(parametersString))\(`throws` ? " throws" : "") -> \(returnType)"
+        return ClosureType(name: composedName, parameters: parameters, returnTypeName: returnTypeName, throws: `throws`)
+    }
+
+    fileprivate func parseClosureParameters(_ parametersString: String) -> [MethodParameter] {
+        guard !parametersString.isEmpty else {
+            return []
+        }
+
+        let parameters = parametersString
+            .commaSeparated()
+            .flatMap({ parameter -> MethodParameter? in
+                let components = parameter.trimmingCharacters(in: .whitespacesAndNewlines)
+                    .colonSeparated()
+                    .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+
+                if components.count == 1 {
+                    return MethodParameter(argumentLabel: nil, typeName: TypeName(components[0]))
+                } else {
+                    let name = components[0].trimmingPrefix("_").stripped()
+                    let typeName = components[1]
+                    return MethodParameter(argumentLabel: nil, name: name, typeName: TypeName(typeName))
+                }
+            })
+
+        if parameters.count == 1 && parameters[0].typeName.isVoid {
+            return []
+        } else {
+            return parameters
         }
     }
 

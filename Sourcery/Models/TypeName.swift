@@ -37,7 +37,8 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
          attributes: [String: Attribute] = [:],
          tuple: TupleType? = nil,
          array: ArrayType? = nil,
-         dictionary: DictionaryType? = nil) {
+         dictionary: DictionaryType? = nil,
+         closure: ClosureType? = nil) {
 
         self.name = name
         self.actualTypeName = actualTypeName
@@ -45,6 +46,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         self.tuple = tuple
         self.array = array
         self.dictionary = dictionary
+        self.closure = closure
 
         var name = name
         attributes.forEach {
@@ -157,6 +159,9 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         }
     }
 
+    /// Closure type data
+    public internal(set) var closure: ClosureType?
+
     /// Returns value of `name` property.
     public override var description: String {
         return name
@@ -174,6 +179,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             self.tuple = aDecoder.decode(forKey: "tuple")
             self.array = aDecoder.decode(forKey: "array")
             self.dictionary = aDecoder.decode(forKey: "dictionary")
+            self.closure = aDecoder.decode(forKey: "closure")
         }
 
         /// :nodoc:
@@ -187,6 +193,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             aCoder.encode(self.tuple, forKey: "tuple")
             aCoder.encode(self.array, forKey: "array")
             aCoder.encode(self.dictionary, forKey: "dictionary")
+            aCoder.encode(self.closure, forKey: "closure")
         }
         // sourcery:end
 
@@ -340,4 +347,76 @@ public final class DictionaryType: NSObject, SourceryModel {
             aCoder.encode(self.keyType, forKey: "keyType")
         }
     // sourcery:end
+}
+
+/// Describes closure type
+public final class ClosureType: NSObject, SourceryModel {
+
+    /// Type name used in declaration with stripped whitespaces and new lines
+    public let name: String
+
+    /// List of closure parameters
+    public let parameters: [MethodParameter]
+
+    /// Return value type name
+    public let returnTypeName: TypeName
+
+    /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
+    public var actualReturnTypeName: TypeName {
+        return returnTypeName.actualTypeName ?? returnTypeName
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Actual return value type, if known
+    public internal(set) var returnType: Type?
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether return value type is optional
+    public var isOptionalReturnType: Bool {
+        return returnTypeName.isOptional
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether return value type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptionalReturnType: Bool {
+        return returnTypeName.isImplicitlyUnwrappedOptional
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Return value type name without attributes and optional type information
+    public var unwrappedReturnTypeName: String {
+        return returnTypeName.unwrappedTypeName
+    }
+
+    /// Whether closure throws
+    public let `throws`: Bool
+
+    init(name: String, parameters: [MethodParameter], returnTypeName: TypeName, returnType: Type? = nil, `throws`: Bool = false) {
+        self.name = name
+        self.parameters = parameters
+        self.returnTypeName = returnTypeName
+        self.returnType = returnType
+        self.`throws` = `throws`
+    }
+
+    // sourcery:inline:ClosureType.AutoCoding
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
+            self.returnType = aDecoder.decode(forKey: "returnType")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.parameters, forKey: "parameters")
+            aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
+            aCoder.encode(self.returnType, forKey: "returnType")
+            aCoder.encode(self.`throws`, forKey: "`throws`")
+        }
+    // sourcery:end
+
 }

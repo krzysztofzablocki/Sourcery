@@ -43,4 +43,5 @@ custom_categories:
       - TupleElement
       - ArrayType
       - DictionaryType
+      - ClosureType
       - Attribute

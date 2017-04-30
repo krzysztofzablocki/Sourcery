@@ -38,6 +38,17 @@ extension Class {
         return super.isEqual(rhs)
     }
 }
+extension ClosureType {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureType else { return false }
+        if self.name != rhs.name { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        return true
+    }
+}
 extension DictionaryType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -192,6 +203,7 @@ extension TypeName {
         if self.tuple != rhs.tuple { return false }
         if self.array != rhs.array { return false }
         if self.dictionary != rhs.dictionary { return false }
+        if self.closure != rhs.closure { return false }
         return true
     }
 }
