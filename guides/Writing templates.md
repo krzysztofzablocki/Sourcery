@@ -76,7 +76,7 @@ Bar
 
 JavaScript templates are powered by [EJS](http://ejs.co) and support all the features available in this template engine.
 
-**Example**: [Equality.js](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js)
+**Example**: [JSExport.ejs](https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/JSExport.ejs)
 
 ## Using Source Annotations
 
@@ -115,7 +115,7 @@ If you want to attribute multiple items with same attributes, you can use sectio
 #### Accessing in templates:
 
 ```swift
-{% if variable|!annotatated:skipPersistence %}
+{% if variable|!annotatated:"skipPersistence" %}
   var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
 {% endif %}
 ```

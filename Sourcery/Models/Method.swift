@@ -150,10 +150,9 @@ public final class Method: NSObject, SourceryModel, Annotated {
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
-    /// :nodoc:
-    @available(*, deprecated: 0.7, message: "Use isConvenienceInitializer instead")
     // sourcery: skipEqaulitey, skipDescription, skipCoding, skipJSExport
-    public var isConvenienceInitialiser: Bool {
+    /// :nodoc:
+    @available(*, deprecated: 0.7, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
         return attributes[Attribute.Identifier.convenience.name] != nil
     }
 
