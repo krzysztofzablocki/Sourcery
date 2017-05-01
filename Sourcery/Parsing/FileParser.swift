@@ -584,39 +584,7 @@ extension FileParser {
              Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        let annotations: [String: NSObject]
-        let enumRange = containingIn.flatMap { Substring.body.range(for: $0.__underlyingSource) }
-        let enumCaseRange = Substring.keyPrefix.range(for: source)
-
-        var searchRange: (offset: Int64, length: Int64)? = nil
-        if let enumCaseRange = enumCaseRange {
-            if let enumRange = enumRange, enumRange.offset > enumCaseRange.offset {
-                let range = (offset: enumRange.offset, length: enumCaseRange.length - (enumRange.offset - enumCaseRange.offset))
-                searchRange = range.length > 0 ? range : enumCaseRange
-            } else {
-                searchRange = enumCaseRange
-            }
-        }
-
-        if let searchRange = searchRange, var body = extract(from: searchRange)?.trimmingSuffix("case") {
-            // search backwards for possible enum cases separators
-
-            let ranges = [
-                body.range(of: ";", options: [.backwards])?.upperBound,
-                body.range(of: ",", options: [.backwards])?.upperBound,
-                body.range(of: ")", options: [.backwards])?.upperBound,
-                body.range(of: "case", options: [.backwards])?.upperBound,
-                body.range(of: "{", options: [.backwards])?.upperBound,
-            ].flatMap { $0 }
-
-            if let maxRange = ranges.max(by: >) {
-                body = body.substring(from: maxRange)
-            }
-
-            annotations = AnnotationsParser(contents: body).all
-        } else {
-            annotations = [:]
-        }
+        let annotations = parseEnumAnnotations(source, containingIn: containingIn)
 
         let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations)
         enumCase.setSource(source)
@@ -655,6 +623,16 @@ extension FileParser {
                 let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
                 return AssociatedValue(localName: localName, externalName: externalName, typeName: typeName, annotations: annotations)
         }
+    }
+
+    fileprivate func parseEnumAnnotations(_ source: [String: SourceKitRepresentable], containingIn: Enum?) -> [String: NSObject] {
+        let containingInSource = containingIn?.__underlyingSource
+
+        let body = EnumParser.annotationsBodyStructured(content: contents, source: source, containingInSource: containingInSource)
+            ?? EnumParser.annotationsBody(content: contents, source: source, containingInSource: containingInSource)
+
+        let annotations = AnnotationsParser(contents: body).all
+        return annotations
     }
 
 }
@@ -847,12 +825,12 @@ extension FileParser {
 
 }
 
-// MARK: - Helpres
+// MARK: - Helpers
 extension FileParser {
 
     fileprivate func extract(from range: (offset: Int64, length: Int64)) -> String? {
         let substring = self.contents.substringWithByteRange(start: Int(range.offset), length: Int(range.length))
-        return substring?.isEmpty == true ? nil : substring?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return substring?.isEmpty == true ? nil : substring
     }
 
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable]) -> String? {
