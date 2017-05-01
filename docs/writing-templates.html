@@ -191,7 +191,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li><code>enum</code>, <code>class</code>, <code>struct</code>, <code>protocol</code> - can be used for Type[s] as filter, can be negated with <code>!</code> prefix.</li>
 <li><code>based</code>, <code>implements</code>, <code>inherits</code> - can be used for Type[s], Variable[s], Associated value[s], can be negated with <code>!</code> prefix.</li>
 <li><code>count</code> - can be used to get count of filtered array</li>
-<li><code>annotated</code> - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. <code>{% for var in variable|annotated: \&quot;skipDescription\&quot;%}</code>, can be negated with <code>!</code> prefix.</li>
+<li><code>annotated</code> - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. <code>{% for var in variable|annotated:"skipDescription" %}</code>, can be negated with <code>!</code> prefix.</li>
 <li><code>public</code>, <code>open</code>, <code>internal</code>, <code>private</code>, <code>fileprivate</code> - can be used on Type[s] and Method[s] to filter by access level, can be negated with <code>!</code> prefix.</li>
 <li><code>publicGet</code>, <code>publicSet</code>, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with <code>!</code> prefix</li>
 </ul>
