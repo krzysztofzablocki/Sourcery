@@ -105,6 +105,7 @@ extension Method {
         string += "isInitializer = \(String(describing: self.isInitializer)), "
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
         string += "isConvenienceInitializer = \(String(describing: self.isConvenienceInitializer)), "
+        string += "isRequired = \(String(describing: self.isRequired)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string
