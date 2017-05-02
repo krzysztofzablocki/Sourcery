@@ -60,6 +60,12 @@ task :build do
   sh %Q(rm -fr #{BUILD_DIR}tmp/)
 end
 
+desc "Update docs"
+task :docs do
+  print_info "Updating docs"
+  sh "jazzy --clean --skip-undocumented"
+end
+
 ## [ Release ] ##########################################################
 
 namespace :release do
@@ -105,11 +111,12 @@ namespace :release do
   end
 
   desc 'Create a zip containing all the prebuilt binaries'
-  task :zip => [:clean] do
+  task :zip => [:clean, :docs] do
     sh %Q(mkdir -p "build")
     sh %Q(mkdir -p "build/Resources")
     sh %Q(cp -r bin build/)
     sh %Q(cp -r Templates build/)
+    sh %Q(cp -r docs/docsets/Sourcery.docset build/)
     `cp LICENSE README.md CHANGELOG.md build`
     `cp Resources/daemon.gif Resources/icon-128.png build/Resources`
     `cd build; zip -r -X sourcery-#{podspec_version}.zip .`
