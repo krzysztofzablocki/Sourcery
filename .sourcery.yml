@@ -1,5 +1,5 @@
 sources:
-  - Sourcery/Models
+  - SourceryFramework/Sources
 templates:
   - Sourcery/Templates
 output:
