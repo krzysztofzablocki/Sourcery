@@ -20,7 +20,7 @@ extension Node {
     }
 
     public init(_ pairs: [(Node, Node)], _ tag: Tag = .implicit, _ style: Mapping.Style = .any) {
-            self = .mapping(.init(pairs, tag, style))
+        self = .mapping(.init(pairs, tag, style))
     }
 
     public init(_ nodes: [Node], _ tag: Tag = .implicit, _ style: Sequence.Style = .any) {
@@ -35,6 +35,14 @@ extension Node {
         case let .scalar(scalar): return scalar.resolvedTag
         case let .mapping(mapping): return mapping.resolvedTag
         case let .sequence(sequence): return sequence.resolvedTag
+        }
+    }
+
+    public var mark: Mark? {
+        switch self {
+        case let .scalar(scalar): return scalar.mark
+        case let .mapping(mapping): return mapping.mark
+        case let .sequence(sequence): return sequence.mark
         }
     }
 

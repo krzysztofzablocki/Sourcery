@@ -1,3 +1,11 @@
+//
+//  YamlError.swift
+//  Yams
+//
+//  Created by JP Simard on 2016-11-19.
+//  Copyright (c) 2016 Yams. All rights reserved.
+//
+
 #if SWIFT_PACKAGE
 import CYaml
 #endif
@@ -6,7 +14,7 @@ import Foundation
 public enum YamlError: Swift.Error {
     // Used in `yaml_emitter_t` and `yaml_parser_t`
     /// YAML_NO_ERROR. No error is produced.
-    case no
+    case no // swiftlint:disable:this identifier_name
     /// YAML_MEMORY_ERROR. Cannot allocate or reallocate a block of memory.
     case memory
 
@@ -14,9 +22,9 @@ public enum YamlError: Swift.Error {
     /// YAML_READER_ERROR. Cannot read or decode the input stream.
     case reader(problem: String, byteOffset: Int, value: Int32, yaml: String)
 
-    // line and column start from 0, column is counted by unicodeScalars
+    // line and column start from 1, column is counted by unicodeScalars
     /// YAML_SCANNER_ERROR. Cannot scan the input stream.
-    case scanner(context: Context, problem: String, Mark, yaml: String)
+    case scanner(context: Context?, problem: String, Mark, yaml: String)
     /// YAML_PARSER_ERROR. Cannot parse the input stream.
     case parser(context: Context?, problem: String, Mark, yaml: String)
     /// YAML_COMPOSER_ERROR. Cannot compose a YAML document.
@@ -31,16 +39,11 @@ public enum YamlError: Swift.Error {
     // Used in `NodeRepresentable`
     case representer(problem: String)
 
-    public struct Mark: CustomStringConvertible {
-        public let line: Int, column: Int
-        public var description: String { return "\(line + 1):\(column + 1)" }
-    }
-
     public struct Context: CustomStringConvertible {
         public let text: String
         public let mark: Mark
         public var description: String {
-            return text + " in line \(mark.line + 1), column \(mark.column + 1)\n"
+            return text + " in line \(mark.line), column \(mark.column)\n"
         }
     }
 }
@@ -51,12 +54,12 @@ extension YamlError {
             guard let context = parser.context else { return nil }
             return Context(
                 text: String(cString: context),
-                mark: Mark(line: parser.context_mark.line, column: parser.context_mark.column)
+                mark: Mark(line: parser.context_mark.line + 1, column: parser.context_mark.column + 1)
             )
         }
 
         func problemMark(from parser: yaml_parser_t) -> Mark {
-            return Mark(line: parser.problem_mark.line, column: parser.problem_mark.column)
+            return Mark(line: parser.problem_mark.line + 1, column: parser.problem_mark.column + 1)
         }
 
         switch parser.error {
@@ -68,7 +71,7 @@ extension YamlError {
                            value: parser.problem_value,
                            yaml: yaml)
         case YAML_SCANNER_ERROR:
-            self = .scanner(context: context(from: parser)!,
+            self = .scanner(context: context(from: parser),
                             problem: String(cString: parser.problem), problemMark(from: parser),
                             yaml: yaml)
         case YAML_PARSER_ERROR:
@@ -107,13 +110,13 @@ extension YamlError: CustomStringConvertible {
             guard let (mark, contents) = markAndSnippet(from: yaml, byteOffset)
                 else { return "\(problem) at byte offset: \(byteOffset), value: \(value)" }
             return "\(mark): error: reader: \(problem):\n" + contents.endingWithNewLine
-                + String(repeating: " ", count: mark.column) + "^"
+                + String(repeating: " ", count: mark.column - 1) + "^"
         case let .scanner(context, problem, mark, yaml):
-            return "\(mark): error: scanner: \(context)\(problem):\n" + snippet(from: yaml, mark)
+            return "\(mark): error: scanner: \(context?.description ?? "")\(problem):\n" + mark.snippet(from: yaml)
         case let .parser(context, problem, mark, yaml):
-            return "\(mark): error: parser: \(context?.description ?? "")\(problem):\n" + snippet(from: yaml, mark)
+            return "\(mark): error: parser: \(context?.description ?? "")\(problem):\n" + mark.snippet(from: yaml)
         case let .composer(context, problem, mark, yaml):
-            return "\(mark): error: composer: \(context?.description ?? "")\(problem):\n" + snippet(from: yaml, mark)
+            return "\(mark): error: composer: \(context?.description ?? "")\(problem):\n" + mark.snippet(from: yaml)
         case let .writer(problem), let .emitter(problem), let .representer(problem):
             return problem
         }
@@ -121,19 +124,6 @@ extension YamlError: CustomStringConvertible {
 }
 
 extension YamlError {
-    fileprivate func snippet(from yaml: String, _ mark: Mark) -> String {
-        let contents = yaml.substring(at: mark.line)
-         // libYAML counts column by unicodeScalars.
-        let columnIndex = contents.unicodeScalars
-            .index(contents.unicodeScalars.startIndex,
-                   offsetBy: mark.column,
-                   limitedBy: contents.unicodeScalars.endIndex)?
-            .samePosition(in: contents) ?? contents.endIndex
-        let column = contents.distance(from: contents.startIndex, to: columnIndex)
-        return contents.endingWithNewLine +
-            String(repeating: " ", count: column) + "^"
-    }
-
     fileprivate func markAndSnippet(from yaml: String, _ byteOffset: Int) -> (Mark, String)? {
         #if USE_UTF8
             guard let (line, column, contents) = yaml.utf8LineNumberColumnAndContents(at: byteOffset)
@@ -142,6 +132,6 @@ extension YamlError {
             guard let (line, column, contents) = yaml.utf16LineNumberColumnAndContents(at: byteOffset / 2)
                 else { return nil }
         #endif
-        return (Mark(line: line, column: column), contents)
+        return (Mark(line: line + 1, column: column + 1), contents)
     }
 }

@@ -174,9 +174,9 @@ public func serialize(
 public final class Emitter {
     public enum LineBreak {
         /// Use CR for line breaks (Mac style).
-        case cr
+        case cr // swiftlint:disable:this identifier_name
         /// Use LN for line breaks (Unix style).
-        case ln
+        case ln // swiftlint:disable:this identifier_name
         /// Use CR LN for line breaks (DOS style).
         case crln
     }
