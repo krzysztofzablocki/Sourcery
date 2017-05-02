@@ -155,8 +155,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     // sourcery: skipEqaulitey, skipDescription, skipCoding, skipJSExport
     /// :nodoc:
-    @available(*, deprecated: 0.7, message: "Use isConvenienceInitializer instead")
-    public var isConvenienceInitialiser: Bool {
+    @available(*, deprecated: 0.7, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
         return attributes[Attribute.Identifier.convenience.name] != nil
     }
 

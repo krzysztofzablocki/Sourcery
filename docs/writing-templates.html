@@ -122,6 +122,9 @@
                 <a href="Classes/DictionaryType.html">DictionaryType</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/ClosureType.html">ClosureType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/Attribute.html">Attribute</a>
               </li>
             </ul>
@@ -188,7 +191,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li><code>enum</code>, <code>class</code>, <code>struct</code>, <code>protocol</code> - can be used for Type[s] as filter, can be negated with <code>!</code> prefix.</li>
 <li><code>based</code>, <code>implements</code>, <code>inherits</code> - can be used for Type[s], Variable[s], Associated value[s], can be negated with <code>!</code> prefix.</li>
 <li><code>count</code> - can be used to get count of filtered array</li>
-<li><code>annotated</code> - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. <code>{% for var in variable|annotated: \&quot;skipDescription\&quot;%}</code>, can be negated with <code>!</code> prefix.</li>
+<li><code>annotated</code> - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. <code>{% for var in variable|annotated:&quot;skipDescription&quot; %}</code>, can be negated with <code>!</code> prefix.</li>
 <li><code>public</code>, <code>open</code>, <code>internal</code>, <code>private</code>, <code>fileprivate</code> - can be used on Type[s] and Method[s] to filter by access level, can be negated with <code>!</code> prefix.</li>
 <li><code>publicGet</code>, <code>publicSet</code>, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with <code>!</code> prefix</li>
 </ul>
@@ -220,7 +223,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 
 <p>JavaScript templates are powered by <a href="http://ejs.co">EJS</a> and support all the features available in this template engine.</p>
 
-<p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js">Equality.js</a></p>
+<p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/JSExport.ejs">JSExport.ejs</a></p>
 <a href='#using-source-annotations' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='using-source-annotations'>Using Source Annotations</h2>
 
 <p>Sourcery supports annotating your classes and variables with special annotations, similar to how attributes work in Rust / Java</p>
@@ -253,7 +256,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li>key = string, e.g. <code>sourcery: jsonKey = &quot;json_key&quot;</code></li>
 </ul>
 <a href='#accessing-in-templates' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='accessing-in-templates'>Accessing in templates:</h4>
-<pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">variable</span><span class="o">|!</span><span class="nv">annotatated</span><span class="p">:</span><span class="n">skipPersistence</span> <span class="o">%</span><span class="p">}</span>
+<pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">variable</span><span class="o">|!</span><span class="nv">annotatated</span><span class="p">:</span><span class="s">"skipPersistence"</span> <span class="o">%</span><span class="p">}</span>
   <span class="k">var</span> <span class="nv">local</span><span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="o">|</span><span class="n">capitalize</span> <span class="p">}}</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s">"{{ variable.annotations.jsonKey }}"</span><span class="p">]</span> <span class="k">as?</span> <span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">typeName</span> <span class="p">}}</span>
 <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
 </code></pre>

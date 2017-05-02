@@ -11,17 +11,20 @@
 - Added support for includes in EJS templates (for example: `<%- include('myTemplate.js') %>`)
 - Add the `lowerFirst` filter for Stencil templates.
 - Added `isRequired` property for `Method`
+- Improved parsing of closure types
 - Improved swift templates performance
 
 ### Bug fixes
 
 - Fixed detecting computed properties
 - Fixed typo in `isConvenienceInitialiser` property
+- Fixed creating cache folder when cache is disabled
 
 ### Internal changes
 
 - Improved `AutoMockable.stencil` to support protocols with `init` methods
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`
+- Updated StencilSwiftKit to 1.0.2 which includes Stencil 0.9.0
 
 ## 0.6.0
 

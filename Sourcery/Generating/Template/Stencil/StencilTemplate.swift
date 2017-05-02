@@ -100,7 +100,7 @@ extension Stencil.Extension {
     func registerFilterWithTwoArguments<T, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?) {
         registerFilter(name) { (any, args) throws -> Any? in
             guard let type = any as? T else { return any }
-            guard args.count == 3, let argA = args[0] as? A, let argB = args[2] as? B else {
+            guard args.count == 2, let argA = args[0] as? A, let argB = args[1] as? B else {
                 throw TemplateSyntaxError("'\(name)' filter takes two arguments: \(A.self) and \(B.self)")
             }
             return try filter(type, argA, argB)

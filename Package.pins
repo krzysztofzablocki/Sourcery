@@ -53,7 +53,7 @@
       "package": "SourceKitten",
       "reason": null,
       "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
-      "version": "0.17.1"
+      "version": "0.17.2"
     },
     {
       "package": "Spectre",
@@ -65,13 +65,13 @@
       "package": "Stencil",
       "reason": null,
       "repositoryURL": "https://github.com/kylef/Stencil.git",
-      "version": "0.8.0"
+      "version": "0.9.0"
     },
     {
       "package": "StencilSwiftKit",
       "reason": null,
       "repositoryURL": "https://github.com/SwiftGen/StencilSwiftKit.git",
-      "version": "1.0.1"
+      "version": "1.0.2"
     },
     {
       "package": "SwiftTryCatch",
@@ -89,7 +89,7 @@
       "package": "Yams",
       "reason": null,
       "repositoryURL": "https://github.com/jpsim/Yams.git",
-      "version": "0.3.0"
+      "version": "0.3.2"
     }
   ],
   "version": 1

@@ -41,7 +41,7 @@ Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/S
 - `enum`, `class`, `struct`, `protocol` - can be used for Type[s] as filter, can be negated with `!` prefix.
 - `based`, `implements`, `inherits` - can be used for Type[s], Variable[s], Associated value[s], can be negated with `!` prefix.
 - `count` - can be used to get count of filtered array
-- `annotated` - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. `{% for var in variable|annotated: \"skipDescription\"%}`, can be negated with `!` prefix.
+- `annotated` - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. `{% for var in variable|annotated:"skipDescription" %}`, can be negated with `!` prefix.
 - `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
 - `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
 
@@ -76,7 +76,7 @@ Bar
 
 JavaScript templates are powered by [EJS](http://ejs.co) and support all the features available in this template engine.
 
-**Example**: [Equality.js](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/JavaScriptTemplates/Equality.js)
+**Example**: [JSExport.ejs](https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/JSExport.ejs)
 
 ## Using Source Annotations
 
@@ -115,7 +115,7 @@ If you want to attribute multiple items with same attributes, you can use sectio
 #### Accessing in templates:
 
 ```swift
-{% if variable|!annotatated:skipPersistence %}
+{% if variable|!annotatated:"skipPersistence" %}
   var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
 {% endif %}
 ```

@@ -7,14 +7,14 @@ PODS:
   - SourceKittenFramework (0.17.2):
     - SWXMLHash (~> 3.0)
     - Yams (~> 0.3)
-  - Stencil (0.8.0):
+  - Stencil (0.9.0):
     - PathKit (~> 0.8.0)
-  - StencilSwiftKit (1.0.1):
-    - Stencil (~> 0.8.0)
+  - StencilSwiftKit (1.0.2):
+    - Stencil (~> 0.9.0)
   - SwiftTryCatch (1.0.0)
   - SWXMLHash (3.0.4)
   - XcodeEdit (1.0.0)
-  - Yams (0.3.1)
+  - Yams (0.3.2)
 
 DEPENDENCIES:
   - Commander
@@ -23,8 +23,7 @@ DEPENDENCIES:
   - PathKit
   - Quick
   - SourceKittenFramework (~> 0.17)
-  - Stencil (~> 0.8.0)
-  - StencilSwiftKit (~> 1.0.0)
+  - StencilSwiftKit (~> 1.0)
   - SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)
   - XcodeEdit (~> 1.0)
 
@@ -45,13 +44,13 @@ SPEC CHECKSUMS:
   PathKit: dcab05d701474011aae0e40cf892298a831f63d6
   Quick: dafc587e21eed9f4cab3249b9f9015b0b7a7f71d
   SourceKittenFramework: 4e780f9b34bf751f26c12f1806a3426bcdd98864
-  Stencil: 6669684db0262e6eb316ce233e7e02d6df0a6cd9
-  StencilSwiftKit: fb7366766d03db6011e132bf4a845cb6cf1f27d6
+  Stencil: 510f0b0518a366b67b6a9c5085a0399741b6d2f9
+  StencilSwiftKit: 2c1391877b0bd92f25cac563b54c6d73f69f2eb9
   SwiftTryCatch: 8dec58919b07ddba4f23c80e814f7e49f05da548
   SWXMLHash: 29d20b84692fc319ea8ed933058fe7d8d005139b
   XcodeEdit: 35c213ce807063332a26857d816639dd9fbdaa9e
-  Yams: eb91a8d6c017e3ecdfb8fb44df735cbb1e34a536
+  Yams: 644c63a27a9be79239e6328f462ea7778aaa3cab
 
-PODFILE CHECKSUM: 2707a8f3d9abef954ea54614603bff0402d3cc60
+PODFILE CHECKSUM: c9ec67ba6b30eb56b9cba7d500fe7f602b6084c5
 
-COCOAPODS: 1.2.1.beta.1
+COCOAPODS: 1.2.0

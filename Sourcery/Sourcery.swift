@@ -203,8 +203,6 @@ extension Sourcery {
         var allResults = [FileParserResult]()
 
         try from.enumerated().forEach { index, from in
-            let cachesPath = Path.cachesDir(sourcePath: from)
-
             let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
             let sources = try fileList
                 .filter { $0.isSwiftSourceFile }
@@ -225,7 +223,7 @@ extension Sourcery {
             var accumulator = 0
             let step = sources.count / 10 // every 10%
 
-            let results = sources.parallelMap({ self.loadOrParse(parser: $0, cachesPath: cachesPath) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+            let results = sources.parallelMap({ self.loadOrParse(parser: $0, cachesPath: Path.cachesDir(sourcePath: from)) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
                 if accumulator > previousUpdate + step {
                     previousUpdate = accumulator
                     let percentage = accumulator * 100 / sources.count
@@ -253,25 +251,27 @@ extension Sourcery {
         return (Types(types: types), inlineRanges)
     }
 
-    private func loadOrParse(parser: FileParser, cachesPath: Path) -> FileParserResult {
+    private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path) -> FileParserResult {
         guard let pathString = parser.path else { fatalError("Unable to retrieve \(String(describing: parser.path))") }
-        let path = Path(pathString)
-        let artifacts = cachesPath + "\(pathString.hash).srf"
 
-        guard !cacheDisabled,
-              artifacts.exists,
+        if cacheDisabled {
+            return parser.parse()
+        }
+
+        let path = Path(pathString)
+        let artifacts = cachesPath() + "\(pathString.hash).srf"
+
+        guard artifacts.exists,
               let contentSha = parser.initialContents.sha256(),
               let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
 
             let result = parser.parse()
 
-            if !cacheDisabled {
-                let data = NSKeyedArchiver.archivedData(withRootObject: result)
-                do {
-                    try artifacts.write(data)
-                } catch {
-                    fatalError("Unable to save artifacts for \(path) under \(artifacts), error: \(error)")
-                }
+            let data = NSKeyedArchiver.archivedData(withRootObject: result)
+            do {
+                try artifacts.write(data)
+            } catch {
+                fatalError("Unable to save artifacts for \(path) under \(artifacts), error: \(error)")
             }
 
             return result

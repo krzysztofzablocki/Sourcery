@@ -89,7 +89,10 @@ class FileParserMethodsSpec: QuickSpec {
                                 Class(name: "Foo", methods: [
                                     Method(name: "foo( bar: [String: String],   foo : ((String, String) -> Void), other: Optional<String>)", selectorName: "foo(bar:foo:other:)", parameters: [
                                         MethodParameter(name: "bar", typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String")))),
-                                        MethodParameter(name: "foo", typeName: TypeName("((String, String) -> Void)")),
+                                        MethodParameter(name: "foo", typeName: TypeName("((String, String) -> Void)", closure: ClosureType(name: "(String, String) -> Void", parameters: [
+                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String")),
+                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String"))
+                                            ], returnTypeName: TypeName("Void")))),
                                         MethodParameter(name: "other", typeName: TypeName("Optional<String>"))
                                         ], returnTypeName: TypeName("Void"))
                                     ])
@@ -102,7 +105,10 @@ class FileParserMethodsSpec: QuickSpec {
                                 Method(name: "foo(bar Bar: Int, _ foo: Int, fooBar: (_ a: Int, _ b: Int) -> ())", selectorName: "foo(bar:_:fooBar:)", parameters: [
                                     MethodParameter(argumentLabel: "bar", name: "Bar", typeName: TypeName("Int")),
                                     MethodParameter(argumentLabel: nil, name: "foo", typeName: TypeName("Int")),
-                                    MethodParameter(name: "fooBar", typeName: TypeName("(_ a: Int, _ b: Int) -> ()"))
+                                    MethodParameter(name: "fooBar", typeName: TypeName("(_ a: Int, _ b: Int) -> ()", closure: ClosureType(name: "(_ a: Int, _ b: Int) -> ()", parameters: [
+                                        MethodParameter(argumentLabel: nil, name: "a", typeName: TypeName("Int")),
+                                        MethodParameter(argumentLabel: nil, name: "b", typeName: TypeName("Int"))
+                                        ], returnTypeName: TypeName("()"))))
                                     ], returnTypeName: TypeName("Void"))
                                 ])
                             ]))
@@ -199,7 +205,11 @@ class FileParserMethodsSpec: QuickSpec {
                         let types = parse("class Foo { func foo() -> (Int, Int) -> () { } }")
                         let method = types.last?.methods.first
 
-                        expect(method?.returnTypeName).to(equal(TypeName("(Int, Int) -> ()")))
+                        expect(method?.returnTypeName).to(equal(TypeName("(Int, Int) -> ()", closure: ClosureType(name: "(Int, Int) -> ()", parameters: [
+
+                            MethodParameter(argumentLabel: nil, typeName: TypeName("Int")),
+                            MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                            ], returnTypeName: TypeName("()")))))
                     }
                 }
 

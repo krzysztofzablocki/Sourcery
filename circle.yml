@@ -1,11 +1,11 @@
 machine:
   xcode:
-    version: 8.2
+    version: 8.3
   environment:
     XCODE_WORKSPACE: Sourcery.xcworkspace
     XCODE_SCHEME: Sourcery
   post:
-      - ln -s /Applications/Xcode-8.2.app /Applications/Xcode.app
+      - ln -s /Applications/Xcode-8.3.app /Applications/Xcode.app
 
 test:
   override:

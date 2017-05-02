@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>EnumCase Class Reference</title>
+    <title>ClosureType Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/EnumCase" class="dashAnchor"></a>
-    <a title="EnumCase Class Reference"></a>
+    <a name="//apple_ref/swift/Class/ClosureType" class="dashAnchor"></a>
+    <a title="ClosureType Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery Docs</a> (100% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        EnumCase Class Reference
+        ClosureType Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -146,14 +146,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>EnumCase</h1>
+            <h1>ClosureType</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">EnumCase</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ClosureType</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
 
                 </div>
               </div>
-            <p>Defines enum case</p>
+            <p>Describes closure type</p>
 
           </section>
           <section class="section task-group-section">
@@ -162,9 +162,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC17SourceryFramework8EnumCase4nameSS"></a>
+                    <a name="/s:vC17SourceryFramework11ClosureType4nameSS"></a>
                     <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC17SourceryFramework8EnumCase4nameSS">name</a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType4nameSS">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -172,7 +172,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum case name</p>
+                        <p>Type name used in declaration with stripped whitespaces and new lines</p>
 
                       </div>
                       <div class="declaration">
@@ -189,9 +189,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC17SourceryFramework8EnumCase8rawValueGSqSS_"></a>
-                    <a name="//apple_ref/swift/Property/rawValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC17SourceryFramework8EnumCase8rawValueGSqSS_">rawValue</a>
+                    <a name="/s:vC17SourceryFramework11ClosureType10parametersGSaCS_15MethodParameter_"></a>
+                    <a name="//apple_ref/swift/Property/parameters" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType10parametersGSaCS_15MethodParameter_">parameters</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -199,14 +199,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum case raw value, if any</p>
+                        <p>List of closure parameters</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">rawValue</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">parameters</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/MethodParameter.html">MethodParameter</a></span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
@@ -216,9 +216,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC17SourceryFramework8EnumCase16associatedValuesGSaCS_15AssociatedValue_"></a>
-                    <a name="//apple_ref/swift/Property/associatedValues" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC17SourceryFramework8EnumCase16associatedValuesGSaCS_15AssociatedValue_">associatedValues</a>
+                    <a name="/s:vC17SourceryFramework11ClosureType14returnTypeNameCS_8TypeName"></a>
+                    <a name="//apple_ref/swift/Property/returnTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType14returnTypeNameCS_8TypeName">returnTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -226,14 +226,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum case associated values</p>
+                        <p>Return value type name</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">associatedValues</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/AssociatedValue.html">AssociatedValue</a></span><span class="p">]</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">returnTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span></code></pre>
 
                         </div>
                       </div>
@@ -243,9 +243,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC17SourceryFramework8EnumCase11annotationsGVs10DictionarySSCSo8NSObject_"></a>
-                    <a name="//apple_ref/swift/Property/annotations" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC17SourceryFramework8EnumCase11annotationsGVs10DictionarySSCSo8NSObject_">annotations</a>
+                    <a name="/s:vC17SourceryFramework11ClosureType20actualReturnTypeNameCS_8TypeName"></a>
+                    <a name="//apple_ref/swift/Property/actualReturnTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType20actualReturnTypeNameCS_8TypeName">actualReturnTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -253,14 +253,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum case annotations</p>
+                        <p>Actual return value type name if declaration uses typealias, otherwise just a <code><a href="../Classes/ClosureType.html#/s:vC17SourceryFramework11ClosureType14returnTypeNameCS_8TypeName">returnTypeName</a></code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">annotations</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">]</span> <span class="o">=</span> <span class="p">[:]</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">actualReturnTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span></code></pre>
 
                         </div>
                       </div>
@@ -270,9 +270,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC17SourceryFramework8EnumCase18hasAssociatedValueSb"></a>
-                    <a name="//apple_ref/swift/Property/hasAssociatedValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC17SourceryFramework8EnumCase18hasAssociatedValueSb">hasAssociatedValue</a>
+                    <a name="/s:vC17SourceryFramework11ClosureType10returnTypeGSqCS_4Type_"></a>
+                    <a name="//apple_ref/swift/Property/returnType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType10returnTypeGSqCS_4Type_">returnType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -280,14 +280,122 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Whether enum case has associated value</p>
+                        <p>Actual return value type, if known</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">hasAssociatedValue</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">returnType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC17SourceryFramework11ClosureType20isOptionalReturnTypeSb"></a>
+                    <a name="//apple_ref/swift/Property/isOptionalReturnType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType20isOptionalReturnTypeSb">isOptionalReturnType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether return value type is optional</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isOptionalReturnType</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC17SourceryFramework11ClosureType39isImplicitlyUnwrappedOptionalReturnTypeSb"></a>
+                    <a name="//apple_ref/swift/Property/isImplicitlyUnwrappedOptionalReturnType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType39isImplicitlyUnwrappedOptionalReturnTypeSb">isImplicitlyUnwrappedOptionalReturnType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether return value type is implicitly unwrapped optional</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isImplicitlyUnwrappedOptionalReturnType</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC17SourceryFramework11ClosureType23unwrappedReturnTypeNameSS"></a>
+                    <a name="//apple_ref/swift/Property/unwrappedReturnTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType23unwrappedReturnTypeNameSS">unwrappedReturnTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return value type name without attributes and optional type information</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">unwrappedReturnTypeName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC17SourceryFramework11ClosureType6throwsSb"></a>
+                    <a name="//apple_ref/swift/Property/throws" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC17SourceryFramework11ClosureType6throwsSb">throws</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether closure throws</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">let</span> <span class="err">`</span><span class="k">throws</span><span class="err">`</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
