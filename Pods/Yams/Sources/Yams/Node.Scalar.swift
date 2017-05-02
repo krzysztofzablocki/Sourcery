@@ -17,6 +17,7 @@ extension Node {
         }
         public var tag: Tag
         public var style: Style
+        public var mark: Mark?
 
         public enum Style: UInt32 { // swiftlint:disable:this nesting
             /// Let the emitter choose the style.
@@ -35,10 +36,11 @@ extension Node {
             case folded
         }
 
-        public init(_ string: String, _ tag: Tag = .implicit, _ style: Style = .any) {
+        public init(_ string: String, _ tag: Tag = .implicit, _ style: Style = .any, _ mark: Mark? = nil) {
             self.string = string
             self.tag = tag
             self.style = style
+            self.mark = mark
         }
     }
 

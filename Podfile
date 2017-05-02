@@ -4,8 +4,7 @@
 target 'Sourcery' do
   use_frameworks!
 
-  pod 'Stencil', '~> 0.8.0'
-  pod 'StencilSwiftKit', '~> 1.0.0'
+  pod 'StencilSwiftKit', '~> 1.0'
   pod 'Commander'
   pod 'PathKit'
   pod 'XcodeEdit', '~> 1.0'

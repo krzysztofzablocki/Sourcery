@@ -13,6 +13,7 @@ extension Node {
         fileprivate var pairs: [Pair<Node>]
         public var tag: Tag
         public var style: Style
+        public var mark: Mark?
 
         public enum Style: UInt32 { // swiftlint:disable:this nesting
             /// Let the emitter choose the style.
@@ -23,10 +24,11 @@ extension Node {
             case flow
         }
 
-        public init(_ pairs: [(Node, Node)], _ tag: Tag = .implicit, _ style: Style = .any) {
+        public init(_ pairs: [(Node, Node)], _ tag: Tag = .implicit, _ style: Style = .any, _ mark: Mark? = nil) {
             self.pairs = pairs.map(Pair.init)
             self.tag = tag
             self.style = style
+            self.mark = mark
         }
     }
 

@@ -67,6 +67,20 @@ extension Attribute: AttributeAutoJSExport {}
 
 extension Class: ClassAutoJSExport {}
 
+@objc protocol ClosureTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var parameters: [MethodParameter] { get }
+    var returnTypeName: TypeName { get }
+    var actualReturnTypeName: TypeName { get }
+    var returnType: Type? { get }
+    var isOptionalReturnType: Bool { get }
+    var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
+    var unwrappedReturnTypeName: String { get }
+    var `throws`: Bool { get }
+}
+
+extension ClosureType: ClosureTypeAutoJSExport {}
+
 @objc protocol DictionaryTypeAutoJSExport: JSExport {
     var name: String { get }
     var valueTypeName: TypeName { get }
@@ -147,6 +161,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isInitializer: Bool { get }
     var isFailableInitializer: Bool { get }
     var isConvenienceInitializer: Bool { get }
+    var isRequired: Bool { get }
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
 }
@@ -316,6 +331,7 @@ extension Type: TypeAutoJSExport {}
     var isDictionary: Bool { get }
     var dictionary: DictionaryType? { get }
     var isClosure: Bool { get }
+    var closure: ClosureType? { get }
     var description: String { get }
 }
 

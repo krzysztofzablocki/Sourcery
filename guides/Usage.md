@@ -18,6 +18,8 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--quiet` [default: false] - Turn off any logging, only emmit errors
 - `--disableCache` [default: false] - Turn off caching of parsed data
 - `--prune` [default: false] - Prune empty generated files
+- `--version` - Display the current version of Sourcery
+- `--help` - Display help information
 
 ### Configuration file
 

@@ -29,6 +29,18 @@ extension Class {
         return string
     }
 }
+extension ClosureType {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "`throws` = \(String(describing: self.`throws`))"
+        return string
+    }
+}
 extension DictionaryType {
     /// :nodoc:
     override public var description: String {
@@ -93,6 +105,7 @@ extension Method {
         string += "isInitializer = \(String(describing: self.isInitializer)), "
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
         string += "isConvenienceInitializer = \(String(describing: self.isConvenienceInitializer)), "
+        string += "isRequired = \(String(describing: self.isRequired)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string

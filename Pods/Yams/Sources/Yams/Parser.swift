@@ -166,7 +166,7 @@ public final class Parser {
         if event.type != YAML_STREAM_END_EVENT {
             throw YamlError.composer(
                 context: YamlError.Context(text: "expected a single document in the stream",
-                                           mark: .init(line: 0, column: 0)),
+                                           mark: Mark(line: 1, column: 1)),
                 problem: "but found another document", event.startMark,
                 yaml: yaml
             )
@@ -233,7 +233,7 @@ extension Parser {
     }
 
     private func loadScalar(from event: Event) throws -> Node {
-        let node = Node(event.scalarValue, tag(event.scalarTag), event.scalarStyle)
+        let node = Node.scalar(.init(event.scalarValue, tag(event.scalarTag), event.scalarStyle, event.startMark))
         if let anchor = event.scalarAnchor {
             anchors[anchor] = node
         }
@@ -247,7 +247,7 @@ extension Parser {
             array.append(try loadNode(from: event))
             event = try parse()
         }
-        let node = Node(array, tag(firstEvent.sequenceTag), event.sequenceStyle)
+        let node = Node.sequence(.init(array, tag(firstEvent.sequenceTag), event.sequenceStyle, event.startMark))
         if let anchor = firstEvent.sequenceAnchor {
             anchors[anchor] = node
         }
@@ -264,7 +264,7 @@ extension Parser {
             pairs.append((key, value))
             event = try parse()
         }
-        let node = Node(pairs, tag(firstEvent.mappingTag), event.mappingStyle)
+        let node = Node.mapping(.init(pairs, tag(firstEvent.mappingTag), event.mappingStyle, event.startMark))
         if let anchor = firstEvent.mappingAnchor {
             anchors[anchor] = node
         }
@@ -341,8 +341,8 @@ fileprivate class Event {
     }
 
     // start_mark
-    var startMark: YamlError.Mark {
-        return YamlError.Mark(line: event.start_mark.line, column: event.start_mark.column)
+    var startMark: Mark {
+        return Mark(line: event.start_mark.line + 1, column: event.start_mark.column + 1)
     }
 }
 

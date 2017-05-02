@@ -45,6 +45,8 @@ extension AssociatedValue: NSCoding {}
 
 extension Attribute: NSCoding {}
 
+extension ClosureType: NSCoding {}
+
 extension DictionaryType: NSCoding {}
 
 extension EnumCase: NSCoding {}
