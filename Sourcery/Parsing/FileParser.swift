@@ -828,11 +828,6 @@ extension FileParser {
 // MARK: - Helpers
 extension FileParser {
 
-    fileprivate func extract(from range: (offset: Int64, length: Int64)) -> String? {
-        let substring = self.contents.substringWithByteRange(start: Int(range.offset), length: Int(range.length))
-        return substring?.isEmpty == true ? nil : substring
-    }
-
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable]) -> String? {
         return substringIdentifier.extract(from: source, contents: self.contents)
     }
