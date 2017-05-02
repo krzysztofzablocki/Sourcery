@@ -8,6 +8,8 @@ import SourceKittenFramework
 
 /// Helper for parsing enums
 internal enum EnumParser {
+    private static let trimmingCharacterSet: CharacterSet = CharacterSet(charactersIn: "-=.,:;").union(.whitespacesAndNewlines)
+    private static let caseKeywordLength = Int64("case".characters.count)
 
     static func annotationsBodyStructured(content: String, source: [String: SourceKitRepresentable], containingInSource: [String: SourceKitRepresentable]?) -> String? {
         guard
@@ -15,11 +17,13 @@ internal enum EnumParser {
             SwiftDocKey.getKind(containingInSource) == SwiftDeclarationKind.enum.rawValue,
             let enumRange = Substring.body.range(for: containingInSource),
             let sourceOffset = SwiftDocKey.getOffset(source),
+            let sourceLength = SwiftDocKey.getLength(source),
             let enumCases = SwiftDocKey.getSubstructure(containingInSource)
         else {
             return nil
         }
 
+        let sourceEnd = sourceOffset + sourceLength
         var start = enumRange.offset
         var lastComment = ""
 
@@ -38,13 +42,13 @@ internal enum EnumParser {
 
             guard
                 SwiftDocKey.getKind(enumCase) == SwiftDeclarationKind.enumcase.rawValue,
-                offset <= sourceOffset,
+                offset < sourceEnd,
                 let elements = SwiftDocKey.getSubstructure(enumCase)
             else {
                 continue
             }
 
-            var elementStart = oldStart
+            var elementStart = elements.count == 1 ? oldStart : offset + caseKeywordLength
 
             // enumerating elements in cases
             for element in elements {
@@ -62,14 +66,14 @@ internal enum EnumParser {
 
                 guard
                     SwiftDocKey.getKind(element) == SwiftDeclarationKind.enumelement.rawValue,
-                    elementOffset <= sourceOffset
+                    elementOffset < sourceEnd
                 else {
                     continue
                 }
 
                 // extracting content between code nodes
-                if oldElementStart < offset, let comment = content.extract(range: (offset: oldElementStart, length: offset - oldElementStart)) {
-                    lastComment = comment
+                if oldElementStart < elementOffset, let comment = content.extract(range: (offset: oldElementStart, length: elementOffset - oldElementStart)) {
+                    lastComment = comment.trimmingCharacters(in: trimmingCharacterSet)
                 }
             }
         }
