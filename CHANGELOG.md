@@ -16,6 +16,7 @@
 
 - Fixed detecting computed properties
 - Fixed typo in `isConvenienceInitialiser` property
+- Fixed parsing of enum cases annotations
 
 ### Internal changes
 
