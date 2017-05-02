@@ -75,3 +75,7 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 Sourcery/CodeGenerated/TypedSpec.generated.swift
+
+# jazzy
+docs/docsets
+docs/undocumented.json
