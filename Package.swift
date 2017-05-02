@@ -3,7 +3,8 @@ import PackageDescription
 let package = Package(
     name: "Sourcery",
     targets: [
-        Target(name: "sourcery", dependencies: [])
+	Target(name: "SourceryFramework"),
+        Target(name: "sourcery", dependencies: ["SourceryFramework"]),
     ],
     dependencies: [
         // https://github.com/kylef/Stencil/pull/84

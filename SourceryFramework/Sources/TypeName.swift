@@ -161,7 +161,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
     }
 
     /// Closure type data
-    public internal(set) var closure: ClosureType?
+    public var closure: ClosureType?
 
     /// Returns value of `name` property.
     public override var description: String {
@@ -373,7 +373,7 @@ public final class ClosureType: NSObject, SourceryModel {
 
     // sourcery: skipEquality, skipDescription
     /// Actual return value type, if known
-    public internal(set) var returnType: Type?
+    public var returnType: Type?
 
     // sourcery: skipEquality, skipDescription
     /// Whether return value type is optional
@@ -396,7 +396,7 @@ public final class ClosureType: NSObject, SourceryModel {
     /// Whether closure throws
     public let `throws`: Bool
 
-    init(name: String, parameters: [MethodParameter], returnTypeName: TypeName, returnType: Type? = nil, `throws`: Bool = false) {
+    public init(name: String, parameters: [MethodParameter], returnTypeName: TypeName, returnType: Type? = nil, `throws`: Bool = false) {
         self.name = name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
