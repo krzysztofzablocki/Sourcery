@@ -562,17 +562,13 @@ extension FileParser {
     fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable], enum: Enum) -> EnumCase? {
         guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
 
-        var associatedValues: [AssociatedValue] = []
-        var rawValue: String? = nil
-
-        guard
-            let keyRange = Substring.key.range(for: source),
-            let keyString = extract(.key, from: source),
-            let nameRange = keyString.range(of: name)
-        else {
+        guard let keyString = extract(.key, from: source), let nameRange = keyString.range(of: name) else {
             Log.warning("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")
             return nil
         }
+
+        var associatedValues: [AssociatedValue] = []
+        var rawValue: String? = nil
 
         let wrappedBody = keyString.substring(from: nameRange.upperBound).trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -589,38 +585,8 @@ extension FileParser {
             Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        // Parse enum case annotations
-
-        let annotations: [String: NSObject]
-
-        var annotationRangeStart: Int64?
-        if let previousCase = `enum`.cases.last, let previousCaseKeyRange = Substring.key.range(for: previousCase.__underlyingSource) {
-            // if current enum case is not the first one in containing enum
-            // get everything after the previous case declaration
-            annotationRangeStart = previousCaseKeyRange.offset + previousCaseKeyRange.length
-        } else if let enumBody = Substring.body.range(for: `enum`.__underlyingSource) {
-            // if current enum case is the first one in containing enum
-            // get everything after enum body start
-            annotationRangeStart = enumBody.offset
-        }
-
-        // actually extract content that might contain annotations
-        var annotationsBody: String?
-        if let annotationRangeStart = annotationRangeStart {
-            let length = keyRange.offset - annotationRangeStart
-            annotationsBody = self.contents.bridge().substringWithByteRange(start: Int(annotationRangeStart), length: Int(length))?
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-                .trimmingSuffix("case") // if each case is defined with a separate `case`
-                .trimmingPrefix("case") // if annotations is between `case` and case name
-                // remove any trailing delimiters between cases
-                .trimmingCharacters(in: CharacterSet(charactersIn: ",;").union(.whitespacesAndNewlines))
-        }
-
-        if let annotationsBody = annotationsBody {
-            annotations = AnnotationsParser(contents: annotationsBody).all
-        } else {
-            annotations = [:]
-        }
+        let annotationsBody = EnumParser.annotationsBody(content: contents, source: source, enumSource: `enum`.__underlyingSource)
+        let annotations = AnnotationsParser(contents: annotationsBody).all
 
         let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations)
         enumCase.setSource(source)
