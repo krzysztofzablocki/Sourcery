@@ -86,6 +86,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
             switch self {
             case .convenience:
                 return "convenience"
+            case .required:
+                return "required"
             default:
                 return "@\(name)"
             }
