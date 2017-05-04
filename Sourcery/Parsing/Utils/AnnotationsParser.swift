@@ -104,6 +104,11 @@ internal struct AnnotationsParser {
             prefix = prefix.substring(to: commentStart.lowerBound).trimmingCharacters(in: .whitespaces)
         }
 
+        guard prefix.isEmpty else {
+            stop = true
+            return annotations
+        }
+
         // if previous line is not comment or has some trailing non-comment blocks
         // we return currently agregated annotations
         // as annotations on previous line belong to previous declaration
