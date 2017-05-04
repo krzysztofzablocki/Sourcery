@@ -42,8 +42,11 @@ class AnnotationsParserSpec: QuickSpec {
                 }
 
                 it("extracts inline annotations") {
-                    let result = parse("/* sourcery: skipEquality */var name: Int { return 2 }")
-                    expect(result).to(equal(["skipEquality": NSNumber(value: true)]))
+                    let result = parse("//sourcery: skipDescription\n/* sourcery: skipEquality */var name: Int { return 2 }")
+                    expect(result).to(equal([
+                        "skipDescription": NSNumber(value: true),
+                        "skipEquality": NSNumber(value: true)
+                        ]))
                 }
 
                 it("extracts multi-line annotations, including numbers") {
