@@ -2,12 +2,21 @@
 // DO NOT EDIT
 
 
-extension CompassPoint {
+extension DefaultEnum {
   static let count: Int = 4
-  static let allCases: [CompassPoint] = [
+  static let allCases: [DefaultEnum] = [
     .north,
     .south,
     .east,
     .west
+  ]
+}
+extension HasAssociatedValuesEnum {
+  static let count: Int = 2
+}
+extension OneValueEnum {
+  static let count: Int = 1
+  static let allCases: [OneValueEnum] = [
+    .one
   ]
 }
