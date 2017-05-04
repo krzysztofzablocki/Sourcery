@@ -15,7 +15,6 @@ target 'TemplatesTests' do
 end
 
 target 'Sourcery' do
-  pod 'Stencil', '~> 0.8.0'
   pod 'StencilSwiftKit', '~> 1.0'
   pod 'Commander'
   pod 'PathKit'
