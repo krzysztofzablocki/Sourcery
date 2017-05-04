@@ -1,0 +1,17 @@
+//
+//  AutoCases.expected
+//  Templates
+//
+//  Created by Anton Domashnev on 03.05.17.
+//  Copyright © 2017 Pixle. All rights reserved.
+//
+
+extension CompassPoint {
+static let count: Int = 4
+static let allCases: [CompassPoint] = [
+.north,
+.south,
+.east,
+.west
+]
+}
