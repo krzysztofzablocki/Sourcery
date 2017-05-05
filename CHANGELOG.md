@@ -19,6 +19,7 @@
 - Fixed detecting computed properties
 - Fixed typo in `isConvenienceInitialiser` property
 - Fixed creating cache folder when cache is disabled
+- Fixed parsing of enum cases annotations
 
 ### Internal changes
 

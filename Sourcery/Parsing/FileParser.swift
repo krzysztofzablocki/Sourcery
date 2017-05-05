@@ -141,7 +141,8 @@ final class FileParser {
                  .extensionEnum:
                 type = Type(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
             case .enumelement:
-                return parseEnumCase(source)
+                // swiftlint:disable:next force_cast
+                return parseEnumCase(source, enum: containingIn as! Enum)
             case .varInstance:
                 return parseVariable(source, containedInProtocol: containingIn is Protocol)
             case .varStatic, .varClass:
@@ -558,51 +559,34 @@ extension FileParser {
 // MARK: - Enums
 extension FileParser {
 
-    fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable]) -> EnumCase? {
+    fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable], enum: Enum) -> EnumCase? {
         guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
-
-        var associatedValues: [AssociatedValue] = []
-        var rawValue: String? = nil
 
         guard let keyString = extract(.key, from: source), let nameRange = keyString.range(of: name) else {
             Log.warning("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")
             return nil
         }
 
+        var associatedValues: [AssociatedValue] = []
+        var rawValue: String? = nil
+
         let wrappedBody = keyString.substring(from: nameRange.upperBound).trimmingCharacters(in: .whitespacesAndNewlines)
 
         switch (wrappedBody.characters.first, wrappedBody.characters.last) {
         case ("="?, _?):
-             let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-             rawValue = parseEnumValues(body)
+            let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+            rawValue = parseEnumValues(body)
         case ("("?, ")"?):
-             let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
-             associatedValues = parseEnumAssociatedValues(body)
+            let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+            associatedValues = parseEnumAssociatedValues(body)
         case (nil, nil):
             break
         default:
-             Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
+            Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        let annotations: [String: NSObject]
-        if var body = extract(.keyPrefix, from: source)?.trimmingSuffix("case") {
-            // search backwards for possible enum cases separators
-            if let semicolon = body.range(of: ";", options: [.backwards])?.upperBound {
-                body = body.substring(from: semicolon)
-            } else if let comma = body.range(of: ",", options: [.backwards])?.upperBound {
-                body = body.substring(from: comma)
-            } else if let parenthesis = body.range(of: ")", options: [.backwards])?.upperBound {
-                body = body.substring(from: parenthesis)
-            } else if let `case` = body.range(of: "case", options: [.backwards])?.upperBound {
-                body = body.substring(from: `case`)
-            } else if let brace = body.range(of: "{", options: [.backwards])?.upperBound {
-                body = body.substring(from: brace)
-            }
-
-            annotations = AnnotationsParser(contents: body).all
-        } else {
-            annotations = [:]
-        }
+        let annotationsBody = EnumParser.annotationsBody(content: contents, source: source, enumSource: `enum`.__underlyingSource)
+        let annotations = AnnotationsParser(contents: annotationsBody).all
 
         let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations)
         enumCase.setSource(source)
@@ -833,7 +817,7 @@ extension FileParser {
 
 }
 
-// MARK: - Helpres
+// MARK: - Helpers
 extension FileParser {
 
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable]) -> String? {
