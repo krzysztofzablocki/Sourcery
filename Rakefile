@@ -70,6 +70,10 @@ namespace :release do
     JSON.parse(`bundle exec pod ipc spec #{file}.podspec`)["version"]
   end
 
+  def project_version(project = 'Sourcery')
+    `xcodebuild -showBuildSettings -project #{project}.xcodeproj | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
+  end
+
   def log_result(result, label, error_msg)
     if result
       puts "#{label.ljust(25)} \u{2705}"
@@ -79,7 +83,7 @@ namespace :release do
     result
   end
 
-  desc 'Check if all versions from the podspecs and CHANGELOG match'
+  desc 'Check if all versions from the podspecs, CHANGELOG and build settings match'
   task :check_versions do
     results = []
 
@@ -97,6 +101,9 @@ namespace :release do
 
     changelog_master = system(%q{grep -qi '^## Master' CHANGELOG.md})
     results << log_result(!changelog_master, "CHANGELOG, No master", 'Please remove entry for master in CHANGELOG')
+
+    # Check if Current Project Version from build settings match podspec version
+    results << log_result(version == project_version, "Project version correct", "Please update Current Project Version in Build Settings to #{version}")
 
     exit 1 unless results.all?
 
