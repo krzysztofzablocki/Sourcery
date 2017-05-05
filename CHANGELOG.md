@@ -12,6 +12,7 @@
 - Add the `lowerFirst` filter for Stencil templates.
 - Added `isRequired` property for `Method`
 - Improved parsing of closure types
+- Check if Current Project Version match version in podspec in release task
 
 ### Bug fixes
 
