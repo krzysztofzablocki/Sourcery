@@ -15,5 +15,5 @@ test:
       - swift build
   post:
       - bash <(curl -s https://codecov.io/bash)
-      - gem install jazzy && jazzy --clean
+      - bundle exec jazzy --clean
       - bundle exec danger
