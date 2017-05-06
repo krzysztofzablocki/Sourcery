@@ -64,7 +64,10 @@ internal struct AnnotationsParser {
             let lineInfo = contents.lineAndCharacter(forCharacterOffset: location)
             else { return [:] }
 
-        var annotations = Annotations()
+        var stop = false
+        var annotations = inlineFrom(line: lineInfo, stop: &stop)
+        guard !stop else { return annotations }
+
         for line in lines[0..<lineInfo.line-1].reversed() {
             line.annotations.forEach { annotation in
                 AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
@@ -77,16 +80,61 @@ internal struct AnnotationsParser {
         return annotations
     }
 
+    func inlineFrom(line lineInfo: (line: Int, character: Int), stop: inout Bool) -> Annotations {
+        let sourceLine = lines[lineInfo.line - 1]
+        var prefix = sourceLine.content.bridge()
+            .substring(to: max(0, lineInfo.character - 1))
+            .trimmingCharacters(in: .whitespaces)
+
+        guard !prefix.isEmpty else { return [:] }
+        var annotations = sourceLine.annotations //get block annotations for this line
+
+        // `case` is not included in the key of enum case definition, so we strip it manually
+        prefix = prefix.trimmingSuffix("case").trimmingCharacters(in: .whitespaces)
+
+        while !prefix.isEmpty {
+            guard prefix.hasSuffix("*/"), let commentStart = prefix.range(of: "/*", options: [.backwards]) else {
+                break
+            }
+
+            let comment = prefix.substring(from: commentStart.lowerBound)
+            for annotation in AnnotationsParser.parse(contents: comment)[0].annotations {
+                AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
+            }
+            prefix = prefix.substring(to: commentStart.lowerBound).trimmingCharacters(in: .whitespaces)
+        }
+
+        guard prefix.isEmpty else {
+            stop = true
+            return annotations
+        }
+
+        // if previous line is not comment or has some trailing non-comment blocks
+        // we return currently agregated annotations
+        // as annotations on previous line belong to previous declaration
+        if lineInfo.line - 2 > 0 {
+            let previousLine = lines[lineInfo.line - 2]
+            let content = previousLine.content.trimmingCharacters(in: .whitespaces)
+
+            guard previousLine.type == .comment, content.hasPrefix("//") || content.hasSuffix("*/") else {
+                stop = true
+                return annotations
+            }
+        }
+
+        return annotations
+    }
+
     private static func parse(contents: String) -> [Line] {
         var annotationsBlock: Annotations?
         return contents.lines()
-                .map { $0.content.trimmingCharacters(in: .whitespaces) }
                 .map { line in
+                    let content = line.content.trimmingCharacters(in: .whitespaces)
                     var annotations = Annotations()
-                    let isComment = line.hasPrefix("//") || line.hasPrefix("/*")
+                    let isComment = content.hasPrefix("//") || content.hasPrefix("/*")
                     var type: Line.LineType = isComment ? .comment : .other
                     if isComment {
-                        switch searchForAnnotations(commentLine: line) {
+                        switch searchForAnnotations(commentLine: content) {
                         case let .begin(items):
                             type = .blockStart
                             annotationsBlock = Annotations()
@@ -109,7 +157,7 @@ internal struct AnnotationsParser {
                         annotations[annotation.key] = annotation.value
                     }
 
-                    return Line(content: line,
+                    return Line(content: line.content,
                                 type: type,
                                 annotations: annotations)
                 }

@@ -12,6 +12,7 @@
 - Add the `lowerFirst` filter for Stencil templates.
 - Added `isRequired` property for `Method`
 - Improved parsing of closure types
+- Check if Current Project Version match version in podspec in release task
 - Improved swift templates performance
 
 ### Bug fixes
@@ -19,6 +20,7 @@
 - Fixed detecting computed properties
 - Fixed typo in `isConvenienceInitialiser` property
 - Fixed creating cache folder when cache is disabled
+- Fixed parsing multiple enum cases annotations
 
 ### Internal changes
 

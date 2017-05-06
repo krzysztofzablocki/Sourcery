@@ -162,7 +162,7 @@ final class FileParser {
             }
 
             type.isGeneric = isGeneric(source: source)
-            type.annotations = parseAnnotations(from: source)
+            type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.setSource(source)
             type.__path = path
@@ -447,7 +447,7 @@ extension FileParser {
         let writeAccessibility = setter.flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "")) }) ?? .none
 
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
-        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
+        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
         variable.setSource(source)
 
         return variable
@@ -525,7 +525,7 @@ extension FileParser {
             }
         }
 
-        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: parseAnnotations(from: source))
+        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
         method.setSource(source)
 
         return method
@@ -535,21 +535,9 @@ extension FileParser {
         guard let (name, _, _) = parseTypeRequirements(source),
             let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
 
-        let annotations: [String: NSObject]
-        if var body = extract(.keyPrefix, from: source) {
-            if let comma = body.range(of: ",", options: [.backwards])?.upperBound {
-                body = body.substring(from: comma)
-            } else if let parenthesis = body.range(of: "(", options: [.backwards])?.upperBound {
-                body = body.substring(from: parenthesis)
-            }
-            annotations = AnnotationsParser(contents: body).all
-        } else {
-            annotations = [:]
-        }
-
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations)
+        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source))
         parameter.setSource(source)
         return parameter
     }
@@ -585,27 +573,7 @@ extension FileParser {
              Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        let annotations: [String: NSObject]
-        if var body = extract(.keyPrefix, from: source)?.trimmingSuffix("case") {
-            // search backwards for possible enum cases separators
-            if let semicolon = body.range(of: ";", options: [.backwards])?.upperBound {
-                body = body.substring(from: semicolon)
-            } else if let comma = body.range(of: ",", options: [.backwards])?.upperBound {
-                body = body.substring(from: comma)
-            } else if let parenthesis = body.range(of: ")", options: [.backwards])?.upperBound {
-                body = body.substring(from: parenthesis)
-            } else if let `case` = body.range(of: "case", options: [.backwards])?.upperBound {
-                body = body.substring(from: `case`)
-            } else if let brace = body.range(of: "{", options: [.backwards])?.upperBound {
-                body = body.substring(from: brace)
-            }
-
-            annotations = AnnotationsParser(contents: body).all
-        } else {
-            annotations = [:]
-        }
-
-        let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations)
+        let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
         enumCase.setSource(source)
         return enumCase
     }
@@ -800,41 +768,7 @@ extension FileParser {
 
 }
 
-// MARK: - Annotations
-
-extension FileParser {
-
-    func parseAnnotations(from source: [String: SourceKitRepresentable], fromKeyword: String? = nil) -> Annotations {
-        guard let prefix = extract(.keyPrefix, from: source),
-            let keyRange = Substring.key.range(for: source),
-            let keyLocation = self.contents.location(fromByteOffset: Int(keyRange.offset)),
-            let keyLine = self.contents.lineAndCharacter(forCharacterOffset: keyLocation) else {
-
-            return self.annotations.from(source)
-        }
-
-        let annotationStart: NSRange = prefix.bridge().range(of: "/*", options: [.backwards])
-        guard annotationStart.location != NSNotFound,
-            let annotationStartLine = self.contents.lineAndCharacter(forCharacterOffset: annotationStart.location),
-            annotationStartLine.line == keyLine.line else {
-
-            return self.annotations.from(source)
-        }
-
-        if let fromKeyword = fromKeyword {
-            let keywordStart = prefix.bridge().range(of: fromKeyword, options: [.backwards])
-
-            guard keywordStart.location != NSNotFound && keywordStart.location > annotationStart.location else {
-                return self.annotations.from(source)
-            }
-        }
-
-        return AnnotationsParser(contents: prefix.bridge().substring(from: annotationStart.location)).all
-    }
-
-}
-
-// MARK: - Helpres
+// MARK: - Helpers
 extension FileParser {
 
     fileprivate func extract(_ substringIdentifier: Substring, from source: [String: SourceKitRepresentable]) -> String? {

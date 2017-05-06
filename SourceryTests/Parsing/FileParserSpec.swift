@@ -224,13 +224,13 @@ class FileParserSpec: QuickSpec {
                     it("extracts cases with special names") {
                         expect(parse("enum Foo { case `default`; case `for`(something: Int, else: Float, `default`: Bool) }"))
                                 .to(equal([
-                                                  Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [EnumCase(name: "`default`"), EnumCase(name: "`for`", associatedValues:
-                                                  [
-                                                          AssociatedValue(name: "something", typeName: TypeName("Int")),
-                                                          AssociatedValue(name: "else", typeName: TypeName("Float")),
-                                                          AssociatedValue(name: "`default`", typeName: TypeName("Bool"))
-                                                  ])])
-                                          ]))
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [EnumCase(name: "`default`"), EnumCase(name: "`for`", associatedValues:
+                                        [
+                                            AssociatedValue(name: "something", typeName: TypeName("Int")),
+                                            AssociatedValue(name: "else", typeName: TypeName("Float")),
+                                            AssociatedValue(name: "`default`", typeName: TypeName("Bool"))
+                                        ])])
+                                    ]))
                     }
 
                     it("extracts multi-byte cases properly") {
@@ -240,30 +240,99 @@ class FileParserSpec: QuickSpec {
                                 ]))
                     }
 
-                    it("extracts cases with annotations properly") {
-                        expect(parse("enum Foo {\n // sourcery: annotation\ncase optionA(Int)\n case optionB }"))
+                    context("given enum cases annotations") {
+
+                        it("extracts cases with annotations properly") {
+                            expect(parse("enum Foo {\n //sourcery:begin: block\n// sourcery: first, second=\"value\"\n case optionA(/* sourcery: value */Int)\n // sourcery: third\n case optionB\n case optionC \n//sourcery:end}"))
                                 .to(equal([
-                                    Enum(name: "Foo",
-                                         cases: [
-                                            EnumCase(name: "optionA", associatedValues: [
-                                                AssociatedValue(name: nil, typeName: TypeName("Int"))
-                                                ], annotations: ["annotation": NSNumber(value: true)]),
-                                            EnumCase(name: "optionB")
+                                    Enum(name: "Foo", cases: [
+                                        EnumCase(name: "optionA", associatedValues: [
+                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: ["value": NSNumber(value: true)])
+                                            ], annotations: [
+                                                "block": NSNumber(value: true),
+                                                "first": NSNumber(value: true),
+                                                "second": "value" as NSString
+                                            ]
+                                        ),
+                                        EnumCase(name: "optionB", annotations: [
+                                            "block": NSNumber(value: true),
+                                            "third": NSNumber(value: true)
+                                            ]
+                                        ),
+                                        EnumCase(name: "optionC", annotations: [
+                                            "block": NSNumber(value: true)
+                                            ])
                                         ])
                                     ]))
-                    }
+                        }
 
-                    it("extracts cases with inline annotations properly") {
-                        expect(parse("enum Foo {\n /* sourcery: annotation */case optionA(Int)\n case optionB }"))
-                            .to(equal([
-                                Enum(name: "Foo",
-                                     cases: [
+                        it("extracts cases with inline annotations properly") {
+                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: associatedValue */Int)\n /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
+                                .to(equal([
+                                    Enum(name: "Foo", cases: [
+                                        EnumCase(name: "optionA", associatedValues: [
+                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: [
+                                                "associatedValue": NSNumber(value: true)
+                                                ])
+                                            ], annotations: [
+                                                "block": NSNumber(value: true),
+                                                "first": NSNumber(value: true),
+                                                "second": "value" as NSString
+                                            ]),
+                                        EnumCase(name: "optionB", annotations: [
+                                            "block": NSNumber(value: true),
+                                            "third": NSNumber(value: true)
+                                            ]),
+                                        EnumCase(name: "optionC", annotations:[
+                                            "block": NSNumber(value: true)
+                                            ])
+                                        ])
+                                    ]))
+                        }
+
+                        it("extracts one line cases with inline annotations properly") {
+                            expect(parse("enum Foo {\n //sourcery:begin: block\ncase /* sourcery: first, second = \"value\" */ optionA(Int), /* sourcery: third, fourth = \"value\" */ optionB, optionC \n//sourcery:end\n}"))
+                                .to(equal([
+                                    Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
                                             AssociatedValue(name: nil, typeName: TypeName("Int"))
-                                            ], annotations: ["annotation": NSNumber(value: true)]),
-                                        EnumCase(name: "optionB")
-                                    ])
-                                ]))
+                                            ], annotations: [
+                                                "block": NSNumber(value: true),
+                                                "first": NSNumber(value: true),
+                                                "second": "value" as NSString
+                                            ]),
+                                        EnumCase(name: "optionB", annotations: [
+                                            "block": NSNumber(value: true),
+                                            "third": NSNumber(value: true),
+                                            "fourth": "value" as NSString
+                                            ]),
+                                        EnumCase(name: "optionC", annotations: [
+                                            "block": NSNumber(value: true)
+                                            ])
+                                        ])
+                                    ]))
+                        }
+
+                        it("extracts cases with annotations and computed variables properly") {
+                            expect(parse("enum Foo {\n // sourcery: var\n var first: Int { return 0 }\n // sourcery: first, second=\"value\"\n case optionA(Int)\n // sourcery: var\n var second: Int { return 0 }\n // sourcery: third\n case optionB\n case optionC }"))
+                                .to(equal([
+                                    Enum(name: "Foo", cases: [
+                                        EnumCase(name: "optionA", associatedValues: [
+                                            AssociatedValue(name: nil, typeName: TypeName("Int"))
+                                            ], annotations: [
+                                                "first": NSNumber(value: true),
+                                                "second": "value" as NSString
+                                            ]),
+                                        EnumCase(name: "optionB", annotations: [
+                                            "third": NSNumber(value: true)
+                                            ]),
+                                        EnumCase(name: "optionC")
+                                        ], variables: [
+                                            Variable(name: "first", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ]),
+                                            Variable(name: "second", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ])
+                                        ])
+                                    ]))
+                        }
                     }
 
                     it("extracts associated value annotations properly") {
