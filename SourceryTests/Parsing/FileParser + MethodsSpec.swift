@@ -257,23 +257,31 @@ class FileParserMethodsSpec: QuickSpec {
                 }
 
                 it("extracts parameter annotations") {
-                    expect(parse("class Foo {\n func foo(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) }")).to(equal([
+                    expect(parse("class Foo {\n //sourcery: foo\nfunc foo(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int)\n//sourcery: bar\nfunc bar(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) }")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "foo(a: Int,b: Int)", selectorName: "foo(a:b:)", parameters: [
                                 MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
                                 MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
-                                ])
+                                ], annotations: ["foo": NSNumber(value: true)]),
+                            Method(name: "bar(a: Int,b: Int)", selectorName: "bar(a:b:)", parameters: [
+                                MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
+                                MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
+                                ], annotations: ["bar": NSNumber(value: true)])
                             ])
                         ]))
                 }
 
                 it("extracts parameter inline annotations") {
-                    expect(parse("class Foo {\nfunc foo(/* sourcery: annotationA */a: Int, /* sourcery: annotationB*/b: Int) }")).to(equal([
+                    expect(parse("class Foo {\n//sourcery:begin:func\n //sourcery: foo\nfunc foo(/* sourcery: annotationA */a: Int, /* sourcery: annotationB*/b: Int)\n//sourcery: bar\nfunc bar(/* sourcery: annotationA */a: Int, /* sourcery: annotationB*/b: Int) \n//sourcery:end}")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "foo(a: Int, b: Int)", selectorName: "foo(a:b:)", parameters: [
-                                MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
-                                MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
-                                ])
+                                MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true), "func": NSNumber(value: true)]),
+                                MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true), "func": NSNumber(value: true)])
+                                ], annotations: ["foo": NSNumber(value: true), "func": NSNumber(value: true)]),
+                            Method(name: "bar(a: Int, b: Int)", selectorName: "bar(a:b:)", parameters: [
+                                MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true), "func": NSNumber(value: true)]),
+                                MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true), "func": NSNumber(value: true)])
+                                ], annotations: ["bar": NSNumber(value: true), "func": NSNumber(value: true)])
                             ])
                         ]))
                 }
