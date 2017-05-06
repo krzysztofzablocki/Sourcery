@@ -4,7 +4,7 @@
 //
 
 @testable import Sourcery
-@testable import SourceryFramework
+@testable import SourceryRuntime
 
 import Nimble
 import Quick

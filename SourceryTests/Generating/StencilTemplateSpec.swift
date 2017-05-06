@@ -2,7 +2,7 @@ import Quick
 import Nimble
 import Stencil
 @testable import Sourcery
-@testable import SourceryFramework
+@testable import SourceryRuntime
 
 class StencilTemplateSpec: QuickSpec {
     override func spec() {

@@ -9,7 +9,7 @@
 import Foundation
 import PathKit
 import SwiftTryCatch
-import SourceryFramework
+import SourceryRuntime
 
 fileprivate enum Delimiters {
     static let open = "<%"
@@ -110,7 +110,7 @@ class SwiftTemplate: Template {
         }
         let contents = sourceFile.joined(separator: "")
         let code = "import Foundation\n" +
-            "import SourceryFramework\n" +
+            "import SourceryRuntime\n" +
             "\n" +
             "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
             "ProcessInfo().context!.generate()"
@@ -189,7 +189,7 @@ class SwiftTemplate: Template {
     }
 
     private func copyFramework(to path: Path) throws {
-        let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryFramework.framework"
+        let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryRuntime.framework"
 
         let copyFramework = try Process.runCommand(path: "/usr/bin/rsync", arguments: [
             "-av", sourceryFramework.description, path.description

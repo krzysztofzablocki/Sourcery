@@ -7,7 +7,7 @@ import Foundation
 import Stencil
 import PathKit
 import SwiftTryCatch
-import SourceryFramework
+import SourceryRuntime
 
 class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.6.0"

@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import SourceryFramework
+import SourceryRuntime
 
 /// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
 extension Type {

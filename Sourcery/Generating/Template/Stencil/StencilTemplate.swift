@@ -2,7 +2,7 @@ import Foundation
 import Stencil
 import PathKit
 import StencilSwiftKit
-import SourceryFramework
+import SourceryRuntime
 
 final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
     private(set) var sourcePath: Path = ""

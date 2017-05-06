@@ -5,7 +5,7 @@
 
 import Foundation
 @testable import Sourcery
-@testable import SourceryFramework
+@testable import SourceryRuntime
 
 extension String {
     var withoutWhitespaces: String {

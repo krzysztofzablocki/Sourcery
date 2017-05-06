@@ -6,7 +6,7 @@
 import Foundation
 import SourceKittenFramework
 import PathKit
-import SourceryFramework
+import SourceryRuntime
 
 protocol Parsable: class {
     var __parserData: Any? { get set }

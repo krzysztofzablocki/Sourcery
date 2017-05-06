@@ -5,7 +5,7 @@
 
 import Foundation
 import Stencil
-import SourceryFramework
+import SourceryRuntime
 
 enum Generator {
     static func generate(_ types: Types, template: Template, arguments: [String: NSObject] = [:]) throws -> String {

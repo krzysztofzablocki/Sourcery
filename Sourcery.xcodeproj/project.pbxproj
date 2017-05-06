@@ -8,14 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		0906124D1E2BC43500BA0937 /* FileParser + MethodsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */; };
-		09334E531EB914510092806F /* SourceryFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 09334E511EB914510092806F /* SourceryFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		09334E531EB914510092806F /* SourceryRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 09334E511EB914510092806F /* SourceryRuntime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		09334E5B1EB915E00092806F /* Coding.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E541EB915E00092806F /* Coding.generated.swift */; };
 		09334E5C1EB915E00092806F /* Description.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E551EB915E00092806F /* Description.generated.swift */; };
 		09334E5D1EB915E00092806F /* Diffable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E561EB915E00092806F /* Diffable.generated.swift */; };
 		09334E5E1EB915E00092806F /* Equality.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E571EB915E00092806F /* Equality.generated.swift */; };
 		09334E5F1EB915E00092806F /* JSExport.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E581EB915E00092806F /* JSExport.generated.swift */; };
 		09334E601EB915E00092806F /* Typed.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E591EB915E00092806F /* Typed.generated.swift */; };
-		09334E611EB915E00092806F /* TypedSpec.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E5A1EB915E00092806F /* TypedSpec.generated.swift */; };
 		09334E721EB916040092806F /* AccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E621EB916040092806F /* AccessLevel.swift */; };
 		09334E731EB916040092806F /* Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E631EB916040092806F /* Annotations.swift */; };
 		09334E741EB916040092806F /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E641EB916040092806F /* Attribute.swift */; };
@@ -51,8 +50,8 @@
 		09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
-		64E201AA1EAE8FBF00EAD8A2 /* SourceryFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryFramework.framework */; };
-		64E201AB1EAE8FBF00EAD8A2 /* SourceryFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		64E201AA1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
+		64E201AB1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */; };
 		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
@@ -120,7 +119,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				64E201AB1EAE8FBF00EAD8A2 /* SourceryFramework.framework in Embed Frameworks */,
+				64E201AB1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,32 +130,31 @@
 		0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + MethodsSpec.swift"; sourceTree = "<group>"; };
 		0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameSpec.swift; sourceTree = "<group>"; };
 		09334E501EB914510092806F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		09334E511EB914510092806F /* SourceryFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceryFramework.h; sourceTree = "<group>"; };
-		09334E541EB915E00092806F /* Coding.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Coding.generated.swift; path = SourceryFramework/Sources/Coding.generated.swift; sourceTree = SOURCE_ROOT; };
-		09334E551EB915E00092806F /* Description.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Description.generated.swift; path = SourceryFramework/Sources/Description.generated.swift; sourceTree = SOURCE_ROOT; };
-		09334E561EB915E00092806F /* Diffable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Diffable.generated.swift; path = SourceryFramework/Sources/Diffable.generated.swift; sourceTree = SOURCE_ROOT; };
-		09334E571EB915E00092806F /* Equality.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Equality.generated.swift; path = SourceryFramework/Sources/Equality.generated.swift; sourceTree = SOURCE_ROOT; };
-		09334E581EB915E00092806F /* JSExport.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSExport.generated.swift; path = SourceryFramework/Sources/JSExport.generated.swift; sourceTree = SOURCE_ROOT; };
-		09334E591EB915E00092806F /* Typed.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Typed.generated.swift; path = SourceryFramework/Sources/Typed.generated.swift; sourceTree = SOURCE_ROOT; };
-		09334E5A1EB915E00092806F /* TypedSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypedSpec.generated.swift; path = SourceryFramework/Sources/TypedSpec.generated.swift; sourceTree = SOURCE_ROOT; };
-		09334E621EB916040092806F /* AccessLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccessLevel.swift; path = SourceryFramework/Sources/AccessLevel.swift; sourceTree = SOURCE_ROOT; };
-		09334E631EB916040092806F /* Annotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Annotations.swift; path = SourceryFramework/Sources/Annotations.swift; sourceTree = SOURCE_ROOT; };
-		09334E641EB916040092806F /* Attribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Attribute.swift; path = SourceryFramework/Sources/Attribute.swift; sourceTree = SOURCE_ROOT; };
-		09334E651EB916040092806F /* Class.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Class.swift; path = SourceryFramework/Sources/Class.swift; sourceTree = SOURCE_ROOT; };
-		09334E661EB916040092806F /* Diffable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Diffable.swift; path = SourceryFramework/Sources/Diffable.swift; sourceTree = SOURCE_ROOT; };
-		09334E671EB916040092806F /* Enum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Enum.swift; path = SourceryFramework/Sources/Enum.swift; sourceTree = SOURCE_ROOT; };
-		09334E681EB916040092806F /* FileParserResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileParserResult.swift; path = SourceryFramework/Sources/FileParserResult.swift; sourceTree = SOURCE_ROOT; };
-		09334E691EB916040092806F /* Method.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Method.swift; path = SourceryFramework/Sources/Method.swift; sourceTree = SOURCE_ROOT; };
-		09334E6A1EB916040092806F /* PhantomProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhantomProtocols.swift; path = SourceryFramework/Sources/PhantomProtocols.swift; sourceTree = SOURCE_ROOT; };
-		09334E6B1EB916040092806F /* Protocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Protocol.swift; path = SourceryFramework/Sources/Protocol.swift; sourceTree = SOURCE_ROOT; };
-		09334E6C1EB916040092806F /* Struct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Struct.swift; path = SourceryFramework/Sources/Struct.swift; sourceTree = SOURCE_ROOT; };
-		09334E6D1EB916040092806F /* TemplateContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TemplateContext.swift; path = SourceryFramework/Sources/TemplateContext.swift; sourceTree = SOURCE_ROOT; };
-		09334E6E1EB916040092806F /* Type.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Type.swift; path = SourceryFramework/Sources/Type.swift; sourceTree = SOURCE_ROOT; };
-		09334E6F1EB916040092806F /* Typealias.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Typealias.swift; path = SourceryFramework/Sources/Typealias.swift; sourceTree = SOURCE_ROOT; };
-		09334E701EB916040092806F /* TypeName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypeName.swift; path = SourceryFramework/Sources/TypeName.swift; sourceTree = SOURCE_ROOT; };
-		09334E711EB916040092806F /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Variable.swift; path = SourceryFramework/Sources/Variable.swift; sourceTree = SOURCE_ROOT; };
-		09334E821EB916340092806F /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Log.swift; path = SourceryFramework/Sources/Log.swift; sourceTree = SOURCE_ROOT; };
-		09334E841EB9163F0092806F /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = SourceryFramework/Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
+		09334E511EB914510092806F /* SourceryRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceryRuntime.h; sourceTree = "<group>"; };
+		09334E541EB915E00092806F /* Coding.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Coding.generated.swift; path = SourceryRuntime/Sources/Coding.generated.swift; sourceTree = SOURCE_ROOT; };
+		09334E551EB915E00092806F /* Description.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Description.generated.swift; path = SourceryRuntime/Sources/Description.generated.swift; sourceTree = SOURCE_ROOT; };
+		09334E561EB915E00092806F /* Diffable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Diffable.generated.swift; path = SourceryRuntime/Sources/Diffable.generated.swift; sourceTree = SOURCE_ROOT; };
+		09334E571EB915E00092806F /* Equality.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Equality.generated.swift; path = SourceryRuntime/Sources/Equality.generated.swift; sourceTree = SOURCE_ROOT; };
+		09334E581EB915E00092806F /* JSExport.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSExport.generated.swift; path = SourceryRuntime/Sources/JSExport.generated.swift; sourceTree = SOURCE_ROOT; };
+		09334E591EB915E00092806F /* Typed.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Typed.generated.swift; path = SourceryRuntime/Sources/Typed.generated.swift; sourceTree = SOURCE_ROOT; };
+		09334E621EB916040092806F /* AccessLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccessLevel.swift; path = SourceryRuntime/Sources/AccessLevel.swift; sourceTree = SOURCE_ROOT; };
+		09334E631EB916040092806F /* Annotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Annotations.swift; path = SourceryRuntime/Sources/Annotations.swift; sourceTree = SOURCE_ROOT; };
+		09334E641EB916040092806F /* Attribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Attribute.swift; path = SourceryRuntime/Sources/Attribute.swift; sourceTree = SOURCE_ROOT; };
+		09334E651EB916040092806F /* Class.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Class.swift; path = SourceryRuntime/Sources/Class.swift; sourceTree = SOURCE_ROOT; };
+		09334E661EB916040092806F /* Diffable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Diffable.swift; path = SourceryRuntime/Sources/Diffable.swift; sourceTree = SOURCE_ROOT; };
+		09334E671EB916040092806F /* Enum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Enum.swift; path = SourceryRuntime/Sources/Enum.swift; sourceTree = SOURCE_ROOT; };
+		09334E681EB916040092806F /* FileParserResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileParserResult.swift; path = SourceryRuntime/Sources/FileParserResult.swift; sourceTree = SOURCE_ROOT; };
+		09334E691EB916040092806F /* Method.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Method.swift; path = SourceryRuntime/Sources/Method.swift; sourceTree = SOURCE_ROOT; };
+		09334E6A1EB916040092806F /* PhantomProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhantomProtocols.swift; path = SourceryRuntime/Sources/PhantomProtocols.swift; sourceTree = SOURCE_ROOT; };
+		09334E6B1EB916040092806F /* Protocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Protocol.swift; path = SourceryRuntime/Sources/Protocol.swift; sourceTree = SOURCE_ROOT; };
+		09334E6C1EB916040092806F /* Struct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Struct.swift; path = SourceryRuntime/Sources/Struct.swift; sourceTree = SOURCE_ROOT; };
+		09334E6D1EB916040092806F /* TemplateContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TemplateContext.swift; path = SourceryRuntime/Sources/TemplateContext.swift; sourceTree = SOURCE_ROOT; };
+		09334E6E1EB916040092806F /* Type.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Type.swift; path = SourceryRuntime/Sources/Type.swift; sourceTree = SOURCE_ROOT; };
+		09334E6F1EB916040092806F /* Typealias.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Typealias.swift; path = SourceryRuntime/Sources/Typealias.swift; sourceTree = SOURCE_ROOT; };
+		09334E701EB916040092806F /* TypeName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypeName.swift; path = SourceryRuntime/Sources/TypeName.swift; sourceTree = SOURCE_ROOT; };
+		09334E711EB916040092806F /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Variable.swift; path = SourceryRuntime/Sources/Variable.swift; sourceTree = SOURCE_ROOT; };
+		09334E821EB916340092806F /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Log.swift; path = SourceryRuntime/Sources/Log.swift; sourceTree = SOURCE_ROOT; };
+		09334E841EB9163F0092806F /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = SourceryRuntime/Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
 		094415C71E78A46A00ABE04A /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		09618B3B1E61EEE100B49D5F /* JavaScriptTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JavaScriptTemplate.swift; sourceTree = "<group>"; };
@@ -176,7 +174,7 @@
 		3825CA349BD2B2AAB9605E7F /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
 		47FBEB8D5AB4DA51522B302B /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
 		4E26A60E38FEA181642B97B4 /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
-		64E201A31EAE8FBF00EAD8A2 /* SourceryFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryRuntime.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67BC066E18D9BE38229EEFA2 /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77F02D631B1EEDD3F68F8EE4 /* Pods-SourceryFramework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.release.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.release.xcconfig"; sourceTree = "<group>"; };
@@ -248,7 +246,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */,
-				64E201AA1EAE8FBF00EAD8A2 /* SourceryFramework.framework in Frameworks */,
+				64E201AA1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,7 +291,6 @@
 				09334E571EB915E00092806F /* Equality.generated.swift */,
 				09334E581EB915E00092806F /* JSExport.generated.swift */,
 				09334E591EB915E00092806F /* Typed.generated.swift */,
-				09334E5A1EB915E00092806F /* TypedSpec.generated.swift */,
 			);
 			path = CodeGenerated;
 			sourceTree = "<group>";
@@ -334,7 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				09334E501EB914510092806F /* Info.plist */,
-				09334E511EB914510092806F /* SourceryFramework.h */,
+				09334E511EB914510092806F /* SourceryRuntime.h */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -348,13 +345,13 @@
 			path = JavaScript;
 			sourceTree = "<group>";
 		};
-		64E201A41EAE8FBF00EAD8A2 /* SourceryFramework */ = {
+		64E201A41EAE8FBF00EAD8A2 /* SourceryRuntime */ = {
 			isa = PBXGroup;
 			children = (
 				09334E4F1EB914510092806F /* Supporting Files */,
 				09334E191EB914420092806F /* Sources */,
 			);
-			path = SourceryFramework;
+			path = SourceryRuntime;
 			sourceTree = "<group>";
 		};
 		8E9D92C3AA77031D4D09801C /* Pods */ = {
@@ -383,7 +380,7 @@
 			children = (
 				CD754C8D1D853F000082B512 /* Sourcery */,
 				CD754C9D1D853F000082B512 /* SourceryTests */,
-				64E201A41EAE8FBF00EAD8A2 /* SourceryFramework */,
+				64E201A41EAE8FBF00EAD8A2 /* SourceryRuntime */,
 				CD754C8C1D853F000082B512 /* Products */,
 				8E9D92C3AA77031D4D09801C /* Pods */,
 				003958827841F12BBF99EB67 /* Frameworks */,
@@ -395,7 +392,7 @@
 			children = (
 				CD754C8B1D853F000082B512 /* Sourcery.app */,
 				CD754C9A1D853F000082B512 /* SourceryTests.xctest */,
-				64E201A31EAE8FBF00EAD8A2 /* SourceryFramework.framework */,
+				64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -589,16 +586,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09334E531EB914510092806F /* SourceryFramework.h in Headers */,
+				09334E531EB914510092806F /* SourceryRuntime.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		64E201A21EAE8FBF00EAD8A2 /* SourceryFramework */ = {
+		64E201A21EAE8FBF00EAD8A2 /* SourceryRuntime */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 64E201AE1EAE8FBF00EAD8A2 /* Build configuration list for PBXNativeTarget "SourceryFramework" */;
+			buildConfigurationList = 64E201AE1EAE8FBF00EAD8A2 /* Build configuration list for PBXNativeTarget "SourceryRuntime" */;
 			buildPhases = (
 				64E2019E1EAE8FBF00EAD8A2 /* Sources */,
 				64E2019F1EAE8FBF00EAD8A2 /* Frameworks */,
@@ -609,9 +606,9 @@
 			);
 			dependencies = (
 			);
-			name = SourceryFramework;
+			name = SourceryRuntime;
 			productName = SourceryFramework;
-			productReference = 64E201A31EAE8FBF00EAD8A2 /* SourceryFramework.framework */;
+			productReference = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		CD754C8A1D853F000082B512 /* Sourcery */ = {
@@ -698,7 +695,7 @@
 			targets = (
 				CD754C8A1D853F000082B512 /* Sourcery */,
 				CD754C991D853F000082B512 /* SourceryTests */,
-				64E201A21EAE8FBF00EAD8A2 /* SourceryFramework */,
+				64E201A21EAE8FBF00EAD8A2 /* SourceryRuntime */,
 			);
 		};
 /* End PBXProject section */
@@ -867,7 +864,6 @@
 				09334E5F1EB915E00092806F /* JSExport.generated.swift in Sources */,
 				09334E601EB915E00092806F /* Typed.generated.swift in Sources */,
 				09334E7E1EB916040092806F /* Type.swift in Sources */,
-				09334E611EB915E00092806F /* TypedSpec.generated.swift in Sources */,
 				09334E851EB9163F0092806F /* Extensions.swift in Sources */,
 				09334E781EB916040092806F /* FileParserResult.swift in Sources */,
 				09334E5C1EB915E00092806F /* Description.generated.swift in Sources */,
@@ -943,7 +939,7 @@
 /* Begin PBXTargetDependency section */
 		64E201A91EAE8FBF00EAD8A2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 64E201A21EAE8FBF00EAD8A2 /* SourceryFramework */;
+			target = 64E201A21EAE8FBF00EAD8A2 /* SourceryRuntime */;
 			targetProxy = 64E201A81EAE8FBF00EAD8A2 /* PBXContainerItemProxy */;
 		};
 		CD754C9C1D853F000082B512 /* PBXTargetDependency */ = {
@@ -968,11 +964,11 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "SourceryFramework/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "SourceryRuntime/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = Pixel.SourceryFramework;
+				PRODUCT_BUNDLE_IDENTIFIER = Pixel.SourceryRuntime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -996,11 +992,11 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "SourceryFramework/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "SourceryRuntime/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = Pixel.SourceryFramework;
+				PRODUCT_BUNDLE_IDENTIFIER = Pixel.SourceryRuntime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -1178,7 +1174,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		64E201AE1EAE8FBF00EAD8A2 /* Build configuration list for PBXNativeTarget "SourceryFramework" */ = {
+		64E201AE1EAE8FBF00EAD8A2 /* Build configuration list for PBXNativeTarget "SourceryRuntime" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				64E201AC1EAE8FBF00EAD8A2 /* Debug */,

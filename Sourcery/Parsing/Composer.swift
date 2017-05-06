@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import SourceryFramework
+import SourceryRuntime
 
 /// Responsible for composing results of `FileParser`.
 struct Composer {
