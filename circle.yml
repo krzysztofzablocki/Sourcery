@@ -15,5 +15,5 @@ test:
       - swift build
   pre:
       - bash <(curl -s https://codecov.io/bash)
-      - bundle exec jazzy --clean
+      - bundle exec jazzy --clean --no-download-badge 
       - bundle exec danger || true

@@ -63,14 +63,14 @@ end
 desc "Update docs"
 task :docs do
   print_info "Updating docs"
-  sh "jazzy --clean --skip-undocumented"
+  sh "bundle exec jazzy --clean --skip-undocumented"
 end
 
 ## [ Release ] ##########################################################
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:check_versions, :build, :tests, :github, :cocoapods]
+  task :new => [:check_docs, :check_versions, :build, :tests, :github, :cocoapods]
 
   def podspec_version(file = 'Sourcery')
     JSON.parse(`bundle exec pod ipc spec #{file}.podspec`)["version"]
@@ -89,8 +89,20 @@ namespace :release do
     result
   end
 
+  desc 'Check if docs are up to date'
+  task :check_docs do
+    print_info "Checking docs are up to date"
+    results = []
+
+    `bundle exec jazzy --skip-undocumented --no-download-badge > /dev/null 2>&1`
+    docs_not_changed = `git diff --name-only` == ""
+    results << log_result(docs_not_changed, 'Docs are up to date', 'Please push updated docs first')
+    exit 1 unless results.all?
+  end
+
   desc 'Check if all versions from the podspecs, CHANGELOG and build settings match'
   task :check_versions do
+    print_info "Checking versions match"
     results = []
 
     # Check if bundler is installed first, as we'll need it for the cocoapods task (and we prefer to fail early)
@@ -118,7 +130,9 @@ namespace :release do
   end
 
   desc 'Create a zip containing all the prebuilt binaries'
-  task :zip => [:clean, :docs] do
+  task :zip => [:clean] do
+    print_info "Creating zip"
+
     sh %Q(mkdir -p "build")
     sh %Q(mkdir -p "build/Resources")
     sh %Q(cp -r bin build/)
