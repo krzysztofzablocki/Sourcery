@@ -1,3 +1,10 @@
+import Foundation
+#if os(iOS) || os(tvOS) || os(watchOS)
+import UIKit
+#elseif os(OSX)
+import AppKit
+#endif
+
 {% macro methodReceivedParameters method %}
     {%if method.parameters.count == 1 %}
         {{ method.shortName }}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
