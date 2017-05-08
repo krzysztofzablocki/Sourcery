@@ -92,6 +92,15 @@ internal struct AnnotationsParser {
         // `case` is not included in the key of enum case definition, so we strip it manually
         prefix = prefix.trimmingSuffix("case").trimmingCharacters(in: .whitespaces)
 
+        // Strips the access level if any
+        if let accessLevel = AccessLevel.all
+            .map({ $0.rawValue })
+            .filter({ prefix.hasSuffix($0) })
+            .first {
+
+            prefix = prefix.trimmingSuffix(accessLevel).trimmingCharacters(in: .whitespaces)
+        }
+
         while !prefix.isEmpty {
             guard prefix.hasSuffix("*/"), let commentStart = prefix.range(of: "/*", options: [.backwards]) else {
                 break
