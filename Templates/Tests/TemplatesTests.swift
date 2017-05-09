@@ -33,5 +33,11 @@ class TemplatesTests: QuickSpec {
                 check(template: "AutoCases")
             }
         }
+        
+        describe("AutoEquatable template") {
+            it("generates expected code") {
+                check(template: "AutoEquatable")
+            }
+        }
     }
 }

@@ -2,21 +2,21 @@
 // DO NOT EDIT
 
 
-extension DefaultEnum {
+extension AutoCasesEnum {
   static let count: Int = 4
-  static let allCases: [DefaultEnum] = [
+  static let allCases: [AutoCasesEnum] = [
     .north,
     .south,
     .east,
     .west
   ]
 }
-extension HasAssociatedValuesEnum {
+extension AutoCasesHasAssociatedValuesEnum {
   static let count: Int = 2
 }
-extension OneValueEnum {
+extension AutoCasesOneValueEnum {
   static let count: Int = 1
-  static let allCases: [OneValueEnum] = [
+  static let allCases: [AutoCasesOneValueEnum] = [
     .one
   ]
 }

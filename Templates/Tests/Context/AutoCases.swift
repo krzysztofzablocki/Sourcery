@@ -10,18 +10,18 @@ import Foundation
 
 protocol AutoCases {}
 
-enum DefaultEnum: AutoCases {
+enum AutoCasesEnum: AutoCases {
     case north
     case south
     case east
     case west
 }
 
-enum OneValueEnum: AutoCases {
+enum AutoCasesOneValueEnum: AutoCases {
     case one
 }
 
-enum HasAssociatedValuesEnum: AutoCases {
+enum AutoCasesHasAssociatedValuesEnum: AutoCases {
     case foo(test: String)
     case bar(number: Int)
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2017 Pixle. All rights reserved.
 //
 
-extension DefaultEnum {
+extension AutoCasesEnum {
   static let count: Int = 4
   static let allCases: [DefaultEnum] = [
     .north,
@@ -15,10 +15,10 @@ extension DefaultEnum {
     .west
   ]
 }
-extension HasAssociatedValuesEnum {
+extension AutoCasesHasAssociatedValuesEnum {
   static let count: Int = 2
 }
-extension OneValueEnum {
+extension AutoCasesOneValueEnum {
   static let count: Int = 1
   static let allCases: [OneValueEnum] = [
     .one
