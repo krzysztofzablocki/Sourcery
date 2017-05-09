@@ -32,7 +32,8 @@ public protocol Typed {
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
 public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
-    init(_ name: String,
+    /// :nodoc:
+    public init(_ name: String,
          actualTypeName: TypeName? = nil,
          attributes: [String: Attribute] = [:],
          tuple: TupleType? = nil,
@@ -91,7 +92,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
 
     // sourcery: skipEquality
     /// Actual type name if given type name is a typealias
-    public internal(set) var actualTypeName: TypeName?
+    public var actualTypeName: TypeName?
 
     /// Type name attributes, i.e. `@escaping`
     public let attributes: [String: Attribute]
@@ -148,7 +149,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
     }
 
     /// Dictionary type data
-    public internal(set) var dictionary: DictionaryType?
+    public var dictionary: DictionaryType?
 
     /// Whether type is a closure
     public var isClosure: Bool {
@@ -160,7 +161,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
     }
 
     /// Closure type data
-    public internal(set) var closure: ClosureType?
+    public var closure: ClosureType?
 
     /// Returns value of `name` property.
     public override var description: String {
@@ -210,9 +211,10 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
 
     // sourcery: skipEquality, skipDescription
     /// Tuple element type, if known
-    public internal(set) var type: Type?
+    public var type: Type?
 
-    init(name: String = "", typeName: TypeName, type: Type? = nil) {
+    /// :nodoc:
+    public init(name: String = "", typeName: TypeName, type: Type? = nil) {
         self.name = name
         self.typeName = typeName
         self.type = type
@@ -244,7 +246,8 @@ public final class TupleType: NSObject, SourceryModel {
     /// Tuple elements
     public let elements: [TupleElement]
 
-    init(name: String, elements: [TupleElement]) {
+    /// :nodoc:
+    public init(name: String, elements: [TupleElement]) {
         self.name = name
         self.elements = elements
     }
@@ -275,9 +278,10 @@ public final class ArrayType: NSObject, SourceryModel {
 
     // sourcery: skipEquality, skipDescription
     /// Array element type, if known
-    public internal(set) var elementType: Type?
+    public var elementType: Type?
 
-    init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
+    /// :nodoc:
+    public init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
         self.name = name
         self.elementTypeName = elementTypeName
         self.elementType = elementType
@@ -311,16 +315,17 @@ public final class DictionaryType: NSObject, SourceryModel {
 
     // sourcery: skipEquality, skipDescription
     /// Dictionary value type, if known
-    public internal(set) var valueType: Type?
+    public var valueType: Type?
 
     /// Dictionary key type name
     public let keyTypeName: TypeName
 
     // sourcery: skipEquality, skipDescription
     /// Dictionary key type, if known
-    public internal(set) var keyType: Type?
+    public var keyType: Type?
 
-    init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
+    /// :nodoc:
+    public init(name: String, valueTypeName: TypeName, valueType: Type? = nil, keyTypeName: TypeName, keyType: Type? = nil) {
         self.name = name
         self.valueTypeName = valueTypeName
         self.valueType = valueType
@@ -368,7 +373,7 @@ public final class ClosureType: NSObject, SourceryModel {
 
     // sourcery: skipEquality, skipDescription
     /// Actual return value type, if known
-    public internal(set) var returnType: Type?
+    public var returnType: Type?
 
     // sourcery: skipEquality, skipDescription
     /// Whether return value type is optional
@@ -391,7 +396,7 @@ public final class ClosureType: NSObject, SourceryModel {
     /// Whether closure throws
     public let `throws`: Bool
 
-    init(name: String, parameters: [MethodParameter], returnTypeName: TypeName, returnType: Type? = nil, `throws`: Bool = false) {
+    public init(name: String, parameters: [MethodParameter], returnTypeName: TypeName, returnType: Type? = nil, `throws`: Bool = false) {
         self.name = name
         self.parameters = parameters
         self.returnTypeName = returnTypeName

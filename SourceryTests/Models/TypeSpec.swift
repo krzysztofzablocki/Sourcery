@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 @testable import Sourcery
+@testable import SourceryRuntime
 
 class TypeSpec: QuickSpec {
     override func spec() {

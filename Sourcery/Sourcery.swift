@@ -7,6 +7,7 @@ import Foundation
 import Stencil
 import PathKit
 import SwiftTryCatch
+import SourceryRuntime
 
 class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.6.0"
@@ -148,7 +149,8 @@ class Sourcery {
                 }
             #else
                 if $0.extension == "swifttemplate" {
-                    return try SwiftTemplate(path: $0)
+                    let cachePath = cacheDisabled ? nil : Path.cachesDir(sourcePath: $0)
+                    return try SwiftTemplate(path: $0, cachePath: cachePath)
                 } else if $0.extension == "ejs" {
                     return try JavaScriptTemplate(path: $0)
                 } else {

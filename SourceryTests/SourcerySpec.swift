@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import PathKit
 @testable import Sourcery
+@testable import SourceryRuntime
 
 private let version = "Major.Minor.Patch"
 

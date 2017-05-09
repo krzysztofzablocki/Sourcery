@@ -13,6 +13,7 @@
 - Added `isRequired` property for `Method`
 - Improved parsing of closure types
 - Check if Current Project Version match version in podspec in release task
+- Improved swift templates performance
 
 ### Bug fixes
 

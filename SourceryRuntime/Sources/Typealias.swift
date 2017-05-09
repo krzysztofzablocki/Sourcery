@@ -1,26 +1,27 @@
 import Foundation
 
 // sourcery: skipJSExport
-final class Typealias: NSObject, Typed, SourceryModel {
+/// :nodoc:
+public final class Typealias: NSObject, Typed, SourceryModel {
     // New typealias name
-    let aliasName: String
+    public let aliasName: String
 
     // Target name
-    let typeName: TypeName
+    public let typeName: TypeName
 
     // sourcery: skipEquality, skipDescription
-    var type: Type?
+    public var type: Type?
 
     // sourcery: skipEquality, skipDescription
-    var parent: Type? {
+    public var parent: Type? {
         didSet {
             parentName = parent?.name
         }
     }
 
-    private(set) var parentName: String?
+    var parentName: String?
 
-    var name: String {
+    public var name: String {
         if let parentName = parent?.name {
             return "\(parentName).\(aliasName)"
         } else {
@@ -28,7 +29,7 @@ final class Typealias: NSObject, Typed, SourceryModel {
         }
     }
 
-    init(aliasName: String = "", typeName: TypeName, parent: Type? = nil) {
+    public init(aliasName: String = "", typeName: TypeName, parent: Type? = nil) {
         self.aliasName = aliasName
         self.typeName = typeName
         self.parent = parent
@@ -37,7 +38,7 @@ final class Typealias: NSObject, Typed, SourceryModel {
 
     // sourcery:inline:Typealias.AutoCoding
         /// :nodoc:
-        required internal init?(coder aDecoder: NSCoder) {
+        required public init?(coder aDecoder: NSCoder) {
             guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["aliasName"])); fatalError() }; self.aliasName = aliasName
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
@@ -46,7 +47,7 @@ final class Typealias: NSObject, Typed, SourceryModel {
         }
 
         /// :nodoc:
-        internal func encode(with aCoder: NSCoder) {
+        public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.aliasName, forKey: "aliasName")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")

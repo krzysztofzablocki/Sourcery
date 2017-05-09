@@ -12,7 +12,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
     // sourcery: skipJSExport
     let _description: String
 
-    init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
+    /// :nodoc:
+    public init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name
         self.arguments = arguments
         self._description = description ?? "@\(name)"
@@ -23,7 +24,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         return _description
     }
 
-    enum Identifier: String {
+    /// :nodoc:
+    public enum Identifier: String {
         case convenience
         case required
         case available
@@ -42,11 +44,11 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case convention
         case escaping
 
-        init?(identifier: String) {
+        public init?(identifier: String) {
             self.init(rawValue: identifier.replacingOccurrences(of: "source.decl.attribute.", with: ""))
         }
 
-        static func from(string: String) -> Identifier? {
+        public static func from(string: String) -> Identifier? {
             switch string {
             case "GKInspectable":
                 return Identifier.GKInspectable
@@ -63,7 +65,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
             }
         }
 
-        var name: String {
+        public var name: String {
             switch self {
             case .GKInspectable:
                 return "GKInspectable"
@@ -80,7 +82,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
             }
         }
 
-        var description: String {
+        public var description: String {
             switch self {
             case .convenience:
                 return "convenience"

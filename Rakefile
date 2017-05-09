@@ -39,6 +39,13 @@ def print_info(str)
   (red,clr) = (`tput colors`.chomp.to_i >= 8) ? %W(\e[33m \e[m) : ["", ""]
   puts red, "== #{str.chomp} ==", clr
 end
+
+desc "Update docs"
+task :docs do
+  print_info "Updating docs"
+  sh "sourcekitten doc --module-name SourceryFramework > docs.json && jazzy --clean --skip-undocumented && rm docs.json"
+end
+
 ## [ Tests & Clean ] ##########################################################
 
 desc "Run the Unit Tests"
