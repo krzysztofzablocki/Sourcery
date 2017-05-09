@@ -1,21 +1,23 @@
 //
-//  Struct.swift
+//  Protocol.swift
 //  Sourcery
 //
-//  Created by Krzysztof Zablocki on 13/09/2016.
+//  Created by Krzysztof Zablocki on 09/12/2016.
 //  Copyright © 2016 Pixle. All rights reserved.
 //
 
 import Foundation
 
-// sourcery: skipDescription
-/// Describes Swift struct
-public final class Struct: Type {
+public typealias SourceryProtocol = Protocol
 
-    /// Returns "struct"
-    public override var kind: String { return "struct" }
+/// Describes Swift protocol
+public final class Protocol: Type {
 
-    override init(name: String = "",
+    /// Returns "protocol"
+    public override var kind: String { return "protocol" }
+
+    /// :nodoc:
+    public override init(name: String = "",
                   parent: Type? = nil,
                   accessLevel: AccessLevel = .internal,
                   isExtension: Bool = false,
@@ -42,7 +44,14 @@ public final class Struct: Type {
         )
     }
 
-    // sourcery:inline:Struct.AutoCoding
+    /// :nodoc:
+    override public func extend(_ type: Type) {
+        type.variables = type.variables.filter({ v in !variables.contains(where: { $0.name == v.name && $0.isStatic == v.isStatic }) })
+        type.methods = type.methods.filter({ !methods.contains($0) })
+        super.extend(type)
+    }
+
+    // sourcery:inline:Protocol.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)

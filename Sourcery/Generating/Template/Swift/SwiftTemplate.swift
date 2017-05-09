@@ -8,6 +8,8 @@
 
 import Foundation
 import PathKit
+import SwiftTryCatch
+import SourceryRuntime
 
 fileprivate enum Delimiters {
     static let open = "<%"
@@ -22,19 +24,26 @@ fileprivate struct ProcessResult {
 class SwiftTemplate: Template {
 
     let sourcePath: Path
+    let cachePath: Path?
+    let code: String
 
-    init(path: Path) throws {
+    private lazy var buildDir: Path = Path.cleanTemporaryDir(name: "build")
+
+    init(path: Path, cachePath: Path? = nil) throws {
         self.sourcePath = path
+        self.cachePath = cachePath
+        self.code = try SwiftTemplate.parse(sourcePath: path)
     }
 
-    enum Command {
-        case output(String)
-        case controlFlow(String)
-        case outputEncoded(String)
-    }
+    static func parse(sourcePath: Path) throws -> String {
 
-    fileprivate static func generateSwiftCode(templateContent _templateContent: String, path: Path) throws -> String {
-        let templateContent = "<%%>" + _templateContent
+        enum Command {
+            case output(String)
+            case controlFlow(String)
+            case outputEncoded(String)
+        }
+
+        let templateContent = try "<%%>" + sourcePath.read()
 
         let components = templateContent.components(separatedBy: Delimiters.open)
 
@@ -47,7 +56,7 @@ class SwiftTemplate: Template {
 
         for component in components.suffix(from: 1) {
             guard let endIndex = component.range(of: Delimiters.close) else {
-                throw "\(path):\(currentLineNumber()) Error while parsing template. Unmatched <%"
+                throw "\(sourcePath):\(currentLineNumber()) Error while parsing template. Unmatched <%"
             }
 
             var code = component.substring(to: endIndex.lowerBound)
@@ -99,61 +108,38 @@ class SwiftTemplate: Template {
                 }
             }
         }
-        return sourceFile.joined(separator: "")
+        let contents = sourceFile.joined(separator: "")
+        let code = "import Foundation\n" +
+            "import SourceryRuntime\n" +
+            "\n" +
+            "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
+            "ProcessInfo().context!.generate()"
+
+        return code
     }
 
     func render(types: Types, arguments: [String: NSObject]) throws -> String {
-        let context = TemplateContext(types: types, arguments: arguments)
-        let swiftCode = try SwiftTemplate.generateSwiftCode(templateContent: try sourcePath.read(), path: sourcePath)
+        let binaryPath: Path
 
-        let compilationDir = Path.cleanTemporaryDir(name: "build")
-
-        let runtimeFiles = try SwiftTemplate.swiftTemplatesRuntime.children().map { file in
-            return file.description
-        }
-
-        let mainFile = compilationDir + Path("main.swift")
-        let binaryFile = compilationDir + Path("bin")
-
-        let runableCode = "extension TemplateContext {\n\n override func generate() {" + swiftCode + "\n }\n\n}\nrun();"
-
-        try mainFile.write(runableCode)
-
-        let serializedContextPath = compilationDir + Path("context.bin")
-
-        let serializedContext = NSKeyedArchiver.archivedData(withRootObject: context)
-        try serializedContextPath.write(serializedContext)
-
-        #if DEBUG
-            // this is a sanity check, deserialized object should be equal to initial object
-            let diff = context.diffAgainst(NSKeyedUnarchiver.unarchiveObject(with: serializedContext))
-            if !diff.isEmpty {
-                print(diff.description)
+        if let cachePath = cachePath, let hash = code.sha256() {
+            binaryPath = cachePath + hash
+            if !binaryPath.exists {
+                try? cachePath.delete() // clear old cache
+                try cachePath.mkdir()
+                try build().move(binaryPath)
+                try copyFramework(to: cachePath.parent())
             }
-            assert(diff.isEmpty)
-        #endif
-
-        let arguments = [mainFile.description] +
-            runtimeFiles + [
-                "-suppress-warnings",
-                "-Onone",
-                "-module-name", "Sourcery",
-                "-o", binaryFile.description
-        ]
-
-        let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
-                                            arguments: arguments,
-                                            environment: [:])
-
-        if !compilationResult.error.isEmpty {
-            #if DEBUG
-                let command = "/usr/bin/swiftc " + arguments.map { "\"\($0)\"" }.joined(separator: " ")
-                print(command)
-            #endif
-            throw compilationResult.error
+        } else {
+            try binaryPath = build()
         }
 
-        let result = try Process.runCommand(path: binaryFile.description,
+        let context = TemplateContext(types: types, arguments: arguments)
+
+        let serializedContextPath = buildDir + "context.bin"
+        let data = NSKeyedArchiver.archivedData(withRootObject: context)
+        try serializedContextPath.write(data)
+
+        let result = try Process.runCommand(path: binaryPath.description,
                                             arguments: [serializedContextPath.description])
 
         if !result.error.isEmpty {
@@ -162,16 +148,66 @@ class SwiftTemplate: Template {
 
         return result.output
     }
+
+    func build() throws -> Path {
+        let mainFile = buildDir + Path("main.swift")
+        let binaryFile = buildDir + Path("bin")
+
+        try copyFramework(to: buildDir.parent())
+        try mainFile.write(code)
+
+        let arguments = [mainFile.description] +
+            [
+                "-suppress-warnings",
+                "-Onone",
+                "-module-name", "main",
+                "-target", "x86_64-apple-macosx10.10",
+                "-F", ".",
+                "-o", binaryFile.description
+        ]
+
+        let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
+                                                       arguments: arguments,
+                                                       environment: [:])
+
+        if !compilationResult.error.isEmpty {
+            throw compilationResult.error
+        }
+
+        let linkingResult = try Process.runCommand(path: "/usr/bin/install_name_tool",
+                                                   arguments: [
+                                                    "-add_rpath",
+                                                    "@executable_path/../",
+                                                    binaryFile.description])
+        if !linkingResult.error.isEmpty {
+            throw linkingResult.error
+        }
+
+        try? mainFile.delete()
+
+        return binaryFile
+    }
+
+    private func copyFramework(to path: Path) throws {
+        let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryRuntime.framework"
+
+        let copyFramework = try Process.runCommand(path: "/usr/bin/rsync", arguments: [
+            "-av", sourceryFramework.description, path.description
+            ])
+
+        if !copyFramework.error.isEmpty {
+            throw copyFramework.error
+        }
+    }
+
 }
 
 fileprivate extension SwiftTemplate {
-    static var resourcesPath: Path {
-        return Bundle(for: Sourcery.self).resourcePath.flatMap { Path($0) }!
+
+    static var frameworksPath: Path {
+        return Bundle(for: Sourcery.self).privateFrameworksPath.flatMap { Path($0) }!
     }
 
-    static var swiftTemplatesRuntime: Path {
-        return resourcesPath + Path("SwiftTemplateRuntime")
-    }
 }
 
 // swiftlint:disable:next force_try
@@ -203,6 +239,7 @@ private extension Process {
         let outHandle = outputPipe.fileHandleForReading
         let errorHandle = errorPipe.fileHandleForReading
 
+        Log.info(path + " " + arguments.map { "\"\($0)\"" }.joined(separator: " "))
         task.launch()
 
         let outputData = outHandle.readDataToEndOfFile()

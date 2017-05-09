@@ -6,6 +6,7 @@ machine:
     XCODE_SCHEME: Sourcery
   post:
       - ln -s /Applications/Xcode-8.3.app /Applications/Xcode.app
+      - brew install sourcekitten
 
 test:
   override:
@@ -15,5 +16,5 @@ test:
       - swift build
   pre:
       - bash <(curl -s https://codecov.io/bash)
-      - bundle exec jazzy --clean --no-download-badge 
+      - rake validate_docs
       - bundle exec danger || true

@@ -7,6 +7,7 @@ import Foundation
 import Quick
 import Nimble
 @testable import Sourcery
+@testable import SourceryRuntime
 
 class DiffableSpec: QuickSpec {
     override func spec() {

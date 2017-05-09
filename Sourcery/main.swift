@@ -11,6 +11,7 @@ import Commander
 import PathKit
 import Yams
 import XcodeEdit
+import SourceryRuntime
 
 extension Path: ArgumentConvertible {
     /// :nodoc:

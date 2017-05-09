@@ -1,7 +1,8 @@
 import Foundation
 
-extension String {
+public extension String {
 
+    /// :nodoc:
     /// Removes leading and trailing whitespace from str. Returns false if str was not altered.
     @discardableResult
     mutating func strip() -> Bool {
@@ -11,11 +12,13 @@ extension String {
         return true
     }
 
+    /// :nodoc:
     /// Returns a copy of str with leading and trailing whitespace removed.
     func stripped() -> String {
         return String(self.trimmingCharacters(in: .whitespaces))
     }
 
+    /// :nodoc:
     @discardableResult
     mutating func trimPrefix(_ prefix: String) -> Bool {
         guard hasPrefix(prefix) else { return false }
@@ -23,11 +26,13 @@ extension String {
         return true
     }
 
+    /// :nodoc:
     func trimmingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
         return String(characters.suffix(characters.count - prefix.characters.count))
     }
 
+    /// :nodoc:
     @discardableResult
     mutating func trimSuffix(_ suffix: String) -> Bool {
         guard hasSuffix(suffix) else { return false }
@@ -35,27 +40,33 @@ extension String {
         return true
     }
 
+    /// :nodoc:
     func trimmingSuffix(_ suffix: String) -> String {
         guard hasSuffix(suffix) else { return self }
         return String(characters.prefix(characters.count - suffix.characters.count))
     }
 
+    /// :nodoc:
     func dropFirst(_ n: Int = 1) -> String {
         return String(characters.dropFirst(n))
     }
 
+    /// :nodoc:
     func dropLast(_ n: Int = 1) -> String {
         return String(characters.dropLast(n))
     }
 
+    /// :nodoc:
     func dropFirstAndLast(_ n: Int = 1) -> String {
         return drop(first: n, last: n)
     }
 
+    /// :nodoc:
     func drop(first: Int, last: Int) -> String {
         return String(characters.dropFirst(first).dropLast(last))
     }
 
+    /// :nodoc:
     /// Wraps brackets if needed to make a valid type name
     func bracketsBalancing() -> String {
         if hasPrefix("(") && hasSuffix(")") {
@@ -67,6 +78,7 @@ extension String {
         }
     }
 
+    /// :nodoc:
     /// Returns true if given string can represent a valid tuple type name
     func isValidTupleName() -> Bool {
         guard hasPrefix("(") && hasSuffix(")") else { return false }
@@ -74,6 +86,7 @@ extension String {
         return trimmedBracketsName.bracketsBalanced() && trimmedBracketsName.commaSeparated().count > 1
     }
 
+    /// :nodoc:
     func isValidArrayName() -> Bool {
         if hasPrefix("Array<") { return true }
         if hasPrefix("[") && hasSuffix("]") {
@@ -82,6 +95,7 @@ extension String {
         return false
     }
 
+    /// :nodoc:
     func isValidDictionaryName() -> Bool {
         if hasPrefix("Dictionary<") { return true }
         if hasPrefix("[") && contains(":") && hasSuffix("]") {
@@ -90,10 +104,12 @@ extension String {
         return false
     }
 
+    /// :nodoc:
     func isValidClosureName() -> Bool {
         return components(separatedBy: "->", excludingDelimiterBetween: ("(", ")")).count > 1
     }
 
+    /// :nodoc:
     /// Returns true if all opening brackets are balanced with closed brackets.
     func bracketsBalanced() -> Bool {
         var bracketsCount: Int = 0
@@ -104,21 +120,25 @@ extension String {
         return bracketsCount == 0
     }
 
+    /// :nodoc:
     /// Returns components separated with a comma respecting nested types
     func commaSeparated() -> [String] {
         return components(separatedBy: ",", excludingDelimiterBetween: ("<[(", ")]>"))
     }
 
+    /// :nodoc:
     /// Returns components separated with colon respecting nested types
     func colonSeparated() -> [String] {
         return components(separatedBy: ":", excludingDelimiterBetween: ("<[(", ")]>"))
     }
 
+    /// :nodoc:
     /// Returns components separated with semicolon respecting nested contexts
     func semicolonSeparated() -> [String] {
         return components(separatedBy: ";", excludingDelimiterBetween: ("{", "}"))
     }
 
+    /// :nodoc:
     func components(separatedBy delimiter: String, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
         var boundingCharactersCount: Int = 0
         var quotesCount: Int = 0
@@ -163,7 +183,7 @@ extension String {
     }
 }
 
-extension NSString {
+public extension NSString {
     var entireRange: NSRange {
         return NSRange(location: 0, length: self.length)
     }

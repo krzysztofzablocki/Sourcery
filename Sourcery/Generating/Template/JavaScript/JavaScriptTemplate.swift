@@ -1,5 +1,6 @@
 import JavaScriptCore
 import PathKit
+import SourceryRuntime
 
 final class JavaScriptTemplate: Template {
 

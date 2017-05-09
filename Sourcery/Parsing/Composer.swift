@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SourceryRuntime
 
 /// Responsible for composing results of `FileParser`.
 struct Composer {
@@ -130,7 +131,7 @@ struct Composer {
         variable.type = resolve(variable.typeName, type)
     }
 
-    private func resolveMethodTypes(_ method: Method, of type: Type, resolve: TypeResolver) {
+    private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
         method.parameters.enumerated().forEach { (_, parameter) in
             parameter.type = resolve(parameter.typeName, type)
         }
@@ -158,7 +159,7 @@ struct Composer {
             enumeration.rawType = rawValueVariable.type
         } else if let rawTypeName = enumeration.inheritedTypes.first {
             if let rawTypeCandidate = types[rawTypeName] {
-                if !(rawTypeCandidate is Protocol) {
+                if !(rawTypeCandidate is SourceryProtocol) {
                     enumeration.rawTypeName = TypeName(rawTypeName)
                     enumeration.rawType = rawTypeCandidate
                 }
@@ -302,7 +303,7 @@ struct Composer {
 
             if baseType is Class {
                 type.inherits[name] = baseType
-            } else if baseType is Protocol {
+            } else if baseType is SourceryProtocol {
                 type.implements[name] = baseType
             }
         }

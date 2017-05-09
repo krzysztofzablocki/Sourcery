@@ -5,6 +5,8 @@
 
 import Foundation
 
+public typealias SourceryVariable = Variable
+
 /// Defines variable
 public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Variable name
@@ -15,7 +17,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
 
     // sourcery: skipEquality, skipDescription
     /// Variable type, if known
-    public internal(set) var type: Type?
+    public var type: Type?
 
     /// Whether variable is computed
     public let isComputed: Bool
@@ -36,19 +38,21 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     }
 
     /// Variable default value expression
-    public internal(set) var defaultValue: String?
+    public var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public internal(set) var annotations: [String: NSObject] = [:]
+    public var annotations: [String: NSObject] = [:]
 
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
-    public internal(set) var attributes: [String: Attribute]
+    public var attributes: [String: Attribute]
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    internal var __parserData: Any?
+    /// :nodoc:
+    public var __parserData: Any?
 
-    init(name: String = "",
+    /// :nodoc:
+    public init(name: String = "",
          typeName: TypeName,
          type: Type? = nil,
          accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),

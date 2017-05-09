@@ -60,10 +60,18 @@ task :build do
   sh %Q(rm -fr #{BUILD_DIR}tmp/)
 end
 
+## [ Docs ] ##########################################################
+
 desc "Update docs"
 task :docs do
   print_info "Updating docs"
-  sh "bundle exec jazzy --clean --skip-undocumented"
+  sh "sourcekitten doc --module-name SourceryRuntime > docs.json && bundle exec jazzy --clean --skip-undocumented && rm docs.json"
+end
+
+desc "Validate docs"
+task :validate_docs do
+  print_info "Checking docs are up to date"
+  sh "sourcekitten doc --module-name SourceryRuntime > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge && rm docs.json"
 end
 
 ## [ Release ] ##########################################################
@@ -90,11 +98,9 @@ namespace :release do
   end
 
   desc 'Check if docs are up to date'
-  task :check_docs do
-    print_info "Checking docs are up to date"
+  task :check_docs => [:validate_docs] do
     results = []
 
-    `bundle exec jazzy --skip-undocumented --no-download-badge > /dev/null 2>&1`
     docs_not_changed = `git diff --name-only` == ""
     results << log_result(docs_not_changed, 'Docs are up to date', 'Please push updated docs first')
     exit 1 unless results.all?

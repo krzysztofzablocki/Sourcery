@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>EnumCase Class Reference</title>
+    <title>Typealias Extension Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/EnumCase" class="dashAnchor"></a>
-    <a title="EnumCase Class Reference"></a>
+    <a name="//apple_ref/swift/Extension/Typealias" class="dashAnchor"></a>
+    <a title="Typealias Extension Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery Docs</a> (100% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        EnumCase Class Reference
+        Typealias Extension Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -154,15 +154,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>EnumCase</h1>
+            <h1>Typealias</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">EnumCase</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Typealias</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
 
                 </div>
               </div>
-            <p>Defines enum case</p>
-
+            
           </section>
           <section class="section task-group-section">
             <div class="task-group">
@@ -170,9 +169,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC15SourceryRuntime8EnumCase4nameSS"></a>
-                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC15SourceryRuntime8EnumCase4nameSS">name</a>
+                    <a name="/s:vC15SourceryRuntime9Typealias10isOptionalSb"></a>
+                    <a name="//apple_ref/swift/Property/isOptional" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC15SourceryRuntime9Typealias10isOptionalSb">isOptional</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -180,14 +179,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum case name</p>
+                        <p>Whether type is optional. Shorthand for <code>typeName.isOptional</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isOptional</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
@@ -197,9 +196,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC15SourceryRuntime8EnumCase8rawValueGSqSS_"></a>
-                    <a name="//apple_ref/swift/Property/rawValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC15SourceryRuntime8EnumCase8rawValueGSqSS_">rawValue</a>
+                    <a name="/s:vC15SourceryRuntime9Typealias29isImplicitlyUnwrappedOptionalSb"></a>
+                    <a name="//apple_ref/swift/Property/isImplicitlyUnwrappedOptional" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC15SourceryRuntime9Typealias29isImplicitlyUnwrappedOptionalSb">isImplicitlyUnwrappedOptional</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -207,14 +206,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum case raw value, if any</p>
+                        <p>Whether type is implicitly unwrapped optional. Shorthand for <code>typeName.isImplicitlyUnwrappedOptional</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">rawValue</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isImplicitlyUnwrappedOptional</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
@@ -224,9 +223,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC15SourceryRuntime8EnumCase16associatedValuesGSaCS_15AssociatedValue_"></a>
-                    <a name="//apple_ref/swift/Property/associatedValues" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC15SourceryRuntime8EnumCase16associatedValuesGSaCS_15AssociatedValue_">associatedValues</a>
+                    <a name="/s:vC15SourceryRuntime9Typealias17unwrappedTypeNameSS"></a>
+                    <a name="//apple_ref/swift/Property/unwrappedTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC15SourceryRuntime9Typealias17unwrappedTypeNameSS">unwrappedTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -234,68 +233,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum case associated values</p>
+                        <p>Type name without attributes and optional type information. Shorthand for <code>typeName.unwrappedTypeName</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">associatedValues</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/AssociatedValue.html">AssociatedValue</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:vC15SourceryRuntime8EnumCase11annotationsGVs10DictionarySSCSo8NSObject_"></a>
-                    <a name="//apple_ref/swift/Property/annotations" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC15SourceryRuntime8EnumCase11annotationsGVs10DictionarySSCSo8NSObject_">annotations</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Enum case annotations</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">annotations</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">]</span> <span class="o">=</span> <span class="p">[:]</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:vC15SourceryRuntime8EnumCase18hasAssociatedValueSb"></a>
-                    <a name="//apple_ref/swift/Property/hasAssociatedValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC15SourceryRuntime8EnumCase18hasAssociatedValueSb">hasAssociatedValue</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Whether enum case has associated value</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">hasAssociatedValue</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">unwrappedTypeName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>

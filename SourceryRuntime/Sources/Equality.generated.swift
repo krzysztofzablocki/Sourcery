@@ -89,7 +89,7 @@ extension EnumCase {
 }
 extension FileParserResult {
     /// :nodoc:
-    override internal func isEqual(_ object: Any?) -> Bool {
+    override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? FileParserResult else { return false }
         if self.path != rhs.path { return false }
         if self.module != rhs.module { return false }
@@ -148,7 +148,7 @@ extension Struct {
 }
 extension TemplateContext {
     /// :nodoc:
-    override internal func isEqual(_ object: Any?) -> Bool {
+    override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TemplateContext else { return false }
         if self.types != rhs.types { return false }
         if self.arguments != rhs.arguments { return false }
@@ -209,7 +209,7 @@ extension TypeName {
 }
 extension Typealias {
     /// :nodoc:
-    override internal func isEqual(_ object: Any?) -> Bool {
+    override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Typealias else { return false }
         if self.aliasName != rhs.aliasName { return false }
         if self.typeName != rhs.typeName { return false }

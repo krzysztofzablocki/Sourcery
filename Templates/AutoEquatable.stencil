@@ -56,7 +56,7 @@ extension {{ type.name }}: Equatable {}
         {% endif %}
         {% endif %}
     {% endfor %}
-    default: return false
+    {% if type.cases.count > 1 %}default: return false {% endif %}
     }
 }
 {% endfor %}
