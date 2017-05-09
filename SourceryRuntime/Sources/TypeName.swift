@@ -396,6 +396,7 @@ public final class ClosureType: NSObject, SourceryModel {
     /// Whether closure throws
     public let `throws`: Bool
 
+    /// :nodoc:
     public init(name: String, parameters: [MethodParameter], returnTypeName: TypeName, returnType: Type? = nil, `throws`: Bool = false) {
         self.name = name
         self.parameters = parameters

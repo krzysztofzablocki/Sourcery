@@ -1,6 +1,7 @@
 import Darwin
 import Foundation
 
+/// :nodoc:
 public enum Log {
 
     public enum Level: Int {

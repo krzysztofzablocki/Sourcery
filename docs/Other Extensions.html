@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Hashable  Reference</title>
+    <title>Other Extensions  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,7 +10,7 @@
     
   </head>
   <body>
-    <a title="Hashable  Reference"></a>
+    <a title="Other Extensions  Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="index.html">Sourcery Reference</a>
         <img id="carat" src="img/carat.png" />
-        Hashable  Reference
+        Other Extensions  Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -130,6 +130,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a href="Other Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/Typealias.html">Typealias</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a href="Other Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -145,35 +153,47 @@
       <article class="main-content">
         <section>
           <section class="section">
-            
-            <a href='#i-want-to-generate-code-hashable-code-implementation' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='i-want-to-generate-code-hashable-code-implementation'>I want to generate <code>Hashable</code> implementation</h2>
+            <h1>Other Extensions</h1>
+            <p>The following extensions are available globally.</p>
 
-<p>Template used to generate hashing for all types that conform to <code>:AutoHashable</code>, allowing us to avoid writing boilerplate code.</p>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:C15SourceryRuntime9Typealias"></a>
+                    <a name="//apple_ref/swift/Extension/Typealias" class="dashAnchor"></a>
+                    <a class="token" href="#/s:C15SourceryRuntime9Typealias">Typealias</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Extensions/Typealias.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Typealias</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
 
-<p>It adds <code>:Hashable</code> conformance to all types, except protocols (because it would require turning them into PAT&rsquo;s).
-For protocols it&rsquo;s just generating <code>var hashValue</code> comparator.</p>
-<a href='#a-href-https-github-com-krzysztofzablocki-sourcery-blob-master-templates-autohashable-stencil-stencil-template-a' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='a-href-https-github-com-krzysztofzablocki-sourcery-blob-master-templates-autohashable-stencil-stencil-template-a'><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/AutoHashable.stencil">Stencil template</a></h3>
-<a href='#available-variable-annotations' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='available-variable-annotations'>Available variable annotations:</h4>
-
-<ul>
-<li><code>skipHashing</code> allows you to skip variable from being compared.</li>
-<li><code>includeInHashing</code> is only applied on enums and allows us to add some computed variable into hashing logic</li>
-</ul>
-<a href='#example-output' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h4 id='example-output'>Example output:</h4>
-<pre class="highlight swift"><code><span class="c1">// MARK: - AdNodeViewModel AutoHashable</span>
-<span class="kd">extension</span> <span class="kt">AdNodeViewModel</span><span class="p">:</span> <span class="kt">Hashable</span> <span class="p">{</span>
-
-    <span class="kd">internal</span> <span class="k">var</span> <span class="nv">hashValue</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nf">combineHashes</span><span class="p">(</span><span class="n">remoteAdView</span><span class="o">.</span><span class="n">hashValue</span><span class="p">,</span> <span class="n">hidesDisclaimer</span><span class="o">.</span><span class="n">hashValue</span><span class="p">,</span> <span class="n">type</span><span class="o">.</span><span class="n">hashValue</span><span class="p">,</span> <span class="n">height</span><span class="o">.</span><span class="n">hashValue</span><span class="p">,</span> <span class="n">attributedDisclaimer</span><span class="o">.</span><span class="n">hashValue</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
-
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
           <p>Copyright © 2016 Pixle. All rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

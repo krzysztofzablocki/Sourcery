@@ -19,3 +19,5 @@ no_changelog_entry = !git.modified_files.include?("CHANGELOG.md")
 if has_app_changes && no_changelog_entry && not_declared_trivial
   fail("Any changes to library code need a summary in the Changelog.")
 end
+
+jazzy.check fail: :modified

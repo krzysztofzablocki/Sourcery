@@ -27,6 +27,8 @@
 - Improved `AutoMockable.stencil` to support protocols with `init` methods
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`
 - Updated StencilSwiftKit to 1.0.2 which includes Stencil 0.9.0
+- Adding docset to release archive
+
 
 ## 0.6.0
 

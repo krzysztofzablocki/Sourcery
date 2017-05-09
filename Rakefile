@@ -39,13 +39,6 @@ def print_info(str)
   (red,clr) = (`tput colors`.chomp.to_i >= 8) ? %W(\e[33m \e[m) : ["", ""]
   puts red, "== #{str.chomp} ==", clr
 end
-
-desc "Update docs"
-task :docs do
-  print_info "Updating docs"
-  sh "sourcekitten doc --module-name SourceryFramework > docs.json && jazzy --clean --skip-undocumented && rm docs.json"
-end
-
 ## [ Tests & Clean ] ##########################################################
 
 desc "Run the Unit Tests"
@@ -67,11 +60,25 @@ task :build do
   sh %Q(rm -fr #{BUILD_DIR}tmp/)
 end
 
+## [ Docs ] ##########################################################
+
+desc "Update docs"
+task :docs do
+  print_info "Updating docs"
+  sh "sourcekitten doc --module-name SourceryRuntime > docs.json && bundle exec jazzy --clean --skip-undocumented && rm docs.json"
+end
+
+desc "Validate docs"
+task :validate_docs do
+  print_info "Checking docs are up to date"
+  sh "sourcekitten doc --module-name SourceryRuntime > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge && rm docs.json"
+end
+
 ## [ Release ] ##########################################################
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:check_versions, :build, :tests, :github, :cocoapods]
+  task :new => [:check_docs, :check_versions, :build, :tests, :github, :cocoapods]
 
   def podspec_version(file = 'Sourcery')
     JSON.parse(`bundle exec pod ipc spec #{file}.podspec`)["version"]
@@ -90,8 +97,18 @@ namespace :release do
     result
   end
 
+  desc 'Check if docs are up to date'
+  task :check_docs => [:validate_docs] do
+    results = []
+
+    docs_not_changed = `git diff --name-only` == ""
+    results << log_result(docs_not_changed, 'Docs are up to date', 'Please push updated docs first')
+    exit 1 unless results.all?
+  end
+
   desc 'Check if all versions from the podspecs, CHANGELOG and build settings match'
   task :check_versions do
+    print_info "Checking versions match"
     results = []
 
     # Check if bundler is installed first, as we'll need it for the cocoapods task (and we prefer to fail early)
@@ -120,10 +137,13 @@ namespace :release do
 
   desc 'Create a zip containing all the prebuilt binaries'
   task :zip => [:clean] do
+    print_info "Creating zip"
+
     sh %Q(mkdir -p "build")
     sh %Q(mkdir -p "build/Resources")
     sh %Q(cp -r bin build/)
     sh %Q(cp -r Templates build/)
+    sh %Q(cp -r docs/docsets/Sourcery.docset build/)
     `cp LICENSE README.md CHANGELOG.md build`
     `cp Resources/daemon.gif Resources/icon-128.png build/Resources`
     `cd build; zip -r -X sourcery-#{podspec_version}.zip .`

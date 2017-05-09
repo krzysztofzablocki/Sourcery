@@ -6,6 +6,7 @@ machine:
     XCODE_SCHEME: Sourcery
   post:
       - ln -s /Applications/Xcode-8.3.app /Applications/Xcode.app
+      - brew install sourcekitten
 
 test:
   override:
@@ -13,6 +14,7 @@ test:
       - xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO build | xcpretty
       - xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | tee $CIRCLE_ARTIFACTS/xcode_raw.log | xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
       - swift build
-  post:
+  pre:
       - bash <(curl -s https://codecov.io/bash)
-      - bundle exec danger
+      - rake validate_docs
+      - bundle exec danger || true
