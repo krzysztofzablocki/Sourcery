@@ -42,6 +42,10 @@ internal func == (lhs: AutoEquatableClassInheritedFromAutoEquatable, rhs: AutoEq
     guard compareOptionals(lhs: lhs.middleName, rhs: rhs.middleName, compare: ==) else { return false }
     return true
 }
+// MARK: - AutoEquatableProtocol AutoEquatable
+internal func == (lhs: AutoEquatableProtocol, rhs: AutoEquatableProtocol) -> Bool {
+    return true
+}
 // MARK: - AutoEquatableStruct AutoEquatable
 extension AutoEquatableStruct: Equatable {} 
 internal func == (lhs: AutoEquatableStruct, rhs: AutoEquatableStruct) -> Bool {

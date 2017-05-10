@@ -14,6 +14,12 @@ protocol Parent {
     var name: String { get }
 }
 
+/// General protocol
+protocol AutoEquatableProtocol: AutoEquatable {
+    var width: Double { get }
+    var height: Double { get}
+}
+
 /// General enum
 enum AutoEquatableEnum: AutoEquatable {
     case one
