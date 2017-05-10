@@ -100,11 +100,12 @@ If you want to attribute multiple items with same attributes, you can use sectio
 
 #### Rules:
 
-- Multiple annotations can occur on the same line
-- You can add multiline annotations. Multiple annotations values with the same key are merged into array
+- Multiple annotations can occur on the same line, separated with `,`
+- You can add multiline annotations
+- Multiple annotations values with the same key are merged into array
 - You can interleave annotations with documentation
 - Sourcery scans all `sourcery:` annotations in the given comment block above the source until first non-comment/doc line
-- Using `/*` and `*/` for annotation comment you can put it on the same line with your code. This is usefull for annotating methods parameters, enum case associated values. All such annotations should be placed in one comment block. When using inline annotations for enum cases, cases must be separated with `;`
+- Using `/*` and `*/` for annotation comment you can put it on the same line with your code. This is usefull for annotating methods parameters and enum case associated values. All such annotations should be placed in one comment block. Do not mix inline and regular annotations for the same declaration (usin inline and block annotations is fine)!
 
 #### Format:
 
