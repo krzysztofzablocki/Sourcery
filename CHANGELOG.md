@@ -22,6 +22,7 @@
 - Fixed creating cache folder when cache is disabled
 - Fixed parsing multiple enum cases annotations
 - Fixed parsing inline annotations when there is an access level or attribute
+- Fixed parsing `required` attribute
 
 ### Internal changes
 
