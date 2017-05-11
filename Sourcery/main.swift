@@ -102,7 +102,6 @@ func runCLI() {
              flag: "w",
              description: "Watch template for changes and regenerate as needed."),
         Flag("disableCache",
-             flag: "w",
              description: "Stops using cache."),
         Flag("verbose",
              flag: "v",
