@@ -30,16 +30,4 @@ enum AccessLevel: String {
             return ""
         }
     }
-
-    static var all: [AccessLevel] {
-        return [
-            .internal,
-            .private,
-            .fileprivate,
-            .public,
-            .open,
-            .none
-        ]
-    }
-
 }
