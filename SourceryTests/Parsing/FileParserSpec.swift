@@ -267,7 +267,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts cases with inline annotations properly") {
-                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: associatedValue */Int)\n /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
+                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: associatedValue */Int); /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
                                 .to(equal([
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
