@@ -92,10 +92,14 @@ internal struct AnnotationsParser {
         // `case` is not included in the key of enum case definition, so we strip it manually
         prefix = prefix.trimmingSuffix("case").trimmingCharacters(in: .whitespaces)
 
+        var inlineCommentFound = false
+
         while !prefix.isEmpty {
             guard prefix.hasSuffix("*/"), let commentStart = prefix.range(of: "/*", options: [.backwards]) else {
                 break
             }
+
+            inlineCommentFound = true
 
             let comment = prefix.substring(from: commentStart.lowerBound)
             for annotation in AnnotationsParser.parse(contents: comment)[0].annotations {
@@ -104,7 +108,7 @@ internal struct AnnotationsParser {
             prefix = prefix.substring(to: commentStart.lowerBound).trimmingCharacters(in: .whitespaces)
         }
 
-        guard prefix.isEmpty else {
+        if inlineCommentFound && !prefix.isEmpty {
             stop = true
             return annotations
         }

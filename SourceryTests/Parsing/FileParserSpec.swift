@@ -114,11 +114,11 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts annotations correctly") {
-                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                        let expectedType = Class(name: "Foo", accessLevel: .public, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
                         expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
 
-                        expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\n class Foo: TestProtocol { }"))
+                        expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\npublic class Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
                     }
                 }
