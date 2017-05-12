@@ -33,7 +33,7 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
     {% if not type.kind == "protocol" %}
     {% call compareVariables type.storedVariables %}
     {% else %}
-    {% call compareVariables type.computedVariables %}
+    {% call compareVariables type.allVariables %}
     {% endif %}
     return true
 }
