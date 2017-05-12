@@ -1,44 +1,40 @@
 //
-//  AutoCases.swift
+//  AutoHashable.swift
 //  Templates
 //
-//  Created by Anton Domashnev on 03.05.17.
+//  Created by Anton Domashnev on 12.05.17.
 //  Copyright © 2017 Pixle. All rights reserved.
 //
 
 import Foundation
 
-protocol AutoEquatable {}
-
-protocol Parent {
-    var name: String { get }
-}
+protocol AutoHashable {}
 
 /// General protocol
-protocol AutoEquatableProtocol: AutoEquatable {
+protocol AutoHashableProtocol: AutoHashable {
     var width: Double { get }
     var height: Double { get}
     static var name: String { get }
 }
 
 /// General enum
-enum AutoEquatableEnum: AutoEquatable {
+enum AutoHashableEnum: AutoHashable {
     case one
     case two(first: String, second: String)
     case three(bar: Int)
     
-    func allValue() -> [AutoEquatableEnum] {
+    func allValue() -> [AutoHashableEnum] {
         return [.one, .two(first: "a", second: "b"), .three(bar: 42)]
     }
 }
 
 /// Sourcery should not generate a default case for enum with only one case
-enum AutoEquatableEnumWithOneCase: AutoEquatable {
+enum AutoHashableEnumWithOneCase: AutoHashable {
     case one
 }
 
 /// Sourcery should generate correct code for struct
-struct AutoEquatableStruct: AutoEquatable {
+struct AutoHashableStruct: AutoHashable {
     // Constants
     let firstName: String
     let lastName: String
@@ -53,7 +49,7 @@ struct AutoEquatableStruct: AutoEquatable {
     
     // Optional variable
     var friends: [String]?
-
+    
     // Void method
     func walk() {
         print("I'm going")
@@ -71,7 +67,7 @@ struct AutoEquatableStruct: AutoEquatable {
 }
 
 /// It should generate correct code for general class
-class AutoEquatableClass: AutoEquatable {
+class AutoHashableClass: AutoHashable {
     // Constants
     let firstName: String
     let lastName: String
@@ -103,8 +99,8 @@ class AutoEquatableClass: AutoEquatable {
     }
 }
 
-/// Sourcery doesn't support inheritance for AutoEqualtable 
-class AutoEquatableClassInheritedFromAutoEquatable: AutoEquatableClass, AutoEquatable {
+/// Sourcery doesn't support inheritance for AutoEqualtable
+class AutoHashableClassInheritedFromAutoHashable: AutoHashableClass, AutoHashable {
     // Optional constants
     let middleName: String?
 }
