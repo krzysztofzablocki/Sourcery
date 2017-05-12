@@ -1,14 +1,6 @@
-//
-//  AutoCases.expected
-//  Templates
-//
-//  Created by Anton Domashnev on 03.05.17.
-//  Copyright © 2017 Pixle. All rights reserved.
-//
-
 extension AutoCasesEnum {
   static let count: Int = 4
-  static let allCases: [DefaultEnum] = [
+  static let allCases: [AutoCasesEnum] = [
     .north,
     .south,
     .east,
@@ -20,7 +12,8 @@ extension AutoCasesHasAssociatedValuesEnum {
 }
 extension AutoCasesOneValueEnum {
   static let count: Int = 1
-  static let allCases: [OneValueEnum] = [
+  static let allCases: [AutoCasesOneValueEnum] = [
     .one
   ]
 }
+

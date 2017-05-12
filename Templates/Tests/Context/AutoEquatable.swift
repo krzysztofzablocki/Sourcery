@@ -42,17 +42,25 @@ struct AutoEquatableStruct: AutoEquatable {
     // Constants
     let firstName: String
     let lastName: String
-    let age: Int
-    
+
+    init(firstName: String, lastName: String, parents: [Parent]) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.parents = parents
+    }
+
     // Arrays
     // sourcery: arrayEquality
     let parents: [Parent]
-    
+
     // Variable
-    var moneyInThePocket: Double
-    
+    var moneyInThePocket: Double = 0
+
     // Optional variable
     var friends: [String]?
+    
+    /// Forced unwrapped variable
+    var age: Int!
 
     // Void method
     func walk() {
@@ -75,14 +83,22 @@ class AutoEquatableClass: AutoEquatable {
     // Constants
     let firstName: String
     let lastName: String
-    let age: Int
+    
+    init(firstName: String, lastName: String, parents: [Parent]) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.parents = parents
+    }
     
     // Arrays
     // sourcery: arrayEquality
     let parents: [Parent]
     
+    /// Forced unwrapped variable
+    var age: Int!
+    
     // Variable
-    var moneyInThePocket: Double
+    var moneyInThePocket: Double = 0
     
     // Optional variable
     var friends: [String]?
@@ -104,7 +120,12 @@ class AutoEquatableClass: AutoEquatable {
 }
 
 /// Sourcery doesn't support inheritance for AutoEqualtable 
-class AutoEquatableClassInheritedFromAutoEquatable: AutoEquatableClass, AutoEquatable {
+class AutoEquatableClassInheritedFromAutoEquatable: AutoEquatableClass {
     // Optional constants
     let middleName: String?
+    
+    init(middleName: String?) {
+        self.middleName = middleName
+        super.init(firstName: "", lastName: "", parents: [])
+    }
 }

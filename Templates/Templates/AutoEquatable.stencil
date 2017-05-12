@@ -27,13 +27,13 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
 // MARK: - AutoEquatable for classes, protocols, structs
 {% for type in types.implementing.AutoEquatable|!enum %}
 // MARK: - {{ type.name }} AutoEquatable
-{% if not type.kind == "protocol" %}extension {{ type.name }}: Equatable {} {% endif %}
-{% if type.supertype.based.Equatable or type.supertype.implements.AutoEquatable %} THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoEquatable {% endif %}
+{% if not type.kind == "protocol" %}extension {{ type.name }}: Equatable {}{% endif %}
+{% if type.supertype.based.Equatable or type.supertype.implements.AutoEquatable %}THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoEquatable{% endif %}
 {{ type.accessLevel }} func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
     {% if not type.kind == "protocol" %}
     {% call compareVariables type.storedVariables %}
     {% else %}
-    {% call compareVariables type.computedVariables %}
+    {% call compareVariables type.allVariables %}
     {% endif %}
     return true
 }
@@ -46,8 +46,8 @@ extension {{ type.name }}: Equatable {}
 {{ type.accessLevel }} func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
     switch (lhs, rhs) {
     {% for case in type.cases %}
-    {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)): {% else %} case (.{{ case.name }}, .{{ case.name }}): {% endif %}
-        {% ifnot case.hasAssociatedValue %} return true {% else %}
+    {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
+        {% ifnot case.hasAssociatedValue %}return true{% else %}
         {% if case.associatedValues.count == 1 %}
         return lhs == rhs
         {% else %}
@@ -56,9 +56,7 @@ extension {{ type.name }}: Equatable {}
         {% endif %}
         {% endif %}
     {% endfor %}
-    {% if type.cases.count > 1 %}default: return false {% endif %}
+    {% if type.cases.count > 1 %}default: return false{% endif %}
     }
 }
 {% endfor %}
-
-// MARK: -

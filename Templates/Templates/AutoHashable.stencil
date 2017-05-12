@@ -17,14 +17,14 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
 }
 
 {% macro combineVariableHashes variables %}
-    return combineHashes([{% for variable in variables %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
+        return combineHashes([{% for variable in variables %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
 {% endmacro %}
 
 // MARK: - AutoHashable for classes, protocols, structs
 {% for type in types.implementing.AutoHashable %}{% if not type.kind == "enum" %}
 // MARK: - {{ type.name }} AutoHashable
 extension {{ type.name }}{% if not type.kind == "protocol" %}: Hashable{% endif %} {
-    {% if type.supertype.based.Hashable or type.supertype.implements.AutoHashable %} THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable {% endif %}
+    {% if type.supertype.based.Hashable or type.supertype.implements.AutoHashable %}THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable{% endif %}
     {{ type.accessLevel }} var hashValue: Int {
         {% if not type.kind == "protocol" %}
         {% call combineVariableHashes type.storedVariables %}
@@ -43,7 +43,7 @@ extension {{ type.name }}: Hashable {
     {{ type.accessLevel }} var hashValue: Int {
         switch self {
         {% for case in type.cases %}
-        {% if case.hasAssociatedValue %}case .{{ case.name }}(let data): {% else %} case .{{ case.name }}: {% endif %}
+        {% if case.hasAssociatedValue %}case .{{ case.name }}(let data):{% else %}case .{{ case.name }}:{% endif %}
             {% ifnot case.hasAssociatedValue %}
             {% if type.computedVariables.count == 0 %}
             return {{ forloop.counter }}.hashValue
@@ -62,5 +62,3 @@ extension {{ type.name }}: Hashable {
     }
 }
 {% endfor %}
-
-// MARK: -

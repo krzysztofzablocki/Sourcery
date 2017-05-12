@@ -24,26 +24,26 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
 // MARK: - AutoHashableClass AutoHashable
 extension AutoHashableClass: Hashable {
     internal var hashValue: Int {
-  return combineHashes([firstName.hashValue, lastName.hashValue, age.hashValue, parents.hashValue, moneyInThePocket.hashValue, friends?.hashValue ?? 0, 0])
+        return combineHashes([firstName.hashValue, lastName.hashValue, parents.hashValue, moneyInThePocket.hashValue, age?.hashValue ?? 0, friends?.hashValue ?? 0, 0])
     }
 }
 // MARK: - AutoHashableClassInheritedFromAutoHashable AutoHashable
 extension AutoHashableClassInheritedFromAutoHashable: Hashable {
-     THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable 
+    THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable
     internal var hashValue: Int {
-  return combineHashes([middleName?.hashValue ?? 0, 0])
+        return combineHashes([middleName?.hashValue ?? 0, 0])
     }
 }
 // MARK: - AutoHashableProtocol AutoHashable
 extension AutoHashableProtocol {
     internal var hashValue: Int {
-  return combineHashes([0])
+        return combineHashes([width.hashValue, height.hashValue, name.hashValue, 0])
     }
 }
 // MARK: - AutoHashableStruct AutoHashable
 extension AutoHashableStruct: Hashable {
     internal var hashValue: Int {
-  return combineHashes([firstName.hashValue, lastName.hashValue, age.hashValue, parents.hashValue, moneyInThePocket.hashValue, friends?.hashValue ?? 0, 0])
+        return combineHashes([firstName.hashValue, lastName.hashValue, parents.hashValue, moneyInThePocket.hashValue, age?.hashValue ?? 0, friends?.hashValue ?? 0, 0])
     }
 }
 
@@ -53,11 +53,11 @@ extension AutoHashableStruct: Hashable {
 extension AutoHashableEnum: Hashable {
     internal var hashValue: Int {
         switch self {
-         case .one: 
+        case .one:
             return 1.hashValue
-        case .two(let data): 
+        case .two(let data):
             return combineHashes([2, data.first.hashValue, data.second.hashValue])
-        case .three(let data): 
+        case .three(let data):
             return combineHashes([3, data.hashValue])
         }
     }
@@ -67,10 +67,8 @@ extension AutoHashableEnum: Hashable {
 extension AutoHashableEnumWithOneCase: Hashable {
     internal var hashValue: Int {
         switch self {
-         case .one: 
+        case .one:
             return 1.hashValue
         }
     }
 }
-
-// MARK: -

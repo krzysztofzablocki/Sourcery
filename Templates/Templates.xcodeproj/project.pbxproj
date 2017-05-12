@@ -22,6 +22,8 @@
 		6D342C941EBA155A006EEBEC /* AutoCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D342C931EBA155A006EEBEC /* AutoCases.swift */; };
 		6D342CA31EBA5415006EEBEC /* AutoCases.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D342CA11EBA35E9006EEBEC /* AutoCases.expected */; };
 		6D342CA41EBA54DF006EEBEC /* AutoCases.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C971EBA3156006EEBEC /* AutoCases.generated.swift */; };
+		6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C981EBA3156006EEBEC /* AutoEquatable.generated.swift */; };
+		6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C991EBA3156006EEBEC /* AutoHashable.generated.swift */; };
 		6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6DC27BD71EC6592700B73CAF /* AutoHashable.expected */; };
 		C03FD2E6F7645376C192094D /* Pods_TemplatesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */; };
 /* End PBXBuildFile section */
@@ -48,7 +50,7 @@
 		6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.generated.swift; sourceTree = "<group>"; };
 		6D342CA11EBA35E9006EEBEC /* AutoCases.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoCases.expected; sourceTree = "<group>"; };
 		6D6A24AA1EB79E8900C1FB1A /* TemplatesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TemplatesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6DC27BD71EC6592700B73CAF /* AutoHashable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoHashable.expected; sourceTree = "<group>"; };
+		6DC27BD71EC6592700B73CAF /* AutoHashable.expected */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoHashable.expected; sourceTree = "<group>"; };
 		8BC863822106BD763A8B145B /* Pods-TemplatesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AD6C4A9866B1F8FDB6B02DA5 /* Pods-TemplatesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -222,10 +224,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D342C901EBA146F006EEBEC /* Info.plist in Resources */,
 				6D342C841EBA13DF006EEBEC /* AutoEquatable.stencil in Resources */,
 				6D342C891EBA13DF006EEBEC /* LinuxMain.stencil in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
+				6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */,
 				6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */,
 				6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */,
 				6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */,

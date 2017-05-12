@@ -38,14 +38,22 @@ struct AutoHashableStruct: AutoHashable {
     // Constants
     let firstName: String
     let lastName: String
-    let age: Int
+    
+    init(firstName: String, lastName: String, parents: [Parent]) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.parents = parents
+    }
     
     // Arrays
     // sourcery: arrayEquality
     let parents: [Parent]
     
     // Variable
-    var moneyInThePocket: Double
+    var moneyInThePocket: Double = 0
+    
+    // Forced unwrapped variable
+    var age: Int!
     
     // Optional variable
     var friends: [String]?
@@ -71,14 +79,22 @@ class AutoHashableClass: AutoHashable {
     // Constants
     let firstName: String
     let lastName: String
-    let age: Int
+    
+    init(firstName: String, lastName: String, parents: [Parent]) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.parents = parents
+    }
     
     // Arrays
     // sourcery: arrayEquality
     let parents: [Parent]
     
     // Variable
-    var moneyInThePocket: Double
+    var moneyInThePocket: Double = 0
+    
+    // Forced unwrapped variable
+    var age: Int!
     
     // Optional variable
     var friends: [String]?
@@ -99,8 +115,13 @@ class AutoHashableClass: AutoHashable {
     }
 }
 
-/// Sourcery doesn't support inheritance for AutoEqualtable
-class AutoHashableClassInheritedFromAutoHashable: AutoHashableClass, AutoHashable {
+/// Sourcery doesn't support inheritance for AutoHashable
+class AutoHashableClassInheritedFromAutoHashable: AutoHashableClass {
     // Optional constants
     let middleName: String?
+    
+    init(middleName: String?) {
+        self.middleName = middleName
+        super.init(firstName: "", lastName: "", parents: [])
+    }
 }
