@@ -29,7 +29,7 @@ extension {{ type.name }}{% if not type.kind == "protocol" %}: Hashable{% endif 
         {% if not type.kind == "protocol" %}
         {% call combineVariableHashes type.storedVariables %}
         {% else %}
-        {% call combineVariableHashes type.computedVariables %}
+        {% call combineVariableHashes type.allVariables %}
         {% endif %}
     }
 }
