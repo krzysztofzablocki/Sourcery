@@ -48,6 +48,7 @@ GEM
       netrc (= 0.7.8)
     cocoapods-try (1.1.0)
     cocoapods-update-if-you-dare (0.1.1)
+    colored (1.2)
     colored2 (3.1.2)
     cork (0.3.0)
       colored2 (~> 3.1)
@@ -129,6 +130,7 @@ PLATFORMS
 DEPENDENCIES
   cocoapods
   cocoapods-update-if-you-dare (~> 0.1.1)
+  colored
   danger
   danger-jazzy
   jazzy
