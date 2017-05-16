@@ -1,5 +1,10 @@
-// Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
+//
+//  AutoLenses.expected.swift
+//  Templates
+//
+//  Created by Anton Domashnev on 16.05.17.
+//  Copyright © 2017 Pixle. All rights reserved.
+//
 
 infix operator *~: MultiplicationPrecedence
 infix operator |>: AdditionPrecedence

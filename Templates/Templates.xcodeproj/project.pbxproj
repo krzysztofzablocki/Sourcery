@@ -10,6 +10,9 @@
 		6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */; };
 		6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */; };
 		6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */; };
+		6D130B791ECACCDF00E9642A /* AutoLenses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D130B781ECACCDF00E9642A /* AutoLenses.swift */; };
+		6D130B7B1ECACD0F00E9642A /* AutoLenses.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */; };
+		6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C9A1EBA3156006EEBEC /* AutoLenses.generated.swift */; };
 		6D342C831EBA13DF006EEBEC /* AutoCases.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C7C1EBA13DF006EEBEC /* AutoCases.stencil */; };
 		6D342C841EBA13DF006EEBEC /* AutoEquatable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C7D1EBA13DF006EEBEC /* AutoEquatable.stencil */; };
 		6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C7E1EBA13DF006EEBEC /* AutoHashable.stencil */; };
@@ -33,6 +36,8 @@
 		6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoEquatable.swift; sourceTree = "<group>"; };
 		6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoEquatable.expected; sourceTree = "<group>"; };
 		6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoHashable.swift; sourceTree = "<group>"; };
+		6D130B781ECACCDF00E9642A /* AutoLenses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoLenses.swift; sourceTree = "<group>"; };
+		6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoLenses.expected; sourceTree = "<group>"; };
 		6D342C7C1EBA13DF006EEBEC /* AutoCases.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoCases.stencil; sourceTree = "<group>"; };
 		6D342C7D1EBA13DF006EEBEC /* AutoEquatable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoEquatable.stencil; sourceTree = "<group>"; };
 		6D342C7E1EBA13DF006EEBEC /* AutoHashable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoHashable.stencil; sourceTree = "<group>"; };
@@ -46,7 +51,7 @@
 		6D342C971EBA3156006EEBEC /* AutoCases.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoCases.generated.swift; sourceTree = "<group>"; };
 		6D342C981EBA3156006EEBEC /* AutoEquatable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoEquatable.generated.swift; sourceTree = "<group>"; };
 		6D342C991EBA3156006EEBEC /* AutoHashable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoHashable.generated.swift; sourceTree = "<group>"; };
-		6D342C9A1EBA3156006EEBEC /* AutoLenses.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoLenses.generated.swift; sourceTree = "<group>"; };
+		6D342C9A1EBA3156006EEBEC /* AutoLenses.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoLenses.generated.swift; sourceTree = "<group>"; };
 		6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.generated.swift; sourceTree = "<group>"; };
 		6D342CA11EBA35E9006EEBEC /* AutoCases.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoCases.expected; sourceTree = "<group>"; };
 		6D6A24AA1EB79E8900C1FB1A /* TemplatesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TemplatesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,6 +90,7 @@
 				6D342C931EBA155A006EEBEC /* AutoCases.swift */,
 				6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */,
 				6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */,
+				6D130B781ECACCDF00E9642A /* AutoLenses.swift */,
 			);
 			path = Context;
 			sourceTree = "<group>";
@@ -95,6 +101,7 @@
 				6DC27BD71EC6592700B73CAF /* AutoHashable.expected */,
 				6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */,
 				6D342CA11EBA35E9006EEBEC /* AutoCases.expected */,
+				6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */,
 			);
 			path = Expected;
 			sourceTree = "<group>";
@@ -226,8 +233,10 @@
 			files = (
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D342C901EBA146F006EEBEC /* Info.plist in Resources */,
+				6D130B7B1ECACD0F00E9642A /* AutoLenses.expected in Resources */,
 				6D342C841EBA13DF006EEBEC /* AutoEquatable.stencil in Resources */,
 				6D342C891EBA13DF006EEBEC /* LinuxMain.stencil in Resources */,
+				6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
 				6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */,
 				6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */,
@@ -311,6 +320,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */,
+				6D130B791ECACCDF00E9642A /* AutoLenses.swift in Sources */,
 				6D342C941EBA155A006EEBEC /* AutoCases.swift in Sources */,
 				6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */,
 				6D342C911EBA146F006EEBEC /* TemplatesTests.swift in Sources */,
