@@ -51,5 +51,11 @@ class TemplatesTests: QuickSpec {
                 check(template: "AutoLenses")
             }
         }
+        
+        describe("AutoMockable template") {
+            it("generates expected code") {
+                check(template: "AutoMockable")
+            }
+        }
     }
 }

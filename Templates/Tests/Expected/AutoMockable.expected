@@ -1,5 +1,10 @@
-// Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
+//
+//  AutoMockable.expected.swift
+//  Templates
+//
+//  Created by Anton Domashnev on 17.05.17.
+//  Copyright © 2017 Pixle. All rights reserved.
+//
 
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
