@@ -57,5 +57,11 @@ class TemplatesTests: QuickSpec {
                 check(template: "AutoMockable")
             }
         }
+        
+        describe("LinuxMain template") {
+            it("generates expected code") {
+                check(template: "LinuxMain")
+            }
+        }
     }
 }

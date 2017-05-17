@@ -1,4 +1,5 @@
 import XCTest
+
 {{ argument.testimports }}
 {% for type in types.classes|based:"XCTestCase" %}
 {% if not type.annotations.disableTests %}extension {{ type.name }} {

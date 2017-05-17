@@ -30,6 +30,9 @@
 		6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D6645C21ECC1824004C1948 /* AutoMockable.expected */; };
 		6D6645C51ECC184A004C1948 /* AutoMockable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6645C41ECC184A004C1948 /* AutoMockable.swift */; };
 		6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D6645C01ECC181A004C1948 /* AutoMockable.generated.swift */; };
+		6D6645C81ECC2187004C1948 /* LinuxMain.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D6645C71ECC2187004C1948 /* LinuxMain.expected */; };
+		6D6645CA1ECC219C004C1948 /* LinuxMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6645C91ECC219C004C1948 /* LinuxMain.swift */; };
+		6D6645CB1ECC22A3004C1948 /* LinuxMain.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */; };
 		6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6DC27BD71EC6592700B73CAF /* AutoHashable.expected */; };
 		C03FD2E6F7645376C192094D /* Pods_TemplatesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */; };
 /* End PBXBuildFile section */
@@ -55,11 +58,13 @@
 		6D342C981EBA3156006EEBEC /* AutoEquatable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoEquatable.generated.swift; sourceTree = "<group>"; };
 		6D342C991EBA3156006EEBEC /* AutoHashable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoHashable.generated.swift; sourceTree = "<group>"; };
 		6D342C9A1EBA3156006EEBEC /* AutoLenses.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoLenses.generated.swift; sourceTree = "<group>"; };
-		6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.generated.swift; sourceTree = "<group>"; };
+		6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = LinuxMain.generated.swift; sourceTree = "<group>"; };
 		6D342CA11EBA35E9006EEBEC /* AutoCases.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoCases.expected; sourceTree = "<group>"; };
 		6D6645C01ECC181A004C1948 /* AutoMockable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoMockable.generated.swift; sourceTree = "<group>"; };
 		6D6645C21ECC1824004C1948 /* AutoMockable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoMockable.expected; sourceTree = "<group>"; };
 		6D6645C41ECC184A004C1948 /* AutoMockable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoMockable.swift; sourceTree = "<group>"; };
+		6D6645C71ECC2187004C1948 /* LinuxMain.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LinuxMain.expected; sourceTree = "<group>"; };
+		6D6645C91ECC219C004C1948 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
 		6D6A24AA1EB79E8900C1FB1A /* TemplatesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TemplatesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DC27BD71EC6592700B73CAF /* AutoHashable.expected */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoHashable.expected; sourceTree = "<group>"; };
 		8BC863822106BD763A8B145B /* Pods-TemplatesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -98,6 +103,7 @@
 				6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */,
 				6D130B781ECACCDF00E9642A /* AutoLenses.swift */,
 				6D6645C41ECC184A004C1948 /* AutoMockable.swift */,
+				6D6645C91ECC219C004C1948 /* LinuxMain.swift */,
 			);
 			path = Context;
 			sourceTree = "<group>";
@@ -110,6 +116,7 @@
 				6D342CA11EBA35E9006EEBEC /* AutoCases.expected */,
 				6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */,
 				6D6645C21ECC1824004C1948 /* AutoMockable.expected */,
+				6D6645C71ECC2187004C1948 /* LinuxMain.expected */,
 			);
 			path = Expected;
 			sourceTree = "<group>";
@@ -154,8 +161,8 @@
 				6D342C7E1EBA13DF006EEBEC /* AutoHashable.stencil */,
 				6D342C7F1EBA13DF006EEBEC /* AutoLenses.stencil */,
 				6D342C801EBA13DF006EEBEC /* AutoMockable.stencil */,
-				6D342C811EBA13DF006EEBEC /* Decorator.swifttemplate */,
 				6D342C821EBA13DF006EEBEC /* LinuxMain.stencil */,
+				6D342C811EBA13DF006EEBEC /* Decorator.swifttemplate */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -243,6 +250,8 @@
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
+				6D6645CB1ECC22A3004C1948 /* LinuxMain.generated.swift in Resources */,
+				6D6645C81ECC2187004C1948 /* LinuxMain.expected in Resources */,
 				6D342C901EBA146F006EEBEC /* Info.plist in Resources */,
 				6D130B7B1ECACD0F00E9642A /* AutoLenses.expected in Resources */,
 				6D342C841EBA13DF006EEBEC /* AutoEquatable.stencil in Resources */,
@@ -336,6 +345,7 @@
 				6D6645C51ECC184A004C1948 /* AutoMockable.swift in Sources */,
 				6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */,
 				6D342C911EBA146F006EEBEC /* TemplatesTests.swift in Sources */,
+				6D6645CA1ECC219C004C1948 /* LinuxMain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
