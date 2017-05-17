@@ -411,10 +411,10 @@ extension Sourcery {
                     try writeIfChanged(generatedBody, to: path)
                 } else {
                     if prune && outputPath.exists {
-                        track("Removing \(path) as it is empty.")
+                        Log.info("Removing \(path) as it is empty.")
                         do { try outputPath.delete() } catch { track("\(error)") }
                     } else {
-                        track("Skipping \(path) as it is empty.")
+                        Log.info("Skipping \(path) as it is empty.")
                     }
                 }
             })
