@@ -114,11 +114,11 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts annotations correctly") {
-                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                        let expectedType = Class(name: "Foo", accessLevel: .public, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
                         expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
 
-                        expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\n class Foo: TestProtocol { }"))
+                        expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\npublic class Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
                     }
                 }
@@ -267,7 +267,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts cases with inline annotations properly") {
-                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: associatedValue */Int)\n /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
+                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: associatedValue */Int); /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
                                 .to(equal([
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [

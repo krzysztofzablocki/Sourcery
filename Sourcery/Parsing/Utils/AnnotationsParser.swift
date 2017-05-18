@@ -30,6 +30,7 @@ internal struct AnnotationsParser {
         let content: String
         let type: LineType
         let annotations: Annotations
+        let blockAnnotations: Annotations
     }
 
     private let lines: [Line]
@@ -87,15 +88,19 @@ internal struct AnnotationsParser {
             .trimmingCharacters(in: .whitespaces)
 
         guard !prefix.isEmpty else { return [:] }
-        var annotations = sourceLine.annotations //get block annotations for this line
+        var annotations = sourceLine.blockAnnotations //get block annotations for this line
 
         // `case` is not included in the key of enum case definition, so we strip it manually
         prefix = prefix.trimmingSuffix("case").trimmingCharacters(in: .whitespaces)
+
+        var inlineCommentFound = false
 
         while !prefix.isEmpty {
             guard prefix.hasSuffix("*/"), let commentStart = prefix.range(of: "/*", options: [.backwards]) else {
                 break
             }
+
+            inlineCommentFound = true
 
             let comment = prefix.substring(from: commentStart.lowerBound)
             for annotation in AnnotationsParser.parse(contents: comment)[0].annotations {
@@ -104,7 +109,7 @@ internal struct AnnotationsParser {
             prefix = prefix.substring(to: commentStart.lowerBound).trimmingCharacters(in: .whitespaces)
         }
 
-        guard prefix.isEmpty else {
+        if inlineCommentFound && !prefix.isEmpty {
             stop = true
             return annotations
         }
@@ -159,7 +164,8 @@ internal struct AnnotationsParser {
 
                     return Line(content: line.content,
                                 type: type,
-                                annotations: annotations)
+                                annotations: annotations,
+                                blockAnnotations: annotationsBlock ?? [:])
                 }
     }
 

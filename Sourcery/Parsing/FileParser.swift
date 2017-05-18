@@ -696,12 +696,13 @@ extension FileParser {
             attributesValue.map({ $0.values }).joined()
                 .flatMap(Attribute.Identifier.init(identifier:))
                 .forEach {
-                    let attributeRange = prefix.range(of: $0.description, options: .backwards)
-
+                    var attributeRange = prefix.range(of: $0.description, options: .backwards)
                     // we expect all attributes to be prefixed with `@`
-                    // but `convenience` attribute does not need it...
-                    if $0 == Attribute.Identifier.convenience {
+                    // but `convenience` and `required` attribute does not need it...
+                    if $0 == Attribute.Identifier.convenience || $0 == Attribute.Identifier.required {
                         prefix = prefix.replacingCharacters(in: attributeRange, with: "@\($0)") as NSString
+                        attributeRange.length += 1
+                        attributeRange.location -= 1
                     }
                     ranges.append(attributeRange)
             }

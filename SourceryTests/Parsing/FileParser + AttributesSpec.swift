@@ -58,9 +58,10 @@ class FileParserAttributesSpec: QuickSpec {
                     "objc": Attribute(name: "objc", arguments: ["some": NSNumber(value: true)], description: "@objc(some)")
                     ]))
 
-                expect(parse("class Foo { @nonobjc convenience init() {} }").first?.initializers.first?.attributes).to(equal([
+                expect(parse("class Foo { @nonobjc convenience required init() {} }").first?.initializers.first?.attributes).to(equal([
                     "nonobjc": Attribute(name: "nonobjc"),
-                    "convenience": Attribute(name: "convenience", description: "convenience")
+                    "convenience": Attribute(name: "convenience", description: "convenience"),
+                    "required": Attribute(name: "required", description: "required")
                     ]))
             }
 

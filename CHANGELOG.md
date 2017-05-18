@@ -21,6 +21,8 @@
 - Fixed typo in `isConvenienceInitialiser` property
 - Fixed creating cache folder when cache is disabled
 - Fixed parsing multiple enum cases annotations
+- Fixed parsing inline annotations when there is an access level or attribute
+- Fixed parsing `required` attribute
 
 ### Internal changes
 
@@ -29,6 +31,7 @@
 - Updated StencilSwiftKit to 1.0.2 which includes Stencil 0.9.0
 - Adding docset to release archive
 - Add tests for bundled stencil templates
+- Moved to CocoaPods 1.2.1
 
 
 ## 0.6.0

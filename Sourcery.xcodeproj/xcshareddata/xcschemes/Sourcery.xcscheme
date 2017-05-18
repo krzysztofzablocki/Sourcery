@@ -89,18 +89,6 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "--help"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--config"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "/Users/ilya/Documents/Developer/iPhoneProjects/Insanity"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--disableCache"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
