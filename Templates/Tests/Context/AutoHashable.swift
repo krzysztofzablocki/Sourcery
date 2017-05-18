@@ -116,7 +116,7 @@ class AutoHashableClass: AutoHashable {
 }
 
 /// Sourcery doesn't support inheritance for AutoHashable
-class AutoHashableClassInheritedFromAutoHashable: AutoHashableClass {
+class AutoHashableClassInherited: AutoHashableClass {
     // Optional constants
     let middleName: String?
 

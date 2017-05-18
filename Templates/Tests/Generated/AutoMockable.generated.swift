@@ -1,6 +1,8 @@
 // Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+// swiftlint:disable line_length
+
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
@@ -8,9 +10,10 @@ import UIKit
 import AppKit
 #endif
 
+
 class BasicProtocolMock: BasicProtocol {
 
-    // MARK: - loadConfiguration
+    //MARK: - loadConfiguration
 
     var loadConfigurationCalled = false
     var loadConfigurationReturnValue: String?!
@@ -19,7 +22,7 @@ class BasicProtocolMock: BasicProtocol {
         loadConfigurationCalled = true
         return loadConfigurationReturnValue
     }
-    // MARK: - save
+    //MARK: - save
 
     var saveCalled = false
     var saveReceivedConfiguration: String?
@@ -31,21 +34,21 @@ class BasicProtocolMock: BasicProtocol {
 }
 class InitializationProtocolMock: InitializationProtocol {
 
-    // MARK: - init
+    //MARK: - init
 
     var initReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
         initReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
     }
-    // MARK: - start
+    //MARK: - start
 
     var startCalled = false
 
     func start() {
         startCalled = true
     }
-    // MARK: - stop
+    //MARK: - stop
 
     var stopCalled = false
 

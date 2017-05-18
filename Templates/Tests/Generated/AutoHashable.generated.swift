@@ -2,6 +2,7 @@
 // DO NOT EDIT
 
 // swiftlint:disable file_length
+// swiftlint:disable line_length
 
 fileprivate func combineHashes(_ hashes: [Int]) -> Int {
     return hashes.reduce(0, combineHashValues)
@@ -19,6 +20,7 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
     return Int(bitPattern: lhs)
 }
 
+
 // MARK: - AutoHashable for classes, protocols, structs
 // MARK: - AutoHashableClass AutoHashable
 extension AutoHashableClass: Hashable {
@@ -26,8 +28,8 @@ extension AutoHashableClass: Hashable {
         return combineHashes([firstName.hashValue, lastName.hashValue, parents.hashValue, moneyInThePocket.hashValue, age?.hashValue ?? 0, friends?.hashValue ?? 0, 0])
     }
 }
-// MARK: - AutoHashableClassInheritedFromAutoHashable AutoHashable
-extension AutoHashableClassInheritedFromAutoHashable: Hashable {
+// MARK: - AutoHashableClassInherited AutoHashable
+extension AutoHashableClassInherited: Hashable {
     THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable
     internal var hashValue: Int {
         return combineHashes([middleName?.hashValue ?? 0, 0])

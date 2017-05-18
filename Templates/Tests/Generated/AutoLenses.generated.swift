@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+// swiftlint:disable variable_name
 infix operator *~: MultiplicationPrecedence
 infix operator |>: AdditionPrecedence
 
@@ -51,7 +52,7 @@ extension House {
 extension Person {
   static let nameLens = Lens<Person, String>(
     get: { $0.name },
-    set: { name, _ in
+    set: { name, person in
        Person(name: name)
     }
   )

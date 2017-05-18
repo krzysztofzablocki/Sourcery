@@ -120,7 +120,7 @@ class AutoEquatableClass: AutoEquatable {
 }
 
 /// Sourcery doesn't support inheritance for AutoEqualtable 
-class AutoEquatableClassInheritedFromAutoEquatable: AutoEquatableClass {
+class AutoEquatableClassInherited: AutoEquatableClass {
     // Optional constants
     let middleName: String?
 

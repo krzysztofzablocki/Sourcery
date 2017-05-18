@@ -1,3 +1,5 @@
+// swiftlint:disable line_length
+
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit

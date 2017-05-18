@@ -22,6 +22,7 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
     return true
 }
 
+
 // MARK: - AutoEquatable for classes, protocols, structs
 // MARK: - AutoEquatableClass AutoEquatable
 extension AutoEquatableClass: Equatable {}
@@ -34,10 +35,10 @@ internal func == (lhs: AutoEquatableClass, rhs: AutoEquatableClass) -> Bool {
     guard compareOptionals(lhs: lhs.friends, rhs: rhs.friends, compare: ==) else { return false }
     return true
 }
-// MARK: - AutoEquatableClassInheritedFromAutoEquatable AutoEquatable
-extension AutoEquatableClassInheritedFromAutoEquatable: Equatable {}
+// MARK: - AutoEquatableClassInherited AutoEquatable
+extension AutoEquatableClassInherited: Equatable {}
 THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoEquatable
-internal func == (lhs: AutoEquatableClassInheritedFromAutoEquatable, rhs: AutoEquatableClassInheritedFromAutoEquatable) -> Bool {
+internal func == (lhs: AutoEquatableClassInherited, rhs: AutoEquatableClassInherited) -> Bool {
     guard compareOptionals(lhs: lhs.middleName, rhs: rhs.middleName, compare: ==) else { return false }
     return true
 }

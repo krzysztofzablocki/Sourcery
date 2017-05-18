@@ -1,4 +1,5 @@
 // swiftlint:disable file_length
+// swiftlint:disable line_length
 
 fileprivate func combineHashes(_ hashes: [Int]) -> Int {
     return hashes.reduce(0, combineHashValues)
