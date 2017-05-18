@@ -16,6 +16,7 @@ internal struct AnnotationsParser {
         case annotations(Annotations)
         case end
         case inlineStart
+        case file(Annotations)
     }
 
     private struct Line {
@@ -26,6 +27,7 @@ internal struct AnnotationsParser {
             case other
             case inlineStart
             case inlineEnd
+            case file
         }
         let content: String
         let type: LineType
@@ -132,6 +134,7 @@ internal struct AnnotationsParser {
 
     private static func parse(contents: String) -> [Line] {
         var annotationsBlock: Annotations?
+        var fileAnnotationsBlock = Annotations()
         return contents.lines()
                 .map { line in
                     let content = line.content.trimmingCharacters(in: .whitespaces)
@@ -155,10 +158,19 @@ internal struct AnnotationsParser {
                             }
                         case .inlineStart:
                             type = .inlineStart
+                        case let .file(items):
+                            type = .file
+                            items.forEach {
+                                fileAnnotationsBlock[$0.key] = $0.value
+                            }
                         }
                     }
 
                     annotationsBlock?.forEach { annotation in
+                        annotations[annotation.key] = annotation.value
+                    }
+                    
+                    fileAnnotationsBlock.forEach { annotation in
                         annotations[annotation.key] = annotation.value
                     }
 
@@ -178,7 +190,8 @@ internal struct AnnotationsParser {
 
         let lowerBound: String.CharacterView.Index?
         let upperBound: String.CharacterView.Index?
-        let insideBlock: Bool
+        var insideBlock: Bool = false
+        var insideFileBlock: Bool = false
 
         if commentLine.contains("sourcery:begin:") {
             lowerBound = commentLine.range(of: "sourcery:begin:")?.upperBound
@@ -186,6 +199,10 @@ internal struct AnnotationsParser {
             insideBlock = true
         } else if commentLine.contains("sourcery:end") {
             return .end
+        } else if commentLine.contains("sourcery:file") {
+            lowerBound = commentLine.range(of: "sourcery:file:")?.upperBound
+            upperBound = commentLine.characters.indices.endIndex
+            insideFileBlock = true
         } else {
             insideBlock = false
             lowerBound = commentLine.range(of: "sourcery:")?.upperBound
@@ -198,7 +215,7 @@ internal struct AnnotationsParser {
 
         if let lowerBound = lowerBound, let upperBound = upperBound {
             let annotations = AnnotationsParser.parse(line: commentLine.substring(with: lowerBound ..< upperBound))
-            return insideBlock ? .begin(annotations) : .annotations(annotations)
+            return insideBlock ? .begin(annotations) : insideFileBlock ? .file(annotations) : .annotations(annotations)
         } else {
             return .annotations([:])
         }
