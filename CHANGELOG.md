@@ -28,6 +28,7 @@
 - Improved `AutoCases.stencil` to use `let` instead of computed `var`
 - Updated StencilSwiftKit to 1.0.2 which includes Stencil 0.9.0
 - Adding docset to release archive
+- Add tests for bundled stencil templates
 
 
 ## 0.6.0
