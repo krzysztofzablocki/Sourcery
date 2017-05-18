@@ -20,4 +20,3 @@ XCTMain([
   testCase(AutoInjectionTests.allTests),
   testCase(AutoWiringTests.allTests),
 ])
-

@@ -26,7 +26,7 @@ enum AutoEquatableEnum: AutoEquatable {
     case one
     case two(first: String, second: String)
     case three(bar: Int)
-    
+
     func allValue() -> [AutoEquatableEnum] {
         return [.one, .two(first: "a", second: "b"), .three(bar: 42)]
     }
@@ -58,7 +58,7 @@ struct AutoEquatableStruct: AutoEquatable {
 
     // Optional variable
     var friends: [String]?
-    
+
     /// Forced unwrapped variable
     var age: Int!
 
@@ -66,12 +66,12 @@ struct AutoEquatableStruct: AutoEquatable {
     func walk() {
         print("I'm going")
     }
-    
+
     // Method with return value
     func greeting(for name: String) -> String {
         return "Hi \(name)!"
     }
-    
+
     // Method with optional return value
     func books(sharedWith name: String) -> String? {
         return nil
@@ -83,36 +83,36 @@ class AutoEquatableClass: AutoEquatable {
     // Constants
     let firstName: String
     let lastName: String
-    
+
     init(firstName: String, lastName: String, parents: [Parent]) {
         self.firstName = firstName
         self.lastName = lastName
         self.parents = parents
     }
-    
+
     // Arrays
     // sourcery: arrayEquality
     let parents: [Parent]
-    
+
     /// Forced unwrapped variable
     var age: Int!
-    
+
     // Variable
     var moneyInThePocket: Double = 0
-    
+
     // Optional variable
     var friends: [String]?
-    
+
     // Void method
     func walk() {
         print("I'm going")
     }
-    
+
     // Method with return value
     func greeting(for name: String) -> String {
         return "Hi \(name)!"
     }
-    
+
     // Method with optional return value
     func books(sharedWith name: String) -> String? {
         return nil
@@ -123,7 +123,7 @@ class AutoEquatableClass: AutoEquatable {
 class AutoEquatableClassInheritedFromAutoEquatable: AutoEquatableClass {
     // Optional constants
     let middleName: String?
-    
+
     init(middleName: String?) {
         self.middleName = middleName
         super.init(firstName: "", lastName: "", parents: [])

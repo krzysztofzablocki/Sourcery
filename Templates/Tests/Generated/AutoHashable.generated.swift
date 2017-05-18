@@ -19,7 +19,6 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
     return Int(bitPattern: lhs)
 }
 
-
 // MARK: - AutoHashable for classes, protocols, structs
 // MARK: - AutoHashableClass AutoHashable
 extension AutoHashableClass: Hashable {

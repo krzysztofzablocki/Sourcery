@@ -51,7 +51,7 @@ extension House {
 extension Person {
   static let nameLens = Lens<Person, String>(
     get: { $0.name },
-    set: { name, person in
+    set: { name, _ in
        Person(name: name)
     }
   )

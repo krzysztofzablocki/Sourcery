@@ -22,7 +22,6 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
     return true
 }
 
-
 // MARK: - AutoEquatable for classes, protocols, structs
 // MARK: - AutoEquatableClass AutoEquatable
 extension AutoEquatableClass: Equatable {}

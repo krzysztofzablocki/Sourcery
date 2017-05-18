@@ -300,7 +300,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Scripts/SwiftLint.sh\"";
+			shellScript = "\"${SRCROOT}/../Scripts/SwiftLint.sh\"";
 		};
 		7139144942C834B5880D5184 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
