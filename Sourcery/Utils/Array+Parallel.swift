@@ -6,12 +6,12 @@
 import Foundation
 
 extension Array {
-    func parallelFlatMap<T>(transform: @escaping ((Element) -> [T])) -> [T] {
+    func parallelFlatMap<T>(transform: ((Element) -> [T])) -> [T] {
         return parallelMap(transform).flatMap { $0 }
     }
 
     /// We have to roll our own solution because concurrentPerform will use slowPath if no NSApplication is available
-    func parallelMap<T>(_ transform: @escaping ((Element) -> T), progress: ((Int) -> Void)? = nil) -> [T] {
+    func parallelMap<T>(_ transform: ((Element) -> T), progress: ((Int) -> Void)? = nil) -> [T] {
         let count = self.count
         let maxConcurrentJobs = ProcessInfo.processInfo.activeProcessorCount
 
@@ -29,17 +29,19 @@ extension Array {
         let queueLabelPrefix = "io.pixle.Sourcery.map.\(uuid)"
         let resultAccumulatorQueue = DispatchQueue(label: "\(queueLabelPrefix).resultAccumulator")
 
-        for jobIndex in stride(from: 0, to: count, by: jobCount) {
-            let queue = DispatchQueue(label: "\(queueLabelPrefix).\(jobIndex / jobCount)")
-            queue.async(group: group) {
-                let jobElements = self[jobIndex..<Swift.min(count, jobIndex + jobCount)]
-                let jobIndexAndResults = (jobIndex, jobElements.map(transform))
-                resultAccumulatorQueue.sync {
-                    result.append(jobIndexAndResults)
+        withoutActuallyEscaping(transform) { escapingtransform in
+            for jobIndex in stride(from: 0, to: count, by: jobCount) {
+                let queue = DispatchQueue(label: "\(queueLabelPrefix).\(jobIndex / jobCount)")
+                queue.async(group: group) {
+                    let jobElements = self[jobIndex..<Swift.min(count, jobIndex + jobCount)]
+                    let jobIndexAndResults = (jobIndex, jobElements.map(escapingtransform))
+                    resultAccumulatorQueue.sync {
+                        result.append(jobIndexAndResults)
+                    }
                 }
             }
+            group.wait()
         }
-        group.wait()
         return result.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
     }
 }
