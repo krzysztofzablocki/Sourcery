@@ -162,7 +162,7 @@ class SwiftTemplate: Template {
                 "-Onone",
                 "-module-name", "main",
                 "-target", "x86_64-apple-macosx10.10",
-                "-F", ".",
+                "-F", buildDir.parent().description,
                 "-o", binaryFile.description
         ]
 
