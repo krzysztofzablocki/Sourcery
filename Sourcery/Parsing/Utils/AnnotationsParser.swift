@@ -204,7 +204,6 @@ internal struct AnnotationsParser {
             upperBound = commentLine.characters.indices.endIndex
             insideFileBlock = true
         } else {
-            insideBlock = false
             lowerBound = commentLine.range(of: "sourcery:")?.upperBound
             if commentLine.hasPrefix("//") {
                 upperBound = commentLine.characters.indices.endIndex
@@ -215,7 +214,13 @@ internal struct AnnotationsParser {
 
         if let lowerBound = lowerBound, let upperBound = upperBound {
             let annotations = AnnotationsParser.parse(line: commentLine.substring(with: lowerBound ..< upperBound))
-            return insideBlock ? .begin(annotations) : insideFileBlock ? .file(annotations) : .annotations(annotations)
+            if insideBlock {
+                return .begin(annotations)
+            } else if insideFileBlock {
+                return .file(annotations)
+            } else {
+                return .annotations(annotations)
+            }
         } else {
             return .annotations([:])
         }
