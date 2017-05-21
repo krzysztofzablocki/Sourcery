@@ -51,7 +51,6 @@
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
 		64E201AA1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
-		64E201AB1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */; };
 		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
@@ -111,20 +110,6 @@
 			remoteInfo = Sourcery;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		CD754CB41D85431F0082B512 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				64E201AB1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + MethodsSpec.swift"; sourceTree = "<group>"; };
@@ -617,7 +602,7 @@
 				CD754C891D853F000082B512 /* Resources */,
 				C7CDE8D445443BF7F4CF3AEB /* [CP] Embed Pods Frameworks */,
 				A7A107008E6572DA90B257F6 /* [CP] Copy Pods Resources */,
-				CD754CB41D85431F0082B512 /* Embed Frameworks */,
+				63F19A081ED109A90046D2EE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -759,6 +744,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		63F19A081ED109A90046D2EE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/rsync -av \"${BUILT_PRODUCTS_DIR}/SourceryRuntime.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"";
 		};
 		8E96ACE81324E260FA5DCECB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

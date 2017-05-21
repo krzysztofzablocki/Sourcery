@@ -121,8 +121,11 @@ class SwiftTemplate: Template {
     func render(types: Types, arguments: [String: NSObject]) throws -> String {
         let binaryPath: Path
 
-        if let cachePath = cachePath, let hash = code.sha256() {
-            binaryPath = cachePath + hash
+        if let cachePath = cachePath,
+            let hash = code.sha256(),
+            let hashPath = hash.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics) {
+            
+            binaryPath = cachePath + hashPath
             if !binaryPath.exists {
                 try? cachePath.delete() // clear old cache
                 try cachePath.mkdir()
@@ -162,7 +165,7 @@ class SwiftTemplate: Template {
                 "-Onone",
                 "-module-name", "main",
                 "-target", "x86_64-apple-macosx10.10",
-                "-F", ".",
+                "-F", buildDir.parent().description,
                 "-o", binaryFile.description
         ]
 
