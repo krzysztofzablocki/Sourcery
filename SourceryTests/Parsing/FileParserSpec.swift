@@ -49,7 +49,7 @@ class FileParserSpec: QuickSpec {
                                 "}")
                         expect(result).to(equal([expectedType]))
                     }
-                    
+
                     it("extracts file annotation block") {
                         let annotations: [[String: NSObject]] = [
                             ["fileAnnotation": NSNumber(value: true), "skipEquality": NSNumber(value: true)],
@@ -59,7 +59,7 @@ class FileParserSpec: QuickSpec {
                         let expectedVariables = (1...3)
                             .map { Variable(name: "property\($0)", typeName: TypeName("Int"), annotations: annotations[$0 - 1]) }
                         let expectedType = Class(name: "Foo", variables: expectedVariables, annotations: ["fileAnnotation": NSNumber(value: true), "skipEquality": NSNumber(value: true)])
-                        
+
                         let result = parse("// sourcery:file: fileAnnotation\n" +
                             "// sourcery:begin: skipEquality\n\n\n\n" +
                             "class Foo {\n" +

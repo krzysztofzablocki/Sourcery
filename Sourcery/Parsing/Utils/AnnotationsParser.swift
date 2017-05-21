@@ -169,7 +169,7 @@ internal struct AnnotationsParser {
                     annotationsBlock?.forEach { annotation in
                         annotations[annotation.key] = annotation.value
                     }
-                    
+
                     fileAnnotationsBlock.forEach { annotation in
                         annotations[annotation.key] = annotation.value
                     }
