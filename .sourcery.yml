@@ -1,6 +1,6 @@
 sources:
-  - SourceryFramework/Sources
+  - SourceryRuntime/Sources
 templates:
   - Sourcery/Templates
 output:
-  Sourcery/CodeGenerated
+  SourceryRuntime/Sources 
