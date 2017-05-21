@@ -98,6 +98,14 @@ If you want to attribute multiple items with same attributes, you can use sectio
 // sourcery:end
 ```
 
+To attribute any declaration in the file use `sourcery:file` at the top of the file:
+
+```swift
+// sourcery:file: skipEquality
+  var firstVariable: Int
+  var secondVariable: Int
+```
+
 #### Rules:
 
 - Multiple annotations can occur on the same line, separated with `,`

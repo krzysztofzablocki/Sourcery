@@ -14,6 +14,7 @@
 - Improved parsing of closure types
 - Check if Current Project Version match version in podspec in release task
 - Improved swift templates performance
+- Added `// sourcery:file` annotation for source code
 
 ### Bug fixes
 
@@ -32,6 +33,7 @@
 - Adding docset to release archive
 - Add tests for bundled stencil templates
 - Moved to CocoaPods 1.2.1
+- Made Array.parallelMap's block non-escaping
 
 
 ## 0.6.0
