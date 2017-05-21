@@ -18,7 +18,6 @@
 		6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C7E1EBA13DF006EEBEC /* AutoHashable.stencil */; };
 		6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C7F1EBA13DF006EEBEC /* AutoLenses.stencil */; };
 		6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C801EBA13DF006EEBEC /* AutoMockable.stencil */; };
-		6D342C881EBA13DF006EEBEC /* Decorator.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C811EBA13DF006EEBEC /* Decorator.swifttemplate */; };
 		6D342C891EBA13DF006EEBEC /* LinuxMain.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C821EBA13DF006EEBEC /* LinuxMain.stencil */; };
 		6D342C911EBA146F006EEBEC /* TemplatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D342C8F1EBA146F006EEBEC /* TemplatesTests.swift */; };
 		6D342C941EBA155A006EEBEC /* AutoCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D342C931EBA155A006EEBEC /* AutoCases.swift */; };
@@ -262,7 +261,6 @@
 				6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */,
 				6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */,
 				6D342C831EBA13DF006EEBEC /* AutoCases.stencil in Resources */,
-				6D342C881EBA13DF006EEBEC /* Decorator.swifttemplate in Resources */,
 				6D342CA31EBA5415006EEBEC /* AutoCases.expected in Resources */,
 				6D342CA41EBA54DF006EEBEC /* AutoCases.generated.swift in Resources */,
 				6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */,

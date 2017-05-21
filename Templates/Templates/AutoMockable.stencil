@@ -24,7 +24,7 @@ import AppKit
 {% if not type.name == "AutoMockable" %}
 class {{ type.name }}Mock: {{ type.name }} {
     {% for variable in type.allVariables %}
-    var {{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if not variable.isArray and not variable.isDictionary %}!{% else %}{% if variable.isArray %} = []{% endif %}{% if variable.isDictionary %} = [:]{% endif %}{% endif %}{% endif %}
+    var {{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if not variable.isArray and not variable.isDictionary %}!{% elif variable.isArray %} = []{% elif variable.isDictionary %} = [:]{% endif %}{% endif %}
     {% endfor %}
 
 {% for method in type.allMethods %}
