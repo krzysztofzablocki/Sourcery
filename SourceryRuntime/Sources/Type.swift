@@ -101,6 +101,7 @@ public class Type: NSObject, SourceryModel, Annotated {
         return methods.filter { $0.isInitializer }
     }
 
+    /// All annotations for this type
     public var annotations: [String: NSObject] = [:]
 
     /// Static variables defined in this type
