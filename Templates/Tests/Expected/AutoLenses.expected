@@ -1,11 +1,3 @@
-//
-//  AutoLenses.expected.swift
-//  Templates
-//
-//  Created by Anton Domashnev on 16.05.17.
-//  Copyright © 2017 Pixle. All rights reserved.
-//
-
 // swiftlint:disable variable_name
 infix operator *~: MultiplicationPrecedence
 infix operator |>: AdditionPrecedence

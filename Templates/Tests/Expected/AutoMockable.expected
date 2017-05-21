@@ -1,11 +1,3 @@
-//
-//  AutoMockable.expected.swift
-//  Templates
-//
-//  Created by Anton Domashnev on 17.05.17.
-//  Copyright © 2017 Pixle. All rights reserved.
-// swiftlint:disable line_length
-
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit

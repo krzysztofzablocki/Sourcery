@@ -1,11 +1,3 @@
-//
-//  AutoHashable.swift
-//  Templates
-//
-//  Created by Anton Domashnev on 12.05.17.
-//  Copyright © 2017 Pixle. All rights reserved.
-//
-
 import Foundation
 
 protocol AutoHashable {}
