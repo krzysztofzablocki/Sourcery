@@ -24,6 +24,7 @@
 - Fixed parsing multiple enum cases annotations
 - Fixed parsing inline annotations when there is an access level or attribute
 - Fixed parsing `required` attribute
+- Fixed typo in `guides/Writing templates.md`
 
 ### Internal changes
 

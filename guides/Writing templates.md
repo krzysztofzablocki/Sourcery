@@ -124,7 +124,7 @@ To attribute any declaration in the file use `sourcery:file` at the top of the f
 #### Accessing in templates:
 
 ```swift
-{% if variable|!annotatated:"skipPersistence" %}
+{% if variable|!annotated:"skipPersistence" %}
   var local{{ variable.name|capitalize }} = json["{{ variable.annotations.jsonKey }}"] as? {{ variable.typeName }}
 {% endif %}
 ```
