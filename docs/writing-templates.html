@@ -271,7 +271,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li>key = string, e.g. <code>sourcery: jsonKey = &quot;json_key&quot;</code></li>
 </ul>
 <h4 id='accessing-in-templates' class='heading'>Accessing in templates:</h4>
-<pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">variable</span><span class="o">|!</span><span class="nv">annotatated</span><span class="p">:</span><span class="s">"skipPersistence"</span> <span class="o">%</span><span class="p">}</span>
+<pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">variable</span><span class="o">|!</span><span class="nv">annotated</span><span class="p">:</span><span class="s">"skipPersistence"</span> <span class="o">%</span><span class="p">}</span>
   <span class="k">var</span> <span class="nv">local</span><span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="o">|</span><span class="n">capitalize</span> <span class="p">}}</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s">"{{ variable.annotations.jsonKey }}"</span><span class="p">]</span> <span class="k">as?</span> <span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">typeName</span> <span class="p">}}</span>
 <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
 </code></pre>
