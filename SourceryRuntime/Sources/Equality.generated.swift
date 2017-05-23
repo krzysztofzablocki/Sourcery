@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension ArrayType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {

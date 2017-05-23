@@ -124,7 +124,7 @@ class SwiftTemplate: Template {
         if let cachePath = cachePath,
             let hash = code.sha256(),
             let hashPath = hash.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics) {
-            
+
             binaryPath = cachePath + hashPath
             if !binaryPath.exists {
                 try? cachePath.delete() // clear old cache

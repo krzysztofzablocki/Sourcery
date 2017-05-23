@@ -123,6 +123,8 @@ GEM
       claide (>= 1.0.1, < 2.0)
       colored2 (~> 3.1)
       nanaimo (~> 0.2.3)
+    xcpretty (0.2.6)
+      rouge (~> 1.8)
 
 PLATFORMS
   ruby
@@ -134,6 +136,7 @@ DEPENDENCIES
   danger-jazzy
   jazzy
   rake
+  xcpretty
 
 BUNDLED WITH
-   1.14.6
+   1.13.7

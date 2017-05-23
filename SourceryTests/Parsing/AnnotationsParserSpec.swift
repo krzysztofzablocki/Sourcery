@@ -78,10 +78,10 @@ class AnnotationsParserSpec: QuickSpec {
                                                "var name: Int { return 2 }")
                     expect(result).to(equal(annotations))
                 }
-                
+
                 it("extracts file annotations") {
                     let annotations = ["isSet": NSNumber(value: true)]
-                    
+
                     let result = parse("// sourcery:file: isSet\n" +
                         "/// isSet is used for something useful\n" +
                         "var name: Int { return 2 }")

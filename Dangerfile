@@ -20,4 +20,11 @@ if has_app_changes && no_changelog_entry && not_declared_trivial
   fail("Any changes to library code need a summary in the Changelog.")
 end
 
+# New templates must be covered with tests
+has_new_stencil_template = !git.added_files.grep(/Templates\/Templates.*\.stencil$/).empty?
+has_new_template_test = !git.added_files.grep(/Templates\/Tests\/Generated/).empty? && !git.added_files.grep(/Templates\/Tests\/Context/).empty? && !git.added_files.grep(/Templates\/Tests\/Expected/).empty?
+if has_new_stencil_template && !has_new_template_test
+  fail("Any new stencil template must be covered with test.")
+end
+
 jazzy.check fail: :modified

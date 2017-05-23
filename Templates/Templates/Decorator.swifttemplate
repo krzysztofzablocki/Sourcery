@@ -1,6 +1,6 @@
 <%# Constructs full method declaration string -%>
 <%
-func methodDeclaration(_ method: Method) -> String {
+func methodDeclaration(_ method: SourceryRuntime.Method) -> String {
     var result = method.name
     if method.throws {
         result = result + " throws"
@@ -12,7 +12,7 @@ func methodDeclaration(_ method: Method) -> String {
 -%>
 <%# Constructs method call string passing in parameters with their local names -%>
 <%
-func methodCall(_ method: Method) -> String {
+func methodCall(_ method: SourceryRuntime.Method) -> String {
     let params = method.parameters.map({
         if let label = $0.argumentLabel {
             return "\(label): \($0.name)"

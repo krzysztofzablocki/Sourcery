@@ -89,12 +89,12 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "$BUILT_PRODUCTS_DIR/Nimble/Nimble.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/Quick/Quick.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Nimble-OSX10.11/Nimble.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Quick-OSX10.11/Quick.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "$BUILT_PRODUCTS_DIR/Nimble/Nimble.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/Quick/Quick.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Nimble-OSX10.11/Nimble.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Quick-OSX10.11/Quick.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

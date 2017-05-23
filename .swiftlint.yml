@@ -16,12 +16,15 @@ opt_in_rules: # some rules are only opt-in
 included:
   - Sourcery
   - SourceryTests
+  - Templates/Tests
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Carthage
   - Pods
   - Packages
   - SourceryTests/Stub
+  - Templates/Tests/Generated
+  - Templates/Tests/Expected
 
 type_body_length:
   - 700 #warning

@@ -1,5 +1,5 @@
 framework module Nimble {
-  umbrella header "Nimble-umbrella.h"
+  umbrella header "Nimble-OSX10.12-umbrella.h"
 
   export *
   module * { export * }
