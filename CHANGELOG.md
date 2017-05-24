@@ -21,6 +21,7 @@
 - Check if Current Project Version match version in podspec in release task
 - Improved swift templates performance
 - Added `// sourcery:file` annotation for source code
+- Added `inOut` flag for `MethodParameter`
 
 ### Bug fixes
 
