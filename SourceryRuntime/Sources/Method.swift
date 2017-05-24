@@ -13,6 +13,8 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     /// Parameter type name
     public let typeName: TypeName
+    
+    public let inOut: Bool
 
     // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
@@ -35,23 +37,25 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], inOut: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
+        self.inOut = inOut
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], inOut: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
+        self.inOut = inOut
     }
 
     // sourcery:inline:MethodParameter.AutoCoding
@@ -62,6 +66,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            self.inOut = aDecoder.decode(forKey: "inOut")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
@@ -73,6 +78,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.inOut, forKey: "inOut")
         }
         // sourcery:end
 }
