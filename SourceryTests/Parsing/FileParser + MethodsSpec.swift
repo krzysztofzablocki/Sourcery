@@ -20,20 +20,24 @@ class FileParserMethodsSpec: QuickSpec {
                 }
 
                 it("extracts methods properly") {
-                    expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {}; func fooVoid() {} }")).to(equal([
+                    expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {}; func fooVoid() {}; func fooInOut(some: Int, anotherSome: inout String) {} }")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
                                 MethodParameter(name: "some", typeName: TypeName("Int"))
                                 ], returnTypeName: TypeName("Bar"), throws: true),
                             Method(name: "foo()", returnTypeName: TypeName("Foo")),
                             Method(name: "fooBar()", returnTypeName: TypeName("Void"), throws: false, rethrows: true),
-                            Method(name: "fooVoid()", returnTypeName: TypeName("Void"))
+                            Method(name: "fooVoid()", returnTypeName: TypeName("Void")),
+                            Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
+                                MethodParameter(name: "some", typeName: TypeName("Int")),
+                                MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), inOut: true)
+                                ], returnTypeName: TypeName("Void"))
                             ])
                         ]))
                 }
 
                 it("extracts protocol methods properly") {
-                    expect(parse("protocol Foo { func bar(some: Int) throws ->Bar ; func foo() ->    Foo ; func fooBar() rethrows ; func fooVoid() }"))
+                    expect(parse("protocol Foo { func bar(some: Int) throws ->Bar ; func foo() ->    Foo ; func fooBar() rethrows ; func fooVoid(); func fooInOut(some: Int, anotherSome: inout String) }"))
                         .to(equal([
                             Protocol(name: "Foo", methods: [
                                 Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
@@ -41,7 +45,11 @@ class FileParserMethodsSpec: QuickSpec {
                                     ], returnTypeName: TypeName("Bar"), throws: true),
                                 Method(name: "foo()", returnTypeName: TypeName("Foo")),
                                 Method(name: "fooBar()", returnTypeName: TypeName("Void"), throws: false, rethrows: true),
-                                Method(name: "fooVoid()", returnTypeName: TypeName("Void"))
+                                Method(name: "fooVoid()", returnTypeName: TypeName("Void")),
+                                Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
+                                    MethodParameter(name: "some", typeName: TypeName("Int")),
+                                    MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), inOut: true)
+                                    ], returnTypeName: TypeName("Void"))
                                 ])
                             ]))
                 }
@@ -123,6 +131,16 @@ class FileParserMethodsSpec: QuickSpec {
                                 ])
                             ]))
 
+                    }
+
+                    it("extracts inout parameters") {
+                        expect(parse("class Foo { func foo(a: inout Int) {} }")).to(equal([
+                            Class(name: "Foo", methods: [
+                                Method(name: "foo(a: inout Int)", selectorName: "foo(a:)", parameters: [
+                                    MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("inout Int"), inOut: true)
+                                    ], returnTypeName: TypeName("Void"))
+                                ])
+                            ]))
                     }
 
                     context("given parameter default value") {

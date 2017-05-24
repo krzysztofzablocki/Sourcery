@@ -533,11 +533,14 @@ extension FileParser {
 
     internal func parseParameter(_ source: [String: SourceKitRepresentable]) -> MethodParameter? {
         guard let (name, _, _) = parseTypeRequirements(source),
-            let type = source[SwiftDocKey.typeName.rawValue] as? String else { return nil }
+              let type = source[SwiftDocKey.typeName.rawValue] as? String else {
+            return nil
+        }
 
+        let inOut = type.hasPrefix("inout ")
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source))
+        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), inOut: inOut)
         parameter.setSource(source)
         return parameter
     }

@@ -89,7 +89,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isStatic: false)],
                                                            methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
-                                                                                                          typeName: TypeName("String"))],
+                                                                                                         typeName: TypeName("String"))],
                                                                             returnTypeName: TypeName(""),
                                                                             isFailableInitializer: true)]
                                                       )
