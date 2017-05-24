@@ -30,7 +30,7 @@ class FileParserMethodsSpec: QuickSpec {
                             Method(name: "fooVoid()", returnTypeName: TypeName("Void")),
                             Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
                                 MethodParameter(name: "some", typeName: TypeName("Int")),
-                                MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), inOut: true)
+                                MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), `inout`: true)
                                 ], returnTypeName: TypeName("Void"))
                             ])
                         ]))
@@ -48,7 +48,7 @@ class FileParserMethodsSpec: QuickSpec {
                                 Method(name: "fooVoid()", returnTypeName: TypeName("Void")),
                                 Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
                                     MethodParameter(name: "some", typeName: TypeName("Int")),
-                                    MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), inOut: true)
+                                    MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), `inout`: true)
                                     ], returnTypeName: TypeName("Void"))
                                 ])
                             ]))
@@ -137,7 +137,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo(a: inout Int) {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(a: inout Int)", selectorName: "foo(a:)", parameters: [
-                                    MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("inout Int"), inOut: true)
+                                    MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("inout Int"), `inout`: true)
                                     ], returnTypeName: TypeName("Void"))
                                 ])
                             ]))

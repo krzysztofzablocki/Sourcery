@@ -537,10 +537,10 @@ extension FileParser {
             return nil
         }
 
-        let inOut = type.hasPrefix("inout ")
+        let `inout` = type.hasPrefix("inout ")
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), inOut: inOut)
+        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), `inout`: `inout`)
         parameter.setSource(source)
         return parameter
     }

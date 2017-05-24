@@ -117,8 +117,8 @@ class MethodSpec: QuickSpec {
                     expect(sut.annotations).to(equal([:]))
                 }
 
-                it("is not inOut") {
-                    expect(sut.inOut).to(beFalse())
+                it("is not inout") {
+                    expect(sut.inout).to(beFalse())
                 }
             }
 
@@ -135,11 +135,11 @@ class MethodSpec: QuickSpec {
 
             context("when inout") {
                 beforeEach {
-                    sut = MethodParameter(typeName: TypeName("Bar"), inOut: true)
+                    sut = MethodParameter(typeName: TypeName("Bar"), `inout`: true)
                 }
 
-                it("is inOut") {
-                    expect(sut.inOut).to(beTrue())
+                it("is inout") {
+                    expect(sut.inout).to(beTrue())
                 }
             }
 
@@ -159,7 +159,7 @@ class MethodSpec: QuickSpec {
                         expect(sut).toNot(equal(MethodParameter(name: "bar", typeName: TypeName("Int"))))
                         expect(sut).toNot(equal(MethodParameter(argumentLabel: "bar", name: "foo", typeName: TypeName("Int"))))
                         expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName("String"))))
-                        expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName("String"), inOut: true)))
+                        expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName("String"), `inout`: true)))
                     }
                 }
 
