@@ -13,7 +13,8 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     /// Parameter type name
     public let typeName: TypeName
-    
+
+    /// Parameter flag whether it's inout or not
     public let inOut: Bool
 
     // sourcery: skipEquality, skipDescription
