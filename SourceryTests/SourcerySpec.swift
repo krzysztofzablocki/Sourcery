@@ -183,7 +183,7 @@ class SourcerySpecTests: QuickSpec {
                             "var property = bar\n" +
                             "// Line Three\n" +
                             "// sourcery:end\n" +
-                            "}"
+                        "}"
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))

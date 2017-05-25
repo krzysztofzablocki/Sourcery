@@ -20,6 +20,12 @@ class TypeNameSpec: QuickSpec {
                 }
             }
 
+            context("given inout type") {
+                it("reports correct unwrappedTypeName") {
+                    expect(TypeName("inout String").unwrappedTypeName).to(equal("String"))
+                }
+            }
+
             context("given optional type with long generic syntax") {
                 it("reports optional true") {
                     expect(TypeName("Optional<Int>").isOptional).to(beTrue())
