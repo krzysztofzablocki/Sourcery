@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### Bug fixes
+
+- Fixed inserting generated code inline automatically at wrong position
+
 ## 0.6.1
 
 ### New Features

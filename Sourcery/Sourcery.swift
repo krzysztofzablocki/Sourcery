@@ -336,9 +336,8 @@ extension Sourcery {
 
     private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult) throws -> String {
         guard watcherEnabled else {
-            var result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
-            result = try processFileRanges(for: parsingResult, in: result)
-            return try processInlineRanges(for: parsingResult, in: result)
+            let result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+            return try processRanges(in: parsingResult, result: result)
         }
 
         var result: String = ""
@@ -348,8 +347,14 @@ extension Sourcery {
             result = error?.description ?? ""
         }, finallyBlock: {})
 
+        return try processRanges(in: parsingResult, result: result)
+    }
+
+    private func processRanges(in parsingResult: ParsingResult, result: String) throws -> String {
+        var result = result
         result = try processFileRanges(for: parsingResult, in: result)
-        return try processInlineRanges(for: parsingResult, in: result)
+        result = try processInlineRanges(for: parsingResult, in: result)
+        return TemplateAnnotationsParser.removingEmptyAnnotations(from: result)
     }
 
     private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {

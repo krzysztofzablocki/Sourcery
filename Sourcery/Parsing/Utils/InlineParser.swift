@@ -7,13 +7,18 @@ import Foundation
 
 internal enum TemplateAnnotationsParser {
 
-    static func parseAnnotations(_ annotation: String, contents: String, removeFromSource: Bool = true) -> (contents: String, annotatedRanges: [String: NSRange]) {
-        var bridged = contents.bridge()
+    private static func regex(annotation: String) throws -> NSRegularExpression {
         let commentPattern = NSRegularExpression.escapedPattern(for: "//")
-        let regex = try? NSRegularExpression(
-                pattern: "(^\\s*?\(commentPattern)\\s*?sourcery:\(annotation):)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
-                options: [.allowCommentsAndWhitespace, .anchorsMatchLines]
+        let regex = try NSRegularExpression(
+            pattern: "(^\\s*?\(commentPattern)\\s*?sourcery:\(annotation):)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
+            options: [.allowCommentsAndWhitespace, .anchorsMatchLines]
         )
+        return regex
+    }
+
+    static func parseAnnotations(_ annotation: String, contents: String) -> (contents: String, annotatedRanges: [String: NSRange]) {
+        var bridged = contents.bridge()
+        let regex = try? self.regex(annotation: annotation)
 
         var rangesToReplace = [NSRange]()
         var annotatedRanges = [String: NSRange]()
@@ -23,32 +28,57 @@ internal enum TemplateAnnotationsParser {
                 return
             }
 
-            let annotationStartRange = result.rangeAt(1)
             let nameRange = result.rangeAt(2)
             let startLineRange = result.rangeAt(3)
             let endLineRange = result.rangeAt(4)
 
             let name = bridged.substring(with: nameRange)
-
-            annotatedRanges[name] = NSRange(
+            let range = NSRange(
                 location: startLineRange.location,
                 length: endLineRange.location - startLineRange.location
             )
-
-            rangesToReplace.append(NSRange(
-                location: annotationStartRange.location,
-                length: NSMaxRange(endLineRange) - annotationStartRange.location
-            ))
+            annotatedRanges[name] = range
+            rangesToReplace.append(range)
         }
 
-        if removeFromSource {
-            rangesToReplace
-                    .reversed()
-                    .forEach {
-                        bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
-                    }
-        }
+        rangesToReplace
+                .reversed()
+                .forEach {
+                    bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
+                }
 
         return (bridged as String, annotatedRanges)
     }
+
+    static func removingEmptyAnnotations(from content: String) -> String {
+        var bridged = content.bridge()
+        let regex = try? self.regex(annotation: "\\S*")
+
+        var rangesToReplace = [NSRange]()
+
+        regex?.enumerateMatches(in: content, options: [], range: bridged.entireRange) { result, _, _ in
+            guard let result = result, result.numberOfRanges == 5 else {
+                return
+            }
+
+            let annotationStartRange = result.rangeAt(1)
+            let startLineRange = result.rangeAt(3)
+            let endLineRange = result.rangeAt(4)
+            if startLineRange.length == 0 {
+                rangesToReplace.append(NSRange(
+                    location: annotationStartRange.location,
+                    length: NSMaxRange(endLineRange) - annotationStartRange.location
+                ))
+            }
+        }
+
+        rangesToReplace
+            .reversed()
+            .forEach {
+                bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
+        }
+
+        return bridged as String
+    }
+
 }

@@ -47,7 +47,7 @@ internal enum Substring {
             }
         case .declaration:
             if let key = Substring.key.range(for: source), let body = Substring.body.range(for: source) {
-                return (key.offset, body.offset - key.offset - 1)
+                return (key.offset, body.offset + body.length - key.offset + 1)
             }
         case .keyPrefix:
             return Substring.key.range(for: source).flatMap { (offset: 0, length: $0.offset) }
