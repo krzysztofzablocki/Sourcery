@@ -19,6 +19,18 @@ rake tests
 
 Check that the last build succeeded in [Circle CI](https://circleci.com/gh/krzysztofzablocki/Sourcery) for all supported platforms.
 
+Update documentation.
+```
+rake docs
+```
+
+Commit changes.
+
+```
+git commit -am "docs: update documentation for 0.6.1 release"
+git push origin master
+```
+
 Following the [Semantic Versioning](http://semver.org/):
 *  Increment the third number if the release has bug fixes and/or very minor features with backward compatibility, only (eg. change `0.6.0` to `0.6.1`).
 *  Increment the second number if the release contains major features or breaking API changes (eg. change `0.6.1` to `0.7.0`).
