@@ -46,7 +46,7 @@ task :tests do
   print_info "Running Sourcery Unit Tests"
   xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx test)
   print_info "Running Sourcery Templates Tests"
-  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Templates-Tests -sdk macosx test)
+  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme TemplatesTests -sdk macosx test)
 end
 
 desc "Delete the build/ directory"
