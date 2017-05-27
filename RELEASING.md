@@ -4,7 +4,7 @@ There're no hard rules about when to release Sourcery. Release bug fixes frequen
 
 ### Release
 
-Example is for releasing `0.6.1` version of the Sourcery. Make sure you've been added as owner for CocoaPods and have set up the api token to be able to upload releases on GitHub.
+Example is for releasing `0.6.1` version of the Sourcery. Make sure you've been added as owner for [CocoaPods Trunk](https://guides.cocoapods.org/making/getting-setup-with-trunk.html) and have set up the api token to be able to upload releases on GitHub via [API](https://developer.github.com/v3/#authentication).
 
 Install dependencies.
 ```
@@ -30,6 +30,8 @@ Commit changes.
 git commit -am "docs: update documentation for 0.6.1 release"
 git push origin master
 ```
+
+#### Update metadata
 
 Following the [Semantic Versioning](http://semver.org/):
 *  Increment the third number if the release has bug fixes and/or very minor features with backward compatibility, only (eg. change `0.6.0` to `0.6.1`).
@@ -94,6 +96,6 @@ Commit your changes.
 
 ```
 git add CHANGELOG.md
-git commit -m "Preparing for next development iteration, 0.6.2."
+git commit -m "docs: preparing for next development iteration."
 git push origin master
 ```
