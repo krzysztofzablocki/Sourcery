@@ -19,7 +19,7 @@ public final class TemplateContext: NSObject, SourceryModel {
         self.types = types
         self.arguments = arguments
     }
-    
+
     // sourcery:inline:TemplateContext.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
@@ -80,7 +80,7 @@ public final class Types: NSObject, SourceryModel {
     public init(types: [Type]) {
         self.types = types
     }
-    
+
     // sourcery:inline:Types.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {

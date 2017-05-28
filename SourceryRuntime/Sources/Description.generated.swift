@@ -1,7 +1,6 @@
-// Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
- 
 extension ArrayType {
     /// :nodoc:
     override public var description: String {
@@ -105,7 +104,6 @@ extension Method {
         string += "isClass = \(String(describing: self.isClass)), "
         string += "isInitializer = \(String(describing: self.isInitializer)), "
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
-        string += "isConvenienceInitialiser = \(String(describing: self.isConvenienceInitialiser)), "
         string += "isConvenienceInitializer = \(String(describing: self.isConvenienceInitializer)), "
         string += "isRequired = \(String(describing: self.isRequired)), "
         string += "annotations = \(String(describing: self.annotations)), "

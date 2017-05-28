@@ -1,6 +1,5 @@
-// Generated using Sourcery 0.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
 
 extension AssociatedValue {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
@@ -65,15 +64,15 @@ extension Typealias {
     /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
     public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
     /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
-    internal var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
     /// Whether type is a tuple. Shorthand for `typeName.isTuple`
-    internal var isTuple: Bool { return typeName.isTuple }
+    public var isTuple: Bool { return typeName.isTuple }
     /// Whether type is a closure. Shorthand for `typeName.isClosure`
-    internal var isClosure: Bool { return typeName.isClosure }
+    public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
-    internal var isArray: Bool { return typeName.isArray }
+    public var isArray: Bool { return typeName.isArray }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
-    internal var isDictionary: Bool { return typeName.isDictionary }
+    public var isDictionary: Bool { return typeName.isDictionary }
 }
 extension Variable {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
