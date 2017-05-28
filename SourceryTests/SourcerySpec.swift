@@ -189,6 +189,39 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(equal(expectedResult))
                     }
 
+                    it("insert same generated code in multiple types") {
+                        update(code: "class Foo {\n" +
+                            "// sourcery:inline:auto:Foo.fake\n" +
+                            "// sourcery:end\n" +
+                            "}\n\nclass Bar {}", in: sourcePath)
+
+                        update(code: "// Line One\n" +
+                            "{% for type in types.all %}" +
+                            "// sourcery:inline:auto:{{ type.name }}.fake\n" +
+                            "var property = bar\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                            "{% endfor %}", in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources([sourcePath]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+
+                        let expectedResult = "class Foo {\n" +
+                            "// sourcery:inline:auto:Foo.fake\n" +
+                            "var property = bar\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                            "}\n\n" +
+                            "class Bar {\n" +
+                            "// sourcery:inline:auto:Bar.fake\n" +
+                            "var property = bar\n" +
+                            "// Line Three\n" +
+                            "// sourcery:end\n" +
+                        "}"
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
                     it("inserts generated code from different templates") {
                         update(code: "class Foo {}", in: sourcePath)
 
