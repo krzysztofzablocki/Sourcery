@@ -156,17 +156,21 @@
             
             <h2 id='usage' class='heading'>Usage</h2>
 
-<p>Sourcery is a command line tool <code>sourcery</code>, you can either run it manually or in a custom build phase using following command:</p>
-<pre class="highlight plaintext"><code>$ ./sourcery --sources &lt;sources path&gt; --templates &lt;templates path&gt; --output &lt;output path&gt; [--args arg1=value,arg2]
+<p>Sourcery is a command line tool, you can either run it manually or in a custom build phase using following command:</p>
+<pre class="highlight plaintext"><code>$ ./sourcery --sources &lt;sources path&gt; --templates &lt;templates path&gt; --output &lt;output path&gt;
 </code></pre>
+
+<blockquote>
+<p>Note: this command may be different depending on the way in which you installed Sourcery (see <a href="installing.html">Installing</a>)</p>
+</blockquote>
 <h3 id='command-line-options' class='heading'>Command line options</h3>
 
 <ul>
 <li><code>--sources</code> - Path to a source swift files. You can provide multiple paths using multiple <code>--sources</code> option.</li>
 <li><code>--templates</code> - Path to templates. File or Directory. You can provide multiple paths using multiple <code>--templates</code> options.</li>
 <li><code>--output</code> [default: current path] - Path to output. File or Directory.</li>
-<li><code>--config</code> [default: current path] - Path to config file. Directory.</li>
-<li><code>--args</code> - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit <code>true</code> value. Arguments should be separated with <code>,</code> without spaces. Arguments are accessible in templates via <code>argument.name</code></li>
+<li><code>--config</code> [default: current path] - Path to config file. Directory. See <a href="usage.html#configuration-file">Configuration file</a>.</li>
+<li><code>--args</code> - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit <code>true</code> value. Arguments should be separated with <code>,</code> without spaces (i.e. <code>--args arg1=value,arg2</code>). Arguments are accessible in templates via <code>argument.name</code></li>
 <li><code>--watch</code> [default: false] - Watch both code and template folders for changes and regenerate automatically.</li>
 <li><code>--verbose</code> [default: false] - Turn on verbose logging</li>
 <li><code>--quiet</code> [default: false] - Turn off any logging, only emmit errors</li>
