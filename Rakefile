@@ -41,13 +41,20 @@ def print_info(str)
 end
 ## [ Tests & Clean ] ##########################################################
 
-desc "Run the Unit Tests"
-task :tests do
-  print_info "Running Sourcery Unit Tests"
-  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx test)
+desc "Run the Unit Tests on Templates project"
+task test_templates: [:build] do
   print_info "Running Sourcery Templates Tests"
   xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme TemplatesTests -sdk macosx test)
 end
+
+desc "Run the Unit Tests on Sourcery project"
+task :test_sourcery do
+  print_info "Running Sourcery Unit Tests"
+  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx test)
+end
+
+desc "Run the Unit Tests on all projects"
+task tests: [:test_sourcery, :test_templates]
 
 desc "Delete the build/ directory"
 task :clean do
