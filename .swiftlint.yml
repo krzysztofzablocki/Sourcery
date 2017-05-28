@@ -15,6 +15,7 @@ opt_in_rules: # some rules are only opt-in
 
 included:
   - Sourcery
+  - SourceryRuntime
   - SourceryTests
   - Templates/Tests
 
