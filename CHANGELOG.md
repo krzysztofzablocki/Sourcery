@@ -8,6 +8,11 @@
 
 - Fixed inserting generated code inline automatically at wrong position
 
+### New Features
+
+- Added `inout` flag for `MethodParameter`
+
+
 ## 0.6.1
 
 ### New Features
@@ -21,7 +26,6 @@
 - Check if Current Project Version match version in podspec in release task
 - Improved swift templates performance
 - Added `// sourcery:file` annotation for source code
-- Added `inOut` flag for `MethodParameter`
 
 ### Bug fixes
 
