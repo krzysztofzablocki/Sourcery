@@ -159,22 +159,26 @@
 <ul>
 <li><p><em>Binary form</em></p>
 
-<p>The easiest way to download the tool right now is to just grab a newest <code>.zip</code> distribution from <a href="https://github.com/krzysztofzablocki/Sourcery/releases">releases tab</a>.</p></li>
-<li><p><em>Via CocoaPods</em></p>
+<p>Download latest release with prebuilt binary from <a href="https://github.com/krzysztofzablocki/Sourcery/releases/latest">release tab</a>. Unzip the archive into desired destination and run <code>bin/sourcery</code></p></li>
+<li><p><em>CocoaPods</em></p>
 
-<p>If you&rsquo;re using CocoaPods, you can simply add <code>pod &#39;Sourcery&#39;</code> to your Podfile.</p>
+<p>Add pod &lsquo;Sourcery&rsquo; to your Podfile and run <code>pod update Sourcery</code>. This will download latest release binary and will put it to your project&rsquo;s CocoaPods path so you will run it with <code>$PODS_ROOT/Sourcery/bin/sourcery</code></p></li>
+<li><p><em>Building from source</em></p>
 
-<p>This will download the Sourcery binaries and dependencies in <code>Pods/</code>.
-You just need to add <code>$PODS_ROOT/Sourcery/bin/sourcery --sources &lt;sources path&gt; --templates &lt;templates path&gt; --output &lt;output path&gt;</code> in your Script Build Phases.</p></li>
-<li><p><em>Via Swift Package Manager</em></p>
+<p>Download latest release source code from <a href="https://github.com/krzysztofzablocki/Sourcery/releases/latest">release tab</a> or clone the repository an build Sourcery manually.</p>
 
-<p>If you&rsquo;re using SwiftPM, you can simply add &lsquo;Sourcery&rsquo; to your manifest.</p>
+<ul>
+<li><p><em>Building with Swift Package Manager</em></p>
 
-<p>Sourcery is placed in <code>Packages</code>.
-After your first <code>swift build</code>, you can run <code>.build/debug/sourcery --sources &lt;sources path&gt; --templates &lt;templates path&gt; --output &lt;output path&gt;</code>.</p></li>
-<li><p><em>From Source</em></p>
+<p>Run <code>swift build -c release</code> in the root folder. This will create a <code>.build/release</code> folder and will put binary there. Move the <strong>whole <code>.build/release</code> folder</strong> to your desired destination and run with <code>path_to_release_folder/sourcery</code></p>
 
-<p>You can clone it from the repo and just run <code>Sourcery.xcworkspace</code>.</p></li>
+<blockquote>
+<p>Note: Swift and JS templates are not supported when building with SPM yet.</p>
+</blockquote></li>
+<li><p><em>Building with Xcode</em></p>
+
+<p>Open <code>Sourcery.xcworkspace</code> and build with <code>Sourcery-Release</code> scheme. This will create <code>Sourcery.app</code> in the Derived Data folder. You can copy it to your desired destination and run with <code>path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery</code></p></li>
+</ul></li>
 </ul>
 
           </section>

@@ -59,51 +59,52 @@ In those scenarios usually **compiler will not generate the error for you**, whi
 
 ## Installing
 
-<details>
-<summary>Binary form</summary>
-The easiest way to download the tool right now is to just grab a newest `.zip` distribution from [releases tab](https://github.com/krzysztofzablocki/Sourcery/releases).
-</details>
+- _Binary form_
 
-<details>
-<summary>Via CocoaPods</summary>
-If you're using CocoaPods, you can simply add pod 'Sourcery' to your Podfile.
+	Download latest release with prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into desired destination and run `bin/sourcery`
 
-This will download the Sourcery binaries and dependencies in `Pods/`.
-You just need to add `$PODS_ROOT/Sourcery/bin/sourcery {source} {templates} {output}` in your Script Build Phases.
-</details>
+- _CocoaPods_
 
-<details>
-<summary>Via Swift Package Manager</summary>
-If you're using SwiftPM, you can simply add 'Sourcery' to your manifest.
+	Add pod 'Sourcery' to your Podfile and run `pod update Sourcery`. This will download latest release binary and will put it to your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
-Sourcery is placed in `Packages`.
-After your first `swift build`, you can run `.build/debug/sourcery {source} {templates} {output}`.
-</details>
+- _Building from source_
 
-<details>
-<summary>From Source</summary>
-You can clone it from the repo and just run `Sourcery.xcworkspace`.
-</details>
+	Download latest release source code from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest) or clone the repository an build Sourcery manually.
+
+	- _Building with Swift Package Manager_
+
+		Run `swift build -c release` in the root folder. This will create a `.build/release` folder and will put binary there. Move the **whole `.build/release` folder** to your desired destination and run with `path_to_release_folder/sourcery`
+
+		> Note: Swift and JS templates are not supported when building with SPM yet.
+
+	- _Building with Xcode_
+
+		Open `Sourcery.xcworkspace` and build with `Sourcery-Release` scheme. This will create `Sourcery.app` in the Derived Data folder. You can copy it to your desired destination and run with `path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery`
 
 ## Usage
 
-Sourcery is a command line tool `sourcery`, you can either run it manually or in a custom build phase using following command:
+Sourcery is a command line tool, you can either run it manually or in a custom build phase using following command:
 
 ```
-$ ./sourcery --sources <sources path> --templates <templates path> --output <output path> [--args arg1=value,arg2]
+$ ./sourcery --sources <sources path> --templates <templates path> --output <output path>
 ```
+
+> Note: this command may be different depending on the way in which you installed Sourcery (see [Installing](#installing))
 
 ### Command line options
 
 - `--sources` - Path to a source swift files. You can provide multiple paths using multiple `--sources` option.
 - `--templates` - Path to templates. File or Directory. You can provide multiple paths using multiple `--templates` options.
-- `--output` - Path to output. File or Directory. Default is current path.
-- `--config` - Path to config file. Directory. Default is current path.
-- `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces. Arguments are accessible in templates via `argument.name`
+- `--output` [default: current path] - Path to output. File or Directory.
+- `--config` [default: current path] - Path to config file. Directory. See [Configuration file](#configuration-file).
+- `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces (i.e. `--args arg1=value,arg2`). Arguments are accessible in templates via `argument.name`
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
-- `--verbose` [default: false] - Turn on verbose logging for ignored entities
+- `--verbose` [default: false] - Turn on verbose logging
+- `--quiet` [default: false] - Turn off any logging, only emmit errors
 - `--disableCache` [default: false] - Turn off caching of parsed data
 - `--prune` [default: false] - Prune empty generated files
+- `--version` - Display the current version of Sourcery
+- `--help` - Display help information
 
 ### Configuration file
 
@@ -136,6 +137,8 @@ project:
 ```
 
 You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects.
+
+> Note: Paths in configuration file are by default relative to configuration file path. If you want to specify absolute path start it with `/`.
 
 ### Features
 

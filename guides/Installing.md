@@ -2,23 +2,22 @@
 
 - _Binary form_
 
-	The easiest way to download the tool right now is to just grab a newest `.zip` distribution from [releases tab](https://github.com/krzysztofzablocki/Sourcery/releases).
+	Download latest release with prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into desired destination and run `bin/sourcery`
 
-- _Via CocoaPods_
+- _CocoaPods_
 
-	If you're using CocoaPods, you can simply add `pod 'Sourcery'` to your Podfile.
+	Add pod 'Sourcery' to your Podfile and run `pod update Sourcery`. This will download latest release binary and will put it to your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
-	This will download the Sourcery binaries and dependencies in `Pods/`.
-You just need to add `$PODS_ROOT/Sourcery/bin/sourcery --sources <sources path> --templates <templates path> --output <output path>` in your Script Build Phases.
+- _Building from source_
 
-- _Via Swift Package Manager_
+	Download latest release source code from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest) or clone the repository an build Sourcery manually.
 
-	If you're using SwiftPM, you can simply add 'Sourcery' to your manifest.
+	- _Building with Swift Package Manager_
 
-	Sourcery is placed in `Packages`.
-After your first `swift build`, you can run `.build/debug/sourcery --sources <sources path> --templates <templates path> --output <output path>`.
+		Run `swift build -c release` in the root folder. This will create a `.build/release` folder and will put binary there. Move the **whole `.build/release` folder** to your desired destination and run with `path_to_release_folder/sourcery`
 
-- _From Source_
+		> Note: Swift and JS templates are not supported when building with SPM yet.
 
-	You can clone it from the repo and just run `Sourcery.xcworkspace`.
+	- _Building with Xcode_
 
+		Open `Sourcery.xcworkspace` and build with `Sourcery-Release` scheme. This will create `Sourcery.app` in the Derived Data folder. You can copy it to your desired destination and run with `path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery`
