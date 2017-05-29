@@ -66,7 +66,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             self.isOptional = false
         } else {
             name = name.bracketsBalancing()
-            let trimmedInoutName = name.trimmingPrefix("inout ")
+            name = name.trimmingPrefix("inout ").trimmingCharacters(in: .whitespaces)
             let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
             let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
             self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
@@ -74,16 +74,16 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
 
             if isOptional {
                 let unwrappedTypeName: String
-                if trimmedInoutName.hasSuffix("?") || trimmedInoutName.hasSuffix("!") {
-                    unwrappedTypeName = String(trimmedInoutName.characters.dropLast())
-                } else if trimmedInoutName.hasPrefix("Optional<") {
-                    unwrappedTypeName = trimmedInoutName.drop(first: "Optional<".characters.count, last: 1)
+                if name.hasSuffix("?") || name.hasSuffix("!") {
+                    unwrappedTypeName = String(name.characters.dropLast())
+                } else if name.hasPrefix("Optional<") {
+                    unwrappedTypeName = name.drop(first: "Optional<".characters.count, last: 1)
                 } else {
-                    unwrappedTypeName = trimmedInoutName.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
+                    unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
                 }
                 self.unwrappedTypeName = unwrappedTypeName.bracketsBalancing()
             } else {
-                self.unwrappedTypeName = trimmedInoutName
+                self.unwrappedTypeName = name
             }
         }
     }
