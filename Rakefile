@@ -39,6 +39,15 @@ def print_info(str)
   (red,clr) = (`tput colors`.chomp.to_i >= 8) ? %W(\e[33m \e[m) : ["", ""]
   puts red, "== #{str.chomp} ==", clr
 end
+
+## [ Bundler & CocoaPods ] ####################################################
+
+desc "Install dependencies"
+task :install_dependencies do
+  sh %Q(bundle install)
+  sh %Q(bundle exec pod install)
+end
+
 ## [ Tests & Clean ] ##########################################################
 
 desc "Run the Unit Tests on Templates project"
@@ -106,6 +115,49 @@ namespace :release do
     result
   end
 
+  def get(url, content_type = 'application/json')
+    uri = URI.parse(url)
+    req = Net::HTTP::Get.new(uri, initheader = {'Content-Type' => content_type})
+    yield req if block_given?
+
+    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == 'https')) do |http|
+      http.request(req)
+    end
+    unless response.code == '200'
+      puts "Error: #{response.code} - #{response.message}"
+      puts response.body
+      exit 3
+    end
+    JSON.parse(response.body)
+  end
+
+  def post(url, content_type = 'application/json')
+    uri = URI.parse(url)
+    req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => content_type})
+    yield req if block_given?
+
+    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == 'https')) do |http|
+      http.request(req)
+    end
+    unless response.code == '201'
+      puts "Error: #{response.code} - #{response.message}"
+      puts response.body
+      exit 3
+    end
+    JSON.parse(response.body)
+  end
+
+  desc 'Check if CI is green'
+  task :check_ci do
+    print_info "Checking Circle CI master branch status"
+    results = []
+
+    json = get('https://circleci.com/api/v1.1/project/github/krzysztofzablocki/Sourcery/tree/master')
+    master_branch_status = json[0]['status']
+    results << log_result(master_branch_status == 'success', 'Master branch is green on CI', 'Please check master branch CI status first')
+    exit 1 unless results.all?
+  end
+
   desc 'Check if docs are up to date'
   task :check_docs => [:validate_docs] do
     results = []
@@ -158,23 +210,6 @@ namespace :release do
     `cd build; zip -r -X sourcery-#{podspec_version}.zip .`
   end
 
-  def post(url, content_type)
-    uri = URI.parse(url)
-    req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => content_type})
-    yield req if block_given?
-    req.basic_auth 'krzysztofzablocki', File.read('.apitoken').chomp
-
-    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == 'https')) do |http|
-      http.request(req)
-    end
-    unless response.code == '201'
-      puts "Error: #{response.code} - #{response.message}"
-      puts response.body
-      exit 3
-    end
-    JSON.parse(response.body)
-  end
-
   desc 'Upload the zipped binaries to a new GitHub release'
   task :github => :zip do
     v = podspec_version
@@ -185,6 +220,7 @@ namespace :release do
 
     json = post('https://api.github.com/repos/krzysztofzablocki/Sourcery/releases', 'application/json') do |req|
       req.body = { :tag_name => v, :name => v, :body => changelog, :draft => false, :prerelease => false }.to_json
+      req.basic_auth 'krzysztofzablocki', File.read('.apitoken').chomp
     end
 
     upload_url = json['upload_url'].gsub(/\{.*\}/,"?name=Sourcery-#{v}.zip")

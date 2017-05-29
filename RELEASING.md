@@ -8,8 +8,7 @@ Example is for releasing `0.6.1` version of the Sourcery. Make sure you've been 
 
 Install dependencies.
 ```
-bundle install
-bundle exec pod install
+rake install_dependencies
 ```
 
 Run tests, check that all tests succeed locally and prepare the build.
