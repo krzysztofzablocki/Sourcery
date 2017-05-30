@@ -10,7 +10,12 @@ import SwiftTryCatch
 import SourceryRuntime
 
 class Sourcery {
-    public static let version: String = inUnitTests ? "Major.Minor.Patch" : "0.6.1"
+    public static var version: String {
+        if inUnitTests {
+            return "Major.Minor.Patch"
+        }
+        return (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "Major.Minor.Patch"
+    }
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"

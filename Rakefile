@@ -12,15 +12,15 @@ BUILD_DIR = 'build/'
 ## [ Utils ] ##################################################################
 
 def version_select
-  # Find all Xcode 8 versions on this computer
-  xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '8.*'"`.chomp.split("\n")
-  if xcodes.empty?
-    raise "\n[!!!] You need to have Xcode 8.x to compile Sourcery.\n\n"
-  end
-  # Order by version and get the latest one
-  vers = lambda { |path| `mdls -name kMDItemVersion -raw "#{path}"` }
-  latest_xcode_version = xcodes.sort { |p1, p2| vers.call(p1) <=> vers.call(p2) }.last
-  %Q(DEVELOPER_DIR="#{latest_xcode_version}/Contents/Developer" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
+  # # Find all Xcode 8 versions on this computer
+  # xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '8.*'"`.chomp.split("\n")
+  # if xcodes.empty?
+  #   raise "\n[!!!] You need to have Xcode 8.x to compile Sourcery.\n\n"
+  # end
+  # # Order by version and get the latest one
+  # vers = lambda { |path| `mdls -name kMDItemVersion -raw "#{path}"` }
+  # latest_xcode_version = xcodes.sort { |p1, p2| vers.call(p1) <=> vers.call(p2) }.last
+  # %Q(DEVELOPER_DIR="#{latest_xcode_version}/Contents/Developer" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
 end
 
 def xcpretty(cmd)
@@ -96,10 +96,24 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:check_docs, :check_versions, :build, :tests, :github, :cocoapods]
+  task :new => [:install_dependencies, :check_docs, :check_versions, :check_ci, :build, :tests, :github, :cocoapods]
+
+  def podspec_update_version(version, file = 'Sourcery.podspec')
+    # The token is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
+    podspec_content = File.read(file)
+    version_var_name = 'version'
+    version_regex = /^(?<begin>[^#]*version\s*=\s*['"])(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>['"])/i
+    version_match = version_regex.match(podspec_content)
+    updated_podspec_content = podspec_content.gsub(version_regex, "#{version_match[:begin]}#{version}#{version_match[:end]}")
+    File.open(file, "w") { |f| f.puts updated_podspec_content }
+  end
 
   def podspec_version(file = 'Sourcery')
     JSON.parse(`bundle exec pod ipc spec #{file}.podspec`)["version"]
+  end
+
+  def project_update_version(version, project = 'Sourcery')
+    `sed -i '' -e 's/CURRENT_PROJECT_VERSION = #{project_version(project)};/CURRENT_PROJECT_VERSION = #{version};/g' #{project}.xcodeproj/project.pbxproj`
   end
 
   def project_version(project = 'Sourcery')
@@ -194,6 +208,30 @@ namespace :release do
 
     print "Release version #{version} [Y/n]? "
     exit 2 unless (STDIN.gets.chomp == 'Y')
+  end
+
+  desc 'Updates metadata for the new release'
+  task :update_metadata do
+    print "New version of Sourcery in sematic format [x.y.z]? "
+    new_version = STDIN.gets.chomp
+    unless new_version =~ /^\d+\.\d+\.\d+$/ then
+      print "Please set version following the semantic format http://semver.org/\n"
+      exit 3
+    end
+
+    print "Updating metadata for #{new_version} release"
+    results = []
+
+    # Replace master with the new release version in CHANGELOG.md
+    system(%Q{sed -i '' -e 's/## Master/## 0.6.2/' CHANGELOG.md})
+
+    # Update podspec version
+    podspec_update_version(new_version)
+
+    # Update project version
+    project_update_version(new_version)
+
+    exit 1 unless results.all?
   end
 
   desc 'Create a zip containing all the prebuilt binaries'
