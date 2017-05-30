@@ -219,7 +219,7 @@ namespace :release do
       exit 3
     end
 
-    print "Updating metadata for #{new_version} release"
+    print "Updating metadata for #{new_version} release\n"
     results = []
 
     # Replace master with the new release version in CHANGELOG.md
