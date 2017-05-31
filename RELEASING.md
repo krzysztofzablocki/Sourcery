@@ -23,26 +23,6 @@ It will perform the following steps:
 5. Ask for the new release version and updates metadata for it;
 6. Create a new release on [GitHub](https://github.com/krzysztofzablocki/Sourcery/releases);
 7. Push new release to [CocoaPods Trunk](https://guides.cocoapods.org/making/getting-setup-with-trunk.html);
+8. Prepare a new development iteration
 
-### Prepare for the Next Version
-
-Create a new `Master` header in CHANGELOG.md.
-
-```
-## Master
-
-### New Features
-
-### Bug fixes
-
-### Internal changes
-
-```
-
-Commit your changes.
-
-```
-git add CHANGELOG.md
-git commit -m "docs: preparing for next development iteration."
-git push origin master
-```
+Some tasks require manual approvement, please pay attention to the automatic changes before confirming them.

@@ -96,7 +96,7 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:install_dependencies, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :github, :cocoapods]
+  task :new => [:clean, :install_dependencies, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :github, :cocoapods]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The token is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
