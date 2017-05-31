@@ -8,6 +8,11 @@
 
 - Fixed inserting generated code inline automatically at wrong position
 
+### New Features
+
+- Added `inout` flag for `MethodParameter`
+
+
 ## 0.6.1
 
 ### New Features
