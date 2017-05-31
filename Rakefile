@@ -233,7 +233,7 @@ namespace :release do
     print_info "Updating metadata for #{new_version} release\n"
 
     # Replace master with the new release version in CHANGELOG.md
-    system(%Q{sed -i '' -e 's/## Master/## 0.6.2/' CHANGELOG.md})
+    system(%Q{sed -i '' -e 's/## Master/## #{new_version}/' CHANGELOG.md})
 
     # Update podspec version
     podspec_update_version(new_version)
