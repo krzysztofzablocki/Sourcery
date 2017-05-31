@@ -6,9 +6,18 @@ Following the [Semantic Versioning](http://semver.org/):
 *  Increment the third number if the release has bug fixes and/or very minor features with backward compatibility, only (eg. change `0.6.0` to `0.6.1`).
 *  Increment the second number if the release contains major features or breaking API changes (eg. change `0.6.1` to `0.7.0`).
 
+Make sure you've been added as owner for [CocoaPods Trunk](https://guides.cocoapods.org/making/getting-setup-with-trunk.html) and have push access to the [Sourcery](https://github.com/krzysztofzablocki/Sourcery) repository.
+
+To create automatic GitHub releases, set up [API Token](https://github.com/settings/tokens/new). We recommend giving the token the smallest scope possible. This means just `public_repo`. After getting the token add the following ENV variables:
+
+```
+SOURCERY_GITHUB_USERNAME=YOUR_GITHUB_USERNAME
+SOURCERY_GITHUB_API_TOKEN=YOUR_TOKEN
+```
+
 ### Release
 
-Example is for releasing `0.6.1` version of the Sourcery. Make sure you've been added as owner for [CocoaPods Trunk](https://guides.cocoapods.org/making/getting-setup-with-trunk.html) and have set up the api token to be able to upload releases on GitHub via [API](https://developer.github.com/v3/#authentication).
+Example is for releasing `0.6.1` version of the Sourcery.
 
 To release a new version of the Sourcery please rake task and follow the commands.
 ```

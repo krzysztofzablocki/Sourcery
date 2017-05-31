@@ -269,7 +269,7 @@ namespace :release do
 
     json = post('https://api.github.com/repos/krzysztofzablocki/Sourcery/releases', 'application/json') do |req|
       req.body = { :tag_name => v, :name => v, :body => changelog, :draft => false, :prerelease => false }.to_json
-      req.basic_auth 'krzysztofzablocki', File.read('.apitoken').chomp
+      req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
     end
 
     upload_url = json['upload_url'].gsub(/\{.*\}/,"?name=Sourcery-#{v}.zip")
