@@ -96,7 +96,7 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:install_dependencies, :check_docs, :check_versions, :check_ci, :build, :tests, :github, :cocoapods]
+  task :new => [:install_dependencies, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :github, :cocoapods]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The token is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
@@ -161,6 +161,17 @@ namespace :release do
     JSON.parse(response.body)
   end
 
+  def manual_commit(files, message)
+    commit_changes = STDIN.gets.chomp == 'Y'
+    if commit_changes then
+      system(%Q{git add #{files.join(" ")}})
+      system(%Q{git commit -m '#{message}'})
+    else
+      system(%Q{git checkout #{files.join(" ")}})
+      exit 2
+    end
+  end
+
   desc 'Check if CI is green'
   task :check_ci do
     print_info "Checking Circle CI master branch status"
@@ -219,8 +230,7 @@ namespace :release do
       exit 3
     end
 
-    print "Updating metadata for #{new_version} release\n"
-    results = []
+    print_info "Updating metadata for #{new_version} release\n"
 
     # Replace master with the new release version in CHANGELOG.md
     system(%Q{sed -i '' -e 's/## Master/## 0.6.2/' CHANGELOG.md})
@@ -231,7 +241,8 @@ namespace :release do
     # Update project version
     project_update_version(new_version)
 
-    exit 1 unless results.all?
+    print "Now review and type [Y/n] to commit or cancel the changes. "
+    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj"], "docs: update metadata for #{new_version} release")
   end
 
   desc 'Create a zip containing all the prebuilt binaries'
@@ -277,5 +288,18 @@ namespace :release do
   task :cocoapods do
     print_info "Pushing pod to CocoaPods Trunk"
     sh 'bundle exec pod trunk push Sourcery.podspec --allow-warnings'
+  end
+
+  desc 'prepare for the new development iteration'
+  task :prepare_next_development_iteration do
+    print_info "Preparing for the next development iteration"
+    `sed -i '' -e '4 a \\
+     ## Master\\
+     \\
+     \\
+     ' CHANGELOG.md`
+
+     print "Now review CHANGELOG.md and type [Y/n] to commit or cancel the changes. "
+     manual_commit(["CHANGELOG.md"], "docs: preparing for next development iteration.")
   end
 end
