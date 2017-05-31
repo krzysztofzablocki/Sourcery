@@ -15,6 +15,10 @@
 - Added parsing `mutating` attribute
 - Added support for `include` Stencil tag
 
+### Internal changes
+
+- Internal release procedure imrpovements
+
 
 ## 0.6.1
 
