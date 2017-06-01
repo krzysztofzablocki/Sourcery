@@ -11,6 +11,7 @@
 ### New Features
 
 - Added `inout` flag for `MethodParameter`
+- Added `mutating` attribute
 
 
 ## 0.6.1
