@@ -8,7 +8,7 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
     private(set) var sourcePath: Path = ""
 
     convenience init(path: Path) throws {
-        self.init(templateString: try path.read(), environment: StencilTemplate.sourceryEnvironment())
+        self.init(templateString: try path.read(), environment: StencilTemplate.sourceryEnvironment(templatePath: path))
         sourcePath = path
     }
 
@@ -25,7 +25,7 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         }
     }
 
-    private static func sourceryEnvironment() -> Stencil.Environment {
+    private static func sourceryEnvironment(templatePath: Path? = nil) -> Stencil.Environment {
         let ext = Stencil.Extension()
         ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
         ext.registerFilter("lowerFirst", filter: Filter<String>.make({ $0.lowerFirst() }))
@@ -78,7 +78,8 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
 
         var extensions = stencilSwiftEnvironment().extensions
         extensions.append(ext)
-        return Environment(extensions: extensions, templateClass: StencilTemplate.self)
+        let loader = templatePath.map({ FileSystemLoader(paths: [$0.parent()]) })
+        return Environment(loader: loader, extensions: extensions, templateClass: StencilTemplate.self)
     }
 }
 

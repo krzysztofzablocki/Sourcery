@@ -11,6 +11,7 @@
 ### New Features
 
 - Added `inout` flag for `MethodParameter`
+- Added support for `include` Stencil tag
 
 
 ## 0.6.1
