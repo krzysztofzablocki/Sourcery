@@ -96,7 +96,7 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:clean, :install_dependencies, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :tag_release, :github, :cocoapods]
+  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :tag_release, :github, :cocoapods]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The token is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
@@ -178,6 +178,17 @@ namespace :release do
 
   def git_push(remote = 'origin', branch = 'master')
     system(%Q{git push #{remote} #{branch} --tags})
+  end
+
+  desc 'Check ENV variables required for release'
+  task :check_environment_variables do
+    print_info "Checking ENV variables"
+    results = []
+
+    results << log_result(!ENV['SOURCERY_GITHUB_USERNAME'].nil?, "SOURCERY_GITHUB_USERNAME is set up", "Please add SOURCERY_GITHUB_USERNAME environment variable")
+    results << log_result(!ENV['SOURCERY_GITHUB_API_TOKEN'].nil?, "SOURCERY_GITHUB_API_TOKEN is set up", "Please add SOURCERY_GITHUB_API_TOKEN environment variable")
+
+    exit 1 unless results.all?
   end
 
   desc 'Check if CI is green'
