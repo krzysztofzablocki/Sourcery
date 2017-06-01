@@ -96,7 +96,7 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:clean, :install_dependencies, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :github, :cocoapods]
+  task :new => [:clean, :install_dependencies, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :tag_release, :github, :cocoapods]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The token is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
@@ -172,6 +172,14 @@ namespace :release do
     end
   end
 
+  def git_tag(tag)
+    system(%Q{git tag #{tag}})
+  end
+
+  def git_push(remote = 'origin', branch = 'master')
+    system(%Q{git push #{remote} #{branch} --tags})
+  end
+
   desc 'Check if CI is green'
   task :check_ci do
     print_info "Checking Circle CI master branch status"
@@ -222,7 +230,7 @@ namespace :release do
   end
 
   desc 'Updates metadata for the new release'
-  task :update_metadata do
+  task :update_metadata => [:git_tag] do
     print "New version of Sourcery in sematic format major.minor.patch? "
     new_version = STDIN.gets.chomp
     unless new_version =~ /^\d+\.\d+\.\d+$/ then
@@ -241,9 +249,18 @@ namespace :release do
     # Update project version
     project_update_version(new_version)
 
-    print "Now review and type [Y/n] to commit or cancel the changes. "
+    print "Now review and type [Y/n] to commit and push or cancel the changes. "
     manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj"], "docs: update metadata for #{new_version} release")
+    git_push
   end
+
+  desc 'Create a tag for the porject version and push to remote'
+  task :tag_release do
+    print_info "Tagging the release"
+    git_tag(project_version)
+    git_push
+  end
+
 
   desc 'Create a zip containing all the prebuilt binaries'
   task :zip => [:clean] do
@@ -299,7 +316,8 @@ namespace :release do
      \\
      ' CHANGELOG.md`
 
-     print "Now review CHANGELOG.md and type [Y/n] to commit or cancel the changes. "
+     print "Now review CHANGELOG.md and type [Y/n] to commit and push or cancel the changes. "
      manual_commit(["CHANGELOG.md"], "docs: preparing for next development iteration.")
+     git_push
   end
 end
