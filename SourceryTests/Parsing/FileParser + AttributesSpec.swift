@@ -63,6 +63,11 @@ class FileParserAttributesSpec: QuickSpec {
                     "convenience": Attribute(name: "convenience", description: "convenience"),
                     "required": Attribute(name: "required", description: "required")
                     ]))
+
+                expect(parse("struct Foo { mutating func some() {} }").first?.methods.first?.attributes).to(equal([
+                    "mutating": Attribute(name: "mutating", description: "mutating")
+                    ]))
+
             }
 
             it("extracts method parameter attributes") {
