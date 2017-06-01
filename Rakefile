@@ -51,7 +51,7 @@ end
 ## [ Tests & Clean ] ##########################################################
 
 desc "Run the Unit Tests on Templates project"
-task test_templates: [:build] do
+task :test_templates do
   print_info "Running Sourcery Templates Tests"
   xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme TemplatesTests -sdk macosx test)
 end
