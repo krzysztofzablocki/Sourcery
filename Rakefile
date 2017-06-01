@@ -12,15 +12,15 @@ BUILD_DIR = 'build/'
 ## [ Utils ] ##################################################################
 
 def version_select
-  # # Find all Xcode 8 versions on this computer
-  # xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '8.*'"`.chomp.split("\n")
-  # if xcodes.empty?
-  #   raise "\n[!!!] You need to have Xcode 8.x to compile Sourcery.\n\n"
-  # end
-  # # Order by version and get the latest one
-  # vers = lambda { |path| `mdls -name kMDItemVersion -raw "#{path}"` }
-  # latest_xcode_version = xcodes.sort { |p1, p2| vers.call(p1) <=> vers.call(p2) }.last
-  # %Q(DEVELOPER_DIR="#{latest_xcode_version}/Contents/Developer" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
+  # Find all Xcode 8 versions on this computer
+  xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '8.*'"`.chomp.split("\n")
+  if xcodes.empty?
+    raise "\n[!!!] You need to have Xcode 8.x to compile Sourcery.\n\n"
+  end
+  # Order by version and get the latest one
+  vers = lambda { |path| `mdls -name kMDItemVersion -raw "#{path}"` }
+  latest_xcode_version = xcodes.sort { |p1, p2| vers.call(p1) <=> vers.call(p2) }.last
+  %Q(DEVELOPER_DIR="#{latest_xcode_version}/Contents/Developer" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
 end
 
 def xcpretty(cmd)
