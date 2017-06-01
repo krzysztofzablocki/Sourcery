@@ -223,7 +223,7 @@ namespace :release do
 
   desc 'Updates metadata for the new release'
   task :update_metadata do
-    print "New version of Sourcery in sematic format [x.y.z]? "
+    print "New version of Sourcery in sematic format major.minor.patch? "
     new_version = STDIN.gets.chomp
     unless new_version =~ /^\d+\.\d+\.\d+$/ then
       print "Please set version following the semantic format http://semver.org/\n"
