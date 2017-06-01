@@ -17,7 +17,7 @@
 
 ### Internal changes
 
-- Internal release procedure imrpovements
+- Internal release procedure improvements
 
 
 ## 0.6.1
