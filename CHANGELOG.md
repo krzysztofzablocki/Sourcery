@@ -18,6 +18,7 @@
 ### Internal changes
 
 - Internal release procedure improvements
+- Improved `TemplatesTests` scheme running
 
 
 ## 0.6.1
