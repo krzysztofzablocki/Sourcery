@@ -42,6 +42,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case IBDesignable = "ibdesignable"
         case autoclosure
         case convention
+        case mutating
         case escaping
 
         public init?(identifier: String) {
@@ -88,6 +89,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
                 return "convenience"
             case .required:
                 return "required"
+            case .mutating:
+                return "mutating"
             default:
                 return "@\(name)"
             }
