@@ -45,6 +45,8 @@ Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/S
 - `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
 - `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
 
+You can also use partial templates using `include` tag. Partial template is loaded from the path of template that inculdes it. `include` tags also supports loading templates from relative path, i.e. `{% include "partials/MyPartial.stencil"%}` will load teamplate from `partials` subfolder.
+
 ## Swift templates
 
 Swift templates syntax is very similar to EJS:

@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import PathKit
 import Stencil
 @testable import Sourcery
 @testable import SourceryRuntime
@@ -56,6 +57,21 @@ class StencilTemplateSpec: QuickSpec {
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal(": Unknown template tag 'tag'"))
                     }))
+            }
+
+            it("includes partial templates") {
+                var outputDir = Path("/tmp")
+                outputDir = Stubs.cleanTemporarySourceryDir()
+
+                let templatePath = Stubs.templateDirectory + Path("Include.stencil")
+                let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
+                    "// DO NOT EDIT\n\n" +
+                "partial template content\n"
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
             }
 
         }
