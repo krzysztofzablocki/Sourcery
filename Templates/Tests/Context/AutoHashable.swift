@@ -27,14 +27,24 @@ enum AutoHashableEnumWithOneCase: AutoHashable {
 
 /// Sourcery should generate correct code for struct
 struct AutoHashableStruct: AutoHashable {
-    // Constants
-    let firstName: String
-    let lastName: String
+    // Private Constants
+    private let laptopModel: String
 
-    init(firstName: String, lastName: String, parents: [Parent]) {
+    // Fileprivate Constants
+    fileprivate let phoneModel: String
+
+    // Internal Constants
+    let firstName: String
+
+    // Public Constans
+    public let lastName: String
+
+    init(firstName: String, lastName: String, parents: [Parent], laptopModel: String, phoneModel: String) {
         self.firstName = firstName
         self.lastName = lastName
         self.parents = parents
+        self.laptopModel = laptopModel
+        self.phoneModel = phoneModel
     }
 
     // Arrays
@@ -68,14 +78,24 @@ struct AutoHashableStruct: AutoHashable {
 
 /// It should generate correct code for general class
 class AutoHashableClass: AutoHashable {
-    // Constants
-    let firstName: String
-    let lastName: String
+    // Private Constants
+    private let laptopModel: String
 
-    init(firstName: String, lastName: String, parents: [Parent]) {
+    // Fileprivate Constants
+    fileprivate let phoneModel: String
+
+    // Internal Constants
+    let firstName: String
+
+    // Public Constans
+    public let lastName: String
+
+    init(firstName: String, lastName: String, parents: [Parent], laptopModel: String, phoneModel: String) {
         self.firstName = firstName
         self.lastName = lastName
         self.parents = parents
+        self.laptopModel = laptopModel
+        self.phoneModel = phoneModel
     }
 
     // Arrays
@@ -114,6 +134,6 @@ class AutoHashableClassInherited: AutoHashableClass {
 
     init(middleName: String?) {
         self.middleName = middleName
-        super.init(firstName: "", lastName: "", parents: [])
+        super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
     }
 }
