@@ -7,6 +7,7 @@
 ### Bug fixes
 
 - Fixed inserting generated code inline automatically at wrong position
+- Fixed regression in AutoEquatable & AutoHashable template with private computed variables
 
 ### New Features
 
