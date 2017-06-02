@@ -44,6 +44,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case convention
         case mutating
         case escaping
+        case final
 
         public init?(identifier: String) {
             self.init(rawValue: identifier.replacingOccurrences(of: "source.decl.attribute.", with: ""))
@@ -84,18 +85,20 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         }
 
         public var description: String {
-            switch self {
-            case .convenience:
-                return "convenience"
-            case .required:
-                return "required"
-            case .mutating:
-                return "mutating"
-            default:
-                return "@\(name)"
-            }
+            return hasAtPrefix ? "@\(name)" : name
         }
 
+        public var hasAtPrefix: Bool {
+            switch self {
+            case .convenience,
+                 .required,
+                 .mutating,
+                 .final:
+                return false
+            default:
+                return true
+            }
+        }
     }
 
     // sourcery:inline:sourcery:.AutoCoding

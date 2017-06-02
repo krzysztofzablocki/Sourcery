@@ -12,7 +12,7 @@
 ### New Features
 
 - Added `inout` flag for `MethodParameter`
-- Added parsing `mutating` attribute
+- Added parsing `mutating` and `final` attributes with convenience `isMutating` and `isFinal` properties 
 - Added support for `include` Stencil tag
 
 

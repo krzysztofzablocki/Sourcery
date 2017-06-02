@@ -701,11 +701,11 @@ extension FileParser {
                 .forEach {
                     var attributeRange = prefix.range(of: $0.description, options: .backwards)
                     // we expect all attributes to be prefixed with `@`
-                    // but `convenience` and `required` attribute does not need it...
-                    if $0 == Attribute.Identifier.convenience || $0 == Attribute.Identifier.mutating || $0 == Attribute.Identifier.required {
+                    // but some attribute does not need it...
+                    if !$0.hasAtPrefix {
                         prefix = prefix.replacingCharacters(in: attributeRange, with: "@\($0)") as NSString
                         attributeRange.length += 1
-                        attributeRange.location -= 1
+                        attributeRange.location = max(0, attributeRange.location - 1)
                     }
                     ranges.append(attributeRange)
             }
