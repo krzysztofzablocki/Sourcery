@@ -39,14 +39,24 @@ enum AutoEquatableEnumWithOneCase: AutoEquatable {
 
 /// Sourcery should generate correct code for struct
 struct AutoEquatableStruct: AutoEquatable {
-    // Constants
-    let firstName: String
-    let lastName: String
+    // Private Constants
+    private let laptopModel: String
 
-    init(firstName: String, lastName: String, parents: [Parent]) {
+    // Fileprivate Constants
+    fileprivate let phoneModel: String
+
+    // Internal Constants
+    let firstName: String
+
+    // Public Constans
+    public let lastName: String
+
+    init(firstName: String, lastName: String, parents: [Parent], laptopModel: String, phoneModel: String) {
         self.firstName = firstName
         self.lastName = lastName
         self.parents = parents
+        self.laptopModel = laptopModel
+        self.phoneModel = phoneModel
     }
 
     // Arrays
@@ -69,7 +79,7 @@ struct AutoEquatableStruct: AutoEquatable {
 
     // Method with return value
     func greeting(for name: String) -> String {
-        return "Hi \(name)!"
+        return "Hi \(name)"
     }
 
     // Method with optional return value
@@ -80,14 +90,24 @@ struct AutoEquatableStruct: AutoEquatable {
 
 /// It should generate correct code for general class
 class AutoEquatableClass: AutoEquatable {
-    // Constants
-    let firstName: String
-    let lastName: String
+    // Private Constants
+    private let laptopModel: String
 
-    init(firstName: String, lastName: String, parents: [Parent]) {
+    // Fileprivate Constants
+    fileprivate let phoneModel: String
+
+    // Internal Constants
+    let firstName: String
+
+    // Public Constans
+    public let lastName: String
+
+    init(firstName: String, lastName: String, parents: [Parent], laptopModel: String, phoneModel: String) {
         self.firstName = firstName
         self.lastName = lastName
         self.parents = parents
+        self.laptopModel = laptopModel
+        self.phoneModel = phoneModel
     }
 
     // Arrays
@@ -126,6 +146,6 @@ class AutoEquatableClassInherited: AutoEquatableClass {
 
     init(middleName: String?) {
         self.middleName = middleName
-        super.init(firstName: "", lastName: "", parents: [])
+        super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
     }
 }

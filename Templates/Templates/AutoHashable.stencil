@@ -18,7 +18,7 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
 }
 
 {% macro combineVariableHashes variables %}
-        return combineHashes([{% for variable in variables %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
+        return combineHashes([{% for variable in variables where variable.readAccess != "private" and variable.readAccess != "fileprivate" %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
 {% endmacro %}
 
 // MARK: - AutoHashable for classes, protocols, structs
