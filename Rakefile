@@ -39,6 +39,15 @@ def print_info(str)
   (red,clr) = (`tput colors`.chomp.to_i >= 8) ? %W(\e[33m \e[m) : ["", ""]
   puts red, "== #{str.chomp} ==", clr
 end
+
+## [ Bundler & CocoaPods ] ####################################################
+
+desc "Install dependencies"
+task :install_dependencies do
+  sh %Q(bundle install)
+  sh %Q(bundle exec pod install)
+end
+
 ## [ Tests & Clean ] ##########################################################
 
 desc "Run the Unit Tests on Templates project"
@@ -87,10 +96,24 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:check_docs, :check_versions, :build, :tests, :github, :cocoapods]
+  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :build, :tests, :update_metadata, :check_versions, :tag_release, :github, :cocoapods]
+
+  def podspec_update_version(version, file = 'Sourcery.podspec')
+    # The token is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
+    podspec_content = File.read(file)
+    version_var_name = 'version'
+    version_regex = /^(?<begin>[^#]*version\s*=\s*['"])(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>['"])/i
+    version_match = version_regex.match(podspec_content)
+    updated_podspec_content = podspec_content.gsub(version_regex, "#{version_match[:begin]}#{version}#{version_match[:end]}")
+    File.open(file, "w") { |f| f.puts updated_podspec_content }
+  end
 
   def podspec_version(file = 'Sourcery')
     JSON.parse(`bundle exec pod ipc spec #{file}.podspec`)["version"]
+  end
+
+  def project_update_version(version, project = 'Sourcery')
+    `sed -i '' -e 's/CURRENT_PROJECT_VERSION = #{project_version(project)};/CURRENT_PROJECT_VERSION = #{version};/g' #{project}.xcodeproj/project.pbxproj`
   end
 
   def project_version(project = 'Sourcery')
@@ -104,6 +127,79 @@ namespace :release do
       puts "#{label.ljust(25)} \u{274C}  - #{error_msg}"
     end
     result
+  end
+
+  def get(url, content_type = 'application/json')
+    uri = URI.parse(url)
+    req = Net::HTTP::Get.new(uri, initheader = {'Content-Type' => content_type})
+    yield req if block_given?
+
+    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == 'https')) do |http|
+      http.request(req)
+    end
+    unless response.code == '200'
+      puts "Error: #{response.code} - #{response.message}"
+      puts response.body
+      exit 3
+    end
+    JSON.parse(response.body)
+  end
+
+  def post(url, content_type = 'application/json')
+    uri = URI.parse(url)
+    req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => content_type})
+    yield req if block_given?
+
+    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == 'https')) do |http|
+      http.request(req)
+    end
+    unless response.code == '201'
+      puts "Error: #{response.code} - #{response.message}"
+      puts response.body
+      exit 3
+    end
+    JSON.parse(response.body)
+  end
+
+  def manual_commit(files, message)
+    commit_changes = STDIN.gets.chomp == 'Y'
+    if commit_changes then
+      system(%Q{git add #{files.join(" ")}})
+      system(%Q{git commit -m '#{message}'})
+    else
+      system(%Q{git checkout #{files.join(" ")}})
+      exit 2
+    end
+  end
+
+  def git_tag(tag)
+    system(%Q{git tag #{tag}})
+  end
+
+  def git_push(remote = 'origin', branch = 'master')
+    system(%Q{git push #{remote} #{branch} --tags})
+  end
+
+  desc 'Check ENV variables required for release'
+  task :check_environment_variables do
+    print_info "Checking ENV variables"
+    results = []
+
+    results << log_result(!ENV['SOURCERY_GITHUB_USERNAME'].nil?, "SOURCERY_GITHUB_USERNAME is set up", "Please add SOURCERY_GITHUB_USERNAME environment variable")
+    results << log_result(!ENV['SOURCERY_GITHUB_API_TOKEN'].nil?, "SOURCERY_GITHUB_API_TOKEN is set up", "Please add SOURCERY_GITHUB_API_TOKEN environment variable")
+
+    exit 1 unless results.all?
+  end
+
+  desc 'Check if CI is green'
+  task :check_ci do
+    print_info "Checking Circle CI master branch status"
+    results = []
+
+    json = get('https://circleci.com/api/v1.1/project/github/krzysztofzablocki/Sourcery/tree/master')
+    master_branch_status = json[0]['status']
+    results << log_result(master_branch_status == 'success', 'Master branch is green on CI', 'Please check master branch CI status first')
+    exit 1 unless results.all?
   end
 
   desc 'Check if docs are up to date'
@@ -144,6 +240,39 @@ namespace :release do
     exit 2 unless (STDIN.gets.chomp == 'Y')
   end
 
+  desc 'Updates metadata for the new release'
+  task :update_metadata do
+    print "New version of Sourcery in sematic format major.minor.patch? "
+    new_version = STDIN.gets.chomp
+    unless new_version =~ /^\d+\.\d+\.\d+$/ then
+      print "Please set version following the semantic format http://semver.org/\n"
+      exit 3
+    end
+
+    print_info "Updating metadata for #{new_version} release\n"
+
+    # Replace master with the new release version in CHANGELOG.md
+    system(%Q{sed -i '' -e 's/## Master/## #{new_version}/' CHANGELOG.md})
+
+    # Update podspec version
+    podspec_update_version(new_version)
+
+    # Update project version
+    project_update_version(new_version)
+
+    print "Now review and type [Y/n] to commit and push or cancel the changes. "
+    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj"], "docs: update metadata for #{new_version} release")
+    git_push
+  end
+
+  desc 'Create a tag for the project version and push to remote'
+  task :tag_release do
+    print_info "Tagging the release"
+    git_tag(project_version)
+    git_push
+  end
+
+
   desc 'Create a zip containing all the prebuilt binaries'
   task :zip => [:clean] do
     print_info "Creating zip"
@@ -158,23 +287,6 @@ namespace :release do
     `cd build; zip -r -X sourcery-#{podspec_version}.zip .`
   end
 
-  def post(url, content_type)
-    uri = URI.parse(url)
-    req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => content_type})
-    yield req if block_given?
-    req.basic_auth 'krzysztofzablocki', File.read('.apitoken').chomp
-
-    response = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == 'https')) do |http|
-      http.request(req)
-    end
-    unless response.code == '201'
-      puts "Error: #{response.code} - #{response.message}"
-      puts response.body
-      exit 3
-    end
-    JSON.parse(response.body)
-  end
-
   desc 'Upload the zipped binaries to a new GitHub release'
   task :github => :zip do
     v = podspec_version
@@ -185,6 +297,7 @@ namespace :release do
 
     json = post('https://api.github.com/repos/krzysztofzablocki/Sourcery/releases', 'application/json') do |req|
       req.body = { :tag_name => v, :name => v, :body => changelog, :draft => false, :prerelease => false }.to_json
+      req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
     end
 
     upload_url = json['upload_url'].gsub(/\{.*\}/,"?name=Sourcery-#{v}.zip")
@@ -203,5 +316,19 @@ namespace :release do
   task :cocoapods do
     print_info "Pushing pod to CocoaPods Trunk"
     sh 'bundle exec pod trunk push Sourcery.podspec --allow-warnings'
+  end
+
+  desc 'prepare for the new development iteration'
+  task :prepare_next_development_iteration do
+    print_info "Preparing for the next development iteration"
+    `sed -i '' -e '4 a \\
+     ## Master\\
+     \\
+     \\
+     ' CHANGELOG.md`
+
+     print "Now review CHANGELOG.md and type [Y/n] to commit and push or cancel the changes. "
+     manual_commit(["CHANGELOG.md"], "docs: preparing for next development iteration.")
+     git_push
   end
 end
