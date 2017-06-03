@@ -67,7 +67,7 @@ struct AutoHashableStruct: AutoHashable {
 
     // Method with return value
     func greeting(for name: String) -> String {
-        return "Hi \(name)!"
+        return "Hi \(name)"
     }
 
     // Method with optional return value
@@ -118,7 +118,7 @@ class AutoHashableClass: AutoHashable {
 
     // Method with return value
     func greeting(for name: String) -> String {
-        return "Hi \(name)!"
+        return "Hi \(name)"
     }
 
     // Method with optional return value
