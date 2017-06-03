@@ -241,7 +241,7 @@ namespace :release do
   end
 
   desc 'Updates metadata for the new release'
-  task :update_metadata => [:git_tag] do
+  task :update_metadata do
     print "New version of Sourcery in sematic format major.minor.patch? "
     new_version = STDIN.gets.chomp
     unless new_version =~ /^\d+\.\d+\.\d+$/ then
@@ -265,7 +265,7 @@ namespace :release do
     git_push
   end
 
-  desc 'Create a tag for the porject version and push to remote'
+  desc 'Create a tag for the project version and push to remote'
   task :tag_release do
     print_info "Tagging the release"
     git_tag(project_version)
