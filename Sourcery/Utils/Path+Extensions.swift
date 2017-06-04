@@ -48,4 +48,12 @@ extension Path {
         self.init(path.string)
     }
 
+    var allPaths: [Path] {
+        if isDirectory {
+            return (try? recursiveChildren()) ?? []
+        } else {
+            return [self]
+        }
+    }
+
 }

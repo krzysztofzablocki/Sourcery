@@ -16,7 +16,7 @@ class JavaScriptTemplateTests: QuickSpec {
                 let templatePath = Stubs.jsTemplates + Path("Equality.ejs")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -26,7 +26,7 @@ class JavaScriptTemplateTests: QuickSpec {
                 let templatePath = Stubs.jsTemplates + Path("Includes.ejs")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -36,7 +36,7 @@ class JavaScriptTemplateTests: QuickSpec {
                 let templatePath = Stubs.jsTemplates + Path("SubfolderIncludes.ejs")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [templatePath], output: outputDir) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))

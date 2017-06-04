@@ -123,6 +123,25 @@ args:
   <name>: <value>
 ```
 
+You can exlude some sources or templates using `include` and `exclude` keys:
+
+```yaml
+sources:
+  include:
+    - <sources path to include>
+    - <sources path to include>
+  exclude:
+    - <sources path to exclude>
+    - <sources path to exclude>
+templates:
+  include:
+    - <templates path to include>
+    - <templates path to include>
+  exclude:
+    - <templates path to exclude>
+    - <templates path to exclude>
+```
+
 You can provide either sources paths or targets to scan:
 
 ```yaml

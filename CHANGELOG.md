@@ -14,6 +14,7 @@
 - Added `inout` flag for `MethodParameter`
 - Added parsing `mutating` attribute
 - Added support for `include` Stencil tag
+- Added support for excluded paths
 
 ### Internal changes
 
