@@ -383,11 +383,11 @@ class SourcerySpecTests: QuickSpec {
                     let outputFile = outputDir + "Composed.swift"
                     let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8).withoutWhitespaces
 
-                    it("joins code generated code into single file") {
-                        expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [Stubs.templateDirectory], output: outputFile) }.toNot(throwError())
+                    it("joins generated code into single file") {
+                        expect { try Sourcery(cacheDisabled: true).processFiles(.sources([Stubs.sourceDirectory]), usingTemplates: [Stubs.templateDirectory + "Basic.stencil", Stubs.templateDirectory + "Other.stencil"], output: outputFile) }.toNot(throwError())
 
                         let result = try? outputFile.read(.utf8)
-                        expect(result.flatMap { $0.withoutWhitespaces }).to(equal(expectedResult?.withoutWhitespaces))
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult?.withoutWhitespaces))
                     }
                 }
 
