@@ -53,6 +53,16 @@
                ReferencedContainer = "container:Sourcery.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6D6A24A91EB79E8900C1FB1A"
+               BuildableName = "TemplatesTests.xctest"
+               BlueprintName = "TemplatesTests"
+               ReferencedContainer = "container:Templates/Templates.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
