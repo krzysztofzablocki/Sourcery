@@ -432,7 +432,7 @@ class SourcerySpecTests: QuickSpec {
                             }.toNot(throwError())
 
                         let result = try? outputFile.read(.utf8)
-                        expect(result.flatMap { $0.withoutWhitespaces }).to(equal(expectedResult?.withoutWhitespaces))
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult?.withoutWhitespaces))
                     }
                 }
 

@@ -6,6 +6,11 @@ import Foundation
     /// Returns "class"
     public override var kind: String { return "class" }
 
+    /// Whether type is final 
+    public var isFinal: Bool {
+        return attributes[Attribute.Identifier.final.name] != nil
+    }
+
     /// :nodoc:
     public override init(name: String = "",
                   parent: Type? = nil,

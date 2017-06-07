@@ -46,6 +46,14 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
     public var attributes: [String: Attribute]
 
+    public var isFinal: Bool {
+        return attributes[Attribute.Identifier.final.name] != nil
+    }
+
+    public var isMutating: Bool {
+        return attributes[Attribute.Identifier.mutating.name] != nil
+    }
+
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     /// :nodoc:

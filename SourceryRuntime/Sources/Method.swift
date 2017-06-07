@@ -176,6 +176,14 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         return attributes[Attribute.Identifier.required.name] != nil
     }
 
+    public var isFinal: Bool {
+        return attributes[Attribute.Identifier.final.name] != nil
+    }
+
+    public var isMutating: Bool {
+        return attributes[Attribute.Identifier.mutating.name] != nil
+    }
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: [String: NSObject]
 

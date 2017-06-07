@@ -22,6 +22,10 @@ class FileParserAttributesSpec: QuickSpec {
                         "convention": Attribute(name: "convention", arguments: ["swift": NSNumber(value: true)], description: "@convention(swift)"),
                         "autoclosure": Attribute(name: "autoclosure")
                         ]))
+
+                expect(parse("final class Foo { }").first?.attributes).to(equal([
+                    "final": Attribute(name: "final", description: "final")
+                    ]))
             }
 
             context("given attribute with arguments") {
@@ -68,6 +72,9 @@ class FileParserAttributesSpec: QuickSpec {
                     "mutating": Attribute(name: "mutating", description: "mutating")
                     ]))
 
+                expect(parse("class Foo { final func some() {} }").first?.methods.first?.attributes).to(equal([
+                    "final": Attribute(name: "final", description: "final")
+                    ]))
             }
 
             it("extracts method parameter attributes") {
@@ -80,6 +87,14 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("class Foo { @NSCopying @objc(objcName:) var name: String }").first?.variables.first?.attributes).to(equal([
                     "NSCopying": Attribute(name: "NSCopying"),
                     "objc": Attribute(name: "objc", arguments: ["objcName:": NSNumber(value: true)], description: "@objc(objcName:)")
+                    ]))
+
+                expect(parse("struct Foo { mutating var some: Int }").first?.variables.first?.attributes).to(equal([
+                    "mutating": Attribute(name: "mutating", description: "mutating")
+                    ]))
+
+                expect(parse("class Foo { final var some: Int }").first?.variables.first?.attributes).to(equal([
+                    "final": Attribute(name: "final", description: "final")
                     ]))
             }
 
