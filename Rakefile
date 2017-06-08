@@ -280,7 +280,6 @@ namespace :release do
     sh %Q(mkdir -p "build")
     sh %Q(mkdir -p "build/Resources")
     sh %Q(cp -r bin build/)
-    sh %Q(cp -r Templates build/)
     sh %Q(cp -r docs/docsets/Sourcery.docset build/)
     `cp LICENSE README.md CHANGELOG.md build`
     `cp Resources/daemon.gif Resources/icon-128.png build/Resources`
