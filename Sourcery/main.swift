@@ -84,9 +84,9 @@ extension Configuration {
             exit(3)
         }
         if case let .sources(sources) = source {
-            _ = sources.map(Validators.isFileOrDirectory(path:))
+            _ = sources.allPaths.map(Validators.isReadable(path:))
         }
-        _ = templates.map(Validators.isFileOrDirectory(path:))
+        _ = templates.allPaths.map(Validators.isReadable(path:))
         guard !templates.isEmpty else {
             Log.error("No templates provided.")
             exit(3)
@@ -140,7 +140,10 @@ func runCLI() {
                                     cacheDisabled: disableCache,
                                     prune: prune,
                                     arguments: configuration.args)
-            if let keepAlive = try sourcery.processFiles(configuration.source, usingTemplates: configuration.templates, output: configuration.output) {
+            if let keepAlive = try sourcery.processFiles(
+                configuration.source,
+                usingTemplates: configuration.templates,
+                output: configuration.output) {
                 RunLoop.current.run()
                 _ = keepAlive
             } else {

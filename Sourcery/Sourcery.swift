@@ -31,7 +31,7 @@ class Sourcery {
     fileprivate let prune: Bool
 
     fileprivate var status = ""
-    fileprivate var templatesPaths: [Path] = []
+    fileprivate var templatesPaths = Paths()
     fileprivate var outputPath: Path = ""
 
     /// Creates Sourcery processor
@@ -54,23 +54,24 @@ class Sourcery {
     ///   - output: Path to output source code to.
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    func processFiles(_ source: Source, usingTemplates templatesPaths: [Path], output: Path) throws -> [FolderWatcher.Local]? {
+    func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Path) throws -> [FolderWatcher.Local]? {
         self.templatesPaths = templatesPaths
         self.outputPath = output
 
-        let watchPaths: [Path]
+        let watchPaths: Paths
         switch source {
         case let .sources(paths):
             watchPaths = paths
         case let .projects(projects):
-            watchPaths = projects.map({ $0.root })
+            watchPaths = Paths(include: projects.map({ $0.root }),
+                               exclude: projects.flatMap({ $0.exclude }))
         }
 
         let process: (Source) throws -> ParsingResult = { source in
             var result: ParsingResult
             switch source {
             case let .sources(paths):
-                result = try self.parse(from: paths, modules: nil)
+                result = try self.parse(from: paths.include, exclude: paths.exclude, modules: nil)
             case let .projects(projects):
                 var paths = [Path]()
                 var modules = [String]()
@@ -78,6 +79,7 @@ class Sourcery {
                     try project.targets.forEach { target in
                         let files: [Path] = try project.file.sourceFilesPaths(targetName: target.name, sourceRoot: project.root.string)
                         files.forEach { file in
+                            guard !project.exclude.contains(file) else { return }
                             paths.append(file)
                             modules.append(target.module)
                         }
@@ -98,14 +100,18 @@ class Sourcery {
 
         track("Starting watching sources.", skipStatus: true)
 
-        let sourceWatchers = watchPaths.map({ watchPath in
+        let sourceWatchers = watchPaths.allPaths.map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
-                let events = events
-                    .filter { $0.flags.contains(.isFile) && Path($0.path).isSwiftSourceFile }
+                let eventPaths: [Path] = events
+                    .filter { $0.flags.contains(.isFile) }
+                    .flatMap {
+                        let path = Path($0.path)
+                        return path.isSwiftSourceFile ? path : nil
+                    }
 
                 var shouldRegenerate = false
-                for event in events {
-                    guard let file = try? String(contentsOfFile: event.path, encoding: .utf8) else { continue }
+                for path in eventPaths {
+                    guard let file = try? path.read(.utf8) else { continue }
                     if !file.hasPrefix(Sourcery.generationMarker) {
                         shouldRegenerate = true
                         break
@@ -125,7 +131,7 @@ class Sourcery {
 
         track("Starting watching templates.", skipStatus: true)
 
-        let templateWatchers = templatesPaths.map({ templatesPath in
+        let templateWatchers = templatesPaths.allPaths.map({ templatesPath in
             return FolderWatcher.Local(path: templatesPath.string) { events in
                 let events = events
                     .filter { $0.flags.contains(.isFile) && Path($0.path).isTemplateFile }
@@ -133,7 +139,7 @@ class Sourcery {
                 if !events.isEmpty {
                     do {
                         self.track("Templates changed: ", terminator: "")
-                        try self.generate([templatesPath], output: output, parsingResult: result)
+                        try self.generate(Paths(include: [templatesPath]), output: output, parsingResult: result)
                     } catch {
                         self.track(error)
                     }
@@ -144,7 +150,7 @@ class Sourcery {
         return Array([sourceWatchers, templateWatchers].joined())
     }
 
-    fileprivate func templates(from: [Path]) throws -> [Template] {
+    fileprivate func templates(from: Paths) throws -> [Template] {
         return try templatePaths(from: from).map {
             #if SWIFT_PACKAGE
                 if $0.extension == "swifttemplate" || $0.extension == "ejs" {
@@ -165,8 +171,8 @@ class Sourcery {
         }
     }
 
-    fileprivate func outputPaths(from: [Path], output: Path) throws -> [Path] {
-        return try templatePaths(from: from).map { output + generatedPath(for: $0) }
+    fileprivate func outputPaths(from: Paths, output: Path) throws -> [Path] {
+        return templatePaths(from: from).map { output + generatedPath(for: $0) }
     }
 
     fileprivate func track(_ message: Any, terminator: String = "\n", skipStatus: Bool = false) {
@@ -183,12 +189,8 @@ class Sourcery {
         }
     }
 
-    private func templatePaths(from: [Path]) throws -> [Path] {
-        let paths = try from.map { (from) -> [Path] in
-            let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
-            return fileList.filter { $0.isTemplateFile }
-        }
-        return Array(paths.joined())
+    private func templatePaths(from: Paths) -> [Path] {
+        return from.allPaths.filter { $0.isTemplateFile }
     }
 
 }
@@ -198,7 +200,7 @@ class Sourcery {
 extension Sourcery {
     typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange])])
 
-    fileprivate func parse(from: [Path], modules: [String]?) throws -> ParsingResult {
+    fileprivate func parse(from: [Path], exclude: [Path] = [], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
             precondition(from.count == modules.count, "There should be module for each file to parse")
         }
@@ -211,6 +213,12 @@ extension Sourcery {
             let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
             let sources = try fileList
                 .filter { $0.isSwiftSourceFile }
+                .filter {
+                    let exclude = exclude
+                        .map { $0.isDirectory ? try? $0.recursiveChildren() : [$0] }
+                        .flatMap({ $0 }).flatMap({ $0 })
+                    return !exclude.contains($0)
+                }
                 .map { (path: $0, contents: try $0.read(.utf8)) }
                 .filter {
                     let result = Verifier.canParse(content: $0.contents)
@@ -303,7 +311,7 @@ extension Sourcery {
 // MARK: - Generation
 extension Sourcery {
 
-    fileprivate func generate(_ templatePaths: [Path], output: Path, parsingResult: ParsingResult) throws {
+    fileprivate func generate(_ templatePaths: Paths, output: Path, parsingResult: ParsingResult) throws {
         track("Loading templates...", terminator: "")
         let allTemplates = try templates(from: templatePaths)
         track("Loaded \(allTemplates.count) templates.")
