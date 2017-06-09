@@ -46,10 +46,12 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
     public var attributes: [String: Attribute]
 
+    /// Whether variable is final or not
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
 
+    /// Whether variable is mutating or not
     public var isMutating: Bool {
         return attributes[Attribute.Identifier.mutating.name] != nil
     }
