@@ -49,6 +49,7 @@
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
+		52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
 		64E201AA1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
 		985E4D303A731C40BE326E5C /* Pods_Sourcery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C9B21117B6C7EB409B9D49 /* Pods_Sourcery.framework */; };
@@ -159,6 +160,7 @@
 		3825CA349BD2B2AAB9605E7F /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
 		47FBEB8D5AB4DA51522B302B /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
 		4E26A60E38FEA181642B97B4 /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
+		52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
 		64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryRuntime.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67BC066E18D9BE38229EEFA2 /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -402,6 +404,7 @@
 				E291D114F84B90258AD76A35 /* Parsing */,
 				E291DC8AFD88340E1355E531 /* Generating */,
 				CD754CA01D853F000082B512 /* Info.plist */,
+				52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */,
 				E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */,
 				E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */,
 				CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */,
@@ -923,6 +926,7 @@
 				E291DA3352C0EDD1EB8DDCB3 /* FileParser + VariableSpec.swift in Sources */,
 				E291DE1CB3B72BAA22DEDEDA /* StencilTemplateSpec.swift in Sources */,
 				E291D00F3B27A346A9ACCDA4 /* Extensions.swift in Sources */,
+				52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */,
 				E291D52FDFF7CF446E239C13 /* TemplateAnnotationsParserSpec.swift in Sources */,
 				E291D5115BBE9AB32275F38F /* VerifierSpec.swift in Sources */,
 			);
