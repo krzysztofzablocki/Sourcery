@@ -19,6 +19,7 @@
 ### Internal changes
 
 - Internal release procedure improvements
+- Fixed swiftlint warnings (version 0.19.0)
 
 
 ## 0.6.1
