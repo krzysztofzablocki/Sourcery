@@ -158,11 +158,7 @@ public final class Enum: Type {
 
     /// Whether enum contains any associated values
     public var hasAssociatedValues: Bool {
-        for entry in cases {
-            if entry.hasAssociatedValue { return true }
-        }
-
-        return false
+        return cases.contains(where: { $0.hasAssociatedValue })
     }
 
     /// :nodoc:
