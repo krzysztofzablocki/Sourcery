@@ -214,17 +214,17 @@ public class Type: NSObject, SourceryModel, Annotated {
 
     /// :nodoc:
     public init(name: String = "",
-         parent: Type? = nil,
-         accessLevel: AccessLevel = .internal,
-         isExtension: Bool = false,
-         variables: [Variable] = [],
-         methods: [Method] = [],
-         inheritedTypes: [String] = [],
-         containedTypes: [Type] = [],
-         typealiases: [Typealias] = [],
-         attributes: [String: Attribute] = [:],
-         annotations: [String: NSObject] = [:],
-         isGeneric: Bool = false) {
+                parent: Type? = nil,
+                accessLevel: AccessLevel = .internal,
+                isExtension: Bool = false,
+                variables: [Variable] = [],
+                methods: [Method] = [],
+                inheritedTypes: [String] = [],
+                containedTypes: [Type] = [],
+                typealiases: [Typealias] = [],
+                attributes: [String: Attribute] = [:],
+                annotations: [String: NSObject] = [:],
+                isGeneric: Bool = false) {
 
         let name = name.trimmingCharacters(in: CharacterSet(charactersIn: "`"))
         self.localName = name
