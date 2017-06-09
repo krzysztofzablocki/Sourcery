@@ -8,6 +8,7 @@
 
 - Fixed inserting generated code inline automatically at wrong position
 - Fixed regression in AutoEquatable & AutoHashable template with private computed variables
+- Fixed regression in `sources` parsing in config files
 
 ### New Features
 
