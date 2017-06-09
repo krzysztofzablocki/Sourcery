@@ -43,7 +43,7 @@ extension Attribute: Diffable {
 extension Class {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let _ = object as? Class else {
+        guard object is Class else {
             results.append("Incorrect type <expected: Class, received: \(type(of: object))>")
             return results
         }
@@ -162,7 +162,7 @@ extension MethodParameter: Diffable {
 extension Protocol {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let _ = object as? Protocol else {
+        guard object is Protocol else {
             results.append("Incorrect type <expected: Protocol, received: \(type(of: object))>")
             return results
         }
@@ -173,7 +173,7 @@ extension Protocol {
 extension Struct {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let _ = object as? Struct else {
+        guard object is Struct else {
             results.append("Incorrect type <expected: Struct, received: \(type(of: object))>")
             return results
         }
