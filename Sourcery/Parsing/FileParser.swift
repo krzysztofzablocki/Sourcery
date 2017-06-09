@@ -268,13 +268,11 @@ final class FileParser {
                     argumentLabels = []
                 }
 
-                for (index, parameter) in method.parameters.enumerated() {
-                    if index < argumentLabels.count {
-                        if argumentLabels[index] == "_" {
-                            parameter.argumentLabel = nil
-                        } else {
-                            parameter.argumentLabel = argumentLabels[index]
-                        }
+                for (index, parameter) in method.parameters.enumerated() where index < argumentLabels.count {
+                    if argumentLabels[index] == "_" {
+                        parameter.argumentLabel = nil
+                    } else {
+                        parameter.argumentLabel = argumentLabels[index]
                     }
                 }
             }

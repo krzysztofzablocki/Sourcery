@@ -61,14 +61,14 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
 
     /// :nodoc:
     public init(name: String = "",
-         typeName: TypeName,
-         type: Type? = nil,
-         accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
-         isComputed: Bool = false,
-         isStatic: Bool = false,
-         defaultValue: String? = nil,
-         attributes: [String: Attribute] = [:],
-         annotations: [String: NSObject] = [:]) {
+                typeName: TypeName,
+                type: Type? = nil,
+                accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
+                isComputed: Bool = false,
+                isStatic: Bool = false,
+                defaultValue: String? = nil,
+                attributes: [String: Attribute] = [:],
+                annotations: [String: NSObject] = [:]) {
 
         self.name = name
         self.typeName = typeName

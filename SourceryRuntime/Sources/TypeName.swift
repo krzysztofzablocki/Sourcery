@@ -34,12 +34,12 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
 
     /// :nodoc:
     public init(_ name: String,
-         actualTypeName: TypeName? = nil,
-         attributes: [String: Attribute] = [:],
-         tuple: TupleType? = nil,
-         array: ArrayType? = nil,
-         dictionary: DictionaryType? = nil,
-         closure: ClosureType? = nil) {
+                actualTypeName: TypeName? = nil,
+                attributes: [String: Attribute] = [:],
+                tuple: TupleType? = nil,
+                array: ArrayType? = nil,
+                dictionary: DictionaryType? = nil,
+                closure: ClosureType? = nil) {
 
         self.name = name
         self.actualTypeName = actualTypeName

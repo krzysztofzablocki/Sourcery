@@ -8,7 +8,7 @@ import Foundation
 /// Defines enum case associated value
 public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
 
-    /// Associated value local name. 
+    /// Associated value local name.
     /// This is a name to be used to construct enum case value
     public let localName: String?
 
@@ -158,28 +158,24 @@ public final class Enum: Type {
 
     /// Whether enum contains any associated values
     public var hasAssociatedValues: Bool {
-        for entry in cases {
-            if entry.hasAssociatedValue { return true }
-        }
-
-        return false
+        return cases.contains(where: { $0.hasAssociatedValue })
     }
 
     /// :nodoc:
     public init(name: String = "",
-         parent: Type? = nil,
-         accessLevel: AccessLevel = .internal,
-         isExtension: Bool = false,
-         inheritedTypes: [String] = [],
-         rawTypeName: TypeName? = nil,
-         cases: [EnumCase] = [],
-         variables: [Variable] = [],
-         methods: [Method] = [],
-         containedTypes: [Type] = [],
-         typealiases: [Typealias] = [],
-         attributes: [String: Attribute] = [:],
-         annotations: [String: NSObject] = [:],
-         isGeneric: Bool = false) {
+                parent: Type? = nil,
+                accessLevel: AccessLevel = .internal,
+                isExtension: Bool = false,
+                inheritedTypes: [String] = [],
+                rawTypeName: TypeName? = nil,
+                cases: [EnumCase] = [],
+                variables: [Variable] = [],
+                methods: [Method] = [],
+                containedTypes: [Type] = [],
+                typealiases: [Typealias] = [],
+                attributes: [String: Attribute] = [:],
+                annotations: [String: NSObject] = [:],
+                isGeneric: Bool = false) {
 
         self.cases = cases
         self.rawTypeName = rawTypeName

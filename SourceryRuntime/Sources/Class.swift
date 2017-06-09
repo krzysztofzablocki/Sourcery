@@ -13,17 +13,17 @@ import Foundation
 
     /// :nodoc:
     public override init(name: String = "",
-                  parent: Type? = nil,
-                  accessLevel: AccessLevel = .internal,
-                  isExtension: Bool = false,
-                  variables: [Variable] = [],
-                  methods: [Method] = [],
-                  inheritedTypes: [String] = [],
-                  containedTypes: [Type] = [],
-                  typealiases: [Typealias] = [],
-                  attributes: [String: Attribute] = [:],
-                  annotations: [String: NSObject] = [:],
-                  isGeneric: Bool = false) {
+                         parent: Type? = nil,
+                         accessLevel: AccessLevel = .internal,
+                         isExtension: Bool = false,
+                         variables: [Variable] = [],
+                         methods: [Method] = [],
+                         inheritedTypes: [String] = [],
+                         containedTypes: [Type] = [],
+                         typealiases: [Typealias] = [],
+                         attributes: [String: Attribute] = [:],
+                         annotations: [String: NSObject] = [:],
+                         isGeneric: Bool = false) {
         super.init(
             name: name,
             parent: parent,

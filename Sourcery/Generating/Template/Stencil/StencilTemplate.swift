@@ -234,7 +234,7 @@ private struct FilterOr<T, Y> {
                 return other(type)
 
             case let array as NSArray:
-                if let _ = array.firstObject as? T {
+                if array.firstObject is T {
                     return array.flatMap { $0 as? T }.filter(filter)
                 } else {
                     return array.flatMap { $0 as? Y }.filter(other)
@@ -256,7 +256,7 @@ private struct FilterOr<T, Y> {
                 return other(type, arg)
 
             case let array as NSArray:
-                if let _ = array.firstObject as? T {
+                if array.firstObject is T {
                     return array.flatMap { $0 as? T }.filter({ filter($0, arg) })
                 } else {
                     return array.flatMap { $0 as? Y }.filter({ other($0, arg) })
