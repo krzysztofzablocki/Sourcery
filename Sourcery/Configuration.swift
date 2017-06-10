@@ -86,7 +86,7 @@ enum Source {
         } else if let project = dict["project"] as? [String: Any] {
             self = .projects([Project(dict: project, relativePath: relativePath)].flatMap({ $0 }))
         } else {
-            self = .sources(Paths(dict: dict, relativePath: relativePath))
+            self = .sources(Paths(dict: dict["sources"], relativePath: relativePath))
         }
     }
 
