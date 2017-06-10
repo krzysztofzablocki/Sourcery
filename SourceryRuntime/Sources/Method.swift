@@ -176,10 +176,12 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         return attributes[Attribute.Identifier.required.name] != nil
     }
 
+    /// Whether method is final
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
 
+    /// Whether method is mutating
     public var isMutating: Bool {
         return attributes[Attribute.Identifier.mutating.name] != nil
     }
