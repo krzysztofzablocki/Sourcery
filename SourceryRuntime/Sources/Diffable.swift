@@ -118,11 +118,9 @@ extension DiffableResult {
             return self
         }
 
-        for (idx, item) in actual.enumerated() {
-            if item != expected[idx] {
-                let string = "idx \(idx): <expected: \(expected), received: \(actual)>"
-                diffResult.append(string)
-            }
+        for (idx, item) in actual.enumerated() where item != expected[idx] {
+            let string = "idx \(idx): <expected: \(expected), received: \(actual)>"
+            diffResult.append(string)
         }
 
         return self

@@ -46,10 +46,12 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
     public var attributes: [String: Attribute]
 
+    /// Whether variable is final or not
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
 
+    /// Whether variable is mutating or not
     public var isMutating: Bool {
         return attributes[Attribute.Identifier.mutating.name] != nil
     }
@@ -61,14 +63,14 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
 
     /// :nodoc:
     public init(name: String = "",
-         typeName: TypeName,
-         type: Type? = nil,
-         accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
-         isComputed: Bool = false,
-         isStatic: Bool = false,
-         defaultValue: String? = nil,
-         attributes: [String: Attribute] = [:],
-         annotations: [String: NSObject] = [:]) {
+                typeName: TypeName,
+                type: Type? = nil,
+                accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
+                isComputed: Bool = false,
+                isStatic: Bool = false,
+                defaultValue: String? = nil,
+                attributes: [String: Attribute] = [:],
+                annotations: [String: NSObject] = [:]) {
 
         self.name = name
         self.typeName = typeName

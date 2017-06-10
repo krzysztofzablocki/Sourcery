@@ -14,11 +14,13 @@
 - Added `inout` flag for `MethodParameter`
 - Added parsing `mutating` and `final` attributes with convenience `isMutating` and `isFinal` properties 
 - Added support for `include` Stencil tag
+- Added support for excluded paths
 
 ### Internal changes
 
 - Internal release procedure improvements
 - Improved `TemplatesTests` scheme running
+- Fixed swiftlint warnings (version 0.19.0)
 
 
 ## 0.6.1

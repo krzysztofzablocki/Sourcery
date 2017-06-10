@@ -176,10 +176,12 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         return attributes[Attribute.Identifier.required.name] != nil
     }
 
+    /// Whether method is final
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
 
+    /// Whether method is mutating
     public var isMutating: Bool {
         return attributes[Attribute.Identifier.mutating.name] != nil
     }
@@ -197,17 +199,17 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     /// :nodoc:
     public init(name: String,
-         selectorName: String? = nil,
-         parameters: [MethodParameter] = [],
-         returnTypeName: TypeName = TypeName("Void"),
-         throws: Bool = false,
-         rethrows: Bool = false,
-         accessLevel: AccessLevel = .internal,
-         isStatic: Bool = false,
-         isClass: Bool = false,
-         isFailableInitializer: Bool = false,
-         attributes: [String: Attribute] = [:],
-         annotations: [String: NSObject] = [:]) {
+                selectorName: String? = nil,
+                parameters: [MethodParameter] = [],
+                returnTypeName: TypeName = TypeName("Void"),
+                throws: Bool = false,
+                rethrows: Bool = false,
+                accessLevel: AccessLevel = .internal,
+                isStatic: Bool = false,
+                isClass: Bool = false,
+                isFailableInitializer: Bool = false,
+                attributes: [String: Attribute] = [:],
+                annotations: [String: NSObject] = [:]) {
 
         self.name = name
         self.selectorName = selectorName ?? name
