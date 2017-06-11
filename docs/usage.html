@@ -194,6 +194,23 @@
   <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
 
+<p>You can exclude some sources or templates using <code>include</code> and <code>exclude</code> keys:</p>
+<pre class="highlight yaml"><code><span class="s">sources</span><span class="pi">:</span>
+  <span class="s">include</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">&lt;sources path to include&gt;</span>
+    <span class="pi">-</span> <span class="s">&lt;sources path to include&gt;</span>
+  <span class="s">exclude</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">&lt;sources path to exclude&gt;</span>
+    <span class="pi">-</span> <span class="s">&lt;sources path to exclude&gt;</span>
+<span class="s">templates</span><span class="pi">:</span>
+  <span class="s">include</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">&lt;templates path to include&gt;</span>
+    <span class="pi">-</span> <span class="s">&lt;templates path to include&gt;</span>
+  <span class="s">exclude</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">&lt;templates path to exclude&gt;</span>
+    <span class="pi">-</span> <span class="s">&lt;templates path to exclude&gt;</span>
+</code></pre>
+
 <p>You can provide either sources paths or targets to scan:</p>
 <pre class="highlight yaml"><code><span class="s">project</span><span class="pi">:</span>
   <span class="s">file</span><span class="pi">:</span>
@@ -203,6 +220,9 @@
   <span class="s">target</span><span class="pi">:</span>
     <span class="s">name</span><span class="pi">:</span> <span class="s">&lt;target name&gt;</span>
     <span class="s">module</span><span class="pi">:</span> <span class="s">&lt;module name&gt; //required if different from target name</span>
+  <span class="s">exclude</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
+    <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
 </code></pre>
 
 <p>You can use several <code>project</code> or <code>target</code> objects to scan multiple targets from one project or to scan multiple projects.</p>

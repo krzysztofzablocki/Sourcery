@@ -11,8 +11,8 @@ Make sure you've been added as owner for [CocoaPods Trunk](https://guides.cocoap
 To create automatic GitHub releases, set up [API Token](https://github.com/settings/tokens/new). We recommend giving the token the smallest scope possible. This means just `public_repo`. After getting the token add the following ENV variables:
 
 ```
-SOURCERY_GITHUB_USERNAME=YOUR_GITHUB_USERNAME
-SOURCERY_GITHUB_API_TOKEN=YOUR_TOKEN
+export SOURCERY_GITHUB_USERNAME=YOUR_GITHUB_USERNAME
+export SOURCERY_GITHUB_API_TOKEN=YOUR_TOKEN
 ```
 
 ### Release

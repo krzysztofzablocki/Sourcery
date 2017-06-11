@@ -45,7 +45,11 @@ Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/S
 - `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
 - `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
 
-You can also use partial templates using `include` tag. Partial template is loaded from the path of template that inculdes it. `include` tags also supports loading templates from relative path, i.e. `{% include "partials/MyPartial.stencil"%}` will load teamplate from `partials` subfolder.
+You can also use partial templates using `include` tag. Partial template is loaded from the path of a template that inculdes it. `include` tags also supports loading templates from relative path, i.e. `{% include "partials/MyPartial.stencil"%}` used in the template located in `templates` directory will load template from `templates/partials` directory.
+
+> Note: You can only load partial templates from child directories of the including template directory, so `{% include "../MyPartial.stencil"%}` is not supported.
+
+Sourcery treat all the templates as independent and so will generate files based on partial templates too. To avoid that use `exclude` in [configuration file](usage.html#configuration-file).
 
 ## Swift templates
 

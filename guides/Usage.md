@@ -40,7 +40,7 @@ args:
   <name>: <value>
 ```
 
-You can exlude some sources or templates using `include` and `exclude` keys:
+You can exclude some sources or templates using `include` and `exclude` keys:
 
 ```yaml
 sources:
