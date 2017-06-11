@@ -2,12 +2,18 @@
 
 ---
 
-## 0.7.0
+## Master
+
+### New Features
+
 
 ### Bug fixes
 
-- Fixed inserting generated code inline automatically at wrong position
-- Fixed regression in AutoEquatable & AutoHashable template with private computed variables
+
+### Internal changes
+
+
+## 0.7.0
 
 ### New Features
 
@@ -15,6 +21,11 @@
 - Added parsing `mutating` and `final` attributes with convenience `isMutating` and `isFinal` properties 
 - Added support for `include` Stencil tag
 - Added support for excluded paths
+
+### Bug fixes
+
+- Fixed inserting generated code inline automatically at wrong position
+- Fixed regression in AutoEquatable & AutoHashable template with private computed variables
 
 ### Internal changes
 
