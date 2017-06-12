@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -25,7 +25,8 @@ extension Class {
     /// :nodoc:
     override public var description: String {
         var string = super.description
-        string += "kind = \(String(describing: self.kind))"
+        string += "kind = \(String(describing: self.kind)), "
+        string += "isFinal = \(String(describing: self.isFinal))"
         return string
     }
 }
@@ -106,6 +107,8 @@ extension Method {
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
         string += "isConvenienceInitializer = \(String(describing: self.isConvenienceInitializer)), "
         string += "isRequired = \(String(describing: self.isRequired)), "
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "isMutating = \(String(describing: self.isMutating)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string
@@ -118,6 +121,7 @@ extension MethodParameter {
         string += "argumentLabel = \(String(describing: self.argumentLabel)), "
         string += "name = \(String(describing: self.name)), "
         string += "typeName = \(String(describing: self.typeName)), "
+        string += "`inout` = \(String(describing: self.`inout`)), "
         string += "typeAttributes = \(String(describing: self.typeAttributes)), "
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations))"
@@ -231,7 +235,9 @@ extension Variable {
         string += "isMutable = \(String(describing: self.isMutable)), "
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations)), "
-        string += "attributes = \(String(describing: self.attributes))"
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "isMutating = \(String(describing: self.isMutating))"
         return string
     }
 }

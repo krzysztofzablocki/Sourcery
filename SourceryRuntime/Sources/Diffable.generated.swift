@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType: Diffable {
@@ -43,7 +43,7 @@ extension Attribute: Diffable {
 extension Class {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard object is Class else {
+        guard let _ = object as? Class else {
             results.append("Incorrect type <expected: Class, received: \(type(of: object))>")
             return results
         }
@@ -154,6 +154,7 @@ extension MethodParameter: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "argumentLabel").trackDifference(actual: self.argumentLabel, expected: rhs.argumentLabel))
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: rhs.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: rhs.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: rhs.`inout`))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: rhs.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: rhs.annotations))
         return results
@@ -162,7 +163,7 @@ extension MethodParameter: Diffable {
 extension Protocol {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard object is Protocol else {
+        guard let _ = object as? Protocol else {
             results.append("Incorrect type <expected: Protocol, received: \(type(of: object))>")
             return results
         }
@@ -173,7 +174,7 @@ extension Protocol {
 extension Struct {
     override func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard object is Struct else {
+        guard let _ = object as? Struct else {
             results.append("Incorrect type <expected: Struct, received: \(type(of: object))>")
             return results
         }

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import JavaScriptCore
@@ -34,6 +34,7 @@ extension Attribute: AttributeAutoJSExport {}
 
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
+    var isFinal: Bool { get }
     var module: String? { get }
     var accessLevel: String { get }
     var name: String { get }
@@ -162,6 +163,8 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isFailableInitializer: Bool { get }
     var isConvenienceInitializer: Bool { get }
     var isRequired: Bool { get }
+    var isFinal: Bool { get }
+    var isMutating: Bool { get }
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
 }
@@ -172,6 +175,7 @@ extension Method: MethodAutoJSExport {}
     var argumentLabel: String? { get }
     var name: String { get }
     var typeName: TypeName { get }
+    var `inout`: Bool { get }
     var type: Type? { get }
     var typeAttributes: [String: Attribute] { get }
     var defaultValue: String? { get }
@@ -354,6 +358,8 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var defaultValue: String? { get }
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
+    var isFinal: Bool { get }
+    var isMutating: Bool { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension AssociatedValue {
@@ -55,7 +55,6 @@ extension TupleElement {
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
-/// :nodoc:
 extension Typealias {
     /// Whether type is optional. Shorthand for `typeName.isOptional`
     public var isOptional: Bool { return typeName.isOptional }

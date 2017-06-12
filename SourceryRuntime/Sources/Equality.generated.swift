@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -127,6 +127,7 @@ extension MethodParameter {
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         return true
