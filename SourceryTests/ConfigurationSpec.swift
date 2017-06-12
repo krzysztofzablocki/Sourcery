@@ -3,32 +3,58 @@ import Nimble
 import PathKit
 @testable import Sourcery
 
-class SourceSpecTests: QuickSpec {
+class ConfigurationSpec: QuickSpec {
+
     // swiftlint:disable:next function_body_length
     override func spec() {
+        let relativePath = Path("/some/path")
+
         describe("Source") {
-            let relativePath = Path("/some/path")
-
-            describe("sources paths parsing") {
-                it("include paths when provided as an array") {
+            context("provided with sources paths") {
+                it("include paths provided as an array") {
                     let config = ["sources": ["."]]
-                    let source = Source(dict: config, relativePath: relativePath)
+                    let source = Configuration(dict: config, relativePath: relativePath).source
                     let expected = Source.sources(Paths(include: [relativePath]))
                     expect(source).to(equal(expected))
                 }
 
-                it("include paths provided in the `include` key") {
+                it("include paths provided with `include` key") {
                     let config = ["sources": ["include": ["."]]]
-                    let source = Source(dict: config, relativePath: relativePath)
+                    let source = Configuration(dict: config, relativePath: relativePath).source
                     let expected = Source.sources(Paths(include: [relativePath]))
                     expect(source).to(equal(expected))
                 }
 
-                it("exclude paths provided in the `exclude` key") {
+                it("exclude paths provided with the `exclude` key") {
                     let config = ["sources": ["exclude": ["."]]]
-                    let source = Source(dict: config, relativePath: relativePath)
+                    let source = Configuration(dict: config, relativePath: relativePath).source
                     let expected = Source.sources(Paths(exclude: [relativePath]))
                     expect(source).to(equal(expected))
+                }
+            }
+        }
+
+        describe("Templates") {
+            context("provided with templates paths") {
+                it("include paths provided as an array") {
+                    let config = ["templates": ["."]]
+                    let templates = Configuration(dict: config, relativePath: relativePath).templates
+                    let expected = Paths(include: [relativePath])
+                    expect(templates).to(equal(expected))
+                }
+
+                it("include paths provided with `include` key") {
+                    let config = ["templates": ["include": ["."]]]
+                    let templates = Configuration(dict: config, relativePath: relativePath).templates
+                    let expected = Paths(include: [relativePath])
+                    expect(templates).to(equal(expected))
+                }
+
+                it("exclude paths provided with the `exclude` key") {
+                    let config = ["templates": ["exclude": ["."]]]
+                    let templates = Configuration(dict: config, relativePath: relativePath).templates
+                    let expected = Paths(exclude: [relativePath])
+                    expect(templates).to(equal(expected))
                 }
             }
         }

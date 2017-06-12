@@ -86,7 +86,7 @@ enum Source {
         } else if let project = dict["project"] as? [String: Any] {
             self = .projects([Project(dict: project, relativePath: relativePath)].flatMap({ $0 }))
         } else {
-            self = .sources(Paths(dict: dict["sources"], relativePath: relativePath))
+            self = .sources(Paths(dict: dict["sources"] ?? [:], relativePath: relativePath))
         }
     }
 
@@ -109,7 +109,7 @@ struct Configuration {
 
     init(dict: [String: Any], relativePath: Path) {
         self.source = Source(dict: dict, relativePath: relativePath)
-        self.templates = Paths(dict: dict, relativePath: relativePath)
+        self.templates = Paths(dict: dict["templates"] ?? [:], relativePath: relativePath)
         self.output = (dict["output"] as? String).map({ Path($0, relativeTo: relativePath) }) ?? "."
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
