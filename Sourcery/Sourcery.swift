@@ -29,6 +29,7 @@ class Sourcery {
     fileprivate let arguments: [String: NSObject]
     fileprivate let cacheDisabled: Bool
     fileprivate let prune: Bool
+    fileprivate let autoLock: Bool
 
     fileprivate var status = ""
     fileprivate var templatesPaths = Paths()
@@ -38,12 +39,13 @@ class Sourcery {
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
     /// - Parameter arguments: Additional arguments to pass to templates.
-    init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, prune: Bool = false, arguments: [String: NSObject] = [:]) {
+    init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, prune: Bool = false, autoLock: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
         self.cacheDisabled = cacheDisabled
         self.prune = prune
+        self.autoLock = autoLock
     }
 
     /// Processes source files and generates corresponding code.
@@ -318,6 +320,22 @@ extension Sourcery {
 
         track("Generating code...", terminator: "")
         status = ""
+        
+        if autoLock && outputPath.exists {
+            do { try FileManager.default.setAttributes([.immutable: false],
+                        ofItemAtPath: outputPath.normalize().description)
+            } catch { track("\(error)") }
+            Log.info("Unlocked: \(outputPath.normalize())")
+        }
+        
+        defer {
+            if autoLock && outputPath.exists {
+                do { try FileManager.default.setAttributes([.immutable: true],
+                        ofItemAtPath: outputPath.normalize().description)
+                } catch { track("\(error)") }
+                Log.info("Locked: \(outputPath.normalize())")
+            }
+        }
 
         guard output.isDirectory else {
             let result = try allTemplates.reduce(Sourcery.generationHeader) { result, template in
