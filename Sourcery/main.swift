@@ -112,12 +112,14 @@ func runCLI() {
         Flag("prune",
              flag: "p",
              description: "Remove empty generated files"),
+        Flag("autoLock",
+             description: "Automatically locks all the ouput files"),
         VariadicOption<Path>("sources", description: "Path to a source swift files"),
         VariadicOption<Path>("templates", description: "Path to templates. File or Directory."),
         Option<Path>("output", ".", description: "Path to output. File or Directory. Default is current path."),
         Option<Path>("config", ".", description: "Path to config file. Directory. Default is current path."),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, sources, templates, output, configPath, args in
+    ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, autoLock, sources, templates, output, configPath, args in
         do {
             Log.level = verboseLogging ? .verbose : quiet ? .errors : .warnings
             let configuration: Configuration
@@ -135,6 +137,7 @@ func runCLI() {
             configuration.validate()
 
             let start = CFAbsoluteTimeGetCurrent()
+            //TODO: Use autoLock
             let sourcery = Sourcery(verbose: verboseLogging,
                                     watcherEnabled: watcherEnabled,
                                     cacheDisabled: disableCache,
