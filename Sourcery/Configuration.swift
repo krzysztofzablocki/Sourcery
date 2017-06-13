@@ -106,19 +106,22 @@ struct Configuration {
     let templates: Paths
     let output: Path
     let args: [String: NSObject]
+    let autoLock: Bool
 
-    init(dict: [String: Any], relativePath: Path) {
+    init(dict: [String: Any], relativePath: Path, autoLock: Bool = false) {
         self.source = Source(dict: dict, relativePath: relativePath)
         self.templates = Paths(dict: dict["templates"] ?? [:], relativePath: relativePath)
         self.output = (dict["output"] as? String).map({ Path($0, relativeTo: relativePath) }) ?? "."
         self.args = dict["args"] as? [String: NSObject] ?? [:]
+        self.autoLock = autoLock
     }
 
-    init(sources: [Path], templates: [Path], output: Path, args: [String: NSObject]) {
+    init(sources: [Path], templates: [Path], output: Path, args: [String: NSObject], autoLock: Bool = false) {
         self.source = .sources(Paths(include: sources))
         self.templates = Paths(include: templates)
         self.output = output
         self.args = args
+        self.autoLock = autoLock
     }
 
 }

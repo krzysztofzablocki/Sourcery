@@ -67,8 +67,34 @@ fileprivate enum Validators {
         return path
     }
 
-    static func isWriteable(path: Path) -> Path {
-        if path.exists && !path.isWritable {
+    static func isWritable(path: Path, autoLock: Bool) -> Path {
+        let pathExistsAndIsNotWritable = path.exists && !path.isWritable
+        let pathExistsAndWillNotBeWritableIfUnlocked: Bool = {
+            guard path.exists, autoLock else {
+                return false
+            }
+            
+            let outputPath = path.absolute().description
+            do {
+                let attributes = try FileManager.default.attributesOfItem(atPath: outputPath)
+                if let isImmutable = attributes[.immutable] as? Bool, isImmutable {
+                    //Unlock and try to write
+                    try FileManager.default.setAttributes([.immutable: false], ofItemAtPath: outputPath)
+                    let isWritableIfUnlocked = path.isWritable
+                    
+                    try FileManager.default.setAttributes([.immutable: true], ofItemAtPath: outputPath)
+                    
+                    return !isWritableIfUnlocked
+                } else {
+                    return false
+                }
+            } catch {
+                return false
+            }
+        }()
+        
+        if pathExistsAndIsNotWritable &&
+           pathExistsAndWillNotBeWritableIfUnlocked {
             Log.error("'\(path)' isn't writeable.")
             exit(2)
         }
@@ -91,7 +117,7 @@ extension Configuration {
             Log.error("No templates provided.")
             exit(3)
         }
-        _ = Validators.isWriteable(path: output)
+        _ = Validators.isWritable(path: output, autoLock: autoLock)
     }
 
 }
@@ -126,22 +152,23 @@ func runCLI() {
 
             let yamlPath: Path = configPath + ".sourcery.yml"
             if yamlPath.exists, let dict = try Yams.load(yaml: yamlPath.read()) as? [String: Any] {
-                configuration = Configuration(dict: dict, relativePath: configPath)
+                configuration = Configuration(dict: dict, relativePath: configPath, autoLock: autoLock)
             } else {
                 configuration = Configuration(sources: sources,
                                               templates: templates,
                                               output: output,
-                                              args: args.arguments)
+                                              args: args.arguments,
+                                              autoLock: autoLock)
             }
 
             configuration.validate()
 
             let start = CFAbsoluteTimeGetCurrent()
-            //TODO: Use autoLock
             let sourcery = Sourcery(verbose: verboseLogging,
                                     watcherEnabled: watcherEnabled,
                                     cacheDisabled: disableCache,
                                     prune: prune,
+                                    autoLock: autoLock,
                                     arguments: configuration.args)
             if let keepAlive = try sourcery.processFiles(
                 configuration.source,
