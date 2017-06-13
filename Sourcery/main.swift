@@ -127,7 +127,7 @@ func runCLI() {
              flag: "p",
              description: "Remove empty generated files"),
         Flag("autoLock",
-             description: "Automatically locks all the ouput files"),
+             description: "Automatically locks all the output files"),
         VariadicOption<Path>("sources", description: "Path to a source swift files"),
         VariadicOption<Path>("templates", description: "Path to templates. File or Directory."),
         Option<Path>("output", ".", description: "Path to output. File or Directory. Default is current path."),
