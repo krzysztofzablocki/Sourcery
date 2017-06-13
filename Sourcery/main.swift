@@ -70,27 +70,15 @@ fileprivate enum Validators {
     static func isWritable(path: Path, autoLock: Bool) -> Path {
         let pathExistsAndIsNotWritable = path.exists && !path.isWritable
         let pathExistsAndWillNotBeWritableIfUnlocked: Bool = {
-            guard path.exists, autoLock else {
+            guard path.exists, autoLock, path.isImmutable else {
                 return false
             }
             
-            let outputPath = path.absolute().description
-            do {
-                let attributes = try FileManager.default.attributesOfItem(atPath: outputPath)
-                if let isImmutable = attributes[.immutable] as? Bool, isImmutable {
-                    //Unlock and try to write
-                    try FileManager.default.setAttributes([.immutable: false], ofItemAtPath: outputPath)
-                    let isWritableIfUnlocked = path.isWritable
-                    
-                    try FileManager.default.setAttributes([.immutable: true], ofItemAtPath: outputPath)
-                    
-                    return !isWritableIfUnlocked
-                } else {
-                    return false
-                }
-            } catch {
-                return false
-            }
+            try! path.setImmutable(false)
+            let isWritableIfUnlocked = path.isWritable
+            try! path.setImmutable(true)
+            
+            return !isWritableIfUnlocked
         }()
         
         if pathExistsAndIsNotWritable &&

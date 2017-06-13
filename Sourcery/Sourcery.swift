@@ -322,17 +322,13 @@ extension Sourcery {
         status = ""
         
         if autoLock && outputPath.exists {
-            do { try FileManager.default.setAttributes([.immutable: false],
-                        ofItemAtPath: outputPath.normalize().description)
-            } catch { track("\(error)") }
-            Log.info("Unlocked: \(outputPath.normalize())")
+            do { try output.setImmutable(false) } catch { track("\(error)") }
+            Log.info("Unlocked: \(outputPath)")
         }
         
         defer {
             if autoLock && outputPath.exists {
-                do { try FileManager.default.setAttributes([.immutable: true],
-                        ofItemAtPath: outputPath.normalize().description)
-                } catch { track("\(error)") }
+                do { try output.setImmutable(true) } catch { track("\(error)") }
                 Log.info("Locked: \(outputPath.normalize())")
             }
         }

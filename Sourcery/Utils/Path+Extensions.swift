@@ -39,6 +39,17 @@ extension Path {
     var isSwiftSourceFile: Bool {
         return !self.isDirectory && self.extension == "swift"
     }
+    
+    var isImmutable: Bool {
+        let attributes = try? FileManager.default.attributesOfItem(atPath: url.absoluteString)
+        let isImmutable = attributes?[.immutable] as? Bool
+        
+        return isImmutable ?? false
+    }
+    
+    func setImmutable(_ newValue: Bool) throws {
+        try FileManager.default.setAttributes([.immutable: newValue], ofItemAtPath: url.absoluteString)
+    }
 
     init(_ string: String, relativeTo relativePath: Path) {
         var path = Path(string)
