@@ -5,7 +5,7 @@
 ## Master
 
 ### New Features
-
+- Added `autoLock` flag to automatically lock and unlock output files
 
 ### Bug fixes
 
