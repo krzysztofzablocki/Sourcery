@@ -4,13 +4,13 @@
 
 ## 0.7.1
 
-### New Features
-
-
 ### Bug fixes
-
+- Fixed regression in parsing templates from config file
+- Removed meaningless `isMutating` property for `Variable`
 
 ### Internal changes
+- Improvements in release script
+- Updated boilerplate code to reflect latest changes
 
 
 ## 0.7.0
