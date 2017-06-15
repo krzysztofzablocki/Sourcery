@@ -280,7 +280,7 @@ namespace :release do
 
     print "Now review and type [Y/n] to commit and push or cancel the changes. "
     manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj", "Sourcery/Version.swift"], "docs: update metadata for #{new_version} release")
-    # git_push
+    git_push
   end
 
   desc 'Create a tag for the project version and push to remote'
