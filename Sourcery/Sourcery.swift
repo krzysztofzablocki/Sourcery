@@ -322,14 +322,22 @@ extension Sourcery {
         status = ""
         
         if autoLock && outputPath.exists {
-            do { try output.setImmutable(false) } catch { track("\(error)") }
+            do {
+                try output.setImmutable(false)
+            } catch {
+                Log.info("Error unlocking \(outputPath): \(error)")
+            }
             Log.info("Unlocked: \(outputPath)")
         }
         
         defer {
             if autoLock && outputPath.exists {
-                do { try output.setImmutable(true) } catch { track("\(error)") }
-                Log.info("Locked: \(outputPath.normalize())")
+                do {
+                    try output.setImmutable(true)
+                } catch {
+                    Log.info("Error locking \(outputPath): \(error)")
+                }
+                Log.info("Locked: \(outputPath)")
             }
         }
 

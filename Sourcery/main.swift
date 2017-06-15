@@ -73,12 +73,18 @@ fileprivate enum Validators {
             guard path.exists, autoLock, path.isImmutable else {
                 return false
             }
-            
-            try! path.setImmutable(false)
-            let isWritableIfUnlocked = path.isWritable
-            try! path.setImmutable(true)
-            
-            return !isWritableIfUnlocked
+
+            do {
+                try path.setImmutable(false)
+                let isWritableIfUnlocked = path.isWritable
+                try path.setImmutable(true)
+
+                return !isWritableIfUnlocked
+            } catch {
+                Log.error("Checking if '\(path)' is writable failed.")
+
+                return false
+            }
         }()
         
         if pathExistsAndIsNotWritable &&
