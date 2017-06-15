@@ -359,7 +359,6 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
     var isFinal: Bool { get }
-    var isMutating: Bool { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }

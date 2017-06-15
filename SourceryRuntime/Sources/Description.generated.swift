@@ -236,8 +236,7 @@ extension Variable {
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes)), "
-        string += "isFinal = \(String(describing: self.isFinal)), "
-        string += "isMutating = \(String(describing: self.isMutating))"
+        string += "isFinal = \(String(describing: self.isFinal))"
         return string
     }
 }
