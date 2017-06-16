@@ -2,13 +2,22 @@
 
 ---
 
+## Master
+
+### Internal changes
+
+- Add Version.swift to represent CLI tool version
+
+
 ## 0.7.1
 
 ### Bug fixes
+
 - Fixed regression in parsing templates from config file
 - Removed meaningless `isMutating` property for `Variable`
 
 ### Internal changes
+
 - Improvements in release script
 - Updated boilerplate code to reflect latest changes
 
@@ -18,7 +27,7 @@
 ### New Features
 
 - Added `inout` flag for `MethodParameter`
-- Added parsing `mutating` and `final` attributes with convenience `isMutating` and `isFinal` properties 
+- Added parsing `mutating` and `final` attributes with convenience `isMutating` and `isFinal` properties
 - Added support for `include` Stencil tag
 - Added support for excluded paths
 

@@ -96,7 +96,7 @@ namespace :release do
   task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :tests, :update_metadata, :check_versions, :build, :tag_release, :github, :cocoapods]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
-    # The token is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
+    # The code is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
     podspec_content = File.read(file)
     version_var_name = 'version'
     version_regex = /^(?<begin>[^#]*version\s*=\s*['"])(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>['"])/i
@@ -115,6 +115,21 @@ namespace :release do
 
   def project_version(project = 'Sourcery')
     `xcodebuild -showBuildSettings -project #{project}.xcodeproj | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
+  end
+
+  def command_line_tool_update_version(version, file = 'Sourcery/Version.swift')
+    version_content = File.read(file)
+    version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
+    version_match = version_regex.match(version_content)
+    updated_version_content = version_content.gsub(version_regex, "#{version_match[:begin]}#{version}#{version_match[:end]}")
+    File.open(file, "w") { |f| f.puts updated_version_content }
+  end
+
+  def command_line_tool_version(file = 'Sourcery/Version.swift')
+    version_content = File.read(file)
+    version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
+    version_match = version_regex.match(version_content)
+    version_match[:value]
   end
 
   def log_result(result, label, error_msg)
@@ -231,6 +246,9 @@ namespace :release do
     # Check if Current Project Version from build settings match podspec version
     results << log_result(version == project_version, "Project version correct", "Please update Current Project Version in Build Settings to #{version}")
 
+    # Check if Command Line Tool version match podspec version
+    results << log_result(version == command_line_tool_version, "Command line tool version correct", "Please update current version in Sourcery/Version.swift to #{version}")
+
     exit 1 unless results.all?
 
     print "Release version #{version} [Y/n]? "
@@ -257,8 +275,11 @@ namespace :release do
     # Update project version
     project_update_version(new_version)
 
+    # Update command line tool version
+    command_line_tool_update_version(new_version)
+
     print "Now review and type [Y/n] to commit and push or cancel the changes. "
-    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj"], "docs: update metadata for #{new_version} release")
+    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj", "Sourcery/Version.swift"], "docs: update metadata for #{new_version} release")
     git_push
   end
 
