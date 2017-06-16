@@ -327,6 +327,7 @@ namespace :release do
       req.body_stream = File.open(zipfile, 'rb')
       req.add_field('Content-Length', zipsize)
       req.add_field('Content-Transfer-Encoding', 'binary')
+      req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
     end
   end
 
