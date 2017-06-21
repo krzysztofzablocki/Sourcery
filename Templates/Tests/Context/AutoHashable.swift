@@ -20,11 +20,6 @@ enum AutoHashableEnum: AutoHashable {
     }
 }
 
-/// Sourcery should not generate a default case for enum with only one case
-enum AutoHashableEnumWithOneCase: AutoHashable {
-    case one
-}
-
 /// Sourcery should generate correct code for struct
 struct AutoHashableStruct: AutoHashable {
     // Private Constants
@@ -128,12 +123,12 @@ class AutoHashableClass: AutoHashable {
 }
 
 /// Sourcery doesn't support inheritance for AutoHashable
-class AutoHashableClassInherited: AutoHashableClass {
-    // Optional constants
-    let middleName: String?
-
-    init(middleName: String?) {
-        self.middleName = middleName
-        super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
-    }
-}
+//class AutoHashableClassInherited: AutoHashableClass {
+//    // Optional constants
+//    let middleName: String?
+//
+//    init(middleName: String?) {
+//        self.middleName = middleName
+//        super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
+//    }
+//}
