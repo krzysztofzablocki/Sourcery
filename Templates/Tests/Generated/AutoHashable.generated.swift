@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.7.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable file_length
@@ -29,18 +29,39 @@ fileprivate extension func hashArray<T: Hashable>(_ array: [T]?) -> Int {
     }
 }
 
+fileprivate extension func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
+    guard let dictionary = dictionary else {
+        return 0
+    }
+    return dictionary.reduce(5381) {
+        combineHashValues($0, combineHashValues($1.key.hash, $1.value.hash))
+    }
+}
+
+
+
 
 // MARK: - AutoHashable for classes, protocols, structs
 // MARK: - AutoHashableClass AutoHashable
 extension AutoHashableClass: Hashable {
     internal var hashValue: Int {
         return combineHashes([
-                firstName.hashValue,
-                lastName.hashValue,
-                hashArray(parents),
-                moneyInThePocket.hashValue,
-                age?.hashValue ?? 0,
-                hashArray(friends),
+            firstName.hashValue,
+            lastName.hashValue,
+            hashArray(parents),
+            hashDictionary(universityGrades),
+            moneyInThePocket.hashValue,
+            age?.hashValue ?? 0,
+            hashArray(friends),
+            0])
+    }
+}
+// MARK: - AutoHashableClassInherited AutoHashable
+extension AutoHashableClassInherited: Hashable {
+    THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable
+    internal var hashValue: Int {
+        return combineHashes([
+            middleName?.hashValue ?? 0,
             0])
     }
 }
@@ -48,8 +69,9 @@ extension AutoHashableClass: Hashable {
 extension AutoHashableProtocol {
     internal var hashValue: Int {
         return combineHashes([
-                width.hashValue,
-                height.hashValue,
+            width.hashValue,
+            height.hashValue,
+            type(of: self).name.hashValue,
             0])
     }
 }
@@ -57,12 +79,13 @@ extension AutoHashableProtocol {
 extension AutoHashableStruct: Hashable {
     internal var hashValue: Int {
         return combineHashes([
-                firstName.hashValue,
-                lastName.hashValue,
-                hashArray(parents),
-                moneyInThePocket.hashValue,
-                age?.hashValue ?? 0,
-                hashArray(friends),
+            firstName.hashValue,
+            lastName.hashValue,
+            hashArray(parents),
+            hashDictionary(universityGrades),
+            moneyInThePocket.hashValue,
+            age?.hashValue ?? 0,
+            hashArray(friends),
             0])
     }
 }

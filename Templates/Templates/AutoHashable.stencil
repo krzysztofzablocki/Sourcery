@@ -17,7 +17,7 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
     return Int(bitPattern: lhs)
 }
 
-fileprivate extension func hashArray<T: Hashable>(_ array: [T]?) -> Int {
+fileprivate func hashArray<T: Hashable>(_ array: [T]?) -> Int {
     guard let array = array else {
         return 0
     }
@@ -26,45 +26,51 @@ fileprivate extension func hashArray<T: Hashable>(_ array: [T]?) -> Int {
     }
 }
 
-fileprivate extension func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
+fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
     guard let dictionary = dictionary else {
         return 0
     }
-    return
+    return dictionary.reduce(5381) {
+        combineHashValues($0, combineHashValues($1.key.hashValue, $1.value.hashValue))
+    }
 }
 
 {% macro dynamicVariableHashValue variable %}
 {% if variable.isArray %}
-    hashArray({{ variable.name }}),
-{% if variable.isDictionary %}
-    hashArray({{ variable.name }}),
+            hashArray({{ variable.name }}),
+{% elif variable.isDictionary %}
+            hashDictionary({{ variable.name }}),
 {% elif not variable.isOptional %}
-    {{ variable.name }}.hashValue,
+            {{ variable.name }}.hashValue,
 {% else %}
-    {{ variable.name }}?.hashValue ?? 0,
+            {{ variable.name }}?.hashValue ?? 0,
 {% endif %}
 {% endmacro %}
 
 {% macro staticVariableHashValue variable %}
-
+{% if variable.isArray %}
+            hashArray(type(of: self).{{ variable.name }}),
+{% elif variable.isDictionary %}
+            hashDictionary(type(of: self).{{ variable.name }}),
+{% elif not variable.isOptional %}
+            type(of: self).{{ variable.name }}.hashValue,
+{% else %}
+            type(of: self).{{ variable.name }}?.hashValue ?? 0,
+{% endif %}
 {% endmacro %}
 
 {% macro combineVariableHashes variables %}
-        return combineHashes([{% for variable in variables where variable.readAccess != "private" and variable.readAccess != "fileprivate" %}
+        return combineHashes([
+    {% for variable in variables where variable.readAccess != "private" and variable.readAccess != "fileprivate" %}
     {% if not variable.annotations.skipHashing %}
         {% if variable.isStatic %}
+            {% call staticVariableHashValue variable %}
         {% else %}
-            {% if variable.isArray %}
-                hashArray({{ variable.name }}),
-            {% elif not variable.isOptional %}
-                {{ variable.name }}.hashValue,
-            {% else %}
-                {{ variable.name }}?.hashValue ?? 0,
-            {% endif %}
-            {% endif %}
-            {% endif %}
-            {% endif %}{% endfor %}
-                0])
+            {% call dynamicVariableHashValue variable %}
+        {% endif %}
+    {% endif %}
+    {% endfor %}
+            0])
 {% endmacro %}
 
 // MARK: - AutoHashable for classes, protocols, structs

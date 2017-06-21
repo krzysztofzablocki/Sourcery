@@ -28,6 +28,9 @@ struct AutoHashableStruct: AutoHashable {
     // Fileprivate Constants
     fileprivate let phoneModel: String
 
+    // Static constant
+    static let structName: String = "AutoHashableStruct"
+
     // Internal Constants
     let firstName: String
 
@@ -40,11 +43,14 @@ struct AutoHashableStruct: AutoHashable {
         self.parents = parents
         self.laptopModel = laptopModel
         self.phoneModel = phoneModel
+        self.universityGrades = ["Math": 5, "Geometry": 3]
     }
 
     // Arrays
-    // sourcery: arrayEquality
     let parents: [Parent]
+
+    // Dictionary
+    let universityGrades: [String: Int]
 
     // Variable
     var moneyInThePocket: Double = 0
@@ -79,6 +85,9 @@ class AutoHashableClass: AutoHashable {
     // Fileprivate Constants
     fileprivate let phoneModel: String
 
+    // Static constant
+    static let className: String = "AutoHashableClass"
+
     // Internal Constants
     let firstName: String
 
@@ -91,11 +100,14 @@ class AutoHashableClass: AutoHashable {
         self.parents = parents
         self.laptopModel = laptopModel
         self.phoneModel = phoneModel
+        self.universityGrades = ["Math": 5, "Geometry": 3]
     }
 
     // Arrays
-    // sourcery: arrayEquality
     let parents: [Parent]
+
+    // Dictionary
+    let universityGrades: [String: Int]
 
     // Variable
     var moneyInThePocket: Double = 0
@@ -122,13 +134,13 @@ class AutoHashableClass: AutoHashable {
     }
 }
 
-/// Sourcery doesn't support inheritance for AutoHashable
-//class AutoHashableClassInherited: AutoHashableClass {
-//    // Optional constants
-//    let middleName: String?
-//
-//    init(middleName: String?) {
-//        self.middleName = middleName
-//        super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
-//    }
-//}
+// Sourcery doesn't support inheritance for AutoHashable
+class AutoHashableClassInherited: AutoHashableClass {
+    // Optional constants
+    let middleName: String?
+
+    init(middleName: String?) {
+        self.middleName = middleName
+        super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
+    }
+}
