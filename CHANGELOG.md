@@ -4,6 +4,10 @@
 
 ## Master
 
+### New Features
+
+- Added support in `AutoHashable` for static variables, `[Hashable]` array and `[Hashable: Hashable]` dictionary
+
 
 ## 0.7.2
 
