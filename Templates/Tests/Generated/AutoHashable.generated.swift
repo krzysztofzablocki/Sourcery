@@ -20,7 +20,7 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
     return Int(bitPattern: lhs)
 }
 
-fileprivate extension func hashArray<T: Hashable>(_ array: [T]?) -> Int {
+fileprivate func hashArray<T: Hashable>(_ array: [T]?) -> Int {
     guard let array = array else {
         return 0
     }
@@ -29,12 +29,12 @@ fileprivate extension func hashArray<T: Hashable>(_ array: [T]?) -> Int {
     }
 }
 
-fileprivate extension func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
+fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
     guard let dictionary = dictionary else {
         return 0
     }
     return dictionary.reduce(5381) {
-        combineHashValues($0, combineHashValues($1.key.hash, $1.value.hash))
+        combineHashValues($0, combineHashValues($1.key.hashValue, $1.value.hashValue))
     }
 }
 
