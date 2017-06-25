@@ -17,8 +17,60 @@ fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
     return Int(bitPattern: lhs)
 }
 
+fileprivate func hashArray<T: Hashable>(_ array: [T]?) -> Int {
+    guard let array = array else {
+        return 0
+    }
+    return array.reduce(5381) {
+        ($0 << 5) &+ $0 &+ $1.hashValue
+    }
+}
+
+fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
+    guard let dictionary = dictionary else {
+        return 0
+    }
+    return dictionary.reduce(5381) {
+        combineHashValues($0, combineHashValues($1.key.hashValue, $1.value.hashValue))
+    }
+}
+
+{% macro dynamicVariableHashValue variable %}
+{% if variable.isArray %}
+            hashArray({{ variable.name }}),
+{% elif variable.isDictionary %}
+            hashDictionary({{ variable.name }}),
+{% elif not variable.isOptional %}
+            {{ variable.name }}.hashValue,
+{% else %}
+            {{ variable.name }}?.hashValue ?? 0,
+{% endif %}
+{% endmacro %}
+
+{% macro staticVariableHashValue variable %}
+{% if variable.isArray %}
+            hashArray(type(of: self).{{ variable.name }}),
+{% elif variable.isDictionary %}
+            hashDictionary(type(of: self).{{ variable.name }}),
+{% elif not variable.isOptional %}
+            type(of: self).{{ variable.name }}.hashValue,
+{% else %}
+            type(of: self).{{ variable.name }}?.hashValue ?? 0,
+{% endif %}
+{% endmacro %}
+
 {% macro combineVariableHashes variables %}
-        return combineHashes([{% for variable in variables where variable.readAccess != "private" and variable.readAccess != "fileprivate" %}{% if not variable.annotations.skipHashing %}{% if not variable.isOptional %}{{ variable.name }}.hashValue{% else %}{{ variable.name }}?.hashValue ?? 0{% endif %}, {% endif %}{% endfor %}0])
+        return combineHashes([
+    {% for variable in variables where variable.readAccess != "private" and variable.readAccess != "fileprivate" %}
+    {% if not variable.annotations.skipHashing %}
+        {% if variable.isStatic %}
+            {% call staticVariableHashValue variable %}
+        {% else %}
+            {% call dynamicVariableHashValue variable %}
+        {% endif %}
+    {% endif %}
+    {% endfor %}
+            0])
 {% endmacro %}
 
 // MARK: - AutoHashable for classes, protocols, structs

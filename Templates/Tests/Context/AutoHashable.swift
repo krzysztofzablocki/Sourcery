@@ -20,11 +20,6 @@ enum AutoHashableEnum: AutoHashable {
     }
 }
 
-/// Sourcery should not generate a default case for enum with only one case
-enum AutoHashableEnumWithOneCase: AutoHashable {
-    case one
-}
-
 /// Sourcery should generate correct code for struct
 struct AutoHashableStruct: AutoHashable {
     // Private Constants
@@ -32,6 +27,9 @@ struct AutoHashableStruct: AutoHashable {
 
     // Fileprivate Constants
     fileprivate let phoneModel: String
+
+    // Static constant
+    static let structName: String = "AutoHashableStruct"
 
     // Internal Constants
     let firstName: String
@@ -45,11 +43,14 @@ struct AutoHashableStruct: AutoHashable {
         self.parents = parents
         self.laptopModel = laptopModel
         self.phoneModel = phoneModel
+        self.universityGrades = ["Math": 5, "Geometry": 3]
     }
 
     // Arrays
-    // sourcery: arrayEquality
     let parents: [Parent]
+
+    // Dictionary
+    let universityGrades: [String: Int]
 
     // Variable
     var moneyInThePocket: Double = 0
@@ -84,6 +85,9 @@ class AutoHashableClass: AutoHashable {
     // Fileprivate Constants
     fileprivate let phoneModel: String
 
+    // Static constant
+    static let className: String = "AutoHashableClass"
+
     // Internal Constants
     let firstName: String
 
@@ -96,11 +100,14 @@ class AutoHashableClass: AutoHashable {
         self.parents = parents
         self.laptopModel = laptopModel
         self.phoneModel = phoneModel
+        self.universityGrades = ["Math": 5, "Geometry": 3]
     }
 
     // Arrays
-    // sourcery: arrayEquality
     let parents: [Parent]
+
+    // Dictionary
+    let universityGrades: [String: Int]
 
     // Variable
     var moneyInThePocket: Double = 0
@@ -127,7 +134,7 @@ class AutoHashableClass: AutoHashable {
     }
 }
 
-/// Sourcery doesn't support inheritance for AutoHashable
+// Sourcery doesn't support inheritance for AutoHashable
 class AutoHashableClassInherited: AutoHashableClass {
     // Optional constants
     let middleName: String?
