@@ -8,6 +8,10 @@
 
 - Added support in `AutoHashable` for static variables, `[Hashable]` array and `[Hashable: Hashable]` dictionary
 
+### Bug fixes
+
+- Fixed linker issue when using Swift templates
+
 
 ## 0.7.2
 

@@ -166,7 +166,8 @@ class SwiftTemplate: Template {
                 "-module-name", "main",
                 "-target", "x86_64-apple-macosx10.10",
                 "-F", buildDir.parent().description,
-                "-o", binaryFile.description
+                "-o", binaryFile.description,
+                "-Xlinker", "-headerpad_max_install_names"
         ]
 
         let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
