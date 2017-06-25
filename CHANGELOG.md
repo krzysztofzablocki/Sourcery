@@ -4,6 +4,9 @@
 
 ## Master
 
+### Bug fixes
+
+- Fixed linker issue when using Swift templates
 
 ## 0.7.2
 
