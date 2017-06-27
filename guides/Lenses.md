@@ -6,7 +6,7 @@ What are Lenses? Great explanation by @mbrandonw
 
 This script assumes you follow swift naming convention, e.g. structs start with an upper letter.
 
-### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/AutoLenses.stencil)
+### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/AutoLenses.stencil)
 
 #### Example output:
 

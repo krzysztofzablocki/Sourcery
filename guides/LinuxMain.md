@@ -2,7 +2,7 @@
 
 For all test cases generates `allTests` static variable and passes all of them as `XCTestCaseEntry` to `XCTMain`. Run with `--args testimports='import MyTests'` parameter to import test modules.
 
-### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/LinuxMain.stencil)
+### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/LinuxMain.stencil)
 
 #### Available annotations:
 

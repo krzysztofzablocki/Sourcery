@@ -2,7 +2,7 @@
 
 Generate `count` and `allCases` for any enumeration that is marked with `AutoCases` phantom protocol.
 
-### [Stencil Template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/AutoCases.stencil)
+### [Stencil Template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/AutoCases.stencil)
 
 #### Example output:
 
