@@ -12,6 +12,10 @@
 
 - Fixed linker issue when using Swift templates
 
+### Internal changes
+
+- Fix link for template in docs
+
 
 ## 0.7.2
 
