@@ -4,7 +4,7 @@ In Swift it can be cumbersome to write a simple decorator that decorates all the
 
 You can use this template as a starting point for mor sophisticated implementations. This template also shows you some powers of swift templates, like using helper methods and whitespace control tags.
 
-### [Swift template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Decorator.swifttemplate)
+### [Swift template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/Decorator.swifttemplate)
 
 #### Available annotations
 

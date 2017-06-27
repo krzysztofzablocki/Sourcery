@@ -5,7 +5,7 @@ Template used to generate hashing for all types that conform to `:AutoHashable`,
 It adds `:Hashable` conformance to all types, except protocols (because it would require turning them into PAT's).
 For protocols it's just generating `var hashValue` comparator.
 
-### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/AutoHashable.stencil)
+### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/AutoHashable.stencil)
 
 #### Available variable annotations:
 

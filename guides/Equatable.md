@@ -6,7 +6,7 @@ Template used to generate equality for all types that conform to `:AutoEquatable
 It adds `:Equatable` conformance to all types, except protocols (because it would require turning them into PAT's).
 For protocols it's just generating `func ==`.
 
-### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/AutoEquatable.stencil)
+### [Stencil template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/AutoEquatable.stencil)
 
 #### Available variable annotations:
 
