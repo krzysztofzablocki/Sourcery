@@ -44,6 +44,7 @@ class StencilTemplateSpec: QuickSpec {
             }
 
             it("removes instances of a substring") {
+                expect(generate("{{\"helloWorld\" | replace:\"he\",\"bo\" | replace:\"llo\",\"la\" }}")).to(equal("bolaWorld"))
                 expect(generate("{{\"helloWorld\" | replace:\"hello\",\"hola\" }}")).to(equal("holaWorld"))
                 expect(generate("{{\"helloWorldhelloWorld\" | replace:\"hello\",\"hola\" }}")).to(equal("holaWorldholaWorld"))
                 expect(generate("{{\"helloWorld\" | replace:\"hello\",\"\" }}")).to(equal("World"))

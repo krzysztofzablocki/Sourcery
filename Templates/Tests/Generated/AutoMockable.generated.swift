@@ -2,6 +2,7 @@
 // DO NOT EDIT
 
 // swiftlint:disable line_length
+// swiftlint:disable variable_name
 
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
@@ -24,22 +25,22 @@ class BasicProtocolMock: BasicProtocol {
     }
     //MARK: - save
 
-    var saveCalled = false
-    var saveReceivedConfiguration: String?
+    var saveconfigurationCalled = false
+    var saveconfigurationReceivedConfiguration: String?
 
     func save(configuration: String) {
-        saveCalled = true
-        saveReceivedConfiguration = configuration
+        saveconfigurationCalled = true
+        saveconfigurationReceivedConfiguration = configuration
     }
 }
 class InitializationProtocolMock: InitializationProtocol {
 
     //MARK: - init
 
-    var initReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
+    var initintParameterstringParameteroptionalParameterReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
-        initReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
+        initintParameterstringParameteroptionalParameterReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
     }
     //MARK: - start
 
@@ -54,6 +55,27 @@ class InitializationProtocolMock: InitializationProtocol {
 
     func stop() {
         stopCalled = true
+    }
+}
+class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
+
+    //MARK: - start
+
+    var startcarofCalled = false
+    var startcarofReceivedArguments: (car: String, model: String)?
+
+    func start(car: String, of model: String) {
+        startcarofCalled = true
+        startcarofReceivedArguments = (car: car, model: model)
+    }
+    //MARK: - start
+
+    var startplaneofCalled = false
+    var startplaneofReceivedArguments: (plane: String, model: String)?
+
+    func start(plane: String, of model: String) {
+        startplaneofCalled = true
+        startplaneofReceivedArguments = (plane: plane, model: model)
     }
 }
 class VariablesProtocolMock: VariablesProtocol {

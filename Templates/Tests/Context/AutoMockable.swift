@@ -28,3 +28,8 @@ protocol VariablesProtocol: AutoMockable {
     var kids: [String] { get }
     var universityMarks: [String: Int] { get }
 }
+
+protocol SameShortMethodNamesProtocol: AutoMockable {
+    func start(car: String, of model: String)
+    func start(plane: String, of model: String)
+}
