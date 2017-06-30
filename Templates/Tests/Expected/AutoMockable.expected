@@ -10,66 +10,66 @@ class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
 
-    var loadConfigurationCalled = false
-    var loadConfigurationReturnValue: String?!
+    var loadConfiguration_Called = false
+    var loadConfiguration_ReturnValue: String?!
 
     func loadConfiguration() -> String? {
-        loadConfigurationCalled = true
-        return loadConfigurationReturnValue
+        loadConfiguration_Called = true
+        return loadConfiguration_ReturnValue
     }
     //MARK: - save
 
-    var saveconfigurationCalled = false
-    var saveconfigurationReceivedConfiguration: String?
+    var save_configuration_Called = false
+    var save_configuration_ReceivedConfiguration: String?
 
     func save(configuration: String) {
-        saveconfigurationCalled = true
-        saveconfigurationReceivedConfiguration = configuration
+        save_configuration_Called = true
+        save_configuration_ReceivedConfiguration = configuration
     }
 }
 class InitializationProtocolMock: InitializationProtocol {
 
     //MARK: - init
 
-    var initintParameterstringParameteroptionalParameterReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
+    var init_intParameter_stringParameter_optionalParameter_ReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
-        initintParameterstringParameteroptionalParameterReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
+        init_intParameter_stringParameter_optionalParameter_ReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
     }
     //MARK: - start
 
-    var startCalled = false
+    var start_Called = false
 
     func start() {
-        startCalled = true
+        start_Called = true
     }
     //MARK: - stop
 
-    var stopCalled = false
+    var stop_Called = false
 
     func stop() {
-        stopCalled = true
+        stop_Called = true
     }
 }
 class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
 
     //MARK: - start
 
-    var startcarofCalled = false
-    var startcarofReceivedArguments: (car: String, model: String)?
+    var start_car_of_Called = false
+    var start_car_of_ReceivedArguments: (car: String, model: String)?
 
     func start(car: String, of model: String) {
-        startcarofCalled = true
-        startcarofReceivedArguments = (car: car, model: model)
+        start_car_of_Called = true
+        start_car_of_ReceivedArguments = (car: car, model: model)
     }
     //MARK: - start
 
-    var startplaneofCalled = false
-    var startplaneofReceivedArguments: (plane: String, model: String)?
+    var start_plane_of_Called = false
+    var start_plane_of_ReceivedArguments: (plane: String, model: String)?
 
     func start(plane: String, of model: String) {
-        startplaneofCalled = true
-        startplaneofReceivedArguments = (plane: plane, model: model)
+        start_plane_of_Called = true
+        start_plane_of_ReceivedArguments = (plane: plane, model: model)
     }
 }
 class VariablesProtocolMock: VariablesProtocol {
