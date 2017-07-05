@@ -91,7 +91,8 @@ class ParserComposerSpec: QuickSpec {
                                                                             parameters: [MethodParameter(name: "rawValue",
                                                                                                          typeName: TypeName("String"))],
                                                                             returnTypeName: TypeName(""),
-                                                                            isFailableInitializer: true)]
+                                                                            isFailableInitializer: true,
+                                                                            definedInTypeName: TypeName("Foo"))]
                                                       )
                                               ]))
                     }
@@ -112,7 +113,8 @@ class ParserComposerSpec: QuickSpec {
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
-                                                                            isFailableInitializer: true)],
+                                                                            isFailableInitializer: true,
+                                                                            definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
                                               ]))
                     }
@@ -133,7 +135,8 @@ class ParserComposerSpec: QuickSpec {
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
-                                                                            isFailableInitializer: true)],
+                                                                            isFailableInitializer: true,
+                                                                            definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
                                               ]))
                     }
@@ -416,9 +419,22 @@ class ParserComposerSpec: QuickSpec {
                         }
                     }
 
+                    context("given method defined in") {
+                        it("replaces defined in type alias with actual name") {
+                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("Foo"), definedInTypeName: TypeName("BarAlias", actualTypeName: TypeName("Bar")))
+
+                            let types = parse("typealias BarAlias = Bar; class Foo {}; class BarAlias { func some() -> Foo }")
+                            let method = types.first?.methods.first
+
+                            expect(method).to(equal(expectedMethod))
+                            expect(method?.actualDefinedInTypeName).to(equal(expectedMethod.actualDefinedInTypeName))
+                            expect(method?.definedInType).to(equal(Class(name: "Bar")))
+                        }
+                    }
+
                     context("given method return value type") {
                         it("replaces method return type alias with actual type") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")))
+                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> FooAlias }")
                             let method = types.first?.methods.first
@@ -436,7 +452,8 @@ class ParserComposerSpec: QuickSpec {
                                                                 tuple: TupleType(name: "(Foo, Int)", elements: [
                                                                     TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                                                     TupleElement(name: "1", typeName: TypeName("Int"))
-                                                                    ])))
+                                                                    ])),
+                                       definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> (FooAlias, Int) }")
                             let method = types.first?.methods.first
@@ -455,7 +472,8 @@ class ParserComposerSpec: QuickSpec {
                                                                 tuple: TupleType(name: "(Foo, Int)", elements: [
                                                                     TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                                                     TupleElement(name: "1", typeName: TypeName("Int"))
-                                                                    ])))
+                                                                    ])),
+                                       definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some() -> GlobalAlias }")
                             let method = types.first?.methods.first
@@ -641,6 +659,16 @@ class ParserComposerSpec: QuickSpec {
                 }
 
                 context("given nested type") {
+                    it("extracts method's defined in properly") {
+                        let expectedMethod = Method(name: "some()", definedInTypeName: TypeName("Bar"))
+
+                        let types = parse("class Foo { class Bar { func some() } }")
+                        let method = types.first?.methods.first
+
+                        expect(method).to(equal(expectedMethod))
+                        expect(method?.definedInType).to(equal(Class(name: "Bar")))
+                    }
+
                     it("extracts property of nested type properly") {
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName:TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])

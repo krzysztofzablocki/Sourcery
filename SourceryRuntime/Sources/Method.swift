@@ -189,9 +189,14 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: [String: NSObject]
 
-    /// Reference to type name where the object is defined,
+    /// Reference to type name where the method is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
+
+    /// Actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
+    public var actualDefinedInTypeName: TypeName? {
+        return definedInTypeName?.actualTypeName ?? definedInTypeName
+    }
 
     // sourcery: skipEquality, skipDescription
     /// Reference to actual type where the object is defined,

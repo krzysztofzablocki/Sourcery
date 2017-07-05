@@ -11,10 +11,10 @@ class TypeSpec: QuickSpec {
             let computedVariable = Variable(name: "variable", typeName: TypeName("Int"), isComputed: true)
             let storedVariable = Variable(name: "otherVariable", typeName: TypeName("Int"), isComputed: false)
             let supertypeVariable = Variable(name: "supertypeVariable", typeName: TypeName("Int"), isComputed: true)
-            let superTypeMethod = Method(name: "doSomething()")
+            let superTypeMethod = Method(name: "doSomething()", definedInTypeName: TypeName("Protocol"))
             let overrideMethod = superTypeMethod
             let overrideVariable = supertypeVariable
-            let initializer = Method(name: "init()")
+            let initializer = Method(name: "init()", definedInTypeName: TypeName("Foo"))
             let parentType = Type(name: "Parent")
             let protocolType = Type(name: "Protocol", variables: [Variable(name: "supertypeVariable", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none))], methods: [superTypeMethod])
             let superType = Type(name: "Supertype", variables: [supertypeVariable], methods: [superTypeMethod], inheritedTypes: ["Protocol"])
@@ -122,7 +122,7 @@ class TypeSpec: QuickSpec {
                 }
 
                 it("adds methods") {
-                    let extraMethod = Method(name: "foo()")
+                    let extraMethod = Method(name: "foo()", definedInTypeName: TypeName("Foo"))
                     let type = Type(name: "Foo", isExtension: true, methods: [extraMethod])
 
                     sut?.extend(type)
@@ -131,12 +131,12 @@ class TypeSpec: QuickSpec {
                 }
 
                 it("does not duplicate methods with protocol extension") {
-                    let aExtension = Type(name: "Foo", isExtension: true, methods: [Method(name: "foo()")])
-                    let aProtocol = Protocol(name: "Foo", methods: [Method(name: "foo()")])
+                    let aExtension = Type(name: "Foo", isExtension: true, methods: [Method(name: "foo()", definedInTypeName: TypeName("Foo"))])
+                    let aProtocol = Protocol(name: "Foo", methods: [Method(name: "foo()", definedInTypeName: TypeName("Foo"))])
 
                     aProtocol.extend(aExtension)
 
-                    expect(aProtocol.methods).to(equal([Method(name: "foo()")]))
+                    expect(aProtocol.methods).to(equal([Method(name: "foo()", definedInTypeName: TypeName("Foo"))]))
                 }
 
                 it("adds annotations") {

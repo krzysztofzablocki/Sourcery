@@ -9,4 +9,7 @@ public protocol Definable: class {
     /// Reference to actual type where the object is defined, 
     /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown
     var definedInType: Type? { get }
+
+    /// Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
+    var actualDefinedInTypeName: TypeName? { get }
 }
