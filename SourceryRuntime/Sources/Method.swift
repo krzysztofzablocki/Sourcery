@@ -85,7 +85,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 }
 
 /// Describes method
-@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated {
+@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated, Contextable {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -189,6 +189,14 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: [String: NSObject]
 
+    /// Reference to type name where the object is defined,
+    /// nil if defined outside of any `enum`, `struct`, `class` etc
+    public let definedInTypeName: TypeName?
+    
+    /// Reference to actual type where the object is defined,
+    /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown
+    public var definedInType: Type?
+
     /// Method attributes, i.e. `@discardableResult`
     public let attributes: [String: Attribute]
 
@@ -209,7 +217,8 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
                 isClass: Bool = false,
                 isFailableInitializer: Bool = false,
                 attributes: [String: Attribute] = [:],
-                annotations: [String: NSObject] = [:]) {
+                annotations: [String: NSObject] = [:],
+                definedInTypeName: TypeName? = nil) {
 
         self.name = name
         self.selectorName = selectorName ?? name
@@ -223,6 +232,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         self.isFailableInitializer = isFailableInitializer
         self.attributes = attributes
         self.annotations = annotations
+        self.definedInTypeName = definedInTypeName
     }
 
     // sourcery:inline:Method.AutoCoding
