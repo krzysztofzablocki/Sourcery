@@ -11,6 +11,7 @@
 ### Bug fixes
 
 - Fixed linker issue when using Swift templates
+- Updated `AutoMockable` to exclude generated code collisions
 
 ### Internal changes
 
