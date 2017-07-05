@@ -153,7 +153,7 @@ final class FileParser {
             case .functionMethodClass,
                  .functionMethodInstance,
                  .functionMethodStatic:
-                return parseMethod(source)
+                return parseMethod(source, containingIn: containingIn as? Type)
             case .varParameter:
                 return parseParameter(source)
             default:
@@ -456,7 +456,7 @@ extension FileParser {
 // MARK: - Methods
 extension FileParser {
 
-    internal func parseMethod(_ source: [String: SourceKitRepresentable]) -> SourceryMethod? {
+    internal func parseMethod(_ source: [String: SourceKitRepresentable], containingIn: Type? = nil) -> SourceryMethod? {
         let requirements = parseTypeRequirements(source)
         guard
             let kind = requirements?.kind,
@@ -523,7 +523,12 @@ extension FileParser {
             }
         }
 
-        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
+        var definedInTypeName: TypeName? = nil
+        if let containingInTypeName = containingIn?.name {
+            definedInTypeName = TypeName(containingInTypeName)
+        }
+
+        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         method.setSource(source)
 
         return method
