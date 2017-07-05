@@ -85,7 +85,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 }
 
 /// Describes method
-@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated, Contextable {
+@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated, Definable {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -192,7 +192,8 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Reference to type name where the object is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
-    
+
+    // sourcery: skipEquality, skipDescription
     /// Reference to actual type where the object is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown
     public var definedInType: Type?
@@ -250,6 +251,8 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
             self.isClass = aDecoder.decode(forKey: "isClass")
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
+            self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
         }
 
@@ -267,6 +270,8 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
             aCoder.encode(self.isClass, forKey: "isClass")
             aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
+            aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
         }
      // sourcery:end

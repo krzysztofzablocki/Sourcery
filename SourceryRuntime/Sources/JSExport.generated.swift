@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import JavaScriptCore
@@ -166,6 +166,8 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isFinal: Bool { get }
     var isMutating: Bool { get }
     var annotations: [String: NSObject] { get }
+    var definedInTypeName: TypeName? { get }
+    var definedInType: Type? { get }
     var attributes: [String: Attribute] { get }
 }
 
