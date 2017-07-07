@@ -266,9 +266,9 @@ class FileParserMethodsSpec: QuickSpec {
                 context("given initializer") {
                     it("extracts initializer properly") {
                         let fooType = Class(name: "Foo")
-                        let expectedInitializer = Method(name: "init()", returnTypeName: TypeName(""))
+                        let expectedInitializer = Method(name: "init()", returnTypeName: TypeName(""), definedInTypeName: TypeName("Foo"))
                         expectedInitializer.returnType = fooType
-                        fooType.methods = [Method(name: "foo()"), expectedInitializer]
+                        fooType.methods = [Method(name: "foo()", definedInTypeName: TypeName("Foo")), expectedInitializer]
 
                         let type = parse("class Foo { func foo() {}; init() {} }").first
                         let initializer = type?.initializers.first
@@ -279,9 +279,9 @@ class FileParserMethodsSpec: QuickSpec {
 
                     it("extracts failable initializer properly") {
                         let fooType = Class(name: "Foo")
-                        let expectedInitializer = Method(name: "init?()", selectorName: "init()", returnTypeName: TypeName(""), isFailableInitializer: true)
+                        let expectedInitializer = Method(name: "init?()", selectorName: "init()", returnTypeName: TypeName(""), isFailableInitializer: true, definedInTypeName: TypeName("Foo"))
                         expectedInitializer.returnType = fooType
-                        fooType.methods = [Method(name: "foo()"), expectedInitializer]
+                        fooType.methods = [Method(name: "foo()", definedInTypeName: TypeName("Foo")), expectedInitializer]
 
                         let type = parse("class Foo { func foo() {}; init?() {} }").first
                         let initializer = type?.initializers.first
