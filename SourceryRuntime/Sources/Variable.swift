@@ -8,7 +8,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-public final class Variable: NSObject, SourceryModel, Typed, Annotated {
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Defined {
     /// Variable name
     public let name: String
 
@@ -50,6 +50,20 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
+    
+    /// Reference to type name where the variable is defined,
+    /// nil if defined outside of any `enum`, `struct`, `class` etc
+    public let definedInTypeName: TypeName?
+    
+    /// Actual type name where the variable is defined if declaration uses typealias, otherwise just a `definedInTypeName`
+    public var actualDefinedInTypeName: TypeName? {
+        return definedInTypeName?.actualTypeName ?? definedInTypeName
+    }
+    
+    // sourcery: skipEquality, skipDescription
+    /// Reference to actual type where the object is defined,
+    /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown
+    public var definedInType: Type?
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
@@ -65,7 +79,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
                 isStatic: Bool = false,
                 defaultValue: String? = nil,
                 attributes: [String: Attribute] = [:],
-                annotations: [String: NSObject] = [:]) {
+                annotations: [String: NSObject] = [:],
+                definedInTypeName: TypeName? = nil) {
 
         self.name = name
         self.typeName = typeName
@@ -77,6 +92,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
         self.writeAccess = accessLevel.write.rawValue
         self.attributes = attributes
         self.annotations = annotations
+        self.definedInTypeName = definedInTypeName
     }
 
     // sourcery:inline:Variable.AutoCoding
@@ -92,6 +108,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
+            self.definedInType = aDecoder.decode(forKey: "definedInType")
         }
 
         /// :nodoc:
@@ -106,6 +124,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated {
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
+            aCoder.encode(self.definedInType, forKey: "definedInType")
         }
         // sourcery:end
 }

@@ -142,6 +142,7 @@ extension Enum: EnumAutoJSExport {}
 
 extension EnumCase: EnumCaseAutoJSExport {}
 
+
 @objc protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
@@ -167,6 +168,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isMutating: Bool { get }
     var annotations: [String: NSObject] { get }
     var definedInTypeName: TypeName? { get }
+    var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
     var attributes: [String: Attribute] { get }
 }
@@ -223,6 +225,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 }
 
 extension Protocol: ProtocolAutoJSExport {}
+
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
@@ -343,6 +346,8 @@ extension Type: TypeAutoJSExport {}
 
 extension TypeName: TypeNameAutoJSExport {}
 
+
+
 @objc protocol TypesCollectionAutoJSExport: JSExport {
 }
 
@@ -361,9 +366,14 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
     var isFinal: Bool { get }
+    var definedInTypeName: TypeName? { get }
+    var actualDefinedInTypeName: TypeName? { get }
+    var definedInType: Type? { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
 }
 
 extension Variable: VariableAutoJSExport {}
+
+

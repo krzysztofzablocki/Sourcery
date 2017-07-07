@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension ArrayType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -240,6 +241,7 @@ extension Variable {
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
         return true
     }
 }

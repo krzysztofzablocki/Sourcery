@@ -1,6 +1,7 @@
 // Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+
 extension ArrayType: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -298,6 +299,7 @@ extension Variable: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: rhs.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: rhs.annotations))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: rhs.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: rhs.definedInTypeName))
         return results
     }
 }

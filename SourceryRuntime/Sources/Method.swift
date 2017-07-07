@@ -85,7 +85,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 }
 
 /// Describes method
-@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated, Definable {
+@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated, Defined {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
