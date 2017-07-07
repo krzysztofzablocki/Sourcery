@@ -798,7 +798,7 @@ extension FileParser {
     }
 
     fileprivate func extractDefaultValue(type: String?, from source: [String: SourceKitRepresentable]) -> String? {
-        guard var nameSuffix = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
+        guard var nameSuffix = extract(.nameSuffixUpToBody, from: source)?.trimmingCharacters(in: .whitespacesAndNewlines) else { return nil }
         if nameSuffix.trimPrefix(":") {
             nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
             guard let type = type, nameSuffix.trimPrefix(type) else { return nil }
