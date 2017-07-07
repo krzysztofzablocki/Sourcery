@@ -45,6 +45,9 @@ class FileParserVariableSpec: QuickSpec {
                         expect(parse("var name = { return 0 }()")?.defaultValue).to(equal("{ return 0 }()"))
                         expect(parse("var name = \t\n { return 0 }() \t\n")?.defaultValue).to(equal("{ return 0 }()"))
                         expect(parse("var name: Int = \t\n { return 0 }() \t\n")?.defaultValue).to(equal("{ return 0 }()"))
+                        expect(parse("var name: String = String() { didSet { print(0) } }")?.defaultValue).to(equal("String()"))
+                        expect(parse("var name: String = String() {\n\tdidSet { print(0) }\n}")?.defaultValue).to(equal("String()"))
+                        expect(parse("var name: String = String()\n{\n\twillSet { print(0) }\n}")?.defaultValue).to(equal("String()"))
                     }
 
                     it("extracts property with default initializer correctly") {
