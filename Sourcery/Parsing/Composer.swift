@@ -143,6 +143,10 @@ struct Composer {
                 method.returnTypeName = TypeName("")
             }
         }
+
+        if let definedInTypeName = method.definedInTypeName {
+            method.definedInType = resolve(definedInTypeName, type)
+        }
     }
 
     private func resolveEnumTypes(_ enumeration: Enum, types: [String: Type], resolve: TypeResolver) {

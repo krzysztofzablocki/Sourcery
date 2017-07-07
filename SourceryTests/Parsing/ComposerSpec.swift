@@ -419,19 +419,6 @@ class ParserComposerSpec: QuickSpec {
                         }
                     }
 
-                    context("given method defined in") {
-                        it("replaces defined in type alias with actual name") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("Foo"), definedInTypeName: TypeName("BarAlias", actualTypeName: TypeName("Bar")))
-
-                            let types = parse("typealias BarAlias = Bar; class Foo {}; class BarAlias { func some() -> Foo }")
-                            let method = types.first?.methods.first
-
-                            expect(method).to(equal(expectedMethod))
-                            expect(method?.actualDefinedInTypeName).to(equal(expectedMethod.actualDefinedInTypeName))
-                            expect(method?.definedInType).to(equal(Class(name: "Bar")))
-                        }
-                    }
-
                     context("given method return value type") {
                         it("replaces method return type alias with actual type") {
                             let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), definedInTypeName: TypeName("Bar"))
@@ -660,13 +647,13 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given nested type") {
                     it("extracts method's defined in properly") {
-                        let expectedMethod = Method(name: "some()", definedInTypeName: TypeName("Bar"))
+                        let expectedMethod = Method(name: "some()", definedInTypeName: TypeName("Foo.Bar"))
 
                         let types = parse("class Foo { class Bar { func some() } }")
-                        let method = types.first?.methods.first
+                        let method = types.last?.methods.first
 
                         expect(method).to(equal(expectedMethod))
-                        expect(method?.definedInType).to(equal(Class(name: "Bar")))
+                        expect(method?.definedInType).to(equal(types.last))
                     }
 
                     it("extracts property of nested type properly") {
