@@ -9,11 +9,65 @@ private let version = "Major.Minor.Patch"
 class SourcerySpecTests: QuickSpec {
     // swiftlint:disable:next function_body_length
     override func spec() {
+        func update(code: String, in path: Path) { guard (try? path.write(code)) != nil else { fatalError() } }
+
         describe ("Sourcery") {
             var outputDir = Path("/tmp")
 
             beforeEach {
                 outputDir = Stubs.cleanTemporarySourceryDir()
+            }
+
+            context("with already generated files") {
+                let templatePath = Stubs.templateDirectory + Path("Other.stencil")
+                let sourcePath = outputDir + Path("Source.swift")
+                var generatedFileModificationDate: Date!
+                var newGeneratedFileModificationDate: Date!
+
+                func fileModificationDate(url: URL) -> Date? {
+                    guard let attr = try? FileManager.default.attributesOfItem(atPath: url.path) else {
+                        return nil
+                    }
+                    return attr[FileAttributeKey.modificationDate] as? Date
+                }
+
+                beforeEach {
+                    update(code: "class Foo { \n" +
+                        "}", in: sourcePath)
+
+                    _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir)
+                }
+
+                context("without changes") {
+                    it("doesn't update existing files") {
+                        let generatedFilePath = outputDir + Sourcery().generatedPath(for: templatePath)
+                        generatedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
+                        DispatchQueue.main.asyncAfter ( deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+                            _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir)
+                            newGeneratedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
+                        }
+                        expect(newGeneratedFileModificationDate).toEventually(equal(generatedFileModificationDate))
+                    }
+                }
+
+                context("with changes") {
+                    let anotherSourcePath = outputDir + Path("AnotherSource.swift")
+
+                    beforeEach {
+                        update(code: "class Bar { \n" +
+                            "}", in: anotherSourcePath)
+                    }
+
+                    it("updates existing files") {
+                        let generatedFilePath = outputDir + Sourcery().generatedPath(for: templatePath)
+                        generatedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
+                        DispatchQueue.main.asyncAfter ( deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+                            _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath, anotherSourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir)
+                            newGeneratedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
+                        }
+                        expect(newGeneratedFileModificationDate).toNotEventually(equal(generatedFileModificationDate))
+                    }
+                }
             }
 
             context("given a single template") {
@@ -23,7 +77,6 @@ class SourcerySpecTests: QuickSpec {
                 describe("using inline generation") {
                     let templatePath = outputDir + Path("FakeTemplate.stencil")
                     let sourcePath = outputDir + Path("Source.swift")
-                    func update(code: String, in path: Path) { guard (try? path.write(code)) != nil else { fatalError() } }
 
                     beforeEach {
                         update(code: "class Foo { \n" +
@@ -131,7 +184,6 @@ class SourcerySpecTests: QuickSpec {
                 describe("using automatic inline generation") {
                     let templatePath = outputDir + Path("FakeTemplate.stencil")
                     let sourcePath = outputDir + Path("Source.swift")
-                    func update(code: String, in path: Path) { guard (try? path.write(code)) != nil else { fatalError() } }
 
                     it("insert generated code in the end of type body") {
                         update(code: "class Foo {}", in: sourcePath)
@@ -275,7 +327,6 @@ class SourcerySpecTests: QuickSpec {
                 describe("using per file generation") {
                     let templatePath = outputDir + Path("FakeTemplate.stencil")
                     let sourcePath = outputDir + Path("Source.swift")
-                    func update(code: String, in path: Path) { guard (try? path.write(code)) != nil else { fatalError() } }
 
                     beforeEach {
                         update(code: "class Foo { }", in: sourcePath)
@@ -338,7 +389,6 @@ class SourcerySpecTests: QuickSpec {
 
                 context("given a restricted file") {
                     let targetPath = outputDir + Sourcery().generatedPath(for: templatePath)
-                    func update(code: String, in path: Path) { guard (try? path.write(code)) != nil else { fatalError() } }
 
                     it("ignores files that are marked with generated by Sourcery") {
                         var updatedTypes: [Type]?
