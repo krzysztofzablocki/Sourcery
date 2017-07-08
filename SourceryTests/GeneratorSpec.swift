@@ -38,9 +38,7 @@ class GeneratorSpec: QuickSpec {
             complexType.methods.forEach { $0.definedInType = complexType }
 
             let knownProtocol = Protocol(name: "KnownProtocol", variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))])
-            let knownProtocolExtension = Type(name: "KnownProtocol", isExtension: true, variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))])
             knownProtocol.variables.forEach { $0.definedInType = knownProtocol }
-            knownProtocolExtension.variables.forEach { $0.definedInType = knownProtocolExtension }
 
             let types = [
                     fooType,
@@ -57,7 +55,6 @@ class GeneratorSpec: QuickSpec {
                     Class(name: "ProjectClass", accessLevel: .open),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
                     knownProtocol,
-                    knownProtocolExtension,
                     Protocol(name: "AlternativeProtocol"),
                     Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
             ]
@@ -93,7 +90,7 @@ class GeneratorSpec: QuickSpec {
             }
 
             it("generates types.enums") {
-                expect(generate("Found {{ types.extensions.count }} extensions, first: {{ types.extensions.first.name }}")).to(equal("Found 2 extensions, first: NSObject"))
+                expect(generate("Found {{ types.extensions.count }} extensions, first: {{ types.extensions.first.name }}")).to(equal("Found 1 extensions, first: NSObject"))
             }
 
             it("feeds types.implementing specific protocol") {
