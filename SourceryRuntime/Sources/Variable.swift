@@ -50,16 +50,16 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Defined 
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
-    
+
     /// Reference to type name where the variable is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
-    
+
     /// Actual type name where the variable is defined if declaration uses typealias, otherwise just a `definedInTypeName`
     public var actualDefinedInTypeName: TypeName? {
         return definedInTypeName?.actualTypeName ?? definedInTypeName
     }
-    
+
     // sourcery: skipEquality, skipDescription
     /// Reference to actual type where the object is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown

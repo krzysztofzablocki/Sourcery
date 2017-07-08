@@ -144,9 +144,9 @@ final class FileParser {
             case .enumelement:
                 return parseEnumCase(source)
             case .varInstance:
-                return parseVariable(source, containedInProtocol: containingIn is SourceryProtocol)
+                return parseVariable(source, containedIn: containingIn as? Type)
             case .varStatic, .varClass:
-                return parseVariable(source, containedInProtocol: containingIn is SourceryProtocol, isStatic: true)
+                return parseVariable(source, containedIn: containingIn as? Type, isStatic: true)
             case .varLocal:
                 //! Don't log local / param vars
                 return nil
@@ -407,9 +407,10 @@ extension FileParser {
         }
     }
 
-    internal func parseVariable(_ source: [String: SourceKitRepresentable], containedInProtocol: Bool, isStatic: Bool = false) -> Variable? {
+    internal func parseVariable(_ source: [String: SourceKitRepresentable], containedIn: Type?, isStatic: Bool = false) -> Variable? {
         guard let (name, _, accesibility) = parseTypeRequirements(source) else { return nil }
 
+        let containedInProtocol = (containedIn != nil) ? containedIn is SourceryProtocol : false
         var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
 
         if maybeType == nil, let substring = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespaces) {
@@ -445,7 +446,13 @@ extension FileParser {
         let writeAccessibility = setter.flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "")) }) ?? .none
 
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
-        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source))
+
+        var definedInTypeName: TypeName? = nil
+        if let containingInTypeName = containedIn?.name {
+            definedInTypeName = TypeName(containingInTypeName)
+        }
+
+        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         variable.setSource(source)
 
         return variable

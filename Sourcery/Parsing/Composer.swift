@@ -129,6 +129,9 @@ struct Composer {
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
+        if let definedInTypeName = variable.definedInTypeName {
+            variable.definedInType = resolve(definedInTypeName, type)
+        }
     }
 
     private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {

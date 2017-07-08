@@ -1,7 +1,6 @@
 // Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
- 
 extension ArrayType {
     /// :nodoc:
     override public var description: String {
