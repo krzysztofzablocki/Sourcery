@@ -15,23 +15,32 @@ class GeneratorSpec: QuickSpec {
             let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
 
             let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
-            let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .private), isComputed: false)
+            let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .private), isComputed: false, definedInTypeName: TypeName("Complex"))
             fooVar.type = fooType
-            let barVar = Variable(name: "bar", typeName: TypeName("Bar"), accessLevel: (read: .public, write: .public), isComputed: false)
+            let barVar = Variable(name: "bar", typeName: TypeName("Bar"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Complex"))
             barVar.type = barType
 
             complexType.variables = [
                 fooVar,
                 barVar,
-                Variable(name: "fooBar", typeName: TypeName("Int"), isComputed: true),
-                Variable(name: "tuple", typeName: TypeName("(Int, Bar)"))
+                Variable(name: "fooBar", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("Complex")),
+                Variable(name: "tuple", typeName: TypeName("(Int, Bar)"), definedInTypeName: TypeName("Complex"))
             ]
+
+            complexType.variables.forEach { $0.definedInType = complexType }
 
             complexType.methods = [
                 Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], accessLevel: .public, definedInTypeName: TypeName("Complex")),
                 Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true, definedInTypeName: TypeName("Complex")),
                 Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true, definedInTypeName: TypeName("Complex"))
             ]
+
+            complexType.methods.forEach { $0.definedInType = complexType }
+
+            let knownProtocol = Protocol(name: "KnownProtocol", variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))])
+            let knownProtocolExtension = Type(name: "KnownProtocol", isExtension: true, variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))])
+            knownProtocol.variables.forEach { $0.definedInType = knownProtocol }
+            knownProtocolExtension.variables.forEach { $0.definedInType = knownProtocolExtension }
 
             let types = [
                     fooType,
@@ -40,14 +49,15 @@ class GeneratorSpec: QuickSpec {
                     barType,
                     Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], containedTypes: [
                         Type(name: "InnerOptions", accessLevel: .public, variables: [
-                            Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false)
+                            Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
                             ])
                         ]),
                     Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Class(name: "ProjectClass", accessLevel: .open),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
-                    Protocol(name: "KnownProtocol", variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true)]),
+                    knownProtocol,
+                    knownProtocolExtension,
                     Protocol(name: "AlternativeProtocol"),
                     Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
             ]
@@ -82,12 +92,24 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.enums.count }} enums, first: {{ types.enums.first.name }}")).to(equal("Found 2 enums, first: FooOptions"))
             }
 
+            it("generates types.enums") {
+                expect(generate("Found {{ types.extensions.count }} extensions, first: {{ types.extensions.first.name }}")).to(equal("Found 2 extensions, first: NSObject"))
+            }
+
             it("feeds types.implementing specific protocol") {
                 expect(generate("Found {{ types.implementing.KnownProtocol.count }} types")).to(equal("Found 8 types"))
                 expect(generate("Found {{ types.implementing.Decodable.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.Foo.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+            }
+
+            it("feeds types.extension specific class") {
+                expect(generate("Found {{ types.inheriting.KnownProtocol.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.inheriting.Decodable.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.inheriting.Foo.count }} types")).to(equal("Found 2 types"))
+                expect(generate("Found {{ types.inheriting.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+                expect(generate("Found {{ types.inheriting.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
             }
 
             it("feeds types.inheriting specific class") {

@@ -51,6 +51,7 @@ public final class TemplateContext: NSObject, SourceryModel {
                 "classes": types.classes,
                 "structs": types.structs,
                 "enums": types.enums,
+                "extensions": types.extensions,
                 "based": types.based,
                 "inheriting": types.inheriting,
                 "implementing": types.implementing
@@ -129,6 +130,12 @@ public final class Types: NSObject, SourceryModel {
     /// All known enums
     public lazy internal(set) var enums: [Enum] = {
         return self.all.flatMap { $0 as? Enum }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known extensions
+    public lazy internal(set) var extensions: [Type] = {
+        return self.all.flatMap { $0.isExtension ? $0 : nil }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
