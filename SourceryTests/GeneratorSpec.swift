@@ -37,24 +37,43 @@ class GeneratorSpec: QuickSpec {
 
             complexType.methods.forEach { $0.definedInType = complexType }
 
-            let knownProtocol = Protocol(name: "KnownProtocol", variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))])
+            let knownProtocol = Protocol(name: "KnownProtocol", variables: [
+                    Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))
+                ], methods: [
+                    Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("String"))], accessLevel: .public, definedInTypeName: TypeName("KnownProtocol"))
+                ])
             knownProtocol.variables.forEach { $0.definedInType = knownProtocol }
+            knownProtocol.methods.forEach { $0.definedInType = knownProtocol }
+
+            let knownProtocolExtension = Protocol(name: "KnownProtocol", variables: [
+                    Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocolExtension"))
+                ], methods: [
+                    Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("String"), defaultValue: "Baz")], accessLevel: .public, definedInTypeName: TypeName("KnownProtocol"))
+                ])
+            knownProtocolExtension.variables.forEach { $0.definedInType = knownProtocolExtension }
+            knownProtocolExtension.methods.forEach { $0.definedInType = knownProtocolExtension }
+
+            let innerOptionsType = Type(name: "InnerOptions", accessLevel: .public, variables: [
+                Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
+                ])
+            innerOptionsType.variables.forEach { $0.definedInType = innerOptionsType }
+            let optionsType = Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], variables: [
+                Variable(name: "optionVar", typeName: TypeName("String"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Options"))
+                ], containedTypes: [innerOptionsType])
+            optionsType.variables.forEach { $0.definedInType = optionsType }
 
             let types = [
                     fooType,
                     fooSubclassType,
                     complexType,
                     barType,
-                    Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], containedTypes: [
-                        Type(name: "InnerOptions", accessLevel: .public, variables: [
-                            Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
-                            ])
-                        ]),
+                    optionsType,
                     Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Class(name: "ProjectClass", accessLevel: .open),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
                     knownProtocol,
+                    knownProtocolExtension,
                     Protocol(name: "AlternativeProtocol"),
                     Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
             ]
@@ -99,7 +118,7 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.implementing.Foo.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
-                
+
                 expect(generate("{{ types.all|implements:\"KnownProtocol\"|count }}")).to(equal("7"))
             }
 
@@ -109,7 +128,7 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.inheriting.Foo.count }} types")).to(equal("Found 2 types"))
                 expect(generate("Found {{ types.inheriting.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.inheriting.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
-                
+
                 expect(generate("{{ types.all|inherits:\"Foo\"|count }}")).to(equal("2"))
             }
 
@@ -122,14 +141,14 @@ class GeneratorSpec: QuickSpec {
 
                 expect(generate("{{ types.all|based:\"Decodable\"|count }}")).to(equal("4"))
             }
-            
+
             it("feeds types.extends specific type or protocol") {
                 expect(generate("Found {{ types.based.KnownProtocol.count }} types")).to(equal("Found 8 types"))
                 expect(generate("Found {{ types.based.Decodable.count }} types")).to(equal("Found 4 types"))
                 expect(generate("Found {{ types.based.Foo.count }} types")).to(equal("Found 2 types"))
                 expect(generate("Found {{ types.based.NSObject.count }} types")).to(equal("Found 3 types"))
                 expect(generate("Found {{ types.based.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
-                
+
                 expect(generate("{{ types.all|based:\"Decodable\"|count }}")).to(equal("4"))
             }
 
@@ -222,6 +241,14 @@ class GeneratorSpec: QuickSpec {
 
                 it("can render variable isOptional") {
                     expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("0"))
+                }
+
+                it("can render variable definedInType") {
+                    expect(generate("{% for type in types.all %}{% for variable in type.variables %}{{ variable.definedInType.name }}{% endfor %}{% endfor %}")).to(equal("ComplexComplexComplexComplexOptions"))
+                }
+
+                it("can render method definedInType") {
+                    expect(generate("{% for type in types.protocols %}{% for method in type.methods %}{{ method.definedInType.name }}{% endfor %}{% endfor %}")).to(equal("0"))
                 }
 
                 it("generates proper response for type.inherits") {

@@ -523,6 +523,14 @@ class FileParserSpec: QuickSpec {
                                 ]))
                     }
 
+                    it("extracts protocol extension properly") {
+                        expect(parse("protocol Foo { var some: Int { get } }; extension Foo { var some: Int { return 1 } }"))
+                            .to(equal([
+                                Protocol(name: "Foo", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Foo"))]),
+                                Type(name: "Foo", isExtension: true, variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Foo"))])
+                                ]))
+                    }
+
                     it("does not consider protocol variables as computed") {
                         expect(parse("protocol Foo { var some: Int { get } }"))
                             .to(equal([
