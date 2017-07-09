@@ -56,6 +56,9 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         ext.registerBoolFilterOrWithArguments("inherits",
                                               filter: { (t: Type, name: String) in t.inherits[name] != nil },
                                               other: { (t: Typed, name: String) in t.type?.inherits[name] != nil })
+        ext.registerBoolFilterOrWithArguments("extends",
+                                              filter: { (t: Type, name: String) in t.isExtension && t.name == name },
+                                              other: { (t: Typed, name: String) in guard let type = t.type else { return false }; return type.isExtension && type.name == name })
 
         ext.registerBoolFilter("extension", filter: { (t: Type) in t.isExtension })
         ext.registerBoolFilter("enum", filter: { (t: Type) in t is Enum })

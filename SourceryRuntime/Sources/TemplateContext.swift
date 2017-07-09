@@ -175,7 +175,6 @@ public final class Types: NSObject, SourceryModel {
                 }
         })
     }()
-
 }
 
 /// :nodoc:
