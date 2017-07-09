@@ -25,6 +25,130 @@ class ParserComposerSpec: QuickSpec {
                     return Composer().uniqueTypes(parserResult)
                 }
 
+                context("given extension") {
+                    var input: String!
+                    var variable: SourceryRuntime.Variable!
+                    var method: SourceryRuntime.Method!
+                    var defaultedMethod: SourceryRuntime.Method!
+                    var parsedResult: Type!
+                    var parsedTypeExtension: Type!
+
+                    beforeEach {
+                        variable = Variable(name: "fooVar",
+                                            typeName: TypeName("Int"),
+                                            accessLevel: (read: .internal,
+                                                          write: .none),
+                                            isComputed: true,
+                                            isStatic: false,
+                                            definedInTypeName: TypeName("Foo"))
+                        method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
+                                        parameters: [MethodParameter(name: "bar",
+                                                                     typeName: TypeName("String"))],
+                                        returnTypeName: TypeName("Void"),
+                                        definedInTypeName: TypeName("Foo"))
+                        defaultedMethod = Method(name: "fooMethod(bar: String = \"Baz\")", selectorName: "fooMethod(bar:)",
+                                                 parameters: [MethodParameter(name: "bar",
+                                                                              typeName: TypeName("String"),
+                                                                              defaultValue: "\"Baz\"")],
+                                                 returnTypeName: TypeName("Void"),
+                                                 definedInTypeName: TypeName("Foo"))
+                    }
+
+                    context("for enum") {
+                        beforeEach {
+                            input = "enum Foo { case A; func \(method.name) {}; var fooVar: Int { return 1 } }; extension Foo { func \(defaultedMethod.name) {} }"
+                            parsedResult = parse(input).first
+                            parsedTypeExtension = parse(input).first
+                            parsedTypeExtension.isExtension = true
+                        }
+
+                        it("resolves variables") {
+                            expect(parsedResult.variables.count).to(equal(1))
+                            expect(parsedResult.variables.first).to(equal(variable))
+                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
+                        }
+
+                        it("resolves methods") {
+                            expect(parsedResult.methods.count).to(equal(2))
+                            expect(parsedResult.methods.first).to(equal(method))
+                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
+                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        }
+                    }
+
+                    context("for protocol") {
+                        beforeEach {
+                            input = "protocol Foo { func \(method.name); var fooVar: Int { get } }; extension Foo { func \(defaultedMethod.name) {}; var fooVar: Int { return 1 } }"
+                            parsedResult = parse(input).first
+                            parsedTypeExtension = parse(input).first
+                            parsedTypeExtension.isExtension = true
+                        }
+
+                        it("resolves variables") {
+                            expect(parsedResult.variables.count).to(equal(2))
+                            expect(parsedResult.variables.first).to(equal(variable))
+                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
+                            expect(parsedResult.variables.last).to(equal(variable))
+                            expect(parsedResult.variables.last?.definedInType).to(equal(parsedTypeExtension))
+                        }
+
+                        it("resolves methods") {
+                            expect(parsedResult.methods.count).to(equal(2))
+                            expect(parsedResult.methods.first).to(equal(method))
+                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
+                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        }
+                    }
+
+                    context("for class") {
+                        beforeEach {
+                            input = "class Foo { func \(method.name) {}; var fooVar: Int { return 1 } }; extension Foo { func \(defaultedMethod.name) {} }"
+                            parsedResult = parse(input).first
+                            parsedTypeExtension = parse(input).first
+                            parsedTypeExtension.isExtension = true
+                        }
+
+                        it("resolves variables") {
+                            expect(parsedResult.variables.count).to(equal(1))
+                            expect(parsedResult.variables.first).to(equal(variable))
+                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
+                        }
+
+                        it("resolves methods") {
+                            expect(parsedResult.methods.count).to(equal(2))
+                            expect(parsedResult.methods.first).to(equal(method))
+                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
+                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        }
+                    }
+
+                    context("for struct") {
+                        beforeEach {
+                            input = "struct Foo { func \(method.name) {}; var fooVar: Int { return 1 } }; extension Foo { func \(defaultedMethod.name) {} }"
+                            parsedResult = parse(input).first
+                            parsedTypeExtension = parse(input).first
+                            parsedTypeExtension.isExtension = true
+                        }
+
+                        it("resolves variables") {
+                            expect(parsedResult.variables.count).to(equal(1))
+                            expect(parsedResult.variables.first).to(equal(variable))
+                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
+                        }
+
+                        it("resolves methods") {
+                            expect(parsedResult.methods.count).to(equal(2))
+                            expect(parsedResult.methods.first).to(equal(method))
+                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
+                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        }
+                    }
+                }
+
                 context("given enum containing associated values") {
                     it("trims whitespace from associated value names") {
                         expect(parse("enum Foo {\n case bar(\nvalue: String,\n other: Int\n)\n}"))

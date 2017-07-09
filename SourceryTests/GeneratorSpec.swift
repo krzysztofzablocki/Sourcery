@@ -45,8 +45,8 @@ class GeneratorSpec: QuickSpec {
             knownProtocol.variables.forEach { $0.definedInType = knownProtocol }
             knownProtocol.methods.forEach { $0.definedInType = knownProtocol }
 
-            let knownProtocolExtension = Protocol(name: "KnownProtocol", variables: [
-                    Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocolExtension"))
+            let knownProtocolExtension = Type(name: "KnownProtocol", isExtension: true, variables: [
+                    Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))
                 ], methods: [
                     Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("String"), defaultValue: "Baz")], accessLevel: .public, definedInTypeName: TypeName("KnownProtocol"))
                 ])
@@ -245,10 +245,6 @@ class GeneratorSpec: QuickSpec {
 
                 it("can render variable definedInType") {
                     expect(generate("{% for type in types.all %}{% for variable in type.variables %}{{ variable.definedInType.name }}{% endfor %}{% endfor %}")).to(equal("ComplexComplexComplexComplexOptions"))
-                }
-
-                it("can render method definedInType") {
-                    expect(generate("{% for type in types.protocols %}{% for method in type.methods %}{{ method.definedInType.name }}{% endfor %}{% endfor %}")).to(equal("0"))
                 }
 
                 it("generates proper response for type.inherits") {

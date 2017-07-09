@@ -22,6 +22,8 @@ struct Composer {
     func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
         var unique = [String: Type]()
         var modules = [String: [String: Type]]()
+        var extensionMethods: [String: [SourceryRuntime.Method]] = [:]
+        var extensionVariables: [String: [SourceryRuntime.Variable]] = [:]
         let types = parserResult.types
         let typealiases = self.typealiasesByNames(parserResult)
 
@@ -38,9 +40,14 @@ struct Composer {
         }
 
         //replace extensions for type aliases with original types
+        //extract all methods and variables from extensions
         types
             .filter { $0.isExtension == true }
-            .forEach { $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName }
+            .forEach {
+                $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName
+                extensionMethods[$0.name] = $0.methods
+                extensionVariables[$0.name] = $0.variables
+            }
 
         //extend all types with their extensions
         types.forEach { type in
