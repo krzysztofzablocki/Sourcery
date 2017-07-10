@@ -25,6 +25,36 @@ class ParserComposerSpec: QuickSpec {
                     return Composer().uniqueTypes(parserResult)
                 }
 
+                context("given class hierarchy") {
+                    var fooType: Type!
+                    var barType: Type!
+                    var bazType: Type!
+
+                    beforeEach {
+                        let input = "class Foo { var foo: Int; func fooMethod() {} }; class Bar: Foo { var bar: Int }; class Baz: Bar { var baz: Int; func bazMethod() {} }"
+                        let parsedResult = parse(input)
+                        fooType = parsedResult[2]
+                        barType = parsedResult[0]
+                        bazType = parsedResult[1]
+                    }
+
+                    it("resolves methods definedInType") {
+                        expect(fooType.allMethods.first?.definedInType).to(equal(fooType))
+                        expect(barType.allMethods.first?.definedInType).to(equal(fooType))
+                        expect(bazType.allMethods.first?.definedInType).to(equal(bazType))
+                        expect(bazType.allMethods.last?.definedInType).to(equal(fooType))
+                    }
+
+                    it("resolves variables definedInType") {
+                        expect(fooType.allVariables.first?.definedInType).to(equal(fooType))
+                        expect(barType.allVariables[0].definedInType).to(equal(barType))
+                        expect(barType.allVariables[1].definedInType).to(equal(fooType))
+                        expect(bazType.allVariables[0].definedInType).to(equal(bazType))
+                        expect(bazType.allVariables[1].definedInType).to(equal(fooType))
+                        expect(bazType.allVariables[2].definedInType).to(equal(barType))
+                    }
+                }
+
                 context("given extension") {
                     var input: String!
                     var method: SourceryRuntime.Method!
