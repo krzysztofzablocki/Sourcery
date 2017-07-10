@@ -27,20 +27,13 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given extension") {
                     var input: String!
-                    var variable: SourceryRuntime.Variable!
                     var method: SourceryRuntime.Method!
                     var defaultedMethod: SourceryRuntime.Method!
                     var parsedResult: Type!
-                    var parsedTypeExtension: Type!
+                    var originalType: Type!
+                    var typeExtension: Type!
 
                     beforeEach {
-                        variable = Variable(name: "fooVar",
-                                            typeName: TypeName("Int"),
-                                            accessLevel: (read: .internal,
-                                                          write: .none),
-                                            isComputed: true,
-                                            isStatic: false,
-                                            definedInTypeName: TypeName("Foo"))
                         method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
                                         parameters: [MethodParameter(name: "bar",
                                                                      typeName: TypeName("String"))],
@@ -56,95 +49,57 @@ class ParserComposerSpec: QuickSpec {
 
                     context("for enum") {
                         beforeEach {
-                            input = "enum Foo { case A; func \(method.name) {}; var fooVar: Int { return 1 } }; extension Foo { func \(defaultedMethod.name) {} }"
+                            input = "enum Foo { case A; func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
-                            parsedTypeExtension = parse(input).first
-                            parsedTypeExtension.isExtension = true
+                            originalType = Enum(name: "Foo", cases: [EnumCase(name: "A")], methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
-                        it("resolves variables") {
-                            expect(parsedResult.variables.count).to(equal(1))
-                            expect(parsedResult.variables.first).to(equal(variable))
-                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
-                        }
-
-                        it("resolves methods") {
-                            expect(parsedResult.methods.count).to(equal(2))
-                            expect(parsedResult.methods.first).to(equal(method))
-                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
-                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
                         }
                     }
 
                     context("for protocol") {
                         beforeEach {
-                            input = "protocol Foo { func \(method.name); var fooVar: Int { get } }; extension Foo { func \(defaultedMethod.name) {}; var fooVar: Int { return 1 } }"
+                            input = "protocol Foo { func \(method.name) }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
-                            parsedTypeExtension = parse(input).first
-                            parsedTypeExtension.isExtension = true
+                            originalType = Protocol(name: "Foo", methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
-                        it("resolves variables") {
-                            expect(parsedResult.variables.count).to(equal(2))
-                            expect(parsedResult.variables.first).to(equal(variable))
-                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
-                            expect(parsedResult.variables.last).to(equal(variable))
-                            expect(parsedResult.variables.last?.definedInType).to(equal(parsedTypeExtension))
-                        }
-
-                        it("resolves methods") {
-                            expect(parsedResult.methods.count).to(equal(2))
-                            expect(parsedResult.methods.first).to(equal(method))
-                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
-                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
                         }
                     }
 
                     context("for class") {
                         beforeEach {
-                            input = "class Foo { func \(method.name) {}; var fooVar: Int { return 1 } }; extension Foo { func \(defaultedMethod.name) {} }"
+                            input = "class Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
-                            parsedTypeExtension = parse(input).first
-                            parsedTypeExtension.isExtension = true
+                            originalType = Class(name: "Foo", methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
-                        it("resolves variables") {
-                            expect(parsedResult.variables.count).to(equal(1))
-                            expect(parsedResult.variables.first).to(equal(variable))
-                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
-                        }
-
-                        it("resolves methods") {
-                            expect(parsedResult.methods.count).to(equal(2))
-                            expect(parsedResult.methods.first).to(equal(method))
-                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
-                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
                         }
                     }
 
                     context("for struct") {
                         beforeEach {
-                            input = "struct Foo { func \(method.name) {}; var fooVar: Int { return 1 } }; extension Foo { func \(defaultedMethod.name) {} }"
+                            input = "struct Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
-                            parsedTypeExtension = parse(input).first
-                            parsedTypeExtension.isExtension = true
+                            originalType = Struct(name: "Foo", methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
-                        it("resolves variables") {
-                            expect(parsedResult.variables.count).to(equal(1))
-                            expect(parsedResult.variables.first).to(equal(variable))
-                            expect(parsedResult.variables.first?.definedInType).to(equal(parsedResult))
-                        }
-
-                        it("resolves methods") {
-                            expect(parsedResult.methods.count).to(equal(2))
-                            expect(parsedResult.methods.first).to(equal(method))
-                            expect(parsedResult.methods.last).to(equal(defaultedMethod))
-                            expect(parsedResult.methods.first?.definedInType).to(equal(parsedResult))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(parsedTypeExtension))
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
                         }
                     }
                 }

@@ -22,10 +22,19 @@ struct Composer {
     func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
         var unique = [String: Type]()
         var modules = [String: [String: Type]]()
-        var extensionMethods: [String: [SourceryRuntime.Method]] = [:]
-        var extensionVariables: [String: [SourceryRuntime.Variable]] = [:]
         let types = parserResult.types
         let typealiases = self.typealiasesByNames(parserResult)
+
+        //set definedInType for all methods and variables
+        types
+            .forEach { type in
+            type.variables.forEach { variable in
+                variable.definedInType = type
+            }
+            type.methods.forEach { method in
+                method.definedInType = type
+            }
+        }
 
         //map all known types to their names
         types
@@ -45,8 +54,6 @@ struct Composer {
             .filter { $0.isExtension == true }
             .forEach {
                 $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName
-                extensionMethods[$0.name] = $0.methods
-                extensionVariables[$0.name] = $0.variables
             }
 
         //extend all types with their extensions
@@ -136,9 +143,6 @@ struct Composer {
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
-        if let definedInTypeName = variable.definedInTypeName {
-            variable.definedInType = resolve(definedInTypeName, type)
-        }
     }
 
     private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
@@ -152,10 +156,6 @@ struct Composer {
             if method.isInitializer {
                 method.returnTypeName = TypeName("")
             }
-        }
-
-        if let definedInTypeName = method.definedInTypeName {
-            method.definedInType = resolve(definedInTypeName, type)
         }
     }
 
