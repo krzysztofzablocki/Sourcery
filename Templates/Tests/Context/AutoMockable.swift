@@ -33,3 +33,16 @@ protocol SameShortMethodNamesProtocol: AutoMockable {
     func start(car: String, of model: String)
     func start(plane: String, of model: String)
 }
+
+protocol ExtendableProtocol: AutoMockable {
+    var canReport: Bool { get }
+    func report(message: String)
+}
+
+extension ExtendableProtocol {
+    var canReport: Bool { return true }
+
+    func report(message: String = "Test") {
+        print(message)
+    }
+}

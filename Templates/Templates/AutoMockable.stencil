@@ -10,10 +10,10 @@ import AppKit
 
 {% macro methodReceivedParameters method %}
     {%if method.parameters.count == 1 %}
-        {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
+        {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 %}
-        {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
+        {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
     {% endif %}
     {% endif %}
 {% endmacro %}
@@ -22,19 +22,21 @@ import AppKit
 {% if not type.name == "AutoMockable" %}
 class {{ type.name }}Mock: {{ type.name }} {
     {% for variable in type.allVariables %}
-    var {{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if not variable.isArray and not variable.isDictionary %}!{% elif variable.isArray %} = []{% elif variable.isDictionary %} = [:]{% endif %}{% endif %}
+    var {%if variable.definedInType.isExtension %}extension_{% endif %}{{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if not variable.isArray and not variable.isDictionary %}!{% elif variable.isArray %} = []{% elif variable.isDictionary %} = [:]{% endif %}{% endif %}
     {% endfor %}
 
 {% for method in type.allMethods %}
-    //MARK: - {{ method.shortName }}
+    //MARK: - {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.shortName }}
 
-    {% if not method.isInitializer %}var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = false{% endif %}
+    {% if not method.isInitializer %}var {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = false{% endif %}
     {% if method.parameters.count == 1 %}
-    var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
+    var {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
-    var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
+    var {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}{% endif %}
-    {% if not method.returnTypeName.isVoid and not method.isInitializer %}var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue: {{ method.returnTypeName }}!{% endif %}
+    {% if not method.returnTypeName.isVoid and not method.isInitializer %}
+    var {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue: {{ method.returnTypeName }}!
+    {% endif %}
 
 {% if method.isInitializer %}
     required {{ method.name }} {
@@ -42,9 +44,9 @@ class {{ type.name }}Mock: {{ type.name }} {
     }
 {% else %}
     func {{ method.name }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
-        {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = true
+        {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = true
         {% call methodReceivedParameters method %}
-        {% if not method.returnTypeName.isVoid %}return {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue{% endif %}
+        {% if not method.returnTypeName.isVoid %}return {%if method.definedInType.isExtension %}extension_{% endif %}{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue{% endif %}
     }
 {% endif %}
 {% endfor %}

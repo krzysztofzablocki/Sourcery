@@ -27,6 +27,28 @@ class BasicProtocolMock: BasicProtocol {
         save_configuration_ReceivedConfiguration = configuration
     }
 }
+class ExtendableProtocolMock: ExtendableProtocol {
+    var canReport: Bool!
+
+    //MARK: - report
+
+    var report_message_Called = false
+    var report_message_ReceivedMessage: String?
+
+    func report(message: String) {
+        report_message_Called = true
+        report_message_ReceivedMessage = message
+    }
+    //MARK: - extension_report
+
+    var extension_report_message_Called = false
+    var extension_report_message_ReceivedMessage: String?
+
+    func report(message: String = "Test") {
+        extension_report_message_Called = true
+        extension_report_message_ReceivedMessage = message
+    }
+}
 class InitializationProtocolMock: InitializationProtocol {
 
     //MARK: - init
