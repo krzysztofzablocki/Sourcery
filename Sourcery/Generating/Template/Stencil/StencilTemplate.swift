@@ -37,6 +37,8 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         ext.registerBoolFilterWithArguments("hasPrefix", filter: { (s1: String, s2) in s1.hasPrefix(s2) })
         ext.registerBoolFilterWithArguments("hasSuffix", filter: { (s1: String, s2) in s1.hasSuffix(s2) })
 
+        ext.registerBoolFilter("definedInExtension", filter: { (t: Defined) in t.definedInType?.isExtension ?? false })
+
         ext.registerBoolFilter("computed", filter: { (v: SourceryVariable) in v.isComputed && !v.isStatic })
         ext.registerBoolFilter("stored", filter: { (v: SourceryVariable) in !v.isComputed && !v.isStatic })
         ext.registerBoolFilter("tuple", filter: { (v: SourceryVariable) in v.isTuple })
