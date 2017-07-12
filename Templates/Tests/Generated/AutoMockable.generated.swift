@@ -12,6 +12,9 @@ import AppKit
 #endif
 
 
+
+
+
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
@@ -23,6 +26,7 @@ class BasicProtocolMock: BasicProtocol {
         loadConfiguration_Called = true
         return loadConfiguration_ReturnValue
     }
+
     //MARK: - save
 
     var save_configuration_Called = false
@@ -32,6 +36,7 @@ class BasicProtocolMock: BasicProtocol {
         save_configuration_Called = true
         save_configuration_ReceivedConfiguration = configuration
     }
+
 }
 class ExtendableProtocolMock: ExtendableProtocol {
     var canReport: Bool!
@@ -45,6 +50,7 @@ class ExtendableProtocolMock: ExtendableProtocol {
         report_message_Called = true
         report_message_ReceivedMessage = message
     }
+
     //MARK: - extension_report
 
     var extension_report_message_Called = false
@@ -54,6 +60,7 @@ class ExtendableProtocolMock: ExtendableProtocol {
         extension_report_message_Called = true
         extension_report_message_ReceivedMessage = message
     }
+
 }
 class InitializationProtocolMock: InitializationProtocol {
 
@@ -71,6 +78,7 @@ class InitializationProtocolMock: InitializationProtocol {
     func start() {
         start_Called = true
     }
+
     //MARK: - stop
 
     var stop_Called = false
@@ -78,6 +86,7 @@ class InitializationProtocolMock: InitializationProtocol {
     func stop() {
         stop_Called = true
     }
+
 }
 class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
 
@@ -90,6 +99,7 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         start_car_of_Called = true
         start_car_of_ReceivedArguments = (car: car, model: model)
     }
+
     //MARK: - start
 
     var start_plane_of_Called = false
@@ -99,6 +109,7 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         start_plane_of_Called = true
         start_plane_of_ReceivedArguments = (plane: plane, model: model)
     }
+
 }
 class VariablesProtocolMock: VariablesProtocol {
     var company: String?
