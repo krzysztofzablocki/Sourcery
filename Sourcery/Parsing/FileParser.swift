@@ -24,11 +24,7 @@ extension Parsable {
     }
 }
 
-protocol Definition: Parsable {
-    var __path: String? { get set }
-}
-
-extension Definition {
+extension Type {
 
     var path: Path? {
         return __path.map({ Path($0) })
@@ -56,7 +52,7 @@ extension Definition {
 }
 
 extension Variable: Parsable {}
-extension Type: Definition {}
+extension Type: Parsable {}
 extension SourceryMethod: Parsable {}
 extension MethodParameter: Parsable {}
 extension EnumCase: Parsable {}

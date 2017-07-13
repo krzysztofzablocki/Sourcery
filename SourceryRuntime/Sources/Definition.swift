@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes that the object is defined in a context of some `Type`
-public protocol Defined: class {
+public protocol Definition: class {
     /// Reference to type name where the object is defined, 
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     var definedInTypeName: TypeName? { get }
