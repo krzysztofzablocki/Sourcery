@@ -124,7 +124,7 @@ final class FileParser {
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
         var types = [Type]()
-        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, containingIn in
+        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn in
             let type: Type
 
             switch kind {
@@ -144,16 +144,16 @@ final class FileParser {
             case .enumelement:
                 return parseEnumCase(source)
             case .varInstance:
-                return parseVariable(source, containedIn: containingIn as? Type)
+                return parseVariable(source, definedIn: definedIn as? Type)
             case .varStatic, .varClass:
-                return parseVariable(source, containedIn: containingIn as? Type, isStatic: true)
+                return parseVariable(source, definedIn: definedIn as? Type, isStatic: true)
             case .varLocal:
                 //! Don't log local / param vars
                 return nil
             case .functionMethodClass,
                  .functionMethodInstance,
                  .functionMethodStatic:
-                return parseMethod(source, containingIn: containingIn as? Type)
+                return parseMethod(source, definedIn: definedIn as? Type)
             case .varParameter:
                 return parseParameter(source)
             default:
@@ -407,10 +407,10 @@ extension FileParser {
         }
     }
 
-    internal func parseVariable(_ source: [String: SourceKitRepresentable], containedIn: Type?, isStatic: Bool = false) -> Variable? {
+    internal func parseVariable(_ source: [String: SourceKitRepresentable], definedIn: Type?, isStatic: Bool = false) -> Variable? {
         guard let (name, _, accesibility) = parseTypeRequirements(source) else { return nil }
 
-        let containedInProtocol = (containedIn != nil) ? containedIn is SourceryProtocol : false
+        let definedInProtocol = (definedIn != nil) ? definedIn is SourceryProtocol : false
         var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
 
         if maybeType == nil, let substring = extract(.nameSuffix, from: source)?.trimmingCharacters(in: .whitespaces) {
@@ -439,14 +439,14 @@ extension FileParser {
         let body = extract(Substring.body, from: source) ?? ""
         let constant = extract(Substring.key, from: source)?.hasPrefix("let") == true
         let hasPropertyObservers = body.hasPrefix("didSet") || body.hasPrefix("willSet")
-        let computed = !containedInProtocol && (
+        let computed = !definedInProtocol && (
             (setter == nil && !constant) ||
             (setter != nil && !body.isEmpty && hasPropertyObservers == false)
         )
         let writeAccessibility = setter.flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "")) }) ?? .none
 
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
-        let definedInTypeName = containedIn.map { TypeName($0.name) }
+        let definedInTypeName = definedIn.map { TypeName($0.name) }
 
         let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         variable.setSource(source)
@@ -459,7 +459,7 @@ extension FileParser {
 // MARK: - Methods
 extension FileParser {
 
-    internal func parseMethod(_ source: [String: SourceKitRepresentable], containingIn: Type? = nil) -> SourceryMethod? {
+    internal func parseMethod(_ source: [String: SourceKitRepresentable], definedIn: Type? = nil) -> SourceryMethod? {
         let requirements = parseTypeRequirements(source)
         guard
             let kind = requirements?.kind,
@@ -526,7 +526,7 @@ extension FileParser {
             }
         }
 
-        let definedInTypeName  = containingIn.map { TypeName($0.name) }
+        let definedInTypeName  = definedIn.map { TypeName($0.name) }
         let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         method.setSource(source)
 

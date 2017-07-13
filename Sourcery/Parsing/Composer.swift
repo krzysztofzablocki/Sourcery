@@ -28,12 +28,12 @@ struct Composer {
         //set definedInType for all methods and variables
         types
             .forEach { type in
-            type.variables.forEach { variable in
-                variable.definedInType = type
-            }
-            type.methods.forEach { method in
-                method.definedInType = type
-            }
+                type.variables.forEach { variable in
+                    variable.definedInType = type
+                }
+                type.methods.forEach { method in
+                    method.definedInType = type
+                }
         }
 
         //map all known types to their names

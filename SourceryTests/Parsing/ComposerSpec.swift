@@ -472,6 +472,20 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given typealiases") {
 
+                    it("resolves definedInType for methods") {
+                        let input = "class Foo { func bar() {} }; typealias FooAlias = Foo; extension FooAlias { func baz() {} }"
+                        let type = parse(input).first
+
+                        expect(type?.methods.first?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.first?.definedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.first?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.methods.first?.definedInType?.isExtension).to(beFalse())
+                        expect(type?.methods.last?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.last?.definedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.last?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.methods.last?.definedInType?.isExtension).to(beTrue())
+                    }
+
                     it("sets typealias type") {
                         let types = parse("class Bar {}; class Foo { typealias BarAlias = Bar }")
                         let bar = types.first
