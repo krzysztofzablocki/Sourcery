@@ -15,6 +15,7 @@ public protocol Defined: class {
 }
 
 public extension Defined {
+    /// Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
     public var actualDefinedInTypeName: TypeName? {
         return definedInTypeName?.actualTypeName ?? definedInTypeName
     }
