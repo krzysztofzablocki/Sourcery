@@ -446,11 +446,7 @@ extension FileParser {
         let writeAccessibility = setter.flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "")) }) ?? .none
 
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
-
-        var definedInTypeName: TypeName? = nil
-        if let containingInTypeName = containedIn?.name {
-            definedInTypeName = TypeName(containingInTypeName)
-        }
+        let definedInTypeName = containedIn.map { TypeName($0.name) }
 
         let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         variable.setSource(source)
@@ -530,11 +526,7 @@ extension FileParser {
             }
         }
 
-        var definedInTypeName: TypeName? = nil
-        if let containingInTypeName = containingIn?.name {
-            definedInTypeName = TypeName(containingInTypeName)
-        }
-
+        let definedInTypeName  = containingIn.map { TypeName($0.name) }
         let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         method.setSource(source)
 
