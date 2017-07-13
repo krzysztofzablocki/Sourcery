@@ -481,9 +481,23 @@ class ParserComposerSpec: QuickSpec {
                         expect(type?.methods.first?.definedInType?.name).to(equal("Foo"))
                         expect(type?.methods.first?.definedInType?.isExtension).to(beFalse())
                         expect(type?.methods.last?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
-                        expect(type?.methods.last?.definedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.last?.definedInTypeName).to(equal(TypeName("FooAlias")))
                         expect(type?.methods.last?.definedInType?.name).to(equal("Foo"))
                         expect(type?.methods.last?.definedInType?.isExtension).to(beTrue())
+                    }
+
+                    it("resolves definedInType for variables") {
+                        let input = "class Foo { var bar: Int { return 1 } }; typealias FooAlias = Foo; extension FooAlias { var baz: Int { return 2 } }"
+                        let type = parse(input).first
+
+                        expect(type?.variables.first?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.variables.first?.definedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.variables.first?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.variables.first?.definedInType?.isExtension).to(beFalse())
+                        expect(type?.variables.last?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.variables.last?.definedInTypeName).to(equal(TypeName("FooAlias")))
+                        expect(type?.variables.last?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.variables.last?.definedInType?.isExtension).to(beTrue())
                     }
 
                     it("sets typealias type") {
