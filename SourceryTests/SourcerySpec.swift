@@ -42,7 +42,7 @@ class SourcerySpecTests: QuickSpec {
                     it("doesn't update existing files") {
                         let generatedFilePath = outputDir + Sourcery().generatedPath(for: templatePath)
                         generatedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
-                        DispatchQueue.main.asyncAfter ( deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+                        DispatchQueue.main.asyncAfter ( deadline: DispatchTime.now() + Double(Int64(0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
                             _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir)
                             newGeneratedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
                         }
