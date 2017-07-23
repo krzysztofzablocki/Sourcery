@@ -143,6 +143,9 @@ struct Composer {
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
+        
+        /// The actual `definedInType` is assigned in `uniqueTypes` but we still
+        /// need to resolve the type to correctly parse typealiases
         if let definedInTypeName = variable.definedInTypeName {
             _ = resolve(definedInTypeName, type)
         }
@@ -161,6 +164,8 @@ struct Composer {
             }
         }
 
+        /// The actual `definedInType` is assigned in `uniqueTypes` but we still
+        /// need to resolve the type to correctly parse typealiases
         if let definedInTypeName = method.definedInTypeName {
             _ = resolve(definedInTypeName, type)
         }
