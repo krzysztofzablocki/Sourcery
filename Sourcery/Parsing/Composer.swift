@@ -146,6 +146,7 @@ struct Composer {
         
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
+        /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
         if let definedInTypeName = variable.definedInTypeName {
             _ = resolve(definedInTypeName, type)
         }
@@ -166,6 +167,7 @@ struct Composer {
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
+        /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
         if let definedInTypeName = method.definedInTypeName {
             _ = resolve(definedInTypeName, type)
         }
