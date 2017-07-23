@@ -10,7 +10,7 @@ class MethodSpec: QuickSpec {
             var sut: SourceryMethod?
 
             beforeEach {
-                sut = Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))])
+                sut = Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], definedInTypeName: TypeName("Bar"))
             }
 
             afterEach {
@@ -49,6 +49,15 @@ class MethodSpec: QuickSpec {
                 }
             }
 
+            it("reports definedInTypeName propertly") {
+                expect(Method(name: "foo()", definedInTypeName: TypeName("BarAlias", actualTypeName: TypeName("Bar"))).definedInTypeName).to(equal(TypeName("BarAlias")))
+                expect(Method(name: "foo()", definedInTypeName: TypeName("Foo")).definedInTypeName).to(equal(TypeName("Foo")))
+            }
+
+            it("reports actualDefinedInTypeName propertly") {
+                expect(Method(name: "foo()", definedInTypeName: TypeName("BarAlias", actualTypeName: TypeName("Bar"))).actualDefinedInTypeName).to(equal(TypeName("Bar")))
+            }
+
             it("reports isInitializer properly") {
                 expect(sut?.isInitializer).to(beFalse())
                 expect(Method(name: "init()").isInitializer).to(beTrue())
@@ -62,7 +71,7 @@ class MethodSpec: QuickSpec {
 
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))])))
+                        expect(sut).to(equal(Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], definedInTypeName: TypeName("Bar"))))
                     }
                 }
 
@@ -74,6 +83,7 @@ class MethodSpec: QuickSpec {
                     }
 
                     it("is not equal") {
+                        expect(sut).toNot(equal(Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], definedInTypeName: TypeName("Baz"))))
                         expect(sut).toNot(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: mockMethodParameters, returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
                         expect(sut).toNot(equal(Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [], returnTypeName: TypeName("Void"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))
                         expect(sut).toNot(equal(Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: mockMethodParameters, returnTypeName: TypeName("String"), accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, annotations: [:])))

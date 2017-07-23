@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Quick
@@ -191,6 +191,14 @@ class TypedSpec: QuickSpec {
 
                 sut.typeName.actualTypeName = TypeName("Int")
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
+            }
+
+            it("can report actual defined in type name via KVC") {
+                let sut = Variable(typeName: TypeName("Alias"), definedInTypeName: TypeName("Baz"))
+                expect(sut.value(forKeyPath: "actualDefinedInTypeName") as? TypeName).to(equal(TypeName("Baz")))
+
+                sut.definedInTypeName?.actualTypeName = TypeName("Int")
+                expect(sut.value(forKeyPath: "actualDefinedInTypeName") as? TypeName).to(equal(TypeName("Int")))
             }
         }
     }

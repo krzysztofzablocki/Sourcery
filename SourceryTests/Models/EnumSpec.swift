@@ -7,7 +7,7 @@ class EnumSpec: QuickSpec {
     override func spec() {
         describe ("Enum") {
             var sut: Enum?
-            let variable = Variable(name: "variable", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: false)
+            let variable = Variable(name: "variable", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))
 
             beforeEach {
                 sut = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA"), EnumCase(name: "CaseB")])

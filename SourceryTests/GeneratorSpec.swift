@@ -9,55 +9,80 @@ class GeneratorSpec: QuickSpec {
     override func spec() {
 
         describe("Generator") {
+            var types: [Type] = []
+            var arguments: [String: NSObject] = [:]
+            var beforeEachGenerate: () -> Void = {
+                let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
+                let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2)])
+                let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
 
-            let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
-            let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2)])
-            let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
+                let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
+                let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .private), isComputed: false, definedInTypeName: TypeName("Complex"))
+                fooVar.type = fooType
+                let barVar = Variable(name: "bar", typeName: TypeName("Bar"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Complex"))
+                barVar.type = barType
 
-            let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
-            let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .private), isComputed: false)
-            fooVar.type = fooType
-            let barVar = Variable(name: "bar", typeName: TypeName("Bar"), accessLevel: (read: .public, write: .public), isComputed: false)
-            barVar.type = barType
+                complexType.variables = [
+                    fooVar,
+                    barVar,
+                    Variable(name: "fooBar", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("Complex")),
+                    Variable(name: "tuple", typeName: TypeName("(Int, Bar)"), definedInTypeName: TypeName("Complex"))
+                ]
 
-            complexType.variables = [
-                fooVar,
-                barVar,
-                Variable(name: "fooBar", typeName: TypeName("Int"), isComputed: true),
-                Variable(name: "tuple", typeName: TypeName("(Int, Bar)"))
-            ]
+                complexType.methods = [
+                    Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], accessLevel: .public, definedInTypeName: TypeName("Complex")),
+                    Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true, definedInTypeName: TypeName("Complex")),
+                    Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true, definedInTypeName: TypeName("Complex"))
+                ]
 
-            complexType.methods = [
-                Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], accessLevel: .public),
-                Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true),
-                Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true)
-            ]
+                let complexTypeExtension = Type(name: "Complex", isExtension: true, variables: [])
+                complexTypeExtension.variables = [
+                    Variable(name: "fooBarFromExtension", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("Complex")),
+                    Variable(name: "tupleFromExtension", typeName: TypeName("(Int, Bar)"), isComputed: true, definedInTypeName: TypeName("Complex"))
+                ]
+                complexTypeExtension.methods = [
+                    Method(name: "fooFromExtension(some: Int)", selectorName: "fooFromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], definedInTypeName: TypeName("Complex")),
+                    Method(name: "foo2FromExtension(some: Int)", selectorName: "foo2FromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], definedInTypeName: TypeName("Complex"))
+                ]
 
-            let types = [
+                let knownProtocol = Protocol(name: "KnownProtocol", variables: [
+                    Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))
+                    ], methods: [
+                        Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("String"))], accessLevel: .public, definedInTypeName: TypeName("KnownProtocol"))
+                    ])
+
+                let innerOptionsType = Type(name: "InnerOptions", accessLevel: .public, variables: [
+                    Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
+                    ])
+                innerOptionsType.variables.forEach { $0.definedInType = innerOptionsType }
+                let optionsType = Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], variables: [
+                    Variable(name: "optionVar", typeName: TypeName("String"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Options"))
+                    ], containedTypes: [innerOptionsType])
+
+                types = [
                     fooType,
                     fooSubclassType,
                     complexType,
+                    complexTypeExtension,
                     barType,
-                    Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], containedTypes: [
-                        Type(name: "InnerOptions", accessLevel: .public, variables: [
-                            Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false)
-                            ])
-                        ]),
+                    optionsType,
                     Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Class(name: "ProjectClass", accessLevel: .open),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
-                    Protocol(name: "KnownProtocol", variables: [Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true)]),
+                    knownProtocol,
                     Protocol(name: "AlternativeProtocol"),
                     Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
-            ]
+                ]
 
-            let arguments: [String: NSObject] = ["some": "value" as NSString, "number": NSNumber(value: Float(4))]
+                arguments = ["some": "value" as NSString, "number": NSNumber(value: Float(4))]
+            }
 
             func generate(_ template: String) -> String {
-                let types = Composer().uniqueTypes(FileParserResult(path: nil, module: nil, types: types, typealiases: []))
+                beforeEachGenerate()
+                let uniqueTypes = Composer().uniqueTypes(FileParserResult(path: nil, module: nil, types: types, typealiases: []))
 
-                return (try? Generator.generate(Types(types: types),
+                return (try? Generator.generate(Types(types: uniqueTypes),
                         template: StencilTemplate(templateString: template),
                         arguments: arguments)) ?? ""
             }
@@ -82,12 +107,18 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.enums.count }} enums, first: {{ types.enums.first.name }}")).to(equal("Found 2 enums, first: FooOptions"))
             }
 
+            it("generates types.extensions") {
+                expect(generate("Found {{ types.extensions.count }} extensions, first: {{ types.extensions.first.name }}")).to(equal("Found 1 extensions, first: NSObject"))
+            }
+
             it("feeds types.implementing specific protocol") {
                 expect(generate("Found {{ types.implementing.KnownProtocol.count }} types")).to(equal("Found 8 types"))
                 expect(generate("Found {{ types.implementing.Decodable.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.Foo.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+
+                expect(generate("{{ types.all|implements:\"KnownProtocol\"|count }}")).to(equal("7"))
             }
 
             it("feeds types.inheriting specific class") {
@@ -96,6 +127,8 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.inheriting.Foo.count }} types")).to(equal("Found 2 types"))
                 expect(generate("Found {{ types.inheriting.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.inheriting.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+
+                expect(generate("{{ types.all|inherits:\"Foo\"|count }}")).to(equal("2"))
             }
 
             it("feeds types.based specific type or protocol") {
@@ -105,8 +138,16 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.based.NSObject.count }} types")).to(equal("Found 3 types"))
                 expect(generate("Found {{ types.based.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
 
-                expect(generate("{{ types.all|implements:\"KnownProtocol\"|count }}")).to(equal("7"))
-                expect(generate("{{ types.all|inherits:\"Foo\"|count }}")).to(equal("2"))
+                expect(generate("{{ types.all|based:\"Decodable\"|count }}")).to(equal("4"))
+            }
+
+            it("feeds types.extends specific type or protocol") {
+                expect(generate("Found {{ types.based.KnownProtocol.count }} types")).to(equal("Found 8 types"))
+                expect(generate("Found {{ types.based.Decodable.count }} types")).to(equal("Found 4 types"))
+                expect(generate("Found {{ types.based.Foo.count }} types")).to(equal("Found 2 types"))
+                expect(generate("Found {{ types.based.NSObject.count }} types")).to(equal("Found 3 types"))
+                expect(generate("Found {{ types.based.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
+
                 expect(generate("{{ types.all|based:\"Decodable\"|count }}")).to(equal("4"))
             }
 
@@ -130,11 +171,11 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("can use filter on variables") {
-                    expect(generate("{{ type.Complex.allVariables|computed|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allVariables|computed|count }}")).to(equal("3"))
                     expect(generate("{{ type.Complex.allVariables|stored|count }}")).to(equal("3"))
-                    expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("4"))
+                    expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("6"))
                     expect(generate("{{ type.Complex.allVariables|static|count }}")).to(equal("0"))
-                    expect(generate("{{ type.Complex.allVariables|tuple|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allVariables|tuple|count }}")).to(equal("2"))
 
                     expect(generate("{{ type.Complex.allVariables|implements:\"KnownProtocol\"|count }}")).to(equal("2"))
                     expect(generate("{{ type.Complex.allVariables|based:\"Decodable\"|count }}")).to(equal("2"))
@@ -142,38 +183,48 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("can use filter on methods") {
-                    expect(generate("{{ type.Complex.allMethods|instance|count }}")).to(equal("1"))
+                    expect(generate("{{ type.Complex.allMethods|instance|count }}")).to(equal("3"))
                     expect(generate("{{ type.Complex.allMethods|class|count }}")).to(equal("1"))
                     expect(generate("{{ type.Complex.allMethods|static|count }}")).to(equal("1"))
                     expect(generate("{{ type.Complex.allMethods|initializer|count }}")).to(equal("0"))
-                    expect(generate("{{ type.Complex.allMethods|count }}")).to(equal("3"))
+                    expect(generate("{{ type.Complex.allMethods|count }}")).to(equal("5"))
                 }
 
-                it("can use access level filter on type") {
+                it("can use access level filter on types") {
                     expect(generate("{{ types.all|public|count }}")).to(equal("3"))
                     expect(generate("{{ types.all|open|count }}")).to(equal("1"))
                     expect(generate("{{ types.all|!private|!fileprivate|!internal|count }}")).to(equal("4"))
                 }
 
-                it("can use access level filter on method") {
+                it("can use access level filter on methods") {
                     expect(generate("{{ type.Complex.methods|public|count }}")).to(equal("1"))
                     expect(generate("{{ type.Complex.methods|private|count }}")).to(equal("0"))
-                    expect(generate("{{ type.Complex.methods|internal|count }}")).to(equal("2"))
+                    expect(generate("{{ type.Complex.methods|internal|count }}")).to(equal("4"))
                 }
 
-                it("can use access level filter on variable") {
+                it("can use access level filter on variables") {
                     expect(generate("{{ type.Complex.variables|publicGet|count }}")).to(equal("2"))
                     expect(generate("{{ type.Complex.variables|publicSet|count }}")).to(equal("1"))
                     expect(generate("{{ type.Complex.variables|privateSet|count }}")).to(equal("1"))
                 }
 
+                it("can use definedInExtension filter on variables") {
+                    expect(generate("{{ type.Complex.variables|definedInExtension|count }}")).to(equal("2"))
+                    expect(generate("{{ type.Complex.variables|!definedInExtension|count }}")).to(equal("4"))
+                }
+
+                it("can use definedInExtension filter on methods") {
+                    expect(generate("{{ type.Complex.methods|definedInExtension|count }}")).to(equal("2"))
+                    expect(generate("{{ type.Complex.methods|!definedInExtension|count }}")).to(equal("3"))
+                }
+
                 context("given tuple variable") {
                     it("can access tuple elements") {
-                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements %}{{ e.typeName.name }},{% endfor %}{% endfor %}")).to(equal("Int,Bar,"))
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements %}{{ e.typeName.name }},{% endfor %}{% endfor %}")).to(equal("Int,Bar,Int,Bar,"))
                     }
 
                     it("can access tuple element type metadata") {
-                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements|implements:\"KnownProtocol\" %}{{ e.type.name }},{% endfor %}{% endfor %}")).to(equal("Bar,"))
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements|implements:\"KnownProtocol\" %}{{ e.type.name }},{% endfor %}{% endfor %}")).to(equal("Bar,Bar,"))
                     }
                 }
 
@@ -190,7 +241,7 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("classifies computed properties properly") {
-                    expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("4, 1, 3"))
+                    expect(generate("{{ type.Complex.variables.count }}, {{ type.Complex.computedVariables.count }}, {{ type.Complex.storedVariables.count }}")).to(equal("6, 3, 3"))
                 }
 
                 it("can access variable type information") {
@@ -199,6 +250,14 @@ class GeneratorSpec: QuickSpec {
 
                 it("can render variable isOptional") {
                     expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("0"))
+                }
+
+                it("can render variable definedInType") {
+                    expect(generate("{% for type in types.all %}{% for variable in type.variables %}{{ variable.definedInType.name }} {% endfor %}{% endfor %}")).to(equal("Complex Complex Complex Complex Complex Complex Foo Options "))
+                }
+
+                it("can render method definedInType") {
+                    expect(generate("{% for type in types.all %}{% for method in type.methods %}{{ method.definedInType.name }} {% endfor %}{% endfor %}")).to(equal("Complex Complex Complex Complex Complex "))
                 }
 
                 it("generates proper response for type.inherits") {

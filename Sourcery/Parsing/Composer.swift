@@ -25,6 +25,17 @@ struct Composer {
         let types = parserResult.types
         let typealiases = self.typealiasesByNames(parserResult)
 
+        //set definedInType for all methods and variables
+        types
+            .forEach { type in
+                type.variables.forEach { variable in
+                    variable.definedInType = type
+                }
+                type.methods.forEach { method in
+                    method.definedInType = type
+                }
+        }
+
         //map all known types to their names
         types
             .filter { $0.isExtension == false}
@@ -38,9 +49,12 @@ struct Composer {
         }
 
         //replace extensions for type aliases with original types
+        //extract all methods and variables from extensions
         types
             .filter { $0.isExtension == true }
-            .forEach { $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName }
+            .forEach {
+                $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName
+            }
 
         //extend all types with their extensions
         types.forEach { type in
@@ -129,6 +143,13 @@ struct Composer {
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
+        
+        /// The actual `definedInType` is assigned in `uniqueTypes` but we still
+        /// need to resolve the type to correctly parse typealiases
+        /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
+        if let definedInTypeName = variable.definedInTypeName {
+            _ = resolve(definedInTypeName, type)
+        }
     }
 
     private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
@@ -142,6 +163,13 @@ struct Composer {
             if method.isInitializer {
                 method.returnTypeName = TypeName("")
             }
+        }
+
+        /// The actual `definedInType` is assigned in `uniqueTypes` but we still
+        /// need to resolve the type to correctly parse typealiases
+        /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
+        if let definedInTypeName = method.definedInTypeName {
+            _ = resolve(definedInTypeName, type)
         }
     }
 

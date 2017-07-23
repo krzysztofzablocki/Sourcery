@@ -51,6 +51,7 @@ public final class TemplateContext: NSObject, SourceryModel {
                 "classes": types.classes,
                 "structs": types.structs,
                 "enums": types.enums,
+                "extensions": types.extensions,
                 "based": types.based,
                 "inheriting": types.inheriting,
                 "implementing": types.implementing
@@ -132,6 +133,12 @@ public final class Types: NSObject, SourceryModel {
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known extensions
+    public lazy internal(set) var extensions: [Type] = {
+        return self.all.flatMap { $0.isExtension ? $0 : nil }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
     /// Types based on any other type, grouped by its name, even if they are not known.
     /// `types.based.MyType` returns list of types based on `MyType`
     public lazy internal(set) var based: TypesCollection = {
@@ -168,7 +175,6 @@ public final class Types: NSObject, SourceryModel {
                 }
         })
     }()
-
 }
 
 /// :nodoc:

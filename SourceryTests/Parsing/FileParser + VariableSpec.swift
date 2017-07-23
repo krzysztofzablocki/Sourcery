@@ -23,7 +23,7 @@ class FileParserVariableSpec: QuickSpec {
                         return nil
                     }
                     _ = parser.parse()
-                    return parser.parseVariable(src, containedInProtocol: false)
+                    return parser.parseVariable(src, definedIn: nil)
                 }
 
                 it("reports variable mutability") {

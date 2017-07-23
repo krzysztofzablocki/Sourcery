@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.7.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 extension ArrayType {
@@ -110,6 +110,8 @@ extension Method {
         string += "isFinal = \(String(describing: self.isFinal)), "
         string += "isMutating = \(String(describing: self.isMutating)), "
         string += "annotations = \(String(describing: self.annotations)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string
     }
@@ -236,7 +238,9 @@ extension Variable {
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes)), "
-        string += "isFinal = \(String(describing: self.isFinal))"
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName))"
         return string
     }
 }

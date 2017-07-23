@@ -37,6 +37,8 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         ext.registerBoolFilterWithArguments("hasPrefix", filter: { (s1: String, s2) in s1.hasPrefix(s2) })
         ext.registerBoolFilterWithArguments("hasSuffix", filter: { (s1: String, s2) in s1.hasSuffix(s2) })
 
+        ext.registerBoolFilter("definedInExtension", filter: { (t: Definition) in t.definedInType?.isExtension ?? false })
+
         ext.registerBoolFilter("computed", filter: { (v: SourceryVariable) in v.isComputed && !v.isStatic })
         ext.registerBoolFilter("stored", filter: { (v: SourceryVariable) in !v.isComputed && !v.isStatic })
         ext.registerBoolFilter("tuple", filter: { (v: SourceryVariable) in v.isTuple })
@@ -56,7 +58,11 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         ext.registerBoolFilterOrWithArguments("inherits",
                                               filter: { (t: Type, name: String) in t.inherits[name] != nil },
                                               other: { (t: Typed, name: String) in t.type?.inherits[name] != nil })
+        ext.registerBoolFilterOrWithArguments("extends",
+                                              filter: { (t: Type, name: String) in t.isExtension && t.name == name },
+                                              other: { (t: Typed, name: String) in guard let type = t.type else { return false }; return type.isExtension && type.name == name })
 
+        ext.registerBoolFilter("extension", filter: { (t: Type) in t.isExtension })
         ext.registerBoolFilter("enum", filter: { (t: Type) in t is Enum })
         ext.registerBoolFilter("struct", filter: { (t: Type) in t is Struct })
         ext.registerBoolFilter("protocol", filter: { (t: Type) in t is SourceryProtocol })

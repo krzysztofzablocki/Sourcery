@@ -25,6 +25,115 @@ class ParserComposerSpec: QuickSpec {
                     return Composer().uniqueTypes(parserResult)
                 }
 
+                context("given class hierarchy") {
+                    var fooType: Type!
+                    var barType: Type!
+                    var bazType: Type!
+
+                    beforeEach {
+                        let input = "class Foo { var foo: Int; func fooMethod() {} }; class Bar: Foo { var bar: Int }; class Baz: Bar { var baz: Int; func bazMethod() {} }"
+                        let parsedResult = parse(input)
+                        fooType = parsedResult[2]
+                        barType = parsedResult[0]
+                        bazType = parsedResult[1]
+                    }
+
+                    it("resolves methods definedInType") {
+                        expect(fooType.allMethods.first?.definedInType).to(equal(fooType))
+                        expect(barType.allMethods.first?.definedInType).to(equal(fooType))
+                        expect(bazType.allMethods.first?.definedInType).to(equal(bazType))
+                        expect(bazType.allMethods.last?.definedInType).to(equal(fooType))
+                    }
+
+                    it("resolves variables definedInType") {
+                        expect(fooType.allVariables.first?.definedInType).to(equal(fooType))
+                        expect(barType.allVariables[0].definedInType).to(equal(barType))
+                        expect(barType.allVariables[1].definedInType).to(equal(fooType))
+                        expect(bazType.allVariables[0].definedInType).to(equal(bazType))
+                        expect(bazType.allVariables[1].definedInType).to(equal(fooType))
+                        expect(bazType.allVariables[2].definedInType).to(equal(barType))
+                    }
+                }
+
+                context("given extension") {
+                    var input: String!
+                    var method: SourceryRuntime.Method!
+                    var defaultedMethod: SourceryRuntime.Method!
+                    var parsedResult: Type!
+                    var originalType: Type!
+                    var typeExtension: Type!
+
+                    beforeEach {
+                        method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
+                                        parameters: [MethodParameter(name: "bar",
+                                                                     typeName: TypeName("String"))],
+                                        returnTypeName: TypeName("Void"),
+                                        definedInTypeName: TypeName("Foo"))
+                        defaultedMethod = Method(name: "fooMethod(bar: String = \"Baz\")", selectorName: "fooMethod(bar:)",
+                                                 parameters: [MethodParameter(name: "bar",
+                                                                              typeName: TypeName("String"),
+                                                                              defaultValue: "\"Baz\"")],
+                                                 returnTypeName: TypeName("Void"),
+                                                 definedInTypeName: TypeName("Foo"))
+                    }
+
+                    context("for enum") {
+                        beforeEach {
+                            input = "enum Foo { case A; func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
+                            parsedResult = parse(input).first
+                            originalType = Enum(name: "Foo", cases: [EnumCase(name: "A")], methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                        }
+
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                        }
+                    }
+
+                    context("for protocol") {
+                        beforeEach {
+                            input = "protocol Foo { func \(method.name) }; extension Foo { func \(defaultedMethod.name) {} }"
+                            parsedResult = parse(input).first
+                            originalType = Protocol(name: "Foo", methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                        }
+
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                        }
+                    }
+
+                    context("for class") {
+                        beforeEach {
+                            input = "class Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
+                            parsedResult = parse(input).first
+                            originalType = Class(name: "Foo", methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                        }
+
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                        }
+                    }
+
+                    context("for struct") {
+                        beforeEach {
+                            input = "struct Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
+                            parsedResult = parse(input).first
+                            originalType = Struct(name: "Foo", methods: [method, defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                        }
+
+                        it("resolves methods definedInType") {
+                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                        }
+                    }
+                }
+
                 context("given enum containing associated values") {
                     it("trims whitespace from associated value names") {
                         expect(parse("enum Foo {\n case bar(\nvalue: String,\n other: Int\n)\n}"))
@@ -86,12 +195,14 @@ class ParserComposerSpec: QuickSpec {
                                                                                 accessLevel: (read: .internal,
                                                                                               write: .none),
                                                                                 isComputed: true,
-                                                                                isStatic: false)],
+                                                                                isStatic: false,
+                                                                                definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
                                                                                                          typeName: TypeName("String"))],
                                                                             returnTypeName: TypeName(""),
-                                                                            isFailableInitializer: true)]
+                                                                            isFailableInitializer: true,
+                                                                            definedInTypeName: TypeName("Foo"))]
                                                       )
                                               ]))
                     }
@@ -108,11 +219,13 @@ class ParserComposerSpec: QuickSpec {
                                                                                 typeName: TypeName("RawValue"),
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
-                                                                                isStatic: false)],
+                                                                                isStatic: false,
+                                                                                definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
-                                                                            isFailableInitializer: true)],
+                                                                            isFailableInitializer: true,
+                                                                            definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
                                               ]))
                     }
@@ -129,11 +242,13 @@ class ParserComposerSpec: QuickSpec {
                                                                                 typeName: TypeName("RawValue"),
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
-                                                                                isStatic: false)],
+                                                                                isStatic: false,
+                                                                                definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
                                                                             returnTypeName: TypeName(""),
-                                                                            isFailableInitializer: true)],
+                                                                            isFailableInitializer: true,
+                                                                            definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
                                               ]))
                     }
@@ -357,6 +472,34 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given typealiases") {
 
+                    it("resolves definedInType for methods") {
+                        let input = "class Foo { func bar() {} }; typealias FooAlias = Foo; extension FooAlias { func baz() {} }"
+                        let type = parse(input).first
+
+                        expect(type?.methods.first?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.first?.definedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.first?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.methods.first?.definedInType?.isExtension).to(beFalse())
+                        expect(type?.methods.last?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.methods.last?.definedInTypeName).to(equal(TypeName("FooAlias")))
+                        expect(type?.methods.last?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.methods.last?.definedInType?.isExtension).to(beTrue())
+                    }
+
+                    it("resolves definedInType for variables") {
+                        let input = "class Foo { var bar: Int { return 1 } }; typealias FooAlias = Foo; extension FooAlias { var baz: Int { return 2 } }"
+                        let type = parse(input).first
+
+                        expect(type?.variables.first?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.variables.first?.definedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.variables.first?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.variables.first?.definedInType?.isExtension).to(beFalse())
+                        expect(type?.variables.last?.actualDefinedInTypeName).to(equal(TypeName("Foo")))
+                        expect(type?.variables.last?.definedInTypeName).to(equal(TypeName("FooAlias")))
+                        expect(type?.variables.last?.definedInType?.name).to(equal("Foo"))
+                        expect(type?.variables.last?.definedInType?.isExtension).to(beTrue())
+                    }
+
                     it("sets typealias type") {
                         let types = parse("class Bar {}; class Foo { typealias BarAlias = Bar }")
                         let bar = types.first
@@ -367,7 +510,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given variable") {
                         it("replaces variable alias type with actual type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias", actualTypeName: TypeName("Foo")))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias", actualTypeName: TypeName("Foo")), definedInTypeName: TypeName("Bar"))
                             expectedVariable.type = Class(name: "Foo")
 
                             let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias }").first
@@ -386,7 +529,8 @@ class ParserComposerSpec: QuickSpec {
                                                             tuple: TupleType(name: "(Foo, Int)", elements: [
                                                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Type(name: "Foo")),
                                                                 TupleElement(name: "1", typeName: TypeName("Int"))
-                                                                ])))
+                                                                ])),
+                                         definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: (GlobalAlias, Int) }")
                             let variable = types.first?.variables.first
@@ -405,7 +549,8 @@ class ParserComposerSpec: QuickSpec {
                                                             tuple: TupleType(name: "(Foo, Int)", elements: [
                                                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                                                 TupleElement(name: "1", typeName: TypeName("Int"))
-                                                                ])))
+                                                                ])),
+                                         definedInTypeName: TypeName("Bar"))
 
                             let type = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { var foo: GlobalAlias }").first
                             let variable = type?.variables.first
@@ -418,7 +563,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given method return value type") {
                         it("replaces method return type alias with actual type") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")))
+                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> FooAlias }")
                             let method = types.first?.methods.first
@@ -436,7 +581,8 @@ class ParserComposerSpec: QuickSpec {
                                                                 tuple: TupleType(name: "(Foo, Int)", elements: [
                                                                     TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                                                     TupleElement(name: "1", typeName: TypeName("Int"))
-                                                                    ])))
+                                                                    ])),
+                                       definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> (FooAlias, Int) }")
                             let method = types.first?.methods.first
@@ -455,7 +601,8 @@ class ParserComposerSpec: QuickSpec {
                                                                 tuple: TupleType(name: "(Foo, Int)", elements: [
                                                                     TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                                                     TupleElement(name: "1", typeName: TypeName("Int"))
-                                                                    ])))
+                                                                    ])),
+                                       definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some() -> GlobalAlias }")
                             let method = types.first?.methods.first
@@ -566,7 +713,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("replaces variable alias with actual type via 3 typealiases") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("FinalAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("FinalAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"), definedInTypeName: TypeName("Bar"))
 
                         let type = parse(
                             "typealias FooAlias = Foo; typealias BarAlias = FooAlias; typealias FinalAlias = BarAlias; class Foo {}; class Bar { var foo: FinalAlias }").first
@@ -578,7 +725,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("replaces variable optional alias type with actual type") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias?", actualTypeName: TypeName("Foo?")), type: Class(name: "Foo"))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias?", actualTypeName: TypeName("Foo?")), type: Class(name: "Foo"), definedInTypeName: TypeName("Bar"))
 
                         let type = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: GlobalAlias? }").first
                         let variable = type?.variables.first
@@ -606,7 +753,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given local typealias") {
                         it("replaces variable alias type with actual type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"), definedInTypeName: TypeName("Bar"))
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias }; class Foo {}").first
                             let variable = type?.variables.first
@@ -617,7 +764,7 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces variable alias type with actual contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Bar.Foo")), type: Class(name: "Foo", parent: Class(name: "Bar")))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Bar.Foo")), type: Class(name: "Foo", parent: Class(name: "Bar")), definedInTypeName: TypeName("Bar"))
 
                             let type = parse("class Bar { typealias FooAlias = Foo; var foo: FooAlias; class Foo {} }").first
                             let variable = type?.variables.first
@@ -628,7 +775,7 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces variable alias type with actual foreign contained type") {
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("FooBar.Foo")), type: Class(name: "Foo", parent: Type(name: "FooBar")))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("FooBar.Foo")), type: Class(name: "Foo", parent: Type(name: "FooBar")), definedInTypeName: TypeName("Bar"))
 
                             let type = parse("class Bar { typealias FooAlias = FooBar.Foo; var foo: FooAlias }; class FooBar { class Foo {} }").first
                             let variable = type?.variables.first
@@ -641,8 +788,18 @@ class ParserComposerSpec: QuickSpec {
                 }
 
                 context("given nested type") {
+                    it("extracts method's defined in properly") {
+                        let expectedMethod = Method(name: "some()", definedInTypeName: TypeName("Foo.Bar"))
+
+                        let types = parse("class Foo { class Bar { func some() } }")
+                        let method = types.last?.methods.first
+
+                        expect(method).to(equal(expectedMethod))
+                        expect(method?.definedInType).to(equal(types.last))
+                    }
+
                     it("extracts property of nested type properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName:TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName:TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: Foo? }}")
@@ -655,7 +812,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type array properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName:TypeName("[Blah.Foo]?")), accessLevel: (read: .internal, write: .none))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName:TypeName("[Blah.Foo]?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
                         expectedVariable.typeName.array = ArrayType(name: "[Blah.Foo]?", elementTypeName: TypeName("Blah.Foo"), elementType: Struct(name: "Foo", parent: expectedBlah))
 
@@ -669,7 +826,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type dictionary properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: TypeName("[Blah.Foo: Blah.Foo]?"), dictionary: DictionaryType(name: "[Blah.Foo: Blah.Foo]?", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: Struct(name: "Blah")), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: Struct(name: "Blah")))), accessLevel: (read: .internal, write: .none))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: TypeName("[Blah.Foo: Blah.Foo]?"), dictionary: DictionaryType(name: "[Blah.Foo: Blah.Foo]?", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: Struct(name: "Blah")), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: Struct(name: "Blah")))), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: [Foo: Foo]? }}")
@@ -686,7 +843,7 @@ class ParserComposerSpec: QuickSpec {
                             TupleElement(name: "a", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
                             TupleElement(name: "1", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
                             TupleElement(name: "2", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo"))
-                            ])), accessLevel: (read: .internal, write: .none))
+                            ])), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: (a: Foo, _: Foo, Foo)? }}")
@@ -715,7 +872,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extends type with extension") {
-                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)])
+                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("MyModule.Bar"))])
                         expectedBar.module = "MyModule"
 
                         let types = parseModules(
@@ -729,7 +886,7 @@ class ParserComposerSpec: QuickSpec {
                     it("resolves variable type") {
                         let expectedBar = Struct(name: "Bar")
                         expectedBar.module = "MyModule"
-                        let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar)])
+                        let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar, definedInTypeName: TypeName("Foo"))])
 
                         let types = parseModules(
                             (name: "MyModule", contents: "struct Bar {}"),
@@ -738,6 +895,21 @@ class ParserComposerSpec: QuickSpec {
 
                         expect(types).to(equal([expectedBar, expectedFoo]))
                         expect(types.last?.variables.first?.type).to(equal(expectedBar))
+                    }
+
+                    it("resolves variable defined in type") {
+                        let expectedBar = Struct(name: "Bar")
+                        expectedBar.module = "MyModule"
+                        let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar, definedInTypeName: TypeName("Foo"))])
+
+                        let types = parseModules(
+                            (name: "MyModule", contents: "struct Bar {}"),
+                            (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
+                        )
+
+                        expect(types).to(equal([expectedBar, expectedFoo]))
+                        expect(types.last?.variables.first?.type).to(equal(expectedBar))
+                        expect(types.last?.variables.first?.definedInType).to(equal(expectedFoo))
                     }
                 }
             }
