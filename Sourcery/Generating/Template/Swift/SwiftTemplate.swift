@@ -51,6 +51,7 @@ class SwiftTemplate: Template {
         var commands = [Command]()
 
         let currentLineNumber = {
+            // the following +1 is to transform a line count (starting from 0) to a line number (starting from 1)
             return processedComponents.joined(separator: "").numberOfLineSeparators + 1
         }
 
