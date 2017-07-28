@@ -15,6 +15,7 @@
 - Fixed linker issue when using Swift templates
 - Updated `AutoMockable` to exclude generated code collisions
 - Fixed parsing of default values for variables that also have a body (e.g. for `didSet`)
+- Fixed line number display when an error occur while parsing a Swift template
 
 ### Internal changes
 

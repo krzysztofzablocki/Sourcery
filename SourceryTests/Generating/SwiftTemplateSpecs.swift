@@ -30,6 +30,16 @@ class SwiftTemplateTests: QuickSpec {
                 expect(result).to(equal(expectedResult))
             }
 
+            it("throws an error showing the involved line for unmatched delimiter in the template") {
+                let templatePath = Stubs.swiftTemplates + Path("InvalidTag.swifttemplate")
+                expect {
+                    try SwiftTemplate(path: templatePath)
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal("\(templatePath):2 Error while parsing template. Unmatched <%"))
+                    }))
+            }
+
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {
