@@ -47,11 +47,11 @@ class SwiftTemplate: Template {
 
         let components = templateContent.components(separatedBy: Delimiters.open)
 
-        var sourceFile = [String]()
+        var processedComponents = [String]()
         var commands = [Command]()
 
         let currentLineNumber = {
-            return sourceFile.joined(separator: "").numberOfLineSeparators
+            return processedComponents.joined(separator: "").numberOfLineSeparators + 1
         }
 
         for component in components.suffix(from: 1) {
@@ -94,21 +94,23 @@ class SwiftTemplate: Template {
             if !encodedPart.isEmpty {
                 commands.append(.outputEncoded(encodedPart))
             }
+            processedComponents.append(component)
         }
 
+        var outputFile = [String]()
         for command in commands {
             switch command {
             case let .output(code):
-                sourceFile.append("\n  print(\"\\(" + code + ")\", terminator: \"\");")
+                outputFile.append("\n  print(\"\\(" + code + ")\", terminator: \"\");")
             case let .controlFlow(code):
-                sourceFile.append("\n \(code)")
+                outputFile.append("\n \(code)")
             case let .outputEncoded(code):
                 if !code.isEmpty {
-                    sourceFile.append(("\n  print(\"") + code.stringEncoded + "\", terminator: \"\");")
+                    outputFile.append(("\n  print(\"") + code.stringEncoded + "\", terminator: \"\");")
                 }
             }
         }
-        let contents = sourceFile.joined(separator: "")
+        let contents = outputFile.joined(separator: "")
         let code = "import Foundation\n" +
             "import SourceryRuntime\n" +
             "\n" +

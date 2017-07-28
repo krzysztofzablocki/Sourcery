@@ -1,0 +1,4 @@
+<% for type in types.all {%>
+extension <%= type.name > {
+}
+<%}%>
