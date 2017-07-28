@@ -199,7 +199,10 @@ class SwiftTemplate: Template {
         let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryRuntime.framework"
 
         let copyFramework = try Process.runCommand(path: "/usr/bin/rsync", arguments: [
-            "-av", sourceryFramework.description, path.description
+            "-av",
+            "--force",
+            sourceryFramework.description,
+            path.description
             ])
 
         if !copyFramework.error.isEmpty {
