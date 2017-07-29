@@ -382,7 +382,7 @@ extension Sourcery {
 
                 guard let (filePath, ranges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {
                     guard key.hasPrefix("auto:") else { return nil }
-                    let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".")[0]
+                    let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".").dropLast().joined(separator: ".")
                     let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
                     guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
