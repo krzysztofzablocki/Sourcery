@@ -16,6 +16,7 @@
 - Updated `AutoMockable` to exclude generated code collisions
 - Fixed parsing of default values for variables that also have a body (e.g. for `didSet`)
 - Fixed line number display when an error occur while parsing a Swift template
+- Fixed `auto:inline` for nested types (this concerns the first time the code is inserted)
 
 ### Internal changes
 
