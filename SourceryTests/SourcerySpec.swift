@@ -189,7 +189,7 @@ class SourcerySpecTests: QuickSpec {
                         update(code: "class Foo {}", in: sourcePath)
 
                         update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Foo\n" +
+                            "// sourcery:inline:auto:Foo.Inlined\n" +
                             "var property = 2\n" +
                             "// Line Three\n" +
                             "// sourcery:end", in: templatePath)
@@ -197,7 +197,7 @@ class SourcerySpecTests: QuickSpec {
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
                         let expectedResult = "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo\n" +
+                            "// sourcery:inline:auto:Foo.Inlined\n" +
                             "var property = 2\n" +
                             "// Line Three\n" +
                             "// sourcery:end\n" +
@@ -211,13 +211,13 @@ class SourcerySpecTests: QuickSpec {
                         update(code: "class Foo {}\n\nclass Bar {}", in: sourcePath)
 
                         update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Bar\n" +
+                            "// sourcery:inline:auto:Bar.Inlined\n" +
                             "var property = bar\n" +
                             "// Line Three\n" +
                             "// sourcery:end" +
                             "\n" +
                             "// Line One\n" +
-                            "// sourcery:inline:auto:Foo\n" +
+                            "// sourcery:inline:auto:Foo.Inlined\n" +
                             "var property = foo\n" +
                             "// Line Three\n" +
                             "// sourcery:end", in: templatePath)
@@ -225,13 +225,13 @@ class SourcerySpecTests: QuickSpec {
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
                         let expectedResult = "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo\n" +
+                            "// sourcery:inline:auto:Foo.Inlined\n" +
                             "var property = foo\n" +
                             "// Line Three\n" +
                             "// sourcery:end\n" +
                             "}\n\n" +
                             "class Bar {\n" +
-                            "// sourcery:inline:auto:Bar\n" +
+                            "// sourcery:inline:auto:Bar.Inlined\n" +
                             "var property = bar\n" +
                             "// Line Three\n" +
                             "// sourcery:end\n" +
