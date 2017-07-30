@@ -35,13 +35,13 @@ class SwiftTemplate: Template {
         self.code = try SwiftTemplate.parse(sourcePath: path)
     }
 
-    static func parse(sourcePath: Path) throws -> String {
+    private enum Command {
+        case output(String)
+        case controlFlow(String)
+        case outputEncoded(String)
+    }
 
-        enum Command {
-            case output(String)
-            case controlFlow(String)
-            case outputEncoded(String)
-        }
+    static func parse(sourcePath: Path) throws -> String {
 
         let templateContent = try "<%%>" + sourcePath.read()
 
