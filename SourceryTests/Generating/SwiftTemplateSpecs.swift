@@ -112,6 +112,16 @@ class SwiftTemplateTests: QuickSpec {
                         expect("\(error)").to(equal("\(templatePath): Unknown type Some, should be used with `based`"))
                     }))
             }
+
+            it("rethrows errors thrown in template") {
+                let templatePath = Stubs.swiftTemplates + Path("Throws.swifttemplate")
+                expect {
+                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal("\(templatePath): Template error"))
+                    }))
+            }
         }
     }
 }
