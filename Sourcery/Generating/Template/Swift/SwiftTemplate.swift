@@ -116,7 +116,11 @@ class SwiftTemplate: Template {
                 guard let includedFile = match.map({ code.bridge().substring(with: $0.rangeAt(1)) }) else {
                     throw "\(sourcePath):\(currentLineNumber()) Error while parsing template. Invalid include tag format '\(code)'"
                 }
-                let includePath = Path(components: [sourcePath.parent().string, includedFile])
+                var includePath = Path(components: [sourcePath.parent().string, includedFile])
+                // The template extension may be omitted, so try to read again by adding it if a template was not found
+                if !includePath.exists, includePath.extension != "swifttemplate" {
+                    includePath = Path(includePath.string + ".swifttemplate")
+                }
                 let includedCommands = try SwiftTemplate.parseCommands(in: includePath)
                 commands.append(contentsOf: includedCommands)
             } else if code.trimPrefix("=") {

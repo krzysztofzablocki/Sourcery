@@ -50,6 +50,16 @@ class SwiftTemplateTests: QuickSpec {
                 expect(result).to(equal(expectedResult))
             }
 
+            it("handles includes without swifttemplate extension") {
+                let templatePath = Stubs.swiftTemplates + Path("IncludesNoExtension.swifttemplate")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
+
             it("handles includes from included files relatively") {
                 let templatePath = Stubs.swiftTemplates + Path("SubfolderIncludes.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
