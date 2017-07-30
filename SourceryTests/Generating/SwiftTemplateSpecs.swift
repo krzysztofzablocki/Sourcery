@@ -40,6 +40,58 @@ class SwiftTemplateTests: QuickSpec {
                     }))
             }
 
+            it("handles includes") {
+                let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
+
+            it("handles includes without swifttemplate extension") {
+                let templatePath = Stubs.swiftTemplates + Path("IncludesNoExtension.swifttemplate")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
+
+            it("handles includes from included files relatively") {
+                let templatePath = Stubs.swiftTemplates + Path("SubfolderIncludes.swifttemplate")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
+
+            it("throws an error when an include cycle is detected") {
+                let templatePath = Stubs.swiftTemplates + Path("IncludeCycle.swifttemplate")
+                let templateCycleDetectionLocationPath = Stubs.swiftTemplates + Path("includeCycle/Two.swifttemplate")
+                let templateInvolvedInCyclePath = Stubs.swiftTemplates + Path("includeCycle/One.swifttemplate")
+                expect {
+                    try SwiftTemplate(path: templatePath)
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal("\(templateCycleDetectionLocationPath):1 Error: Include cycle detected for \(templateInvolvedInCyclePath). Check your include statements so that templates do not include each other."))
+                    }))
+            }
+
+            it("throws an error when an include cycle involving the root template is detected") {
+                let templatePath = Stubs.swiftTemplates + Path("SelfIncludeCycle.swifttemplate")
+                expect {
+                    try SwiftTemplate(path: templatePath)
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal("\(templatePath):1 Error: Include cycle detected for \(templatePath). Check your include statements so that templates do not include each other."))
+                    }))
+            }
+
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {

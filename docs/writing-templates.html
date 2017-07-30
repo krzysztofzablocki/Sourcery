@@ -221,6 +221,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li>Trim extra new line after control flow tag with <code>-%&gt;</code></li>
 <li>Trim <em>all</em> whitespaces before/after control flow tag with <code>&lt;%_</code> and <code>_%&gt;</code></li>
 <li>Use <code>&lt;%# %&gt;</code> for comments</li>
+<li>Use <code>&lt;%- include(&quot;relative_path_to_template.swifttemplate&quot;) %&gt;</code> to include another template. The <code>swifttemplate</code> extension can be omitted. The path is relative to the including template.</li>
 </ul>
 
 <p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate">Equality.swifttemplate</a></p>

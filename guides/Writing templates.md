@@ -60,6 +60,7 @@ Swift templates syntax is very similar to EJS:
 - Trim extra new line after control flow tag with `-%>`
 - Trim _all_ whitespaces before/after control flow tag with `<%_` and `_%>`
 - Use `<%# %>` for comments
+- Use `<%- include("relative_path_to_template.swifttemplate") %>` to include another template. The `swifttemplate` extension can be omitted. The path is relative to the including template.
 
 **Example**: [Equality.swifttemplate](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate)
 

@@ -35,14 +35,40 @@ class SwiftTemplate: Template {
         self.code = try SwiftTemplate.parse(sourcePath: path)
     }
 
+    private enum Command {
+        case output(String)
+        case controlFlow(String)
+        case outputEncoded(String)
+    }
+
     static func parse(sourcePath: Path) throws -> String {
 
-        enum Command {
-            case output(String)
-            case controlFlow(String)
-            case outputEncoded(String)
-        }
+        let commands = try SwiftTemplate.parseCommands(in: sourcePath)
 
+        var outputFile = [String]()
+        for command in commands {
+            switch command {
+            case let .output(code):
+                outputFile.append("\n  print(\"\\(" + code + ")\", terminator: \"\");")
+            case let .controlFlow(code):
+                outputFile.append("\n \(code)")
+            case let .outputEncoded(code):
+                if !code.isEmpty {
+                    outputFile.append(("\n  print(\"") + code.stringEncoded + "\", terminator: \"\");")
+                }
+            }
+        }
+        let contents = outputFile.joined(separator: "")
+        let code = "import Foundation\n" +
+            "import SourceryRuntime\n" +
+            "\n" +
+            "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
+            "ProcessInfo().context!.generate()"
+
+        return code
+    }
+
+    private static func parseCommands(in sourcePath: Path, includeStack: [Path] = []) throws -> [Command] {
         let templateContent = try "<%%>" + sourcePath.read()
 
         let components = templateContent.components(separatedBy: Delimiters.open)
@@ -84,7 +110,24 @@ class SwiftTemplate: Template {
                 }
             }
 
-            if code.trimPrefix("=") {
+            if code.trimPrefix("-") {
+                let regex = try? NSRegularExpression(pattern: "include\\(\"([^\"]*)\"\\)", options: [])
+                let match = regex?.firstMatch(in: code, options: [], range: code.bridge().entireRange)
+                guard let includedFile = match.map({ code.bridge().substring(with: $0.rangeAt(1)) }) else {
+                    throw "\(sourcePath):\(currentLineNumber()) Error while parsing template. Invalid include tag format '\(code)'"
+                }
+                var includePath = Path(components: [sourcePath.parent().string, includedFile])
+                // The template extension may be omitted, so try to read again by adding it if a template was not found
+                if !includePath.exists, includePath.extension != "swifttemplate" {
+                    includePath = Path(includePath.string + ".swifttemplate")
+                }
+                // Check for include cycles to prevent stack overflow and show a more user friendly error
+                if includeStack.contains(includePath) {
+                    throw "\(sourcePath):\(currentLineNumber()) Error: Include cycle detected for \(includePath). Check your include statements so that templates do not include each other."
+                }
+                let includedCommands = try SwiftTemplate.parseCommands(in: includePath, includeStack: includeStack + [includePath])
+                commands.append(contentsOf: includedCommands)
+            } else if code.trimPrefix("=") {
                 commands.append(.output(code))
             } else {
                 if !code.hasPrefix("#") && !code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -98,27 +141,7 @@ class SwiftTemplate: Template {
             processedComponents.append(component)
         }
 
-        var outputFile = [String]()
-        for command in commands {
-            switch command {
-            case let .output(code):
-                outputFile.append("\n  print(\"\\(" + code + ")\", terminator: \"\");")
-            case let .controlFlow(code):
-                outputFile.append("\n \(code)")
-            case let .outputEncoded(code):
-                if !code.isEmpty {
-                    outputFile.append(("\n  print(\"") + code.stringEncoded + "\", terminator: \"\");")
-                }
-            }
-        }
-        let contents = outputFile.joined(separator: "")
-        let code = "import Foundation\n" +
-            "import SourceryRuntime\n" +
-            "\n" +
-            "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
-            "ProcessInfo().context!.generate()"
-
-        return code
+        return commands
     }
 
     func render(types: Types, arguments: [String: NSObject]) throws -> String {
