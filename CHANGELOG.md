@@ -9,6 +9,7 @@
 - Added support in `AutoHashable` for static variables, `[Hashable]` array and `[Hashable: Hashable]` dictionary
 - Added `definedInType` property for `Method` and `Variable`
 - Added `extensions` filter for stencil template
+- Added include support in Swift templates
 
 ### Bug fixes
 
