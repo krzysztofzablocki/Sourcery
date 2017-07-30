@@ -40,6 +40,16 @@ class SwiftTemplateTests: QuickSpec {
                     }))
             }
 
+            it("handles includes") {
+                let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
+
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {

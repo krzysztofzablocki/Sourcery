@@ -110,7 +110,16 @@ class SwiftTemplate: Template {
                 }
             }
 
-            if code.trimPrefix("=") {
+            if code.trimPrefix("-") {
+                let regex = try? NSRegularExpression(pattern: "include\\(\"([^\"]*)\"\\)", options: [])
+                let match = regex?.firstMatch(in: code, options: [], range: code.bridge().entireRange)
+                guard let includedFile = match.map({ code.bridge().substring(with: $0.rangeAt(1)) }) else {
+                    throw "\(sourcePath):\(currentLineNumber()) Error while parsing template. Invalid include tag format '\(code)'"
+                }
+                let includePath = Path(components: [sourcePath.parent().string, includedFile])
+                let includedCommands = try SwiftTemplate.parseCommands(in: includePath)
+                commands.append(contentsOf: includedCommands)
+            } else if code.trimPrefix("=") {
                 commands.append(.output(code))
             } else {
                 if !code.hasPrefix("#") && !code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
