@@ -43,6 +43,32 @@ class SwiftTemplate: Template {
 
     static func parse(sourcePath: Path) throws -> String {
 
+        let commands = try SwiftTemplate.parseCommands(in: sourcePath)
+
+        var outputFile = [String]()
+        for command in commands {
+            switch command {
+            case let .output(code):
+                outputFile.append("\n  print(\"\\(" + code + ")\", terminator: \"\");")
+            case let .controlFlow(code):
+                outputFile.append("\n \(code)")
+            case let .outputEncoded(code):
+                if !code.isEmpty {
+                    outputFile.append(("\n  print(\"") + code.stringEncoded + "\", terminator: \"\");")
+                }
+            }
+        }
+        let contents = outputFile.joined(separator: "")
+        let code = "import Foundation\n" +
+            "import SourceryRuntime\n" +
+            "\n" +
+            "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
+            "ProcessInfo().context!.generate()"
+
+        return code
+    }
+
+    private static func parseCommands(in sourcePath: Path) throws -> [Command] {
         let templateContent = try "<%%>" + sourcePath.read()
 
         let components = templateContent.components(separatedBy: Delimiters.open)
@@ -98,27 +124,7 @@ class SwiftTemplate: Template {
             processedComponents.append(component)
         }
 
-        var outputFile = [String]()
-        for command in commands {
-            switch command {
-            case let .output(code):
-                outputFile.append("\n  print(\"\\(" + code + ")\", terminator: \"\");")
-            case let .controlFlow(code):
-                outputFile.append("\n \(code)")
-            case let .outputEncoded(code):
-                if !code.isEmpty {
-                    outputFile.append(("\n  print(\"") + code.stringEncoded + "\", terminator: \"\");")
-                }
-            }
-        }
-        let contents = outputFile.joined(separator: "")
-        let code = "import Foundation\n" +
-            "import SourceryRuntime\n" +
-            "\n" +
-            "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
-            "ProcessInfo().context!.generate()"
-
-        return code
+        return commands
     }
 
     func render(types: Types, arguments: [String: NSObject]) throws -> String {
