@@ -68,7 +68,7 @@ class SwiftTemplate: Template {
         return code
     }
 
-    private static func parseCommands(in sourcePath: Path) throws -> [Command] {
+    private static func parseCommands(in sourcePath: Path, includeStack: [Path] = []) throws -> [Command] {
         let templateContent = try "<%%>" + sourcePath.read()
 
         let components = templateContent.components(separatedBy: Delimiters.open)
@@ -121,7 +121,11 @@ class SwiftTemplate: Template {
                 if !includePath.exists, includePath.extension != "swifttemplate" {
                     includePath = Path(includePath.string + ".swifttemplate")
                 }
-                let includedCommands = try SwiftTemplate.parseCommands(in: includePath)
+                // Check for include cycles to prevent stack overflow and show a more user friendly error
+                if includeStack.contains(includePath) {
+                    throw "\(sourcePath):\(currentLineNumber()) Error: Include cycle detected for \(includePath). Check your include statements so that templates do not include each other."
+                }
+                let includedCommands = try SwiftTemplate.parseCommands(in: includePath, includeStack: includeStack + [includePath])
                 commands.append(contentsOf: includedCommands)
             } else if code.trimPrefix("=") {
                 commands.append(.output(code))

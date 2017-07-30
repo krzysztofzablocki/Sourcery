@@ -70,6 +70,28 @@ class SwiftTemplateTests: QuickSpec {
                 expect(result).to(equal(expectedResult))
             }
 
+            it("throws an error when an include cycle is detected") {
+                let templatePath = Stubs.swiftTemplates + Path("IncludeCycle.swifttemplate")
+                let templateCycleDetectionLocationPath = Stubs.swiftTemplates + Path("includeCycle/Two.swifttemplate")
+                let templateInvolvedInCyclePath = Stubs.swiftTemplates + Path("includeCycle/One.swifttemplate")
+                expect {
+                    try SwiftTemplate(path: templatePath)
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal("\(templateCycleDetectionLocationPath):1 Error: Include cycle detected for \(templateInvolvedInCyclePath). Check your include statements so that templates do not include each other."))
+                    }))
+            }
+
+            it("throws an error when an include cycle involving the root template is detected") {
+                let templatePath = Stubs.swiftTemplates + Path("SelfIncludeCycle.swifttemplate")
+                expect {
+                    try SwiftTemplate(path: templatePath)
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal("\(templatePath):1 Error: Include cycle detected for \(templatePath). Check your include statements so that templates do not include each other."))
+                    }))
+            }
+
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {
