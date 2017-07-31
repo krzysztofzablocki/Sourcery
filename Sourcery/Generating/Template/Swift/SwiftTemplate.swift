@@ -62,8 +62,8 @@ class SwiftTemplate: Template {
         let code = "import Foundation\n" +
             "import SourceryRuntime\n" +
             "\n" +
-            "extension TemplateContext {\nfunc generate() {" + contents + "\n}\n\n}\n\n" +
-            "ProcessInfo().context!.generate()"
+            "extension TemplateContext {\nfunc generate() throws {" + contents + "\n}\n\n}\n\n" +
+            "do { try ProcessInfo().context!.generate() } catch { Log.error(error) }"
 
         return code
     }

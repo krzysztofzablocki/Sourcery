@@ -10,6 +10,7 @@
 - Added `definedInType` property for `Method` and `Variable`
 - Added `extensions` filter for stencil template
 - Added include support in Swift templates
+- Swift templates now can throw errors. You can also throw just string literals.
 
 ### Bug fixes
 
