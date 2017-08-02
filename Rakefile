@@ -78,7 +78,6 @@ end
 
 ## [ Code Generated ] ################################################
 
-desc "Run sourcery on Sourcery itself"
 task :run_sourcery do
   print_info "Generating internal boilerplate code"
   sh "bin/sourcery --sources './Sources/' --templates './Sourcery/Templates/' --output './SourceryRuntime/Sources/'"
