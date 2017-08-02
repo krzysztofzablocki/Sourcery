@@ -24,6 +24,7 @@
 ### Internal changes
 
 - Fix link for template in docs
+- Fix running Sourcery in the example app
 
 
 ## 0.7.2
