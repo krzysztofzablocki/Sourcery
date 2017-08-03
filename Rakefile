@@ -64,6 +64,7 @@ end
 
 desc "Delete the build/ directory"
 task :clean do
+  print_info "Cleaning build folder"
   sh %Q(rm -fr build)
 end
 
@@ -73,6 +74,29 @@ task :build do
   sh %Q(rm -fr bin/Sourcery.app)
   `mv #{BUILD_DIR}tmp/Build/Products/Release/Sourcery.app bin/`
   sh %Q(rm -fr #{BUILD_DIR}tmp/)
+end
+
+## [ Code Generated ] ################################################
+
+task :run_sourcery do
+  print_info "Generating internal boilerplate code"
+  sh "bin/sourcery --sources './Sources/' --templates './Sourcery/Templates/' --output './SourceryRuntime/Sources/'"
+end
+
+desc "Update internal boilerplate code"
+task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
+  generated_files = [
+    "SourceryRuntime/Sources/Coding.generated.swift",
+    "SourceryRuntime/Sources/Description.generated.swift",
+    "SourceryRuntime/Sources/Diffable.generated.swift",
+    "SourceryRuntime/Sources/Equality.generated.swift",
+    "SourceryRuntime/Sources/JSExport.generated.swift",
+    "SourceryRuntime/Sources/Typed.generated.swift",
+    "SourceryTests/Models/TypedSpec.generated.swift"
+  ]
+  print_info "Now review and type [Y/n] to commit and push or cancel the changes."
+  print "Updated files:\n#{generated_files.join("\n")}\n"
+  manual_commit(generated_files, "update internal boilerplate code.")
 end
 
 ## [ Docs ] ##########################################################
@@ -93,7 +117,7 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :tests, :update_metadata, :check_versions, :build, :tag_release, :github, :cocoapods]
+  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :generate_internal_boilerplate_code, :tests, :update_metadata, :check_versions, :build, :tag_release, :github, :cocoapods]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The code is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
