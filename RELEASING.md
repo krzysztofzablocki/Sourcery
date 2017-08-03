@@ -28,10 +28,11 @@ It will perform the following steps:
 1. Install Bundler and CocoaPods dependencies;
 2. Check if the docs are up-to-date or not;
 3. Check if the master branch is green on [CI](https://circleci.com/gh/krzysztofzablocki/Sourcery);
-4. Run tests;
-5. Ask for the new release version and updates metadata for it;
-6. Create a new release on [GitHub](https://github.com/krzysztofzablocki/Sourcery/releases);
-7. Push new release to [CocoaPods Trunk](https://guides.cocoapods.org/making/getting-setup-with-trunk.html);
-8. Prepare a new development iteration
+3. Update internal boilerplate code;
+5. Run tests;
+6. Ask for the new release version and updates metadata for it;
+7. Create a new release on [GitHub](https://github.com/krzysztofzablocki/Sourcery/releases);
+8. Push new release to [CocoaPods Trunk](https://guides.cocoapods.org/making/getting-setup-with-trunk.html);
+9. Prepare a new development iteration
 
 Some tasks require manual approvement, please pay attention to the automatic changes before confirming them.
