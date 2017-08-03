@@ -25,6 +25,7 @@
 
 - Fix link for template in docs
 - Fix running Sourcery in the example app
+- Add step to update internal boilerplate code during the release
 
 
 ## 0.7.2
