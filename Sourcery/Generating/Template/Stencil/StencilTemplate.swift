@@ -27,16 +27,8 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
 
     private static func sourceryEnvironment(templatePath: Path? = nil) -> Stencil.Environment {
         let ext = Stencil.Extension()
-        ext.registerFilter("upperFirst", filter: Filter<String>.make({ $0.upperFirst() }))
-        ext.registerFilter("lowerFirst", filter: Filter<String>.make({ $0.lowerFirst() }))
-        ext.registerFilterWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
-            return source.replacingOccurrences(of: substring, with: replacement)
-        })
 
-        ext.registerBoolFilterWithArguments("contains", filter: { (s1: String, s2) in s1.contains(s2) })
-        ext.registerBoolFilterWithArguments("hasPrefix", filter: { (s1: String, s2) in s1.hasPrefix(s2) })
-        ext.registerBoolFilterWithArguments("hasSuffix", filter: { (s1: String, s2) in s1.hasSuffix(s2) })
-
+        ext.registerStringFilters()
         ext.registerBoolFilter("definedInExtension", filter: { (t: Definition) in t.definedInType?.isExtension ?? false })
 
         ext.registerBoolFilter("computed", filter: { (v: SourceryVariable) in v.isComputed && !v.isStatic })
@@ -104,6 +96,39 @@ extension Annotated {
 
 extension Stencil.Extension {
 
+    func registerStringFilters() {
+        let upperFirst = FilterOr<String, TypeName>.make({ $0.upperFirst() }, other: { $0.name.upperFirst() })
+        registerFilter("upperFirst", filter: upperFirst)
+
+        let lowerFirst = FilterOr<String, TypeName>.make({ $0.lowerFirst() }, other: { $0.name.lowerFirst() })
+        registerFilter("lowerFirst", filter: lowerFirst)
+
+        let lowercase = FilterOr<String, TypeName>.make({ $0.lowercased() }, other: { $0.name.lowercased() })
+        registerFilter("lowercase", filter: lowercase)
+
+        let uppercase = FilterOr<String, TypeName>.make({ $0.uppercased() }, other: { $0.name.uppercased() })
+        registerFilter("uppercase", filter: uppercase)
+
+        let capitalise = FilterOr<String, TypeName>.make({ $0.capitalized }, other: { $0.name.capitalized })
+        registerFilter("capitalise", filter: capitalise)
+
+        registerFilterOrWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
+            return source.replacingOccurrences(of: substring, with: replacement)
+        }, other: { (source: TypeName, substring: String, replacement: String) -> Any? in
+            return source.name.replacingOccurrences(of: substring, with: replacement)
+        })
+
+        registerBoolFilterOrWithArguments("contains",
+                                          filter: { (s1: String, s2) in s1.contains(s2) },
+                                          other: { (t: TypeName, s2) in t.name.contains(s2) })
+        registerBoolFilterOrWithArguments("hasPrefix",
+                                          filter: { (s1: String, s2) in s1.hasPrefix(s2) },
+                                          other: { (t: TypeName, s2) in t.name.hasPrefix(s2) })
+        registerBoolFilterOrWithArguments("hasSuffix",
+                                          filter: { (s1: String, s2) in s1.hasSuffix(s2) },
+                                          other: { (t: TypeName, s2) in t.name.hasSuffix(s2) })
+    }
+
     func registerFilterWithTwoArguments<T, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?) {
         registerFilter(name) { (any, args) throws -> Any? in
             guard let type = any as? T else { return any }
@@ -111,6 +136,21 @@ extension Stencil.Extension {
                 throw TemplateSyntaxError("'\(name)' filter takes two arguments: \(A.self) and \(B.self)")
             }
             return try filter(type, argA, argB)
+        }
+    }
+
+    func registerFilterOrWithTwoArguments<T, Y, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?, other: @escaping (Y, A, B) throws -> Any?) {
+        registerFilter(name) { (any, args) throws -> Any? in
+            guard args.count == 2, let argA = args[0] as? A, let argB = args[1] as? B else {
+                throw TemplateSyntaxError("'\(name)' filter takes two arguments: \(A.self) and \(B.self)")
+            }
+            if let type = any as? T {
+                return try filter(type, argA, argB)
+            } else if let type = any as? Y {
+                return try other(type, argA, argB)
+            } else {
+                return any
+            }
         }
     }
 
@@ -244,6 +284,28 @@ private struct FilterOr<T, Y> {
                     return array.flatMap { $0 as? T }.filter(filter)
                 } else {
                     return array.flatMap { $0 as? Y }.filter(other)
+                }
+
+            default:
+                return any
+            }
+        }
+    }
+
+    static func make<U>(_ filter: @escaping (T) -> U?, other: @escaping (Y) -> U?) -> (Any?) throws -> Any? {
+        return { (any) throws -> Any? in
+            switch any {
+            case let type as T:
+                return filter(type)
+
+            case let type as Y:
+                return other(type)
+
+            case let array as NSArray:
+                if array.firstObject is T {
+                    return array.flatMap { $0 as? T }.flatMap(filter)
+                } else {
+                    return array.flatMap { $0 as? Y }.flatMap(other)
                 }
 
             default:

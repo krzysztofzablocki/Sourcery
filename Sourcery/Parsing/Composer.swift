@@ -143,7 +143,7 @@ struct Composer {
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
-        
+
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374

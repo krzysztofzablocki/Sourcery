@@ -11,6 +11,7 @@
 - Added `extensions` filter for stencil template
 - Added include support in Swift templates
 - Swift templates now can throw errors. You can also throw just string literals.
+- Added support for TypeName in string filters (except filters from StencilSwiftKit).
 
 ### Bug fixes
 
