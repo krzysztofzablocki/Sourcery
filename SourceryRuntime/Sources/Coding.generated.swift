@@ -1,7 +1,8 @@
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Foundation
+
 
 extension NSCoder {
 
@@ -45,9 +46,11 @@ extension AssociatedValue: NSCoding {}
 
 extension Attribute: NSCoding {}
 
+
 extension ClosureType: NSCoding {}
 
 extension DictionaryType: NSCoding {}
+
 
 extension EnumCase: NSCoding {}
 
@@ -56,6 +59,8 @@ extension FileParserResult: NSCoding {}
 extension Method: NSCoding {}
 
 extension MethodParameter: NSCoding {}
+
+
 
 extension TemplateContext: NSCoding {}
 
@@ -72,3 +77,4 @@ extension Typealias: NSCoding {}
 extension Types: NSCoding {}
 
 extension Variable: NSCoding {}
+

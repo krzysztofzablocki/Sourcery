@@ -1,5 +1,6 @@
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 
 extension ArrayType: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {
