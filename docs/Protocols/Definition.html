@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>TupleType Class Reference</title>
+    <title>Definition Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/TupleType" class="dashAnchor"></a>
-    <a title="TupleType Class Reference"></a>
+    <a name="//apple_ref/swift/Protocol/Definition" class="dashAnchor"></a>
+    <a title="Definition Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery Docs</a> (100% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        TupleType Class Reference
+        Definition Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -157,14 +157,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>TupleType</h1>
+            <h1>Definition</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleType</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Definition</span><span class="p">:</span> <span class="kd">class</span></code></pre>
 
                 </div>
               </div>
-            <p>Describes tuple type</p>
+            <p>Describes that the object is defined in a context of some <code><a href="../Classes/Type.html">Type</a></code></p>
 
           </section>
           <section class="section task-group-section">
@@ -173,9 +173,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC15SourceryRuntime9TupleType4nameSS"></a>
-                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC15SourceryRuntime9TupleType4nameSS">name</a>
+                    <a name="/s:vP15SourceryRuntime10Definition17definedInTypeNameGSqCS_8TypeName_"></a>
+                    <a name="//apple_ref/swift/Property/definedInTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vP15SourceryRuntime10Definition17definedInTypeNameGSqCS_8TypeName_">definedInTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -183,14 +183,15 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Type name used in declaration</p>
+                        <p>Reference to type name where the object is defined, 
+nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">definedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -200,9 +201,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:vC15SourceryRuntime9TupleType8elementsGSaCS_12TupleElement_"></a>
-                    <a name="//apple_ref/swift/Property/elements" class="dashAnchor"></a>
-                    <a class="token" href="#/s:vC15SourceryRuntime9TupleType8elementsGSaCS_12TupleElement_">elements</a>
+                    <a name="/s:vP15SourceryRuntime10Definition13definedInTypeGSqCS_4Type_"></a>
+                    <a name="//apple_ref/swift/Property/definedInType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vP15SourceryRuntime10Definition13definedInTypeGSqCS_4Type_">definedInType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -210,14 +211,42 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Tuple elements</p>
+                        <p>Reference to actual type where the object is defined, 
+nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc or type is unknown</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">elements</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/TupleElement.html">TupleElement</a></span><span class="p">]</span></code></pre>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">definedInType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vP15SourceryRuntime10Definition23actualDefinedInTypeNameGSqCS_8TypeName_"></a>
+                    <a name="//apple_ref/swift/Property/actualDefinedInTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vP15SourceryRuntime10Definition23actualDefinedInTypeNameGSqCS_8TypeName_">actualDefinedInTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a <code><a href="../Protocols/Definition.html#/s:vP15SourceryRuntime10Definition17definedInTypeNameGSqCS_8TypeName_">definedInTypeName</a></code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">actualDefinedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>

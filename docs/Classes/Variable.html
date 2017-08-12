@@ -145,6 +145,9 @@
                 <a href="../Protocols/Annotated.html">Annotated</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Protocols/Definition.html">Definition</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Protocols/Typed.html">Typed</a>
               </li>
             </ul>
@@ -157,7 +160,7 @@
             <h1>Variable</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Variable</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Variable</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Definition.html">Definition</a></span></code></pre>
 
                 </div>
               </div>
@@ -486,6 +489,89 @@ For immutable variables this value is empty string</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isFinal</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC15SourceryRuntime8Variable17definedInTypeNameGSqCS_8TypeName_"></a>
+                    <a name="//apple_ref/swift/Property/definedInTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC15SourceryRuntime8Variable17definedInTypeNameGSqCS_8TypeName_">definedInTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to type name where the variable is defined,
+nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">definedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC15SourceryRuntime8Variable23actualDefinedInTypeNameGSqCS_8TypeName_"></a>
+                    <a name="//apple_ref/swift/Property/actualDefinedInTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC15SourceryRuntime8Variable23actualDefinedInTypeNameGSqCS_8TypeName_">actualDefinedInTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a <code><a href="../Classes/Variable.html#/s:vC15SourceryRuntime8Variable17definedInTypeNameGSqCS_8TypeName_">definedInTypeName</a></code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">actualDefinedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC15SourceryRuntime8Variable13definedInTypeGSqCS_4Type_"></a>
+                    <a name="//apple_ref/swift/Property/definedInType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC15SourceryRuntime8Variable13definedInTypeGSqCS_4Type_">definedInType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to actual type where the object is defined,
+nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc or type is unknown</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">definedInType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
