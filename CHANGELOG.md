@@ -7,6 +7,7 @@
 ### New Features
 
 - Added support for file paths in `config` parameter
+- Improved config file validation and error reporting
 
 
 ## 0.8.0

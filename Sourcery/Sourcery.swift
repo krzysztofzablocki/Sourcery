@@ -26,7 +26,7 @@ class Sourcery {
     fileprivate let prune: Bool
 
     fileprivate var status = ""
-    fileprivate var templatesPaths = Paths()
+    fileprivate var templatesPaths = try Paths(include: [])
     fileprivate var outputPath: Path = ""
 
     /// Creates Sourcery processor

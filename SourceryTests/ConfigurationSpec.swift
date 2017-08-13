@@ -11,37 +11,134 @@ class ConfigurationSpec: QuickSpec {
 
         describe("Configuration") {
             context("given invalid config file") {
-                it("throws error") {
+
+                func configError(_ config: [String: Any]) -> String {
+                    do {
+                        _ = try Configuration(dict: config, relativePath: relativePath)
+                        return "No error"
+                    } catch {
+                        return "\(error)"
+                    }
+                }
+
+                it("throws error on invalid file format") {
                     do {
                         _ = try Configuration(path: Stubs.configs + ".invalid.yml", relativePath: relativePath)
                         fail("expected to throw error")
                     } catch {
-                        expect(error).to(matchError(Configuration.Error.invalidFormat))
+                        expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
                     }
                 }
+
+                it("throws error on empty sources") {
+                    let config: [String: Any] = ["sources": [], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. No paths provided."))
+                }
+
+                it("throws error on missing sources") {
+                    let config: [String: Any] = ["templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. 'sources' or 'project' key are missing."))
+                }
+
+                it("throws error on invalid sources format") {
+                    let config: [String: Any] = ["sources": ["inc": ["."]], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. No paths provided. Expected list of strings or object with 'include' and optional 'exclude' keys."))
+                }
+
+                it("throws error on missing sources include key") {
+                    let config: [String: Any] = ["sources": ["exclude": ["."]], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. No paths provided. Expected list of strings or object with 'include' and optional 'exclude' keys."))
+                }
+
+                it("throws error on invalid sources include format") {
+                    let config: [String: Any] = ["sources": ["include": "."], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. No paths provided. Expected list of strings or object with 'include' and optional 'exclude' keys."))
+                }
+
+                it("throws error on missing templates key") {
+                    let config: [String: Any] = ["sources": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid templates. 'templates' key is missing."))
+                }
+
+                it("throws error on empty templates") {
+                    let config: [String: Any] = ["sources": ["."], "templates": [], "output": "."]
+                    expect(configError(config)).to(equal("Invalid templates. No paths provided."))
+                }
+
+                it("throws error on missing template include key") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["exclude": ["."]], "output": "."]
+                    expect(configError(config)).to(equal("Invalid templates. No paths provided. Expected list of strings or object with 'include' and optional 'exclude' keys."))
+                }
+
+                it("throws error on invalid template include format") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["include": "."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid templates. No paths provided. Expected list of strings or object with 'include' and optional 'exclude' keys."))
+                }
+
+                it("throws error on empty projects") {
+                    let config: [String: Any] = ["project": [], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. No projects provided."))
+                }
+
+                it("throws error on missing project file") {
+                    let config: [String: Any] = ["project": ["root": "."], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. Project file path is not provided. Expected string."))
+                }
+
+                it("throws error on missing project root") {
+                    let config: [String: Any] = ["project": ["file": "."], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. Project root path is not provided. Expected string."))
+                }
+
+                it("throws error on missing target key") {
+                    let config: [String: Any] = ["project": ["file": ".", "root": "."], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. 'target' key is missing. Expected object or array of objects."))
+                }
+
+                it("throws error on empty targets") {
+                    let config: [String: Any] = ["project": ["file": ".", "root": ".", "target": []], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. No targets provided."))
+                }
+
+                it("throws error on missing target name key") {
+                    let config: [String: Any] = ["project": ["file": ".", "root": ".", "target": ["module": "module"]], "templates": ["."], "output": "."]
+                    expect(configError(config)).to(equal("Invalid sources. Target name is not provided. Expected string."))
+                }
+
+                it("throws error on missing output key") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."]]
+                    expect(configError(config)).to(equal("Invalid output. 'output' key is missing or is not a string."))
+                }
+
+                it("throws error on invalid output format") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."], "output": ["."]]
+                    expect(configError(config)).to(equal("Invalid output. 'output' key is missing or is not a string."))
+                }
+
             }
+
         }
 
         describe("Source") {
             context("provided with sources paths") {
                 it("include paths provided as an array") {
-                    let config = ["sources": ["."]]
-                    let source = Configuration(dict: config, relativePath: relativePath).source
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."], "output": "."]
+                    let source = try? Configuration(dict: config, relativePath: relativePath).source
                     let expected = Source.sources(Paths(include: [relativePath]))
                     expect(source).to(equal(expected))
                 }
 
                 it("include paths provided with `include` key") {
-                    let config = ["sources": ["include": ["."]]]
-                    let source = Configuration(dict: config, relativePath: relativePath).source
+                    let config: [String: Any] = ["sources": ["include": ["."]], "templates": ["."], "output": "."]
+                    let source = try? Configuration(dict: config, relativePath: relativePath).source
                     let expected = Source.sources(Paths(include: [relativePath]))
                     expect(source).to(equal(expected))
                 }
 
                 it("exclude paths provided with the `exclude` key") {
-                    let config = ["sources": ["exclude": ["."]]]
-                    let source = Configuration(dict: config, relativePath: relativePath).source
-                    let expected = Source.sources(Paths(exclude: [relativePath]))
+                    let config: [String: Any] = ["sources": ["include": ["."], "exclude": ["excludedPath"]], "templates": ["."], "output": "."]
+                    let source = try? Configuration(dict: config, relativePath: relativePath).source
+                    let expected = Source.sources(Paths(include: [relativePath], exclude: [relativePath + "excludedPath"]))
                     expect(source).to(equal(expected))
                 }
             }
@@ -50,23 +147,23 @@ class ConfigurationSpec: QuickSpec {
         describe("Templates") {
             context("provided with templates paths") {
                 it("include paths provided as an array") {
-                    let config = ["templates": ["."]]
-                    let templates = Configuration(dict: config, relativePath: relativePath).templates
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."], "output": "."]
+                    let templates = try? Configuration(dict: config, relativePath: relativePath).templates
                     let expected = Paths(include: [relativePath])
                     expect(templates).to(equal(expected))
                 }
 
                 it("include paths provided with `include` key") {
-                    let config = ["templates": ["include": ["."]]]
-                    let templates = Configuration(dict: config, relativePath: relativePath).templates
+                    let config: [String: Any] = ["sources": ["."], "templates": ["include": ["."]], "output": "."]
+                    let templates = try? Configuration(dict: config, relativePath: relativePath).templates
                     let expected = Paths(include: [relativePath])
                     expect(templates).to(equal(expected))
                 }
 
                 it("exclude paths provided with the `exclude` key") {
-                    let config = ["templates": ["exclude": ["."]]]
-                    let templates = Configuration(dict: config, relativePath: relativePath).templates
-                    let expected = Paths(exclude: [relativePath])
+                    let config: [String: Any] = ["sources": ["."], "templates": ["include": ["."], "exclude": ["excludedPath"]], "output": "."]
+                    let templates = try? Configuration(dict: config, relativePath: relativePath).templates
+                    let expected = Paths(include: [relativePath], exclude: [relativePath + "excludedPath"])
                     expect(templates).to(equal(expected))
                 }
             }

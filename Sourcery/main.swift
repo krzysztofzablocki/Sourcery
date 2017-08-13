@@ -134,7 +134,7 @@ func runCLI() {
             let yamlPath: Path = configPath.isDirectory ? configPath + ".sourcery.yml" : configPath
 
             if !yamlPath.exists {
-                Log.info("No config file provided or it does not exist Using command line arguments.")
+                Log.info("No config file provided or it does not exist. Using command line arguments.")
                 configuration = Configuration(sources: sources,
                                               templates: templates,
                                               output: output,
