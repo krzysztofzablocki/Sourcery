@@ -1,6 +1,8 @@
 import Foundation
 import XcodeEdit
 import PathKit
+import Yams
+import SourceryRuntime
 
 struct Project {
     let file: XCProjectFile
@@ -102,10 +104,26 @@ enum Source {
 
 struct Configuration {
 
+    enum Error: String, Swift.Error, CustomStringConvertible {
+        case invalidFormat = "Invalid config file format."
+
+        var description: String {
+            return rawValue
+        }
+    }
+
     let source: Source
     let templates: Paths
     let output: Path
     let args: [String: NSObject]
+
+    init(path: Path, relativePath: Path) throws {
+        guard let dict = try Yams.load(yaml: path.read()) as? [String: Any] else {
+            throw Configuration.Error.invalidFormat
+        }
+
+        self.init(dict: dict, relativePath: relativePath)
+    }
 
     init(dict: [String: Any], relativePath: Path) {
         self.source = Source(dict: dict, relativePath: relativePath)

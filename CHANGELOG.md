@@ -4,6 +4,10 @@
 
 ## Master
 
+### New Features
+
+- Added support for file paths in `config` parameter
+
 
 ## 0.8.0
 

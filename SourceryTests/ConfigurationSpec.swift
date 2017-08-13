@@ -9,6 +9,19 @@ class ConfigurationSpec: QuickSpec {
     override func spec() {
         let relativePath = Path("/some/path")
 
+        describe("Configuration") {
+            context("given invalid config file") {
+                it("throws error") {
+                    do {
+                        _ = try Configuration(path: Stubs.configs + ".invalid.yml", relativePath: relativePath)
+                        fail("expected to throw error")
+                    } catch {
+                        expect(error).to(matchError(Configuration.Error.invalidFormat))
+                    }
+                }
+            }
+        }
+
         describe("Source") {
             context("provided with sources paths") {
                 it("include paths provided as an array") {

@@ -9,7 +9,7 @@ import SourceryRuntime
 
 enum Generator {
     static func generate(_ types: Types, template: Template, arguments: [String: NSObject] = [:]) throws -> String {
-        Log.info("Rendering template \(template.sourcePath)")
+        Log.verbose("Rendering template \(template.sourcePath)")
         return try template.render(types: types, arguments: arguments)
     }
 }

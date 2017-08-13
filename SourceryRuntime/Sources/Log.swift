@@ -7,6 +7,7 @@ public enum Log {
     public enum Level: Int {
         case errors
         case warnings
+        case info
         case verbose
     }
 
@@ -24,8 +25,12 @@ public enum Log {
         log(level: .warnings, "warning: \(message)")
     }
 
-    public static func info(_ message: Any) {
+    public static func verbose(_ message: Any) {
         log(level: .verbose, message)
+    }
+
+    public static func info(_ message: Any) {
+        log(level: .info, message)
     }
 
     private static func log(level logLevel: Level, _ message: Any) {

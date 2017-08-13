@@ -21,6 +21,7 @@ enum Stubs {
     static let resultDirectory = basePath + Path("Result/")
     static let templateDirectory = basePath + Path("Templates")
     static let errorsDirectory = basePath + Path("Errors/")
+    static let configs = basePath + Path("Configs/")
 
     static func cleanTemporarySourceryDir() -> Path {
         return Path.cleanTemporaryDir(name: "Sourcery")

@@ -106,7 +106,7 @@ final class FileParser {
         _ = parseContentsIfNeeded()
 
         if let path = path {
-            Log.info("Processing file \(path)")
+            Log.verbose("Processing file \(path)")
         }
         let file = File(contents: contents)
         let source = Structure(file: file).dictionary
@@ -153,7 +153,7 @@ final class FileParser {
             case .varParameter:
                 return parseParameter(source)
             default:
-                Log.info("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
+                Log.verbose("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
             }
 
