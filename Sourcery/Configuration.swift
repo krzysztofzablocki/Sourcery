@@ -1,6 +1,8 @@
 import Foundation
 import XcodeEdit
 import PathKit
+import Yams
+import SourceryRuntime
 
 struct Project {
     let file: XCProjectFile
@@ -12,33 +14,40 @@ struct Project {
         let name: String
         let module: String
 
-        init?(dict: [String: String]) {
+        init(dict: [String: String]) throws {
             guard let name = dict["name"] else {
-                return nil
+                throw Configuration.Error.invalidSources(message: "Target name is not provided. Expected string.")
             }
             self.name = name
             self.module = dict["module"] ?? name
         }
     }
 
-    init?(dict: [String: Any], relativePath: Path) {
-        guard let file = dict["file"] as? String,
-            let project = try? XCProjectFile(path: Path(file, relativeTo: relativePath).string),
-            let root = dict["root"] as? String else {
-                return nil
+    init(dict: [String: Any], relativePath: Path) throws {
+        guard let file = dict["file"] as? String else {
+            throw Configuration.Error.invalidSources(message: "Project file path is not provided. Expected string.")
         }
+        guard let root = dict["root"] as? String else {
+            throw Configuration.Error.invalidSources(message: "Project root path is not provided. Expected string.")
+        }
+
+        let targetsArray: [Target]
         if let targets = dict["target"] as? [[String: String]] {
-            self.targets = targets.flatMap(Target.init(dict:))
+            targetsArray = try targets.map({ try Target(dict: $0) })
         } else if let target = dict["target"] as? [String: String] {
-            self.targets = [Target(dict: target)].flatMap({ $0 })
+            targetsArray = try [Target(dict: target)]
         } else {
-            return nil
+            throw Configuration.Error.invalidSources(message: "'target' key is missing. Expected object or array of objects.")
         }
+        guard !targetsArray.isEmpty else {
+            throw Configuration.Error.invalidSources(message: "No targets provided.")
+        }
+        self.targets = targetsArray
 
         let exclude = (dict["exclude"] as? [String])?.map({ Path($0, relativeTo: relativePath) }) ?? []
         self.exclude = exclude.flatMap { $0.allPaths }
 
-        self.file = project
+        self.file = try XCProjectFile(path: Path(file, relativeTo: relativePath).string)
         self.root = Path(root)
     }
 
@@ -53,18 +62,25 @@ struct Paths {
         return allPaths.isEmpty
     }
 
-    init(dict: Any, relativePath: Path) {
-        if let sources = dict as? [String: [String]] {
-            let include = sources["include"]?.map({ Path($0, relativeTo: relativePath) }) ?? []
+    init(dict: Any, relativePath: Path) throws {
+        if let sources = dict as? [String: [String]],
+            let include = sources["include"]?.map({ Path($0, relativeTo: relativePath) }) {
+
             let exclude = sources["exclude"]?.map({ Path($0, relativeTo: relativePath) }) ?? []
             self.init(include: include, exclude: exclude)
-        } else {
-            let sources = (dict as? [String])?.map({ Path($0, relativeTo: relativePath) }) ?? []
+        } else if let sources = dict as? [String] {
+
+            let sources = sources.map({ Path($0, relativeTo: relativePath) })
+            guard !sources.isEmpty else {
+                throw Configuration.Error.invalidPaths(message: "No paths provided.")
+            }
             self.init(include: sources)
+        } else {
+            throw Configuration.Error.invalidPaths(message: "No paths provided. Expected list of strings or object with 'include' and optional 'exclude' keys.")
         }
     }
 
-    init(include: [Path] = [], exclude: [Path] = []) {
+    init(include: [Path], exclude: [Path] = []) {
         self.include = include
         self.exclude = exclude
 
@@ -80,13 +96,20 @@ enum Source {
     case projects([Project])
     case sources(Paths)
 
-    init(dict: [String: Any], relativePath: Path) {
+    init(dict: [String: Any], relativePath: Path) throws {
         if let projects = dict["project"] as? [[String: Any]] {
-            self = .projects(projects.flatMap({ Project.init(dict: $0, relativePath: relativePath) }))
+            guard !projects.isEmpty else { throw Configuration.Error.invalidSources(message: "No projects provided.") }
+            self = try .projects(projects.map({ try Project(dict: $0, relativePath: relativePath) }))
         } else if let project = dict["project"] as? [String: Any] {
-            self = .projects([Project(dict: project, relativePath: relativePath)].flatMap({ $0 }))
+            self = try .projects([Project(dict: project, relativePath: relativePath)])
+        } else if let sources = dict["sources"] {
+            do {
+                self = try .sources(Paths(dict: sources, relativePath: relativePath))
+            } catch {
+                throw Configuration.Error.invalidSources(message: "\(error)")
+            }
         } else {
-            self = .sources(Paths(dict: dict["sources"] ?? [:], relativePath: relativePath))
+            throw Configuration.Error.invalidSources(message: "'sources' or 'project' key are missing.")
         }
     }
 
@@ -102,15 +125,68 @@ enum Source {
 
 struct Configuration {
 
+    enum Error: Swift.Error, CustomStringConvertible {
+        case invalidFormat(message: String)
+        case invalidSources(message: String)
+        case invalidTemplates(message: String)
+        case invalidOutput(message: String)
+        case invalidPaths(message: String)
+
+        var description: String {
+            switch self {
+            case .invalidFormat(let message):
+                return "Invalid config file format. \(message)"
+            case .invalidSources(let message):
+                return "Invalid sources. \(message)"
+            case .invalidTemplates(let message):
+                return "Invalid templates. \(message)"
+            case .invalidOutput(let message):
+                return "Invalid output. \(message)"
+            case .invalidPaths(let message):
+                return "\(message)"
+            }
+        }
+    }
+
     let source: Source
     let templates: Paths
     let output: Path
     let args: [String: NSObject]
 
-    init(dict: [String: Any], relativePath: Path) {
-        self.source = Source(dict: dict, relativePath: relativePath)
-        self.templates = Paths(dict: dict["templates"] ?? [:], relativePath: relativePath)
-        self.output = (dict["output"] as? String).map({ Path($0, relativeTo: relativePath) }) ?? "."
+    init(path: Path, relativePath: Path) throws {
+        guard let dict = try Yams.load(yaml: path.read()) as? [String: Any] else {
+            throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
+        }
+
+        try self.init(dict: dict, relativePath: relativePath)
+    }
+
+    init(dict: [String: Any], relativePath: Path) throws {
+        let source = try Source(dict: dict, relativePath: relativePath)
+        guard !source.isEmpty else {
+            throw Configuration.Error.invalidSources(message: "No sources provided.")
+        }
+        self.source = source
+
+        let templates: Paths
+        guard let templatesDict = dict["templates"] else {
+            throw Configuration.Error.invalidTemplates(message: "'templates' key is missing.")
+        }
+        do {
+            templates = try Paths(dict: templatesDict, relativePath: relativePath)
+        } catch {
+            throw Configuration.Error.invalidTemplates(message: "\(error)")
+        }
+        guard !templates.isEmpty else {
+            throw Configuration.Error.invalidTemplates(message: "No templates provided.")
+        }
+        self.templates = templates
+
+        guard let output = dict["output"] as? String else {
+            throw Configuration.Error.invalidOutput(message: "'output' key is missing or is not a string.")
+        }
+        self.output = Path(output, relativeTo: relativePath)
+
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 

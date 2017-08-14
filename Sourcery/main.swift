@@ -9,7 +9,6 @@
 import Foundation
 import Commander
 import PathKit
-import Yams
 import XcodeEdit
 import SourceryRuntime
 
@@ -50,7 +49,7 @@ fileprivate enum Validators {
     static func isReadable(path: Path) -> Path {
         if !path.isReadable {
             Log.error("'\(path)' does not exist or is not readable.")
-            exit(1)
+            exit(.invalidePath)
         }
 
         return path
@@ -61,7 +60,7 @@ fileprivate enum Validators {
 
         if !(path.isDirectory || path.isFile) {
             Log.error("'\(path)' isn't a directory or proper file.")
-            exit(2)
+            exit(.invalidePath)
         }
 
         return path
@@ -70,7 +69,7 @@ fileprivate enum Validators {
     static func isWriteable(path: Path) -> Path {
         if path.exists && !path.isWritable {
             Log.error("'\(path)' isn't writeable.")
-            exit(2)
+            exit(.invalidePath)
         }
         return path
     }
@@ -81,7 +80,7 @@ extension Configuration {
     func validate() {
         guard !source.isEmpty else {
             Log.error("No sources provided.")
-            exit(3)
+            exit(.invalidConfig)
         }
         if case let .sources(sources) = source {
             _ = sources.allPaths.map(Validators.isReadable(path:))
@@ -89,11 +88,21 @@ extension Configuration {
         _ = templates.allPaths.map(Validators.isReadable(path:))
         guard !templates.isEmpty else {
             Log.error("No templates provided.")
-            exit(3)
+            exit(.invalidConfig)
         }
         _ = Validators.isWriteable(path: output)
     }
 
+}
+
+enum ExitCode: Int32 {
+    case invalidePath = 1
+    case invalidConfig
+    case other
+}
+
+private func exit(_ code: ExitCode) -> Never {
+    exit(code.rawValue)
 }
 
 func runCLI() {
@@ -115,21 +124,33 @@ func runCLI() {
         VariadicOption<Path>("sources", description: "Path to a source swift files"),
         VariadicOption<Path>("templates", description: "Path to templates. File or Directory."),
         Option<Path>("output", ".", description: "Path to output. File or Directory. Default is current path."),
-        Option<Path>("config", ".", description: "Path to config file. Directory. Default is current path."),
+        Option<Path>("config", ".", description: "Path to config file. File or Directory. Default is current path."),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
     ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, sources, templates, output, configPath, args in
         do {
-            Log.level = verboseLogging ? .verbose : quiet ? .errors : .warnings
-            let configuration: Configuration
+            Log.level = verboseLogging ? .verbose : quiet ? .errors : .info
 
-            let yamlPath: Path = configPath + ".sourcery.yml"
-            if yamlPath.exists, let dict = try Yams.load(yaml: yamlPath.read()) as? [String: Any] {
-                configuration = Configuration(dict: dict, relativePath: configPath)
-            } else {
+            let configuration: Configuration
+            let yamlPath: Path = configPath.isDirectory ? configPath + ".sourcery.yml" : configPath
+
+            if !yamlPath.exists {
+                Log.info("No config file provided or it does not exist. Using command line arguments.")
                 configuration = Configuration(sources: sources,
                                               templates: templates,
                                               output: output,
                                               args: args.arguments)
+            } else {
+                _ = Validators.isFileOrDirectory(path: configPath)
+                _ = Validators.isReadable(path: yamlPath)
+
+                do {
+                    let relativePath: Path = configPath.isDirectory ? configPath : configPath.parent()
+                    configuration = try Configuration(path: yamlPath, relativePath: relativePath)
+                    Log.info("Using configuration file at '\(yamlPath)'")
+                } catch {
+                    Log.error(error)
+                    exit(.invalidConfig)
+                }
             }
 
             configuration.validate()
@@ -151,7 +172,7 @@ func runCLI() {
             }
         } catch {
             Log.error("\(error)")
-            exit(4)
+            exit(.other)
         }
         }.run(Sourcery.version)
 }

@@ -26,7 +26,7 @@ class Sourcery {
     fileprivate let prune: Bool
 
     fileprivate var status = ""
-    fileprivate var templatesPaths = Paths()
+    fileprivate var templatesPaths = try Paths(include: [])
     fileprivate var outputPath: Path = ""
 
     /// Creates Sourcery processor
@@ -331,10 +331,10 @@ extension Sourcery {
                 try writeIfChanged(Sourcery.generationHeader + result, to: outputPath)
             } else {
                 if prune && outputPath.exists {
-                    Log.info("Removing \(outputPath) as it is empty.")
+                    Log.verbose("Removing \(outputPath) as it is empty.")
                     do { try outputPath.delete() } catch { track("\(error)") }
                 } else {
-                    Log.info("Skipping \(outputPath) as it is empty.")
+                    Log.verbose("Skipping \(outputPath) as it is empty.")
                 }
             }
         }
@@ -424,10 +424,10 @@ extension Sourcery {
                     try writeIfChanged(generatedBody, to: path)
                 } else {
                     if prune && outputPath.exists {
-                        Log.info("Removing \(path) as it is empty.")
+                        Log.verbose("Removing \(path) as it is empty.")
                         do { try outputPath.delete() } catch { track("\(error)") }
                     } else {
-                        Log.info("Skipping \(path) as it is empty.")
+                        Log.verbose("Skipping \(path) as it is empty.")
                     }
                 }
             })
