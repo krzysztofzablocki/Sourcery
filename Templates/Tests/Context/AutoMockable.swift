@@ -43,6 +43,10 @@ protocol ReservedWordsProtocol: AutoMockable {
     func `continue`(with message: String) -> String
 }
 
+protocol ThrowableProtocol: AutoMockable {
+    func doOrThrow() throws -> String
+}
+
 extension ExtendableProtocol {
     var canReport: Bool { return true }
 
