@@ -88,6 +88,21 @@ class InitializationProtocolMock: InitializationProtocol {
     }
 
 }
+class ReservedWordsProtocolMock: ReservedWordsProtocol {
+
+    //MARK: - `continue`
+
+    var continue_with_Called = false
+    var continue_with_ReceivedMessage: String?
+    var continue_with_ReturnValue: String!
+
+    func `continue`(with message: String) -> String {
+        continue_with_Called = true
+        continue_with_ReceivedMessage = message
+        return continue_with_ReturnValue
+    }
+
+}
 class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
 
     //MARK: - start
