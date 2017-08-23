@@ -570,6 +570,20 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? outputFile.read(.utf8)
                         expect(result?.withoutWhitespaces).to(equal(expectedResult?.withoutWhitespaces))
                     }
+
+                    it("does not create generated file with empty content") {
+                        let templatePath = Stubs.templateDirectory + Path("Empty.stencil")
+                        update(code: "", in: templatePath)
+
+                        expect {
+                            try Sourcery(cacheDisabled: true, prune: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                                                                        usingTemplates: Paths(include: [templatePath]),
+                                                                                        output: outputFile)
+                        }.toNot(throwError())
+
+                        let result = try? outputFile.read(.utf8)
+                        expect(result).to(beNil())
+                    }
                 }
 
                 context("given an output directory") {
