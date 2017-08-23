@@ -21,7 +21,7 @@ Before submitting changes, please follow these guidelines:
 2. Open an issue to discuss a new feature.
 3. Write tests.
 4. Make sure your changes pass existing tests.
-5. Make sure the entire test suite passes locally and on Travis CI.
+5. Make sure the entire test suite passes locally and on Circle CI.
 6. Open a Pull Request.
 
 Unless otherwise noted, the Sourcery source files are distributed under
