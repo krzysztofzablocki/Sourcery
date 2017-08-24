@@ -159,7 +159,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     /// Whether method is an deinitializer
     public var isDeinitializer: Bool {
-        return selectorName.hasPrefix("deinit")
+        return selectorName == "deinit"
     }
 
     /// Whether method is a failable initializer
