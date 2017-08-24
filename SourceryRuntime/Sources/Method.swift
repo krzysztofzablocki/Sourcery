@@ -157,6 +157,11 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         return selectorName.hasPrefix("init(")
     }
 
+    /// Whether method is an deinitializer
+    public var isDeinitializer: Bool {
+        return selectorName.hasPrefix("deinit")
+    }
+
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
