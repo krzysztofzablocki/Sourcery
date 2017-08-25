@@ -26,7 +26,7 @@ class Sourcery {
     fileprivate let prune: Bool
 
     fileprivate var status = ""
-    fileprivate var templatesPaths = try Paths(include: [])
+    fileprivate var templatesPaths = Paths(include: [])
     fileprivate var outputPath: Path = ""
 
     /// Creates Sourcery processor
@@ -315,11 +315,11 @@ extension Sourcery {
         status = ""
 
         guard output.isDirectory else {
-            let result = try allTemplates.reduce(Sourcery.generationHeader) { result, template in
+            let result = try allTemplates.reduce("") { result, template in
                 return result + "\n" + (try generate(template, forParsingResult: parsingResult))
             }
 
-            try writeIfChanged(result, to: output)
+            try self.output(result: result, to: output)
             return
         }
 
@@ -327,19 +327,23 @@ extension Sourcery {
             let outputPath = output + generatedPath(for: template.sourcePath)
             let result = try generate(template, forParsingResult: parsingResult)
 
-            if !result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                try writeIfChanged(Sourcery.generationHeader + result, to: outputPath)
-            } else {
-                if prune && outputPath.exists {
-                    Log.verbose("Removing \(outputPath) as it is empty.")
-                    do { try outputPath.delete() } catch { track("\(error)") }
-                } else {
-                    Log.verbose("Skipping \(outputPath) as it is empty.")
-                }
-            }
+            try self.output(result: result, to: outputPath)
         }
 
         track("Finished.", skipStatus: true)
+    }
+
+    private func output(result: String, to outputPath: Path) throws {
+        if !result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            try writeIfChanged(Sourcery.generationHeader + result, to: outputPath)
+        } else {
+            if prune && outputPath.exists {
+                Log.verbose("Removing \(outputPath) as it is empty.")
+                do { try outputPath.delete() } catch { track("\(error)") }
+            } else {
+                Log.verbose("Skipping \(outputPath) as it is empty.")
+            }
+        }
     }
 
     private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult) throws -> String {
