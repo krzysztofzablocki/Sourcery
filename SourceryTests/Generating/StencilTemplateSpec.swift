@@ -90,7 +90,7 @@ class StencilTemplateSpec: QuickSpec {
                     expect(generate("{{ type.MyClass.variables.1.typeName | capitalise }}")).to(equal("Myclass"))
                 }
 
-                fit("checks for string in name") {
+                it("checks for string in name") {
                     expect(generate("{{ type.MyClass.variables.0.typeName | contains:\"my\" }}")).to(equal("true"))
                     expect(generate("{{ type.MyClass.variables.0.typeName | contains:\"xx\" }}")).to(equal("false"))
                     expect(generate("{{ type.MyClass.variables.0.typeName | !contains:\"my\" }}")).to(equal("false"))
