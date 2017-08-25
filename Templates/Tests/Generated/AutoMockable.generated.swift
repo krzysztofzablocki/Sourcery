@@ -39,6 +39,19 @@ class BasicProtocolMock: BasicProtocol {
     }
 
 }
+class CurrencyPresenterMock: CurrencyPresenter {
+
+    //MARK: - showSourceCurrency
+
+    var showSourceCurrencyCalled = false
+    var showSourceCurrencyReceivedCurrency: String?
+
+    func showSourceCurrency(_ currency: String) {
+        showSourceCurrencyCalled = true
+        showSourceCurrencyReceivedCurrency = currency
+    }
+
+}
 class ExtendableProtocolMock: ExtendableProtocol {
     var canReport: Bool!
 

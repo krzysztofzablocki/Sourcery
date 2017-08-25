@@ -47,6 +47,10 @@ protocol ThrowableProtocol: AutoMockable {
     func doOrThrow() throws -> String
 }
 
+protocol CurrencyPresenter: AutoMockable {
+    func showSourceCurrency(_ currency: String)
+}
+
 extension ExtendableProtocol {
     var canReport: Bool { return true }
 
