@@ -15,6 +15,10 @@ import AppKit
 
 
 
+
+
+
+
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
@@ -88,6 +92,21 @@ class InitializationProtocolMock: InitializationProtocol {
     }
 
 }
+class ReservedWordsProtocolMock: ReservedWordsProtocol {
+
+    //MARK: - `continue`
+
+    var continue_with_Called = false
+    var continue_with_ReceivedMessage: String?
+    var continue_with_ReturnValue: String!
+
+    func `continue`(with message: String) -> String {
+        continue_with_Called = true
+        continue_with_ReceivedMessage = message
+        return continue_with_ReturnValue
+    }
+
+}
 class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
 
     //MARK: - start
@@ -108,6 +127,23 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
     func start(plane: String, of model: String) {
         start_plane_of_Called = true
         start_plane_of_ReceivedArguments = (plane: plane, model: model)
+    }
+
+}
+class ThrowableProtocolMock: ThrowableProtocol {
+
+    //MARK: - doOrThrow
+
+    var doOrThrow_ThrowableError: Error?
+    var doOrThrow_Called = false
+    var doOrThrow_ReturnValue: String!
+
+    func doOrThrow() throws -> String {
+        if let error = doOrThrow_ThrowableError {
+            throw error
+        }
+        doOrThrow_Called = true
+        return doOrThrow_ReturnValue
     }
 
 }
