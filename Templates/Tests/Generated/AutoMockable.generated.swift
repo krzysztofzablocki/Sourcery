@@ -16,9 +16,6 @@ import AppKit
 
 
 
-
-
-
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
