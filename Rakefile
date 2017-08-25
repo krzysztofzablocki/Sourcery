@@ -110,7 +110,8 @@ end
 desc "Validate docs"
 task :validate_docs do
   print_info "Checking docs are up to date"
-  sh "sourcekitten doc --module-name SourceryRuntime > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge && rm docs.json"
+  sh "sourcekitten doc --module-name SourceryRuntime -- -workspace Sourcery.xcworkspace -scheme Sourcery-Release -derivedDataPath #{BUILD_DIR}tmp/ > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge && rm docs.json"
+  sh "rm -fr #{BUILD_DIR}tmp/"
 end
 
 ## [ Release ] ##########################################################
