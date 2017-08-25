@@ -20,22 +20,22 @@ class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
 
-    var loadConfiguration_Called = false
-    var loadConfiguration_ReturnValue: String?!
+    var loadConfigurationCalled = false
+    var loadConfigurationReturnValue: String?!
 
     func loadConfiguration() -> String? {
-        loadConfiguration_Called = true
-        return loadConfiguration_ReturnValue
+        loadConfigurationCalled = true
+        return loadConfigurationReturnValue
     }
 
     //MARK: - save
 
-    var save_configuration_Called = false
-    var save_configuration_ReceivedConfiguration: String?
+    var saveConfigurationCalled = false
+    var saveConfigurationReceivedConfiguration: String?
 
     func save(configuration: String) {
-        save_configuration_Called = true
-        save_configuration_ReceivedConfiguration = configuration
+        saveConfigurationCalled = true
+        saveConfigurationReceivedConfiguration = configuration
     }
 
 }
@@ -44,22 +44,22 @@ class ExtendableProtocolMock: ExtendableProtocol {
 
     //MARK: - report
 
-    var report_message_Called = false
-    var report_message_ReceivedMessage: String?
+    var reportMessageCalled = false
+    var reportMessageReceivedMessage: String?
 
     func report(message: String) {
-        report_message_Called = true
-        report_message_ReceivedMessage = message
+        reportMessageCalled = true
+        reportMessageReceivedMessage = message
     }
 
     //MARK: - extension_report
 
-    var extension_report_message_Called = false
-    var extension_report_message_ReceivedMessage: String?
+    var extensionReportMessageCalled = false
+    var extensionReportMessageReceivedMessage: String?
 
     func report(message: String = "Test") {
-        extension_report_message_Called = true
-        extension_report_message_ReceivedMessage = message
+        extensionReportMessageCalled = true
+        extensionReportMessageReceivedMessage = message
     }
 
 }
@@ -67,25 +67,25 @@ class InitializationProtocolMock: InitializationProtocol {
 
     //MARK: - init
 
-    var init_intParameter_stringParameter_optionalParameter_ReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
+    var initIntParameterStringParameterOptionalParameterReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
-        init_intParameter_stringParameter_optionalParameter_ReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
+        initIntParameterStringParameterOptionalParameterReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
     }
     //MARK: - start
 
-    var start_Called = false
+    var startCalled = false
 
     func start() {
-        start_Called = true
+        startCalled = true
     }
 
     //MARK: - stop
 
-    var stop_Called = false
+    var stopCalled = false
 
     func stop() {
-        stop_Called = true
+        stopCalled = true
     }
 
 }
@@ -108,22 +108,22 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
 
     //MARK: - start
 
-    var start_car_of_Called = false
-    var start_car_of_ReceivedArguments: (car: String, model: String)?
+    var startCarOfCalled = false
+    var startCarOfReceivedArguments: (car: String, model: String)?
 
     func start(car: String, of model: String) {
-        start_car_of_Called = true
-        start_car_of_ReceivedArguments = (car: car, model: model)
+        startCarOfCalled = true
+        startCarOfReceivedArguments = (car: car, model: model)
     }
 
     //MARK: - start
 
-    var start_plane_of_Called = false
-    var start_plane_of_ReceivedArguments: (plane: String, model: String)?
+    var startPlaneOfCalled = false
+    var startPlaneOfReceivedArguments: (plane: String, model: String)?
 
     func start(plane: String, of model: String) {
-        start_plane_of_Called = true
-        start_plane_of_ReceivedArguments = (plane: plane, model: model)
+        startPlaneOfCalled = true
+        startPlaneOfReceivedArguments = (plane: plane, model: model)
     }
 
 }
