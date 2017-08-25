@@ -10,6 +10,7 @@
 - Improved config file validation and error reporting
 - Support methods with reserved keywords name in `AutoMockable` template
 - Support methods that throws in `AutoMockable` template
+- Improved `AutoMockable` template naming
 
 
 ## 0.8.0
