@@ -60,7 +60,7 @@ class MethodSpec: QuickSpec {
 
             it("reports isDeinitializer properly") {
                 expect(sut?.isDeinitializer).to(beFalse())
-                expect(Method(name: "deinitObects() {}").isDeinitializer).to(beFalse())
+                expect(Method(name: "deinitObjects() {}").isDeinitializer).to(beFalse())
                 expect(Method(name: "deinit").isDeinitializer).to(beTrue())
             }
 
