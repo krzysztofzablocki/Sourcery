@@ -58,6 +58,12 @@ class MethodSpec: QuickSpec {
                 expect(Method(name: "foo()", definedInTypeName: TypeName("BarAlias", actualTypeName: TypeName("Bar"))).actualDefinedInTypeName).to(equal(TypeName("Bar")))
             }
 
+            it("reports isDeinitializer properly") {
+                expect(sut?.isDeinitializer).to(beFalse())
+                expect(Method(name: "deinitObjects() {}").isDeinitializer).to(beFalse())
+                expect(Method(name: "deinit").isDeinitializer).to(beTrue())
+            }
+
             it("reports isInitializer properly") {
                 expect(sut?.isInitializer).to(beFalse())
                 expect(Method(name: "init()").isInitializer).to(beTrue())
