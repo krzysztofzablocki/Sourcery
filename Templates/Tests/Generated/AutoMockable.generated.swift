@@ -16,6 +16,10 @@ import AppKit
 
 
 
+
+
+
+
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
@@ -106,14 +110,14 @@ class ReservedWordsProtocolMock: ReservedWordsProtocol {
 
     //MARK: - `continue`
 
-    var continue_with_Called = false
-    var continue_with_ReceivedMessage: String?
-    var continue_with_ReturnValue: String!
+    var continueWithCalled = false
+    var continueWithReceivedMessage: String?
+    var continueWithReturnValue: String!
 
     func `continue`(with message: String) -> String {
-        continue_with_Called = true
-        continue_with_ReceivedMessage = message
-        return continue_with_ReturnValue
+        continueWithCalled = true
+        continueWithReceivedMessage = message
+        return continueWithReturnValue
     }
 
 }
@@ -144,16 +148,16 @@ class ThrowableProtocolMock: ThrowableProtocol {
 
     //MARK: - doOrThrow
 
-    var doOrThrow_ThrowableError: Error?
-    var doOrThrow_Called = false
-    var doOrThrow_ReturnValue: String!
+    var doOrThrowThrowableError: Error?
+    var doOrThrowCalled = false
+    var doOrThrowReturnValue: String!
 
     func doOrThrow() throws -> String {
-        if let error = doOrThrow_ThrowableError {
+        if let error = doOrThrowThrowableError {
             throw error
         }
-        doOrThrow_Called = true
-        return doOrThrow_ReturnValue
+        doOrThrowCalled = true
+        return doOrThrowReturnValue
     }
 
 }

@@ -8,7 +8,7 @@ import UIKit
 import AppKit
 #endif
 
-{% macro swiftify name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
+{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 {% macro swiftifyExtensionMethodName name %}extension{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase }}{% endmacro %}
 
 {% macro extensionMethodThrowableErrorDeclaration method %}
@@ -16,7 +16,7 @@ import AppKit
 {% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}
-    var {% call swiftify method.selectorName %}ThrowableError: Error?
+    var {% call swiftifyMethodName method.selectorName %}ThrowableError: Error?
 {% endmacro %}
 
 {% macro extensionMethodThrowableErrorUsage method %}
@@ -26,7 +26,7 @@ import AppKit
 {% endmacro %}
 
 {% macro methodThrowableErrorUsage method %}
-        if let error = {% call swiftify method.selectorName %}ThrowableError {
+        if let error = {% call swiftifyMethodName method.selectorName %}ThrowableError {
             throw error
         }
 {% endmacro %}
@@ -58,7 +58,7 @@ import AppKit
         {% call methodThrowableErrorDeclaration method %}
     {% endif %}
     {% if not method.isInitializer %}
-    var {% call swiftify method.selectorName %}Called = false{% endif %}
+    var {% call swiftifyMethodName method.selectorName %}Called = false{% endif %}
     {% if method.parameters.count == 1 %}
     var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
@@ -77,7 +77,7 @@ import AppKit
         {% if method.throws %}
         {% call methodThrowableErrorUsage method %}
         {% endif %}
-        {% call swiftify method.selectorName %}Called = true
+        {% call swiftifyMethodName method.selectorName %}Called = true
         {% call methodReceivedParameters method %}
         {% if not method.returnTypeName.isVoid %}return {% call swiftifyMethodName method.selectorName %}ReturnValue{% endif %}
     }
@@ -91,7 +91,7 @@ import AppKit
     {% if method.throws %}
     {% call extensionMethodThrowableErrorDeclaration method %}
     {% endif %}
-    {% if not method.isInitializer %}var extension_{% call swiftifyExtensionMethodName method.selectorName %}Called = false{% endif %}
+    {% if not method.isInitializer %}var {% call swiftifyExtensionMethodName method.selectorName %}Called = false{% endif %}
     {% if method.parameters.count == 1 %}
     var {% call swiftifyExtensionMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
@@ -110,7 +110,7 @@ import AppKit
         {% if method.throws %}
         {% call extensionMethodThrowableErrorUsage method %}
         {% endif %}
-        extension_{% call swiftifyExtensionMethodName method.selectorName %}Called = true
+        {% call swiftifyExtensionMethodName method.selectorName %}Called = true
         {% call extensionMethodReceivedParameters method %}
         {% if not method.returnTypeName.isVoid %}return {% call swiftifyExtensionMethodName method.selectorName %}ReturnValue{% endif %}
     }
