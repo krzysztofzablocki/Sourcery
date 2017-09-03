@@ -221,8 +221,13 @@ public class TypesCollection: NSObject, AutoJSExport {
     }
 
     /// :nodoc:
-    public subscript(_ key: String) -> Any? {
-        return value(forKey: key)
+    public subscript(_ key: String) -> [Type]? {
+        do {
+            return try types(forKey: key)
+        } catch {
+            Log.error(error)
+            return nil
+        }
     }
 
 }
