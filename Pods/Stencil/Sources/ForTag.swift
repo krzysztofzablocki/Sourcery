@@ -110,6 +110,7 @@ class ForNode : NodeType {
           "first": index == 0,
           "last": index == (count - 1),
           "counter": index + 1,
+          "counter0": index,
         ]
 
         return try context.push(dictionary: ["forloop": forContext]) {
