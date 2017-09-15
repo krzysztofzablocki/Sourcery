@@ -119,8 +119,8 @@ extension Stencil.Extension {
         })
 
         registerBoolFilterOrWithArguments("contains",
-                                          filter: { (s1: String, s2) in s1.contains(s2) },
-                                          other: { (t: TypeName, s2) in t.name.contains(s2) })
+                                          filter: { (s1: String, s2: String) in s1.contains(s2) },
+                                          other: { (t: TypeName, s2: String) in t.name.contains(s2) })
         registerBoolFilterOrWithArguments("hasPrefix",
                                           filter: { (s1: String, s2) in s1.hasPrefix(s2) },
                                           other: { (t: TypeName, s2) in t.name.hasPrefix(s2) })
