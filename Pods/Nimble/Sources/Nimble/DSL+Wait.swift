@@ -29,7 +29,7 @@ internal class NMBWait: NSObject {
         action: @escaping (@escaping () -> Void) throws -> Void) {
             let awaiter = NimbleEnvironment.activeInstance.awaiter
             let leeway = timeout / 2.0
-            let result = awaiter.performBlock { (done: @escaping (ErrorResult) -> Void) throws -> Void in
+        let result = awaiter.performBlock(file: file, line: line) { (done: @escaping (ErrorResult) -> Void) throws -> Void in
                 DispatchQueue.main.async {
                     let capture = NMBExceptionCapture(
                         handler: ({ exception in

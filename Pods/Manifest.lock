@@ -1,7 +1,7 @@
 PODS:
   - Commander (0.6.0)
   - libCommonCrypto (0.1.1)
-  - Nimble (6.1.0)
+  - Nimble (7.0.1)
   - PathKit (0.8.0)
   - Quick (1.1.0)
   - SourceKittenFramework (0.17.2):
@@ -40,7 +40,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Commander: fba7c96c9e787ecc8ebe0737be875e1e18ef47ff
   libCommonCrypto: 8bc2f53375ef9815ddd9dd663e110e1cced41747
-  Nimble: c53e6903fee94041b90ded74f135820437d8bf59
+  Nimble: 657d000e11df8aebe27cdaf9d244de7f30ed87f7
   PathKit: dcab05d701474011aae0e40cf892298a831f63d6
   Quick: dafc587e21eed9f4cab3249b9f9015b0b7a7f71d
   SourceKittenFramework: 4e780f9b34bf751f26c12f1806a3426bcdd98864
@@ -53,4 +53,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: af49710984dec35407e540cfd2809ca172fb99c7
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.3.0
