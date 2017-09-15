@@ -115,11 +115,19 @@ private let floatFormatter = numberFormatter(with: 7)
 // TODO: Support `Float80`
 //extension Float80: NodeRepresentable {}
 
+#if swift(>=4.0)
+extension BinaryInteger {
+    public func represented() throws -> Node {
+        return Node(String(describing: self), Tag(.int))
+    }
+}
+#else
 extension Integer {
     public func represented() throws -> Node {
         return Node(String(describing: self), Tag(.int))
     }
 }
+#endif
 
 extension Int: NodeRepresentable {}
 extension Int16: NodeRepresentable {}
@@ -154,14 +162,14 @@ extension Optional: NodeRepresentable {
 
 extension Array: NodeRepresentable {
     public func represented() throws -> Node {
-        let nodes = try flatMap(represent)
+        let nodes = try map(represent)
         return Node(nodes, Tag(.seq))
     }
 }
 
 extension Dictionary: NodeRepresentable {
     public func represented() throws -> Node {
-        let pairs = try map { (key: try represent($0), value: try represent($1)) }
+        let pairs = try map { (key: try represent($0.0), value: try represent($0.1)) }
         return Node(pairs.sorted { $0.key < $1.key }, Tag(.map))
     }
 }

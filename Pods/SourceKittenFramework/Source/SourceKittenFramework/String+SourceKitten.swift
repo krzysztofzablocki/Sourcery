@@ -32,8 +32,6 @@ private let commentLinePrefixCharacterSet: CharacterSet = {
     return characterSet
 }()
 
-private var keyCacheContainer = 0
-
 extension NSString {
     /**
     CacheContainer caches:
@@ -171,40 +169,26 @@ extension NSString {
         }
 
         func lineAndCharacter(forByteOffset offset: Int) -> (line: Int, character: Int)? {
-            let index = lines.index(where: { NSLocationInRange(offset, $0.byteRange) })
-            return index.map {
-                let line = lines[$0]
-
-                let character: Int
-                let content = line.content
-                let length = offset - line.byteRange.location + 1
-                if length == line.byteRange.length {
-                    character = content.utf16.count
-                } else {
-                    let utf8View = content.utf8
-                    let endIndex = utf8View.index(utf8View.startIndex, offsetBy: length, limitedBy: utf8View.endIndex)!
-                        .samePosition(in: content.utf16)!
-                    character = content.utf16.distance(from: content.utf16.startIndex, to: endIndex)
-                }
-                return (line: line.index, character: character)
-            }
+            let characterOffset = location(fromByteOffset: offset)
+            return lineAndCharacter(forCharacterOffset: characterOffset)
         }
     }
+
+    static private var stringCache = [NSString: CacheContainer]()
+    static private var stringCacheLock = NSLock()
 
     /**
     CacheContainer instance is stored to instance of NSString as associated object.
     */
     private var cacheContainer: CacheContainer {
-        #if os(Linux)
-        return CacheContainer(self)
-        #else
-        if let cache = objc_getAssociatedObject(self, &keyCacheContainer) as? CacheContainer {
+        NSString.stringCacheLock.lock()
+        defer { NSString.stringCacheLock.unlock() }
+        if let cache = NSString.stringCache[self] {
             return cache
         }
         let cache = CacheContainer(self)
-        objc_setAssociatedObject(self, &keyCacheContainer, cache, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        NSString.stringCache[self] = cache
         return cache
-        #endif
     }
 
     /**
@@ -428,7 +412,7 @@ extension String {
         let matches = regex.matches(in: self, options: [], range: range)
 
         return matches.flatMap { match in
-            let markRange = match.rangeAt(2)
+            let markRange = match.range(at: 2)
             for excludedRange in excludeRanges {
                 if NSIntersectionRange(excludedRange, markRange).length > 0 {
                     return nil
@@ -512,7 +496,7 @@ extension String {
                     return []
                 }
                 return (1..<numberOfRanges).map { rangeIndex in
-                    let range = match.rangeAt(rangeIndex)
+                    let range = match.range(at: rangeIndex)
                     if range.location == NSNotFound {
                         return "" // empty capture group, return empty string
                     }
@@ -557,7 +541,12 @@ extension String {
 
         return lineComponents.map { line in
             if line.characters.count >= minLeadingCharacters {
-                return line[line.index(line.startIndex, offsetBy: minLeadingCharacters)..<line.endIndex]
+#if swift(>=3.2)
+                return String(line[line.index(line.startIndex, offsetBy: minLeadingCharacters)...])
+#else
+                let range: Range = line.index(line.startIndex, offsetBy: minLeadingCharacters)..<line.endIndex
+                return line.substring(with: range)
+#endif
             }
             return line
         }.joined(separator: "\n")
@@ -586,63 +575,17 @@ extension String {
         unwantedSet.insert(charactersIn: "{")
         return trimmingCharacters(in: unwantedSet)
     }
-}
 
-// MARK: - migration support
-extension NSString {
-    @available(*, unavailable, renamed: "lineAndCharacter(forCharacterOffset:)")
-    public func lineAndCharacterForCharacterOffset(_ offset: Int) -> (line: Int, character: Int)? {
-        fatalError()
-    }
-
-    @available(*, unavailable, renamed: "lineAndCharacter(forByteOffset:)")
-    public func lineAndCharacterForByteOffset(_ offset: Int) -> (line: Int, character: Int)? {
-        fatalError()
-    }
-
-    @available(*, unavailable, renamed: "trimmingTrailingCharacters(in:)")
-    public func stringByTrimmingTrailingCharactersInSet(_ characterSet: CharacterSet) -> String {
-        fatalError()
-    }
-
-    @available(*, unavailable, renamed: "absolutePathRepresentation(rootDirectory:)")
-    public func absolutePathRepresentation(_ rootDirectory: String = FileManager.default.currentDirectoryPath) -> String {
-        fatalError()
-    }
-
-#if !os(Linux)
-    @available(*, unavailable, renamed: "substringWithSourceRange(start:end:)")
-    public func substringWithSourceRange(_ start: SourceLocation, end: SourceLocation) -> String? {
-        fatalError()
-    }
+    /// Returns the byte offset of the section of the string following the last dot ".", or 0 if no dots.
+    internal func byteOffsetOfInnerTypeName() -> Int64 {
+        guard let range = range(of: ".", options: .backwards) else {
+            return 0
+        }
+#if swift(>=4.0)
+        let utf8pos = index(after: range.lowerBound).samePosition(in: utf8)!
+#else
+        let utf8pos = index(after: range.lowerBound).samePosition(in: utf8)
 #endif
-}
-
-extension String {
-#if !os(Linux)
-    @available(*, unavailable, renamed: "pragmaMarks(_:excludeRanges:limit:)")
-    public func pragmaMarks(_ filename: String, excludeRanges: [NSRange], limitRange: NSRange?) -> [SourceDeclaration] {
-        fatalError()
-    }
-#endif
-
-    @available(*, unavailable, renamed: "documentedTokenOffsets(syntaxMap:)")
-    public func documentedTokenOffsets(_ syntaxMap: SyntaxMap) -> [Int] {
-        fatalError()
-    }
-
-    @available(*, unavailable, renamed: "commentBody(range:)")
-    public func commentBody(_ range: NSRange? = nil) -> String? {
-        fatalError()
-    }
-
-    @available(*, unavailable, renamed: "removingCommonLeadingWhitespaceFromLines()")
-    public func stringByRemovingCommonLeadingWhitespaceFromLines() -> String {
-        fatalError()
-    }
-
-    @available(*, unavailable, renamed: "countOfLeadingCharacters(in:)")
-    public func countOfLeadingCharactersInSet(_ characterSet: CharacterSet) -> Int {
-        fatalError()
+        return Int64(utf8.distance(from: utf8.startIndex, to: utf8pos))
     }
 }

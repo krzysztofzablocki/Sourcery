@@ -267,5 +267,3 @@ extension Node {
         return false
     }
 }
-
-// swiftlint:disable:this file_length

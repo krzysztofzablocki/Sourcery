@@ -45,7 +45,7 @@ Then create a `Podfile` with the following contents:
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 
-pod 'SWXMLHash', '~> 3.0.0'
+pod 'SWXMLHash', '~> 4.0.0'
 ```
 
 Finally, run the following command to install it:
@@ -66,7 +66,7 @@ $ brew install carthage
 Then add the following line to your `Cartfile`:
 
 ```
-github "drmohundro/SWXMLHash" ~> 3.0
+github "drmohundro/SWXMLHash" ~> 4.0
 ```
 
 ### Manual Installation
@@ -77,7 +77,7 @@ To install manually, you'll need to clone the SWXMLHash repository. You can do t
 
 ## Getting Started
 
-If you're just getting started with SWXMLHash, I'd recommend cloning the repository down and opening the workspace. I've included a Swift playground in the workspace which makes it *very* easy to experiment with the API and the calls.
+If you're just getting started with SWXMLHash, I'd recommend cloning the repository down and opening the workspace. I've included a Swift playground in the workspace which makes it easy to experiment with the API and the calls.
 
 <img src="https://raw.githubusercontent.com/drmohundro/SWXMLHash/assets/swift-playground@2x.png" width="600" alt="Swift Playground" />
 
@@ -95,11 +95,17 @@ let xml = SWXMLHash.config {
 The available options at this time are:
 
 * `shouldProcessLazily`
-    * This determines whether not to use lazy loading of the XML. It can significantly increase the performance of parsing if your XML is very large.
+    * This determines whether not to use lazy loading of the XML. It can significantly increase the performance of parsing if your XML is large.
     * Defaults to `false`
 * `shouldProcessNamespaces`
     * This setting is forwarded on to the internal `NSXMLParser` instance. It will return any XML elements without their namespace parts (i.e. "\<h:table\>" will be returned as "\<table\>")
     * Defaults to `false`
+* `caseInsensitive`
+    * This setting allows for key lookups to be case insensitive. Typically XML is a case sensitive language, but this option lets you bypass this if necessary.
+    * Defaults to `false`
+* `encoding`
+    * This setting allows for explicitly specifying the character encoding when an XML string is passed to `parse`.
+    * Defaults to `String.encoding.utf8`
 
 ## Examples
 
@@ -227,14 +233,6 @@ for elem in xml["root"]["catalog"]["book"].all {
 }
 ```
 
-Alternatively, XMLIndexer provides `for-in` support directly from the index (no `all` needed in this case).
-
-```swift
-for elem in xml["root"]["catalog"]["book"] {
-  print(elem["genre"].element!.text!)
-}
-```
-
 ### Returning All Child Elements At Current Level
 
 Given:
@@ -280,9 +278,9 @@ __Or__ using the existing indexing functionality:
 
 ```swift
 switch xml["root"]["what"]["header"]["foo"] {
-case .Element(let elem):
+case .element(let elem):
   // everything is good, code away!
-case .XMLError(let error):
+case .xmlError(let error):
   // error is an IndexingError instance that you can deal with
 }
 ```
@@ -300,17 +298,29 @@ Given:
       <title>Book A</title>
       <price>12.5</price>
       <year>2015</year>
+      <categories>
+        <category>C1</category>
+        <category>C2</category>
+      </categories>
     </book>
     <book isbn="0000000002">
       <title>Book B</title>
       <price>10</price>
       <year>1988</year>
+      <categories>
+        <category>C2</category>
+        <category>C3</category>
+      </categories>
     </book>
     <book isbn="0000000003">
       <title>Book C</title>
       <price>8.33</price>
       <year>1990</year>
       <amount>10</amount>
+      <categories>
+        <category>C1</category>
+        <category>C3</category>
+      </categories>
     </book>
   <books>
 </root>
@@ -324,6 +334,7 @@ struct Book: XMLIndexerDeserializable {
     let year: Int
     let amount: Int?
     let isbn: Int
+    let category: [String]
 
     static func deserialize(_ node: XMLIndexer) throws -> Book {
         return try Book(
@@ -331,7 +342,8 @@ struct Book: XMLIndexerDeserializable {
             price: node["price"].value(),
             year: node["year"].value(),
             amount: node["amount"].value(),
-            isbn: node.value(ofAttribute: "isbn")
+            isbn: node.value(ofAttribute: "isbn"),
+            category : node["categories"]["category"].value()
         )
     }
 }
@@ -390,7 +402,7 @@ See below for the code snippet to get this to work and note in particular the `p
 extension NSDate: XMLElementDeserializable {
   public static func deserialize(_ element: XMLElement) throws -> Self {
     guard let dateAsString = element.text else {
-      throw XMLDeserializationError.NodeHasNoValue
+      throw XMLDeserializationError.nodeHasNoValue
     }
 
     let dateFormatter = NSDateFormatter()
@@ -398,7 +410,7 @@ extension NSDate: XMLElementDeserializable {
     let date = dateFormatter.dateFromString(dateAsString)
 
     guard let validDate = date else {
-      throw XMLDeserializationError.TypeConversionFailed(type: "Date", element: element)
+      throw XMLDeserializationError.typeConversionFailed(type: "Date", element: element)
     }
 
     // NOTE THIS

@@ -145,6 +145,17 @@ public enum SwiftDocKey: String {
     }
 
     /**
+     Get name string from dictionary.
+
+     - parameter dictionary: Dictionary to get value from.
+
+     - returns: Name string if successful.
+     */
+    internal static func getName(_ dictionary: [String: SourceKitRepresentable]) -> String? {
+        return get(.name, dictionary)
+    }
+
+    /**
     Get type name string from dictionary.
 
     - parameter dictionary: Dictionary to get value from.
@@ -244,110 +255,20 @@ public enum SwiftDocKey: String {
     }
 }
 
-// MARK: - migration support
+// MARK: - higher-level helpers
 extension SwiftDocKey {
-    @available(*, unavailable, renamed: "annotatedDeclaration")
-    public static var AnnotatedDeclaration: SwiftDocKey { fatalError() }
+    /**
+     Get the best offset from the dictionary.
 
-    @available(*, unavailable, renamed: "bodyLength")
-    public static var BodyLength: SwiftDocKey { fatalError() }
+     - parameter dictionary: Dictionary to get value from.
 
-    @available(*, unavailable, renamed: "bodyOffset")
-    public static var BodyOffset: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "diagnosticStage")
-    public static var DiagnosticStage: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "filePath")
-    public static var FilePath: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "fullXMLDocs")
-    public static var FullXMLDocs: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "kind")
-    public static var Kind: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "length")
-    public static var Length: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "name")
-    public static var Name: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "nameLength")
-    public static var NameLength: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "nameOffset")
-    public static var NameOffset: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "offset")
-    public static var Offset: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "substructure")
-    public static var Substructure: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "syntaxMap")
-    public static var SyntaxMap: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "typeName")
-    public static var TypeName: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "inheritedtypes")
-    public static var Inheritedtypes: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docColumn")
-    public static var DocColumn: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "documentationComment")
-    public static var DocumentationComment: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docDeclaration")
-    public static var DocDeclaration: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docDiscussion")
-    public static var DocDiscussion: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docFile")
-    public static var DocFile: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docLine")
-    public static var DocLine: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docName")
-    public static var DocName: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docParameters")
-    public static var DocParameters: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docResultDiscussion")
-    public static var DocResultDiscussion: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "docType")
-    public static var DocType: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "usr")
-    public static var USR: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "parsedDeclaration")
-    public static var ParsedDeclaration: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "parsedScopeEnd")
-    public static var ParsedScopeEnd: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "parsedScopeStart")
-    public static var ParsedScopeStart: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "swiftDeclaration")
-    public static var SwiftDeclaration: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "alwaysDeprecated")
-    public static var AlwaysDeprecated: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "alwaysUnavailable")
-    public static var AlwaysUnavailable: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "deprecationMessage")
-    public static var DeprecationMessage: SwiftDocKey { fatalError() }
-
-    @available(*, unavailable, renamed: "unavailableMessage")
-    public static var UnavailableMessage: SwiftDocKey { fatalError() }
+     - returns: Best 'offset' for the declaration.  Name offset normally preferable,
+       but some eg. enumcase have invalid 0 here.
+     */
+    internal static func getBestOffset(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
+        if let nameOffset = getNameOffset(dictionary), nameOffset > 0 {
+            return nameOffset
+        }
+        return getOffset(dictionary)
+    }
 }

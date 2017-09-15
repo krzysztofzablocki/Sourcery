@@ -93,7 +93,11 @@ extension CXCursor {
         guard let rootXML = SWXMLHash.parse(commentXML).children.first else {
             fatalError("couldn't parse XML")
         }
-        return rootXML["Declaration"].element?.text?
+        guard let text = rootXML["Declaration"].element?.text,
+            !text.isEmpty else {
+                return nil
+        }
+        return text
             .replacingOccurrences(of: "\n@end", with: "")
             .replacingOccurrences(of: "@property(", with: "@property (")
     }
@@ -116,8 +120,8 @@ extension CXCursor {
             let range = NSRange(location: 0, length: usrNSString.length)
             let matches = regex.matches(in: usrNSString as String, options: [], range: range)
             if !matches.isEmpty {
-                let categoryOn = usrNSString.substring(with: matches[0].rangeAt(1))
-                let categoryName = ext ? "" : usrNSString.substring(with: matches[0].rangeAt(2))
+                let categoryOn = usrNSString.substring(with: matches[0].range(at: 1))
+                let categoryName = ext ? "" : usrNSString.substring(with: matches[0].range(at: 2))
                 return "\(categoryOn)(\(categoryName))"
             } else {
                 fatalError("Couldn't get category name")
@@ -200,7 +204,7 @@ extension CXCursor {
             swiftUUID = NSUUID().uuidString
             setUUIDString(uidString: swiftUUID, for: file)
             // Generate Swift interface, associating it with the UUID
-            _ = Request.interface(file: file, uuid: swiftUUID).send()
+            _ = Request.interface(file: file, uuid: swiftUUID, arguments: compilerArguments).send()
         }
 
         guard let usr = usr(),
@@ -209,11 +213,17 @@ extension CXCursor {
         }
 
         let cursorInfo = Request.cursorInfo(file: swiftUUID, offset: usrOffset, arguments: compilerArguments).send()
-        guard let docsXML = cursorInfo[SwiftDocKey.fullXMLDocs.rawValue] as? String,
-              let swiftDeclaration = SWXMLHash.parse(docsXML).children.first?["Declaration"].element?.text else {
-                return nil
+        if let docsXML = cursorInfo[SwiftDocKey.fullXMLDocs.rawValue] as? String,
+           let swiftDeclaration = SWXMLHash.parse(docsXML).children.first?["Declaration"].element?.text {
+                return swiftDeclaration
         }
-        return swiftDeclaration
+
+        if let annotatedDeclarationXML = cursorInfo[SwiftDocKey.annotatedDeclaration.rawValue] as? String,
+           let swiftDeclaration = SWXMLHash.parse(annotatedDeclarationXML).element?.recursiveText {
+                return swiftDeclaration
+        }
+
+        return nil
     }
 }
 
