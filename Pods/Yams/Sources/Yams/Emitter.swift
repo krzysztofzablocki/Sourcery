@@ -369,9 +369,9 @@ extension Emitter {
                 mapping_style)
         }
         try emit(&event)
-        try mapping.forEach { (key, value) in
-            try self.serializeNode(key)
-            try self.serializeNode(value)
+        try mapping.forEach {
+            try self.serializeNode($0.key)
+            try self.serializeNode($0.value)
         }
         yaml_mapping_end_event_initialize(&event)
         try emit(&event)

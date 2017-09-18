@@ -63,6 +63,34 @@ public struct SourceDeclaration {
         return accessorUSR(getter: false)
     }
 
+    private enum AccessorType {
+        case `class`, instance
+
+        var propertyTypeString: String {
+            switch self {
+            case .class: return "(cpy)"
+            case .instance: return "(py)"
+            }
+        }
+
+        var methodTypeString: String {
+            switch self {
+            case .class: return "(cm)"
+            case .instance: return "(im)"
+            }
+        }
+    }
+
+    private func propertyTypeStringStartAndAcessorType(usr: String) -> (String.Index, AccessorType) {
+        if let accessorTypeStringStartIndex = usr.range(of: AccessorType.class.propertyTypeString)?.lowerBound {
+            return (accessorTypeStringStartIndex, .class)
+        } else if let accessorTypeStringStartIndex = usr.range(of: AccessorType.instance.propertyTypeString)?.lowerBound {
+            return (accessorTypeStringStartIndex, .instance)
+        } else {
+            fatalError("expected an instance or class property by got \(usr)")
+        }
+    }
+
     private func accessorUSR(getter: Bool) -> String {
         assert(type == .property)
         guard let usr = usr else {
@@ -71,47 +99,31 @@ public struct SourceDeclaration {
         guard let declaration = declaration else {
             fatalError("Couldn't extract declaration")
         }
-        enum AccessorType { // swiftlint:disable:this nesting
-            case `class`, instance
 
-            var propertyTypeString: String {
-                switch self {
-                case .class: return "(cpy)"
-                case .instance: return "(py)"
-                }
-            }
-
-            var methodTypeString: String {
-                switch self {
-                case .class: return "(cm)"
-                case .instance: return "(im)"
-                }
-            }
-        }
-        let propertyTypeStringStart: String.Index
-        let accessorType: AccessorType
-        if let accessorTypeStringStartIndex = usr.range(of: AccessorType.class.propertyTypeString)?.lowerBound {
-            propertyTypeStringStart = accessorTypeStringStartIndex
-            accessorType = .class
-        } else if let accessorTypeStringStartIndex = usr.range(of: AccessorType.instance.propertyTypeString)?.lowerBound {
-            propertyTypeStringStart = accessorTypeStringStartIndex
-            accessorType = .instance
-        } else {
-            fatalError("expected an instance or class property by got \(usr)")
-        }
+        let (propertyTypeStringStart, accessorType) = propertyTypeStringStartAndAcessorType(usr: usr)
         let nsDeclaration = declaration as NSString
+#if swift(>=3.2)
+        let usrPrefix = usr[..<propertyTypeStringStart]
+#else
         let usrPrefix = usr.substring(to: propertyTypeStringStart)
-        let regex = try! NSRegularExpression(pattern: getter ? "getter\\s*=\\s*(\\w+)" : "setter\\s*=\\s*(\\w+:)")
+#endif
+        let pattern = getter ? "getter\\s*=\\s*(\\w+)" : "setter\\s*=\\s*(\\w+:)"
+        let regex = try! NSRegularExpression(pattern: pattern)
         let matches = regex.matches(in: declaration, options: [], range: NSRange(location: 0, length: nsDeclaration.length))
         if !matches.isEmpty {
-            let accessorName = nsDeclaration.substring(with: matches[0].rangeAt(1))
+            let accessorName = nsDeclaration.substring(with: matches[0].range(at: 1))
             return usrPrefix + accessorType.methodTypeString + accessorName
         } else if getter {
             return usr.replacingOccurrences(of: accessorType.propertyTypeString, with: accessorType.methodTypeString)
         }
         // Setter
         let setterOffset = accessorType.propertyTypeString.characters.count
-        let capitalizedSetterName = usr.substring(from: usr.characters.index(propertyTypeStringStart, offsetBy: setterOffset)).capitalizingFirstLetter()
+        let from = usr.index(propertyTypeStringStart, offsetBy: setterOffset)
+#if swift(>=3.2)
+        let capitalizedSetterName = String(usr[from...]).capitalizingFirstLetter()
+#else
+        let capitalizedSetterName = usr.substring(from: from).capitalizingFirstLetter()
+#endif
         return "\(usrPrefix)\(accessorType.methodTypeString)set\(capitalizedSetterName):"
     }
 }
@@ -182,11 +194,5 @@ extension SourceDeclaration: Comparable {}
 /// over instances of `Self`.
 public func < (lhs: SourceDeclaration, rhs: SourceDeclaration) -> Bool {
     return lhs.location < rhs.location
-}
-
-// MARK: - migration support
-@available(*, unavailable, renamed: "insertMarks(declarations:limit:)")
-public func insertMarks(_ declarations: [SourceDeclaration], limitRange: NSRange? = nil) -> [SourceDeclaration] {
-    fatalError()
 }
 #endif

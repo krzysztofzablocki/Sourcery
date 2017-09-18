@@ -13,7 +13,7 @@
 ### Bug fixes
 
 - Fixed single file generation not skipping writing the file when there is no generated content
-
+- Updated dependencies for Swift 4
 
 ## 0.8.0
 

@@ -203,7 +203,7 @@ public enum Request {
     /// for which to generate code completion options and array of compiler arguments.
     case codeCompletionRequest(file: String, contents: String, offset: Int64, arguments: [String])
     /// ObjC Swift Interface
-    case interface(file: String, uuid: String)
+    case interface(file: String, uuid: String, arguments: [String])
     /// Find USR
     case findUSR(file: String, usr: String)
     /// Index
@@ -257,9 +257,14 @@ public enum Request {
                 sourcekitd_uid_get_from_cstr("key.offset"): sourcekitd_request_int64_create(offset),
                 sourcekitd_uid_get_from_cstr("key.compilerargs"): sourcekitd_request_array_create(&compilerargs, compilerargs.count)
             ]
-        case .interface(let file, let uuid):
-            let arguments = ["-x", "objective-c", file, "-isysroot", sdkPath()]
-            var compilerargs = arguments.map({ sourcekitd_request_string_create($0) })
+        case .interface(let file, let uuid, var arguments):
+            if !arguments.contains("-x") {
+                arguments.append(contentsOf: ["-x", "objective-c"])
+            }
+            if !arguments.contains("-isysroot") {
+                arguments.append(contentsOf: ["-isysroot", sdkPath()])
+            }
+            var compilerargs = ([file] + arguments).map({ sourcekitd_request_string_create($0) })
             dict = [
                 sourcekitd_uid_get_from_cstr("key.request"):
                     sourcekitd_request_uid_create(sourcekitd_uid_get_from_cstr("source.request.editor.open.interface.header")),
@@ -445,34 +450,49 @@ private func interfaceForModule(_ module: String, compilerArguments: [String]) -
 }
 
 extension String {
+    private func nameFromFullFunctionName() -> String {
+#if swift(>=3.2)
+        return String(self[..<range(of: "(")!.lowerBound])
+#else
+        return substring(to: range(of: "(")!.lowerBound)
+#endif
+    }
+
     fileprivate func extractFreeFunctions(inSubstructure substructure: [[String: SourceKitRepresentable]]) -> [String] {
         return substructure.filter({
             SwiftDeclarationKind(rawValue: SwiftDocKey.getKind($0)!) == .functionFree
         }).flatMap { function -> String? in
-            let fullFunctionName = function["key.name"] as! String
-            let name = fullFunctionName.substring(to: fullFunctionName.range(of: "(")!.lowerBound)
+            let name = (function["key.name"] as! String).nameFromFullFunctionName()
             let unsupportedFunctions = [
                 "clang_executeOnThread",
                 "sourcekitd_variant_dictionary_apply",
                 "sourcekitd_variant_array_apply"
-                ]
+            ]
             guard !unsupportedFunctions.contains(name) else {
                 return nil
             }
 
-            var parameters = [String]()
-            if let functionSubstructure = SwiftDocKey.getSubstructure(function) {
-                for parameterStructure in functionSubstructure {
-                    parameters.append((parameterStructure as! [String: SourceKitRepresentable])["key.typename"] as! String)
-                }
-            }
+            let parameters = SwiftDocKey.getSubstructure(function)?.map { parameterStructure in
+                return (parameterStructure as! [String: SourceKitRepresentable])["key.typename"] as! String
+            } ?? []
             var returnTypes = [String]()
             if let offset = SwiftDocKey.getOffset(function), let length = SwiftDocKey.getLength(function) {
                 let start = index(startIndex, offsetBy: Int(offset))
                 let end = index(start, offsetBy: Int(length))
-                let functionDeclaration = substring(with: start..<end)
+#if swift(>=4.0)
+                let functionDeclaration = String(self[start..<end])
+#else
+                let functionDeclaration = self[start..<end]
+#endif
                 if let startOfReturnArrow = functionDeclaration.range(of: "->", options: .backwards)?.lowerBound {
+#if swift(>=3.2)
+                    let adjustedDistance = distance(from: startIndex, to: startOfReturnArrow)
+                    let adjustedReturnTypeStartIndex = functionDeclaration.index(functionDeclaration.startIndex,
+                                                                                 offsetBy: adjustedDistance + 3)
+                    returnTypes.append(String(functionDeclaration[adjustedReturnTypeStartIndex...]))
+#else
                     returnTypes.append(functionDeclaration.substring(from: functionDeclaration.index(startOfReturnArrow, offsetBy: 3)))
+#endif
                 }
             }
 
@@ -512,52 +532,4 @@ internal func libraryWrapperForModule(_ module: String, loadPath: String, linuxP
         endPlatformCheck = "\n"
     }
     return startPlatformCheck + spmImport + library + freeFunctions.joined(separator: "\n") + endPlatformCheck
-}
-
-// MARK: - migration support
-extension Request {
-    // swiftlint:disable identifier_name
-    @available(*, unavailable, renamed: "editorOpen(file:)")
-    public static func EditorOpen(_: File) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "cursorInfo(file:offset:arguments:)")
-    public static func CursorInfo(file: String, offset: Int64, arguments: [String]) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "customRequest(request:)")
-    public static func CustomRequest(_: sourcekitd_object_t) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "codeCompletionRequest(file:contents:offset:arguments:)")
-    public static func CodeCompletionRequest(file: String, contents: String, offset: Int64, arguments: [String]) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "interface(file:uuid:)")
-    public static func Interface(file: String, uuid: String) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "findUSR(file:usr:)")
-    public static func FindUSR(file: String, usr: String) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "index(file:arguments:)")
-    public static func Index(file: String, arguments: [String]) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "format(file:line:useTabs:indentWith:)")
-    public static func Format(file: String, line: Int64, useTabs: Bool, indentWidth: Int64) -> Request { fatalError() }
-
-    @available(*, unavailable, renamed: "replaceText(file:offset:length:sourceText:)")
-    public static func ReplaceText(file: String, offset: Int64, length: Int64, sourceText: String) -> Request { fatalError() }
-}
-
-extension Request.Error {
-    @available(*, unavailable, renamed: "connectionInterrupted(_:)")
-    public static func ConnectionInterrupted(_: String?) -> Request.Error { fatalError() }
-
-    @available(*, unavailable, renamed: "invalid(_:)")
-    public static func Invalid(_: String?) -> Request.Error { fatalError() }
-
-    @available(*, unavailable, renamed: "failed(_:)")
-    public static func Failed(_: String?) -> Request.Error { fatalError() }
-
-    @available(*, unavailable, renamed: "cancelled(_:)")
-    public static func Cancelled(_: String?) -> Request.Error { fatalError() }
-
-    @available(*, unavailable, renamed: "unknown(_:)")
-    public static func Unknown(_: String?) -> Request.Error { fatalError() }
 }

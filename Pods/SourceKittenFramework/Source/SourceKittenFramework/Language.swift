@@ -13,16 +13,3 @@ public enum Language {
     /// Objective-C.
     case objc
 }
-
-// MARK: - migration support
-extension Language {
-    @available(*, unavailable, renamed: "swift")
-    public static var Swift: Language {
-        fatalError()
-    }
-
-    @available(*, unavailable, renamed: "objc")
-    public static var ObjC: Language {
-        fatalError()
-    }
-}

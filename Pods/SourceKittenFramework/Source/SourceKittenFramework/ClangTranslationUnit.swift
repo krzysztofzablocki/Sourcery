@@ -20,7 +20,7 @@ extension Sequence where Iterator.Element: Hashable {
 }
 
 extension Sequence {
-    fileprivate func grouped<U: Hashable>(by transform: (Iterator.Element) -> U) -> [U: [Iterator.Element]] {
+    fileprivate func grouped<U>(by transform: (Iterator.Element) -> U) -> [U: [Iterator.Element]] {
         return reduce([:]) { dictionary, element in
             var dictionary = dictionary
             let key = transform(element)
@@ -39,7 +39,7 @@ extension Dictionary {
     }
 
     fileprivate func map<OutValue>(transform: (Value) throws -> (OutValue)) rethrows -> [Key: OutValue] {
-        return [Key: OutValue](try map { (k, v) in (k, try transform(v)) }) // swiftlint:disable:this variable_name
+        return [Key: OutValue](try map { ($0.key, try transform($0.value)) })
     }
 }
 

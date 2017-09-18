@@ -36,19 +36,19 @@ public struct Module {
 
     public init?(spmName: String) {
         let yamlPath = ".build/debug.yaml"
-        guard let yaml = try? Yams.load(yaml: String(contentsOfFile: yamlPath, encoding: .utf8)) as? [String: Any],
-            let yamlCommands = (yaml?["commands"] as? [String: [String: Any]])?.values else {
+        guard let yaml = try? Yams.compose(yaml: String(contentsOfFile: yamlPath, encoding: .utf8)),
+            let commands = yaml?["commands"]?.mapping?.values else {
             fatalError("SPM build manifest does not exist at `\(yamlPath)` or does not match expected format.")
         }
-        guard let moduleCommand = yamlCommands.first(where: { ($0["module-name"] as? String ?? "") == spmName }) else {
+        guard let moduleCommand = commands.first(where: { $0["module-name"]?.string == spmName }) else {
             fputs("Could not find SPM module '\(spmName)'. Here are the modules available:\n", stderr)
-            let availableModules = yamlCommands.flatMap({ $0["module-name"] as? String })
+            let availableModules = commands.flatMap({ $0["module-name"]?.string })
             fputs("\(availableModules.map({ "  - " + $0 }).joined(separator: "\n"))\n", stderr)
             return nil
         }
-        guard let imports = moduleCommand["import-paths"] as? [String],
-              let otherArguments = moduleCommand["other-args"] as? [String],
-              let sources = moduleCommand["sources"] as? [String] else {
+        guard let imports = moduleCommand["import-paths"]?.array(of: String.self),
+              let otherArguments = moduleCommand["other-args"]?.array(of: String.self),
+              let sources = moduleCommand["sources"]?.array(of: String.self) else {
                 fatalError("SPM build manifest does not match expected format.")
         }
         name = spmName

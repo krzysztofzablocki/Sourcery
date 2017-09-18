@@ -62,7 +62,7 @@ public struct SwiftDocs {
                 syntaxMap: syntaxMap
             )
         }
-        docsDictionary = dictionary
+        docsDictionary = file.addDocComments(dictionary: dictionary, syntaxMap: syntaxMap)
     }
 }
 

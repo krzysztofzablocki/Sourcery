@@ -48,10 +48,8 @@ extension File {
     */
     private func mapOffsets(_ dictionary: [String: SourceKitRepresentable], offsetMap: OffsetMap) -> OffsetMap {
         var offsetMap = offsetMap
-        // Only map if we're in the correct file
         if let rangeStart = SwiftDocKey.getNameOffset(dictionary),
-           let rangeLength = SwiftDocKey.getNameLength(dictionary),
-           shouldTreatAsSameFile(dictionary) {
+           let rangeLength = SwiftDocKey.getNameLength(dictionary) {
             let bodyLength = SwiftDocKey.getBodyLength(dictionary) ?? 0
             let rangeMax = Int(rangeStart + rangeLength + bodyLength)
             let rangeStart = Int(rangeStart)
@@ -69,13 +67,5 @@ extension File {
             }
         }
         return offsetMap
-    }
-}
-
-// MARK: - migration support
-extension File {
-    @available(*, unavailable, renamed: "makeOffsetMap(documentedTokenOffsets:dictionary:)")
-    public func generateOffsetMap(_ documentedTokenOffsets: [Int], dictionary: [String: SourceKitRepresentable]) -> OffsetMap {
-        fatalError()
     }
 }

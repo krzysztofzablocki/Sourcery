@@ -51,40 +51,63 @@ public struct SyntaxMap {
     public init(file: File) {
         self.init(sourceKitResponse: Request.editorOpen(file: file).send())
     }
+}
 
-    /**
-    Returns the range of the last contiguous doc comment block from the tokens in `self` prior to
-    `offset`. If finds identifier earlier than doc comment, stops searching and returns nil,
-    because doc comment belong to identifier.
+// MARK: Support for enumerating doc-comment blocks
 
-    - parameter offset: Last possible byte offset of the range's start.
-    */
-    public func commentRange(beforeOffset offset: Int) -> Range<Int>? {
-        let tokensBeforeOffset = tokens.reversed().filter { $0.offset < offset }
+extension SyntaxToken {
+    /// Is this a doc comment?
+    internal var isDocComment: Bool {
+        return SyntaxKind.docComments().contains { $0.rawValue == type }
+    }
+}
 
-        let docTypes = SyntaxKind.docComments().map({ $0.rawValue })
-        let isDoc = { (token: SyntaxToken) in docTypes.contains(token.type) }
-        let isNotDoc = { !isDoc($0) }
-
-        guard let commentBegin = tokensBeforeOffset.index(where: isDoc) else { return nil }
-        let tokensBeginningComment = tokensBeforeOffset.suffix(from: commentBegin)
-
-        // For avoiding declaring `var` with type annotation before `if let`, use `map()`
-        let commentEnd = tokensBeginningComment.index(where: isNotDoc)
-        let commentTokensImmediatelyPrecedingOffset = (
-            commentEnd.map(tokensBeginningComment.prefix(upTo:)) ?? tokensBeginningComment
-        ).reversed()
-
-        return commentTokensImmediatelyPrecedingOffset.first.flatMap { firstToken in
-            return commentTokensImmediatelyPrecedingOffset.last.flatMap { lastToken in
-                let regularCommentTokensBetweenDocCommentAndOffset = tokensBeforeOffset
-                    .filter({ $0.offset > lastToken.offset && SyntaxKind(rawValue: $0.type) == .comment })
-                if !regularCommentTokensBetweenDocCommentAndOffset.isEmpty {
-                    return nil // "doc comment" isn't actually a doc comment
+extension SyntaxMap {
+    /// The ranges of documentation comments described by the map, in the order
+    /// that they occur in the file.
+    internal var docCommentRanges: [Range<Int>] {
+        let docCommentBlocks = tokens.split { !$0.isDocComment }
+        return docCommentBlocks.flatMap { ranges in
+            ranges.first.flatMap { first in
+                ranges.last.flatMap { last -> Range<Int>? in
+                    first.offset..<last.offset + last.length
                 }
-                return Range(firstToken.offset...lastToken.offset + lastToken.length)
             }
         }
+    }
+
+    /**
+    A tool to distribute doc comments between declarations.
+    A new instance covers a single complete pass of the file.
+    The `getRangeForDeclaration(atOffset:)` method should be called with the file's
+    declaration offsets in order to retrieve the most appropriate doc comment for each.
+    */
+    internal final class DocCommentFinder {
+        /// Remaining doc comments that have not been assigned or skipped
+        private var ranges: [Range<Int>]
+        /// The most recent file offset requested
+        private var previousOffset: Int
+
+        /// Create a new doc comment finder from a `SyntaxMap`.
+        internal init(syntaxMap: SyntaxMap) {
+            self.ranges = syntaxMap.docCommentRanges
+            self.previousOffset = -1
+        }
+
+        /// Get the byte range of the declaration's doc comment, or nil if none.
+        internal func getRangeForDeclaration(atOffset offset: Int) -> Range<Int>? {
+            guard offset > previousOffset else { return nil }
+
+            let commentsBeforeDecl = ranges.prefix { $0.upperBound < offset }
+            ranges.replaceSubrange(0..<commentsBeforeDecl.count, with: [])
+            previousOffset = offset
+            return commentsBeforeDecl.last
+        }
+    }
+
+    /// Create a new doc comment finder for this map
+    internal func createDocCommentFinder() -> DocCommentFinder {
+        return DocCommentFinder(syntaxMap: self)
     }
 }
 
@@ -117,12 +140,4 @@ public func == (lhs: SyntaxMap, rhs: SyntaxMap) -> Bool {
         return false
     }
     return true
-}
-
-// MARK: - migration support
-extension SyntaxMap {
-    @available(*, unavailable, renamed: "commentRange(beforeOffset:)")
-    public func commentRangeBeforeOffset(_ offset: Int) -> Range<Int>? {
-        fatalError()
-    }
 }

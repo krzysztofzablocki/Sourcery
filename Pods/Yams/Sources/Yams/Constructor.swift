@@ -96,7 +96,7 @@ extension Date: ScalarConstructible {
             result.range.location != NSNotFound else {
                 return nil
         }
-        #if os(Linux)
+        #if os(Linux) || swift(>=4.0)
             let components = (1..<result.numberOfRanges).map {
                 scalar.substring(with: result.range(at: $0))
             }
@@ -120,7 +120,11 @@ extension Date: ScalarConstructible {
             if length < 9 {
                 nanosecond = Int($0 + String(repeating: "0", count: 9 - length))
             } else {
+#if swift(>=4.0)
+                nanosecond = Int($0[..<$0.index($0.startIndex, offsetBy: 9)])
+#else
                 nanosecond = Int($0.substring(to: $0.index($0.startIndex, offsetBy: 9)))
+#endif
             }
             return nanosecond
         }
@@ -186,19 +190,35 @@ extension Int: ScalarConstructible {
             return 0
         }
         if scalar.hasPrefix("0x") {
+#if swift(>=4.0)
+            let hexadecimal = scalar[scalar.index(scalar.startIndex, offsetBy: 2)...]
+#else
             let hexadecimal = scalar.substring(from: scalar.index(scalar.startIndex, offsetBy: 2))
+#endif
             return Int(hexadecimal, radix: 16)
         }
         if scalar.hasPrefix("0b") {
+#if swift(>=4.0)
+            let octal = scalar[scalar.index(scalar.startIndex, offsetBy: 2)...]
+#else
             let octal = scalar.substring(from: scalar.index(scalar.startIndex, offsetBy: 2))
+#endif
             return Int(octal, radix: 2)
         }
         if scalar.hasPrefix("0o") {
+#if swift(>=4.0)
+            let octal = scalar[scalar.index(scalar.startIndex, offsetBy: 2)...]
+#else
             let octal = scalar.substring(from: scalar.index(scalar.startIndex, offsetBy: 2))
+#endif
             return Int(octal, radix: 8)
         }
         if scalar.hasPrefix("0") {
+#if swift(>=4.0)
+            let octal = scalar[scalar.index(after: scalar.startIndex)...]
+#else
             let octal = scalar.substring(from: scalar.index(after: scalar.startIndex))
+#endif
             return Int(octal, radix: 8)
         }
         if scalar.contains(":") {
@@ -340,7 +360,11 @@ fileprivate extension String {
             let upperBound = utf16upperBound.samePosition(in: self) else {
                 fatalError("unreachable")
         }
+#if swift(>=4.0)
+        return String(self[lowerBound..<upperBound])
+#else
         return substring(with: lowerBound..<upperBound)
+#endif
     }
 }
 
@@ -373,9 +397,17 @@ fileprivate extension String {
         var sign: T = 1
         if scalar.hasPrefix("-") {
             sign = -1
+#if swift(>=4.0)
+            scalar = String(scalar[scalar.index(after: scalar.startIndex)...])
+#else
             scalar = scalar.substring(from: scalar.index(after: scalar.startIndex))
+#endif
         } else if scalar.hasPrefix("+") {
+#if swift(>=4.0)
+            scalar = String(scalar[scalar.index(after: scalar.startIndex)...])
+#else
             scalar = scalar.substring(from: scalar.index(after: scalar.startIndex))
+#endif
         }
         let digits = scalar.components(separatedBy: ":").flatMap({ T($0) }).reversed()
         var base: T = 1

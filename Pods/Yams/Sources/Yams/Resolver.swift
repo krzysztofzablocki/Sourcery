@@ -11,7 +11,7 @@ import Foundation
 public final class Resolver {
     let tagNamePatternPairs: [(Tag.Name, NSRegularExpression)]
     init(_ tagPatternPairs: [(Tag.Name, String)] = []) {
-        self.tagNamePatternPairs = tagPatternPairs.map { ($0, pattern($1)) }
+        self.tagNamePatternPairs = tagPatternPairs.map { ($0.0, pattern($0.1)) }
     }
 
     public func resolveTag(of node: Node) -> Tag.Name {

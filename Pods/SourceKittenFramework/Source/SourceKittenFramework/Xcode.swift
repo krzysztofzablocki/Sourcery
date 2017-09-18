@@ -171,9 +171,3 @@ public func sdkPath() -> String {
     file.closeFile()
     return sdkPath?.replacingOccurrences(of: "\n", with: "") ?? ""
 }
-
-// MARK: - migration support
-@available(*, unavailable, renamed: "parseHeaderFilesAndXcodebuildArguments(sourcekittenArguments:)")
-public func parseHeaderFilesAndXcodebuildArguments(_ sourcekittenArguments: [String]) -> (headerFiles: [String], xcodebuildArguments: [String]) {
-    fatalError()
-}

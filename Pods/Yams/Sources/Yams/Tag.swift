@@ -19,6 +19,10 @@ public final class Tag {
         }
     }
 
+    public static var implicit: Tag {
+        return Tag(.implicit)
+    }
+
     // internal
     let constructor: Constructor
     var name: Name
@@ -38,10 +42,6 @@ public final class Tag {
             name = T.defaultTagName
         }
         return self
-    }
-
-    static var implicit: Tag {
-        return Tag(.implicit)
     }
 
     // fileprivate

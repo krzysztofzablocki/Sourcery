@@ -29,6 +29,9 @@ public class FailureMessage: NSObject {
     }
 
     internal var _stringValueOverride: String?
+    internal var hasOverriddenStringValue: Bool {
+        return _stringValueOverride != nil
+    }
 
     public override init() {
     }
@@ -61,5 +64,29 @@ public class FailureMessage: NSObject {
         }
 
         return value
+    }
+
+    internal func appendMessage(_ msg: String) {
+        if hasOverriddenStringValue {
+            stringValue += "\(msg)"
+        } else if actualValue != nil {
+            postfixActual += msg
+        } else {
+            postfixMessage += msg
+        }
+    }
+
+    internal func appendDetails(_ msg: String) {
+        if hasOverriddenStringValue {
+            if let desc = userDescription {
+                stringValue = "\(desc)\n\(stringValue)"
+            }
+            stringValue += "\n\(msg)"
+        } else {
+            if let desc = userDescription {
+                userDescription = desc
+            }
+            extendedMessage = msg
+        }
     }
 }

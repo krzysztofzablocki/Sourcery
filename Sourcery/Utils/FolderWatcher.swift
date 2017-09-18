@@ -78,9 +78,7 @@ enum FolderWatcher {
             self.path = path
             self.closure = closure
 
-            func handler(_ stream: OpaquePointer, clientCallbackInfo: UnsafeMutableRawPointer?, numEvents: Int, eventPaths: UnsafeMutableRawPointer, eventFlags: UnsafePointer<FSEventStreamEventFlags>?, eventIDs: UnsafePointer<FSEventStreamEventId>?) {
-                guard let eventFlags = eventFlags else { return }
-
+            func handler(_ stream: ConstFSEventStreamRef, clientCallbackInfo: UnsafeMutableRawPointer?, numEvents: Int, eventPaths: UnsafeMutableRawPointer, eventFlags: UnsafePointer<FSEventStreamEventFlags>, eventIDs: UnsafePointer<FSEventStreamEventId>) {
                 let eventStream = unsafeBitCast(clientCallbackInfo, to: Local.self)
                 let paths = unsafeBitCast(eventPaths, to: NSArray.self)
 

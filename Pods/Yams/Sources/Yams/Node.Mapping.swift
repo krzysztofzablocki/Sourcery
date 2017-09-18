@@ -25,7 +25,7 @@ extension Node {
         }
 
         public init(_ pairs: [(Node, Node)], _ tag: Tag = .implicit, _ style: Style = .any, _ mark: Mark? = nil) {
-            self.pairs = pairs.map(Pair.init)
+            self.pairs = pairs.map { Pair($0.0, $0.1) }
             self.tag = tag
             self.style = style
             self.mark = mark
