@@ -39,6 +39,18 @@ protocol ExtendableProtocol: AutoMockable {
     func report(message: String)
 }
 
+protocol ReservedWordsProtocol: AutoMockable {
+    func `continue`(with message: String) -> String
+}
+
+protocol ThrowableProtocol: AutoMockable {
+    func doOrThrow() throws -> String
+}
+
+protocol CurrencyPresenter: AutoMockable {
+    func showSourceCurrency(_ currency: String)
+}
+
 extension ExtendableProtocol {
     var canReport: Bool { return true }
 

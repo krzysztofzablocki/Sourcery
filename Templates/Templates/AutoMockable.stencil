@@ -8,22 +8,45 @@ import UIKit
 import AppKit
 #endif
 
+{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
+{% macro swiftifyExtensionMethodName name %}extension{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase }}{% endmacro %}
+
+{% macro extensionMethodThrowableErrorDeclaration method %}
+    var {% call swiftifyExtensionMethodName method.selectorName %}ThrowableError: Error?
+{% endmacro %}
+
+{% macro methodThrowableErrorDeclaration method %}
+    var {% call swiftifyMethodName method.selectorName %}ThrowableError: Error?
+{% endmacro %}
+
+{% macro extensionMethodThrowableErrorUsage method %}
+        if let error = {% call swiftifyExtensionMethodName method.selectorName %}ThrowableError {
+            throw error
+        }
+{% endmacro %}
+
+{% macro methodThrowableErrorUsage method %}
+        if let error = {% call swiftifyMethodName method.selectorName %}ThrowableError {
+            throw error
+        }
+{% endmacro %}
+
 {% macro extensionMethodReceivedParameters method %}
     {%if method.parameters.count == 1 %}
-        extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
+        {% call swiftifyExtensionMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 %}
-        extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
+        {% call swiftifyExtensionMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
     {% endif %}
     {% endif %}
 {% endmacro %}
 
 {% macro methodReceivedParameters method %}
     {%if method.parameters.count == 1 %}
-        {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
+        {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 %}
-        {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
+        {% call swiftifyMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
     {% endif %}
     {% endif %}
 {% endmacro %}
@@ -31,14 +54,18 @@ import AppKit
 {% macro mockMethod method %}
     //MARK: - {{ method.shortName }}
 
-    {% if not method.isInitializer %}var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = false{% endif %}
+    {% if method.throws %}
+        {% call methodThrowableErrorDeclaration method %}
+    {% endif %}
+    {% if not method.isInitializer %}
+    var {% call swiftifyMethodName method.selectorName %}Called = false{% endif %}
     {% if method.parameters.count == 1 %}
-    var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
+    var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
-    var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
+    var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}{% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
-    var {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue: {{ method.returnTypeName }}!
+    var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}!
     {% endif %}
 
 {% if method.isInitializer %}
@@ -46,10 +73,13 @@ import AppKit
         {% call methodReceivedParameters method %}
     }
 {% else %}
-    func {{ method.name }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
-        {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = true
+    func {{ method.name }}{% if not method.returnTypeName.isVoid %} {% if method.throws %}throws {% endif %}-> {{ method.returnTypeName }}{% endif %} {
+        {% if method.throws %}
+        {% call methodThrowableErrorUsage method %}
+        {% endif %}
+        {% call swiftifyMethodName method.selectorName %}Called = true
         {% call methodReceivedParameters method %}
-        {% if not method.returnTypeName.isVoid %}return {{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue{% endif %}
+        {% if not method.returnTypeName.isVoid %}return {% call swiftifyMethodName method.selectorName %}ReturnValue{% endif %}
     }
 
 {% endif %}
@@ -58,14 +88,17 @@ import AppKit
 {% macro mockExtensionMethod method %}
     //MARK: - extension_{{ method.shortName }}
 
-    {% if not method.isInitializer %}var extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = false{% endif %}
+    {% if method.throws %}
+    {% call extensionMethodThrowableErrorDeclaration method %}
+    {% endif %}
+    {% if not method.isInitializer %}var {% call swiftifyExtensionMethodName method.selectorName %}Called = false{% endif %}
     {% if method.parameters.count == 1 %}
-    var extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
+    var {% call swiftifyExtensionMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
-    var extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
+    var {% call swiftifyExtensionMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}{% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
-    var extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue: {{ method.returnTypeName }}!
+    var {% call swiftifyExtensionMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}!
     {% endif %}
 
 {% if method.isInitializer %}
@@ -73,10 +106,13 @@ import AppKit
         {% call extensionMethodReceivedParameters method %}
     }
 {% else %}
-    func {{ method.name }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
-        extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}Called = true
+    func {{ method.name }}{% if not method.returnTypeName.isVoid %} {% if method.throws %}throws {% endif %}-> {{ method.returnTypeName }}{% endif %} {
+        {% if method.throws %}
+        {% call extensionMethodThrowableErrorUsage method %}
+        {% endif %}
+        {% call swiftifyExtensionMethodName method.selectorName %}Called = true
         {% call extensionMethodReceivedParameters method %}
-        {% if not method.returnTypeName.isVoid %}return extension_{{ method.selectorName | replace:"(","_" | replace:")","" | replace:":","_" }}ReturnValue{% endif %}
+        {% if not method.returnTypeName.isVoid %}return {% call swiftifyExtensionMethodName method.selectorName %}ReturnValue{% endif %}
     }
 
 {% endif %}
@@ -86,7 +122,7 @@ import AppKit
 {% if not type.name == "AutoMockable" %}
 class {{ type.name }}Mock: {{ type.name }} {
     {% for variable in type.allVariables %}
-    var {%if variable.definedInType.isExtension %}extension_{% endif %}{{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if not variable.isArray and not variable.isDictionary %}!{% elif variable.isArray %} = []{% elif variable.isDictionary %} = [:]{% endif %}{% endif %}
+    var {%if variable.definedInType.isExtension %}extension{% endif %}{{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if not variable.isArray and not variable.isDictionary %}!{% elif variable.isArray %} = []{% elif variable.isDictionary %} = [:]{% endif %}{% endif %}
     {% endfor %}
 
 {% for method in type.allMethods|!definedInExtension %}

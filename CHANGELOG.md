@@ -9,6 +9,9 @@
 - Added support for file paths in `config` parameter
 - Added `isDeinitializer` property for methods
 - Improved config file validation and error reporting
+- Support methods with reserved keywords name in `AutoMockable` template
+- Support methods that throws in `AutoMockable` template
+- Improved `AutoMockable` template naming
 
 ### Bug fixes
 
