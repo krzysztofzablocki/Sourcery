@@ -9,7 +9,7 @@
 - Added support for file paths in `config` parameter
 - Added `isDeinitializer` property for methods
 - Improved config file validation and error reporting
-- Various improvements for `AutoMockable` template: 
+- Various improvements for `AutoMockable` template:
   - support methods with reserved keywords name
   - support methods that throws
   - improved generated declarations names
@@ -21,6 +21,7 @@
 ### Internal changes
 
 - Updated dependencies for Swift 4
+- Update internal ruby dependencies
 
 ## 0.8.0
 
