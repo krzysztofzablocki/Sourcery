@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.8.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import JavaScriptCore
@@ -142,6 +142,7 @@ extension Enum: EnumAutoJSExport {}
 
 extension EnumCase: EnumCaseAutoJSExport {}
 
+
 @objc protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
@@ -160,6 +161,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isStatic: Bool { get }
     var isClass: Bool { get }
     var isInitializer: Bool { get }
+    var isDeinitializer: Bool { get }
     var isFailableInitializer: Bool { get }
     var isConvenienceInitializer: Bool { get }
     var isRequired: Bool { get }
@@ -224,6 +226,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 }
 
 extension Protocol: ProtocolAutoJSExport {}
+
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
@@ -343,6 +346,8 @@ extension Type: TypeAutoJSExport {}
 }
 
 extension TypeName: TypeNameAutoJSExport {}
+
+
 
 @objc protocol TypesCollectionAutoJSExport: JSExport {
 }

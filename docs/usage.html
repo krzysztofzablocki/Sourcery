@@ -172,7 +172,7 @@
 <li><code>--sources</code> - Path to a source swift files. You can provide multiple paths using multiple <code>--sources</code> option.</li>
 <li><code>--templates</code> - Path to templates. File or Directory. You can provide multiple paths using multiple <code>--templates</code> options.</li>
 <li><code>--output</code> [default: current path] - Path to output. File or Directory.</li>
-<li><code>--config</code> [default: current path] - Path to config file. Directory. See <a href="usage.html#configuration-file">Configuration file</a>.</li>
+<li><code>--config</code> [default: current path] - Path to config file. File or Directory. See <a href="usage.html#configuration-file">Configuration file</a>.</li>
 <li><code>--args</code> - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit <code>true</code> value. Arguments should be separated with <code>,</code> without spaces (i.e. <code>--args arg1=value,arg2</code>). Arguments are accessible in templates via <code>argument.name</code></li>
 <li><code>--watch</code> [default: false] - Watch both code and template folders for changes and regenerate automatically.</li>
 <li><code>--verbose</code> [default: false] - Turn on verbose logging</li>
@@ -184,15 +184,20 @@
 </ul>
 <h3 id='configuration-file' class='heading'>Configuration file</h3>
 
-<p>You can also provide arguments using <code>.sourcery.yml</code> file in project&rsquo;s root directory, like this:</p>
+<p>You can also provide arguments using configuration file. Some of the configuration features (like excluding files) are only 
+available when using configuration file. You provide path to this file using <code>--config</code> command line option.
+If you provide path to directory Sourcery will search for file <code>.sourcery.yml</code> in this directory. You can also provide
+path to config file itself. By default Sourcery will search for <code>.sourcery.yml</code> in your current path.</p>
+
+<p>Configuration file should be a valid Yaml file, like this:</p>
 <pre class="highlight yaml"><code><span class="s">sources</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
+  <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span> <span class="c1"># you can provide either single path or several paths using `-`</span>
   <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
 <span class="s">templates</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
+  <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span> <span class="c1"># as well as for templates</span>
   <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
 <span class="s">output</span><span class="pi">:</span>
-  <span class="s">&lt;output path&gt;</span>
+  <span class="s">&lt;output path&gt;</span> <span class="c1"># note that there is no `-` here as only single output path is supported</span>
 <span class="s">args</span><span class="pi">:</span>
   <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
@@ -216,10 +221,8 @@
 
 <p>You can provide either sources paths or targets to scan:</p>
 <pre class="highlight yaml"><code><span class="s">project</span><span class="pi">:</span>
-  <span class="s">file</span><span class="pi">:</span>
-    <span class="s">&lt;path to xcodeproj file&gt;</span>
-  <span class="s">root</span><span class="pi">:</span>
-    <span class="s">&lt;path to project sources root&gt;</span>
+  <span class="s">file</span><span class="pi">:</span> <span class="s">&lt;path to xcodeproj file&gt;</span>
+  <span class="s">root</span><span class="pi">:</span> <span class="s">&lt;path to project sources root&gt;</span>
   <span class="s">target</span><span class="pi">:</span>
     <span class="s">name</span><span class="pi">:</span> <span class="s">&lt;target name&gt;</span>
     <span class="s">module</span><span class="pi">:</span> <span class="s">&lt;module name&gt; //required if different from target name</span>

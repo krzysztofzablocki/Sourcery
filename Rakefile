@@ -236,7 +236,7 @@ namespace :release do
 
     json = get('https://circleci.com/api/v1.1/project/github/krzysztofzablocki/Sourcery/tree/master')
     master_branch_status = json[0]['status']
-    results << log_result(master_branch_status == 'success', 'Master branch is green on CI', 'Please check master branch CI status first')
+    results << log_result(master_branch_status == 'success' || master_branch_status == 'fixed', 'Master branch is green on CI', 'Please check master branch CI status first')
     exit 1 unless results.all?
   end
 

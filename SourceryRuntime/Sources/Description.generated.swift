@@ -1,5 +1,6 @@
-// Generated using Sourcery 0.8.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
 
 extension ArrayType {
     /// :nodoc:
@@ -104,6 +105,7 @@ extension Method {
         string += "isStatic = \(String(describing: self.isStatic)), "
         string += "isClass = \(String(describing: self.isClass)), "
         string += "isInitializer = \(String(describing: self.isInitializer)), "
+        string += "isDeinitializer = \(String(describing: self.isDeinitializer)), "
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
         string += "isConvenienceInitializer = \(String(describing: self.isConvenienceInitializer)), "
         string += "isRequired = \(String(describing: self.isRequired)), "
