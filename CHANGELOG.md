@@ -4,6 +4,9 @@
 
 ## Master
 
+### Internal changes
+
+- Add release to Homebrew rake task
 
 ## 0.9.0
 
@@ -25,7 +28,6 @@
 
 - Updated dependencies for Swift 4
 - Update internal ruby dependencies
-- Add release to Homebrew rake task
 
 ## 0.8.0
 
