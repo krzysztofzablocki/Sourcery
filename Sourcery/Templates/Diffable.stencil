@@ -1,3 +1,7 @@
+// swiftlint:disable vertical_whitespace
+// swiftlint:disable unused_optional_binding
+
+
 {% for type in types.implementing.AutoDiffable|!protocol %}
 extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: Diffable{% endif %} {
     {% if type.based.Type %}override {% endif %}func diffAgainst(_ object: Any?) -> DiffableResult {

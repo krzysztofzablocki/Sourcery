@@ -88,7 +88,7 @@ public func equal<T: Equatable, C: Equatable>(_ expectedValue: [T: C]?) -> NonNi
     }
 }
 
-fileprivate func prepare(_ message: FailureMessage, results: DiffableResult, actual: String) {
+private func prepare(_ message: FailureMessage, results: DiffableResult, actual: String) {
     if !results.isEmpty {
         message.stringValue = "\(results)\n Actual: \(actual)\(message.postfixActual)"
     }

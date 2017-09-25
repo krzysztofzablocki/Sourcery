@@ -1,6 +1,8 @@
 // Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+// swiftlint:disable vertical_whitespace
+
 
 extension AssociatedValue {
     /// Whether type is optional. Shorthand for `typeName.isOptional`

@@ -45,7 +45,7 @@ struct CustomArguments: ArgumentConvertible {
 
 }
 
-fileprivate enum Validators {
+private enum Validators {
     static func isReadable(path: Path) -> Path {
         if !path.isReadable {
             Log.error("'\(path)' does not exist or is not readable.")

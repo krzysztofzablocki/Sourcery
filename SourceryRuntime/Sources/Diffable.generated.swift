@@ -1,6 +1,9 @@
 // Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
+// swiftlint:disable vertical_whitespace
+// swiftlint:disable unused_optional_binding
+
 
 extension ArrayType: Diffable {
     func diffAgainst(_ object: Any?) -> DiffableResult {

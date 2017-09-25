@@ -609,6 +609,7 @@
 			buildConfigurationList = CD754CA31D853F000082B512 /* Build configuration list for PBXNativeTarget "Sourcery" */;
 			buildPhases = (
 				8E96ACE81324E260FA5DCECB /* [CP] Check Pods Manifest.lock */,
+				6D01F99A1F79A30C0013A6BB /* Run Swiftlint */,
 				CD754C871D853F000082B512 /* Sources */,
 				CD754C881D853F000082B512 /* Frameworks */,
 				CD754C891D853F000082B512 /* Resources */,
@@ -776,6 +777,20 @@
 			shellPath = /bin/sh;
 			shellScript = "/usr/bin/rsync -av \"${BUILT_PRODUCTS_DIR}/SourceryRuntime.framework\" \"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"";
 		};
+		6D01F99A1F79A30C0013A6BB /* Run Swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Swiftlint";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"";
+		};
 		8E96ACE81324E260FA5DCECB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -857,7 +872,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Scripts/SwiftLint.sh\"";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"";
 		};
 		D135298010CC2F3340A9BC8A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

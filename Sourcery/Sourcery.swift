@@ -396,6 +396,7 @@ extension Sourcery {
                     }
                     return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
                 }
+                // swiftlint:disable:next force_unwrapping
                 return MappedInlineAnnotations(range, Path(filePath), ranges[key]!, generatedBody)
             }
             .sorted { lhs, rhs in

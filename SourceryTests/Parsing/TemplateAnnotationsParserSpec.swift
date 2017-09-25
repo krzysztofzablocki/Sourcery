@@ -15,7 +15,6 @@ private func build(_ source: String) -> [String: SourceKitRepresentable]? {
 }
 
 class TemplateAnnotationsParserSpec: QuickSpec {
-    // swiftlint:disable function_body_length
     override func spec() {
         describe("InlineParser") {
             let source =
