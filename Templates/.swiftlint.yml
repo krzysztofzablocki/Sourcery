@@ -1,0 +1,3 @@
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Tests/Generated
+  - Tests/Expected

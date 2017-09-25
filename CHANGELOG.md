@@ -11,6 +11,7 @@
 ### Internal changes
 
 - Add release to Homebrew rake task
+- Fixed Swiftlint warnings
 
 ## 0.9.0
 
