@@ -15,6 +15,8 @@ export SOURCERY_GITHUB_USERNAME=YOUR_GITHUB_USERNAME
 export SOURCERY_GITHUB_API_TOKEN=YOUR_TOKEN
 ```
 
+To be able to release a [Homebrew](https://github.com/Homebrew/homebrew-core) formula update, install [brew](https://brew.sh/).
+
 ### Release
 
 Example is for releasing `0.6.1` version of the Sourcery.
@@ -28,11 +30,12 @@ It will perform the following steps:
 1. Install Bundler and CocoaPods dependencies;
 2. Check if the docs are up-to-date or not;
 3. Check if the master branch is green on [CI](https://circleci.com/gh/krzysztofzablocki/Sourcery);
-3. Update internal boilerplate code;
+4. Update internal boilerplate code;
 5. Run tests;
 6. Ask for the new release version and updates metadata for it;
 7. Create a new release on [GitHub](https://github.com/krzysztofzablocki/Sourcery/releases);
 8. Push new release to [CocoaPods Trunk](https://guides.cocoapods.org/making/getting-setup-with-trunk.html);
-9. Prepare a new development iteration
+9. Push new formula to [Homebrew](https://github.com/Homebrew/homebrew-core), this will ask you for manual input of your username and password to open a GitHub PR;
+10. Prepare a new development iteration.
 
-Some tasks require manual approvement, please pay attention to the automatic changes before confirming them.
+Some tasks require manual approvement or input, please pay attention to the automatic changes before confirming them.

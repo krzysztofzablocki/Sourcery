@@ -119,7 +119,7 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :generate_internal_boilerplate_code, :tests, :update_metadata, :check_versions, :build, :tag_release, :github, :cocoapods]
+  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :generate_internal_boilerplate_code, :tests, :update_metadata, :check_versions, :build, :tag_release, :github, :cocoapods, :homebrew]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The code is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
@@ -191,7 +191,7 @@ namespace :release do
     response = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.scheme == 'https')) do |http|
       http.request(req)
     end
-    unless response.code == '201'
+    unless response.code == '201' || response.code == '202'
       puts "Error: #{response.code} - #{response.message}"
       puts response.body
       exit 3
@@ -216,6 +216,20 @@ namespace :release do
 
   def git_push(remote = 'origin', branch = 'master')
     system(%Q{git push #{remote} #{branch} --tags})
+  end
+
+  def sourcery_targz_url(version)
+    "https://github.com/krzysztofzablocki/Sourcery/archive/#{version}.tar.gz"
+  end
+
+  def extract_sha256(archive_url)
+    sha256_res = `curl -L #{archive_url} | shasum -a 256`
+    sha256 = /^[A-Fa-f0-9]+/.match(sha256_res)
+    if sha256.nil? then
+      print "Unable to extract SHA256"
+      exit 3
+    end
+    sha256
   end
 
   desc 'Check ENV variables required for release'
@@ -361,6 +375,39 @@ namespace :release do
   task :cocoapods do
     print_info "Pushing pod to CocoaPods Trunk"
     sh 'bundle exec pod trunk push Sourcery.podspec --allow-warnings'
+  end
+
+  desc 'send a PR to homebrew'
+  task :homebrew do
+    print_info "Releasing to homebrew"
+    formulas_dir = `brew --repository homebrew/core`.chomp
+    formula_file = "./Formula/sourcery.rb"
+    version = project_version
+    branch = "sourcery-#{version}"
+
+    Dir.chdir(formulas_dir) do
+      sh "git checkout master"
+      sh "git pull origin master"
+      sh "git checkout -b #{branch} origin/master"
+
+      print_info "Updating Homebrew formula"
+      targz_url = sourcery_targz_url(version)
+      sha256 = extract_sha256(targz_url)
+      formula = File.read(formula_file)
+      new_formula = formula.gsub(/url "https:.*"$/, %Q(url "#{targz_url}")).gsub(/sha256 ".*"$/,%Q(sha256 "#{sha256.to_s}"))
+      File.open(formula_file, "w") { |f| f.puts new_formula }
+
+      print_info "Checking Homebrew formula"
+      sh "brew install --build-from-source #{formula_file}"
+      sh "brew audit --strict --online #{formula_file}"
+      sh "brew test #{formula_file}"
+
+      print_info "Pushing to Homebrew"
+      sh "git checkout #{formula_file}"
+      sh "git checkout master"
+      sh "git branch #{branch} -D"
+      sh "brew bump-formula-pr --url='#{targz_url}' --sha256='#{sha256.to_s}' #{formula_file}"
+    end
   end
 
   desc 'prepare for the new development iteration'

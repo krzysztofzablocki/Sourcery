@@ -1,0 +1,4 @@
+---
+BUNDLE_CLEAN: "true"
+BUNDLE_DISABLE_SHARED_GEMS: "true"
+BUNDLE_WITHOUT: "test:development"

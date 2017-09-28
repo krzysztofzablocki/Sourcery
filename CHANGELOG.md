@@ -4,6 +4,9 @@
 
 ## Master
 
+### Internal changes
+
+- Add release to Homebrew rake task
 
 ## 0.9.0
 
