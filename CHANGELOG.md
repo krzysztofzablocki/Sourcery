@@ -4,6 +4,10 @@
 
 ## Master
 
+### New Features
+
+- Added new toArray Stencil fileter
+
 ### Internal changes
 
 - Add release to Homebrew rake task

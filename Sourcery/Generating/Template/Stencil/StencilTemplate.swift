@@ -60,6 +60,7 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         ext.registerBoolFilter("protocol", filter: { (t: Type) in t is SourceryProtocol })
 
         ext.registerFilter("count", filter: count)
+        ext.registerFilter("toArray", filter: toArray)
 
         ext.registerBoolFilter("initializer", filter: { (m: SourceryMethod) in m.isInitializer })
         ext.registerBoolFilterOr("class",
@@ -198,6 +199,17 @@ extension Stencil.Extension {
         registerBoolFilter("!\(accessLevel.rawValue)Set", filter: { (v: SourceryVariable) in v.writeAccess != accessLevel.rawValue && v.writeAccess != AccessLevel.none.rawValue })
     }
 
+}
+
+private func toArray(_ value: Any?) -> Any? {
+    switch value {
+    case let array as NSArray:
+        return array
+    case .some(let something):
+        return [something]
+    default:
+        return nil
+    }
 }
 
 private func count(_ value: Any?) -> Any? {
