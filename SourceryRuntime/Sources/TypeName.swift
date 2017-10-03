@@ -202,7 +202,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
     // MARK: - LosslessStringConvertible
     
     public convenience init(_ description: String) {
-        self.init(description)
+        self.init(description, actualTypeName: nil)
     }
     
     public override var debugDescription: String {
