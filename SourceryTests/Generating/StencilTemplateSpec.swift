@@ -17,7 +17,7 @@ class StencilTemplateSpec: QuickSpec {
                 singleAnnotation.annotations = ["Foo": "HelloWorld" as NSString]
                 return (try? Generator.generate(Types(types: [
                     Class(name: "MyClass", variables: [
-                        Variable(name: "lowerFirst", typeName: TypeName("myClass")),
+                        Variable(name: "lowerFirstLetter", typeName: TypeName("myClass")),
                         Variable(name: "upperFirstLetter", typeName: TypeName("MyClass")),
                         arrayAnnotations,
                         singleAnnotation
@@ -46,8 +46,8 @@ class StencilTemplateSpec: QuickSpec {
                     expect(generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))
                 }
 
-                it("generates lowerFirst") {
-                    expect(generate("{{\"HelloWorld\" | lowerFirst }}")).to(equal("helloWorld"))
+                it("generates lowerFirstLetter") {
+                    expect(generate("{{\"HelloWorld\" | lowerFirstLetter }}")).to(equal("helloWorld"))
                 }
 
                 it("generates uppercase") {
@@ -96,8 +96,8 @@ class StencilTemplateSpec: QuickSpec {
                     expect(generate("{{ type.MyClass.variables.0.typeName | upperFirstLetter }}")).to(equal("MyClass"))
                 }
 
-                it("generates lowerFirst") {
-                    expect(generate("{{ type.MyClass.variables.1.typeName | lowerFirst }}")).to(equal("myClass"))
+                it("generates lowerFirstLetter") {
+                    expect(generate("{{ type.MyClass.variables.1.typeName | lowerFirstLetter }}")).to(equal("myClass"))
                 }
 
                 it("generates uppercase") {

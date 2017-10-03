@@ -98,9 +98,6 @@ extension Annotated {
 extension Stencil.Extension {
 
     func registerStringFilters() {
-        let lowerFirst = FilterOr<String, TypeName>.make({ $0.lowerFirst() }, other: { $0.name.lowerFirst() })
-        registerFilter("lowerFirst", filter: lowerFirst)
-
         let lowercase = FilterOr<String, TypeName>.make({ $0.lowercased() }, other: { $0.name.lowercased() })
         registerFilter("lowercase", filter: lowercase)
 
@@ -109,12 +106,6 @@ extension Stencil.Extension {
 
         let capitalise = FilterOr<String, TypeName>.make({ $0.capitalized }, other: { $0.name.capitalized })
         registerFilter("capitalise", filter: capitalise)
-
-        registerFilterOrWithTwoArguments("replace", filter: { (source: String, substring: String, replacement: String) -> Any? in
-            return source.replacingOccurrences(of: substring, with: replacement)
-        }, other: { (source: TypeName, substring: String, replacement: String) -> Any? in
-            return source.name.replacingOccurrences(of: substring, with: replacement)
-        })
 
         registerBoolFilterOrWithArguments("contains",
                                           filter: { (s1: String, s2: String) in s1.contains(s2) },
@@ -214,14 +205,6 @@ private func count(_ value: Any?) -> Any? {
         return value
     }
     return array.count
-}
-
-extension String {
-    fileprivate func lowerFirst() -> String {
-        let first = String(self.prefix(1)).lowercased()
-        let other = dropFirst()
-        return first + other
-    }
 }
 
 private struct Filter<T> {
