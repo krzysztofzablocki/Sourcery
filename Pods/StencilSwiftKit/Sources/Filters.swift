@@ -7,13 +7,37 @@
 import Foundation
 import Stencil
 
-// For retro-compatibility. Remove in next major.
-@available(*, deprecated, renamed: "Filters.Error", message: "Use the Filters.Error nested type instead")
-typealias FilterError = Filters.Error
-
 enum Filters {
   enum Error: Swift.Error {
     case invalidInputType
+    case invalidOption(option: String)
+  }
+
+  /// Parses filter input value for a string value, where accepted objects must conform to
+  /// `CustomStringConvertible`
+  ///
+  /// - Parameters:
+  ///   - value: an input value, may be nil
+  /// - Throws: Filters.Error.invalidInputType
+  static func parseString(from value: Any?) throws -> String {
+    guard let stringArg = value as? LosslessStringConvertible else {
+      throw Error.invalidInputType
+    }
+    return String(describing: stringArg)
+  }
+
+  /// Parses filter arguments for a string value, where accepted objects must conform to 
+  /// `CustomStringConvertible`
+  ///
+  /// - Parameters:
+  ///   - arguments: an array of argument values, may be empty
+  ///   - index: the index in the arguments array
+  /// - Throws: Filters.Error.invalidInputType
+  static func parseStringArgument(from arguments: [Any?], at index: Int = 0) throws -> String {
+    guard index < arguments.count, let stringArg = arguments[index] as? LosslessStringConvertible else {
+      throw Error.invalidInputType
+    }
+    return String(describing: stringArg)
   }
 
   /// Parses filter arguments for a boolean value, where true can by any one of: "true", "yes", "1", and
@@ -26,7 +50,7 @@ enum Filters {
   ///   - required: If true, the argument is required and function throws if missing.
   ///               If false, returns nil on missing args.
   /// - Throws: Filters.Error.invalidInputType
-  static func parseBool(from arguments: [Any?], index: Int, required: Bool = true) throws -> Bool? {
+  static func parseBool(from arguments: [Any?], at index: Int = 0, required: Bool = true) throws -> Bool? {
     guard index < arguments.count, let boolArg = arguments[index] as? String else {
       if required {
         throw Error.invalidInputType
@@ -44,16 +68,24 @@ enum Filters {
       throw Error.invalidInputType
     }
   }
-}
 
-// For retro-compatibility. Remove in next major.
-@available(*, deprecated, message: "Use the official `join` filter which is now part of Stencil itself")
-enum ArrayFilters {
-  static func join(_ value: Any?) throws -> Any? {
-    guard let array = value as? [Any] else { throw Filters.Error.invalidInputType }
-    let strings = array.flatMap { $0 as? String }
-    guard array.count == strings.count else { throw Filters.Error.invalidInputType }
+  /// Parses filter arguments for an enum value (with a String rawvalue).
+  ///
+  /// - Parameters:
+  ///   - arguments: an array of argument values, may be empty
+  ///   - index: the index in the arguments array
+  ///   - default: The default value should no argument be provided
+  /// - Throws: Filters.Error.invalidInputType
+  static func parseEnum<T>(from arguments: [Any?], at index: Int = 0, default: T) throws -> T
+    where T: RawRepresentable, T.RawValue == String {
 
-    return strings.joined(separator: ", ")
+    guard index < arguments.count else { return `default` }
+    let arg = arguments[index].map(String.init(describing:)) ?? `default`.rawValue
+
+    guard let result = T(rawValue: arg) else {
+      throw Filters.Error.invalidOption(option: arg)
+    }
+
+    return result
   }
 }
