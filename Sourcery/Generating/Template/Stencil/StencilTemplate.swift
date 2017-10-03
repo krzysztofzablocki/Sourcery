@@ -98,9 +98,6 @@ extension Annotated {
 extension Stencil.Extension {
 
     func registerStringFilters() {
-        let upperFirst = FilterOr<String, TypeName>.make({ $0.upperFirst() }, other: { $0.name.upperFirst() })
-        registerFilter("upperFirst", filter: upperFirst)
-
         let lowerFirst = FilterOr<String, TypeName>.make({ $0.lowerFirst() }, other: { $0.name.lowerFirst() })
         registerFilter("lowerFirst", filter: lowerFirst)
 
@@ -220,13 +217,6 @@ private func count(_ value: Any?) -> Any? {
 }
 
 extension String {
-
-    fileprivate func upperFirst() -> String {
-        let first = String(self.prefix(1)).capitalized
-        let other = dropFirst()
-        return first + other
-    }
-
     fileprivate func lowerFirst() -> String {
         let first = String(self.prefix(1)).lowercased()
         let other = dropFirst()

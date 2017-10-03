@@ -1683,7 +1683,6 @@
 				493D950980CAA88D4ABC9179DF37A9AF /* SwiftTryCatch.m */,
 				657F595A2B723ED777AC9EFCC0BE6D68 /* Support Files */,
 			);
-			name = SwiftTryCatch;
 			path = SwiftTryCatch;
 			sourceTree = "<group>";
 		};
@@ -1711,7 +1710,6 @@
 				4BE891E775849C393B5050F9A7596C45 /* Variable.swift */,
 				4D0E7C096AF1547D8E5AB1C0C65B9767 /* Support Files */,
 			);
-			name = Stencil;
 			path = Stencil;
 			sourceTree = "<group>";
 		};

@@ -18,7 +18,7 @@ class StencilTemplateSpec: QuickSpec {
                 return (try? Generator.generate(Types(types: [
                     Class(name: "MyClass", variables: [
                         Variable(name: "lowerFirst", typeName: TypeName("myClass")),
-                        Variable(name: "upperFirst", typeName: TypeName("MyClass")),
+                        Variable(name: "upperFirstLetter", typeName: TypeName("MyClass")),
                         arrayAnnotations,
                         singleAnnotation
                         ])
@@ -42,8 +42,8 @@ class StencilTemplateSpec: QuickSpec {
             }
 
             context("given string") {
-                it("generates upperFirst") {
-                    expect(generate("{{\"helloWorld\" | upperFirst }}")).to(equal("HelloWorld"))
+                it("generates upperFirstLetter") {
+                    expect(generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))
                 }
 
                 it("generates lowerFirst") {
@@ -92,8 +92,8 @@ class StencilTemplateSpec: QuickSpec {
             }
 
             context("given TypeName") {
-                it("generates upperFirst") {
-                    expect(generate("{{ type.MyClass.variables.0.typeName | upperFirst }}")).to(equal("MyClass"))
+                it("generates upperFirstLetter") {
+                    expect(generate("{{ type.MyClass.variables.0.typeName | upperFirstLetter }}")).to(equal("MyClass"))
                 }
 
                 it("generates lowerFirst") {

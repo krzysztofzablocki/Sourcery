@@ -30,7 +30,7 @@ public protocol Typed {
 }
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, LosslessStringConvertible {
 
     /// :nodoc:
     public init(_ name: String,
@@ -198,7 +198,16 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             aCoder.encode(self.closure, forKey: "closure")
         }
         // sourcery:end
-
+    
+    // MARK: - LosslessStringConvertible
+    
+    public convenience init(_ description: String) {
+        self.init(description)
+    }
+    
+    public override var debugDescription: String {
+        return name
+    }
 }
 
 /// Describes tuple type element
