@@ -300,7 +300,6 @@ extension String {
             return NSMaxRange(line.range)
         }
         let utf8View = line.content.utf8
-        // swiftlint:disable:next force_unwrapping
         guard let endUTF16index = utf8View.index(utf8View.startIndex, offsetBy: diff, limitedBy: utf8View.endIndex)?.samePosition(in: line.content.utf16) else { return nil }
         let utf16Diff = line.content.utf16.distance(from: line.content.utf16.startIndex, to: endUTF16index)
         return line.range.location + utf16Diff

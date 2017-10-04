@@ -1,3 +1,6 @@
+// swiftlint:disable vertical_whitespace
+
+
 {% for type in types.implementing.Typed %}
 extension {{ type.name }} {
     /// Whether type is optional. Shorthand for `typeName.isOptional`

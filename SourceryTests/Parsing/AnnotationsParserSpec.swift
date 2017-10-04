@@ -11,7 +11,6 @@ import SourceKittenFramework
 @testable import SourceryRuntime
 
 class AnnotationsParserSpec: QuickSpec {
-    // swiftlint:disable function_body_length
     override func spec() {
         describe("AnnotationsParser") {
             describe("parse(line:)") {

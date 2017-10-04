@@ -11,12 +11,12 @@ import PathKit
 import SwiftTryCatch
 import SourceryRuntime
 
-fileprivate enum Delimiters {
+private enum Delimiters {
     static let open = "<%"
     static let close = "%>"
 }
 
-fileprivate struct ProcessResult {
+private struct ProcessResult {
     let output: String
     let error: String
 }
@@ -244,7 +244,7 @@ fileprivate extension SwiftTemplate {
 }
 
 // swiftlint:disable:next force_try
-fileprivate let newlines = try! NSRegularExpression(pattern: "\\n\\r|\\r\\n|\\r|\\n", options: [])
+private let newlines = try! NSRegularExpression(pattern: "\\n\\r|\\r\\n|\\r|\\n", options: [])
 
 private extension String {
     var numberOfLineSeparators: Int {

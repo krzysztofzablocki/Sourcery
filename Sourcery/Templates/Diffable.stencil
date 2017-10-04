@@ -1,14 +1,17 @@
+// swiftlint:disable vertical_whitespace
+
+
 {% for type in types.implementing.AutoDiffable|!protocol %}
 extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: Diffable{% endif %} {
     {% if type.based.Type %}override {% endif %}func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let {% if type.storedVariables|!annotated:"skipEquality" %}rhs{% else %}_{% endif %} = object as? {{ type.name }} else {
+        guard let castObject = object as? {{ type.name }} else {
             results.append("Incorrect type <expected: {{ type.name }}, received: \(type(of: object))>")
             return results
         }
-        {% for variable in type.storedVariables|!annotated:"skipEquality" %}results.append(contentsOf: DiffableResult(identifier: "{{ variable.name }}").trackDifference(actual: self.{{ variable.name }}, expected: rhs.{{ variable.name }}))
+        {% for variable in type.storedVariables|!annotated:"skipEquality" %}results.append(contentsOf: DiffableResult(identifier: "{{ variable.name }}").trackDifference(actual: self.{{ variable.name }}, expected: castObject.{{ variable.name }}))
         {% endfor %}
-        {% if type.supertype.implements.AutoDiffable %}results.append(contentsOf: super.diffAgainst(object))
+        {% if type.supertype.implements.AutoDiffable %}results.append(contentsOf: super.diffAgainst(castObject))
         return results{% else %}return results{% endif %}
     }
 }{% endfor %}

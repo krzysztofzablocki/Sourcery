@@ -1,3 +1,6 @@
+// swiftlint:disable vertical_whitespace
+
+
 {% for type in types.implementing.AutoDescription|class %} {% if type.variables.count %}
 extension {{ type.name }} {
     /// :nodoc:

@@ -4,6 +4,10 @@
 workspace 'Sourcery.xcworkspace'
 use_frameworks!
 
+def meta
+  pod 'SwiftLint'
+end
+
 def test_pods
   pod 'Quick'
   pod 'Nimble'
@@ -11,10 +15,13 @@ end
 
 target 'TemplatesTests' do
   project 'Templates/Templates.xcodeproj'
+  meta
   test_pods
 end
 
 target 'Sourcery' do
+  meta
+
   pod 'StencilSwiftKit', '~> 1.0'
   pod 'Commander'
   pod 'PathKit'
