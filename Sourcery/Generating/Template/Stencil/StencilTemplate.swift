@@ -106,16 +106,6 @@ extension Stencil.Extension {
 
         let capitalise = FilterOr<String, TypeName>.make({ $0.capitalized }, other: { $0.name.capitalized })
         registerFilter("capitalise", filter: capitalise)
-
-        registerBoolFilterOrWithArguments("contains",
-                                          filter: { (s1: String, s2: String) in s1.contains(s2) },
-                                          other: { (t: TypeName, s2: String) in t.name.contains(s2) })
-        registerBoolFilterOrWithArguments("hasPrefix",
-                                          filter: { (s1: String, s2) in s1.hasPrefix(s2) },
-                                          other: { (t: TypeName, s2) in t.name.hasPrefix(s2) })
-        registerBoolFilterOrWithArguments("hasSuffix",
-                                          filter: { (s1: String, s2) in s1.hasSuffix(s2) },
-                                          other: { (t: TypeName, s2) in t.name.hasSuffix(s2) })
     }
 
     func registerFilterWithTwoArguments<T, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?) {

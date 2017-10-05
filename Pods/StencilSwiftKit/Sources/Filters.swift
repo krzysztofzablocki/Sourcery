@@ -8,6 +8,8 @@ import Foundation
 import Stencil
 
 enum Filters {
+  typealias BooleanWithArguments = (Any?, [Any?]) throws -> Bool
+
   enum Error: Swift.Error {
     case invalidInputType
     case invalidOption(option: String)
@@ -21,10 +23,10 @@ enum Filters {
   /// - Throws: Filters.Error.invalidInputType
   static func parseString(from value: Any?) throws -> String {
     if let losslessString = value as? LosslessStringConvertible {
-      return String(describing: losslessString)
+        return String(describing: losslessString)
     }
-    if let losslessString = (value as? String) as? LosslessStringConvertible {
-      return String(describing: losslessString)
+    if let string = value as? String {
+        return string
     }
     throw Error.invalidInputType
   }
@@ -38,13 +40,13 @@ enum Filters {
   /// - Throws: Filters.Error.invalidInputType
   static func parseStringArgument(from arguments: [Any?], at index: Int = 0) throws -> String {
     guard index < arguments.count else {
-      throw Error.invalidInputType
+        throw Error.invalidInputType
     }
     if let losslessString = arguments[index] as? LosslessStringConvertible {
-      return String(describing: losslessString)
+        return String(describing: losslessString)
     }
-    if let losslessString = (arguments[index] as? String) as? LosslessStringConvertible {
-      return String(describing: losslessString)
+    if let string = arguments[index] as? String {
+        return string
     }
     throw Error.invalidInputType
   }

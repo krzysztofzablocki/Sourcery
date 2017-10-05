@@ -21,7 +21,7 @@ target 'TemplatesTests' do
 end
 
 target 'Sourcery' do
-  pod 'StencilSwiftKit', '~> 2.0'
+  pod 'StencilSwiftKit', :git=>'https://github.com/SwiftGen/StencilSwiftKit.git', :branch=>'additional_boolean_templates'
   pod 'Commander'
   pod 'PathKit'
   pod 'XcodeEdit', '~> 1.0'

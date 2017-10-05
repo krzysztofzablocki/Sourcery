@@ -198,13 +198,13 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             aCoder.encode(self.closure, forKey: "closure")
         }
         // sourcery:end
-    
+
     // MARK: - LosslessStringConvertible
-    
+
     public convenience init(_ description: String) {
         self.init(description, actualTypeName: nil)
     }
-    
+
     public override var debugDescription: String {
         return name
     }

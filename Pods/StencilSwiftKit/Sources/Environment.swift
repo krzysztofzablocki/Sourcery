@@ -15,6 +15,11 @@ public extension Extension {
 
   // MARK: - Private
 
+  private func registerBooleanFilterWithArguments(_ name: String, filter: @escaping Filters.BooleanWithArguments) {
+    registerFilter(name, filter: filter)
+    registerFilter("!\(name)", filter: { value, arguments in try !filter(value, arguments)})
+  }
+
   private func registerNumbersFilters() {
     registerFilter("hexToInt", filter: Filters.Numbers.hexToInt)
     registerFilter("int255toFloat", filter: Filters.Numbers.int255toFloat)
@@ -24,11 +29,8 @@ public extension Extension {
   private func registerStringsFilters() {
     registerFilter("basename", filter: Filters.Strings.basename)
     registerFilter("camelToSnakeCase", filter: Filters.Strings.camelToSnakeCase)
-    registerFilter("contains", filter: Filters.Strings.contains)
     registerFilter("dirname", filter: Filters.Strings.dirname)
     registerFilter("escapeReservedKeywords", filter: Filters.Strings.escapeReservedKeywords)
-    registerFilter("hasPrefix", filter: Filters.Strings.hasPrefix)
-    registerFilter("hasSuffix", filter: Filters.Strings.hasSuffix)
     registerFilter("lowerFirstLetter", filter: Filters.Strings.lowerFirstLetter)
     registerFilter("lowerFirstWord", filter: Filters.Strings.lowerFirstWord)
     registerFilter("removeNewlines", filter: Filters.Strings.removeNewlines)
@@ -37,6 +39,10 @@ public extension Extension {
     registerFilter("swiftIdentifier", filter: Filters.Strings.swiftIdentifier)
     registerFilter("titlecase", filter: Filters.Strings.upperFirstLetter)
     registerFilter("upperFirstLetter", filter: Filters.Strings.upperFirstLetter)
+
+    registerBooleanFilterWithArguments("contains", filter: Filters.Strings.contains)
+    registerBooleanFilterWithArguments("hasPrefix", filter: Filters.Strings.hasPrefix)
+    registerBooleanFilterWithArguments("hasSuffix", filter: Filters.Strings.hasSuffix)
   }
 
   private func registerTags() {
