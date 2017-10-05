@@ -144,6 +144,7 @@ extension Enum: EnumAutoJSExport {}
 
 extension EnumCase: EnumCaseAutoJSExport {}
 
+
 @objc protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
@@ -227,6 +228,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 }
 
 extension Protocol: ProtocolAutoJSExport {}
+
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
@@ -343,9 +345,12 @@ extension Type: TypeAutoJSExport {}
     var isClosure: Bool { get }
     var closure: ClosureType? { get }
     var description: String { get }
+    var debugDescription: String { get }
 }
 
 extension TypeName: TypeNameAutoJSExport {}
+
+
 
 @objc protocol TypesCollectionAutoJSExport: JSExport {
 }
