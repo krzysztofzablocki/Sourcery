@@ -200,11 +200,14 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         // sourcery:end
 
     // MARK: - LosslessStringConvertible
-
+    
+    /// :nodoc:
     public convenience init(_ description: String) {
         self.init(description, actualTypeName: nil)
     }
-
+    
+    // sourcery: skipEquality, skipDescription
+    /// :nodoc:
     public override var debugDescription: String {
         return name
     }
