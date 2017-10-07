@@ -15,6 +15,7 @@
 - Fixed Swiftlint warnings
 - Fixed per file generation if there is long (approx. 150KB) output inside `sourcery:file` annotation
 - Do not generate default.profraw
+- Remove filters in favor of same filters from StencilSwiftKit
 
 ## 0.9.0
 
