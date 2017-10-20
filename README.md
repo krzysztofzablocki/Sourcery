@@ -7,14 +7,14 @@
 
 <img src="Resources/icon-128.png">
 
-**Sourcery** is a codegenerator for Swift language, built on top of Apple own SourceKit, it extends the language abstractions to allow you to generate boilerplate code automatically.
+**Sourcery** is a code generator for Swift language, built on top of Apple's own SourceKit. It extends the language abstractions to allow you to generate boilerplate code automatically.
 
-Its used in over 6000 projects on both iOS and Mac, it powers some of the most popular and critically-acclaimed apps you have used. Its massive community adoption was one of the factors that pushed Apple to implement derived Equality and automatic Codable conformance. Sourcery is maintained by a growing community of [contributors](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors).
+It's used in over 6000 projects on both iOS and macOS and it powers some of the most popular and critically-acclaimed apps you have used. Its massive community adoption was one of the factors that pushed Apple to implement derived Equality and automatic Codable conformance. Sourcery is maintained by a growing community of [contributors](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors).
 
-Try **Sourcery** for your next project or add it to existing one -- you'll save a lot of time and be happy you did!
+Try **Sourcery** for your next project or add it to an existing one -- you'll save a lot of time and be happy you did!
 
 ## TL;DR
-Sourcery allows you to get rid of repetitive tasks, an example might be implementing `Equatable`, without Sourcery you need to implement stuff like this:
+Sourcery allows you to get rid of repetitive tasks. An example might be implementing `Equatable`, without Sourcery you need to implement stuff like this:
 
 ```swift
 extension Person: Equatable {
@@ -29,7 +29,7 @@ extension Person: Equatable {
 
 This is trivial code but imagine doing this across ten types. Across fifty. How many structs and classes are in your project? 
 
-Sourcery removes need to write this code. And if you refactor or add properties, the equality code will be automatically updated for you, eliminating possible human errors. 
+Sourcery removes the need to write this code. And if you refactor or add properties, the equality code will be automatically updated for you, eliminating possible human errors. 
 
 Sourcery automation can be applied to many more domains, e.g.
 
@@ -42,7 +42,7 @@ Sourcery automation can be applied to many more domains, e.g.
 - JSON coding
 - NSCoding and Codable
 
-It's trivial to write new templates to remove boilerplate thats specific to your projects.
+It's trivial to write new templates to remove boilerplate that is specific to your projects.
 
 ## How To Get Started
 There are plenty of tutorials for different uses of Sourcery:
@@ -58,25 +58,25 @@ There are plenty of tutorials for different uses of Sourcery:
 
 - _Binary form_
 
-	Download latest release with prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into desired destination and run `bin/sourcery`
+    Downloadthe  latest release with the prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into the desired destination and run `bin/sourcery`
 
 - _CocoaPods_
 
-	Add pod 'Sourcery' to your Podfile and run `pod update Sourcery`. This will download latest release binary and will put it to your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
+    Add pod 'Sourcery' to your Podfile and run `pod update Sourcery`. This will download the latest release binary and will put it in your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
 - _Building from source_
 
-	Download latest release source code from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest) or clone the repository an build Sourcery manually.
+    Download the latest release source code from [the release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest) or clone the repository and build Sourcery manually.
 
-	- _Building with Swift Package Manager_
+    - _Building with Swift Package Manager_
 
-		Run `swift build -c release` in the root folder. This will create a `.build/release` folder and will put binary there. Move the **whole `.build/release` folder** to your desired destination and run with `path_to_release_folder/sourcery`
+        Run `swift build -c release` in the root folder. This will create a `.build/release` folder and will put the binary there. Move the **whole `.build/release` folder** to your desired destination and run with `path_to_release_folder/sourcery`
 
-		> Note: Swift and JS templates are not supported when building with SPM yet.
+        > Note: Swift and JS templates are not supported when building with SPM yet.
 
-	- _Building with Xcode_
+    - _Building with Xcode_
 
-		Open `Sourcery.xcworkspace` and build with `Sourcery-Release` scheme. This will create `Sourcery.app` in the Derived Data folder. You can copy it to your desired destination and run with `path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery`
+        Open `Sourcery.xcworkspace` and build with `Sourcery-Release` scheme. This will create `Sourcery.app` in the Derived Data folder. You can copy it to your desired destination and run with `path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery`
 
 ## Documentation
 
@@ -84,7 +84,7 @@ Full documentation is available [here](https://cdn.rawgit.com/krzysztofzablocki/
 
 ## Usage
 
-Sourcery is a command line tool, you can either run it manually or in a custom build phase using following command:
+Sourcery is a command line tool, you can either run it manually or in a custom build phase using the following command:
 
 ```
 $ ./sourcery --sources <sources path> --templates <templates path> --output <output path>
@@ -98,10 +98,10 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--templates` - Path to templates. File or Directory. You can provide multiple paths using multiple `--templates` options.
 - `--output` [default: current path] - Path to output. File or Directory.
 - `--config` [default: current path] - Path to config file. Directory. See [Configuration file](#configuration-file).
-- `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces (i.e. `--args arg1=value,arg2`). Arguments are accessible in templates via `argument.name`
+- `--args` - Additional arguments to pass to templates. Each argument can have an explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces (i.e. `--args arg1=value,arg2`). Arguments are accessible in templates via `argument.name`
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
 - `--verbose` [default: false] - Turn on verbose logging
-- `--quiet` [default: false] - Turn off any logging, only emmit errors
+- `--quiet` [default: false] - Turn off any logging, only emit errors
 - `--disableCache` [default: false] - Turn off caching of parsed data
 - `--prune` [default: false] - Prune empty generated files
 - `--version` - Display the current version of Sourcery
@@ -158,7 +158,7 @@ project:
 
 You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects.
 
-> Note: Paths in configuration file are by default relative to configuration file path. If you want to specify absolute path start it with `/`.
+> Note: Paths in configuration files are by default relative to configuration file path. If you want to specify absolute paths start it with `/`.
 
 ## Contributing
 
@@ -195,6 +195,6 @@ Make sure to check my other libraries and tools, especially:
 - [KZPlayground](https://github.com/krzysztofzablocki/KZPlayground) - Powerful playgrounds for Swift and Objective-C
 - [KZFileWatchers](https://github.com/krzysztofzablocki/KZFileWatchers) - Daemon for observing local and remote file changes, used for building other developer tools (Sourcery uses it)
 
-You can [follow me on twitter][1] for news/updates about other projects I am creating.
+You can [follow me on Twitter][1] for news/updates about other projects I am creating.
 
  [1]: http://twitter.com/merowing_
