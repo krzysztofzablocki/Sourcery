@@ -13,17 +13,36 @@ Its used in over 6000 projects on both iOS and Mac, it powers some of the most p
 
 Try **Sourcery** for your next project or add it to existing one -- you'll save a lot of time and be happy you did!
 
-Using it offers many benefits:
+## TL;DR
+Sourcery allows you to get rid of repetitive tasks, an example might be implementing `Equatable`, without Sourcery you need to implement stuff like this:
 
-- Write less repetitive code and make it easy to adhere to [DRY principle](https://en.wikipedia.org/wiki/Don't_repeat_yourself).
-- It allows you to create better code, one that would be hard to maintain without it, e.g. [performing automatic property level difference in tests](https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/Diffable.stencil)
-- Limits the risk of introducing human error when refactoring.
-- Sourcery **doesn't use runtime tricks**, in fact, it allows you to leverage compiler, even more, creating more safety.
-- **Immediate feedback:** Sourcery features built-in daemon support, enabling you to write your templates in real-time side-by-side with generated code.
+```swift
+extension Person: Equatable {
+    static func ==(lhs: Person, rhs: Person) -> Bool {
+        guard lhs.firstName == rhs.firstName else { return false }
+        guard lhs.lastName == rhs.lastName else { return false }
+        guard lhs.birthDate == rhs.birthDate else { return false }
+        return true
+    }
+}
+``` 
 
-![Daemon demo](Resources/daemon.gif)
+This is trivial code but imagine doing this across ten types. Across fifty. How many structs and classes are in your project? 
 
-**Sourcery is so meta that it is used to code-generate its boilerplate code**
+Sourcery removes need to write this code. And if you refactor or add properties, the equality code will be automatically updated for you, eliminating possible human errors. 
+
+Sourcery automation can be applied to many more domains, e.g.
+
+- Equality & Hashing
+- Enum cases & Counts
+- Lenses
+- Mocks & Stubs
+- LinuxMain
+- Decorators
+- JSON coding
+- NSCoding and Codable
+
+It's trivial to write new templates to remove boilerplate thats specific to your projects.
 
 ## How To Get Started
 There are plenty of tutorials for different uses of Sourcery:
