@@ -10,8 +10,8 @@ internal enum TemplateAnnotationsParser {
     private static func regex(annotation: String) throws -> NSRegularExpression {
         let commentPattern = NSRegularExpression.escapedPattern(for: "//")
         let regex = try NSRegularExpression(
-            pattern: "(^\\s*?\(commentPattern)\\s*?sourcery:\(annotation):)(\\S*)\\s*?(^(?:.|\\s)*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
-            options: [.allowCommentsAndWhitespace, .anchorsMatchLines]
+            pattern: "(^\\s*?\(commentPattern)\\s*?sourcery:\(annotation):)(\\S*)\\s*?(^.*?)(^\\s*?\(commentPattern)\\s*?sourcery:end)",
+            options: [.allowCommentsAndWhitespace, .anchorsMatchLines, .dotMatchesLineSeparators]
         )
         return regex
     }
