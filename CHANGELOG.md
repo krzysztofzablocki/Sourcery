@@ -6,12 +6,13 @@
 
 ### New Features
 
-- Added new toArray Stencil fileter
+- Added new toArray Stencil filter
 
 ### Internal changes
 
 - Add release to Homebrew rake task
 - Fixed Swiftlint warnings
+- Fixed per file generation if there is long (approx. 150KB) output inside `sourcery:file` annotation
 
 ## 0.9.0
 
