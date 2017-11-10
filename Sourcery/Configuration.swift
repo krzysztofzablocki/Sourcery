@@ -151,6 +151,7 @@ struct Configuration {
     let source: Source
     let templates: Paths
     let output: Path
+    let parsableExtensions: [String]
     let args: [String: NSObject]
 
     init(path: Path, relativePath: Path) throws {
@@ -182,6 +183,8 @@ struct Configuration {
         }
         self.templates = templates
 
+        self.parsableExtensions = dict["parsableExtensions"] as? [String] ?? []
+
         guard let output = dict["output"] as? String else {
             throw Configuration.Error.invalidOutput(message: "'output' key is missing or is not a string.")
         }
@@ -190,10 +193,11 @@ struct Configuration {
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 
-    init(sources: [Path], templates: [Path], output: Path, args: [String: NSObject]) {
+    init(sources: [Path], templates: [Path], output: Path, parsableExtensions: [String], args: [String: NSObject]) {
         self.source = .sources(Paths(include: sources))
         self.templates = Paths(include: templates)
         self.output = output
+        self.parsableExtensions = parsableExtensions
         self.args = args
     }
 
