@@ -125,9 +125,9 @@ func runCLI() {
         VariadicOption<Path>("templates", description: "Path to templates. File or Directory."),
         Option<Path>("output", ".", description: "Path to output. File or Directory. Default is current path."),
         Option<Path>("config", ".", description: "Path to config file. File or Directory. Default is current path."),
-        VariadicOption<String>("parsableExtensions", description: "extensions that this run of Sorcery should parse"),
+        VariadicOption<String>("force-parse", description: "extensions that this run of Sorcery should parse"),
         Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, sources, templates, output, configPath, parsableExtensions, args in
+    ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, sources, templates, output, configPath, forceParse, args in
         do {
             Log.level = verboseLogging ? .verbose : quiet ? .errors : .info
 
@@ -139,7 +139,7 @@ func runCLI() {
                 configuration = Configuration(sources: sources,
                                               templates: templates,
                                               output: output,
-                                              parsableExtensions: parsableExtensions,
+                                              forceParse: forceParse,
                                               args: args.arguments)
             } else {
                 _ = Validators.isFileOrDirectory(path: configPath)
@@ -167,7 +167,7 @@ func runCLI() {
                 configuration.source,
                 usingTemplates: configuration.templates,
                 output: configuration.output,
-                parsableExtensions: configuration.parsableExtensions) {
+                forceParse: configuration.forceParse) {
                 RunLoop.current.run()
                 _ = keepAlive
             } else {

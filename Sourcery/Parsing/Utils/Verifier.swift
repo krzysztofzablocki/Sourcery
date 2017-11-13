@@ -18,10 +18,10 @@ enum Verifier {
 
     public static func canParse(content: String,
                                 path: Path,
-                                parsableExtensions: [String]) -> Result {
+                                forceParse: [String] = []) -> Result {
         guard !content.isEmpty else { return .approved }
 
-        let hasParsableExtension = (parsableExtensions.filter({ (ext) -> Bool in
+        let hasParsableExtension = (forceParse.filter({ (ext) -> Bool in
             return path.hasExtension(as: ext)
         }).isEmpty == false)
 

@@ -47,10 +47,10 @@ class Sourcery {
     ///   - files: Path of files to process, can be directory or specific file.
     ///   - templatePath: Specific Template to use for code generation.
     ///   - output: Path to output source code to.
-    ///   - parsableExtensions: extensions of generated sourcery file that can be parsed
+    ///   - forceParse: extensions of generated sourcery file that can be parsed
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Path, parsableExtensions: [String]) throws -> [FolderWatcher.Local]? {
+    func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Path, forceParse: [String] = []) throws -> [FolderWatcher.Local]? {
         self.templatesPaths = templatesPaths
         self.outputPath = output
 
@@ -67,7 +67,7 @@ class Sourcery {
             var result: ParsingResult
             switch source {
             case let .sources(paths):
-                result = try self.parse(from: paths.include, exclude: paths.exclude, parsableExtensions: parsableExtensions, modules: nil)
+                result = try self.parse(from: paths.include, exclude: paths.exclude, forceParse: forceParse, modules: nil)
             case let .projects(projects):
                 var paths = [Path]()
                 var modules = [String]()
@@ -196,16 +196,13 @@ class Sourcery {
 extension Sourcery {
     typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange])])
 
-    fileprivate func parse(from: [Path], exclude: [Path] = [], parsableExtensions: [String] = [], modules: [String]?) throws -> ParsingResult {
+    fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
             precondition(from.count == modules.count, "There should be module for each file to parse")
         }
 
         self.track("Scanning sources...", terminator: "")
-        self.track("Parsable Extensions:", terminator: "")
-        for ext in parsableExtensions {
-            self.track("ext: \(ext)", terminator: "")
-        }
+
         var inlineRanges = [(file: String, ranges: [String: NSRange])]()
         var allResults = [FileParserResult]()
 
@@ -223,7 +220,7 @@ extension Sourcery {
                 .filter {
                     let result = Verifier.canParse(content: $0.contents,
                                                    path: $0.path,
-                                                   parsableExtensions: parsableExtensions)
+                                                   forceParse: forceParse)
                     if result == .containsConflictMarkers {
                         throw Error.containsMergeConflictMarkers
                     }
