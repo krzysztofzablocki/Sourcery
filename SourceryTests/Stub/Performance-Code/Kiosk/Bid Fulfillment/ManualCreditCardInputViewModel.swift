@@ -46,7 +46,7 @@ class ManualCreditCardInputViewModel: NSObject {
 
     var moveToYear: Observable<Void> {
         return expirationMonth.asObservable().filter { value in
-            return value.characters.count == 2
+            return value.count == 2
         }.map(void)
     }
 

@@ -132,7 +132,7 @@ class ConfirmYourBidViewController: UIViewController {
     }
 
     func toPhoneNumberString(_ number: String) -> String {
-        if number.characters.count >= 7 {
+        if number.count >= 7 {
             return phoneNumberFormatter.string(for: number) ?? number
         } else {
             return number

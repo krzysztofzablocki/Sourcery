@@ -222,13 +222,13 @@ private func count(_ value: Any?) -> Any? {
 extension String {
 
     fileprivate func upperFirst() -> String {
-        let first = String(characters.prefix(1)).capitalized
+        let first = String(self.prefix(1)).capitalized
         let other = dropFirst()
         return first + other
     }
 
     fileprivate func lowerFirst() -> String {
-        let first = String(characters.prefix(1)).lowercased()
+        let first = String(self.prefix(1)).lowercased()
         let other = dropFirst()
         return first + other
     }

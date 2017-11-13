@@ -18,6 +18,6 @@ class AdminLogViewController: UIViewController {
     }
 
     @IBAction func scrollTapped(_ sender: AnyObject) {
-        textView.scrollRangeToVisible(NSMakeRange(textView.text.characters.count - 1, 1))
+        textView.scrollRangeToVisible(NSMakeRange(textView.text.count - 1, 1))
     }
 }

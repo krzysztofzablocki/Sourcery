@@ -129,7 +129,7 @@ class SecureTextField: TextField {
     func dotPlaceholder() -> String {
         var index = 0
         let dots = NSMutableString()
-        while (index < text.characters.count) {
+        while (index < text.count) {
             dots.append("•")
             index += 1
         }
