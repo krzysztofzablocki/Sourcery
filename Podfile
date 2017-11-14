@@ -3,6 +3,7 @@
 
 workspace 'Sourcery.xcworkspace'
 use_frameworks!
+inhibit_all_warnings!
 
 def meta
   pod 'SwiftLint'

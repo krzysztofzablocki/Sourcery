@@ -56,7 +56,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         }
 
         if let genericConstraint = name.range(of: "where") {
-            name = String(name.characters.prefix(upTo: genericConstraint.lowerBound))
+            name = String(name.prefix(upTo: genericConstraint.lowerBound))
                 .trimmingCharacters(in: .whitespaces)
         }
 
@@ -75,11 +75,11 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             if isOptional {
                 let unwrappedTypeName: String
                 if name.hasSuffix("?") || name.hasSuffix("!") {
-                    unwrappedTypeName = String(name.characters.dropLast())
+                    unwrappedTypeName = String(name.dropLast())
                 } else if name.hasPrefix("Optional<") {
-                    unwrappedTypeName = name.drop(first: "Optional<".characters.count, last: 1)
+                    unwrappedTypeName = name.drop(first: "Optional<".count, last: 1)
                 } else {
-                    unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".characters.count, last: 1)
+                    unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".count, last: 1)
                 }
                 self.unwrappedTypeName = unwrappedTypeName.bracketsBalancing()
             } else {

@@ -22,25 +22,25 @@ func isZeroLength(string: String) -> Bool {
 
 func isStringLength(in range: Range<Int>) -> (String) -> Bool {
     return { string in
-        return range.contains(string.characters.count)
+        return range.contains(string.count)
     }
 }
 
 func isStringOf(length: Int) -> (String) -> Bool {
     return { string in
-        return string.characters.count == length
+        return string.count == length
     }
 }
 
 func isStringLengthAtLeast(length: Int) -> (String) -> Bool {
     return { string in
-        return string.characters.count >= length
+        return string.count >= length
     }
 }
 
 func isStringLength(oneOf lengths: [Int]) -> (String) -> Bool {
     return { string in
-        return lengths.contains(string.characters.count)
+        return lengths.contains(string.count)
     }
 }
 

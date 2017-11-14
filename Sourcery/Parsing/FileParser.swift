@@ -317,7 +317,7 @@ extension FileParser {
         var inferredType: String
         if string == "nil" {
             return "Optional"
-        } else if string.characters.first == "\"" {
+        } else if string.first == "\"" {
             return "String"
         } else if Bool(string) != nil {
             return "Bool"
@@ -348,7 +348,7 @@ extension FileParser {
             }
 
             return "(\(types.joined(separator: ", ")))"
-        } else if string.characters.first == "[", string.characters.last == "]" {
+        } else if string.first == "[", string.last == "]" {
             //collection
             let string = string.dropFirstAndLast()
             let items = string.commaSeparated()
@@ -394,7 +394,7 @@ extension FileParser {
             //initializer
             inferredType = string.substring(with: string.startIndex..<initializer.lowerBound)
             return inferredType
-        } else if let parens = string.range(of: "("), string.characters.last == ")" {
+        } else if let parens = string.range(of: "("), string.last == ")" {
             inferredType = string.substring(with: string.startIndex..<parens.lowerBound)
             //to avoid inferring i.e. 'Optional.some' for 'Optional.some(...)'
             return inferredType.contains(".") ? nil : inferredType
@@ -416,7 +416,7 @@ extension FileParser {
             substring = substring.components(separatedBy: .newlines)[0]
 
             if substring.hasSuffix("{") {
-                substring = String(substring.characters.dropLast()).trimmingCharacters(in: .whitespaces)
+                substring = String(substring.dropLast()).trimmingCharacters(in: .whitespaces)
             }
 
             maybeType = inferType(from: substring)
@@ -499,7 +499,7 @@ extension FileParser {
                     key = key.trimmingSuffix(nameSuffix).trimmingCharacters(in: .whitespaces)
                 }
 
-                let lineSuffix = String(line.characters.suffix(from: range.lowerBound))
+                let lineSuffix = String(line.suffix(from: range.lowerBound))
                 let components = lineSuffix.semicolonSeparated()
                 if let suffix = components.first {
                     nameSuffix = suffix
@@ -561,7 +561,7 @@ extension FileParser {
 
         let wrappedBody = keyString.substring(from: nameRange.upperBound).trimmingCharacters(in: .whitespacesAndNewlines)
 
-        switch (wrappedBody.characters.first, wrappedBody.characters.last) {
+        switch (wrappedBody.first, wrappedBody.last) {
         case ("="?, _?):
              let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
              rawValue = parseEnumValues(body)
@@ -727,13 +727,14 @@ extension FileParser {
             guard let attributeString = $0.trimmingCharacters(in: .whitespaces)
                 .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
 
-            if let openIndex = attributeString.characters.index(of: "(") {
-                let name = String(attributeString.characters.prefix(upTo: openIndex))
+            if let openIndex = attributeString.index(of: "(") {
+                let name = String(attributeString.prefix(upTo: openIndex))
 
-                let chars = attributeString.characters
+                let chars = attributeString
                 let startIndex = chars.index(openIndex, offsetBy: 1)
                 let endIndex = chars.index(chars.endIndex, offsetBy: -1)
-                let argumentsString = String(chars[startIndex ..< endIndex])
+                let optArgumentsString = String(chars[startIndex ..< endIndex])
+                guard let argumentsString = optArgumentsString else { return nil }
                 let arguments = parseAttributeArguments(argumentsString)
 
                 return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")

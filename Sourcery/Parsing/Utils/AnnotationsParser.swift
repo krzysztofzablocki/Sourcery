@@ -195,18 +195,18 @@ internal struct AnnotationsParser {
 
         if commentLine.contains("sourcery:begin:") {
             lowerBound = commentLine.range(of: "sourcery:begin:")?.upperBound
-            upperBound = commentLine.characters.indices.endIndex
+            upperBound = commentLine.indices.endIndex
             insideBlock = true
         } else if commentLine.contains("sourcery:end") {
             return .end
         } else if commentLine.contains("sourcery:file") {
             lowerBound = commentLine.range(of: "sourcery:file:")?.upperBound
-            upperBound = commentLine.characters.indices.endIndex
+            upperBound = commentLine.indices.endIndex
             insideFileBlock = true
         } else {
             lowerBound = commentLine.range(of: "sourcery:")?.upperBound
             if commentLine.hasPrefix("//") {
-                upperBound = commentLine.characters.indices.endIndex
+                upperBound = commentLine.indices.endIndex
             } else {
                 upperBound = commentLine.range(of: "*/")?.lowerBound
             }
@@ -252,7 +252,7 @@ internal struct AnnotationsParser {
                     append(key: name, value: NSNumber(value: number), to: &annotations)
                 } else {
                     if (value.hasPrefix("'") && value.hasSuffix("'")) || (value.hasPrefix("\"") && value.hasSuffix("\"")) {
-                        value = value[value.characters.index(after: value.startIndex) ..< value.characters.index(before: value.endIndex)]
+                        value = value[value.index(after: value.startIndex) ..< value.index(before: value.endIndex)]
                         value = value.trimmingCharacters(in: .whitespaces)
                     }
                     append(key: name, value: value as NSString, to: &annotations)

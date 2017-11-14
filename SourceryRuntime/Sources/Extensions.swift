@@ -22,38 +22,38 @@ public extension String {
     @discardableResult
     mutating func trimPrefix(_ prefix: String) -> Bool {
         guard hasPrefix(prefix) else { return false }
-        self = String(characters.suffix(characters.count - prefix.characters.count))
+        self = String(self.suffix(self.count - prefix.count))
         return true
     }
 
     /// :nodoc:
     func trimmingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
-        return String(characters.suffix(characters.count - prefix.characters.count))
+        return String(self.suffix(self.count - prefix.count))
     }
 
     /// :nodoc:
     @discardableResult
     mutating func trimSuffix(_ suffix: String) -> Bool {
         guard hasSuffix(suffix) else { return false }
-        self = String(characters.prefix(characters.count - suffix.characters.count))
+        self = String(self.prefix(self.count - suffix.count))
         return true
     }
 
     /// :nodoc:
     func trimmingSuffix(_ suffix: String) -> String {
         guard hasSuffix(suffix) else { return self }
-        return String(characters.prefix(characters.count - suffix.characters.count))
+        return String(self.prefix(self.count - suffix.count))
     }
 
     /// :nodoc:
     func dropFirst(_ n: Int = 1) -> String {
-        return String(characters.dropFirst(n))
+        return String(self.dropFirst(n))
     }
 
     /// :nodoc:
     func dropLast(_ n: Int = 1) -> String {
-        return String(characters.dropLast(n))
+        return String(self.dropLast(n))
     }
 
     /// :nodoc:
@@ -63,7 +63,7 @@ public extension String {
 
     /// :nodoc:
     func drop(first: Int, last: Int) -> String {
-        return String(characters.dropFirst(first).dropLast(last))
+        return String(self.dropFirst(first).dropLast(last))
     }
 
     /// :nodoc:
@@ -113,7 +113,7 @@ public extension String {
     /// Returns true if all opening brackets are balanced with closed brackets.
     func bracketsBalanced() -> Bool {
         var bracketsCount: Int = 0
-        for char in characters {
+        for char in self {
             if char == "(" { bracketsCount += 1 } else if char == ")" { bracketsCount -= 1 }
             if bracketsCount < 0 { return false }
         }
@@ -146,10 +146,10 @@ public extension String {
         var items = [String]()
         var matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
 
-        for char in characters {
-            if between.open.characters.contains(char) {
+        for char in self {
+            if between.open.contains(char) {
                 boundingCharactersCount += 1
-            } else if between.close.characters.contains(char) {
+            } else if between.close.contains(char) {
                 boundingCharactersCount = max(0, boundingCharactersCount - 1)
             }
             if char == "\"" {
@@ -161,7 +161,7 @@ public extension String {
                 continue
             }
 
-            if char == matchedDelimiter.leftToMatch.characters.first {
+            if char == matchedDelimiter.leftToMatch.first {
                 matchedDelimiter.alreadyMatched.append(char)
                 matchedDelimiter.leftToMatch = matchedDelimiter.leftToMatch.dropFirst()
                 if matchedDelimiter.leftToMatch.isEmpty {

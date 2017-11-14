@@ -274,7 +274,7 @@ struct Composer {
                     }
                 }
                 actualTypeName = "(\(actualElements.joined(separator: ", ")))"
-            } else if unwrappedTypeName.characters.first == "[", unwrappedTypeName.characters.last == "]" {
+            } else if unwrappedTypeName.first == "[", unwrappedTypeName.last == "]" {
                 let types = unwrappedTypeName.dropFirstAndLast()
                     .colonSeparated()
                     .map({ $0.trimmingCharacters(in: .whitespaces) })

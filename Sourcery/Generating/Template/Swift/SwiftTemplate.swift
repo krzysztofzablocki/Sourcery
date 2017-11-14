@@ -248,7 +248,7 @@ private let newlines = try! NSRegularExpression(pattern: "\\n\\r|\\r\\n|\\r|\\n"
 
 private extension String {
     var numberOfLineSeparators: Int {
-        return newlines.matches(in: self, options: [], range: NSRange(location: 0, length: self.characters.count)).count
+        return newlines.matches(in: self, options: [], range: NSRange(location: 0, length: self.count)).count
     }
 
     var stringEncoded: String {

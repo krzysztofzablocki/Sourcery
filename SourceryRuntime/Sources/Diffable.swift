@@ -18,7 +18,7 @@ protocol Diffable {
 }
 
 /// :nodoc:
-extension NSRange: Diffable, Equatable {
+extension NSRange: Diffable {
     /// :nodoc:
     public static func == (lhs: NSRange, rhs: NSRange) -> Bool {
         return NSEqualRanges(lhs, rhs)
@@ -126,7 +126,7 @@ extension DiffableResult {
         return self
     }
 
-    @discardableResult func trackDifference<K: Equatable, T: Equatable>(actual: [K: T], expected: [K: T]) -> DiffableResult where T: Diffable {
+    @discardableResult func trackDifference<K, T: Equatable>(actual: [K: T], expected: [K: T]) -> DiffableResult where T: Diffable {
         let diffResult = DiffableResult()
         defer { append(contentsOf: diffResult) }
 
@@ -163,7 +163,7 @@ extension DiffableResult {
 
 // MARK: - NSObject diffing
 
-    @discardableResult func trackDifference<K: Equatable, T: NSObjectProtocol>(actual: [K: T], expected: [K: T]) -> DiffableResult {
+    @discardableResult func trackDifference<K, T: NSObjectProtocol>(actual: [K: T], expected: [K: T]) -> DiffableResult {
         let diffResult = DiffableResult()
         defer { append(contentsOf: diffResult) }
 
