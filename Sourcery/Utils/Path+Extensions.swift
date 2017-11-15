@@ -40,6 +40,11 @@ extension Path {
         return !self.isDirectory && self.extension == "swift"
     }
 
+    func hasExtension(as string: String) -> Bool {
+        let extensionString = ".\(string)."
+        return self.string.contains(extensionString)
+    }
+
     init(_ string: String, relativeTo relativePath: Path) {
         var path = Path(string)
         if !path.isAbsolute {

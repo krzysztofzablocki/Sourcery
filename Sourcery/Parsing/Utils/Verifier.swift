@@ -16,10 +16,16 @@ enum Verifier {
         case approved
     }
 
-    public static func canParse(content: String) -> Result {
+    public static func canParse(content: String,
+                                path: Path,
+                                forceParse: [String] = []) -> Result {
         guard !content.isEmpty else { return .approved }
 
-        if content.hasPrefix(Sourcery.generationMarker) {
+        let hasParsableExtension = (forceParse.filter({ (ext) -> Bool in
+            return path.hasExtension(as: ext)
+        }).isEmpty == false)
+
+        if content.hasPrefix(Sourcery.generationMarker) && hasParsableExtension == false {
             return .isCodeGenerated
         }
 
