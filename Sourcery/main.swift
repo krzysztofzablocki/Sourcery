@@ -148,9 +148,25 @@ func runCLI() {
                 do {
                     let relativePath: Path = configPath.isDirectory ? configPath : configPath.parent()
                     configuration = try Configuration(path: yamlPath, relativePath: relativePath)
-                    Log.info("Using configuration file at '\(yamlPath)'")
+
+                    // Doesn't consider 'configPath' cause it's related to the yaml file
+                    let hasAnyParameter = (watcherEnabled == true ||
+                        disableCache == true ||
+                        verboseLogging != true ||
+                        quiet == true ||
+                        prune == true ||
+                        !sources.isEmpty ||
+                        !templates.isEmpty ||
+                        output != "" ||
+                        !args.arguments.isEmpty)
+
+                    if hasAnyParameter {
+                        Log.info("Using configuration file at '\(yamlPath)'. WARNING: Ignoring the parameters passed in the command line.")
+                    } else {
+                        Log.info("Using configuration file at '\(yamlPath)'")
+                    }
                 } catch {
-                    Log.error(error)
+                    Log.error("while reading .yml '\(yamlPath)'. '\(error)'")
                     exit(.invalidConfig)
                 }
             }
