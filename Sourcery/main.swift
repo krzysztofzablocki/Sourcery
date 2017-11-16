@@ -151,14 +151,14 @@ func runCLI() {
 
                     // Check if the user is passing parameters
                     // that are ignored cause read from the yaml file
-                    let hasAnyParameter = (
-                        !sources.isEmpty ||
-                        !templates.isEmpty ||
-                        !forceParse.isEmpty ||
-                        output != ""
-                    )
+                    let hasAnyYamlDuplicatedParameter = (
+                                                        !sources.isEmpty ||
+                                                        !templates.isEmpty ||
+                                                            !forceParse.isEmpty ||
+                                                            output != ""
+                                                         )
 
-                    if hasAnyParameter {
+                    if hasAnyYamlDuplicatedParameter {
                         Log.info("Using configuration file at '\(yamlPath)'. WARNING: Ignoring the parameters passed in the command line.")
                     } else {
                         Log.info("Using configuration file at '\(yamlPath)'")
