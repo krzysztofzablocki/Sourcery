@@ -7,6 +7,7 @@
 ### New Features
 
 - Added new toArray Stencil filter
+- Added a console warning when a yaml is available but any parameter between 'sources', templates', 'forceParse', 'output' are provided
 
 ### Internal changes
 
