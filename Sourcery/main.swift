@@ -154,9 +154,9 @@ func runCLI() {
                     let hasAnyYamlDuplicatedParameter = (
                                                         !sources.isEmpty ||
                                                         !templates.isEmpty ||
-                                                            !forceParse.isEmpty ||
-                                                            output != ""
-                                                         )
+                                                        !forceParse.isEmpty ||
+                                                        output != ""
+                                                        )
 
                     if hasAnyYamlDuplicatedParameter {
                         Log.info("Using configuration file at '\(yamlPath)'. WARNING: Ignoring the parameters passed in the command line.")
