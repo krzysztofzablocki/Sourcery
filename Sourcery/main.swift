@@ -154,6 +154,7 @@ func runCLI() {
                     let hasAnyParameter = (
                         !sources.isEmpty ||
                         !templates.isEmpty ||
+                        !forceParse.isEmpty ||
                         output != ""
                     )
 
