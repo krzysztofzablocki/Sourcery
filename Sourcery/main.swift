@@ -148,9 +148,23 @@ func runCLI() {
                 do {
                     let relativePath: Path = configPath.isDirectory ? configPath : configPath.parent()
                     configuration = try Configuration(path: yamlPath, relativePath: relativePath)
-                    Log.info("Using configuration file at '\(yamlPath)'")
+
+                    // Check if the user is passing parameters
+                    // that are ignored cause read from the yaml file
+                    let hasAnyYamlDuplicatedParameter = (
+                                                        !sources.isEmpty ||
+                                                        !templates.isEmpty ||
+                                                        !forceParse.isEmpty ||
+                                                        output != ""
+                                                        )
+
+                    if hasAnyYamlDuplicatedParameter {
+                        Log.info("Using configuration file at '\(yamlPath)'. WARNING: Ignoring the parameters passed in the command line.")
+                    } else {
+                        Log.info("Using configuration file at '\(yamlPath)'")
+                    }
                 } catch {
-                    Log.error(error)
+                    Log.error("while reading .yml '\(yamlPath)'. '\(error)'")
                     exit(.invalidConfig)
                 }
             }
