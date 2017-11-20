@@ -14,6 +14,7 @@
 - Add release to Homebrew rake task
 - Fixed Swiftlint warnings
 - Fixed per file generation if there is long (approx. 150KB) output inside `sourcery:file` annotation
+- Do not generate default.profraw
 
 ## 0.9.0
 
