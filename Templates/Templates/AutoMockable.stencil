@@ -33,7 +33,7 @@ import AppKit
 
 {% macro extensionMethodReceivedParameters method %}
     {%if method.parameters.count == 1 %}
-        {% call swiftifyExtensionMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
+        {% call swiftifyExtensionMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 %}
         {% call swiftifyExtensionMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
@@ -43,7 +43,7 @@ import AppKit
 
 {% macro methodReceivedParameters method %}
     {%if method.parameters.count == 1 %}
-        {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }} = {{ param.name }}{% endfor %}
+        {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 %}
         {% call swiftifyMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
@@ -60,7 +60,7 @@ import AppKit
     {% if not method.isInitializer %}
     var {% call swiftifyMethodName method.selectorName %}Called = false{% endif %}
     {% if method.parameters.count == 1 %}
-    var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
+    var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
     var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}{% endif %}
@@ -93,7 +93,7 @@ import AppKit
     {% endif %}
     {% if not method.isInitializer %}var {% call swiftifyExtensionMethodName method.selectorName %}Called = false{% endif %}
     {% if method.parameters.count == 1 %}
-    var {% call swiftifyExtensionMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirst }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
+    var {% call swiftifyExtensionMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ param.typeName.unwrappedTypeName }}?{% endfor %}
     {% else %}{% if not method.parameters.count == 0 %}
     var {% call swiftifyExtensionMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}{% endif %}

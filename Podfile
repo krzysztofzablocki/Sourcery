@@ -21,9 +21,7 @@ target 'TemplatesTests' do
 end
 
 target 'Sourcery' do
-  meta
-
-  pod 'StencilSwiftKit', '~> 1.0'
+  pod 'StencilSwiftKit', :git=>'https://github.com/SwiftGen/StencilSwiftKit.git', :branch=>'master'
   pod 'Commander'
   pod 'PathKit'
   pod 'XcodeEdit', '~> 1.0'

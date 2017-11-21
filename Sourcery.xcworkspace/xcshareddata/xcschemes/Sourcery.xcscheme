@@ -62,20 +62,20 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6D6A24A91EB79E8900C1FB1A"
-               BuildableName = "TemplatesTests.xctest"
-               BlueprintName = "TemplatesTests"
-               ReferencedContainer = "container:Templates/Templates.xcodeproj">
+               BlueprintIdentifier = "CD754C991D853F000082B512"
+               BuildableName = "SourceryTests.xctest"
+               BlueprintName = "SourceryTests"
+               ReferencedContainer = "container:Sourcery.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CD754C991D853F000082B512"
-               BuildableName = "SourceryTests.xctest"
-               BlueprintName = "SourceryTests"
-               ReferencedContainer = "container:Sourcery.xcodeproj">
+               BlueprintIdentifier = "6D6A24A91EB79E8900C1FB1A"
+               BuildableName = "TemplatesTests.xctest"
+               BlueprintName = "TemplatesTests"
+               ReferencedContainer = "container:Templates/Templates.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
