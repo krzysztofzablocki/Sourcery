@@ -1,6 +1,6 @@
 {
   "name": "StencilSwiftKit",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "summary": "Stencil additions dedicated for Swift code generation",
   "description": "This pod contains some additional nodes and filters for\n[Stencil](https://github.com/kylef/Stencil).\nThese additional nodes & filters are mainly dedicated\nfor writing Stencil templates generating *Swift* code.",
   "homepage": "https://github.com/SwiftGen/StencilSwiftKit",
@@ -14,7 +14,7 @@
   },
   "source": {
     "git": "https://github.com/SwiftGen/StencilSwiftKit.git",
-    "tag": "2.2.0"
+    "tag": "2.3.0"
   },
   "source_files": "Sources/**/*.swift",
   "dependencies": {

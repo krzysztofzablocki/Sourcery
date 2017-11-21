@@ -15,9 +15,10 @@ public extension Extension {
 
   // MARK: - Private
 
-  private func registerBooleanFilterWithArguments(_ name: String, filter: @escaping Filters.BooleanWithArguments) {
-    registerFilter(name, filter: filter)
-    registerFilter("!\(name)", filter: { value, arguments in try !filter(value, arguments)})
+  private func registerFilter(_ name: String, filter: @escaping Filters.BooleanWithArguments) {
+    typealias GenericFilter = (Any?, [Any?]) throws -> Any?
+    registerFilter(name, filter: filter as GenericFilter)
+    registerFilter("!\(name)", filter: { value, arguments in try !filter(value, arguments)} as GenericFilter)
   }
 
   private func registerNumbersFilters() {
@@ -39,10 +40,9 @@ public extension Extension {
     registerFilter("swiftIdentifier", filter: Filters.Strings.swiftIdentifier)
     registerFilter("titlecase", filter: Filters.Strings.upperFirstLetter)
     registerFilter("upperFirstLetter", filter: Filters.Strings.upperFirstLetter)
-
-    registerBooleanFilterWithArguments("contains", filter: Filters.Strings.contains)
-    registerBooleanFilterWithArguments("hasPrefix", filter: Filters.Strings.hasPrefix)
-    registerBooleanFilterWithArguments("hasSuffix", filter: Filters.Strings.hasSuffix)
+    registerFilter("contains", filter: Filters.Strings.contains)
+    registerFilter("hasPrefix", filter: Filters.Strings.hasPrefix)
+    registerFilter("hasSuffix", filter: Filters.Strings.hasSuffix)
   }
 
   private func registerTags() {
