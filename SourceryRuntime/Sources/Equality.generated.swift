@@ -151,6 +151,20 @@ extension Struct {
         return super.isEqual(rhs)
     }
 }
+extension Subscript {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Subscript else { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.readAccess != rhs.readAccess { return false }
+        if self.writeAccess != rhs.writeAccess { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        return true
+    }
+}
 extension TemplateContext {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -190,6 +204,7 @@ extension Type {
         if self.localName != rhs.localName { return false }
         if self.variables != rhs.variables { return false }
         if self.methods != rhs.methods { return false }
+        if self.subscripts != rhs.subscripts { return false }
         if self.annotations != rhs.annotations { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }

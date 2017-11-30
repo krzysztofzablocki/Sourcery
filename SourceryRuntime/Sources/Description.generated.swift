@@ -150,6 +150,24 @@ extension Struct {
         return string
     }
 }
+extension Subscript {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "readAccess = \(String(describing: self.readAccess)), "
+        string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "isMutable = \(String(describing: self.isMutable)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
+        string += "attributes = \(String(describing: self.attributes))"
+        return string
+    }
+}
 extension TemplateContext {
     /// :nodoc:
     override public var description: String {
@@ -192,6 +210,7 @@ extension Type {
         string += "localName = \(String(describing: self.localName)), "
         string += "variables = \(String(describing: self.variables)), "
         string += "methods = \(String(describing: self.methods)), "
+        string += "subscripts = \(String(describing: self.subscripts)), "
         string += "initializers = \(String(describing: self.initializers)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "staticVariables = \(String(describing: self.staticVariables)), "
