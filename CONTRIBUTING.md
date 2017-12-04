@@ -6,7 +6,7 @@ I really appreciate your help!
 
 ## Filing issues
 
-When filing an issue, make sure to answer these five questions:
+When filing an issue, make sure to answer these questions:
 
 1. What version of Swift are you using (`swift --version`)?
 2. What did you do?
