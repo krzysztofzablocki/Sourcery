@@ -12,7 +12,7 @@ class StencilTemplateSpec: QuickSpec {
 
             func generate(_ template: String) -> String {
                 let arrayAnnotations = Variable(name: "annotated", typeName: TypeName("MyClass"))
-                arrayAnnotations.annotations = ["Foo": ["Hello", "World"] as NSArray]
+                arrayAnnotations.annotations = ["Foo": ["Hello", "beautiful", "World"] as NSArray]
                 let singleAnnotation = Variable(name: "annotated", typeName: TypeName("MyClass"))
                 singleAnnotation.annotations = ["Foo": "HelloWorld" as NSString]
                 return (try? Generator.generate(Types(types: [
@@ -29,7 +29,7 @@ class StencilTemplateSpec: QuickSpec {
                 context("given array") {
                     it("doesnt modify the value") {
                         let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | toArray }}{% endfor %}")
-                        expect(result).to(equal("(\n    Hello,\n    World\n)"))
+                        expect(result).to(equal("(\n    Hello,\n    beautiful,\n    World\n)"))
                     }
                 }
 
@@ -39,6 +39,15 @@ class StencilTemplateSpec: QuickSpec {
                         expect(result).to(equal("[HelloWorld]"))
                     }
                 }
+            }
+
+            describe("sorted") {
+              context("given array") {
+                it("sorts it") {
+                  let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sorted:\"description\" }}{% endfor %}")
+                  expect(result).to(equal("[beautiful, Hello, World]"))
+                }
+              }
             }
 
             context("given string") {
