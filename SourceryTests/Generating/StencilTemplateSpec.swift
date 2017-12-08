@@ -83,6 +83,16 @@ class StencilTemplateSpec: QuickSpec {
                     }
                 }
             }
+
+            describe("reversed") {
+                context("given array") {
+                    it("reverses it") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | reversed }}{% endfor %}")
+                        expect(result).to(equal("[World, beautiful, Hello]"))
+                    }
+                }
+            }
+
             context("given string") {
                 it("generates upperFirstLetter") {
                     expect(generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))

@@ -61,6 +61,7 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
 
         ext.registerFilter("count", filter: count)
         ext.registerFilter("isEmpty", filter: isEmpty)
+        ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
 
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
@@ -209,6 +210,13 @@ private func toArray(_ value: Any?) -> Any? {
     default:
         return nil
     }
+}
+
+private func reversed(_ value: Any?) -> Any? {
+    guard let array = value as? NSArray else {
+        return value
+    }
+    return array.reversed()
 }
 
 private func count(_ value: Any?) -> Any? {
