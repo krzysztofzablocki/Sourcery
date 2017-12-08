@@ -7,6 +7,7 @@
 ### New Features
 
 - Added new sorted Stencil filter. This can sort arrays by calling e.g. `protocol.allVariables|sorted:"name"`
+- Improved compile time of AutoHashable template
 - Added new toArray Stencil filter
 - Added a console warning when a yaml is available but any parameter between 'sources', templates', 'forceParse', 'output' are provided
 
