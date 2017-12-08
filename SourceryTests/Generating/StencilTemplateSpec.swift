@@ -41,6 +41,15 @@ class StencilTemplateSpec: QuickSpec {
                 }
             }
 
+            describe("count") {
+                context("given array") {
+                    it("counts it") {
+                        let result = generate("{{ type.MyClass.allVariables | count }}")
+                        expect(result).to(equal("4"))
+                    }
+                }
+            }
+
             describe("sorted") {
               context("given array") {
                 it("sorts it") {
