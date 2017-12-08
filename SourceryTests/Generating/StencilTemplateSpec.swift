@@ -50,6 +50,22 @@ class StencilTemplateSpec: QuickSpec {
                 }
             }
 
+            describe("isEmpty") {
+                context("given empty array") {
+                    it("returns true") {
+                    let result = generate("{{ type.MyClass.allMethods | isEmpty }}")
+                        expect(result).to(equal("true"))
+                    }
+                }
+
+                context("given non-empty array") {
+                    it("returns false") {
+                    let result = generate("{{ type.MyClass.allVariables | isEmpty }}")
+                        expect(result).to(equal("false"))
+                    }
+                }
+            }
+
             describe("sorted") {
               context("given array") {
                 it("sorts it") {
