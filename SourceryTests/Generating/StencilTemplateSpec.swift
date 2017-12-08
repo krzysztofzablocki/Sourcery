@@ -59,6 +59,14 @@ class StencilTemplateSpec: QuickSpec {
               }
             }
 
+            describe("sortedDescending") {
+                context("given array") {
+                    it("sorts it descending") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sortedDescending:\"description\" }}{% endfor %}")
+                        expect(result).to(equal("[World, Hello, beautiful]"))
+                    }
+                }
+            }
             context("given string") {
                 it("generates upperFirstLetter") {
                     expect(generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))

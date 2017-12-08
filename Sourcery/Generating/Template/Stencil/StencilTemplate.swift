@@ -71,6 +71,16 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
               return nil
           }
         }
+        
+        ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
+            switch array {
+            case let array as NSArray:
+                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: false, selector: #selector(NSString.caseInsensitiveCompare))
+                return array.sortedArray(using: [sortDescriptor])
+            default:
+                return nil
+            }
+        }
 
         ext.registerBoolFilter("initializer", filter: { (m: SourceryMethod) in m.isInitializer })
         ext.registerBoolFilterOr("class",
