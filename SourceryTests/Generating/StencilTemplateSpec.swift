@@ -41,6 +41,31 @@ class StencilTemplateSpec: QuickSpec {
                 }
             }
 
+            describe("count") {
+                context("given array") {
+                    it("counts it") {
+                        let result = generate("{{ type.MyClass.allVariables | count }}")
+                        expect(result).to(equal("4"))
+                    }
+                }
+            }
+
+            describe("isEmpty") {
+                context("given empty array") {
+                    it("returns true") {
+                    let result = generate("{{ type.MyClass.allMethods | isEmpty }}")
+                        expect(result).to(equal("true"))
+                    }
+                }
+
+                context("given non-empty array") {
+                    it("returns false") {
+                    let result = generate("{{ type.MyClass.allVariables | isEmpty }}")
+                        expect(result).to(equal("false"))
+                    }
+                }
+            }
+
             describe("sorted") {
               context("given array") {
                 it("sorts it") {
@@ -48,6 +73,24 @@ class StencilTemplateSpec: QuickSpec {
                   expect(result).to(equal("[beautiful, Hello, World]"))
                 }
               }
+            }
+
+            describe("sortedDescending") {
+                context("given array") {
+                    it("sorts it descending") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sortedDescending:\"description\" }}{% endfor %}")
+                        expect(result).to(equal("[World, Hello, beautiful]"))
+                    }
+                }
+            }
+
+            describe("reversed") {
+                context("given array") {
+                    it("reverses it") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | reversed }}{% endfor %}")
+                        expect(result).to(equal("[World, beautiful, Hello]"))
+                    }
+                }
             }
 
             context("given string") {
