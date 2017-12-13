@@ -64,6 +64,12 @@ There are plenty of tutorials for different uses of Sourcery:
 
     Add pod 'Sourcery' to your Podfile and run `pod update Sourcery`. This will download the latest release binary and will put it in your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
+
+- _[Mint](https://github.com/yonaskolb/Mint)_
+
+    Run `mint run krzysztofzablocki/Sourcery`. 
+    > Note: Constraints of SPM (see below) apply.
+    
 - _Building from source_
 
     Download the latest release source code from [the release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest) or clone the repository and build Sourcery manually.
