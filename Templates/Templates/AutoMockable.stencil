@@ -118,12 +118,31 @@ import AppKit
 {% endif %}
 {% endmacro %}
 
+{% macro mockOptionalVariable variable %}
+    var {% call mockedVariableName variable %}: {{ variable.typeName }}
+{% endmacro %}
+
+{% macro mockNonOptionalArrayOrDictionaryVariable variable %}
+    var {% call mockedVariableName variable %}: {{ variable.typeName }} = {% if variable.isArray %}[]{% elif variable.isDictionary %}[:]{% endif %}
+{% endmacro %}
+
+{% macro mockNonOptionalVariable variable %}
+    var {% call mockedVariableName variable %}: {{ variable.typeName }} {
+        get { return {% call underlyingMockedVariableName variable %} }
+        set(value) { {% call underlyingMockedVariableName variable %} = value }
+    }
+    var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}!
+{% endmacro %}
+
+{% macro underlyingMockedVariableName variable %}underlying{% call mockedVariableName variable %}{% endmacro %}
+{% macro mockedVariableName variable %}{%if variable.definedInType.isExtension %}extension{% endif %}{{ variable.name }}{% endmacro %}
+
 {% for type in types.based.AutoMockable %}{% if type.kind == 'protocol' %}
 {% if not type.name == "AutoMockable" %}
 class {{ type.name }}Mock: {{ type.name }} {
-    {% for variable in type.allVariables %}
-    var {%if variable.definedInType.isExtension %}extension{% endif %}{{ variable.name }}: {{ variable.typeName }}{% if not variable.isOptional %}{% if not variable.isArray and not variable.isDictionary %}!{% elif variable.isArray %} = []{% elif variable.isDictionary %} = [:]{% endif %}{% endif %}
-    {% endfor %}
+{% for variable in type.allVariables %}
+    {% if variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}
+{% endfor %}
 
 {% for method in type.allMethods|!definedInExtension %}
     {% call mockMethod method %}
