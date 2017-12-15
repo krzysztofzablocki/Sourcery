@@ -17,5 +17,6 @@ Pod::Spec.new do |s|
 
   s.source       = { :http => "https://github.com/krzysztofzablocki/Sourcery/releases/download/#{s.version}/sourcery-#{s.version}.zip" }
   s.preserve_paths = '*'
+  s.exclude_files = '**/file.zip'
 
 end
