@@ -94,7 +94,7 @@ class Sourcery {
             return nil
         }
 
-        track("Starting watching sources.", skipStatus: true)
+        Log.info("Starting watching sources.")
 
         let sourceWatchers = watchPaths.allPaths.map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
@@ -105,27 +105,27 @@ class Sourcery {
                         return path.isSwiftSourceFile ? path : nil
                     }
 
-                var shouldRegenerate = false
+                var pathThatForcedRegeneration: Path? = nil
                 for path in eventPaths {
                     guard let file = try? path.read(.utf8) else { continue }
                     if !file.hasPrefix(Sourcery.generationMarker) {
-                        shouldRegenerate = true
+                        pathThatForcedRegeneration = path
                         break
                     }
                 }
 
-                if shouldRegenerate {
+                if let path = pathThatForcedRegeneration {
                     do {
-                        self.track("Source changed: ", terminator: "")
+                        Log.info("Source changed at \(path.string)")
                         result = try process(source)
                     } catch {
-                        self.track(error)
+                        Log.error(error)
                     }
                 }
             }
         })
 
-        track("Starting watching templates.", skipStatus: true)
+        Log.error("Starting watching templates.")
 
         let templateWatchers = templatesPaths.allPaths.map({ templatesPath in
             return FolderWatcher.Local(path: templatesPath.string) { events in
@@ -134,10 +134,14 @@ class Sourcery {
 
                 if !events.isEmpty {
                     do {
-                        self.track("Templates changed: ", terminator: "")
+                        if events.count == 1 {
+                            Log.info("Template changed \(events[0].path)")
+                        } else {
+                            Log.info("Templates changed: ")
+                        }
                         try self.generate(Paths(include: [templatesPath]), output: output, parsingResult: result)
                     } catch {
-                        self.track(error)
+                        Log.error(error)
                     }
                 }
             }
@@ -171,20 +175,6 @@ class Sourcery {
         return templatePaths(from: from).map { output + generatedPath(for: $0) }
     }
 
-    fileprivate func track(_ message: Any, terminator: String = "\n", skipStatus: Bool = false) {
-        if !watcherEnabled || verbose {
-            //! console doesn't update in-place so always print on new line
-            Swift.print(message)
-        }
-
-        guard watcherEnabled && !skipStatus else { return }
-        status = String(describing: message) + terminator
-
-        _ = try? outputPaths(from: templatesPaths, output: outputPath).forEach { path in
-            _ = try? path.write(Sourcery.generationHeader + "STATUS:\n" + status, encoding: .utf8)
-        }
-    }
-
     private func templatePaths(from: Paths) -> [Path] {
         return from.allPaths.filter { $0.isTemplateFile }
     }
@@ -201,7 +191,7 @@ extension Sourcery {
             precondition(from.count == modules.count, "There should be module for each file to parse")
         }
 
-        self.track("Scanning sources...", terminator: "")
+        Log.info("Scanning sources...")
 
         var inlineRanges = [(file: String, ranges: [String: NSRange])]()
         var allResults = [FileParserResult]()
@@ -239,7 +229,7 @@ extension Sourcery {
                 if accumulator > previousUpdate + step {
                     previousUpdate = accumulator
                     let percentage = accumulator * 100 / sources.count
-                    self.track("Scanning sources... \(percentage)% (\(sources.count) files)", terminator: "")
+                    Log.info("Scanning sources... \(percentage)% (\(sources.count) files)")
                 }
                 accumulator += 1
                 })
@@ -259,7 +249,7 @@ extension Sourcery {
         //! All files have been scanned, time to join extensions with base class
         let types = Composer().uniqueTypes(parserResult)
 
-        track("Found \(types.count) types.")
+        Log.info("Found \(types.count) types.")
         return (Types(types: types), inlineRanges)
     }
 
@@ -311,11 +301,11 @@ extension Sourcery {
 extension Sourcery {
 
     fileprivate func generate(_ templatePaths: Paths, output: Path, parsingResult: ParsingResult) throws {
-        track("Loading templates...", terminator: "")
+        Log.info("Loading templates...")
         let allTemplates = try templates(from: templatePaths)
-        track("Loaded \(allTemplates.count) templates.")
+        Log.info("Loaded \(allTemplates.count) templates.")
 
-        track("Generating code...", terminator: "")
+        Log.info("Generating code...")
         status = ""
 
         guard output.isDirectory else {
@@ -334,7 +324,7 @@ extension Sourcery {
             try self.output(result: result, to: outputPath)
         }
 
-        track("Finished.", skipStatus: true)
+        Log.info("Finished.")
     }
 
     private func output(result: String, to outputPath: Path) throws {
@@ -343,7 +333,7 @@ extension Sourcery {
         } else {
             if prune && outputPath.exists {
                 Log.verbose("Removing \(outputPath) as it is empty.")
-                do { try outputPath.delete() } catch { track("\(error)") }
+                do { try outputPath.delete() } catch { Log.error("\(error)") }
             } else {
                 Log.verbose("Skipping \(outputPath) as it is empty.")
             }
@@ -434,7 +424,7 @@ extension Sourcery {
                 } else {
                     if prune && outputPath.exists {
                         Log.verbose("Removing \(path) as it is empty.")
-                        do { try outputPath.delete() } catch { track("\(error)") }
+                        do { try outputPath.delete() } catch { Log.error("\(error)") }
                     } else {
                         Log.verbose("Skipping \(path) as it is empty.")
                     }

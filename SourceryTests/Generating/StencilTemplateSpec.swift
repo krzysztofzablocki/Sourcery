@@ -6,6 +6,7 @@ import Stencil
 @testable import SourceryRuntime
 
 class StencilTemplateSpec: QuickSpec {
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         describe("StencilTemplate") {
