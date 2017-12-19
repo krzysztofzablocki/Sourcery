@@ -134,7 +134,7 @@ import AppKit
     var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}!
 {% endmacro %}
 
-{% macro underlyingMockedVariableName variable %}underlying{% call mockedVariableName variable %}{% endmacro %}
+{% macro underlyingMockedVariableName variable %}underlying{%if variable.definedInType.isExtension %}Extension{% endif %}{{ variable.name|upperFirstLetter }}{% endmacro %}
 {% macro mockedVariableName variable %}{%if variable.definedInType.isExtension %}extension{% endif %}{{ variable.name }}{% endmacro %}
 
 {% for type in types.based.AutoMockable %}{% if type.kind == 'protocol' %}

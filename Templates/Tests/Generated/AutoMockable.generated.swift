@@ -62,10 +62,10 @@ class CurrencyPresenterMock: CurrencyPresenter {
 }
 class ExtendableProtocolMock: ExtendableProtocol {
     var canReport: Bool {
-        get { return underlyingcanReport }
-        set(value) { underlyingcanReport = value }
+        get { return underlyingCanReport }
+        set(value) { underlyingCanReport = value }
     }
-    var underlyingcanReport: Bool!
+    var underlyingCanReport: Bool!
 
     //MARK: - report
 
@@ -172,15 +172,15 @@ class ThrowableProtocolMock: ThrowableProtocol {
 class VariablesProtocolMock: VariablesProtocol {
     var company: String?
     var name: String {
-        get { return underlyingname }
-        set(value) { underlyingname = value }
+        get { return underlyingName }
+        set(value) { underlyingName = value }
     }
-    var underlyingname: String!
+    var underlyingName: String!
     var age: Int {
-        get { return underlyingage }
-        set(value) { underlyingage = value }
+        get { return underlyingAge }
+        set(value) { underlyingAge = value }
     }
-    var underlyingage: Int!
+    var underlyingAge: Int!
     var kids: [String] = []
     var universityMarks: [String: Int] = [:]
 
