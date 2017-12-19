@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable line_length
@@ -10,6 +10,10 @@ import UIKit
 #elseif os(OSX)
 import AppKit
 #endif
+
+
+
+
 
 
 
@@ -57,7 +61,11 @@ class CurrencyPresenterMock: CurrencyPresenter {
 
 }
 class ExtendableProtocolMock: ExtendableProtocol {
-    var canReport: Bool!
+    var canReport: Bool {
+        get { return underlyingcanReport }
+        set(value) { underlyingcanReport = value }
+    }
+    var underlyingcanReport: Bool!
 
     //MARK: - report
 
@@ -163,8 +171,16 @@ class ThrowableProtocolMock: ThrowableProtocol {
 }
 class VariablesProtocolMock: VariablesProtocol {
     var company: String?
-    var name: String!
-    var age: Int!
+    var name: String {
+        get { return underlyingname }
+        set(value) { underlyingname = value }
+    }
+    var underlyingname: String!
+    var age: Int {
+        get { return underlyingage }
+        set(value) { underlyingage = value }
+    }
+    var underlyingage: Int!
     var kids: [String] = []
     var universityMarks: [String: Int] = [:]
 
