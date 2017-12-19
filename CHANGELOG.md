@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 0.10.1
 
 * When installing Sourcery via CocoaPods, the unneeded `file.zip` is not kept in `Pods/Sourcery/` anymore _(freeing ~12MB on each install of Sourcery made via CocoaPods!)_.  
 
