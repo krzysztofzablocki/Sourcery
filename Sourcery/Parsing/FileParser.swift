@@ -458,96 +458,7 @@ extension FileParser {
 // MARK: - Subscripts
 extension FileParser {
 
-    private func parseSubscriptReturnTypeNameAndBody(_ source: [String: SourceKitRepresentable]) -> (returnTypeName: String, body: String)? {
-        let returnTypeName: String
-        let body: String
-        if let key = extract(.key, from: source),
-            var line = extractLines(.key, from: source, contents: contents, trimWhitespacesAndNewlines: false),
-            let range = line.range(of: key) {
-
-            // if parameter line ends with new line we just append everything to it so that we can read return type
-            if line.trimmingCharacters(in: .whitespacesAndNewlines) != line {
-                let lines = contents.lines()
-                if let linesRange = extractLinesNumbers(.key, from: source, contents: contents), lines.count >= linesRange.end {
-                    line += lines.suffix(from: linesRange.end).map({ $0.content }).joined()
-                }
-            }
-
-            let lineSuffix = String(line.suffix(from: range.lowerBound))
-            let components = lineSuffix.semicolonSeparated()
-            if let suffix = components.first {
-                var nameSuffix = suffix
-                    .trimmingCharacters(in: .whitespaces)
-                    .trimmingPrefix(key)
-                    .trimmingCharacters(in: CharacterSet(charactersIn: ")").union(.whitespacesAndNewlines))
-
-                if nameSuffix.trimPrefix("->"), let openBraceIndex = nameSuffix.index(of: "{") {
-                    returnTypeName = nameSuffix
-                        .prefix(upTo: openBraceIndex)
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                    body = String(nameSuffix.suffix(from: openBraceIndex))
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                        .trimmingPrefix("{")
-                        .trimmingSuffix("}")
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                    return (returnTypeName, body)
-                } else {
-                    // actual type name should be set when last parameter is processed
-                    return ("", "")
-                }
-            } else { return nil }
-        } else { return nil }
-    }
-
-    private func parseSubscriptAccessLevel(_ keyPrefix: inout String, definedIn: Type?) -> (readAccessLevel: AccessLevel, writeAccessLevel: AccessLevel, isFinal: Bool) {
-        var readAccessLevel: AccessLevel = definedIn.flatMap({ AccessLevel(rawValue: $0.accessLevel) }) ?? .`internal`
-        var writeAccessLevel: AccessLevel = .none
-        var isFinal: Bool = false
-
-        let accessLevels: [AccessLevel] = [.`private`, .`fileprivate`, .`internal`, .`public`, .`open`]
-        var readAllPrefixes: Bool = false
-
-        while !readAllPrefixes {
-            var readReadAccessLevel: Bool = false
-            var readWriteAccessLevel: Bool = false
-            var readFinalAttribute: Bool = false
-
-            if let _readAccessLevel = accessLevels.first(where: { keyPrefix.trimSuffix($0.rawValue) }) {
-                readAccessLevel = _readAccessLevel
-                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-                readReadAccessLevel = true
-            }
-            if let _writeAccessLevel = accessLevels.first(where: { keyPrefix.trimSuffix("\($0.rawValue)(set)") }) {
-                writeAccessLevel = _writeAccessLevel
-                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-                readWriteAccessLevel = true
-            }
-            if keyPrefix.trimSuffix("final") {
-                isFinal = true
-                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-                readFinalAttribute = true
-            }
-            readAllPrefixes =
-                (readReadAccessLevel && readWriteAccessLevel && readFinalAttribute) ||
-                (!readReadAccessLevel && !readWriteAccessLevel && !readFinalAttribute)
-        }
-
-        return (readAccessLevel, writeAccessLevel, isFinal)
-    }
-
-    private func lastNonCommentStartingLine(_ keyPrefix: String) -> Line? {
-        let keyPrefixLines = keyPrefix.lines()
-        for keyPrefixLine in keyPrefixLines.reversed() {
-            let line = keyPrefixLine.content.trimmingCharacters(in: .whitespacesAndNewlines)
-            let isCommmentLine = line.hasPrefix("//") || line.hasPrefix("/*")
-            if !isCommmentLine && !line.isEmpty {
-                return keyPrefixLine
-            }
-        }
-        return nil
-    }
-
-    internal func parseSubscript(_ source: [String: SourceKitRepresentable], definedIn: Type? = nil) -> Subscript? {
+    func parseSubscript(_ source: [String: SourceKitRepresentable], definedIn: Type? = nil) -> Subscript? {
         guard let (returnTypeName, body) = parseSubscriptReturnTypeNameAndBody(source) else { return nil }
         guard let param = parseParameter(source), let key = extract(.key, from: source) else { return nil }
 
@@ -607,6 +518,96 @@ extension FileParser {
         }
         return nil
     }
+
+    private func parseSubscriptReturnTypeNameAndBody(_ source: [String: SourceKitRepresentable]) -> (returnTypeName: String, body: String)? {
+        let returnTypeName: String
+        let body: String
+        if let key = extract(.key, from: source),
+            var line = extractLines(.key, from: source, contents: contents, trimWhitespacesAndNewlines: false),
+            let range = line.range(of: key) {
+            
+            // if parameter line ends with new line we just append everything to it so that we can read return type
+            if line.trimmingCharacters(in: .whitespacesAndNewlines) != line {
+                let lines = contents.lines()
+                if let linesRange = extractLinesNumbers(.key, from: source, contents: contents), lines.count >= linesRange.end {
+                    line += lines.suffix(from: linesRange.end).map({ $0.content }).joined()
+                }
+            }
+            
+            let lineSuffix = String(line.suffix(from: range.lowerBound))
+            let components = lineSuffix.semicolonSeparated()
+            if let suffix = components.first {
+                var nameSuffix = suffix
+                    .trimmingCharacters(in: .whitespaces)
+                    .trimmingPrefix(key)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: ")").union(.whitespacesAndNewlines))
+                
+                if nameSuffix.trimPrefix("->"), let openBraceIndex = nameSuffix.index(of: "{") {
+                    returnTypeName = nameSuffix
+                        .prefix(upTo: openBraceIndex)
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                    body = String(nameSuffix.suffix(from: openBraceIndex))
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .trimmingPrefix("{")
+                        .trimmingSuffix("}")
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                    return (returnTypeName, body)
+                } else {
+                    // actual type name should be set when last parameter is processed
+                    return ("", "")
+                }
+            } else { return nil }
+        } else { return nil }
+    }
+
+    private func parseSubscriptAccessLevel(_ keyPrefix: inout String, definedIn: Type?) -> (readAccessLevel: AccessLevel, writeAccessLevel: AccessLevel, isFinal: Bool) {
+        var readAccessLevel: AccessLevel = definedIn.flatMap({ AccessLevel(rawValue: $0.accessLevel) }) ?? .`internal`
+        var writeAccessLevel: AccessLevel = .none
+        var isFinal: Bool = false
+        
+        let accessLevels: [AccessLevel] = [.`private`, .`fileprivate`, .`internal`, .`public`, .`open`]
+        var readAllPrefixes: Bool = false
+        
+        while !readAllPrefixes {
+            var readReadAccessLevel: Bool = false
+            var readWriteAccessLevel: Bool = false
+            var readFinalAttribute: Bool = false
+            
+            if let _readAccessLevel = accessLevels.first(where: { keyPrefix.trimSuffix($0.rawValue) }) {
+                readAccessLevel = _readAccessLevel
+                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
+                readReadAccessLevel = true
+            }
+            if let _writeAccessLevel = accessLevels.first(where: { keyPrefix.trimSuffix("\($0.rawValue)(set)") }) {
+                writeAccessLevel = _writeAccessLevel
+                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
+                readWriteAccessLevel = true
+            }
+            if keyPrefix.trimSuffix("final") {
+                isFinal = true
+                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
+                readFinalAttribute = true
+            }
+            readAllPrefixes =
+                (readReadAccessLevel && readWriteAccessLevel && readFinalAttribute) ||
+                (!readReadAccessLevel && !readWriteAccessLevel && !readFinalAttribute)
+        }
+        
+        return (readAccessLevel, writeAccessLevel, isFinal)
+    }
+
+    private func lastNonCommentStartingLine(_ keyPrefix: String) -> Line? {
+        let keyPrefixLines = keyPrefix.lines()
+        for keyPrefixLine in keyPrefixLines.reversed() {
+            let line = keyPrefixLine.content.trimmingCharacters(in: .whitespacesAndNewlines)
+            let isCommmentLine = line.hasPrefix("//") || line.hasPrefix("/*")
+            if !isCommmentLine && !line.isEmpty {
+                return keyPrefixLine
+            }
+        }
+        return nil
+    }
+
 }
 
 // MARK: - Methods
