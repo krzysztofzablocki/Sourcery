@@ -58,3 +58,7 @@ extension ExtendableProtocol {
         print(message)
     }
 }
+
+protocol ClosureProtocol: AutoMockable {
+    func setClosure(_ closure: @escaping () -> Void)
+}

@@ -49,6 +49,22 @@ class BasicProtocolMock: BasicProtocol {
     }
 
 }
+class ClosureProtocolMock: ClosureProtocol {
+
+    //MARK: - setClosure
+
+    var setClosureCallsCount = 0
+    var setClosureCalled: Bool {
+        return setClosureCallsCount > 0
+    }
+    var setClosureReceivedClosure: (() -> Void)?
+
+    func setClosure(_ closure: @escaping () -> Void) {
+        setClosureCallsCount += 1
+        setClosureReceivedClosure = closure
+    }
+
+}
 class CurrencyPresenterMock: CurrencyPresenter {
 
     //MARK: - showSourceCurrency
