@@ -272,6 +272,7 @@ public final class GenericType: NSObject, SourceryModel {
     /// This generic type parameters
     public let typeParameters: [GenericTypeParameter]
 
+    /// :nodoc:
     public init(name: String, typeParameters: [GenericTypeParameter] = []) {
         self.name = name
         self.typeParameters = typeParameters
