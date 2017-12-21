@@ -230,40 +230,64 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
     }
 }
 
-/// Descibes Swift class
+/// Descibes Swift generic type parameter
+public final class GenericTypeParameter: NSObject, SourceryModel {
+
+    /// Generic parameter type name
+    public let typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Generic parameter type name
+    public var type: Type?
+
+    /// :nodoc:
+    public init(typeName: TypeName, type: Type? = nil) {
+        self.typeName = typeName
+        self.type = type
+    }
+
+    // sourcery:inline:GenericTypeParameter.AutoCoding
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+        }
+
+    // sourcery:end
+}
+
+/// Descibes Swift generic type
 public final class GenericType: NSObject, SourceryModel {
     /// the name of the base type.
     ///
     /// `Array<Int>`'s GenericType.name is `Array`
     public let name: String
 
-    // sourcery: skipEquality, skipDescription
-    /// The types referenced between `<` and `>` generics in the right order
-    public let referencedTypes: [Type]
+    /// This generic type parameters
+    public let typeParameters: [GenericTypeParameter]
 
-    // sourcery: skipEquality, skipDescription
-    /// The TypeNames referenced between `<` and `>` generics in the right order
-    public let referencedTypeNames: [TypeName]
-
-    public init(name: String, referencedTypes: [Type] = [], referencedTypeNames: [TypeName] = []) {
+    public init(name: String, typeParameters: [GenericTypeParameter] = []) {
         self.name = name
-        self.referencedTypes = referencedTypes
-        self.referencedTypeNames = referencedTypeNames
+        self.typeParameters = typeParameters
     }
 
     // sourcery:inline:GenericType.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let referencedTypes: [Type] = aDecoder.decode(forKey: "referencedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["referencedTypes"])); fatalError() }; self.referencedTypes = referencedTypes
-            guard let referencedTypeNames: [TypeName] = aDecoder.decode(forKey: "referencedTypeNames") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["referencedTypeNames"])); fatalError() }; self.referencedTypeNames = referencedTypeNames
+            guard let typeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "typeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeParameters"])); fatalError() }; self.typeParameters = typeParameters
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.referencedTypes, forKey: "referencedTypes")
-            aCoder.encode(self.referencedTypeNames, forKey: "referencedTypeNames")
+            aCoder.encode(self.typeParameters, forKey: "typeParameters")
         }
 
     // sourcery:end
