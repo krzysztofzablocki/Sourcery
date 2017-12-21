@@ -96,7 +96,7 @@ class StencilTemplateSpec: QuickSpec {
 
             context("given string") {
                 it("generates upperFirstLetter") {
-                    expect(generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))
+                    expect( generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))
                 }
 
                 it("generates lowerFirstLetter") {
