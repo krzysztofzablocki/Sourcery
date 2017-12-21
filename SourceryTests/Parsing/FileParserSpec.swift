@@ -440,7 +440,9 @@ class FileParserSpec: QuickSpec {
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
                                             EnumCase(name: "optionA", associatedValues: [
-                                                AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Observable<Int, Int>"))
+                                                AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Observable<Int, Int>", generic: GenericType(
+                                                        name: "Observable", referencedTypeNames: [TypeName("Int"), TypeName("Int")]
+                                                    )))
                                                 ]),
                                             EnumCase(name: "optionB", associatedValues: [
                                                 AssociatedValue(localName: nil, externalName: "0", typeName: TypeName("Int")),
