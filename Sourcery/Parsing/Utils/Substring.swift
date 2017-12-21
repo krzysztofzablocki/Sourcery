@@ -61,10 +61,17 @@ internal enum Substring {
         return substring?.isEmpty == true ? nil : substring?.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    func extractLines(from source: [String: SourceKitRepresentable], contents: String) -> String? {
+    func extractLines(from source: [String: SourceKitRepresentable], contents: String, trimWhitespacesAndNewlines: Bool = true) -> String? {
         guard let range = range(for: source) else { return nil }
         let substring = contents.bridge().substringLinesWithByteRange(start: Int(range.offset), length: Int(range.length))
-        return substring?.isEmpty == true ? nil : substring?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return substring?.isEmpty == true
+            ? nil
+            : trimWhitespacesAndNewlines ? substring?.trimmingCharacters(in: .whitespacesAndNewlines) : substring
+    }
+
+    func extractLinesNumbers(from source: [String: SourceKitRepresentable], contents: String) -> (start: Int, end: Int)? {
+        guard let range = range(for: source) else { return nil }
+        return contents.bridge().lineRangeWithByteRange(start: Int(range.offset), length: Int(range.length))
     }
 
 }

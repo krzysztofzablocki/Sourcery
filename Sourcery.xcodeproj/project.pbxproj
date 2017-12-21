@@ -51,6 +51,8 @@
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */; };
 		58A8D89B0B5015671E6B526C /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F74DA40979C0911C0573C7A /* Pods_SourceryTests.framework */; };
+		6359E6651FE409250015AF8F /* FileParser+SubscriptsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359E6641FE409250015AF8F /* FileParser+SubscriptsSpec.swift */; };
+		63D25BE71FD0356E007592AA /* Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D25BE61FD0356E007592AA /* Subscript.swift */; };
 		63E1AD0E1F4093EB00D01FED /* Configs in Resources */ = {isa = PBXBuildFile; fileRef = 63E1AD0D1F4093EB00D01FED /* Configs */; };
 		64E201AA1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
 		6D31FC5F1F0C2DE4000E77E3 /* Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D31FC5E1F0C2DE4000E77E3 /* Definition.swift */; };
@@ -164,6 +166,8 @@
 		47FBEB8D5AB4DA51522B302B /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
 		4E26A60E38FEA181642B97B4 /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
 		52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
+		6359E6641FE409250015AF8F /* FileParser+SubscriptsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileParser+SubscriptsSpec.swift"; sourceTree = "<group>"; };
+		63D25BE61FD0356E007592AA /* Subscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Subscript.swift; path = SourceryRuntime/Sources/Subscript.swift; sourceTree = SOURCE_ROOT; };
 		63E1AD0D1F4093EB00D01FED /* Configs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Configs; sourceTree = "<group>"; };
 		64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryRuntime.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67BC066E18D9BE38229EEFA2 /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -298,6 +302,7 @@
 				09334E671EB916040092806F /* Enum.swift */,
 				09334E681EB916040092806F /* FileParserResult.swift */,
 				09334E691EB916040092806F /* Method.swift */,
+				63D25BE61FD0356E007592AA /* Subscript.swift */,
 				09334E6A1EB916040092806F /* PhantomProtocols.swift */,
 				09334E6B1EB916040092806F /* Protocol.swift */,
 				09334E6C1EB916040092806F /* Struct.swift */,
@@ -453,6 +458,7 @@
 				098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */,
 				E291DC650271984B35942FE4 /* TemplateAnnotationsParserSpec.swift */,
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
+				6359E6641FE409250015AF8F /* FileParser+SubscriptsSpec.swift */,
 				E291DA3CE0BD58D0BF35138C /* VerifierSpec.swift */,
 			);
 			path = Parsing;
@@ -911,6 +917,7 @@
 				09334E7A1EB916040092806F /* PhantomProtocols.swift in Sources */,
 				09334E5B1EB915E00092806F /* Coding.generated.swift in Sources */,
 				09334E7D1EB916040092806F /* TemplateContext.swift in Sources */,
+				63D25BE71FD0356E007592AA /* Subscript.swift in Sources */,
 				09334E721EB916040092806F /* AccessLevel.swift in Sources */,
 				09334E741EB916040092806F /* Attribute.swift in Sources */,
 				09334E5E1EB915E00092806F /* Equality.generated.swift in Sources */,
@@ -989,6 +996,7 @@
 				52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */,
 				E291D52FDFF7CF446E239C13 /* TemplateAnnotationsParserSpec.swift in Sources */,
 				E291D5115BBE9AB32275F38F /* VerifierSpec.swift in Sources */,
+				6359E6651FE409250015AF8F /* FileParser+SubscriptsSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,12 +28,9 @@ struct Composer {
         //set definedInType for all methods and variables
         types
             .forEach { type in
-                type.variables.forEach { variable in
-                    variable.definedInType = type
-                }
-                type.methods.forEach { method in
-                    method.definedInType = type
-                }
+                type.variables.forEach { $0.definedInType = type }
+                type.methods.forEach { $0.definedInType = type }
+                type.subscripts.forEach { $0.definedInType = type }
         }
 
         //map all known types to their names
@@ -92,6 +89,9 @@ struct Composer {
             }
             type.methods.forEach {
                 resolveMethodTypes($0, of: type, resolve: resolveType)
+            }
+            type.subscripts.forEach {
+                resolveSubscriptTypes($0, of: type, resolve: resolveType)
             }
 
             if let enumeration = type as? Enum {
@@ -166,8 +166,19 @@ struct Composer {
         }
     }
 
+    private func resolveSubscriptTypes(_ subscript: Subscript, of type: Type, resolve: TypeResolver) {
+        `subscript`.parameters.forEach { (parameter) in
+            parameter.type = resolve(parameter.typeName, type)
+        }
+
+        `subscript`.returnType = resolve(`subscript`.returnTypeName, type)
+        if let definedInTypeName = `subscript`.definedInTypeName {
+            _ = resolve(definedInTypeName, type)
+        }
+    }
+
     private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
-        method.parameters.enumerated().forEach { (_, parameter) in
+        method.parameters.forEach { parameter in
             parameter.type = resolve(parameter.typeName, type)
         }
 
