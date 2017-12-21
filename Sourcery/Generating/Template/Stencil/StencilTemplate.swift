@@ -60,7 +60,29 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         ext.registerBoolFilter("protocol", filter: { (t: Type) in t is SourceryProtocol })
 
         ext.registerFilter("count", filter: count)
+        ext.registerFilter("isEmpty", filter: isEmpty)
+        ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
+
+        ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
+          switch array {
+            case let array as NSArray:
+              let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
+              return array.sortedArray(using: [sortDescriptor])
+            default:
+              return nil
+          }
+        }
+
+        ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
+            switch array {
+            case let array as NSArray:
+                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: false, selector: #selector(NSString.caseInsensitiveCompare))
+                return array.sortedArray(using: [sortDescriptor])
+            default:
+                return nil
+            }
+        }
 
         ext.registerBoolFilter("initializer", filter: { (m: SourceryMethod) in m.isInitializer })
         ext.registerBoolFilterOr("class",
@@ -190,11 +212,26 @@ private func toArray(_ value: Any?) -> Any? {
     }
 }
 
+private func reversed(_ value: Any?) -> Any? {
+    guard let array = value as? NSArray else {
+        return value
+    }
+    return array.reversed()
+}
+
 private func count(_ value: Any?) -> Any? {
     guard let array = value as? NSArray else {
         return value
     }
     return array.count
+}
+
+private func isEmpty(_ value: Any?) -> Any? {
+    guard let array = value as? NSArray else {
+        return false
+    }
+    // swiftlint:disable:next empty_count
+    return array.count == 0
 }
 
 private struct Filter<T> {

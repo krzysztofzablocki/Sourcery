@@ -6,13 +6,14 @@ import Stencil
 @testable import SourceryRuntime
 
 class StencilTemplateSpec: QuickSpec {
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         describe("StencilTemplate") {
 
             func generate(_ template: String) -> String {
                 let arrayAnnotations = Variable(name: "annotated", typeName: TypeName("MyClass"))
-                arrayAnnotations.annotations = ["Foo": ["Hello", "World"] as NSArray]
+                arrayAnnotations.annotations = ["Foo": ["Hello", "beautiful", "World"] as NSArray]
                 let singleAnnotation = Variable(name: "annotated", typeName: TypeName("MyClass"))
                 singleAnnotation.annotations = ["Foo": "HelloWorld" as NSString]
                 return (try? Generator.generate(Types(types: [
@@ -29,7 +30,7 @@ class StencilTemplateSpec: QuickSpec {
                 context("given array") {
                     it("doesnt modify the value") {
                         let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | toArray }}{% endfor %}")
-                        expect(result).to(equal("(\n    Hello,\n    World\n)"))
+                        expect(result).to(equal("(\n    Hello,\n    beautiful,\n    World\n)"))
                     }
                 }
 
@@ -37,6 +38,58 @@ class StencilTemplateSpec: QuickSpec {
                     it("transforms it into array") {
                         let result = generate("{% for key,value in type.MyClass.variables.3.annotations %}{{ value | toArray }}{% endfor %}")
                         expect(result).to(equal("[HelloWorld]"))
+                    }
+                }
+            }
+
+            describe("count") {
+                context("given array") {
+                    it("counts it") {
+                        let result = generate("{{ type.MyClass.allVariables | count }}")
+                        expect(result).to(equal("4"))
+                    }
+                }
+            }
+
+            describe("isEmpty") {
+                context("given empty array") {
+                    it("returns true") {
+                    let result = generate("{{ type.MyClass.allMethods | isEmpty }}")
+                        expect(result).to(equal("true"))
+                    }
+                }
+
+                context("given non-empty array") {
+                    it("returns false") {
+                    let result = generate("{{ type.MyClass.allVariables | isEmpty }}")
+                        expect(result).to(equal("false"))
+                    }
+                }
+            }
+
+            describe("sorted") {
+              context("given array") {
+                it("sorts it") {
+                  let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sorted:\"description\" }}{% endfor %}")
+                  expect(result).to(equal("[beautiful, Hello, World]"))
+                }
+              }
+            }
+
+            describe("sortedDescending") {
+                context("given array") {
+                    it("sorts it descending") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sortedDescending:\"description\" }}{% endfor %}")
+                        expect(result).to(equal("[World, Hello, beautiful]"))
+                    }
+                }
+            }
+
+            describe("reversed") {
+                context("given array") {
+                    it("reverses it") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | reversed }}{% endfor %}")
+                        expect(result).to(equal("[World, beautiful, Hello]"))
                     }
                 }
             }

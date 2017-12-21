@@ -13,7 +13,7 @@ BUILD_DIR = 'build/'
 
 def version_select
   # Find all Xcode 8 versions on this computer
-  xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '8.*'"`.chomp.split("\n")
+  xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '9.*'"`.chomp.split("\n")
   if xcodes.empty?
     raise "\n[!!!] You need to have Xcode 8.x to compile Sourcery.\n\n"
   end
