@@ -7,6 +7,7 @@
 ### New Features
 
 - Added support for subscripts
+- Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
 
 ## 0.10.1
 
