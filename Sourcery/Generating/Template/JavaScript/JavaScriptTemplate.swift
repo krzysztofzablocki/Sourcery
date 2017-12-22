@@ -29,7 +29,7 @@ final class JavaScriptTemplate: Template {
 
         var error: Swift.Error?
         jsContext.exceptionHandler = { _, exception in
-            error = exception?.toString() ?? "Unknown JavaScript error"
+            error = error ?? exception?.toString() ?? "Unknown JavaScript error"
         }
         jsContext.setObject(template, forKeyedSubscript: "template" as NSString)
         jsContext.setObject(sourcePath.lastComponent, forKeyedSubscript: "templateName" as NSString)
