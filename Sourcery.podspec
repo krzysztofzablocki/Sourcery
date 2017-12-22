@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Sourcery"
-  s.version      = "0.9.0"
+  s.version      = "0.10.1"
   s.summary      = "A tool that brings meta-programming to Swift, allowing you to code generate Swift code."
 
   s.description  = <<-DESC
@@ -17,5 +17,6 @@ Pod::Spec.new do |s|
 
   s.source       = { :http => "https://github.com/krzysztofzablocki/Sourcery/releases/download/#{s.version}/sourcery-#{s.version}.zip" }
   s.preserve_paths = '*'
+  s.exclude_files = '**/file.zip'
 
 end

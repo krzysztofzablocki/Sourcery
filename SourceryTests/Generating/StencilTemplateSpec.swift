@@ -6,6 +6,7 @@ import Stencil
 @testable import SourceryRuntime
 
 class StencilTemplateSpec: QuickSpec {
+    // swiftlint:disable:next function_body_length
     override func spec() {
 
         describe("StencilTemplate") {
@@ -95,7 +96,7 @@ class StencilTemplateSpec: QuickSpec {
 
             context("given string") {
                 it("generates upperFirstLetter") {
-                    expect(generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))
+                    expect( generate("{{\"helloWorld\" | upperFirstLetter }}")).to(equal("HelloWorld"))
                 }
 
                 it("generates lowerFirstLetter") {

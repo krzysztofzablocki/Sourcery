@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace trailing_newline
@@ -47,6 +47,8 @@ extension Attribute: AttributeAutoJSExport {}
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
     var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -112,6 +114,8 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
     var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -206,6 +210,8 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
     var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -242,6 +248,8 @@ extension Protocol: ProtocolAutoJSExport {}
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
     var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -264,6 +272,27 @@ extension Protocol: ProtocolAutoJSExport {}
 }
 
 extension Struct: StructAutoJSExport {}
+
+@objc protocol SubscriptAutoJSExport: JSExport {
+    var parameters: [MethodParameter] { get }
+    var returnTypeName: TypeName { get }
+    var actualReturnTypeName: TypeName { get }
+    var returnType: Type? { get }
+    var isOptionalReturnType: Bool { get }
+    var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
+    var unwrappedReturnTypeName: String { get }
+    var isFinal: Bool { get }
+    var readAccess: String { get }
+    var writeAccess: String { get }
+    var isMutable: Bool { get }
+    var annotations: [String: NSObject] { get }
+    var definedInTypeName: TypeName? { get }
+    var actualDefinedInTypeName: TypeName? { get }
+    var definedInType: Type? { get }
+    var attributes: [String: Attribute] { get }
+}
+
+extension Subscript: SubscriptAutoJSExport {}
 
 @objc protocol TemplateContextAutoJSExport: JSExport {
     var types: Types { get }
@@ -305,6 +334,8 @@ extension TupleType: TupleTypeAutoJSExport {}
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
     var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
