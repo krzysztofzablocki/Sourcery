@@ -34,19 +34,8 @@ final class JavaScriptTemplate: Template {
         jsContext.setObject(template, forKeyedSubscript: "template" as NSString)
         jsContext.setObject(sourcePath.lastComponent, forKeyedSubscript: "templateName" as NSString)
         jsContext.setObject(context.jsContext, forKeyedSubscript: "templateContext" as NSString)
-
-        let valueForKey: @convention(block) (TypesCollection, String) -> Any? = { target, key in
-            do {
-                return try target.types(forKey: key)
-            } catch let _error {
-                error = _error
-                return nil
-            }
-        }
-        jsContext.setObject(valueForKey, forKeyedSubscript: "valueForKey" as NSString)
-        jsContext.evaluateScript("templateContext.types.implementing = new Proxy(templateContext.types.implementing, { get: valueForKey })")
-        jsContext.evaluateScript("templateContext.types.inheriting = new Proxy(templateContext.types.inheriting, { get: valueForKey })")
-        jsContext.evaluateScript("templateContext.types.based = new Proxy(templateContext.types.based, { get: valueForKey })")
+        jsContext.catchTypesAccessErrors(onError: { error = $0 })
+        jsContext.catchTemplateContextTypesUnknownProperties()
 
         let include: @convention(block) (String) -> [String:String] = { [unowned self] requestedPath in
             let requestedPath = Path(requestedPath)
@@ -76,6 +65,41 @@ final class JavaScriptTemplate: Template {
 
         let content = jsContext.objectForKeyedSubscript("content").toString()
         return content ?? ""
+    }
+
+}
+
+private extension JSContext {
+
+    // this will catch errors accessing types through wrong collections (i.e. using `implementing` instead of `based`)
+    func catchTypesAccessErrors(onError: @escaping (Error) -> Void) {
+        let valueForKey: @convention(block) (TypesCollection, String) -> Any? = { target, key in
+            do {
+                return try target.types(forKey: key)
+            } catch {
+                onError(error)
+                return nil
+            }
+        }
+        setObject(valueForKey, forKeyedSubscript: "valueForKey" as NSString)
+        evaluateScript("templateContext.types.implementing = new Proxy(templateContext.types.implementing, { get: valueForKey })")
+        evaluateScript("templateContext.types.inheriting = new Proxy(templateContext.types.inheriting, { get: valueForKey })")
+        evaluateScript("templateContext.types.based = new Proxy(templateContext.types.based, { get: valueForKey })")
+    }
+
+    // this will catch errors when accessing context types properties (i.e. using `implements` instead of `implementing`)
+    func catchTemplateContextTypesUnknownProperties() {
+        evaluateScript("""
+            templateContext.types = new Proxy(templateContext.types, {
+                get(target, propertyKey, receiver) {
+                    if (!(propertyKey in target)) {
+                        throw new TypeError('Unknown property `'+propertyKey+'`');
+                    }
+                    // Make sure we don’t block access to Object.prototype
+                    return Reflect.get(target, propertyKey, receiver);
+                }
+            });
+            """)
     }
 
 }
