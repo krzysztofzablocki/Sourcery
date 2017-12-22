@@ -10,7 +10,9 @@
 
 ### Bug fixes 
 
-- JS exceptions no more override syntax errors in JS templates 
+- Various improvements in JS templates:
+  - JS exceptions no more override syntax errors in JS templates 
+  - Accesing types through `based` `implementing` or `inheriting` no more return `nil` resutuin in `undefined` if no such types found, instead empty list is returned  
 
 ## 0.10.1
 
