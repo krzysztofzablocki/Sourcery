@@ -74,6 +74,17 @@ public class Type: NSObject, SourceryModel, Annotated {
     public var allMethods: [Method] {
         return flattenAll({ $0.methods })
     }
+    
+    /// Subscripts defined in this type only, inluding subscripts defined in its extensions,
+    /// but not including subscripts inherited from superclasses (for classes only) and protocols
+    public var subscripts: [Subscript]
+    
+    // sourcery: skipEquality, skipDescription
+    /// All subscripts defined for this type, including subscripts defined in extensions,
+    /// in superclasses (for classes only) and protocols
+    public var allSubscripts: [Subscript] {
+        return flattenAll({ $0.subscripts })
+    }
 
     private func flattenAll<T>(_ extraction: @escaping (Type) -> [T], filter: (([T], T) -> Bool)? = nil) -> [T] {
         let all = NSMutableOrderedSet()
@@ -219,6 +230,7 @@ public class Type: NSObject, SourceryModel, Annotated {
                 isExtension: Bool = false,
                 variables: [Variable] = [],
                 methods: [Method] = [],
+                subscripts: [Subscript] = [],
                 inheritedTypes: [String] = [],
                 containedTypes: [Type] = [],
                 typealiases: [Typealias] = [],
@@ -232,6 +244,7 @@ public class Type: NSObject, SourceryModel, Annotated {
         self.isExtension = isExtension
         self.variables = variables
         self.methods = methods
+        self.subscripts = subscripts
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
         self.typealiases = [:]
@@ -259,6 +272,7 @@ public class Type: NSObject, SourceryModel, Annotated {
     public func extend(_ type: Type) {
         self.variables += type.variables
         self.methods += type.methods
+        self.subscripts += type.subscripts
         self.inheritedTypes += type.inheritedTypes
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
@@ -277,6 +291,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName
             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods
+            guard let subscripts: [Subscript] = aDecoder.decode(forKey: "subscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["subscripts"])); fatalError() }; self.subscripts = subscripts
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
@@ -302,6 +317,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.localName, forKey: "localName")
             aCoder.encode(self.variables, forKey: "variables")
             aCoder.encode(self.methods, forKey: "methods")
+            aCoder.encode(self.subscripts, forKey: "subscripts")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
             aCoder.encode(self.based, forKey: "based")

@@ -2,10 +2,23 @@
 
 ---
 
-## 0.11.0
+## Master
 
-### Bug fixes
+### New Features
+
+- Added support for subscripts
+
+### Bug fixes 
+
+- Various improvements in JS templates:
+  - JS exceptions no more override syntax errors in JS templates 
+  - Accesing types through `based` `implementing` or `inheriting` no more returns `nil` resulting in `undefined is not an object` exception if no such types found, instead empty list is returned  
+  - Accessing unknown property on `types` now results in a better error than `undefined is not an object`
 - Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
+
+## 0.10.1
+
+* When installing Sourcery via CocoaPods, the unneeded `file.zip` is not kept in `Pods/Sourcery/` anymore _(freeing ~12MB on each install of Sourcery made via CocoaPods!)_.  
 
 ## 0.10.0
 

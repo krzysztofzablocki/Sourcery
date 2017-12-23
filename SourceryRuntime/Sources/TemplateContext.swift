@@ -207,7 +207,7 @@ public class TypesCollection: NSObject, AutoJSExport {
             }
             try validate(type)
         }
-        return types[key]
+        return types[key] ?? []
     }
 
     /// :nodoc:

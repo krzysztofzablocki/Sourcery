@@ -73,7 +73,7 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
               return nil
           }
         }
-        
+
         ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
