@@ -2,6 +2,11 @@
 
 ---
 
+## 0.11.0
+
+### Bug fixes
+- Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
+
 ## 0.10.0
 
 ### New Features
