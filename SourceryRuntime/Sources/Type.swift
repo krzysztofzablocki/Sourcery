@@ -74,11 +74,11 @@ public class Type: NSObject, SourceryModel, Annotated {
     public var allMethods: [Method] {
         return flattenAll({ $0.methods })
     }
-    
+
     /// Subscripts defined in this type only, inluding subscripts defined in its extensions,
     /// but not including subscripts inherited from superclasses (for classes only) and protocols
     public var subscripts: [Subscript]
-    
+
     // sourcery: skipEquality, skipDescription
     /// All subscripts defined for this type, including subscripts defined in extensions,
     /// in superclasses (for classes only) and protocols

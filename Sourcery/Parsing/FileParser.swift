@@ -525,7 +525,7 @@ extension FileParser {
         if let key = extract(.key, from: source),
             var line = extractLines(.key, from: source, contents: contents, trimWhitespacesAndNewlines: false),
             let range = line.range(of: key) {
-            
+
             // if parameter line ends with new line we just append everything to it so that we can read return type
             if line.trimmingCharacters(in: .whitespacesAndNewlines) != line {
                 let lines = contents.lines()
@@ -533,7 +533,7 @@ extension FileParser {
                     line += lines.suffix(from: linesRange.end).map({ $0.content }).joined()
                 }
             }
-            
+
             let lineSuffix = String(line.suffix(from: range.lowerBound))
             let components = lineSuffix.semicolonSeparated()
             if let suffix = components.first {
@@ -541,7 +541,7 @@ extension FileParser {
                     .trimmingCharacters(in: .whitespaces)
                     .trimmingPrefix(key)
                     .trimmingCharacters(in: CharacterSet(charactersIn: ")").union(.whitespacesAndNewlines))
-                
+
                 if nameSuffix.trimPrefix("->"), let openBraceIndex = nameSuffix.index(of: "{") {
                     returnTypeName = nameSuffix
                         .prefix(upTo: openBraceIndex)
@@ -564,15 +564,15 @@ extension FileParser {
         var readAccessLevel: AccessLevel = definedIn.flatMap({ AccessLevel(rawValue: $0.accessLevel) }) ?? .`internal`
         var writeAccessLevel: AccessLevel = .none
         var isFinal: Bool = false
-        
+
         let accessLevels: [AccessLevel] = [.`private`, .`fileprivate`, .`internal`, .`public`, .`open`]
         var readAllPrefixes: Bool = false
-        
+
         while !readAllPrefixes {
             var readReadAccessLevel: Bool = false
             var readWriteAccessLevel: Bool = false
             var readFinalAttribute: Bool = false
-            
+
             if let _readAccessLevel = accessLevels.first(where: { keyPrefix.trimSuffix($0.rawValue) }) {
                 readAccessLevel = _readAccessLevel
                 keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -592,7 +592,7 @@ extension FileParser {
                 (readReadAccessLevel && readWriteAccessLevel && readFinalAttribute) ||
                 (!readReadAccessLevel && !readWriteAccessLevel && !readFinalAttribute)
         }
-        
+
         return (readAccessLevel, writeAccessLevel, isFinal)
     }
 
