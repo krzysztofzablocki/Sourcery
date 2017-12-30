@@ -7,7 +7,8 @@
 ### New Features
 
 - Added support for subscripts
-- Return non-Optional arrays from `TypesCollection`'s `types(forKey:)` and `subscript(_ key:)` methods. Note that this is a source-breaking change for anyone who has a Swift template that does something like this:
+- Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
+This is a breaking change for template code like this:
 
  ```swift
 <% for type in (types.implementing["SomeProtocol"] ?? []) { %>
@@ -21,10 +22,8 @@
 
 ### Bug fixes 
 
-- Various improvements in JS templates:
-  - JS exceptions no more override syntax errors in JS templates 
-  - Accesing types through `based` `implementing` or `inheriting` no more returns `nil` resulting in `undefined is not an object` exception if no such types found, instead empty list is returned  
-  - Accessing unknown property on `types` now results in a better error than `undefined is not an object`
+- JS exceptions no more override syntax errors in JS templates 
+- Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
 - Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
 
 ## 0.10.1
