@@ -7,6 +7,17 @@
 ### New Features
 
 - Added support for subscripts
+- Return non-Optional arrays from `TypesCollection`'s `types(forKey:)` and `subscript(_ key:)` methods. Note that this is a source-breaking change for anyone who has a Swift template that does something like this:
+
+ ```swift
+<% for type in (types.implementing["SomeProtocol"] ?? []) { %>
+```
+
+ The new correct syntax would be:
+
+ ```swift
+<% for type in types.implementing["SomeProtocol"] { %>
+```
 
 ### Bug fixes 
 

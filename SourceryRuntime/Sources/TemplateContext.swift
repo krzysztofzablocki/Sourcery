@@ -200,7 +200,7 @@ public class TypesCollection: NSObject, AutoJSExport {
         self.validate = validate
     }
 
-    public func types(forKey key: String) throws -> [Type]? {
+    public func types(forKey key: String) throws -> [Type] {
         if let validate = validate {
             guard let type = all.first(where: { $0.name == key }) else {
                 throw "Unknown type \(key), should be used with `based`"
@@ -221,12 +221,12 @@ public class TypesCollection: NSObject, AutoJSExport {
     }
 
     /// :nodoc:
-    public subscript(_ key: String) -> [Type]? {
+    public subscript(_ key: String) -> [Type] {
         do {
             return try types(forKey: key)
         } catch {
             Log.error(error)
-            return nil
+            return []
         }
     }
 
