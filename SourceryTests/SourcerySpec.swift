@@ -193,7 +193,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:inline:auto:Foo.Inlined
                             var property = 2
                             // Line Three
-                            // sourcery:end", in: templatePath)
+                            // sourcery:end
                             """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
