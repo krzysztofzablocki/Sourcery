@@ -14,7 +14,7 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--templates` - Path to templates. File or Directory. You can provide multiple paths using multiple `--templates` options.
 - `--output` [default: current path] - Path to output. File or Directory.
 - `--config` [default: current path] - Path to config file. File or Directory. See [Configuration file](usage.html#configuration-file).
-- `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces (i.e. `--args arg1=value,arg2`). Arguments are accessible in templates via `argument.name`. To pass in string you should use escaped quotes (`\"`) .
+- `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces (i.e. `--args arg1=value,arg2`) or should be passed one by one (i.e `--args arg1=value --args arg2`). Arguments are accessible in templates via `argument.name`. To pass in string you should use escaped quotes (`\"`) .
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
 - `--verbose` [default: false] - Turn on verbose logging
 - `--quiet` [default: false] - Turn off any logging, only emmit errors
