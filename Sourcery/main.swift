@@ -23,28 +23,6 @@ extension Path: ArgumentConvertible {
     }
 }
 
-struct CustomArguments: ArgumentConvertible {
-    let arguments: Annotations
-
-    init(parser: ArgumentParser) throws {
-        guard let args = try parser.shiftValueForOption("args") else {
-            self.arguments = Annotations()
-            return
-        }
-
-        self.arguments = AnnotationsParser.parse(line: args)
-    }
-
-    init(arguments: [String: NSObject] = [:]) {
-        self.arguments = arguments
-    }
-
-    var description: String {
-        return arguments.description
-    }
-
-}
-
 private enum Validators {
     static func isReadable(path: Path) -> Path {
         if !path.isReadable {
@@ -126,7 +104,7 @@ func runCLI() {
         Option<Path>("output", ".", description: "Path to output. File or Directory. Default is current path."),
         Option<Path>("config", ".", description: "Path to config file. File or Directory. Default is current path."),
         VariadicOption<String>("force-parse", description: "extensions that this run of Sorcery should parse"),
-        Argument<CustomArguments>("args", description: "Custom values to pass to templates.")
+        VariadicOption<String>("args", description: "Custom values to pass to templates.")
     ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, sources, templates, output, configPath, forceParse, args in
         do {
             Log.level = verboseLogging ? .verbose : quiet ? .errors : .info
@@ -136,11 +114,13 @@ func runCLI() {
 
             if !yamlPath.exists {
                 Log.info("No config file provided or it does not exist. Using command line arguments.")
+                let args = args.joined(separator: ",")
+                let arguments = AnnotationsParser.parse(line: args)
                 configuration = Configuration(sources: sources,
                                               templates: templates,
                                               output: output,
                                               forceParse: forceParse,
-                                              args: args.arguments)
+                                              args: arguments)
             } else {
                 _ = Validators.isFileOrDirectory(path: configPath)
                 _ = Validators.isReadable(path: yamlPath)

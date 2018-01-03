@@ -9,6 +9,7 @@
 - Added support for subscripts
 - Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
 This is a breaking change for template code like this:
+- You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
 
  ```swift
 <% for type in (types.implementing["SomeProtocol"] ?? []) { %>
