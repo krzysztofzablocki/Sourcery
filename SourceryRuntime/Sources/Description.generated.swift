@@ -24,6 +24,15 @@ extension AssociatedValue {
         return string
     }
 }
+extension BytesRange {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "offset = \(String(describing: self.offset)), "
+        string += "length = \(String(describing: self.length))"
+        return string
+    }
+}
 extension Class {
     /// :nodoc:
     override public var description: String {

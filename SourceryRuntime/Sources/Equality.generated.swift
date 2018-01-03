@@ -34,6 +34,15 @@ extension Attribute {
         return true
     }
 }
+extension BytesRange {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? BytesRange else { return false }
+        if self.offset != rhs.offset { return false }
+        if self.length != rhs.length { return false }
+        return true
+    }
+}
 extension Class {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {

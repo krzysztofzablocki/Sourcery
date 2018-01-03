@@ -48,6 +48,8 @@ extension AssociatedValue: NSCoding {}
 
 extension Attribute: NSCoding {}
 
+extension BytesRange: NSCoding {}
+
 
 extension ClosureType: NSCoding {}
 

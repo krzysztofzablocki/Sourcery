@@ -34,6 +34,13 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
 
 extension Attribute: AttributeAutoJSExport {}
 
+@objc protocol BytesRangeAutoJSExport: JSExport {
+    var offset: Int64 { get }
+    var length: Int64 { get }
+}
+
+extension BytesRange: BytesRangeAutoJSExport {}
+
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
@@ -49,6 +56,7 @@ extension Attribute: AttributeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -116,6 +124,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -212,6 +221,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -250,6 +260,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -336,6 +347,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
