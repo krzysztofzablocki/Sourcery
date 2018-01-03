@@ -25,6 +25,7 @@ This is a breaking change for template code like this:
 - JS exceptions no more override syntax errors in JS templates 
 - Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
 - Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
+- Fixed `inline:auto` not inserting code if Sourcery is run with cache enabled #467
 
 ## 0.10.1
 
