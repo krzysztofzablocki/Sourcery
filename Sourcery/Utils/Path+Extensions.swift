@@ -20,10 +20,10 @@ extension Path {
         return Path(tempDirURL.path)
     }
 
-    static func cachesDir(sourcePath: Path) -> Path {
+    static func cachesDir(sourcePath: Path, createIfMissing: Bool = true) -> Path {
         var paths = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true) as [String]
         let path = Path(paths[0]) + "Sourcery" + sourcePath.lastComponent
-        if !path.exists {
+        if !path.exists && createIfMissing {
             // swiftlint:disable:next force_try
             try! FileManager.default.createDirectory(at: path.url, withIntermediateDirectories: true, attributes: nil)
         }

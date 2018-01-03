@@ -14,7 +14,7 @@ protocol Parsable: class {
 
 extension Parsable {
     /// Source structure used by the parser
-    var __underlyingSource: [String: SourceKitRepresentable] {
+    fileprivate var __underlyingSource: [String: SourceKitRepresentable] {
         return (__parserData as? [String: SourceKitRepresentable]) ?? [:]
     }
 
@@ -28,10 +28,6 @@ extension Type {
 
     var path: Path? {
         return __path.map({ Path($0) })
-    }
-
-    var bodyBytesRange: (offset: Int64, length: Int64)? {
-        return Substring.body.range(for: __underlyingSource)
     }
 
     func bodyRange(_ contents: String) -> NSRange? {
@@ -166,6 +162,7 @@ final class FileParser {
             type.isGeneric = isGeneric(source: source)
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
+            type.bodyBytesRange = Substring.body.range(for: source).map { BytesRange(range: $0) }
             type.setSource(source)
             type.__path = path
             types.append(type)
