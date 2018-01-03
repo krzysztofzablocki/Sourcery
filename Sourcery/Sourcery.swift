@@ -96,7 +96,22 @@ class Sourcery {
 
         Log.info("Starting watching sources.")
 
-        let sourceWatchers = watchPaths.allPaths.map({ watchPath in
+        var topDirectories = [(Path, [Path])]()
+        watchPaths.allPaths.forEach { path in
+            // See if its already contained by the topDirectories
+            guard topDirectories.first(where: { (_, children) -> Bool in
+                return children.contains(path)
+            }) == nil else { return }
+
+            if path.isDirectory {
+                topDirectories.append((path, (try? path.recursiveChildren()) ?? []))
+            } else {
+                let dir = path.parent()
+                topDirectories.append((dir, (try? dir.recursiveChildren()) ?? []))
+            }
+        }
+
+        let sourceWatchers = topDirectories.map({ (watchPath, _) in
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
                     .filter { $0.flags.contains(.isFile) }
@@ -125,7 +140,7 @@ class Sourcery {
             }
         })
 
-        Log.error("Starting watching templates.")
+        Log.info("Starting watching templates.")
 
         let templateWatchers = templatesPaths.allPaths.map({ templatesPath in
             return FolderWatcher.Local(path: templatesPath.string) { events in
