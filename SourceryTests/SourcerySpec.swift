@@ -32,8 +32,10 @@ class SourcerySpecTests: QuickSpec {
                 }
 
                 beforeEach {
-                    update(code: "class Foo { \n" +
-                        "}", in: sourcePath)
+                    update(code: """
+                        class Foo {
+                        }
+                        """, in: sourcePath)
 
                     _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir)
                 }
@@ -54,8 +56,10 @@ class SourcerySpecTests: QuickSpec {
                     let anotherSourcePath = outputDir + Path("AnotherSource.swift")
 
                     beforeEach {
-                        update(code: "class Bar { \n" +
-                            "}", in: anotherSourcePath)
+                        update(code: """
+                            class Bar {
+                            }
+                            """, in: anotherSourcePath)
                     }
 
                     it("updates existing files") {
@@ -79,39 +83,48 @@ class SourcerySpecTests: QuickSpec {
                     let sourcePath = outputDir + Path("Source.swift")
 
                     beforeEach {
-                        update(code: "class Foo { \n" +
-                            "// sourcery:inline:Foo.Inlined\n" +
-                            "\n" +
-                            "// This will be replaced\n" +
-                            "Last line\n" +
-                            "// sourcery:end\n" +
-                            "}", in: sourcePath)
+                        update(code: """
+                            class Foo {
+                            // sourcery:inline:Foo.Inlined
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:Foo.Inlined \n" +
-                            "var property = 2\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end", in: templatePath)
+                            // This will be replaced
+                            Last line
+                            // sourcery:end
+                            }
+                            """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:Foo.Inlined
+                            var property = 2
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
                     }
 
                     it("replaces placeholder with generated code") {
-                        let expectedResult = "class Foo { \n" +
-                                "// sourcery:inline:Foo.Inlined\n" +
-                                "var property = 2\n" +
-                                "// Line Three\n" +
-                                "// sourcery:end\n" +
-                                "}"
+                        let expectedResult = """
+                            class Foo {
+                            // sourcery:inline:Foo.Inlined
+                            var property = 2
+                            // Line Three
+                            // sourcery:end
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
 
                     it("removes code from within generated template") {
-                        let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
-                        "// DO NOT EDIT\n\n" +
-                        "// Line One\n"
+                        let expectedResult = """
+                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            // Line One
+                            """
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
 
@@ -120,11 +133,12 @@ class SourcerySpecTests: QuickSpec {
                     }
 
                     it("does not create generated file with empty content") {
-                        update(code:
-                            "// sourcery:inline:Foo.Inlined \n" +
-                                "var property = 2\n" +
-                                "// Line Three\n" +
-                            "// sourcery:end\n", in: templatePath)
+                        update(code: """
+                            // sourcery:inline:Foo.Inlined
+                            var property = 2
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
@@ -135,46 +149,54 @@ class SourcerySpecTests: QuickSpec {
                     }
 
                     it("inline multiple generated code blocks correctly") {
-                        update(code: "class Foo { \n" +
-                            "// sourcery:inline:Foo.Inlined\n" +
-                            "\n" +
-                            "// This will be replaced\n" +
-                            "Last line\n" +
-                            "// sourcery:end\n" +
-                            "}\n\n" +
-                            "class Bar { \n" +
-                            "// sourcery:inline:Bar.Inlined\n" +
-                            "\n" +
-                            "// This will be replaced\n" +
-                            "Last line\n" +
-                            "// sourcery:end\n" +
-                            "}", in: sourcePath)
+                        update(code: """
+                            class Foo {
+                            // sourcery:inline:Foo.Inlined
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:Bar.Inlined \n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "// Line One\n" +
-                            "// sourcery:inline:Foo.Inlined \n" +
-                            "var property = foo\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end", in: templatePath)
+                            // This will be replaced
+                            Last line
+                            // sourcery:end
+                            }
+
+                            class Bar {
+                            // sourcery:inline:Bar.Inlined
+
+                            // This will be replaced
+                            Last line
+                            // sourcery:end
+                            }
+                            """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:Bar.Inlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            // Line One
+                            // sourcery:inline:Foo.Inlined
+                            var property = foo
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
-                        let expectedResult = "class Foo { \n" +
-                            "// sourcery:inline:Foo.Inlined\n" +
-                            "var property = foo\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}\n\n" +
-                            "class Bar { \n" +
-                            "// sourcery:inline:Bar.Inlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}"
+                        let expectedResult = """
+                            class Foo {
+                            // sourcery:inline:Foo.Inlined
+                            var property = foo
+                            // Line Three
+                            // sourcery:end
+                            }
+
+                            class Bar {
+                            // sourcery:inline:Bar.Inlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -193,7 +215,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:inline:auto:Foo.Inlined
                             var property = 2
                             // Line Three
-                            // sourcery:end", in: templatePath)
+                            // sourcery:end
                             """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
@@ -212,153 +234,198 @@ class SourcerySpecTests: QuickSpec {
                     }
 
                     it("insert generated code in multiple types") {
-                        update(code: "class Foo {}\n\nclass Bar {}", in: sourcePath)
+                        update(code: """
+                            class Foo {}
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Bar.Inlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end" +
-                            "\n" +
-                            "// Line One\n" +
-                            "// sourcery:inline:auto:Foo.Inlined\n" +
-                            "var property = foo\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end", in: templatePath)
+                            class Bar {}
+                            """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Bar.Inlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+
+                            // Line One
+                            // sourcery:inline:auto:Foo.Inlined
+                            var property = foo
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
-                        let expectedResult = "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo.Inlined\n" +
-                            "var property = foo\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}\n\n" +
-                            "class Bar {\n" +
-                            "// sourcery:inline:auto:Bar.Inlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                        "}"
+                        let expectedResult = """
+                            class Foo {
+                            // sourcery:inline:auto:Foo.Inlined
+                            var property = foo
+                            // Line Three
+                            // sourcery:end
+                            }
+
+                            class Bar {
+                            // sourcery:inline:auto:Bar.Inlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
 
                     it("insert same generated code in multiple types") {
-                        update(code: "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo.fake\n" +
-                            "// sourcery:end\n" +
-                            "}\n\nclass Bar {}", in: sourcePath)
+                        update(code: """
+                            class Foo {
+                            // sourcery:inline:auto:Foo.fake
+                            // sourcery:end
+                            }
 
-                        update(code: "// Line One\n" +
-                            "{% for type in types.all %}" +
-                            "// sourcery:inline:auto:{{ type.name }}.fake\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "{% endfor %}", in: templatePath)
+                            class Bar {}
+                            """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            {% for type in types.all %}
+                            // sourcery:inline:auto:{{ type.name }}.fake
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
-                        let expectedResult = "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo.fake\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}\n\n" +
-                            "class Bar {\n" +
-                            "// sourcery:inline:auto:Bar.fake\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                        "}"
+                        let expectedResult = """
+                            class Foo {
+                            // sourcery:inline:auto:Foo.fake
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            }
+
+                            class Bar {
+                            // sourcery:inline:auto:Bar.fake
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
 
                     it("insert generated code in a nested type") {
-                        update(code: "class Foo {\n    class Bar {}\n}", in: sourcePath)
+                        update(code: """
+                            class Foo {
+                                class Bar {}
+                            }
+                            """, in: sourcePath)
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Foo.Bar.AutoInlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end" +
-                            "\n", in: templatePath)
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Foo.Bar.AutoInlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
-                        let expectedResult = "class Foo {\n" +
-                            "    class Bar {\n" +
-                            "// sourcery:inline:auto:Foo.Bar.AutoInlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}\n" +
-                            "}"
+                        let expectedResult = """
+                            class Foo {
+                                class Bar {
+                            // sourcery:inline:auto:Foo.Bar.AutoInlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            }
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
 
                     it("insert generated code in a nested type with extension") {
-                        update(code: "class Foo {}\n\nextension Foo {\n    class Bar {}\n}", in: sourcePath)
+                        update(code: """
+                            class Foo {}
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Foo.Bar.AutoInlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end" +
-                            "\n", in: templatePath)
+                            extension Foo {
+                                class Bar {}
+                            }
+                            """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Foo.Bar.AutoInlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
-                        let expectedResult = "class Foo {}\n\n" +
-                            "extension Foo {\n" +
-                            "    class Bar {\n" +
-                            "// sourcery:inline:auto:Foo.Bar.AutoInlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}\n" +
-                        "}"
+                        let expectedResult = """
+                            class Foo {}
+
+                            extension Foo {
+                                class Bar {
+                            // sourcery:inline:auto:Foo.Bar.AutoInlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            }
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
 
                     it("insert generated code in both type and its nested type") {
-                        update(code: "class Foo {}\n\nextension Foo {\n    class Bar {}\n}", in: sourcePath)
+                        update(code: """
+                            class Foo {}
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Foo.AutoInlined\n" +
-                            "var property = foo\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "// sourcery:inline:auto:Foo.Bar.AutoInlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end" +
-                            "\n", in: templatePath)
+                            extension Foo {
+                                class Bar {}
+                            }
+                            """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Foo.AutoInlined
+                            var property = foo
+                            // Line Three
+                            // sourcery:end
+                            // sourcery:inline:auto:Foo.Bar.AutoInlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
-                        let expectedResult = "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo.AutoInlined\n" +
-                            "var property = foo\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}\n\n" +
-                            "extension Foo {\n" +
-                            "    class Bar {\n" +
-                            "// sourcery:inline:auto:Foo.Bar.AutoInlined\n" +
-                            "var property = bar\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                            "}\n" +
-                            "}"
+                        let expectedResult = """
+                            class Foo {
+                            // sourcery:inline:auto:Foo.AutoInlined
+                            var property = foo
+                            // Line Three
+                            // sourcery:end
+                            }
+
+                            extension Foo {
+                                class Bar {
+                            // sourcery:inline:auto:Foo.Bar.AutoInlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            }
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -367,18 +434,21 @@ class SourcerySpecTests: QuickSpec {
                     it("inserts generated code from different templates") {
                         update(code: "class Foo {}", in: sourcePath)
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Foo.fake\n" +
-                            "var property = 2\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end", in: templatePath)
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Foo.fake
+                            var property = 2
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
 
                         let secondTemplatePath = outputDir + Path("OtherFakeTemplate.stencil")
 
-                        update(code:
-                            "// sourcery:inline:auto:Foo.otherFake\n" +
-                            "// Line Four\n" +
-                            "// sourcery:end", in: secondTemplatePath)
+                        update(code: """
+                            // sourcery:inline:auto:Foo.otherFake
+                            // Line Four
+                            // sourcery:end
+                            """, in: secondTemplatePath)
 
                         expect {
                             try Sourcery(watcherEnabled: false, cacheDisabled: true)
@@ -387,16 +457,18 @@ class SourcerySpecTests: QuickSpec {
                                               output: outputDir)
                             }.toNot(throwError())
 
-                        let expectedResult = "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo.otherFake\n" +
-                            "// Line Four\n" +
-                            "// sourcery:end\n" +
-                            "\n" +
-                            "// sourcery:inline:auto:Foo.fake\n" +
-                            "var property = 2\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                        "}"
+                        let expectedResult = """
+                            class Foo {
+                            // sourcery:inline:auto:Foo.otherFake
+                            // Line Four
+                            // sourcery:end
+
+                            // sourcery:inline:auto:Foo.fake
+                            var property = 2
+                            // Line Three
+                            // sourcery:end
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -461,27 +533,32 @@ class SourcerySpecTests: QuickSpec {
                     beforeEach {
                         update(code: "class Foo { }", in: sourcePath)
 
-                        update(code:
-                            "// Line One\n" +
-                            "{% for type in types.all %}" +
-                            "// sourcery:file:Generated/{{ type.name }}\n" +
-                            "extension {{ type.name }} {\n" +
-                            "var property = 2\n" +
-                            "// Line Three\n" +
-                            "}\n" +
-                            "// sourcery:end\n" +
-                            "{% endfor %}", in: templatePath)
+                        update(code: """
+                            // Line One
+                            {% for type in types.all %}
+                            // sourcery:file:Generated/{{ type.name }}
+                            extension {{ type.name }} {
+                            var property = 2
+                            // Line Three
+                            }
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
                     }
 
                     it("replaces placeholder with generated code") {
-                        let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
-                            "// DO NOT EDIT\n\n" +
-                            "extension Foo {\n" +
-                            "var property = 2\n" +
-                            "// Line Three\n" +
-                        "}\n"
+                        let expectedResult = """
+                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            extension Foo {
+                            var property = 2
+                            // Line Three
+                            }
+
+                            """
 
                         let generatedPath = outputDir + Path("Generated/Foo.generated.swift")
 
@@ -490,9 +567,13 @@ class SourcerySpecTests: QuickSpec {
                     }
 
                     it("removes code from within generated template") {
-                        let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
-                            "// DO NOT EDIT\n\n" +
-                            "// Line One\n"
+                        let expectedResult = """
+                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            // Line One
+
+                            """
 
                         let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
 
@@ -501,11 +582,12 @@ class SourcerySpecTests: QuickSpec {
                     }
 
                     it("does not create generated file with empty content") {
-                        update(code:
-                                "{% for type in types.all %}" +
-                                "// sourcery:file:Generated/{{ type.name }}\n" +
-                                "// sourcery:end\n" +
-                            "{% endfor %}", in: templatePath)
+                        update(code: """
+                            {% for type in types.all %}
+                            // sourcery:file:Generated/{{ type.name }}
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
@@ -538,7 +620,12 @@ class SourcerySpecTests: QuickSpec {
                     it("throws error when file contains merge conflict markers") {
                         let sourcePath = outputDir + Path("Source.swift")
 
-                        update(code: "\n\n<<<<<\n", in: sourcePath)
+                        update(code: """
+
+
+                            <<<<<
+
+                            """, in: sourcePath)
 
                         expect {
                             try Sourcery(cacheDisabled: true)
