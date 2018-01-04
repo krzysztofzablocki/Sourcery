@@ -188,20 +188,24 @@ class SourcerySpecTests: QuickSpec {
                     it("insert generated code in the end of type body") {
                         update(code: "class Foo {}", in: sourcePath)
 
-                        update(code: "// Line One\n" +
-                            "// sourcery:inline:auto:Foo.Inlined\n" +
-                            "var property = 2\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end", in: templatePath)
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Foo.Inlined
+                            var property = 2
+                            // Line Three
+                            // sourcery:end", in: templatePath)
+                            """, in: templatePath)
 
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
 
-                        let expectedResult = "class Foo {\n" +
-                            "// sourcery:inline:auto:Foo.Inlined\n" +
-                            "var property = 2\n" +
-                            "// Line Three\n" +
-                            "// sourcery:end\n" +
-                        "}"
+                        let expectedResult = """
+                            class Foo {
+                            // sourcery:inline:auto:Foo.Inlined
+                            var property = 2
+                            // Line Three
+                            // sourcery:end
+                            }
+                            """
 
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
@@ -407,6 +411,46 @@ class SourcerySpecTests: QuickSpec {
 
                         let newResult = try? sourcePath.read(.utf8)
                         expect(newResult).to(equal(expectedResult))
+                    }
+
+                    context("with cache of already inserted code") {
+                        beforeEach {
+                            Sourcery.removeCache(for: [sourcePath])
+
+                            update(code: "class Foo {}", in: sourcePath)
+
+                            update(code: """
+                                // Line One
+                                // sourcery:inline:auto:Foo.Inlined
+                                var property = 2
+                                // Line Three
+                                // sourcery:end
+                                """, in: templatePath)
+
+                            _ = try? Sourcery(watcherEnabled: false, cacheDisabled: false).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir)
+                        }
+
+                        it("inserts the generated code if it was deleted") {
+                            update(code: "class Foo {}", in: sourcePath)
+
+                            expect { try Sourcery(watcherEnabled: false, cacheDisabled: false).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: outputDir) }.toNot(throwError())
+
+                            let expectedResult = """
+                                class Foo {
+                                // sourcery:inline:auto:Foo.Inlined
+                                var property = 2
+                                // Line Three
+                                // sourcery:end
+                                }
+                                """
+
+                            let result = try? sourcePath.read(.utf8)
+                            expect(result).to(equal(expectedResult))
+                        }
+
+                        afterEach {
+                            Sourcery.removeCache(for: [sourcePath])
+                        }
                     }
                 }
 

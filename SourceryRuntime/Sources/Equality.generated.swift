@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.10.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace
@@ -31,6 +31,15 @@ extension Attribute {
         if self.name != rhs.name { return false }
         if self.arguments != rhs.arguments { return false }
         if self._description != rhs._description { return false }
+        return true
+    }
+}
+extension BytesRange {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? BytesRange else { return false }
+        if self.offset != rhs.offset { return false }
+        if self.length != rhs.length { return false }
         return true
     }
 }

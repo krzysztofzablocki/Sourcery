@@ -169,6 +169,16 @@ class Sourcery {
         return top.map { $0.0 }
     }
 
+    /// Remove the existing cache artifacts if it exists.
+    ///
+    /// - Parameter sources: paths of the sources you want to delete the
+    static func removeCache(for sources: [Path]) {
+        sources.forEach { path in
+            let cacheDir = Path.cachesDir(sourcePath: path, createIfMissing: false)
+            _ = try? cacheDir.delete()
+        }
+    }
+
     fileprivate func templates(from: Paths) throws -> [Template] {
         return try templatePaths(from: from).map {
             #if SWIFT_PACKAGE

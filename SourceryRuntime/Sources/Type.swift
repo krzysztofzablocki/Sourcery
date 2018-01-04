@@ -86,6 +86,10 @@ public class Type: NSObject, SourceryModel, Annotated {
         return flattenAll({ $0.subscripts })
     }
 
+    // sourcery: skipEquality, skipDescription
+    /// Bytes position of the body of this type in its declaration file if available.
+    public var bodyBytesRange: BytesRange?
+
     private func flattenAll<T>(_ extraction: @escaping (Type) -> [T], filter: (([T], T) -> Bool)? = nil) -> [T] {
         let all = NSMutableOrderedSet()
         all.addObjects(from: extraction(self))
@@ -215,7 +219,7 @@ public class Type: NSObject, SourceryModel, Annotated {
     public var attributes: [String: Attribute]
 
     // Underlying parser data, never to be used by anything else
-    // sourcery: skipDescription, skipEquality, skipJSExport
+    // sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
     /// :nodoc:
     public var __parserData: Any?
     // Path to file where the type is defined
@@ -292,6 +296,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods
             guard let subscripts: [Subscript] = aDecoder.decode(forKey: "subscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["subscripts"])); fatalError() }; self.subscripts = subscripts
+            self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
@@ -303,7 +308,6 @@ public class Type: NSObject, SourceryModel, Annotated {
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
-            self.__parserData = aDecoder.decodeObject(forKey: "__parserData")
             self.__path = aDecoder.decode(forKey: "__path")
         }
 
@@ -318,6 +322,7 @@ public class Type: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.variables, forKey: "variables")
             aCoder.encode(self.methods, forKey: "methods")
             aCoder.encode(self.subscripts, forKey: "subscripts")
+            aCoder.encode(self.bodyBytesRange, forKey: "bodyBytesRange")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
             aCoder.encode(self.based, forKey: "based")
@@ -329,7 +334,6 @@ public class Type: NSObject, SourceryModel, Annotated {
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.supertype, forKey: "supertype")
             aCoder.encode(self.attributes, forKey: "attributes")
-            aCoder.encode(self.__parserData, forKey: "__parserData")
             aCoder.encode(self.__path, forKey: "__path")
         }
     // sourcery:end
