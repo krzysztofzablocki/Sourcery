@@ -6,6 +6,8 @@
 
 ### New Features
 
+- Supports adding new templates files while in watcher mode
+- Supports adding new source files while in watcher mode
 - Added support for subscripts
 - Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
 This is a breaking change for template code like this:
@@ -23,6 +25,7 @@ This is a breaking change for template code like this:
 
 ### Bug fixes 
 
+- Fixes FSEvents errors reported in #465 that happen on Sierra.
 - JS exceptions no more override syntax errors in JS templates 
 - Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
 - Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
