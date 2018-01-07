@@ -125,6 +125,22 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "--help"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--sources"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/ilyapuchka/dev/Sourcery/SourceryRuntime/Sources"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--templates"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/ilyapuchka/dev/Sourcery/Sourcery/Templates"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

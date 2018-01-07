@@ -24,7 +24,7 @@ target 'Sourcery' do
   pod 'StencilSwiftKit', :git=>'https://github.com/SwiftGen/StencilSwiftKit.git', :branch=>'master'
   pod 'Commander'
   pod 'PathKit'
-  pod 'XcodeEdit', '~> 1.0'
+  pod "xcproj"
   pod 'SourceKittenFramework', '~> 0.17'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
   pod 'libCommonCrypto'
@@ -44,10 +44,16 @@ target 'SourcerySwift' do
   pod 'libCommonCrypto'
 end
 
+swift4 = ['xcproj']
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
+    swift_version = '3.2'
+    if swift4.include?(target.name)
+      swift_version = '4.0'
+    end
     target.build_configurations.each do |config|
-      config.build_settings['SWIFT_VERSION'] = '3.0'
+      config.build_settings['SWIFT_VERSION'] = swift_version
     end
   end
 end

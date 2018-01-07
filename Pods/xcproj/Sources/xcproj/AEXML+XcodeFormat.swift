@@ -56,6 +56,10 @@ let attributesOrder: [String: [String]] = [
         "ignoresPersistentStateOnLaunch",
         "debugDocumentVersioning",
         "enableTestabilityWhenProfilingTests"
+    ],
+    "ActionContent": [
+        "title",
+        "scriptText"
     ]
 ]
 
@@ -71,13 +75,11 @@ extension AEXMLElement {
         if attributes.count > 0 {
             // insert attributes
             var attributes = self.attributes
-            if let attributesOrder = attributesOrder[self.name] {
-                for key in attributesOrder {
-                    if let value = attributes.removeValue(forKey: key) {
-                        xml += "\n"
-                        xml += indent(withDepth: parentsCount)
-                        xml += "\(key) = \"\(value.xmlEscaped)\""
-                    }
+            for key in attributesOrder[self.name] ?? [] {
+                if let value = attributes.removeValue(forKey: key) {
+                    xml += "\n"
+                    xml += indent(withDepth: parentsCount)
+                    xml += "\(key) = \"\(value.xmlEscaped)\""
                 }
             }
 

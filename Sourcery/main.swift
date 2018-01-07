@@ -9,7 +9,6 @@
 import Foundation
 import Commander
 import PathKit
-import XcodeEdit
 import SourceryRuntime
 import SourceryJS
 
@@ -69,7 +68,7 @@ extension Configuration {
             Log.error("No templates provided.")
             exit(.invalidConfig)
         }
-        _ = Validators.isWriteable(path: output)
+        _ = output.path.map(Validators.isWriteable(path:))
     }
 
 }
