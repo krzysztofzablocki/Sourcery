@@ -11,7 +11,7 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-public final class Protocol: Type {
+@objcMembers public final class Protocol: Type {
 
     /// Returns "protocol"
     public override var kind: String { return "protocol" }

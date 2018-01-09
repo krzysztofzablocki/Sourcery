@@ -8,7 +8,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
+@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
     /// Variable name
     public let name: String
 

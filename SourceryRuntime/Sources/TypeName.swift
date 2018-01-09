@@ -30,7 +30,7 @@ public protocol Typed {
 }
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, LosslessStringConvertible {
+@objcMembers public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, LosslessStringConvertible {
 
     /// :nodoc:
     public init(_ name: String,
@@ -214,7 +214,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
 }
 
 /// Describes tuple type element
-public final class TupleElement: NSObject, SourceryModel, Typed {
+@objcMembers public final class TupleElement: NSObject, SourceryModel, Typed {
 
     /// Tuple element name
     public let name: String
@@ -251,7 +251,7 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
 }
 
 /// Describes tuple type
-public final class TupleType: NSObject, SourceryModel {
+@objcMembers public final class TupleType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public let name: String
@@ -281,7 +281,7 @@ public final class TupleType: NSObject, SourceryModel {
 }
 
 /// Describes array type
-public final class ArrayType: NSObject, SourceryModel {
+@objcMembers public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public let name: String
@@ -318,7 +318,7 @@ public final class ArrayType: NSObject, SourceryModel {
 }
 
 /// Describes dictionary type
-public final class DictionaryType: NSObject, SourceryModel {
+@objcMembers public final class DictionaryType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public let name: String
@@ -368,7 +368,7 @@ public final class DictionaryType: NSObject, SourceryModel {
 }
 
 /// Describes closure type
-public final class ClosureType: NSObject, SourceryModel {
+@objcMembers public final class ClosureType: NSObject, SourceryModel {
 
     /// Type name used in declaration with stripped whitespaces and new lines
     public let name: String
