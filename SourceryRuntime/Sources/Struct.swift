@@ -10,7 +10,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-public final class Struct: Type {
+@objcMembers public final class Struct: Type {
 
     /// Returns "struct"
     public override var kind: String { return "struct" }

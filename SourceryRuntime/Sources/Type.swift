@@ -6,7 +6,7 @@
 import Foundation
 
 /// Defines Swift type
-public class Type: NSObject, SourceryModel, Annotated {
+@objcMembers public class Type: NSObject, SourceryModel, Annotated {
 
     /// :nodoc:
     public var module: String?

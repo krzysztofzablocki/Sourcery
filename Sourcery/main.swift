@@ -217,7 +217,7 @@ if !inUnitTests {
     }
 
     autoreleasepool { () -> Void in
-        let app =   NSApplication.shared()
+        let app =   NSApplication.shared
         let controller =   TestApplicationController()
 
         app.delegate   = controller
