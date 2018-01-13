@@ -77,7 +77,7 @@ import AppKit
         {% call methodReceivedParameters method %}
     }
 {% else %}
-    func {{ method.name }}{% if not method.returnTypeName.isVoid %} {% if method.throws %}throws {% endif %}-> {{ method.returnTypeName }}{% endif %} {
+    func {{ method.name }}{% if not method.returnTypeName.isVoid %} {% if method.throws %}throws {% endif %}-> {{ method.returnTypeName }}{% else %}{% if method.throws %} throws{% endif %}{% endif %} {
         {% if method.throws %}
         {% call methodThrowableErrorUsage method %}
         {% endif %}
