@@ -31,7 +31,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case available
         case discardableResult
         case GKInspectable = "gkinspectable"
-        case objc = "objc.name"
+        case objc
         case nonobjc
         case NSApplicationMain
         case NSCopying
@@ -47,7 +47,12 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case final
 
         public init?(identifier: String) {
-            self.init(rawValue: identifier.replacingOccurrences(of: "source.decl.attribute.", with: ""))
+            let identifier = identifier.replacingOccurrences(of: "source.decl.attribute.", with: "")
+            if identifier == "objc.name" {
+                self.init(rawValue: "objc")
+            } else {
+                self.init(rawValue: identifier)
+            }
         }
 
         public static func from(string: String) -> Identifier? {
