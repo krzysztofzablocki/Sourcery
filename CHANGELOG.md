@@ -10,6 +10,10 @@
 - Supports adding new source files while in watcher mode
 - Added support for subscripts
 - You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
+- Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
+- added `@objcMembers` attribute
+
+- **Breaking** @objc attribute now has a `name` argument that contains Objective-C name of attributed declaration
 - **Breaking** Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
 This is a breaking change for template code like this:
 
@@ -22,9 +26,6 @@ This is a breaking change for template code like this:
  ```swift
 <% for type in types.implementing["SomeProtocol"] { %>
 ```
-
-- **Breaking** @objc attribute now has a `name` argument that contains Objective-C name of attributed declaration
-- added `@objcMembers` attribute
 
 ### Bug fixes 
 

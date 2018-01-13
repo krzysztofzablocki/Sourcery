@@ -440,7 +440,11 @@ class FileParserSpec: QuickSpec {
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
                                             EnumCase(name: "optionA", associatedValues: [
-                                                AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Observable<Int, Int>"))
+                                                AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Observable<Int, Int>", generic: GenericType(
+                                                    name: "Observable", typeParameters: [
+                                                        GenericTypeParameter(typeName: TypeName("Int")),
+                                                        GenericTypeParameter(typeName: TypeName("Int"))
+                                                    ])))
                                                 ]),
                                             EnumCase(name: "optionB", associatedValues: [
                                                 AssociatedValue(localName: nil, externalName: "0", typeName: TypeName("Int")),
@@ -448,7 +452,7 @@ class FileParserSpec: QuickSpec {
                                                 AssociatedValue(localName: nil, externalName: "2", typeName: TypeName("Int"))
                                                 ]),
                                             EnumCase(name: "optionC", associatedValues: [
-                                                AssociatedValue(localName: "dict", externalName: nil, typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String"))))
+                                                AssociatedValue(localName: "dict", externalName: nil, typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String")), generic: GenericType(name: "[String: String]", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("String"))])))
                                                 ])
                                         ])
                                 ]))
