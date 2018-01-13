@@ -32,6 +32,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case discardableResult
         case GKInspectable = "gkinspectable"
         case objc
+        case objcMembers
         case nonobjc
         case NSApplicationMain
         case NSCopying

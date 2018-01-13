@@ -24,6 +24,7 @@ This is a breaking change for template code like this:
 ```
 
 - **Breaking** @objc attribute now has a `name` argument that contains Objective-C name of attributed declaration
+- added `@objcMembers` attribute
 
 ### Bug fixes 
 

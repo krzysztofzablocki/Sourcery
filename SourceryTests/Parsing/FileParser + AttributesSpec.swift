@@ -34,6 +34,10 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("@objc(Bar) class Foo {}").first?.attributes).to(equal([
                     "objc": Attribute(name: "objc", arguments: ["name": "Bar" as NSString], description: "@objc(Bar)")
                     ]))
+
+                expect(parse("@objcMembers class Foo {}").first?.attributes).to(equal([
+                    "objcMembers": Attribute(name: "objcMembers", arguments: [:], description: "@objcMembers")
+                    ]))
             }
 
             context("given attribute with arguments") {
