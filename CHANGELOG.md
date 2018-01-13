@@ -9,9 +9,9 @@
 - Supports adding new templates files while in watcher mode
 - Supports adding new source files while in watcher mode
 - Added support for subscripts
+- Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
 - Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
 This is a breaking change for template code like this:
-- You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
 
  ```swift
 <% for type in (types.implementing["SomeProtocol"] ?? []) { %>
@@ -22,6 +22,8 @@ This is a breaking change for template code like this:
  ```swift
 <% for type in types.implementing["SomeProtocol"] { %>
 ```
+
+- You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
 
 ### Bug fixes 
 
