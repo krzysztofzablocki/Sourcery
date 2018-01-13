@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.10.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace
@@ -21,6 +21,15 @@ extension AssociatedValue {
         string += "externalName = \(String(describing: self.externalName)), "
         string += "typeName = \(String(describing: self.typeName)), "
         string += "annotations = \(String(describing: self.annotations))"
+        return string
+    }
+}
+extension BytesRange {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "offset = \(String(describing: self.offset)), "
+        string += "length = \(String(describing: self.length))"
         return string
     }
 }

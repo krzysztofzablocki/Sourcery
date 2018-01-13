@@ -6,8 +6,32 @@
 
 ### New Features
 
+- Supports adding new templates files while in watcher mode
+- Supports adding new source files while in watcher mode
 - Added support for subscripts
 - Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
+- Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
+This is a breaking change for template code like this:
+
+ ```swift
+<% for type in (types.implementing["SomeProtocol"] ?? []) { %>
+```
+
+ The new correct syntax would be:
+
+ ```swift
+<% for type in types.implementing["SomeProtocol"] { %>
+```
+
+- You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
+
+### Bug fixes 
+
+- Fixes FSEvents errors reported in #465 that happen on Sierra.
+- JS exceptions no more override syntax errors in JS templates 
+- Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
+- Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
+- Fixed `inline:auto` not inserting code if Sourcery is run with cache enabled #467
 
 ## 0.10.1
 

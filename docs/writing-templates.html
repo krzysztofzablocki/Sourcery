@@ -191,8 +191,8 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <h3 id='custom-stencil-tags-and-filters' class='heading'>Custom Stencil tags and filters</h3>
 
 <ul>
-<li><code>{{ name|upperFirst }}</code> - makes first letter in <code>name</code> uppercase</li>
-<li><code>{{ name|lowerFirst }}</code> - makes first letter in <code>name</code> lowercase</li>
+<li><code>{{ name|upperFirstLetter }}</code> - makes first letter in <code>name</code> uppercase</li>
+<li><code>{{ name|lowerFirstLetter }}</code> - makes first letter in <code>name</code> lowercase</li>
 <li><code>{{ name|replace:&quot;substring&quot;,&quot;replacement&quot; }}</code> - replaces occurances of <code>substring</code> with <code>replacement</code> in <code>name</code> (case sensitive)</li>
 <li><code>{% if name|contains:&quot;Foo&quot; %}</code> - check if <code>name</code> contains arbitrary substring, can be negated with <code>!</code> prefix.</li>
 <li><code>{% if name|hasPrefix:&quot;Foo&quot; %}</code>- check if <code>name</code> starts with arbitrary substring, can be negated with <code>!</code> prefix.</li>
