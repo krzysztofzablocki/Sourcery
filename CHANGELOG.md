@@ -9,6 +9,7 @@
 - Supports adding new templates files while in watcher mode
 - Supports adding new source files while in watcher mode
 - Added support for subscripts
+- Added `isGeneric` property for `Method`
 - Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
 - Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
 This is a breaking change for template code like this:
