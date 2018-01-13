@@ -26,6 +26,18 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("final class Foo { }").first?.attributes).to(equal([
                     "final": Attribute(name: "final", description: "final")
                     ]))
+
+                expect(parse("@objc class Foo {}").first?.attributes).to(equal([
+                    "objc": Attribute(name: "objc", arguments: [:], description: "@objc")
+                    ]))
+
+                expect(parse("@objc(Bar) class Foo {}").first?.attributes).to(equal([
+                    "objc": Attribute(name: "objc", arguments: ["name": "Bar" as NSString], description: "@objc(Bar)")
+                    ]))
+
+                expect(parse("@objcMembers class Foo {}").first?.attributes).to(equal([
+                    "objcMembers": Attribute(name: "objcMembers", arguments: [:], description: "@objcMembers")
+                    ]))
             }
 
             context("given attribute with arguments") {
@@ -59,7 +71,7 @@ class FileParserAttributesSpec: QuickSpec {
             it("extracts method attributes") {
                 expect(parse("class Foo { @discardableResult\n@objc(some)\nfunc some() {} }").first?.methods.first?.attributes).to(equal([
                     "discardableResult": Attribute(name: "discardableResult"),
-                    "objc": Attribute(name: "objc", arguments: ["some": NSNumber(value: true)], description: "@objc(some)")
+                    "objc": Attribute(name: "objc", arguments: ["name": "some" as NSString], description: "@objc(some)")
                     ]))
 
                 expect(parse("class Foo { @nonobjc convenience required init() {} }").first?.initializers.first?.attributes).to(equal([
@@ -86,7 +98,7 @@ class FileParserAttributesSpec: QuickSpec {
             it("extracts variable attributes") {
                 expect(parse("class Foo { @NSCopying @objc(objcName:) var name: String }").first?.variables.first?.attributes).to(equal([
                     "NSCopying": Attribute(name: "NSCopying"),
-                    "objc": Attribute(name: "objc", arguments: ["objcName:": NSNumber(value: true)], description: "@objc(objcName:)")
+                    "objc": Attribute(name: "objc", arguments: ["name": "objcName:" as NSString], description: "@objc(objcName:)")
                     ]))
 
                 expect(parse("struct Foo { mutating var some: Int }").first?.variables.first?.attributes).to(equal([
