@@ -29,6 +29,7 @@ This is a breaking change for template code like this:
 
 ### Bug fixes 
 
+- Fixed failing tests concerning `GenericType` and `GenericTypeParameter`
 - Fixes FSEvents errors reported in #465 that happen on Sierra
 - JS exceptions no more override syntax errors in JS templates 
 - Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
