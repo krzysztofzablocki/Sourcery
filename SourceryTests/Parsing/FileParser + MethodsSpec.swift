@@ -20,7 +20,7 @@ class FileParserMethodsSpec: QuickSpec {
                 }
 
                 it("extracts methods properly") {
-                    expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->    Foo {}; func fooBar() rethrows {}; func fooVoid() {}; func fooInOut(some: Int, anotherSome: inout String) {} deinit {} }")).to(equal([
+                    expect(parse("class Foo { func bar(some: Int) throws ->Bar {}; func foo() ->  \n  Foo {}; func fooBar() rethrows {}; func fooVoid(){}; func fooInOut(some: Int, anotherSome: inout String)\n{} deinit {} }")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
                                 MethodParameter(name: "some", typeName: TypeName("Int"))

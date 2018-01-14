@@ -642,7 +642,7 @@ extension FileParser {
             if source.keys.contains(SwiftDocKey.bodyOffset.rawValue),
                 let suffix = extract(.nameSuffixUpToBody, from: source) {
                 //if declaration has body then get everything up to body start
-                nameSuffix = suffix
+                nameSuffix = suffix.trimmingCharacters(in: .whitespacesAndNewlines)
             } else if
                 var key = extract(.key, from: source),
                 let line = extractLines(.key, from: source, contents: contents),
@@ -657,10 +657,13 @@ extension FileParser {
                 let lineSuffix = String(line.suffix(from: range.lowerBound))
                 let components = lineSuffix.semicolonSeparated()
                 if let suffix = components.first {
-                    nameSuffix = suffix
-                        .trimmingCharacters(in: .whitespaces)
+                    nameSuffix = String(suffix
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
                         .trimmingPrefix(key)
-                        .trimmingCharacters(in: CharacterSet(charactersIn: "}").union(.whitespacesAndNewlines))
+                        .prefix(while: { $0 != "{" })
+                        .prefix(while: { $0 != "}" })
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                    )
                 }
             }
 
