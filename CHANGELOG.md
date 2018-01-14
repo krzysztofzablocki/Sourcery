@@ -27,6 +27,10 @@ This is a breaking change for template code like this:
 <% for type in types.implementing["SomeProtocol"] { %>
 ```
 
+### Internal changes
+
+- Migrate to Swift 4, SwiftPM 4 and Xcode 9.2
+
 ### Bug fixes 
 
 - Fixed failing tests concerning `GenericType` and `GenericTypeParameter`

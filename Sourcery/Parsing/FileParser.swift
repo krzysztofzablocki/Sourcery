@@ -259,7 +259,7 @@ final class FileParser {
             for method in type.allMethods {
                 let argumentLabels: [String]
                 if let labels = method.selectorName.range(of: "(")
-                        .map({ method.selectorName.substring(from: $0.upperBound) })?
+                        .map({ String(method.selectorName[$0.upperBound...]) })?
                         .trimmingCharacters(in: CharacterSet(charactersIn: ")"))
                         .components(separatedBy: ":")
                         .dropLast() {
@@ -392,10 +392,10 @@ extension FileParser {
             }
         } else if let initializer = string.range(of: ".init(") {
             //initializer
-            inferredType = string.substring(with: string.startIndex..<initializer.lowerBound)
+            inferredType = String(string[string.startIndex..<initializer.lowerBound])
             return inferredType
         } else if let parens = string.range(of: "("), string.last == ")" {
-            inferredType = string.substring(with: string.startIndex..<parens.lowerBound)
+            inferredType = String(string[string.startIndex..<parens.lowerBound])
             //to avoid inferring i.e. 'Optional.some' for 'Optional.some(...)'
             return inferredType.contains(".") ? nil : inferredType
         } else {
@@ -714,14 +714,14 @@ extension FileParser {
             return nil
         }
 
-        let wrappedBody = keyString.substring(from: nameRange.upperBound).trimmingCharacters(in: .whitespacesAndNewlines)
+        let wrappedBody = keyString[nameRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         switch (wrappedBody.first, wrappedBody.last) {
         case ("="?, _?):
-             let body = wrappedBody.substring(from: wrappedBody.index(after: wrappedBody.startIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+             let body = wrappedBody[wrappedBody.index(after: wrappedBody.startIndex)...].trimmingCharacters(in: .whitespacesAndNewlines)
              rawValue = parseEnumValues(body)
         case ("("?, ")"?):
-             let body = wrappedBody.substring(with: wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)).trimmingCharacters(in: .whitespacesAndNewlines)
+             let body = wrappedBody[wrappedBody.index(after: wrappedBody.startIndex)..<wrappedBody.index(before: wrappedBody.endIndex)].trimmingCharacters(in: .whitespacesAndNewlines)
              associatedValues = parseEnumAssociatedValues(body)
         case (nil, nil):
             break
@@ -888,7 +888,7 @@ extension FileParser {
                 let chars = attributeString
                 let startIndex = chars.index(openIndex, offsetBy: 1)
                 let endIndex = chars.index(chars.endIndex, offsetBy: -1)
-                guard let argumentsString = String(chars[startIndex ..< endIndex]) else { return nil }
+                let argumentsString = String(chars[startIndex ..< endIndex])
                 let arguments = parseAttributeArguments(argumentsString, attribute: name)
 
                 return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")

@@ -1,12 +1,11 @@
-// swiftlint:disable vertical_whitespace
-
+import Foundation
 
 {% for type in types.implementing.AutoDiffable|!protocol %}
 extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: Diffable{% endif %} {
-    {% if type.based.Type %}override {% endif %}func diffAgainst(_ object: Any?) -> DiffableResult {
+    {% if type.based.Type %}override {% else %}@objc {% endif %}func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? {{ type.name }} else {
-            results.append("Incorrect type <expected: {{ type.name }}, received: \(type(of: object))>")
+            results.append("Incorrect type <expected: {{ type.name }}, received: \(Swift.type(of: object))>")
             return results
         }
         {% for variable in type.storedVariables|!annotated:"skipEquality" %}results.append(contentsOf: DiffableResult(identifier: "{{ variable.name }}").trackDifference(actual: self.{{ variable.name }}, expected: castObject.{{ variable.name }}))

@@ -1,6 +1,6 @@
 machine:
   xcode:
-    version: 9.0
+    version: 9.2
   environment:
     XCODE_WORKSPACE: Sourcery.xcworkspace
     XCODE_PROJECT: Sourcery.xcodeproj

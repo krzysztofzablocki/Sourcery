@@ -6,7 +6,7 @@
 import Foundation
 
 /// Represents a range of bytes
-public final class BytesRange: NSObject, SourceryModel {
+@objcMembers public final class BytesRange: NSObject, SourceryModel {
     /// :nodoc:
     public let offset: Int64
     /// :nodoc:

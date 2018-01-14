@@ -4,7 +4,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+@objcMembers public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -85,7 +85,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 }
 
 /// Describes method
-@objc(SwiftMethod) public final class Method: NSObject, SourceryModel, Annotated, Definition {
+@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -96,12 +96,12 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
 
     /// Method name without arguments names and parenthesis, i.e. `foo<T>`
     public var shortName: String {
-        return name.range(of: "(").map({ name.substring(to: $0.lowerBound) }) ?? name
+        return name.range(of: "(").map({ String(name[..<$0.lowerBound]) }) ?? name
     }
 
     /// Method name without arguments names, parenthesis and generic types, i.e. `foo` (can be used to generate code for method call)
     public var callName: String {
-        return shortName.range(of: "<").map({ shortName.substring(to: $0.lowerBound) }) ?? shortName
+        return shortName.range(of: "<").map({ String(shortName[..<$0.lowerBound]) }) ?? shortName
     }
 
     /// Method parameters

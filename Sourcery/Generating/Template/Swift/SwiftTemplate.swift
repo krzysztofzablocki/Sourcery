@@ -86,13 +86,13 @@ class SwiftTemplate: Template {
                 throw "\(sourcePath):\(currentLineNumber()) Error while parsing template. Unmatched <%"
             }
 
-            var code = component.substring(to: endIndex.lowerBound)
+            var code = String(component[..<endIndex.lowerBound])
             let shouldTrimTrailingNewLines = code.trimSuffix("-")
             let shouldTrimLeadingWhitespaces = code.trimPrefix("_")
             let shouldTrimTrailingWhitespaces = code.trimSuffix("_")
 
             // string after closing tag
-            var encodedPart = component.substring(from: endIndex.upperBound)
+            var encodedPart = String(component[endIndex.upperBound...])
             if shouldTrimTrailingNewLines {
                 // we trim only new line caused by script tag, not all of leading new lines in string after tag
                 encodedPart = encodedPart.replacingOccurrences(of: "^\\n{1}", with: "", options: .regularExpression, range: nil)
@@ -113,7 +113,7 @@ class SwiftTemplate: Template {
             if code.trimPrefix("-") {
                 let regex = try? NSRegularExpression(pattern: "include\\(\"([^\"]*)\"\\)", options: [])
                 let match = regex?.firstMatch(in: code, options: [], range: code.bridge().entireRange)
-                guard let includedFile = match.map({ code.bridge().substring(with: $0.rangeAt(1)) }) else {
+                guard let includedFile = match.map({ code.bridge().substring(with: $0.range(at: 1)) }) else {
                     throw "\(sourcePath):\(currentLineNumber()) Error while parsing template. Invalid include tag format '\(code)'"
                 }
                 var includePath = Path(components: [sourcePath.parent().string, includedFile])
