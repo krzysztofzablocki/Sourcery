@@ -54,12 +54,12 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
         var name = name
         attributes.forEach {
             name = name.trimmingPrefix($0.value.description)
-                .trimmingCharacters(in: .whitespaces)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
         if let genericConstraint = name.range(of: "where") {
             name = String(name.prefix(upTo: genericConstraint.lowerBound))
-                .trimmingCharacters(in: .whitespaces)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
         if name.isEmpty {
@@ -69,7 +69,7 @@ public final class TypeName: NSObject, AutoCoding, AutoEquatable, AutoDiffable, 
             self.isGeneric = false
         } else {
             name = name.bracketsBalancing()
-            name = name.trimmingPrefix("inout ").trimmingCharacters(in: .whitespaces)
+            name = name.trimmingPrefix("inout ").trimmingCharacters(in: .whitespacesAndNewlines)
             let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
             let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
             self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional

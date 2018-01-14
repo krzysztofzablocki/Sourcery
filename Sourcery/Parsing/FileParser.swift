@@ -117,7 +117,7 @@ final class FileParser {
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
         var types = [Type]()
-        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn in
+        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
 
             switch kind {
@@ -146,7 +146,7 @@ final class FileParser {
             case .functionMethodClass,
                  .functionMethodInstance,
                  .functionMethodStatic:
-                return parseMethod(source, definedIn: definedIn as? Type)
+                return parseMethod(source, definedIn: definedIn as? Type, nextStructure: next)
             case .varParameter:
                 if definedIn is SourceryMethod {
                     return parseParameter(source)
@@ -172,26 +172,44 @@ final class FileParser {
         return finishedParsing(types: types)
     }
 
+    typealias FoundEntry = (
+        /*kind:*/ SwiftDeclarationKind,
+        /*name:*/ String,
+        /*accessLevel:*/ AccessLevel,
+        /*inheritedTypes:*/ [String],
+        /*source:*/ [String: SourceKitRepresentable],
+        /*definedIn:*/ Any?,
+        /*next:*/ [String: SourceKitRepresentable]?
+    ) -> Any?
+
     /// Walks all declarations in the source
-    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable], Any?) -> Any?) {
+    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: FoundEntry) {
         if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
-            for substructure in substructures {
+            for (index, substructure) in substructures.enumerated() {
                 if let source = substructure as? [String: SourceKitRepresentable] {
                     processed.append(source)
-                    walkDeclaration(source: source, containingIn: containingIn, foundEntry: foundEntry)
+                    let nextStructure = index < substructures.count - 1
+                        ? substructures[index+1] as? [String: SourceKitRepresentable]
+                        : nil
+                    walkDeclaration(
+                        source: source,
+                        next: nextStructure,
+                        containingIn: containingIn,
+                        foundEntry: foundEntry
+                    )
                 }
             }
         }
     }
 
     /// Walks single declaration in the source, recursively processing containing types
-    private func walkDeclaration(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: (SwiftDeclarationKind, String, AccessLevel, [String], [String: SourceKitRepresentable], Any?) -> Any?) {
+    private func walkDeclaration(source: [String: SourceKitRepresentable], next: [String: SourceKitRepresentable]?, containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: FoundEntry) {
         var declaration = containingIn
 
         let inheritedTypes = extractInheritedTypes(source: source)
 
         if let requirements = parseTypeRequirements(source) {
-            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source, containingIn?.0)
+            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source, containingIn?.0, next)
             if let foundDeclaration = foundDeclaration, let containingIn = containingIn {
                 processContainedDeclaration(foundDeclaration, within: containingIn)
             }
@@ -610,7 +628,7 @@ extension FileParser {
 // MARK: - Methods
 extension FileParser {
 
-    internal func parseMethod(_ source: [String: SourceKitRepresentable], definedIn: Type? = nil) -> SourceryMethod? {
+    internal func parseMethod(_ source: [String: SourceKitRepresentable], definedIn: Type? = nil, nextStructure: [String: SourceKitRepresentable]? = nil) -> SourceryMethod? {
         let requirements = parseTypeRequirements(source)
         guard
             let kind = requirements?.kind,
@@ -639,31 +657,29 @@ extension FileParser {
             returnTypeName = ""
         } else {
             var nameSuffix: String?
-            if source.keys.contains(SwiftDocKey.bodyOffset.rawValue),
-                let suffix = extract(.nameSuffixUpToBody, from: source) {
-                //if declaration has body then get everything up to body start
-                nameSuffix = suffix.trimmingCharacters(in: .whitespacesAndNewlines)
-            } else if
-                var key = extract(.key, from: source),
-                let line = extractLines(.key, from: source, contents: contents),
-                let range = line.range(of: key) {
-
-                //otherwise get full declaration and parse it manually
-
-                if let nameSuffix = extract(.nameSuffix, from: source) {
-                    key = key.trimmingSuffix(nameSuffix).trimmingCharacters(in: .whitespaces)
+            // if declaration has body then get everything up to body start
+            if source.keys.contains(SwiftDocKey.bodyOffset.rawValue) {
+                if let suffix = extract(.nameSuffixUpToBody, from: source) {
+                    nameSuffix = suffix.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    nameSuffix = ""
                 }
-
-                let lineSuffix = String(line.suffix(from: range.lowerBound))
-                let components = lineSuffix.semicolonSeparated()
-                if let suffix = components.first {
-                    nameSuffix = String(suffix
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                        .trimmingPrefix(key)
-                        .prefix(while: { $0 != "{" })
-                        .prefix(while: { $0 != "}" })
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                    )
+            } else if let nameSuffixRange = Substring.nameSuffix.range(for: source) {
+                // if declaration has no body, usually in protocols, parse it manually
+                var upperBound: Int?
+                if let nextStructure = nextStructure, let range = Substring.key.range(for: nextStructure) {
+                    // if there is next declaration, parse until its start
+                    upperBound = Int(range.offset)
+                } else if let definedInSource = definedIn?.__underlyingSource, let range = Substring.key.range(for: definedInSource) {
+                    // if there are no fiurther declarations, parse until end of containing declaration
+                    upperBound = Int(range.offset) + Int(range.length) - 1
+                }
+                if let upperBound = upperBound {
+                    let start = Int(nameSuffixRange.offset)
+                    let length = upperBound - Int(nameSuffixRange.offset)
+                    nameSuffix = contents.bridge()
+                        .substringWithByteRange(start: start, length: length)?
+                        .trimmingCharacters(in: CharacterSet(charactersIn: ";").union(.whitespacesAndNewlines))
                 }
             }
 
