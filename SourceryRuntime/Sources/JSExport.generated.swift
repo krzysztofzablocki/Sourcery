@@ -158,6 +158,20 @@ extension Enum: EnumAutoJSExport {}
 extension EnumCase: EnumCaseAutoJSExport {}
 
 
+@objc protocol GenericTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var typeParameters: [GenericTypeParameter] { get }
+}
+
+extension GenericType: GenericTypeAutoJSExport {}
+
+@objc protocol GenericTypeParameterAutoJSExport: JSExport {
+    var typeName: TypeName { get }
+    var type: Type? { get }
+}
+
+extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
+
 @objc protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
@@ -373,6 +387,8 @@ extension Type: TypeAutoJSExport {}
 
 @objc protocol TypeNameAutoJSExport: JSExport {
     var name: String { get }
+    var generic: GenericType? { get }
+    var isGeneric: Bool { get }
     var actualTypeName: TypeName? { get }
     var attributes: [String: Attribute] { get }
     var isOptional: Bool { get }

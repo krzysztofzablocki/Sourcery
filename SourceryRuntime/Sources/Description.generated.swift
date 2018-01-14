@@ -104,7 +104,16 @@ extension GenericType {
     /// :nodoc:
     override public var description: String {
         var string = "\(type(of: self)): "
-        string += "name = \(String(describing: self.name))"
+        string += "name = \(String(describing: self.name)), "
+        string += "typeParameters = \(String(describing: self.typeParameters))"
+        return string
+    }
+}
+extension GenericTypeParameter {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "typeName = \(String(describing: self.typeName))"
         return string
     }
 }
