@@ -888,9 +888,8 @@ extension FileParser {
                 let chars = attributeString
                 let startIndex = chars.index(openIndex, offsetBy: 1)
                 let endIndex = chars.index(chars.endIndex, offsetBy: -1)
-                let optArgumentsString = String(chars[startIndex ..< endIndex])
-                guard let argumentsString = optArgumentsString else { return nil }
-                let arguments = parseAttributeArguments(argumentsString)
+                guard let argumentsString = String(chars[startIndex ..< endIndex]) else { return nil }
+                let arguments = parseAttributeArguments(argumentsString, attribute: name)
 
                 return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")
             } else {
@@ -902,11 +901,16 @@ extension FileParser {
         return attributes
     }
 
-    private func parseAttributeArguments(_ string: String) -> [String: NSObject] {
+    private func parseAttributeArguments(_ string: String, attribute: String) -> [String: NSObject] {
         var arguments = [String: NSObject]()
         string.components(separatedBy: ",", excludingDelimiterBetween: ("\"", "\""))
             .map({ $0.trimmingCharacters(in: .whitespaces) })
             .forEach { argument in
+                if attribute == "objc" {
+                    arguments["name"] = argument as NSString
+                    return
+                }
+
                 guard argument.contains("\"") else {
                     if argument != "*" {
                         arguments[argument.replacingOccurrences(of: " ", with: "_")] = NSNumber(value: true)
