@@ -191,6 +191,10 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         return attributes[Attribute.Identifier.mutating.name] != nil
     }
 
+    public var isGeneric: Bool {
+        return shortName.hasSuffix(">")
+    }
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: [String: NSObject]
 

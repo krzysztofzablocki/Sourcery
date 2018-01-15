@@ -9,6 +9,7 @@
 - Supports adding new templates files while in watcher mode
 - Supports adding new source files while in watcher mode
 - Added support for subscripts
+- Added `isGeneric` property for `Method`
 - You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
 - Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
 - added `@objcMembers` attribute

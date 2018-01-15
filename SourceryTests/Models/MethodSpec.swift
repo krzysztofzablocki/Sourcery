@@ -73,6 +73,11 @@ class MethodSpec: QuickSpec {
                 expect(Method(name: "init()", isFailableInitializer: true).isOptionalReturnType).to(beTrue())
             }
 
+            it("reports generic method") {
+                expect(Method(name: "foo<T>()").isGeneric).to(beTrue())
+                expect(Method(name: "foo()").isGeneric).to(beFalse())
+            }
+
             describe("When testing equality") {
 
                 context("given same items") {
