@@ -91,7 +91,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     public let name: String
 
     /// Method name including arguments names, i.e. `foo(bar:)`
-    public let selectorName: String
+    public var selectorName: String
 
     // sourcery: skipEquality, skipDescription
     /// Method name without arguments names and parenthesis, i.e. `foo<T>`
@@ -157,7 +157,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     // sourcery: skipEquality, skipDescription
     /// Whether method is an initializer
     public var isInitializer: Bool {
-        return selectorName.hasPrefix("init(")
+        return selectorName.hasPrefix("init(") || selectorName == "init"
     }
 
     // sourcery: skipEquality, skipDescription

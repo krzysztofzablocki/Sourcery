@@ -289,6 +289,11 @@ final class FileParser {
                 for (index, parameter) in method.parameters.enumerated() where index < argumentLabels.count {
                     parameter.argumentLabel = argumentLabels[index] != "_" ? argumentLabels[index] : nil
                 }
+
+                // adjust method selector name as methods without parameters do not have ()
+                if method.parameters.isEmpty {
+                    method.selectorName.trimSuffix("()")
+                }
             }
         }
 

@@ -30,7 +30,6 @@ This is a breaking change for template code like this:
 
 ### Bug fixes 
 
-- Fixed failing tests concerning `GenericType` and `GenericTypeParameter`
 - Fixes FSEvents errors reported in #465 that happen on Sierra
 - JS exceptions no more override syntax errors in JS templates 
 - Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
@@ -38,6 +37,8 @@ This is a breaking change for template code like this:
 - Fixed `inline:auto` not inserting code if Sourcery is run with cache enabled #467
 - Fixed parsing @objc attributes on types  
 - Fixed parsing void return type in methods without spaces between method name and body open curly brace and in protocols
+- **Breaking** Fixed `selectorName` for methods without parameters, now it will not contain `()`
+- Fixed parsing throwing initializers
 
 ## 0.10.1
 
