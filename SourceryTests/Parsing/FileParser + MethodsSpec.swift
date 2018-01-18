@@ -22,7 +22,7 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts methods properly") {
                     let methods = parse("class Foo { init() throws; func bar(some: Int) throws ->Bar {}; func foo() ->  \n  Foo {}; func fooBar() rethrows {}; func fooVoid(){}; func fooInOut(some: Int, anotherSome: inout String)\n{} deinit {} }")[0].methods
 
-                    expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName(""), throws: true, definedInTypeName: TypeName("Foo"))))
+                    expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName("Foo"), throws: true, definedInTypeName: TypeName("Foo"))))
                     expect(methods[1]).to(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Bar"), throws: true, definedInTypeName: TypeName("Foo"))))
                     expect(methods[2]).to(equal(Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName("Foo"), definedInTypeName: TypeName("Foo"))))
                     expect(methods[3]).to(equal(Method(name: "fooBar()", selectorName: "fooBar", returnTypeName: TypeName("Void"), throws: false, rethrows: true, definedInTypeName: TypeName("Foo"))))
@@ -36,7 +36,7 @@ class FileParserMethodsSpec: QuickSpec {
 
                 it("extracts protocol methods properly") {
                     let methods = parse("protocol Foo { init() throws; func bar(some: Int) throws ->Bar ; func foo() ->    Foo ; func fooBar() rethrows ; func fooVoid(); func fooInOut(some: Int, anotherSome: inout String) }")[0].methods
-                    expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName(""), throws: true, definedInTypeName: TypeName("Foo"))))
+                    expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName("Foo"), throws: true, definedInTypeName: TypeName("Foo"))))
                     expect(methods[1]).to(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
                         MethodParameter(name: "some", typeName: TypeName("Int"))
                         ], returnTypeName: TypeName("Bar"), throws: true, definedInTypeName: TypeName("Foo"))))
@@ -261,7 +261,7 @@ class FileParserMethodsSpec: QuickSpec {
                 context("given initializer") {
                     it("extracts initializer properly") {
                         let fooType = Class(name: "Foo")
-                        let expectedInitializer = Method(name: "init()", selectorName: "init", returnTypeName: TypeName(""), definedInTypeName: TypeName("Foo"))
+                        let expectedInitializer = Method(name: "init()", selectorName: "init", returnTypeName: TypeName("Foo"), definedInTypeName: TypeName("Foo"))
                         expectedInitializer.returnType = fooType
                         fooType.methods = [Method(name: "foo()", selectorName: "foo", definedInTypeName: TypeName("Foo")), expectedInitializer]
 
@@ -274,7 +274,7 @@ class FileParserMethodsSpec: QuickSpec {
 
                     it("extracts failable initializer properly") {
                         let fooType = Class(name: "Foo")
-                        let expectedInitializer = Method(name: "init?()", selectorName: "init", returnTypeName: TypeName(""), isFailableInitializer: true, definedInTypeName: TypeName("Foo"))
+                        let expectedInitializer = Method(name: "init?()", selectorName: "init", returnTypeName: TypeName("Foo?"), isFailableInitializer: true, definedInTypeName: TypeName("Foo"))
                         expectedInitializer.returnType = fooType
                         fooType.methods = [Method(name: "foo()", selectorName: "foo", definedInTypeName: TypeName("Foo")), expectedInitializer]
 

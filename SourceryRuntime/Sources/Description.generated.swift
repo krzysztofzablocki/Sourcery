@@ -130,6 +130,7 @@ extension Method {
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "isStatic = \(String(describing: self.isStatic)), "
         string += "isClass = \(String(describing: self.isClass)), "
+        string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
         string += "attributes = \(String(describing: self.attributes))"

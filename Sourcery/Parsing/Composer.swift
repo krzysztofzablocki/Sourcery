@@ -182,19 +182,27 @@ struct Composer {
             parameter.type = resolve(parameter.typeName, type)
         }
 
-        if !method.returnTypeName.isVoid {
-            method.returnType = resolve(method.returnTypeName, type)
-
-            if method.isInitializer {
-                method.returnTypeName = TypeName("")
-            }
-        }
-
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
+        var definedInType: Type?
         if let definedInTypeName = method.definedInTypeName {
-            _ = resolve(definedInTypeName, type)
+            definedInType = resolve(definedInTypeName, type)
+        }
+
+        guard !method.returnTypeName.isVoid else { return }
+
+        if method.isInitializer || method.isFailableInitializer {
+            method.returnType = definedInType
+            if let actualDefinedInTypeName = method.actualDefinedInTypeName {
+                if method.isFailableInitializer {
+                    method.returnTypeName = TypeName("\(actualDefinedInTypeName.name)?")
+                } else if method.isInitializer {
+                    method.returnTypeName = actualDefinedInTypeName
+                }
+            }
+        } else {
+            method.returnType = resolve(method.returnTypeName, type)
         }
     }
 

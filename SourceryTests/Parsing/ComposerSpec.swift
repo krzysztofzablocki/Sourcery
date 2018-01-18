@@ -200,7 +200,7 @@ class ParserComposerSpec: QuickSpec {
                                                            methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
                                                                                                          typeName: TypeName("String"))],
-                                                                            returnTypeName: TypeName(""),
+                                                                            returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))]
                                                       )
@@ -223,7 +223,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
-                                                                            returnTypeName: TypeName(""),
+                                                                            returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
@@ -246,7 +246,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
-                                                                            returnTypeName: TypeName(""),
+                                                                            returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
