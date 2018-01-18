@@ -45,6 +45,7 @@ protocol ReservedWordsProtocol: AutoMockable {
 
 protocol ThrowableProtocol: AutoMockable {
     func doOrThrow() throws -> String
+    func doOrThrowVoid() throws
 }
 
 protocol CurrencyPresenter: AutoMockable {

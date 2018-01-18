@@ -191,6 +191,21 @@ class ThrowableProtocolMock: ThrowableProtocol {
         return doOrThrowReturnValue
     }
 
+    //MARK: - doOrThrowVoid
+
+    var doOrThrowVoidThrowableError: Error?
+    var doOrThrowVoidCallsCount = 0
+    var doOrThrowVoidCalled: Bool {
+        return doOrThrowVoidCallsCount > 0
+    }
+
+    func doOrThrowVoid() throws {
+        if let error = doOrThrowVoidThrowableError {
+            throw error
+        }
+        doOrThrowVoidCallsCount += 1
+    }
+
 }
 class VariablesProtocolMock: VariablesProtocol {
     var company: String?
