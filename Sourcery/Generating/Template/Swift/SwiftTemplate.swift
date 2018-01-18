@@ -197,8 +197,7 @@ class SwiftTemplate: Template {
         ]
 
         let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
-                                                       arguments: arguments,
-                                                       environment: [:])
+                                                       arguments: arguments)
 
         if !compilationResult.error.isEmpty {
             throw compilationResult.error
@@ -259,7 +258,7 @@ private extension String {
 }
 
 private extension Process {
-    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:]) throws -> ProcessResult {
+    static func runCommand(path: String, arguments: [String], environment: [String: String] = ProcessInfo.processInfo.environment) throws -> ProcessResult {
         let task = Process()
         task.launchPath = path
         task.arguments = arguments
