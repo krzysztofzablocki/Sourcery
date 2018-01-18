@@ -42,6 +42,7 @@ This is a breaking change for template code like this:
 - Fixed `inline:auto` not inserting code if Sourcery is run with cache enabled #467
 - Fixed parsing @objc attributes on types  
 - Fixed parsing void return type in methods without spaces between method name and body open curly brace and in protocols
+- Fixed AutoMockable template generating throwing method with void return type 
 - Fixed parsing throwing initializers
 
 ## 0.10.1
