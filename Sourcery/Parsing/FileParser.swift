@@ -289,6 +289,11 @@ final class FileParser {
                 for (index, parameter) in method.parameters.enumerated() where index < argumentLabels.count {
                     parameter.argumentLabel = argumentLabels[index] != "_" ? argumentLabels[index] : nil
                 }
+
+                // adjust method selector name as methods without parameters do not have ()
+                if method.parameters.isEmpty {
+                    method.selectorName.trimSuffix("()")
+                }
             }
         }
 
@@ -653,46 +658,42 @@ extension FileParser {
         var `throws` = false
         var `rethrows` = false
 
-        if name.hasPrefix("init(") {
-            returnTypeName = ""
-        } else {
-            var nameSuffix: String?
-            // if declaration has body then get everything up to body start
-            if source.keys.contains(SwiftDocKey.bodyOffset.rawValue) {
-                if let suffix = extract(.nameSuffixUpToBody, from: source) {
-                    nameSuffix = suffix.trimmingCharacters(in: .whitespacesAndNewlines)
-                } else {
-                    nameSuffix = ""
-                }
-            } else if let nameSuffixRange = Substring.nameSuffix.range(for: source) {
-                // if declaration has no body, usually in protocols, parse it manually
-                var upperBound: Int?
-                if let nextStructure = nextStructure, let range = Substring.key.range(for: nextStructure) {
-                    // if there is next declaration, parse until its start
-                    upperBound = Int(range.offset)
-                } else if let definedInSource = definedIn?.__underlyingSource, let range = Substring.key.range(for: definedInSource) {
-                    // if there are no fiurther declarations, parse until end of containing declaration
-                    upperBound = Int(range.offset) + Int(range.length) - 1
-                }
-                if let upperBound = upperBound {
-                    let start = Int(nameSuffixRange.offset)
-                    let length = upperBound - Int(nameSuffixRange.offset)
-                    nameSuffix = contents.bridge()
-                        .substringWithByteRange(start: start, length: length)?
-                        .trimmingCharacters(in: CharacterSet(charactersIn: ";").union(.whitespacesAndNewlines))
-                }
+        var nameSuffix: String?
+        // if declaration has body then get everything up to body start
+        if source.keys.contains(SwiftDocKey.bodyOffset.rawValue) {
+            if let suffix = extract(.nameSuffixUpToBody, from: source) {
+                nameSuffix = suffix.trimmingCharacters(in: .whitespacesAndNewlines)
+            } else {
+                nameSuffix = ""
             }
+        } else if let nameSuffixRange = Substring.nameSuffix.range(for: source) {
+            // if declaration has no body, usually in protocols, parse it manually
+            var upperBound: Int?
+            if let nextStructure = nextStructure, let range = Substring.key.range(for: nextStructure) {
+                // if there is next declaration, parse until its start
+                upperBound = Int(range.offset)
+            } else if let definedInSource = definedIn?.__underlyingSource, let range = Substring.key.range(for: definedInSource) {
+                // if there are no fiurther declarations, parse until end of containing declaration
+                upperBound = Int(range.offset) + Int(range.length) - 1
+            }
+            if let upperBound = upperBound {
+                let start = Int(nameSuffixRange.offset)
+                let length = upperBound - Int(nameSuffixRange.offset)
+                nameSuffix = contents.bridge()
+                    .substringWithByteRange(start: start, length: length)?
+                    .trimmingCharacters(in: CharacterSet(charactersIn: ";").union(.whitespacesAndNewlines))
+            }
+        }
 
-            if var nameSuffix = nameSuffix {
-                `throws` = nameSuffix.trimPrefix("throws")
-                `rethrows` = nameSuffix.trimPrefix("rethrows")
-                nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+        if var nameSuffix = nameSuffix {
+            `throws` = nameSuffix.trimPrefix("throws")
+            `rethrows` = nameSuffix.trimPrefix("rethrows")
+            nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
 
-                if nameSuffix.trimPrefix("->") {
-                    returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
-                } else if !nameSuffix.isEmpty {
-                    returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
-                }
+            if nameSuffix.trimPrefix("->") {
+                returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+            } else if !nameSuffix.isEmpty {
+                returnTypeName = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
             }
         }
 
