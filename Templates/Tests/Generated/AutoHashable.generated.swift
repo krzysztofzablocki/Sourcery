@@ -41,18 +41,30 @@ fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?)
 
 
 
+
+
+
+
 // MARK: - AutoHashable for classes, protocols, structs
 // MARK: - AutoHashableClass AutoHashable
 extension AutoHashableClass: Hashable {
     internal var hashValue: Int {
+        let firstNameHashValue = firstName.hashValue
+        let lastNameHashValue = lastName.hashValue
+        let parentsHashValue = hashArray(parents)
+        let universityGradesHashValue = hashDictionary(universityGrades)
+        let moneyInThePocketHashValue = moneyInThePocket.hashValue
+        let ageHashValue = age?.hashValue ?? 0
+        let friendsHashValue = hashArray(friends)
+
         return combineHashes([
-            firstName.hashValue,
-            lastName.hashValue,
-            hashArray(parents),
-            hashDictionary(universityGrades),
-            moneyInThePocket.hashValue,
-            age?.hashValue ?? 0,
-            hashArray(friends),
+            firstNameHashValue,
+            lastNameHashValue,
+            parentsHashValue,
+            universityGradesHashValue,
+            moneyInThePocketHashValue,
+            ageHashValue,
+            friendsHashValue,
             0])
     }
 }
@@ -60,32 +72,46 @@ extension AutoHashableClass: Hashable {
 extension AutoHashableClassInherited: Hashable {
     THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable
     internal var hashValue: Int {
+        let middleNameHashValue = middleName?.hashValue ?? 0
+
         return combineHashes([
-            middleName?.hashValue ?? 0,
+            middleNameHashValue,
             0])
     }
 }
 // MARK: - AutoHashableProtocol AutoHashable
 extension AutoHashableProtocol {
     internal var hashValue: Int {
+        let widthHashValue = width.hashValue
+        let heightHashValue = height.hashValue
+        let type(of: self).nameHashValue = type(of: self).name.hashValue
+
         return combineHashes([
-            width.hashValue,
-            height.hashValue,
-            type(of: self).name.hashValue,
+            widthHashValue,
+            heightHashValue,
+            nameHashValue,
             0])
     }
 }
 // MARK: - AutoHashableStruct AutoHashable
 extension AutoHashableStruct: Hashable {
     internal var hashValue: Int {
+        let firstNameHashValue = firstName.hashValue
+        let lastNameHashValue = lastName.hashValue
+        let parentsHashValue = hashArray(parents)
+        let universityGradesHashValue = hashDictionary(universityGrades)
+        let moneyInThePocketHashValue = moneyInThePocket.hashValue
+        let ageHashValue = age?.hashValue ?? 0
+        let friendsHashValue = hashArray(friends)
+
         return combineHashes([
-            firstName.hashValue,
-            lastName.hashValue,
-            hashArray(parents),
-            hashDictionary(universityGrades),
-            moneyInThePocket.hashValue,
-            age?.hashValue ?? 0,
-            hashArray(friends),
+            firstNameHashValue,
+            lastNameHashValue,
+            parentsHashValue,
+            universityGradesHashValue,
+            moneyInThePocketHashValue,
+            ageHashValue,
+            friendsHashValue,
             0])
     }
 }

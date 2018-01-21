@@ -33,6 +33,10 @@ This is a breaking change for template code like this:
 - `selectorName` for methods without parameters now will not contain `()`
 - `returnTypeName` for initializers will be the type name of defining type, with `?` for failable initializers
 
+### Internal changes
+
+- Improved compile time of AutoHashable template
+
 ### Bug fixes 
 
 - Fixes FSEvents errors reported in #465 that happen on Sierra
