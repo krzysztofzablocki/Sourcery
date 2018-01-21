@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.10.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace
@@ -31,6 +31,15 @@ extension Attribute {
         if self.name != rhs.name { return false }
         if self.arguments != rhs.arguments { return false }
         if self._description != rhs._description { return false }
+        return true
+    }
+}
+extension BytesRange {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? BytesRange else { return false }
+        if self.offset != rhs.offset { return false }
+        if self.length != rhs.length { return false }
         return true
     }
 }
@@ -101,6 +110,23 @@ extension FileParserResult {
         if self.inlineRanges != rhs.inlineRanges { return false }
         if self.contentSha != rhs.contentSha { return false }
         if self.sourceryVersion != rhs.sourceryVersion { return false }
+        return true
+    }
+}
+extension GenericType {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeParameters != rhs.typeParameters { return false }
+        return true
+    }
+}
+extension GenericTypeParameter {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypeParameter else { return false }
+        if self.typeName != rhs.typeName { return false }
         return true
     }
 }
@@ -219,6 +245,8 @@ extension TypeName {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TypeName else { return false }
         if self.name != rhs.name { return false }
+        if self.generic != rhs.generic { return false }
+        if self.isGeneric != rhs.isGeneric { return false }
         if self.attributes != rhs.attributes { return false }
         if self.tuple != rhs.tuple { return false }
         if self.array != rhs.array { return false }

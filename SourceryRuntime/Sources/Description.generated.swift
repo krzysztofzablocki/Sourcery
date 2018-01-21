@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.10.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace
@@ -21,6 +21,15 @@ extension AssociatedValue {
         string += "externalName = \(String(describing: self.externalName)), "
         string += "typeName = \(String(describing: self.typeName)), "
         string += "annotations = \(String(describing: self.annotations))"
+        return string
+    }
+}
+extension BytesRange {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "offset = \(String(describing: self.offset)), "
+        string += "length = \(String(describing: self.length))"
         return string
     }
 }
@@ -91,31 +100,39 @@ extension FileParserResult {
         return string
     }
 }
+extension GenericType {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeParameters = \(String(describing: self.typeParameters))"
+        return string
+    }
+}
+extension GenericTypeParameter {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(type(of: self)): "
+        string += "typeName = \(String(describing: self.typeName))"
+        return string
+    }
+}
 extension Method {
     /// :nodoc:
     override public var description: String {
         var string = "\(type(of: self)): "
         string += "name = \(String(describing: self.name)), "
-        string += "shortName = \(String(describing: self.shortName)), "
-        string += "callName = \(String(describing: self.callName)), "
+        string += "selectorName = \(String(describing: self.selectorName)), "
         string += "parameters = \(String(describing: self.parameters)), "
         string += "returnTypeName = \(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
         string += "`throws` = \(String(describing: self.`throws`)), "
         string += "`rethrows` = \(String(describing: self.`rethrows`)), "
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "isStatic = \(String(describing: self.isStatic)), "
         string += "isClass = \(String(describing: self.isClass)), "
-        string += "isInitializer = \(String(describing: self.isInitializer)), "
-        string += "isDeinitializer = \(String(describing: self.isDeinitializer)), "
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
-        string += "isConvenienceInitializer = \(String(describing: self.isConvenienceInitializer)), "
-        string += "isRequired = \(String(describing: self.isRequired)), "
-        string += "isFinal = \(String(describing: self.isFinal)), "
-        string += "isMutating = \(String(describing: self.isMutating)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
         string += "attributes = \(String(describing: self.attributes))"
         return string
     }

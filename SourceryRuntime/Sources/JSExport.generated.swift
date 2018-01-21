@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.10.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace trailing_newline
@@ -34,6 +34,13 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
 
 extension Attribute: AttributeAutoJSExport {}
 
+@objc protocol BytesRangeAutoJSExport: JSExport {
+    var offset: Int64 { get }
+    var length: Int64 { get }
+}
+
+extension BytesRange: BytesRangeAutoJSExport {}
+
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
@@ -49,6 +56,7 @@ extension Attribute: AttributeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -116,6 +124,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -149,6 +158,20 @@ extension Enum: EnumAutoJSExport {}
 extension EnumCase: EnumCaseAutoJSExport {}
 
 
+@objc protocol GenericTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var typeParameters: [GenericTypeParameter] { get }
+}
+
+extension GenericType: GenericTypeAutoJSExport {}
+
+@objc protocol GenericTypeParameterAutoJSExport: JSExport {
+    var typeName: TypeName { get }
+    var type: Type? { get }
+}
+
+extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
+
 @objc protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
@@ -173,6 +196,7 @@ extension EnumCase: EnumCaseAutoJSExport {}
     var isRequired: Bool { get }
     var isFinal: Bool { get }
     var isMutating: Bool { get }
+    var isGeneric: Bool { get }
     var annotations: [String: NSObject] { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
@@ -212,6 +236,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -250,6 +275,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -336,6 +362,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
+    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -361,6 +388,8 @@ extension Type: TypeAutoJSExport {}
 
 @objc protocol TypeNameAutoJSExport: JSExport {
     var name: String { get }
+    var generic: GenericType? { get }
+    var isGeneric: Bool { get }
     var actualTypeName: TypeName? { get }
     var attributes: [String: Attribute] { get }
     var isOptional: Bool { get }

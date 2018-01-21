@@ -200,7 +200,7 @@ class ParserComposerSpec: QuickSpec {
                                                            methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
                                                                                                          typeName: TypeName("String"))],
-                                                                            returnTypeName: TypeName(""),
+                                                                            returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))]
                                                       )
@@ -223,7 +223,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
-                                                                            returnTypeName: TypeName(""),
+                                                                            returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
@@ -246,7 +246,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
-                                                                            returnTypeName: TypeName(""),
+                                                                            returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))],
                                                            typealiases: [Typealias(aliasName: "RawValue", typeName: TypeName("String"))])
@@ -259,27 +259,36 @@ class ParserComposerSpec: QuickSpec {
                     it("extracts elements properly") {
                         let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))}")
                         let variable = types.first?.variables.first
+                        let tuple = variable?.typeName.tuple
 
-                        expect(variable?.typeName.tuple).to(equal(
-                            TupleType(name: "(a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))", elements: [
-                                TupleElement(name: "a", typeName: TypeName("Int")),
-                                TupleElement(name: "b", typeName: TypeName("Int")),
-                                TupleElement(name: "2", typeName: TypeName("String")),
-                                TupleElement(name: "3", typeName: TypeName("Float")),
-                                TupleElement(name: "literal", typeName: TypeName("[String: [String: Float]]", dictionary: DictionaryType(name: "[String: [String: Float]]", valueTypeName: TypeName("[String: Float]", dictionary: DictionaryType(name: "[String: Float]", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
-                                TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>", dictionary: DictionaryType(name: "Dictionary<String, Dictionary<String, Float>>", valueTypeName: TypeName("Dictionary<String, Float>", dictionary: DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))), keyTypeName: TypeName("String")))),
-                                TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)", closure: ClosureType(name: "(Int) -> (Int -> Int)", parameters: [
-                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
-                                    ], returnTypeName: TypeName("(Int -> Int)", closure: ClosureType(name: "(Int) -> Int", parameters: [
-                                        MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
-                                        ], returnTypeName: TypeName("Int")))))),
-                                TupleElement(name: "tuple", typeName: TypeName("(Int, Int)", tuple:
-                                    TupleType(name: "(Int, Int)", elements: [
-                                        TupleElement(name: "0", typeName: TypeName("Int")),
-                                        TupleElement(name: "1", typeName: TypeName("Int"))
-                                        ])))
-                                ])
+                        let stringToFloatDictGeneric = GenericType(name: "Dictionary<String, Float>", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("Float"))])
+                        let stringToFloatDictGenericLiteral = GenericType(name: "[String: Float]", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("Float"))])
+
+                        let stringToFloatDict = DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))
+                        let stringToFloatDictLiteral = DictionaryType(name: "[String: Float]", valueTypeName: TypeName("Float"), keyTypeName: TypeName("String"))
+
+                        expect(tuple?.elements[0]).to(equal(TupleElement(name: "a", typeName: TypeName("Int"))))
+                        expect(tuple?.elements[1]).to(equal(TupleElement(name: "b", typeName: TypeName("Int"))))
+                        expect(tuple?.elements[2]).to(equal(TupleElement(name: "2", typeName: TypeName("String"))))
+                        expect(tuple?.elements[3]).to(equal(TupleElement(name: "3", typeName: TypeName("Float"))))
+                        expect(tuple?.elements[4]).to(equal(
+                            TupleElement(name: "literal", typeName: TypeName("[String: [String: Float]]", dictionary: DictionaryType(name: "[String: [String: Float]]", valueTypeName: TypeName("[String: Float]", dictionary: stringToFloatDictLiteral, generic: stringToFloatDictGenericLiteral), keyTypeName: TypeName("String")), generic: GenericType(name: "[String: [String: Float]]", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("[String: Float]", dictionary: stringToFloatDictLiteral, generic: stringToFloatDictGenericLiteral))])))
                         ))
+                        expect(tuple?.elements[5]).to(equal(
+                            TupleElement(name: "generic", typeName: TypeName("Dictionary<String, Dictionary<String, Float>>", dictionary: DictionaryType(name: "Dictionary<String, Dictionary<String, Float>>", valueTypeName: TypeName("Dictionary<String, Float>", dictionary: stringToFloatDict, generic: stringToFloatDictGeneric), keyTypeName: TypeName("String")), generic: GenericType(name: "Dictionary<String, Dictionary<String, Float>>", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("Dictionary<String, Float>", dictionary: stringToFloatDict, generic: stringToFloatDictGeneric))])))
+                        ))
+                        expect(tuple?.elements[6]).to(equal(
+                            TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)", closure: ClosureType(name: "(Int) -> (Int -> Int)", parameters: [
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                ], returnTypeName: TypeName("(Int -> Int)", closure: ClosureType(name: "(Int) -> Int", parameters: [
+                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                    ], returnTypeName: TypeName("Int"))))))
+                        ))
+                        expect(tuple?.elements[7]).to(equal(TupleElement(name: "tuple", typeName: TypeName("(Int, Int)", tuple:
+                            TupleType(name: "(Int, Int)", elements: [
+                                TupleElement(name: "0", typeName: TypeName("Int")),
+                                TupleElement(name: "1", typeName: TypeName("Int"))
+                                ])))))
                     }
                 }
 
@@ -298,7 +307,7 @@ class ParserComposerSpec: QuickSpec {
                                     ])))
                         ))
                         expect(variables?[2].typeName.array).to(equal(
-                            ArrayType(name: "[[Int]]", elementTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int"))))
+                            ArrayType(name: "[[Int]]", elementTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int")), generic: GenericType(name: "[Int]", typeParameters: [GenericTypeParameter(typeName: TypeName("Int"))])))
                         ))
                         expect(variables?[3].typeName.array).to(equal(
                             ArrayType(name: "[()->()]", elementTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))))
@@ -321,7 +330,7 @@ class ParserComposerSpec: QuickSpec {
                                     ])))
                         ))
                         expect(variables?[2].typeName.array).to(equal(
-                            ArrayType(name: "Array<Array<Int>>", elementTypeName: TypeName("Array<Int>", array: ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int"))))
+                            ArrayType(name: "Array<Array<Int>>", elementTypeName: TypeName("Array<Int>", array: ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int")), generic: GenericType(name: "Array<Int>", typeParameters: [GenericTypeParameter(typeName: TypeName("Int"))])))
                         ))
                         expect(variables?[3].typeName.array).to(equal(
                             ArrayType(name: "Array<()->()>", elementTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))))
@@ -331,21 +340,18 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given generic dictionary type") {
                     it("extracts key type properly") {
-                        let types = parse("struct Foo { var dictionary: Dictionary<Int, String>; var dictionaryOfArrays: Dictionary<[Int], [String]>; var dicitonaryOfDictionaries: Dictionary<Int, [Int: String]>; var dictionaryOfTuples: Dictionary<Int, (String, String)>; var dictionaryOfClojures: Dictionary<Int, ()->()> }")
+                        let types = parse("struct Foo { var dictionary: Dictionary<Int, String>; var dictionaryOfArrays: Dictionary<[Int], [String]>; var dictonaryOfDictionaries: Dictionary<Int, [Int: String]>; var dictionaryOfTuples: Dictionary<Int, (String, String)>; var dictionaryOfClojures: Dictionary<Int, ()->()> }")
                         let variables = types.first?.variables
 
                         expect(variables?[0].typeName.dictionary).to(equal(
                             DictionaryType(name: "Dictionary<Int, String>", valueTypeName: TypeName("String"), keyTypeName: TypeName("Int"))
                         ))
                         expect(variables?[1].typeName.dictionary).to(equal(
-                            DictionaryType(name: "Dictionary<[Int], [String]>",
-                                           valueTypeName: TypeName("[String]", array: ArrayType(name: "[String]", elementTypeName: TypeName("String"))),
-                                           keyTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int"))))
+                            DictionaryType(name: "Dictionary<[Int], [String]>", valueTypeName: TypeName("[String]", array: ArrayType(name: "[String]", elementTypeName: TypeName("String")), generic: GenericType(name: "[String]", typeParameters: [GenericTypeParameter(typeName: TypeName("String"))])), keyTypeName: TypeName("[Int]", array:
+                                ArrayType(name: "[Int]", elementTypeName: TypeName("Int")), generic: GenericType(name: "[Int]", typeParameters: [GenericTypeParameter(typeName: TypeName("Int"))])))
                         ))
                         expect(variables?[2].typeName.dictionary).to(equal(
-                            DictionaryType(name: "Dictionary<Int, [Int: String]>",
-                                           valueTypeName: TypeName("[Int: String]", dictionary: DictionaryType(name: "[Int: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("Int"))),
-                                           keyTypeName: TypeName("Int"))
+                            DictionaryType(name: "Dictionary<Int, [Int: String]>", valueTypeName: TypeName("[Int: String]", dictionary: DictionaryType(name: "[Int: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("Int")), generic: GenericType(name: "[Int: String]", typeParameters: [GenericTypeParameter(typeName: TypeName("Int")), GenericTypeParameter(typeName: TypeName("String"))])), keyTypeName: TypeName("Int"))
                         ))
                         expect(variables?[3].typeName.dictionary).to(equal(
                             DictionaryType(name: "Dictionary<Int, (String, String)>",
@@ -368,13 +374,15 @@ class ParserComposerSpec: QuickSpec {
                         ))
                         expect(variables?[1].typeName.dictionary).to(equal(
                             DictionaryType(name: "[[Int]: [String]]",
-                                           valueTypeName: TypeName("[String]", array: ArrayType(name: "[String]", elementTypeName: TypeName("String"))),
-                                           keyTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int"))))
+                                           valueTypeName: TypeName("[String]", array: ArrayType(name: "[String]", elementTypeName: TypeName("String")), generic: GenericType(name: "[String]", typeParameters: [GenericTypeParameter(typeName: TypeName("String"))])),
+                                           keyTypeName: TypeName("[Int]", array: ArrayType(name: "[Int]", elementTypeName: TypeName("Int")), generic: GenericType(name: "[Int]", typeParameters: [GenericTypeParameter(typeName: TypeName("Int"))]))
+                            )
                         ))
                         expect(variables?[2].typeName.dictionary).to(equal(
                             DictionaryType(name: "[Int: [Int: String]]",
-                                           valueTypeName: TypeName("[Int: String]", dictionary: DictionaryType(name: "[Int: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("Int"))),
-                                           keyTypeName: TypeName("Int"))
+                                           valueTypeName: TypeName("[Int: String]", dictionary: DictionaryType(name: "[Int: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("Int")), generic: GenericType(name: "[Int: String]", typeParameters: [GenericTypeParameter(typeName: TypeName("Int")), GenericTypeParameter(typeName: TypeName("String"))])),
+                                           keyTypeName: TypeName("Int")
+                            )
                         ))
                         expect(variables?[3].typeName.dictionary).to(equal(
                             DictionaryType(name: "[Int: (String, String)]",
@@ -563,7 +571,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given method return value type") {
                         it("replaces method return type alias with actual type") {
-                            let expectedMethod = Method(name: "some()", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), definedInTypeName: TypeName("Bar"))
+                            let expectedMethod = Method(name: "some()", selectorName: "some", returnTypeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some() -> FooAlias }")
                             let method = types.first?.methods.first
@@ -575,7 +583,7 @@ class ParserComposerSpec: QuickSpec {
 
                         it("replaces tuple elements alias types with actual types") {
                             let expectedMethod =
-                                Method(name: "some()",
+                                Method(name: "some()", selectorName: "some",
                                        returnTypeName: TypeName("(FooAlias, Int)",
                                                                 actualTypeName: TypeName("(Foo, Int)"),
                                                                 tuple: TupleType(name: "(Foo, Int)", elements: [
@@ -595,7 +603,7 @@ class ParserComposerSpec: QuickSpec {
 
                         it("replaces method return type alias with actual tuple type name") {
                             let expectedMethod =
-                                Method(name: "some()",
+                                Method(name: "some()", selectorName: "some",
                                        returnTypeName: TypeName("GlobalAlias",
                                                                 actualTypeName: TypeName("(Foo, Int)"),
                                                                 tuple: TupleType(name: "(Foo, Int)", elements: [
@@ -789,7 +797,7 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given nested type") {
                     it("extracts method's defined in properly") {
-                        let expectedMethod = Method(name: "some()", definedInTypeName: TypeName("Foo.Bar"))
+                        let expectedMethod = Method(name: "some()", selectorName: "some", definedInTypeName: TypeName("Foo.Bar"))
 
                         let types = parse("class Foo { class Bar { func some() } }")
                         let method = types.last?.methods.first
@@ -815,6 +823,7 @@ class ParserComposerSpec: QuickSpec {
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName:TypeName("[Blah.Foo]?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
                         expectedVariable.typeName.array = ArrayType(name: "[Blah.Foo]?", elementTypeName: TypeName("Blah.Foo"), elementType: Struct(name: "Foo", parent: expectedBlah))
+                        expectedVariable.typeName.generic = GenericType(name: "[Blah.Foo]?", typeParameters: [GenericTypeParameter(typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo", parent: expectedBlah))])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: [Foo]? }}")
                         let blah = types.first(where: { $0.name == "Blah" })
@@ -826,8 +835,10 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type dictionary properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: TypeName("[Blah.Foo: Blah.Foo]?"), dictionary: DictionaryType(name: "[Blah.Foo: Blah.Foo]?", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: Struct(name: "Blah")), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: Struct(name: "Blah")))), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: TypeName("[Blah.Foo: Blah.Foo]?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
+                        expectedVariable.typeName.dictionary = DictionaryType(name: "[Blah.Foo: Blah.Foo]?", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: Struct(name: "Blah")), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: Struct(name: "Blah")))
+                        expectedVariable.typeName.generic = GenericType(name: "[Blah.Foo: Blah.Foo]?", typeParameters: [GenericTypeParameter(typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo", parent: Struct(name: "Blah"))), GenericTypeParameter(typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo", parent: Struct(name: "Blah")))])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: [Foo: Foo]? }}")
                         let blah = types.first(where: { $0.name == "Blah" })

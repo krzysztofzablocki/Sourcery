@@ -285,7 +285,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\"";
+			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\" --disableCache";
 		};
 		6D483FFA1ECDC815006B778D /* Run SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;

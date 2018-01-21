@@ -96,7 +96,7 @@ class Sourcery {
 
         Log.info("Starting watching sources.")
 
-        let sourceWatchers = watchPaths.allPaths.map({ watchPath in
+        let sourceWatchers = topPaths(from: watchPaths.allPaths).map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
                     .filter { $0.flags.contains(.isFile) }
@@ -125,9 +125,9 @@ class Sourcery {
             }
         })
 
-        Log.error("Starting watching templates.")
+        Log.info("Starting watching templates.")
 
-        let templateWatchers = templatesPaths.allPaths.map({ templatesPath in
+        let templateWatchers = topPaths(from: templatesPaths.allPaths).map({ templatesPath in
             return FolderWatcher.Local(path: templatesPath.string) { events in
                 let events = events
                     .filter { $0.flags.contains(.isFile) && Path($0.path).isTemplateFile }
@@ -148,6 +148,40 @@ class Sourcery {
         })
 
         return Array([sourceWatchers, templateWatchers].joined())
+    }
+
+    private func topPaths(from paths: [Path]) -> [Path] {
+        var top = [(Path, [Path])]()
+        paths.forEach { path in
+            // See if its already contained by the topDirectories
+            guard top.first(where: { (_, children) -> Bool in
+                return children.contains(path)
+            }) == nil else { return }
+
+            if path.isDirectory {
+                top.append((path, (try? path.recursiveChildren()) ?? []))
+            } else {
+                let dir = path.parent()
+                let children = (try? dir.recursiveChildren()) ?? []
+                if children.contains(path) {
+                    top.append((dir, children))
+                } else {
+                    top.append((path, []))
+                }
+            }
+        }
+
+        return top.map { $0.0 }
+    }
+
+    /// Remove the existing cache artifacts if it exists.
+    ///
+    /// - Parameter sources: paths of the sources you want to delete the
+    static func removeCache(for sources: [Path]) {
+        sources.forEach { path in
+            let cacheDir = Path.cachesDir(sourcePath: path, createIfMissing: false)
+            _ = try? cacheDir.delete()
+        }
     }
 
     fileprivate func templates(from: Paths) throws -> [Template] {

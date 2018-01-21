@@ -53,10 +53,19 @@ class JavaScriptTemplateTests: QuickSpec {
 
             it("rethrows template runtime errors") {
                 expect {
-                    try Generator.generate(Types(types: []), template: JavaScriptTemplate(templateString: "<%= types.implementing.Some %>"))
+                    try Generator.generate(Types(types: []), template: JavaScriptTemplate(templateString: "<%_ for (type of types.implementing.Some) { -%><% } %>"))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal(": Unknown type Some, should be used with `based`"))
+                    }))
+            }
+
+            it("throws unknown property exception") {
+                expect {
+                    try Generator.generate(Types(types: []), template: JavaScriptTemplate(templateString: "<%_ for (type of types.implements.Some) { -%><% } %>"))
+                    }
+                    .to(throwError(closure: { (error) in
+                        expect("\(error)").to(equal(": TypeError: ejs:1\n >> 1| <%_ for (type of types.implements.Some) { -%><% } %>\n\nUnknown property `implements`"))
                     }))
             }
         }

@@ -58,9 +58,14 @@ There are plenty of tutorials for different uses of Sourcery:
 
 - _Binary form_
 
-    Downloadthe  latest release with the prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into the desired destination and run `bin/sourcery`
+    Download the  latest release with the prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into the desired destination and run `bin/sourcery`
+    
+- _[Homebrew](https://brew.sh)_
 
-- _CocoaPods_
+	`brew install sourcery`
+
+
+- _[CocoaPods](https://cocoapods.org)_
 
     Add pod 'Sourcery' to your Podfile and run `pod update Sourcery`. This will download the latest release binary and will put it in your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
@@ -68,7 +73,7 @@ There are plenty of tutorials for different uses of Sourcery:
 - _[Mint](https://github.com/yonaskolb/Mint)_
 
     Run `mint run krzysztofzablocki/Sourcery`. 
-    > Note: Constraints of SPM (see below) apply.
+	> Note: Constraints of SPM (see below) apply.
     
 - _Building from source_
 

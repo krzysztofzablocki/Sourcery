@@ -20,6 +20,10 @@ import AppKit
 
 
 
+
+
+
+
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
@@ -82,7 +86,11 @@ class CurrencyPresenterMock: CurrencyPresenter {
 
 }
 class ExtendableProtocolMock: ExtendableProtocol {
-    var canReport: Bool!
+    var canReport: Bool {
+        get { return underlyingCanReport }
+        set(value) { underlyingCanReport = value }
+    }
+    var underlyingCanReport: Bool!
 
     //MARK: - report
 
@@ -209,11 +217,34 @@ class ThrowableProtocolMock: ThrowableProtocol {
         return doOrThrowReturnValue
     }
 
+    //MARK: - doOrThrowVoid
+
+    var doOrThrowVoidThrowableError: Error?
+    var doOrThrowVoidCallsCount = 0
+    var doOrThrowVoidCalled: Bool {
+        return doOrThrowVoidCallsCount > 0
+    }
+
+    func doOrThrowVoid() throws {
+        if let error = doOrThrowVoidThrowableError {
+            throw error
+        }
+        doOrThrowVoidCallsCount += 1
+    }
+
 }
 class VariablesProtocolMock: VariablesProtocol {
     var company: String?
-    var name: String!
-    var age: Int!
+    var name: String {
+        get { return underlyingName }
+        set(value) { underlyingName = value }
+    }
+    var underlyingName: String!
+    var age: Int {
+        get { return underlyingAge }
+        set(value) { underlyingAge = value }
+    }
+    var underlyingAge: Int!
     var kids: [String] = []
     var universityMarks: [String: Int] = [:]
 

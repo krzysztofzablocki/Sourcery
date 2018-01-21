@@ -115,13 +115,21 @@ struct Composer {
             return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         }
 
+        // should we also set these types on lookupName?
         if let array = parseArrayType(lookupName) {
             typeName.array = array
             array.elementType = resolveTypeWithName(array.elementTypeName)
+            typeName.generic = GenericType(name: lookupName.name, typeParameters: [
+                GenericTypeParameter(typeName: array.elementTypeName, type: array.elementType)
+                ])
         } else if let dictionary = parseDictionaryType(lookupName) {
             typeName.dictionary = dictionary
             dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName)
             dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName)
+            typeName.generic = GenericType(name: lookupName.name, typeParameters: [
+                GenericTypeParameter(typeName: dictionary.keyTypeName, type: dictionary.keyType),
+                GenericTypeParameter(typeName: dictionary.valueTypeName, type: dictionary.valueType)
+                ])
         } else if let tuple = parseTupleType(lookupName) {
             typeName.tuple = tuple
             tuple.elements.forEach { tupleElement in
@@ -133,10 +141,16 @@ struct Composer {
             closure.parameters.forEach({ parameter in
                 parameter.type = resolveTypeWithName(parameter.typeName)
             })
+        } else if let generic = parseGenericType(lookupName) {
+            // should also set generic data for optional types
+            typeName.generic = generic
+            generic.typeParameters.forEach {typeParameter in
+                typeParameter.type = resolveTypeWithName(typeParameter.typeName)
+            }
         }
 
-        return unique[lookupName.unwrappedTypeName]
-            ?? typeFromModule(lookupName.unwrappedTypeName, modules: modules)
+        let resolvedTypeName = lookupName.generic?.name ?? lookupName.unwrappedTypeName
+        return unique[resolvedTypeName] ?? typeFromModule(resolvedTypeName, modules: modules)
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
@@ -168,19 +182,27 @@ struct Composer {
             parameter.type = resolve(parameter.typeName, type)
         }
 
-        if !method.returnTypeName.isVoid {
-            method.returnType = resolve(method.returnTypeName, type)
-
-            if method.isInitializer {
-                method.returnTypeName = TypeName("")
-            }
-        }
-
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
+        var definedInType: Type?
         if let definedInTypeName = method.definedInTypeName {
-            _ = resolve(definedInTypeName, type)
+            definedInType = resolve(definedInTypeName, type)
+        }
+
+        guard !method.returnTypeName.isVoid else { return }
+
+        if method.isInitializer || method.isFailableInitializer {
+            method.returnType = definedInType
+            if let actualDefinedInTypeName = method.actualDefinedInTypeName {
+                if method.isFailableInitializer {
+                    method.returnTypeName = TypeName("\(actualDefinedInTypeName.name)?")
+                } else if method.isInitializer {
+                    method.returnTypeName = actualDefinedInTypeName
+                }
+            }
+        } else {
+            method.returnType = resolve(method.returnTypeName, type)
         }
     }
 
@@ -459,6 +481,26 @@ struct Composer {
         } else {
             return parameters
         }
+    }
+
+    fileprivate func parseGenericType(_ typeName: TypeName) -> GenericType? {
+        let genericComponents = typeName.unwrappedTypeName
+            .split(separator: "<", maxSplits: 1)
+            .map({ String($0).stripped() })
+
+        guard genericComponents.count == 2 else {
+            return nil
+        }
+
+        let name = genericComponents[0]
+        let typeParametersString = genericComponents[1].dropLast()
+        return GenericType(name: name, typeParameters: parseGenericTypeParameters(typeParametersString))
+    }
+
+    fileprivate func parseGenericTypeParameters(_ typeParametersString: String) -> [GenericTypeParameter] {
+        return typeParametersString
+            .commaSeparated()
+            .map({ GenericTypeParameter(typeName: TypeName($0.stripped())) })
     }
 
 }

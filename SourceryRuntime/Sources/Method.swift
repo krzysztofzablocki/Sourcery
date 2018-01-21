@@ -90,15 +90,16 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
 
-    // sourcery: skipDescription
     /// Method name including arguments names, i.e. `foo(bar:)`
-    public let selectorName: String
+    public var selectorName: String
 
+    // sourcery: skipEquality, skipDescription
     /// Method name without arguments names and parenthesis, i.e. `foo<T>`
     public var shortName: String {
         return name.range(of: "(").map({ name.substring(to: $0.lowerBound) }) ?? name
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Method name without arguments names, parenthesis and generic types, i.e. `foo` (can be used to generate code for method call)
     public var callName: String {
         return shortName.range(of: "<").map({ shortName.substring(to: $0.lowerBound) }) ?? shortName
@@ -110,6 +111,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Return value type name used in declaration, including generic constraints, i.e. `where T: Equatable`
     public var returnTypeName: TypeName
 
+    // sourcery: skipEquality, skipDescription
     /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
     public var actualReturnTypeName: TypeName {
         return returnTypeName.actualTypeName ?? returnTypeName
@@ -152,11 +154,13 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Whether method is a class method
     public let isClass: Bool
 
+    // sourcery: skipEquality, skipDescription
     /// Whether method is an initializer
     public var isInitializer: Bool {
-        return selectorName.hasPrefix("init(")
+        return selectorName.hasPrefix("init(") || selectorName == "init"
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Whether method is an deinitializer
     public var isDeinitializer: Bool {
         return selectorName == "deinit"
@@ -171,24 +175,34 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
         return attributes[Attribute.Identifier.convenience.name] != nil
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Whether method is a convenience initializer
     public var isConvenienceInitializer: Bool {
         return attributes[Attribute.Identifier.convenience.name] != nil
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Whether method is required
     public var isRequired: Bool {
         return attributes[Attribute.Identifier.required.name] != nil
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Whether method is final
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Whether method is mutating
     public var isMutating: Bool {
         return attributes[Attribute.Identifier.mutating.name] != nil
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is generic
+    public var isGeneric: Bool {
+        return shortName.hasSuffix(">")
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
@@ -198,6 +212,7 @@ public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
 
+    // sourcery: skipEquality, skipDescription
     /// Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
     public var actualDefinedInTypeName: TypeName? {
         return definedInTypeName?.actualTypeName ?? definedInTypeName
