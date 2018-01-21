@@ -37,49 +37,49 @@ fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?)
 
 {% macro letDynamicVariableHashValue variable %}
 {% if variable.isArray %}
-  let {{ variable.name }}HashValue = hashArray({{ variable.name }})
+        let {{ variable.name }}HashValue = hashArray({{ variable.name }})
 {% elif variable.isDictionary %}
-  let {{ variable.name }}HashValue = hashDictionary({{ variable.name }})
+        let {{ variable.name }}HashValue = hashDictionary({{ variable.name }})
 {% elif not variable.isOptional %}
-  let {{ variable.name }}HashValue = {{ variable.name }}.hashValue
+        let {{ variable.name }}HashValue = {{ variable.name }}.hashValue
 {% else %}
-  let {{ variable.name }}HashValue = {{ variable.name }}?.hashValue ?? 0
+        let {{ variable.name }}HashValue = {{ variable.name }}?.hashValue ?? 0
 {% endif %}
 {% endmacro %}
 
 {% macro dynamicVariableHashValue variable %}
 {% if variable.isArray %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% elif variable.isDictionary %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% elif not variable.isOptional %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% else %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% endif %}
 {% endmacro %}
 
 {% macro letStaticVariableHashValue variable %}
   {% if variable.isArray %}
-  let {{ variable.name }}HashValue = hashArray(type(of: self).{{ variable.name }})
+        let {{ variable.name }}HashValue = hashArray(type(of: self).{{ variable.name }})
 {% elif variable.isDictionary %}
-  let {{ variable.name }}HashValue = hashDictionary(type(of: self).{{ variable.name }})
+        let {{ variable.name }}HashValue = hashDictionary(type(of: self).{{ variable.name }})
 {% elif not variable.isOptional %}
-  let type(of: self).{{ variable.name }}HashValue = type(of: self).{{ variable.name }}.hashValue
+        let type(of: self).{{ variable.name }}HashValue = type(of: self).{{ variable.name }}.hashValue
 {% else %}
-  let type(of: self).{{ variable.name }}HashValue = type(of: self).{{ variable.name }}?.hashValue ?? 0
+        let type(of: self).{{ variable.name }}HashValue = type(of: self).{{ variable.name }}?.hashValue ?? 0
 {% endif %}
 {% endmacro %}
 
 {% macro staticVariableHashValue variable %}
 {% if variable.isArray %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% elif variable.isDictionary %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% elif not variable.isOptional %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% else %}
-  {{ variable.name }}HashValue,
+            {{ variable.name }}HashValue,
 {% endif %}
 {% endmacro %}
 
