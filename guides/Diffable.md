@@ -1,6 +1,6 @@
 ## I want to have diffing in tests
 
-Template used to generate much better output when using equality in tests, instead of having to read wall of text it's used to generate precise property level differences. This template uses [Sourcery Diffable implementation](../../Sourcery/Models/Diffable.swift)
+Template used to generate much better output when using equality in tests, instead of having to read wall of text it's used to generate precise property level differences. This template uses [Sourcery Diffable implementation](../SourceryRuntime/Sources/Diffable.swift)
 
 from this:
 <img width="600" alt="before" src="https://cloud.githubusercontent.com/assets/1468993/21425370/0e3dd990-c849-11e6-877a-6dc80ae8f039.png">
