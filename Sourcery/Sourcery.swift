@@ -96,7 +96,7 @@ class Sourcery {
 
         Log.info("Starting watching sources.")
 
-        let sourceWatchers = topDirectories(from: watchPaths.allPaths).map({ watchPath in
+        let sourceWatchers = topPaths(from: watchPaths.allPaths).map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
                     .filter { $0.flags.contains(.isFile) }
@@ -127,7 +127,7 @@ class Sourcery {
 
         Log.info("Starting watching templates.")
 
-        let templateWatchers = topDirectories(from: templatesPaths.allPaths).map({ templatesPath in
+        let templateWatchers = topPaths(from: templatesPaths.allPaths).map({ templatesPath in
             return FolderWatcher.Local(path: templatesPath.string) { events in
                 let events = events
                     .filter { $0.flags.contains(.isFile) && Path($0.path).isTemplateFile }
@@ -150,7 +150,7 @@ class Sourcery {
         return Array([sourceWatchers, templateWatchers].joined())
     }
 
-    private func topDirectories(from paths: [Path]) -> [Path] {
+    private func topPaths(from paths: [Path]) -> [Path] {
         var top = [(Path, [Path])]()
         paths.forEach { path in
             // See if its already contained by the topDirectories
@@ -162,7 +162,12 @@ class Sourcery {
                 top.append((path, (try? path.recursiveChildren()) ?? []))
             } else {
                 let dir = path.parent()
-                top.append((dir, (try? dir.recursiveChildren()) ?? []))
+                let children = (try? dir.recursiveChildren()) ?? []
+                if children.contains(path) {
+                    top.append((dir, children))
+                } else {
+                    top.append((path, []))
+                }
             }
         }
 

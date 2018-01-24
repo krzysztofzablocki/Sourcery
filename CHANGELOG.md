@@ -9,12 +9,15 @@
 - Supports adding new templates files while in watcher mode
 - Supports adding new source files while in watcher mode
 - Added support for subscripts
+- Added `isGeneric` property for `Method`
 - You can now pass additional arguments one by one, i.e. `--args arg1=value1 --args arg2 --args arg3=value3`
 - Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
 - added `@objcMembers` attribute
 
-- **Breaking** @objc attribute now has a `name` argument that contains Objective-C name of attributed declaration
-- **Breaking** Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
+** Breaking **
+
+- @objc attribute now has a `name` argument that contains Objective-C name of attributed declaration
+- Type collections `types.based`, `types.implementing` and `types.inheriting` now return non-optional array. If no types found, empty array will be returned. 
 This is a breaking change for template code like this:
 
  ```swift
@@ -30,16 +33,21 @@ This is a breaking change for template code like this:
 ### Internal changes
 
 - Migrate to Swift 4, SwiftPM 4 and Xcode 9.2
+- `selectorName` for methods without parameters now will not contain `()`
+- `returnTypeName` for initializers will be the type name of defining type, with `?` for failable initializers
+- Improved compile time of AutoHashable template
 
 ### Bug fixes 
 
-- Fixed failing tests concerning `GenericType` and `GenericTypeParameter`
 - Fixes FSEvents errors reported in #465 that happen on Sierra
 - JS exceptions no more override syntax errors in JS templates 
 - Accessing unknown property on `types` now results in a better error than `undefined is not an object` in JS templates
 - Fixed issue in AutoMockable, where generated non-optional variables wouldn't meet protocol's requirements. For this purpose, underlying variable was introduced
 - Fixed `inline:auto` not inserting code if Sourcery is run with cache enabled #467
 - Fixed parsing @objc attributes on types  
+- Fixed parsing void return type in methods without spaces between method name and body open curly brace and in protocols
+- Fixed AutoMockable template generating throwing method with void return type 
+- Fixed parsing throwing initializers
 
 ## 0.10.1
 

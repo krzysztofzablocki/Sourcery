@@ -196,6 +196,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var isRequired: Bool { get }
     var isFinal: Bool { get }
     var isMutating: Bool { get }
+    var isGeneric: Bool { get }
     var annotations: [String: NSObject] { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
