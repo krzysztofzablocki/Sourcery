@@ -2,12 +2,13 @@ import Foundation
 import Quick
 import Nimble
 import PathKit
+@testable import SourceryJS
 @testable import Sourcery
 @testable import SourceryRuntime
 
 class JavaScriptTemplateTests: QuickSpec {
     override func spec() {
-        describe("JavaScriptTemplate") {
+        describe("EJSTemplate") {
             let outputDir: Path = {
                 return Stubs.cleanTemporarySourceryDir()
             }()

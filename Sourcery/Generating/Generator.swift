@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import Stencil
 import SourceryRuntime
 
 enum Generator {

@@ -1,5 +1,5 @@
 framework module PathKit {
-  umbrella header "PathKit-umbrella.h"
+  umbrella header "PathKit-macOS10.10-umbrella.h"
 
   export *
   module * { export * }

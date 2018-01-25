@@ -103,7 +103,7 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Commander/Commander.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PathKit-macOS10.11/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SourceKittenFramework/SourceKittenFramework.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
@@ -112,10 +112,11 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/XcodeEdit/XcodeEdit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/libCommonCrypto/CommonCrypto.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PathKit-macOS10.10/PathKit.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Commander/Commander.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PathKit-macOS10.11/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SourceKittenFramework/SourceKittenFramework.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
@@ -124,6 +125,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/XcodeEdit/XcodeEdit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/libCommonCrypto/CommonCrypto.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PathKit-macOS10.10/PathKit.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait
