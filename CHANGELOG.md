@@ -30,11 +30,11 @@ This is a breaking change for template code like this:
 <% for type in types.implementing["SomeProtocol"] { %>
 ```
 
-- `selectorName` for methods without parameters now will not contain `()`
-- `returnTypeName` for initializers will be the type name of defining type, with `?` for failable initializers
-
 ### Internal changes
 
+- Migrate to Swift 4, SwiftPM 4 and Xcode 9.2
+- `selectorName` for methods without parameters now will not contain `()`
+- `returnTypeName` for initializers will be the type name of defining type, with `?` for failable initializers
 - Improved compile time of AutoHashable template
 
 ### Bug fixes 

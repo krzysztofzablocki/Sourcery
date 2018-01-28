@@ -28,9 +28,9 @@ internal enum TemplateAnnotationsParser {
                 return
             }
 
-            let nameRange = result.rangeAt(2)
-            let startLineRange = result.rangeAt(3)
-            let endLineRange = result.rangeAt(4)
+            let nameRange = result.range(at: 2)
+            let startLineRange = result.range(at: 3)
+            let endLineRange = result.range(at: 4)
 
             let name = bridged.substring(with: nameRange)
             let range = NSRange(
@@ -61,9 +61,9 @@ internal enum TemplateAnnotationsParser {
                 return
             }
 
-            let annotationStartRange = result.rangeAt(1)
-            let startLineRange = result.rangeAt(3)
-            let endLineRange = result.rangeAt(4)
+            let annotationStartRange = result.range(at: 1)
+            let startLineRange = result.range(at: 3)
+            let endLineRange = result.range(at: 4)
             if startLineRange.length == 0 {
                 rangesToReplace.append(NSRange(
                     location: annotationStartRange.location,

@@ -104,11 +104,11 @@ internal struct AnnotationsParser {
 
             inlineCommentFound = true
 
-            let comment = prefix.substring(from: commentStart.lowerBound)
+            let comment = String(prefix[commentStart.lowerBound...])
             for annotation in AnnotationsParser.parse(contents: comment)[0].annotations {
                 AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
             }
-            prefix = prefix.substring(to: commentStart.lowerBound).trimmingCharacters(in: .whitespaces)
+            prefix = prefix[..<commentStart.lowerBound].trimmingCharacters(in: .whitespaces)
         }
 
         if inlineCommentFound && !prefix.isEmpty {
@@ -188,8 +188,8 @@ internal struct AnnotationsParser {
             return .inlineStart
         }
 
-        let lowerBound: String.CharacterView.Index?
-        let upperBound: String.CharacterView.Index?
+        let lowerBound: String.Index?
+        let upperBound: String.Index?
         var insideBlock: Bool = false
         var insideFileBlock: Bool = false
 
@@ -213,7 +213,7 @@ internal struct AnnotationsParser {
         }
 
         if let lowerBound = lowerBound, let upperBound = upperBound {
-            let annotations = AnnotationsParser.parse(line: commentLine.substring(with: lowerBound ..< upperBound))
+            let annotations = AnnotationsParser.parse(line: String(commentLine[lowerBound..<upperBound]))
             if insideBlock {
                 return .begin(annotations)
             } else if insideFileBlock {
@@ -252,7 +252,7 @@ internal struct AnnotationsParser {
                     append(key: name, value: NSNumber(value: number), to: &annotations)
                 } else {
                     if (value.hasPrefix("'") && value.hasSuffix("'")) || (value.hasPrefix("\"") && value.hasSuffix("\"")) {
-                        value = value[value.index(after: value.startIndex) ..< value.index(before: value.endIndex)]
+                        value = String(value[value.index(after: value.startIndex) ..< value.index(before: value.endIndex)])
                         value = value.trimmingCharacters(in: .whitespaces)
                     }
                     append(key: name, value: value as NSString, to: &annotations)

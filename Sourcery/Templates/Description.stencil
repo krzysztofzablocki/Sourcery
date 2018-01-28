@@ -5,7 +5,7 @@
 extension {{ type.name }} {
     /// :nodoc:
     override {{ type.accessLevel }} var description: String {
-        var string = {% if type.inheritedTypes.first == "NSObject" %}"\(type(of: self)): "{% else %}super.description{% endif %}
+        var string = {% if type.inheritedTypes.first == "NSObject" %}"\(Swift.type(of: self)): "{% else %}super.description{% endif %}
         {% for variable in type.variables|!annotated:"skipDescription" %}string += "{{ variable.name }} = \(String(describing: self.{{ variable.name }})){% if not forloop.last %}, {% endif %}"
         {% endfor %}return string
     }

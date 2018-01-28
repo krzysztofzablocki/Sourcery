@@ -6,7 +6,7 @@
 import Foundation
 
 /// :nodoc:
-public final class TemplateContext: NSObject, SourceryModel {
+@objcMembers public final class TemplateContext: NSObject, SourceryModel {
     public let types: Types
     public let arguments: [String: NSObject]
 
@@ -72,7 +72,7 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-public final class Types: NSObject, SourceryModel {
+@objcMembers public final class Types: NSObject, SourceryModel {
 
     /// :nodoc:
     public let types: [Type]
@@ -178,7 +178,7 @@ public final class Types: NSObject, SourceryModel {
 }
 
 /// :nodoc:
-public class TypesCollection: NSObject, AutoJSExport {
+@objcMembers public class TypesCollection: NSObject, AutoJSExport {
 
     // sourcery:begin: skipJSExport
     let all: [Type]
