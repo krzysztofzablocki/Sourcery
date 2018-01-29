@@ -11,8 +11,7 @@ class JavaScriptTemplate: EJSTemplate, Template {
         }
     }
 
-    func render(types: Types, arguments: [String : NSObject]) throws -> String {
-        let context = TemplateContext(types: types, arguments: arguments)
+    func render(_ context: TemplateContext) throws -> String {
         return try render(context.jsContext)
     }
 
