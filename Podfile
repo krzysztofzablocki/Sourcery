@@ -39,6 +39,11 @@ target 'SourceryJS' do
   pod 'PathKit'
 end
 
+target 'SourcerySwift' do
+  pod 'PathKit'
+  pod 'libCommonCrypto'
+end
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
