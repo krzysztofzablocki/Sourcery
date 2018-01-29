@@ -4,10 +4,10 @@
 //
 
 import Foundation
-import Stencil
 import PathKit
 import SwiftTryCatch
 import SourceryRuntime
+import SourceryJS
 
 class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : Version.current.value

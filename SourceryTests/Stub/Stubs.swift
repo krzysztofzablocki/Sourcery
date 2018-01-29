@@ -7,8 +7,7 @@ import Foundation
 import PathKit
 import Quick
 
-@testable
-import Sourcery
+@testable import Sourcery
 
 private class Reference {}
 
