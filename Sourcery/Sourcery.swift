@@ -8,7 +8,11 @@ import PathKit
 import SwiftTryCatch
 import SourceryRuntime
 import SourceryJS
+
+#if SWIFT_PACKAGE
+#else
 import SourcerySwift
+#endif
 
 class Sourcery {
     public static let version: String = inUnitTests ? "Major.Minor.Patch" : Version.current.value
