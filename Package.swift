@@ -7,7 +7,6 @@ let package = Package(
     products: [
         .executable(name: "sourcery", targets: ["Sourcery"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
-        .library(name: "SourceryJS", targets: ["SourceryJS"]),
     ],
     dependencies: [
         .package(url: "https://github.com/kylef/Commander.git", from: "0.6.1"),
@@ -22,7 +21,6 @@ let package = Package(
     targets: [
         .target(name: "Sourcery", dependencies: [
             "SourceryRuntime",
-            "SourceryJS",
             "Commander",
             "PathKit",
             "SourceKittenFramework",
@@ -32,9 +30,5 @@ let package = Package(
             "SwiftTryCatch",
         ]),
         .target(name: "SourceryRuntime"),
-        .target(name: "SourceryJS", dependencies: [
-            "PathKit",
-            "SourceryRuntime",
-        ]),
     ]
 )

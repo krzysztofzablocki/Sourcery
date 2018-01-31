@@ -7,10 +7,10 @@ import Foundation
 import PathKit
 import SwiftTryCatch
 import SourceryRuntime
-import SourceryJS
 
 #if SWIFT_PACKAGE
 #else
+import SourceryJS
 import SourcerySwift
 #endif
 
