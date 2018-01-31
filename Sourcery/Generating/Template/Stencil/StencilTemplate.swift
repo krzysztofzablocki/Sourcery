@@ -16,8 +16,7 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, Template {
         self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment())
     }
 
-    func render(types: Types, arguments: [String: NSObject]) throws -> String {
-        let context = TemplateContext(types: types, arguments: arguments)
+    func render(_ context: TemplateContext) throws -> String {
         do {
             return try super.render(context.stencilContext)
         } catch {
