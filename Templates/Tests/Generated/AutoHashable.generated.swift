@@ -29,6 +29,16 @@ fileprivate func hashArray<T: Hashable>(_ array: [T]?) -> Int {
     }
 }
 
+#if swift(>=4.0)
+fileprivate func hashDictionary<T, U: Hashable>(_ dictionary: [T: U]?) -> Int {
+    guard let dictionary = dictionary else {
+        return 0
+    }
+    return dictionary.reduce(5381) {
+        combineHashValues($0, combineHashValues($1.key.hashValue, $1.value.hashValue))
+    }
+}
+#else
 fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
     guard let dictionary = dictionary else {
         return 0
@@ -37,6 +47,7 @@ fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?)
         combineHashValues($0, combineHashValues($1.key.hashValue, $1.value.hashValue))
     }
 }
+#endif
 
 
 
