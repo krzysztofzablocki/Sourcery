@@ -245,7 +245,14 @@ extension Sourcery {
                         .flatMap({ $0 }).flatMap({ $0 })
                     return !exclude.contains($0)
                 }
-                .map { (path: $0, contents: try $0.read(.utf8)) }
+                .flatMap { (path: Path) -> (path: Path, contents: String)? in
+                    do {
+                        return (path: path, contents: try path.read(.utf8))
+                    } catch {
+                        Log.warning("Skipping file at \(path) as it does not exist")
+                        return nil
+                    }
+                }
                 .filter {
                     let result = Verifier.canParse(content: $0.contents,
                                                    path: $0.path,

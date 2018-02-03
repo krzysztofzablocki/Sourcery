@@ -634,6 +634,16 @@ class SourcerySpecTests: QuickSpec {
                                               output: outputDir)
                             }.to(throwError())
                     }
+
+                    it("does not throw when source file does not exist") {
+                        let sourcePath = outputDir + Path("Missing.swift")
+                        expect {
+                            try Sourcery(cacheDisabled: true)
+                                .processFiles(.sources(Paths(include: [sourcePath])),
+                                              usingTemplates: Paths(include: [templatePath]),
+                                              output: outputDir)
+                            }.toNot(throwError())
+                    }
                 }
 
                 context("given excluded source paths") {
