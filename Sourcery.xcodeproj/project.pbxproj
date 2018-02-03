@@ -57,7 +57,6 @@
 		6393BC6D2019F58D0044E8CC /* SourceryJS.h in Headers */ = {isa = PBXBuildFile; fileRef = 6393BC6B2019F58D0044E8CC /* SourceryJS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6393BC762019F59E0044E8CC /* SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6393BC692019F58D0044E8CC /* SourceryJS.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		6393BC792019F5C90044E8CC /* EJSTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */; };
-		6393BC7B2019F6990044E8CC /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
 		6393BC7D201A7C280044E8CC /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DC7064748459115A1660 /* Template.swift */; };
 		6393BC92201B50910044E8CC /* JavaScriptTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */; };
 		6393BC93201B55230044E8CC /* ejsbundle.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejsbundle.js */; };
@@ -285,7 +284,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6393BC7B2019F6990044E8CC /* SourceryRuntime.framework in Frameworks */,
 				B54CFEA7116B0F372DC7D901 /* Pods_SourceryJS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

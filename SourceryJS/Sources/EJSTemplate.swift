@@ -1,11 +1,23 @@
 import JavaScriptCore
 import PathKit
-import SourceryRuntime
 
 open class EJSTemplate {
 
+    public struct Error: Swift.Error, CustomStringConvertible {
+        public let description: String
+        public init(_ value: String) {
+            self.description = value
+        }
+    }
+
+    /// Should be set to the path of EJS before rendering any template.
+    /// By default reads ejsbundle.js from framework bundle.
+    /// If framework is built with SPM this property should be set manually.
+    public static var ejsPath: Path! = Bundle(for: EJSTemplate.self).path(forResource: "ejsbundle", ofType: "js").map({ Path($0) })
+
     public let sourcePath: Path
     public let templateString: String
+    let ejs: String
 
     public private(set) lazy var jsContext: JSContext = {
         let jsContext = JSContext()!
@@ -23,31 +35,30 @@ open class EJSTemplate {
         }
     }
 
-    public init(path: Path, context: JSContext = JSContext()) throws {
+    public init(path: Path, ejsPath: Path = EJSTemplate.ejsPath) throws {
         templateString = try path.read()
         sourcePath = path
+        self.ejs = try ejsPath.read(.utf8)
     }
 
-    public init(templateString: String) {
+    public init(templateString: String, ejsPath: Path = EJSTemplate.ejsPath) throws {
         self.templateString = templateString
         sourcePath = ""
+        self.ejs = try ejsPath.read(.utf8)
     }
 
     public func render(_ context: [String: Any]) throws -> String {
         self.context = context
 
-        var error: Swift.Error?
+        var error: Error?
         jsContext.exceptionHandler = {
-            error = error ?? $1?.toString() ?? "Unknown JavaScript error"
+            error = error ?? $1.map({ Error($0.toString()) }) ?? Error("Unknown JavaScript error")
         }
 
-        // swiftlint:disable:next force_unwrapping
-        let path = Bundle(for: EJSTemplate.self).path(forResource: "ejsbundle", ofType: "js")!
-        let ejs = try String(contentsOfFile: path, encoding: .utf8)
         jsContext.evaluateScript("var window = this; \(ejs)")
 
         if let error = error {
-            throw "\(sourcePath): \(error)"
+            throw Error("\(sourcePath): \(error)")
         }
 
         let content = jsContext.objectForKeyedSubscript("content").toString()
