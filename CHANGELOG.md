@@ -49,6 +49,7 @@ This is a breaking change for template code like this:
 - Fixed parsing void return type in methods without spaces between method name and body open curly brace and in protocols
 - Fixed AutoMockable template generating throwing method with void return type 
 - Fixed parsing throwing initializers
+- Fixed trying to process files which do not exist
 
 ## 0.10.1
 
