@@ -111,7 +111,10 @@ func runCLI() {
         do {
             Log.level = verboseLogging ? .verbose : quiet ? .errors : .info
 
-            EJSTemplate.ejsPath = ejsPath.string.isEmpty ? EJSTemplate.ejsPath : ejsPath
+            // if ejsPath is not provided use default value or executable path
+            EJSTemplate.ejsPath = ejsPath.string.isEmpty
+                ? (EJSTemplate.ejsPath ?? Path(ProcessInfo.processInfo.arguments[0]).parent() + "ejs.js")
+                : ejsPath
 
             let configuration: Configuration
             let yamlPath: Path = configPath.isDirectory ? configPath + ".sourcery.yml" : configPath
