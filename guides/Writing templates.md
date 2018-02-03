@@ -85,6 +85,10 @@ JavaScript templates are powered by [EJS](http://ejs.co) and support all the fea
 
 **Example**: [JSExport.ejs](https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/JSExport.ejs)
 
+> Note: when using JavaScript templates with Sourcery built using Swift Package Manager you must provide path to EJS source code using `--ejsPath` command line argument. Download EJS source code [here](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryJS/Sources/ejsbundle.js), put it in some path and pass it when running Sourcery. Otherwise JavaScript templates will be ignored (you will see a warning in the console output).
+
+You can also use `SourceryJS` framework independently of Sourcery. You can add it as a Carthge or SPM dependency.
+
 ## Using Source Annotations
 
 Sourcery supports annotating your classes and variables with special annotations, similar to how attributes work in Rust / Java
