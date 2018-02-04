@@ -19,7 +19,7 @@ class BasicProtocolMock: BasicProtocol {
 
     func loadConfiguration() -> String? {
         loadConfigurationCallsCount += 1
-		return loadConfigurationClosure != nil ? loadConfigurationClosure!() : loadConfigurationReturnValue
+        return loadConfigurationClosure != nil ? loadConfigurationClosure!() : loadConfigurationReturnValue
     }
 
     //MARK: - save
@@ -36,6 +36,7 @@ class BasicProtocolMock: BasicProtocol {
         saveConfigurationReceivedConfiguration = configuration
 		saveConfigurationClosure?(configuration)
     }
+
 }
 class ClosureProtocolMock: ClosureProtocol {
 
@@ -71,6 +72,7 @@ class CurrencyPresenterMock: CurrencyPresenter {
         showSourceCurrencyReceivedCurrency = currency
 		showSourceCurrencyClosure?(currency)
     }
+
 }
 class ExtendableProtocolMock: ExtendableProtocol {
     var canReport: Bool {
@@ -93,6 +95,7 @@ class ExtendableProtocolMock: ExtendableProtocol {
         reportMessageReceivedMessage = message
 		reportMessageClosure?(message)
     }
+
 }
 class InitializationProtocolMock: InitializationProtocol {
 
@@ -117,6 +120,7 @@ class InitializationProtocolMock: InitializationProtocol {
         startCallsCount += 1
 		startClosure?()
     }
+
     //MARK: - stop
 
     var stopCallsCount = 0
@@ -129,6 +133,7 @@ class InitializationProtocolMock: InitializationProtocol {
         stopCallsCount += 1
 		stopClosure?()
     }
+
 }
 class ReservedWordsProtocolMock: ReservedWordsProtocol {
 
@@ -145,7 +150,7 @@ class ReservedWordsProtocolMock: ReservedWordsProtocol {
     func `continue`(with message: String) -> String {
         continueWithCallsCount += 1
         continueWithReceivedMessage = message
-		return continueWithClosure != nil ? continueWithClosure!(message) : continueWithReturnValue
+        return continueWithClosure != nil ? continueWithClosure!(message) : continueWithReturnValue
     }
 
 }
@@ -165,6 +170,7 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         startCarOfReceivedArguments = (car: car, model: model)
 		startCarOfClosure?(car, model)
     }
+
     //MARK: - start
 
     var startPlaneOfCallsCount = 0
@@ -179,6 +185,7 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         startPlaneOfReceivedArguments = (plane: plane, model: model)
 		startPlaneOfClosure?(plane, model)
     }
+
 }
 class ThrowableProtocolMock: ThrowableProtocol {
 
@@ -190,14 +197,14 @@ class ThrowableProtocolMock: ThrowableProtocol {
         return doOrThrowCallsCount > 0
     }
     var doOrThrowReturnValue: String!
-	var doOrThrowClosure: (() throws -> String)?
+	var doOrThrowClosure: (() -> String)?
 
     func doOrThrow() throws -> String {
         if let error = doOrThrowThrowableError {
             throw error
         }
         doOrThrowCallsCount += 1
-		return doOrThrowClosure != nil ? doOrThrowClosure!() : doOrThrowReturnValue
+        return doOrThrowClosure != nil ? doOrThrowClosure!() : doOrThrowReturnValue
     }
 
     //MARK: - doOrThrowVoid
@@ -207,14 +214,14 @@ class ThrowableProtocolMock: ThrowableProtocol {
     var doOrThrowVoidCalled: Bool {
         return doOrThrowVoidCallsCount > 0
     }
-	var doOrThrowVoid: (() throws -> Void)?
+	var doOrThrowVoidClosure: (() -> Void)?
 
     func doOrThrowVoid() throws {
         if let error = doOrThrowVoidThrowableError {
             throw error
         }
         doOrThrowVoidCallsCount += 1
-		doOrThrowVoid?()
+		doOrThrowVoidClosure?()
     }
 
 }
@@ -232,4 +239,5 @@ class VariablesProtocolMock: VariablesProtocol {
     var underlyingAge: Int!
     var kids: [String] = []
     var universityMarks: [String: Int] = [:]
+
 }
