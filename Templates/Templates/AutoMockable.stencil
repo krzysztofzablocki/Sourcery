@@ -57,11 +57,14 @@ import AppKit
     {% if method.throws %}
         {% call methodThrowableErrorDeclaration method %}
     {% endif %}
-    {% if not method.isInitializer %}
+    {% if method.isInitializer %}
+	var {% call swiftifyMethodName method.selectorName %}Closure: (({% for param in method.parameters %}{% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}) -> Void)?
+	{% else %}
     var {% call swiftifyMethodName method.selectorName %}CallsCount = 0
     var {% call swiftifyMethodName method.selectorName %}Called: Bool {
         return {% call swiftifyMethodName method.selectorName %}CallsCount > 0
     }
+	var {% call swiftifyMethodName method.selectorName %}Closure: (({% for param in method.parameters %}{% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}) -> {{ method.returnTypeName }})?
     {% endif %}
     {% if method.parameters.count == 1 %}
     var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {% if param.isClosure %}({% endif %}{{ param.typeName.unwrappedTypeName }}{% if param.isClosure %}){% endif %}?{% endfor %}
@@ -75,6 +78,7 @@ import AppKit
 {% if method.isInitializer %}
     required {{ method.name }} {
         {% call methodReceivedParameters method %}
+		{% call swiftifyMethodName method.selectorName %}Closure?({% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %})
     }
 {% else %}
     func {{ method.name }}{% if method.throws %} throws{% endif %}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
@@ -83,7 +87,11 @@ import AppKit
         {% endif %}
         {% call swiftifyMethodName method.selectorName %}CallsCount += 1
         {% call methodReceivedParameters method %}
-        {% if not method.returnTypeName.isVoid %}return {% call swiftifyMethodName method.selectorName %}ReturnValue{% endif %}
+		{% if method.returnTypeName.isVoid %}
+		{% call swiftifyMethodName method.selectorName %}Closure?({% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %})
+		{% else %}
+        return {% call swiftifyMethodName method.selectorName %}Closure != nil ? {% call swiftifyMethodName method.selectorName %}Closure!({% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}) : {% call swiftifyMethodName method.selectorName %}ReturnValue
+		{% endif %}
     }
 
 {% endif %}
