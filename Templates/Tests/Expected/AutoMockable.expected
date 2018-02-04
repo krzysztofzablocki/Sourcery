@@ -93,20 +93,6 @@ class ExtendableProtocolMock: ExtendableProtocol {
         reportMessageReceivedMessage = message
 		reportMessageClosure?(message)
     }
-    //MARK: - extension_report
-
-    var extensionReportMessageCallsCount = 0
-    var extensionReportMessageCalled: Bool {
-        return extensionReportMessageCallsCount > 0
-    }
-    var extensionReportMessageReceivedMessage: String?
-	var extensionReportMessageClosure: ((String) -> Void)?
-
-    func report(message: String = "Test") {
-        extensionReportMessageCallsCount += 1
-        extensionReportMessageReceivedMessage = message
-		extensionReportMessageClosure?(message)
-    }
 }
 class InitializationProtocolMock: InitializationProtocol {
 
