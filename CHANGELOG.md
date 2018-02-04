@@ -50,6 +50,7 @@ This is a breaking change for template code like this:
 - Fixed AutoMockable template generating throwing method with void return type 
 - Fixed parsing throwing initializers
 - Fixed trying to process files which do not exist
+- Automockable will not generate mocks for methods defined in protocol extensions
 
 ## 0.10.1
 

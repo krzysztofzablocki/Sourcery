@@ -20,10 +20,6 @@ import AppKit
 
 
 
-
-
-
-
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
@@ -103,19 +99,6 @@ class ExtendableProtocolMock: ExtendableProtocol {
     func report(message: String) {
         reportMessageCallsCount += 1
         reportMessageReceivedMessage = message
-    }
-
-    //MARK: - extension_report
-
-    var extensionReportMessageCallsCount = 0
-    var extensionReportMessageCalled: Bool {
-        return extensionReportMessageCallsCount > 0
-    }
-    var extensionReportMessageReceivedMessage: String?
-
-    func report(message: String = "Test") {
-        extensionReportMessageCallsCount += 1
-        extensionReportMessageReceivedMessage = message
     }
 
 }
