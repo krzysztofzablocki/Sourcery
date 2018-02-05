@@ -14,6 +14,7 @@
 - Improved support for generic types. Now you can access basic generic type information with `TypeName.generic` property
 - added `@objcMembers` attribute
 - Moved EJS and Swift templates to separate framework targets
+- Added Closures to AutoMockable
 
 ** Breaking **
 
