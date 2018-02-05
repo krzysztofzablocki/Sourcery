@@ -214,14 +214,14 @@ class ThrowableProtocolMock: ThrowableProtocol {
         return doOrThrowCallsCount > 0
     }
     var doOrThrowReturnValue: String!
-	var doOrThrowClosure: (() -> String)?
+	var doOrThrowClosure: (() throws -> String)?
 
     func doOrThrow() throws -> String {
         if let error = doOrThrowThrowableError {
             throw error
         }
         doOrThrowCallsCount += 1
-        return doOrThrowClosure != nil ? doOrThrowClosure!() : doOrThrowReturnValue
+        return doOrThrowClosure != nil ? try doOrThrowClosure!() : doOrThrowReturnValue
     }
 
     //MARK: - doOrThrowVoid
@@ -231,14 +231,14 @@ class ThrowableProtocolMock: ThrowableProtocol {
     var doOrThrowVoidCalled: Bool {
         return doOrThrowVoidCallsCount > 0
     }
-	var doOrThrowVoidClosure: (() -> Void)?
+	var doOrThrowVoidClosure: (() throws -> Void)?
 
     func doOrThrowVoid() throws {
         if let error = doOrThrowVoidThrowableError {
             throw error
         }
         doOrThrowVoidCallsCount += 1
-		doOrThrowVoidClosure?()
+		try doOrThrowVoidClosure?()
     }
 
 }
