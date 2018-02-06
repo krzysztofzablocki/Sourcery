@@ -1,5 +1,3 @@
-#if SWIFT_PACKAGE
-#else
 import SourceryJS
 import SourceryRuntime
 import JavaScriptCore
@@ -53,4 +51,3 @@ private extension JSContext {
     }
 
 }
-#endif

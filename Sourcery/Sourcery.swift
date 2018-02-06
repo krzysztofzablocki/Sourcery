@@ -7,10 +7,10 @@ import Foundation
 import PathKit
 import SwiftTryCatch
 import SourceryRuntime
+import SourceryJS
 
 #if SWIFT_PACKAGE
 #else
-import SourceryJS
 import SourcerySwift
 #endif
 
@@ -190,23 +190,24 @@ class Sourcery {
     }
 
     fileprivate func templates(from: Paths) throws -> [Template] {
-        return try templatePaths(from: from).map {
-            #if SWIFT_PACKAGE
-                if $0.extension == "swifttemplate" || $0.extension == "ejs" {
-                    throw "Swift and JavaScript templates are not supported when using Sourcery built with Swift Package Manager yet. Please use only Stencil templates. See https://github.com/krzysztofzablocki/Sourcery/issues/244 for details."
-                } else {
-                    return try StencilTemplate(path: $0)
-                }
-            #else
-                if $0.extension == "swifttemplate" {
+        return try templatePaths(from: from).flatMap {
+            if $0.extension == "swifttemplate" {
+                #if SWIFT_PACKAGE
+                    Log.warning("Skipping template \($0). Swift templates are not supported when using Sourcery built with Swift Package Manager yet. Please use only Stencil or EJS templates. See https://github.com/krzysztofzablocki/Sourcery/issues/244 for details.")
+                    return nil
+                #else
                     let cachePath = cacheDisabled ? nil : Path.cachesDir(sourcePath: $0)
                     return try SwiftTemplate(path: $0, cachePath: cachePath)
-                } else if $0.extension == "ejs" {
-                    return try JavaScriptTemplate(path: $0)
-                } else {
-                    return try StencilTemplate(path: $0)
+                #endif
+            } else if $0.extension == "ejs" {
+                guard EJSTemplate.ejsPath != nil else {
+                    Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
+                    return nil
                 }
-            #endif
+                return try JavaScriptTemplate(path: $0)
+            } else {
+                return try StencilTemplate(path: $0)
+            }
         }
     }
 

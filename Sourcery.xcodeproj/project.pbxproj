@@ -57,10 +57,9 @@
 		6393BC6D2019F58D0044E8CC /* SourceryJS.h in Headers */ = {isa = PBXBuildFile; fileRef = 6393BC6B2019F58D0044E8CC /* SourceryJS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6393BC762019F59E0044E8CC /* SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6393BC692019F58D0044E8CC /* SourceryJS.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		6393BC792019F5C90044E8CC /* EJSTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */; };
-		6393BC7B2019F6990044E8CC /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
 		6393BC7D201A7C280044E8CC /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DC7064748459115A1660 /* Template.swift */; };
 		6393BC92201B50910044E8CC /* JavaScriptTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */; };
-		6393BC93201B55230044E8CC /* ejsbundle.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejsbundle.js */; };
+		6393BC93201B55230044E8CC /* ejs.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejs.js */; };
 		6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393BC97201B57620044E8CC /* JavaScriptTemplate.swift */; };
 		63D25BE71FD0356E007592AA /* Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D25BE61FD0356E007592AA /* Subscript.swift */; };
 		63E1AD0E1F4093EB00D01FED /* Configs in Resources */ = {isa = PBXBuildFile; fileRef = 63E1AD0D1F4093EB00D01FED /* Configs */; };
@@ -175,7 +174,7 @@
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
 		094415C71E78A46A00ABE04A /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EJSTemplate.swift; sourceTree = "<group>"; };
-		09618B411E620D8600B49D5F /* ejsbundle.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejsbundle.js; sourceTree = "<group>"; };
+		09618B411E620D8600B49D5F /* ejs.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejs.js; sourceTree = "<group>"; };
 		09618B431E620E3200B49D5F /* JSExport.ejs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = JSExport.ejs; sourceTree = "<group>"; };
 		09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JavaScriptTemplateSpecs.swift; sourceTree = "<group>"; };
 		09618B4E1E662B0A00B49D5F /* JavaScriptTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JavaScriptTemplates; sourceTree = "<group>"; };
@@ -285,7 +284,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6393BC7B2019F6990044E8CC /* SourceryRuntime.framework in Frameworks */,
 				B54CFEA7116B0F372DC7D901 /* Pods_SourceryJS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -432,7 +430,7 @@
 			isa = PBXGroup;
 			children = (
 				09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */,
-				09618B411E620D8600B49D5F /* ejsbundle.js */,
+				09618B411E620D8600B49D5F /* ejs.js */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -896,7 +894,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6393BC93201B55230044E8CC /* ejsbundle.js in Resources */,
+				6393BC93201B55230044E8CC /* ejs.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
