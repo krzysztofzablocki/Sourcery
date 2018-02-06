@@ -33,10 +33,10 @@ import AppKit
 {% macro methodClosureName method %}{% call swiftifyMethodName method.selectorName %}Closure{% endmacro %}
 
 {% macro methodClosureDeclaration method %}
-	var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{{ method.returnTypeName }}{% endif %})?
+    var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{{ method.returnTypeName }}{% endif %})?
 {% endmacro %}
 
-{% macro methodClosureCall method sufix %}{% call methodClosureName method %}{{ sufix }}({% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}){% endmacro %}
+{% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
 
 {% macro mockMethod method %}
     //MARK: - {{ method.shortName }}
@@ -58,12 +58,12 @@ import AppKit
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
     var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}!
     {% endif %}
-	{% call methodClosureDeclaration method %}
+    {% call methodClosureDeclaration method %}
 
 {% if method.isInitializer %}
     required {{ method.name }} {
         {% call methodReceivedParameters method %}
-		{% call methodClosureCall method "?" %}
+        {% call methodClosureName method %}?({% call methodClosureCallParameters method %})
     }
 {% else %}
     func {{ method.name }}{% if method.throws %} throws{% endif %}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
@@ -72,11 +72,11 @@ import AppKit
         {% endif %}
         {% call swiftifyMethodName method.selectorName %}CallsCount += 1
         {% call methodReceivedParameters method %}
-		{% if method.returnTypeName.isVoid %}
-		{% if method.throws %}try {% endif %}{% call methodClosureCall method "?" %}
-		{% else %}
-        return {% call methodClosureName method %} != nil ? {% if method.throws %}try {% endif %}{% call methodClosureCall method "!" %} : {% call swiftifyMethodName method.selectorName %}ReturnValue
-		{% endif %}
+        {% if method.returnTypeName.isVoid %}
+        {% if method.throws %}try {% endif %}{% call methodClosureName method %}?({% call methodClosureCallParameters method %})
+        {% else %}
+        return {% if method.throws %}try {% endif %}{% call methodClosureName method %}.map({ {% if method.throws %}try {% endif %}$0({% call methodClosureCallParameters method %}) }) ?? {% call swiftifyMethodName method.selectorName %}ReturnValue
+        {% endif %}
     }
 
 {% endif %}

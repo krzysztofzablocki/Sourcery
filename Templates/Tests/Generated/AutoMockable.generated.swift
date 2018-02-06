@@ -36,7 +36,7 @@ class BasicProtocolMock: BasicProtocol {
 
     func loadConfiguration() -> String? {
         loadConfigurationCallsCount += 1
-        return loadConfigurationClosure != nil ? loadConfigurationClosure!() : loadConfigurationReturnValue
+        return loadConfigurationClosure.map({ $0() }) ?? loadConfigurationReturnValue
     }
 
     //MARK: - save
@@ -167,7 +167,7 @@ class ReservedWordsProtocolMock: ReservedWordsProtocol {
     func `continue`(with message: String) -> String {
         continueWithCallsCount += 1
         continueWithReceivedMessage = message
-        return continueWithClosure != nil ? continueWithClosure!(message) : continueWithReturnValue
+        return continueWithClosure.map({ $0(message) }) ?? continueWithReturnValue
     }
 
 }
@@ -221,7 +221,7 @@ class ThrowableProtocolMock: ThrowableProtocol {
             throw error
         }
         doOrThrowCallsCount += 1
-        return doOrThrowClosure != nil ? try doOrThrowClosure!() : doOrThrowReturnValue
+        return try doOrThrowClosure.map({ try $0() }) ?? doOrThrowReturnValue
     }
 
     //MARK: - doOrThrowVoid
