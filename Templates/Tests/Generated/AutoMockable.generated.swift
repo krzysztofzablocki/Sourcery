@@ -32,7 +32,7 @@ class BasicProtocolMock: BasicProtocol {
         return loadConfigurationCallsCount > 0
     }
     var loadConfigurationReturnValue: String?!
-	var loadConfigurationClosure: (() -> String?)?
+    var loadConfigurationClosure: (() -> String?)?
 
     func loadConfiguration() -> String? {
         loadConfigurationCallsCount += 1
@@ -46,12 +46,12 @@ class BasicProtocolMock: BasicProtocol {
         return saveConfigurationCallsCount > 0
     }
     var saveConfigurationReceivedConfiguration: String?
-	var saveConfigurationClosure: ((String) -> Void)?
+    var saveConfigurationClosure: ((String) -> Void)?
 
     func save(configuration: String) {
         saveConfigurationCallsCount += 1
         saveConfigurationReceivedConfiguration = configuration
-		saveConfigurationClosure?(configuration)
+        saveConfigurationClosure?(configuration)
     }
 
 }
@@ -64,12 +64,12 @@ class ClosureProtocolMock: ClosureProtocol {
         return setClosureCallsCount > 0
     }
     var setClosureReceivedClosure: (() -> Void)?
-	var setClosureClosure: ((@escaping () -> Void) -> Void)?
+    var setClosureClosure: ((@escaping () -> Void) -> Void)?
 
     func setClosure(_ closure: @escaping () -> Void) {
         setClosureCallsCount += 1
         setClosureReceivedClosure = closure
-		setClosureClosure?(closure)
+        setClosureClosure?(closure)
     }
 
 }
@@ -82,12 +82,12 @@ class CurrencyPresenterMock: CurrencyPresenter {
         return showSourceCurrencyCallsCount > 0
     }
     var showSourceCurrencyReceivedCurrency: String?
-	var showSourceCurrencyClosure: ((String) -> Void)?
+    var showSourceCurrencyClosure: ((String) -> Void)?
 
     func showSourceCurrency(_ currency: String) {
         showSourceCurrencyCallsCount += 1
         showSourceCurrencyReceivedCurrency = currency
-		showSourceCurrencyClosure?(currency)
+        showSourceCurrencyClosure?(currency)
     }
 
 }
@@ -105,12 +105,12 @@ class ExtendableProtocolMock: ExtendableProtocol {
         return reportMessageCallsCount > 0
     }
     var reportMessageReceivedMessage: String?
-	var reportMessageClosure: ((String) -> Void)?
+    var reportMessageClosure: ((String) -> Void)?
 
     func report(message: String) {
         reportMessageCallsCount += 1
         reportMessageReceivedMessage = message
-		reportMessageClosure?(message)
+        reportMessageClosure?(message)
     }
 
 }
@@ -119,11 +119,11 @@ class InitializationProtocolMock: InitializationProtocol {
     //MARK: - init
 
     var initIntParameterStringParameterOptionalParameterReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
-	var initIntParameterStringParameterOptionalParameterClosure: ((Int, String, String?) -> Void)?
+    var initIntParameterStringParameterOptionalParameterClosure: ((Int, String, String?) -> Void)?
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
         initIntParameterStringParameterOptionalParameterReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
-		initIntParameterStringParameterOptionalParameterClosure?(intParameter, stringParameter, optionalParameter)
+        initIntParameterStringParameterOptionalParameterClosure?(intParameter, stringParameter, optionalParameter)
     }
     //MARK: - start
 
@@ -131,11 +131,11 @@ class InitializationProtocolMock: InitializationProtocol {
     var startCalled: Bool {
         return startCallsCount > 0
     }
-	var startClosure: (() -> Void)?
+    var startClosure: (() -> Void)?
 
     func start() {
         startCallsCount += 1
-		startClosure?()
+        startClosure?()
     }
 
     //MARK: - stop
@@ -144,11 +144,11 @@ class InitializationProtocolMock: InitializationProtocol {
     var stopCalled: Bool {
         return stopCallsCount > 0
     }
-	var stopClosure: (() -> Void)?
+    var stopClosure: (() -> Void)?
 
     func stop() {
         stopCallsCount += 1
-		stopClosure?()
+        stopClosure?()
     }
 
 }
@@ -162,7 +162,7 @@ class ReservedWordsProtocolMock: ReservedWordsProtocol {
     }
     var continueWithReceivedMessage: String?
     var continueWithReturnValue: String!
-	var continueWithClosure: ((String) -> String)?
+    var continueWithClosure: ((String) -> String)?
 
     func `continue`(with message: String) -> String {
         continueWithCallsCount += 1
@@ -180,12 +180,12 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         return startCarOfCallsCount > 0
     }
     var startCarOfReceivedArguments: (car: String, model: String)?
-	var startCarOfClosure: ((String, String) -> Void)?
+    var startCarOfClosure: ((String, String) -> Void)?
 
     func start(car: String, of model: String) {
         startCarOfCallsCount += 1
         startCarOfReceivedArguments = (car: car, model: model)
-		startCarOfClosure?(car, model)
+        startCarOfClosure?(car, model)
     }
 
     //MARK: - start
@@ -195,12 +195,12 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         return startPlaneOfCallsCount > 0
     }
     var startPlaneOfReceivedArguments: (plane: String, model: String)?
-	var startPlaneOfClosure: ((String, String) -> Void)?
+    var startPlaneOfClosure: ((String, String) -> Void)?
 
     func start(plane: String, of model: String) {
         startPlaneOfCallsCount += 1
         startPlaneOfReceivedArguments = (plane: plane, model: model)
-		startPlaneOfClosure?(plane, model)
+        startPlaneOfClosure?(plane, model)
     }
 
 }
@@ -214,7 +214,7 @@ class ThrowableProtocolMock: ThrowableProtocol {
         return doOrThrowCallsCount > 0
     }
     var doOrThrowReturnValue: String!
-	var doOrThrowClosure: (() throws -> String)?
+    var doOrThrowClosure: (() throws -> String)?
 
     func doOrThrow() throws -> String {
         if let error = doOrThrowThrowableError {
@@ -231,14 +231,14 @@ class ThrowableProtocolMock: ThrowableProtocol {
     var doOrThrowVoidCalled: Bool {
         return doOrThrowVoidCallsCount > 0
     }
-	var doOrThrowVoidClosure: (() throws -> Void)?
+    var doOrThrowVoidClosure: (() throws -> Void)?
 
     func doOrThrowVoid() throws {
         if let error = doOrThrowVoidThrowableError {
             throw error
         }
         doOrThrowVoidCallsCount += 1
-		try doOrThrowVoidClosure?()
+        try doOrThrowVoidClosure?()
     }
 
 }
