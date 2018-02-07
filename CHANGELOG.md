@@ -15,6 +15,7 @@
 - added `@objcMembers` attribute
 - Moved EJS and Swift templates to separate framework targets
 - EJS templates now can be used when building Sourcery with SPM
+- You can now link generated files to projects using config file
 
 ** Breaking **
 

@@ -91,7 +91,7 @@ There are plenty of tutorials for different uses of Sourcery:
 
 ## Documentation
 
-Full documentation is available [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html).
+Full documentation for the latest release is available [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html).
 
 ## Usage
 
@@ -121,7 +121,7 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 
 ### Configuration file
 
-You can also provide arguments using `.sourcery.yml` file in project's root directory, like this:
+Instead of CLI arguments you can use  `.sourcery.yml` configuration file, like this:
 
 ```yaml
 sources:
@@ -139,41 +139,7 @@ args:
   <name>: <value>
 ```
 
-You can exlude some sources or templates using `include` and `exclude` keys:
-
-```yaml
-sources:
-  include:
-    - <sources path to include>
-    - <sources path to include>
-  exclude:
-    - <sources path to exclude>
-    - <sources path to exclude>
-templates:
-  include:
-    - <templates path to include>
-    - <templates path to include>
-  exclude:
-    - <templates path to exclude>
-    - <templates path to exclude>
-```
-
-You can provide either sources paths or targets to scan:
-
-```yaml
-project:
-  file:
-    <path to xcodeproj file>
-  root:
-    <path to project sources root>
-  target:
-    name: <target name>
-    module: <module name> //required if different from target name
-```
-
-You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects.
-
-> Note: Paths in configuration files are by default relative to configuration file path. If you want to specify absolute paths start it with `/`.
+Read more about configuration file [here](#configuration-file).
 
 ## Contributing
 
