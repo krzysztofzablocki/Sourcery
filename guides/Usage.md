@@ -107,7 +107,7 @@ output:
   path: <output path>
 ```
 
-You can use optional `link` key to automatically link generated file to some target.
+You can use optional `link` key to automatically link generated files to some target.
 
 ```yaml
 output:
@@ -117,7 +117,5 @@ output:
     target: <name of the target to link to>
     group: <group in the project to add files to> // by default files are added to project's root group
 ```
-
-Sourcery can automatically link generated files to the project
 
 > Note: Paths in configuration file are by default relative to configuration file path. If you want to specify absolute path start it with `/`.

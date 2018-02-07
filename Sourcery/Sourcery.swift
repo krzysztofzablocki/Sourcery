@@ -213,10 +213,6 @@ class Sourcery {
         }
     }
 
-//    fileprivate func outputPaths(from: Paths, output: Path) throws -> [Path] {
-//        return templatePaths(from: from).map { output + generatedPath(for: $0) }
-//    }
-
     private func templatePaths(from: Paths) -> [Path] {
         return from.allPaths.filter { $0.isTemplateFile }
     }
