@@ -1,11 +1,11 @@
 import Foundation
-import XcodeEdit
+import xcproj
 import PathKit
 import Yams
 import SourceryRuntime
 
 struct Project {
-    let file: XCProjectFile
+    let file: XcodeProj
     let root: Path
     let targets: [Target]
     let exclude: [Path]
@@ -27,9 +27,6 @@ struct Project {
         guard let file = dict["file"] as? String else {
             throw Configuration.Error.invalidSources(message: "Project file path is not provided. Expected string.")
         }
-        guard let root = dict["root"] as? String else {
-            throw Configuration.Error.invalidSources(message: "Project root path is not provided. Expected string.")
-        }
 
         let targetsArray: [Target]
         if let targets = dict["target"] as? [[String: String]] {
@@ -47,8 +44,9 @@ struct Project {
         let exclude = (dict["exclude"] as? [String])?.map({ Path($0, relativeTo: relativePath) }) ?? []
         self.exclude = exclude.flatMap { $0.allPaths }
 
-        self.file = try XCProjectFile(path: Path(file, relativeTo: relativePath).string)
-        self.root = Path(root)
+        let path = Path(file, relativeTo: relativePath)
+        self.file = try XcodeProj(path: path)
+        self.root = path.parent()
     }
 
 }
@@ -97,11 +95,9 @@ enum Source {
     case sources(Paths)
 
     init(dict: [String: Any], relativePath: Path) throws {
-        if let projects = dict["project"] as? [[String: Any]] {
+        if let projects = (dict["project"] as? [[String: Any]]) ?? (dict["project"] as? [String: Any]).map({ [$0] }) {
             guard !projects.isEmpty else { throw Configuration.Error.invalidSources(message: "No projects provided.") }
             self = try .projects(projects.map({ try Project(dict: $0, relativePath: relativePath) }))
-        } else if let project = dict["project"] as? [String: Any] {
-            self = try .projects([Project(dict: project, relativePath: relativePath)])
         } else if let sources = dict["sources"] {
             do {
                 self = try .sources(Paths(dict: sources, relativePath: relativePath))
@@ -121,6 +117,52 @@ enum Source {
             return projects.isEmpty
         }
     }
+}
+
+struct Output {
+    struct LinkTo {
+        let project: XcodeProj
+        let projectPath: Path
+        let target: String
+        let group: String?
+
+        init(dict: [String: Any], relativePath: Path) throws {
+            guard let project = dict["project"] as? String else {
+                throw Configuration.Error.invalidOutput(message: "No project file path provided.")
+            }
+            guard let target = dict["target"] as? String else {
+                throw Configuration.Error.invalidOutput(message: "No target name provided.")
+            }
+            let projectPath = Path(project, relativeTo: relativePath)
+            self.projectPath = projectPath
+            self.project = try XcodeProj(path: projectPath)
+            self.target = target
+            self.group = dict["group"] as? String
+        }
+    }
+
+    let path: Path
+    let linkTo: LinkTo?
+
+    init(dict: [String: Any], relativePath: Path) throws {
+        guard let path = dict["path"] as? String else {
+            throw Configuration.Error.invalidOutput(message: "No path provided.")
+        }
+
+        self.path = Path(path, relativeTo: relativePath)
+
+        if let linkToDict = dict["link"] as? [String: Any] {
+            self.linkTo = try? LinkTo(dict: linkToDict, relativePath: relativePath)
+        } else {
+            self.linkTo = nil
+        }
+    }
+
+    init(_ path: Path, linkTo: LinkTo? = nil) {
+        self.path = path
+        self.linkTo = linkTo
+    }
+
 }
 
 struct Configuration {
@@ -150,7 +192,7 @@ struct Configuration {
 
     let source: Source
     let templates: Paths
-    let output: Path
+    let output: Output
     let forceParse: [String]
     let args: [String: NSObject]
 
@@ -185,10 +227,13 @@ struct Configuration {
 
         self.forceParse = dict["force-parse"] as? [String] ?? []
 
-        guard let output = dict["output"] as? String else {
-            throw Configuration.Error.invalidOutput(message: "'output' key is missing or is not a string.")
+        if let output = dict["output"] as? String {
+            self.output = Output(Path(output, relativeTo: relativePath))
+        } else if let output = dict["output"] as? [String: Any] {
+            self.output = try Output(dict: output, relativePath: relativePath)
+        } else {
+            throw Configuration.Error.invalidOutput(message: "'output' key is missing or is not a string or object.")
         }
-        self.output = Path(output, relativeTo: relativePath)
 
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
@@ -196,7 +241,7 @@ struct Configuration {
     init(sources: [Path], templates: [Path], output: Path, forceParse: [String], args: [String: NSObject]) {
         self.source = .sources(Paths(include: sources))
         self.templates = Paths(include: templates)
-        self.output = output
+        self.output = Output(output, linkTo: nil)
         self.forceParse = forceParse
         self.args = args
     }

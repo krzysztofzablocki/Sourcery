@@ -134,6 +134,7 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Commander/Commander.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework"
@@ -141,11 +142,12 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SwiftTryCatch/SwiftTryCatch.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/XcodeEdit/XcodeEdit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/libCommonCrypto/CommonCrypto.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Commander/Commander.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework"
@@ -153,9 +155,9 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SwiftTryCatch/SwiftTryCatch.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/XcodeEdit/XcodeEdit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/libCommonCrypto/CommonCrypto.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

@@ -45,7 +45,29 @@ args:
   <name>: <value>
 ```
 
-You can exclude some sources or templates using `include` and `exclude` keys:
+#### Sources
+
+You can provide sources using paths to directories or specific files.
+
+```yaml
+sources:
+  - <sources dir path>
+  - <source file path>
+```
+
+Or you can provide project which will be scanned and which source files will be processed. You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects.
+
+```yaml
+project:
+  file: <path to xcodeproj file>
+  target:
+    name: <target name>
+    module: <module name> //required if different from target name
+```
+
+#### Excluding sources or templates
+
+You can specifiy paths to sources files that should be scanned using `include` key and paths that should be excluded using `exclude` key. These can be directory or file paths.
 
 ```yaml
 sources:
@@ -55,29 +77,45 @@ sources:
   exclude:
     - <sources path to exclude>
     - <sources path to exclude>
-templates:
-  include:
-    - <templates path to include>
-    - <templates path to include>
-  exclude:
-    - <templates path to exclude>
-    - <templates path to exclude>
 ```
 
-You can provide either sources paths or targets to scan:
+You can also specify path to include and exclude for templates.
+When source is a project you can use `exclude` key to exclude some of its source files.
 
 ```yaml
 project:
-  file: <path to xcodeproj file>
-  root: <path to project sources root>
-  target:
-    name: <target name>
-    module: <module name> //required if different from target name
+  file: ...
+  target: ...
   exclude:
     - <sources path>
     - <sources path>
 ```
 
-You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects.
+#### Output
+
+You can specify output file using `output` key. This can be a path to directory or file. If it's a file path, all generated content will be written into this file. If it's a directory path, for each template a separate file will be created with `TemplateName.geneareted.swift` name.
+
+```yaml
+output:
+  <output path>
+```
+
+Alternatively you can use `path` key to specify output path.
+
+```yaml
+output:
+  path: <output path>
+```
+
+You can use optional `link` key to automatically link generated files to some target.
+
+```yaml
+output:
+  path: <output path>
+  link:
+    project: <path to the xcodeproj to link to>
+    target: <name of the target to link to>
+    group: <group in the project to add files to> // by default files are added to project's root group
+```
 
 > Note: Paths in configuration file are by default relative to configuration file path. If you want to specify absolute path start it with `/`.

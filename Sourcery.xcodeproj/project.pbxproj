@@ -43,7 +43,6 @@
 		09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */; };
 		09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
-		09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		524A2EA71FFD3C40001CD8F9 /* BytesRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524A2EA61FFD3C40001CD8F9 /* BytesRange.swift */; };
 		52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */; };
@@ -61,6 +60,7 @@
 		6393BC92201B50910044E8CC /* JavaScriptTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */; };
 		6393BC93201B55230044E8CC /* ejs.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejs.js */; };
 		6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393BC97201B57620044E8CC /* JavaScriptTemplate.swift */; };
+		63CC359520246CCB0017D839 /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		63D25BE71FD0356E007592AA /* Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D25BE61FD0356E007592AA /* Subscript.swift */; };
 		63E1AD0E1F4093EB00D01FED /* Configs in Resources */ = {isa = PBXBuildFile; fileRef = 63E1AD0D1F4093EB00D01FED /* Configs */; };
 		64E201AA1EAE8FBF00EAD8A2 /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
@@ -1111,6 +1111,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework",
 				"${BUILT_PRODUCTS_DIR}/Commander/Commander.framework",
 				"${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework",
@@ -1118,12 +1119,13 @@
 				"${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework",
 				"${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftTryCatch/SwiftTryCatch.framework",
-				"${BUILT_PRODUCTS_DIR}/XcodeEdit/XcodeEdit.framework",
 				"${BUILT_PRODUCTS_DIR}/Yams/Yams.framework",
 				"${BUILT_PRODUCTS_DIR}/libCommonCrypto/CommonCrypto.framework",
+				"${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AEXML.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Commander.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PathKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SWXMLHash.framework",
@@ -1131,9 +1133,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stencil.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StencilSwiftKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftTryCatch.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XcodeEdit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Yams.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CommonCrypto.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/xcproj.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1240,6 +1242,7 @@
 				E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */,
 				C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */,
 				E291D4D8E67E26F4567EB5DE /* Composer.swift in Sources */,
+				63CC359520246CCB0017D839 /* Xcode+Extensions.swift in Sources */,
 				E291DD2ED0B47ECB174FEAAD /* Substring.swift in Sources */,
 				E291DF1320ACA969F7A8CBAE /* AnnotationsParser.swift in Sources */,
 				E291D8DB06EC63770326562B /* Type+Stencil.swift in Sources */,
@@ -1247,7 +1250,6 @@
 				6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */,
 				E291D33EA3BB6FC777B3950E /* FolderWatcher.swift in Sources */,
 				E291D9FBE0B751C3C898E5B6 /* Array+Parallel.swift in Sources */,
-				09C61FA61E76109E005EA58A /* Xcode+Extensions.swift in Sources */,
 				E291D5EA18C2B12217A59EC9 /* Sha.swift in Sources */,
 				E291DA2409438D3B0DA5F3BB /* InlineParser.swift in Sources */,
 				E291D1249578F631BC03070A /* Verifier.swift in Sources */,
@@ -1611,6 +1613,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.Sourcery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = build;
 			};
 			name = Debug;
 		};
@@ -1631,6 +1634,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.Sourcery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = build;
 			};
 			name = Release;
 		};

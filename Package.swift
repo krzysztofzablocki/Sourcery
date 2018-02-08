@@ -17,7 +17,7 @@ let package = Package(
         .package(url: "https://github.com/IBM-Swift/CommonCrypto.git", from: "0.1.5"),
         .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", from: "2.3.0"),
         .package(url: "https://github.com/seanparsons/SwiftTryCatch.git", .revision("e7074a72e4d4dc516f391bc4d4afd8ca6a845b4b")),
-        .package(url: "https://github.com/tomlokhorst/XcodeEdit.git", from: "1.0.0"),
+        .package(url: "https://github.com/xcodeswift/xcproj.git", from: "4.0.0"),
     ],
     targets: [
         .target(name: "Sourcery", dependencies: [
@@ -28,7 +28,7 @@ let package = Package(
             "SourceKittenFramework",
             "CommonCrypto",
             "StencilSwiftKit",
-            "XcodeEdit",
+            "xcproj",
             "SwiftTryCatch",
         ]),
         .target(name: "SourceryRuntime"),
