@@ -63,3 +63,8 @@ extension ExtendableProtocol {
 protocol ClosureProtocol: AutoMockable {
     func setClosure(_ closure: @escaping () -> Void)
 }
+
+/// sourcery: AutoMockable
+protocol AnnotatedProtocol {
+    func sayHelloWith(name: String)
+}
