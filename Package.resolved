@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "AEXML",
+        "repositoryURL": "https://github.com/tadija/AEXML.git",
+        "state": {
+          "branch": null,
+          "revision": "09f27784d9e328670ef0a181c832cce497117131",
+          "version": "4.2.2"
+        }
+      },
+      {
         "package": "Clang_C",
         "repositoryURL": "https://github.com/norio-nomura/Clang_C.git",
         "state": {
@@ -62,6 +71,15 @@
           "branch": null,
           "revision": "12496b370363034ccc919e1d72a99b9970b4941e",
           "version": "4.2.5"
+        }
+      },
+      {
+        "package": "ShellOut",
+        "repositoryURL": "https://github.com/JohnSundell/ShellOut.git",
+        "state": {
+          "branch": null,
+          "revision": "f1c253a34a40df4bfd268b09fdb101b059f6d52d",
+          "version": "2.1.0"
         }
       },
       {
@@ -134,6 +152,15 @@
           "branch": null,
           "revision": "90a76f3cdb552b8e6aea5dabdd6c3578b8a7ad45",
           "version": "0.4.1"
+        }
+      },
+      {
+        "package": "xcproj",
+        "repositoryURL": "https://github.com/xcodeswift/xcproj.git",
+        "state": {
+          "branch": null,
+          "revision": "5f68ad74627a537cdd3d022644edd0fa7a80d4a7",
+          "version": "4.0.0"
         }
       }
     ]
