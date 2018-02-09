@@ -835,26 +835,52 @@ extension FileParser {
                     continue
             }
 
-            guard let alias = extract(tokens[index + 1], contents: contents) else {
+            let aliasNameToken = tokens[index + 1]
+            guard let aliasName = extract(aliasNameToken, contents: contents) else {
                 continue
             }
 
             //get all subsequent type identifiers
             var index = index + 1
             var lastTypeToken: SyntaxToken?
-            var firstTypeToken: SyntaxToken?
             while index < tokens.count - 1 {
                 index += 1
-                if tokens[index].type == SyntaxKind.typeidentifier.rawValue {
-                    if firstTypeToken == nil { firstTypeToken = tokens[index] }
+                let tokenType = tokens[index].type
+                let token = extract(tokens[index], contents: contents)
+                if tokenType == SyntaxKind.typeidentifier.rawValue {
+                    lastTypeToken = tokens[index]
+                } else if tokenType == SyntaxKind.keyword.rawValue && (token == "Any" || token == "AnyObject") {
                     lastTypeToken = tokens[index]
                 } else { break }
             }
-            if let firstTypeToken = firstTypeToken,
-                let lastTypeToken = lastTypeToken,
-                let typeName = extract(from: firstTypeToken, to: lastTypeToken, contents: contents) {
+            if let lastTypeToken = lastTypeToken,
+                var typeName = extract(from: aliasNameToken, to: lastTypeToken, contents: contents)?
+                    .trimmingPrefix(aliasName)
+                    .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                    .trimmingPrefix("=")
+                    .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines),
+                var typeNameSuffix = extract(after: lastTypeToken, contents: contents) {
 
-                typealiases.append(Typealias(aliasName: alias, typeName: TypeName(typeName.bracketsBalancing())))
+                // token has only type name without closing brackets optional
+                // so we pick them from the suffix string one by one
+                while true {
+                    if typeNameSuffix.hasPrefix("]") {
+                        typeName += "]"
+                    } else if typeNameSuffix.hasPrefix(")") {
+                        typeName += ")"
+                    } else if typeNameSuffix.hasPrefix(">") {
+                        typeName += ">"
+                    } else if typeNameSuffix.hasPrefix("?") {
+                        typeName += "?"
+                    } else if typeNameSuffix.hasPrefix("!") {
+                        typeName += "!"
+                    } else {
+                        break
+                    }
+                    typeNameSuffix = typeNameSuffix.dropFirst()
+                }
+
+                typealiases.append(Typealias(aliasName: aliasName, typeName: TypeName(typeName.bracketsBalancing())))
             }
         }
         return typealiases
@@ -979,6 +1005,10 @@ extension FileParser {
 
     fileprivate func extract(from: SyntaxToken, to: SyntaxToken, contents: String) -> String? {
         return contents.bridge().substringWithByteRange(start: from.offset, length: to.offset + to.length - from.offset)
+    }
+
+    fileprivate func extract(after: SyntaxToken, contents: String) -> String? {
+        return contents.bridge().substringWithByteRange(start: after.offset + after.length, length: contents.count - (after.offset + after.length))
     }
 
     fileprivate func extractDefaultValue(type: String?, from source: [String: SourceKitRepresentable]) -> String? {
