@@ -117,37 +117,43 @@ struct Composer {
 
         // should we also set these types on lookupName?
         if let array = parseArrayType(lookupName) {
-            typeName.array = array
+            lookupName.array = array
             array.elementType = resolveTypeWithName(array.elementTypeName)
-            typeName.generic = GenericType(name: lookupName.name, typeParameters: [
+            lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
                 GenericTypeParameter(typeName: array.elementTypeName, type: array.elementType)
                 ])
         } else if let dictionary = parseDictionaryType(lookupName) {
-            typeName.dictionary = dictionary
+            lookupName.dictionary = dictionary
             dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName)
             dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName)
-            typeName.generic = GenericType(name: lookupName.name, typeParameters: [
+            lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
                 GenericTypeParameter(typeName: dictionary.keyTypeName, type: dictionary.keyType),
                 GenericTypeParameter(typeName: dictionary.valueTypeName, type: dictionary.valueType)
                 ])
         } else if let tuple = parseTupleType(lookupName) {
-            typeName.tuple = tuple
+            lookupName.tuple = tuple
             tuple.elements.forEach { tupleElement in
                 tupleElement.type = resolveTypeWithName(tupleElement.typeName)
             }
         } else if let closure = parseClosureType(lookupName) {
-            typeName.closure = closure
+            lookupName.closure = closure
             closure.returnType = resolveTypeWithName(closure.returnTypeName)
             closure.parameters.forEach({ parameter in
                 parameter.type = resolveTypeWithName(parameter.typeName)
             })
         } else if let generic = parseGenericType(lookupName) {
             // should also set generic data for optional types
-            typeName.generic = generic
+            lookupName.generic = generic
             generic.typeParameters.forEach {typeParameter in
                 typeParameter.type = resolveTypeWithName(typeParameter.typeName)
             }
         }
+
+        typeName.array = lookupName.array
+        typeName.dictionary = lookupName.dictionary
+        typeName.tuple = lookupName.tuple
+        typeName.closure = lookupName.closure
+        typeName.generic = lookupName.generic
 
         let resolvedTypeName = lookupName.generic?.name ?? lookupName.unwrappedTypeName
         return unique[resolvedTypeName] ?? typeFromModule(resolvedTypeName, modules: modules)

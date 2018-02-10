@@ -91,7 +91,9 @@ public protocol Typed {
             }
 
             self.unwrappedTypeName = unwrappedTypeName
-            self.isGeneric = unwrappedTypeName.contains("<") && unwrappedTypeName.last == ">"
+            self.isGeneric = (unwrappedTypeName.contains("<") && unwrappedTypeName.last == ">")
+                || unwrappedTypeName.isValidArrayName()
+                || unwrappedTypeName.isValidDictionaryName()
         }
     }
 
