@@ -74,7 +74,7 @@ public extension String {
             return unwrapped.commaSeparated().count == 1 ? unwrapped.bracketsBalancing() : self
         } else {
             let wrapped = "(\(self))"
-            return wrapped.isValidTupleName() || !bracketsBalanced() ? wrapped : self
+            return wrapped.isValidTupleName() || !isBracketsBalanced() ? wrapped : self
         }
     }
 
@@ -83,7 +83,7 @@ public extension String {
     func isValidTupleName() -> Bool {
         guard hasPrefix("(") && hasSuffix(")") else { return false }
         let trimmedBracketsName = dropFirstAndLast()
-        return trimmedBracketsName.bracketsBalanced() && trimmedBracketsName.commaSeparated().count > 1
+        return trimmedBracketsName.isBracketsBalanced() && trimmedBracketsName.commaSeparated().count > 1
     }
 
     /// :nodoc:
@@ -111,7 +111,7 @@ public extension String {
 
     /// :nodoc:
     /// Returns true if all opening brackets are balanced with closed brackets.
-    func bracketsBalanced() -> Bool {
+    func isBracketsBalanced() -> Bool {
         var bracketsCount: Int = 0
         for char in self {
             if char == "(" { bracketsCount += 1 } else if char == ")" { bracketsCount -= 1 }

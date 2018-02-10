@@ -54,6 +54,7 @@ This is a breaking change for template code like this:
 - Fixed parsing throwing initializers
 - Fixed trying to process files which do not exist
 - Automockable will not generate mocks for methods defined in protocol extensions
+- Fixed parsing typealiases of generic types
 
 ## 0.10.1
 
