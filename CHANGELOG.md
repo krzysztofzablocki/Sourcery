@@ -17,6 +17,7 @@
 - EJS templates now can be used when building Sourcery with SPM
 - Added Closures to AutoMockable
 - You can now link generated files to projects using config file
+- You can now use AutoMockable with annotations
 
 ** Breaking **
 

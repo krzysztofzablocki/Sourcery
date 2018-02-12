@@ -23,6 +23,24 @@ import AppKit
 
 
 
+class AnnotatedProtocolMock: AnnotatedProtocol {
+
+    //MARK: - sayHelloWith
+
+    var sayHelloWithNameCallsCount = 0
+    var sayHelloWithNameCalled: Bool {
+        return sayHelloWithNameCallsCount > 0
+    }
+    var sayHelloWithNameReceivedName: String?
+    var sayHelloWithNameClosure: ((String) -> Void)?
+
+    func sayHelloWith(name: String) {
+        sayHelloWithNameCallsCount += 1
+        sayHelloWithNameReceivedName = name
+        sayHelloWithNameClosure?(name)
+    }
+
+}
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
