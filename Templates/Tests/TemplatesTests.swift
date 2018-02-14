@@ -71,5 +71,11 @@ class TemplatesTests: QuickSpec {
                 check(template: "LinuxMain")
             }
         }
+
+        describe("ModelMappable template") {
+            it("generates expected code") {
+                check(template: "ModelMappable")
+            }
+        }
     }
 }

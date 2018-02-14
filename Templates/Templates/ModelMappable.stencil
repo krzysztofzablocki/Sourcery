@@ -1,0 +1,162 @@
+// https://github.com/SwiftGen/StencilSwiftKit/blob/master/Documentation/tag-set.md
+// https://github.com/kylef/Stencil
+// https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html
+
+import Foundation
+
+private typealias Timestamp = UInt64
+
+private struct Formatter {
+  static let iso8601: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.calendar = Calendar(identifier: .iso8601)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(abbreviation: "UTC")
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+    return formatter
+  }()
+}
+
+extension String {
+  fileprivate var dateFromISO8601: Date? {
+    // "Mar 22, 2017, 10:22 AM"
+    return Formatter.iso8601.date(from: self)
+  }
+}
+
+extension Date {
+  fileprivate var iso8601: String {
+    return Formatter.iso8601.string(from: self)
+  }
+
+  fileprivate static func fromTimestamp(_ timestamp: Timestamp) -> Date {
+    return Date(timeIntervalSince1970: Double(timestamp) / 1000)
+  }
+
+  fileprivate var asTimestamp: Timestamp {
+    return UInt64(1000 * timeIntervalSince1970)
+  }
+}
+
+{% macro modelName name %}{{ name | replace:"Mapping","Model" }}{% endmacro %}
+{% macro remoteName var %}{% if var.annotations.coding %}{{ var.annotations.coding }}{% elif var.typeName.name == "String" %}{{ var.name|camelToSnakeCase|replace:"id","uuid" }}{% else %}{{ var.name|camelToSnakeCase }}{% endif %}{% endmacro %}
+
+{% macro immutableVariables variables %}
+  {% for var in variables %}
+  let {{ var.name }}: {{ var.typeName }}
+  {% endfor %}
+{% endmacro %}
+
+{% macro codingKeys variables %}
+  private enum CodingKeys: String, CodingKey {
+    {% for var in variables %}
+    case {{ var.name }} = "{% call remoteName var %}"
+    {% endfor %}
+  }
+{% endmacro %}
+
+{% macro decodeVar var %}
+  {% set itype %}{{ var.annotations.incomingType }}{% endset %}
+  {% if var.typeName.name == "Bool" and itype == "Int" %} {# its a 0 or 1 #}
+    {{ var.name }} = try container.decodeIfPresent(Int.self, forKey: .{{ var.name }}) == 1
+  {% elif var.typeName.name == "Date" and itype == "String" %} {# iso date string #}
+    if
+      let {{ var.name }} = try container.decodeIfPresent(String.self, forKey: .{{ var.name }}),
+      let date = {{ var.name }}.dateFromISO8601 {
+      self.{{ var.name }} = date
+    } else {
+      self.{{ var.name }} = Date()
+    }
+  {% endif %}
+{% endmacro %}
+
+{# cant get spacing right without doing it like this, better way when possible #}
+{% macro decodeWithDefault var %}
+  {% set typename %}{{ var.typeName.name }}{% endset %}
+  {% if typename == "String" %}
+    {{ var.name }} = try container.decodeIfPresent({{ typename }}.self, forKey: .{{ var.name }}) ?? ""
+  {% elif typename == "Bool" %}
+    {{ var.name }} = try container.decodeIfPresent({{ typename }}.self, forKey: .{{ var.name }}) ?? false
+  {% elif typename == "Int" or typename == "Double" or typename == "Float" or typename == "NSNumber" %}
+    {{ var.name }} = try container.decodeIfPresent({{ typename }}.self, forKey: .{{ var.name }}) ?? 0
+  {% elif typename == "Date" %}
+    {{ var.name }} = try container.decodeIfPresent({{ typename }}.self, forKey: .{{ var.name }}) ?? Date()
+  {% endif %}
+{% endmacro %}
+
+{% macro decodableInitializer variables %}
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    {% for var in variables where var|annotated:"incomingType" %}
+    {% call decodeVar var %}
+    {% endfor %}
+    {% for var in variables where var|!annotated:"incomingType" %}
+    {% call decodeWithDefault var %}
+    {% endfor %}
+  }
+{% endmacro %}
+
+{% macro convertVarForObject var %}
+  {% set typename %}{{ var.typeName.name }}{% endset %}
+  {% set itype %}{{ var.annotations.incomingType }}{% endset %}
+  {% if typename == "Bool" and itype == "Int" %} {# its a 0 or 1 #}
+    {{ var.name }} = (object["{{ var.name }}"] as? Int) == 1
+  {% elif typename == "Date" and itype == "String" %} {# iso date string #}
+    if let {{ var.name }} = object["{{ var.name }}"] as? NSNumber {
+      self.{{ var.name }} = Date.fromTimestamp(Timestamp({{ var.name }}.int64Value))
+    } else {
+      self.{{ var.name }} = Date()
+    }
+  {% endif %}
+{% endmacro %}
+
+{% macro convertVarForEncoder var %}
+  {% set typename %}{{ var.typeName.name }}{% endset %}
+  {% set itype %}{{ var.annotations.incomingType }}{% endset %}
+  {% if not itype %}
+    try container.encode({{ var.name }}, forKey: .{{ var.name }})
+  {% elif typename == "Bool" and itype == "Int" %} {# its a 0 or 1 #}
+    try container.encode({{ var.name }} ? 1 : 0, forKey: .{{ var.name }})
+  {% elif typename == "Date" and itype == "String" %} {# iso date string #}
+    try container.encode({{ var.name }}.iso8601, forKey: .{{ var.name }})
+  {% endif %}
+{% endmacro %}
+
+{% macro encode variables %}
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    {% for var in variables %}
+    {% call convertVarForEncoder var %}
+    {% endfor %}
+  }
+{% endmacro %}
+
+{% macro asDictionary variables %}
+  func asDictionary() -> [String: Any] {
+    var dictionary: [String: Any] = [:]
+    {% for var in variables %}
+    {% if var.typeName.name == "Date" %}
+    dictionary["{{ var.name }}"] = {{ var.name }}.asTimestamp
+    {% else %}
+    dictionary["{{ var.name }}"] = {{ var.name }}
+    {% endif %}
+    {% endfor %}
+    return dictionary
+  }
+{% endmacro %}
+
+{% for type in types.based.ModelMappable where type|protocol and not type.name == "ModelMappable" %}
+{% set model %}{% call modelName type.name %}{% endset %}
+// MARK: {{ model }} Mappable
+struct {{ model }}: Codable {
+  {% call immutableVariables type.allVariables %}
+  // MARK: {{ model }} CodingKeys
+  {% call codingKeys type.allVariables %}
+  // MARK: {{ model }} Decodable
+  {% call decodableInitializer type.allVariables %}
+  // MARK: {{ model }} Encodable
+  {% call encode type.allVariables %}
+  // MARK: {{ model }} Dictionary
+  {% call asDictionary type.allVariables %}
+}
+{% endfor %}
