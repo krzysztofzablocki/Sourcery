@@ -1,0 +1,35 @@
+{# these are a giant line because of spacing, to debug just seperate the if into lines#}
+{% macro defaultValueFor variable %}{% set typename %}{{ variable.typeName.name }}{% endset %}{% if variable|annotated:"codingDefaultValue" %}{{ variable.annotations.codingDefaultValue }}{% elif variable.isOptional %}nil){% elif variable.isArray %}[]){% elif typename == "String" %}""){% elif typename == "Int" or typename == "Double" or typename == "Float" or typename == "NSNumber" %}0){% elif typename == "Bool" %}false){% endif %}{% endmacro %}
+{% macro nameWithTransform name transform %}{% if transform == "camelToSnake" or not transform %}{{ name|camelToSnakeCase }}{% elif transform == "camelToSnake:idToUUID" %}{{ name|camelToSnakeCase|replace:"id","uuid" }}{% elif transform == "idToUUID" %}{{ name|replace:"id","uuid" }}{% endif %}{% endmacro %}
+{% macro keyedNameFor type  variable %}{% if variable|annotated:"codingKey" %}{{ variable.annotations.codingKey }}{% elif type|annotated:"codingKeyTransform" %}{% call nameWithTransform variable.name type.annotations.codingKeyTransform %}{% else %}{{ variable.name }}{% endif %}{% endmacro %}
+{# to make decoding with a default easier #}
+{% macro keyedCodingExtension codingKeyType %}
+{% set codingKeyFull %}{{ codingKeyType.name }}.CodableKeys{% endset %}
+extension KeyedDecodingContainer where KeyedDecodingContainer.Key == {{ codingKeyFull }} {
+  fileprivate func decodeOrDefault<T: Decodable>(_ type: T.Type, forKey key: {{ codingKeyFull }}, defaultValue: T) throws -> T {
+    guard let value: T = try decodeIfPresent(type, forKey: key) else {
+      return defaultValue
+    }
+    return value
+  }
+}
+{% endmacro %}
+{# the keys to use to decoding #}
+{% macro codingKeys type %}
+  fileprivate enum CodableKeys: String, CodingKey {
+    {% for variable in type.allVariables where variable|!annotated:"skipCoding" %}
+    case {{ variable.name }} = "{% call keyedNameFor type variable %}"
+    {% endfor %}
+  }
+{% endmacro %}
+{# going to exclude protocols for now, handle it seperatly #}
+{% for type in types.all|!protocol where type.based.AutoDecodable or type|annotated:"AutoDecodable" and not type.name == "AutoCodable" %}
+{% call keyedCodingExtension type %}
+{% call codingKeys type %}
+{{ type.accessLevel }} init(from decoder: Decoder) throws {
+  let container = try decoder.container(keyedBy: CodableKeys.self)
+  {% for var in type.allVariables where var|!annotated:"skipCoding" %}
+  {{ var.name }} = try container.decodeOrDefault({{ var.typeName.name }}.self, forKey: .{{ var.name }}, defaultValue: {% call defaultValueFor var %}
+  {% endfor %}
+}
+{% endfor %}

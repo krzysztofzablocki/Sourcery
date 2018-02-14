@@ -1,0 +1,12 @@
+{% for type in types.all|!protocol where type.based.AutoDictionaryConvertable or type|annotated:"DictionaryConvertable" %}
+// MARK: {{ type.name }}+AutoDictionaryConvertable
+extension {{ type.name }} {
+  func toDictionary() -> [String: Any] {
+    return [
+    {% for variable in type.allVariables|!annotated:"skipDictionary" %}
+      {% if variable|annotated:"dictionaryKey" %}"{{ variable.annotations.dictionaryKey }}": {{ variable.name }}{% else %}"{{ variable.name }}": {{ variable.name }}{% if not forloop.last %},{% endif %}{% endif %}
+    {% endfor %}
+    ]
+  }
+}
+{% endfor %}
