@@ -33,7 +33,7 @@
   }
 {% endmacro %}
 
-{% for type in types.all|!protocol|!enum where type.based.AutoEncodable or type|annotated:"AutoEncodable" and not type.name == "AutoCodable" %}
+{% for type in types.all|!protocol|!enum where type.based.AutoEncodable or type|annotated:"AutoEncodable" %}
 // MARK: {{ type.name }}+Encodable | AutoEncodable
 extension {{ type.name }}: Encodable {
   {% call codingKeys type %}

@@ -72,10 +72,22 @@ class TemplatesTests: QuickSpec {
             }
         }
 
-        describe("ModelMappable template") {
+        describe("AutoDecodable template") {
             it("generates expected code") {
-                check(template: "ModelMappable")
+                check(template: "AutoDecodable")
             }
+        }
+
+        describe("AutoEncodable template") {
+          it("generates expected code") {
+            check(template: "AutoEncodable")
+          }
+        }
+
+        describe("AutoDictionaryConvertable template") {
+          it("generates expected code") {
+            check(template: "AutoDictionaryConvertable")
+          }
         }
     }
 }

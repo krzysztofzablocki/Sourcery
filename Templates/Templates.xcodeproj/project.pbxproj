@@ -33,10 +33,16 @@
 		6D6645CB1ECC22A3004C1948 /* LinuxMain.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */; };
 		6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6DC27BD71EC6592700B73CAF /* AutoHashable.expected */; };
 		C03FD2E6F7645376C192094D /* Pods_TemplatesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */; };
-		C90D743C20361ACD00EBBE21 /* ModelMappable.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = C90D7439203618F500EBBE21 /* ModelMappable.generated.swift */; };
-		C9EE091B203405A5001D8083 /* ModelMappable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = C9EE091A203405A5001D8083 /* ModelMappable.stencil */; };
-		C9EE091D203405AB001D8083 /* ModelMappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EE091C203405AB001D8083 /* ModelMappable.swift */; };
-		C9EE091F203405B3001D8083 /* ModelMappable.expected in Resources */ = {isa = PBXBuildFile; fileRef = C9EE091E203405B3001D8083 /* ModelMappable.expected */; };
+		C960F1F92037A149004C334A /* Decorator.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = C960F1F52037A149004C334A /* Decorator.swifttemplate */; };
+		C960F1FA2037A149004C334A /* AutoEncodable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = C960F1F62037A149004C334A /* AutoEncodable.stencil */; };
+		C960F1FB2037A149004C334A /* AutoDictionaryConvertable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = C960F1F72037A149004C334A /* AutoDictionaryConvertable.stencil */; };
+		C960F1FC2037A149004C334A /* AutoDecodable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = C960F1F82037A149004C334A /* AutoDecodable.stencil */; };
+		C960F1FE2037A150004C334A /* AutoCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C960F1FD2037A150004C334A /* AutoCodable.swift */; };
+		C960F2012037A370004C334A /* AutoCodable.expected in Resources */ = {isa = PBXBuildFile; fileRef = C960F1FF2037A160004C334A /* AutoCodable.expected */; };
+		C960F2022037A370004C334A /* TemplatesTests.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C8F1EBA146F006EEBEC /* TemplatesTests.swift */; };
+		C960F20C2037AC8C004C334A /* AutoDictionaryConvertable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C960F2092037AC8B004C334A /* AutoDictionaryConvertable.generated.swift */; };
+		C960F20D2037AC8C004C334A /* AutoEncodable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C960F20A2037AC8C004C334A /* AutoEncodable.generated.swift */; };
+		C960F20E2037AC8C004C334A /* AutoDecodable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C960F20B2037AC8C004C334A /* AutoDecodable.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,10 +76,15 @@
 		6DC27BD71EC6592700B73CAF /* AutoHashable.expected */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoHashable.expected; sourceTree = "<group>"; };
 		8BC863822106BD763A8B145B /* Pods-TemplatesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AD6C4A9866B1F8FDB6B02DA5 /* Pods-TemplatesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.release.xcconfig"; sourceTree = "<group>"; };
-		C90D7439203618F500EBBE21 /* ModelMappable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMappable.generated.swift; sourceTree = "<group>"; };
-		C9EE091A203405A5001D8083 /* ModelMappable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ModelMappable.stencil; sourceTree = "<group>"; };
-		C9EE091C203405AB001D8083 /* ModelMappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMappable.swift; sourceTree = "<group>"; };
-		C9EE091E203405B3001D8083 /* ModelMappable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ModelMappable.expected; sourceTree = "<group>"; };
+		C960F1F52037A149004C334A /* Decorator.swifttemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Decorator.swifttemplate; sourceTree = "<group>"; };
+		C960F1F62037A149004C334A /* AutoEncodable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoEncodable.stencil; sourceTree = "<group>"; };
+		C960F1F72037A149004C334A /* AutoDictionaryConvertable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoDictionaryConvertable.stencil; sourceTree = "<group>"; };
+		C960F1F82037A149004C334A /* AutoDecodable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoDecodable.stencil; sourceTree = "<group>"; };
+		C960F1FD2037A150004C334A /* AutoCodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCodable.swift; sourceTree = "<group>"; };
+		C960F1FF2037A160004C334A /* AutoCodable.expected */ = {isa = PBXFileReference; lastKnownFileType = text; path = AutoCodable.expected; sourceTree = "<group>"; };
+		C960F2092037AC8B004C334A /* AutoDictionaryConvertable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoDictionaryConvertable.generated.swift; sourceTree = "<group>"; };
+		C960F20A2037AC8C004C334A /* AutoEncodable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoEncodable.generated.swift; sourceTree = "<group>"; };
+		C960F20B2037AC8C004C334A /* AutoDecodable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoDecodable.generated.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +114,7 @@
 		6D342C8D1EBA146F006EEBEC /* Context */ = {
 			isa = PBXGroup;
 			children = (
-				C9EE091C203405AB001D8083 /* ModelMappable.swift */,
+				C960F1FD2037A150004C334A /* AutoCodable.swift */,
 				6D342C931EBA155A006EEBEC /* AutoCases.swift */,
 				6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */,
 				6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */,
@@ -117,13 +128,13 @@
 		6D342C921EBA1481006EEBEC /* Expected */ = {
 			isa = PBXGroup;
 			children = (
-				C9EE091E203405B3001D8083 /* ModelMappable.expected */,
 				6DC27BD71EC6592700B73CAF /* AutoHashable.expected */,
 				6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */,
 				6D342CA11EBA35E9006EEBEC /* AutoCases.expected */,
 				6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */,
 				6D6645C21ECC1824004C1948 /* AutoMockable.expected */,
 				6D6645C71ECC2187004C1948 /* LinuxMain.expected */,
+				C960F1FF2037A160004C334A /* AutoCodable.expected */,
 			);
 			path = Expected;
 			sourceTree = "<group>";
@@ -131,7 +142,9 @@
 		6D342C961EBA18F6006EEBEC /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				C90D7439203618F500EBBE21 /* ModelMappable.generated.swift */,
+				C960F20B2037AC8C004C334A /* AutoDecodable.generated.swift */,
+				C960F2092037AC8B004C334A /* AutoDictionaryConvertable.generated.swift */,
+				C960F20A2037AC8C004C334A /* AutoEncodable.generated.swift */,
 				6D6645C01ECC181A004C1948 /* AutoMockable.generated.swift */,
 				6D342C971EBA3156006EEBEC /* AutoCases.generated.swift */,
 				6D342C981EBA3156006EEBEC /* AutoEquatable.generated.swift */,
@@ -164,7 +177,10 @@
 		6D6A249B1EB79E8900C1FB1A /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				C9EE091A203405A5001D8083 /* ModelMappable.stencil */,
+				C960F1F82037A149004C334A /* AutoDecodable.stencil */,
+				C960F1F72037A149004C334A /* AutoDictionaryConvertable.stencil */,
+				C960F1F62037A149004C334A /* AutoEncodable.stencil */,
+				C960F1F52037A149004C334A /* Decorator.swifttemplate */,
 				6D342C7C1EBA13DF006EEBEC /* AutoCases.stencil */,
 				6D342C7D1EBA13DF006EEBEC /* AutoEquatable.stencil */,
 				6D342C7E1EBA13DF006EEBEC /* AutoHashable.stencil */,
@@ -257,27 +273,30 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C960F2012037A370004C334A /* AutoCodable.expected in Resources */,
+				C960F2022037A370004C334A /* TemplatesTests.swift in Resources */,
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
-				C90D743C20361ACD00EBBE21 /* ModelMappable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
 				6D6645CB1ECC22A3004C1948 /* LinuxMain.generated.swift in Resources */,
 				6D6645C81ECC2187004C1948 /* LinuxMain.expected in Resources */,
 				6D130B7B1ECACD0F00E9642A /* AutoLenses.expected in Resources */,
 				6D342C841EBA13DF006EEBEC /* AutoEquatable.stencil in Resources */,
+				C960F1F92037A149004C334A /* Decorator.swifttemplate in Resources */,
 				6D342C891EBA13DF006EEBEC /* LinuxMain.stencil in Resources */,
 				6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
 				6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */,
 				6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */,
 				6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */,
-				C9EE091F203405B3001D8083 /* ModelMappable.expected in Resources */,
+				C960F1FB2037A149004C334A /* AutoDictionaryConvertable.stencil in Resources */,
 				6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */,
 				6D342C831EBA13DF006EEBEC /* AutoCases.stencil in Resources */,
 				6D342CA31EBA5415006EEBEC /* AutoCases.expected in Resources */,
-				C9EE091B203405A5001D8083 /* ModelMappable.stencil in Resources */,
 				6D342CA41EBA54DF006EEBEC /* AutoCases.generated.swift in Resources */,
+				C960F1FC2037A149004C334A /* AutoDecodable.stencil in Resources */,
 				6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */,
+				C960F1FA2037A149004C334A /* AutoEncodable.stencil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,13 +392,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */,
-				C9EE091D203405AB001D8083 /* ModelMappable.swift in Sources */,
 				6D130B791ECACCDF00E9642A /* AutoLenses.swift in Sources */,
 				6D342C941EBA155A006EEBEC /* AutoCases.swift in Sources */,
 				6D6645C51ECC184A004C1948 /* AutoMockable.swift in Sources */,
 				6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */,
+				C960F20D2037AC8C004C334A /* AutoEncodable.generated.swift in Sources */,
 				6D342C911EBA146F006EEBEC /* TemplatesTests.swift in Sources */,
 				6D6645CA1ECC219C004C1948 /* LinuxMain.swift in Sources */,
+				C960F1FE2037A150004C334A /* AutoCodable.swift in Sources */,
+				C960F20E2037AC8C004C334A /* AutoDecodable.generated.swift in Sources */,
+				C960F20C2037AC8C004C334A /* AutoDictionaryConvertable.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
