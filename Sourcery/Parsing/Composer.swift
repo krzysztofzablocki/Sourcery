@@ -327,6 +327,21 @@ struct Composer {
                     let valueName = self.actualTypeName(for: TypeName(types[1]), containingType: containingType, unique: unique, typealiases: typealiases)
                     actualTypeName = "[\(keyName ?? types[0]): \(valueName ?? types[1])]"
                 }
+            } else if let genericStartIndex = unwrappedTypeName.index(of: "<"), unwrappedTypeName.last == ">" {
+                let genericTypeNameString = String(unwrappedTypeName.prefix(upTo: genericStartIndex))
+                let genericTypeName = self.actualTypeName(for: TypeName(genericTypeNameString), containingType: containingType, unique: unique, typealiases: typealiases)
+
+                let typeParametersString = unwrappedTypeName.suffix(from: genericStartIndex).dropFirst().dropLast()
+                let typeParameters = String(typeParametersString).commaSeparated()
+                var actualTypeParameters = [String]()
+                for typeParameter in typeParameters {
+                    if let typeName = self.actualTypeName(for: TypeName(typeParameter), containingType: containingType, unique: unique, typealiases: typealiases) {
+                        actualTypeParameters.append(typeName)
+                    } else {
+                        actualTypeParameters.append(typeParameter)
+                    }
+                }
+                actualTypeName = "\(genericTypeName ?? genericTypeNameString)<\(actualTypeParameters.joined(separator: ", "))>"
             }
             return actualTypeName + optionalPrefix
         } else {
