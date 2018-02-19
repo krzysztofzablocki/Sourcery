@@ -66,6 +66,8 @@ extension NSRange: Diffable {
 
 extension DiffableResult {
 
+#if swift(>=4.1)
+#else
     @discardableResult func trackDifference<T: Equatable>(actual: T, expected: T) -> DiffableResult {
         if actual != expected {
             let result = DiffableResult(results: ["<expected: \(expected), received: \(actual)>"])
@@ -73,6 +75,7 @@ extension DiffableResult {
         }
         return self
     }
+#endif
 
     @discardableResult func trackDifference<T: Equatable>(actual: T?, expected: T?) -> DiffableResult {
         if actual != expected {
