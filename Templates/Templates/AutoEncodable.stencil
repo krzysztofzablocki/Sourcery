@@ -1,10 +1,10 @@
 {% macro nameWithTransform name transform %}{% if transform == "camelToSnake" or not transform %}{{ name|camelToSnakeCase }}{% elif transform == "camelToSnake:idToUUID" %}{{ name|camelToSnakeCase|replace:"id","uuid" }}{% elif transform == "idToUUID" %}{{ name|replace:"id","uuid" }}{% endif %}{% endmacro %}
-{% macro keyedNameFor type  variable %}{% if variable|annotated:"codingKey" %}{{ variable.annotations.codingKey }}{% elif type|annotated:"codingKeyTransform" %}{% call nameWithTransform variable.name type.annotations.codingKeyTransform %}{% else %}{{ variable.name }}{% endif %}{% endmacro %}
+{% macro keyedNameFor type  variable %}{% if variable|annotated:"codingKey" %} = "{{ variable.annotations.codingKey }}"{% elif type|annotated:"codingKeyTransform" %}= "{% call decodeNameWithTransform variable.name type.annotations.codingKeyTransform %}"{% endif %}{% endmacro %}
 
 {% macro convertTypeForEncoder var %}
   {% set encodeCall %}{% if var.isOptional %}encodeIfPresent{% else %}encode{% endif %}{% endset %}
   {% if var|!annotated:"encodingType" %}
-    try container.{{encodeCall}}({{ var.name }}, forKey: .{{ var.name }})
+    try container.{{ encodeCall }}({{ var.name }}, forKey: .{{ var.name }})
   {% else %}
   {% set typename %}{{ var.typeName.name }}{% endset %}
   {% set encodingType %}{{ var.annotations.encodingType }}{% endset %}
@@ -19,23 +19,23 @@
 {% macro encode type %}
   {{ type.accessLevel }} func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: EncodableKeys.self)
-    {% for variable in type.allVariables where variable|!annotated:"skipCoding" %}
+    {% for variable in type.instanceVariables where variable|!annotated:"skipCoding" %}
     {% call convertTypeForEncoder variable %}
     {% endfor %}
   }
 {% endmacro %}
 
 {% macro codingKeys type %}
-  fileprivate enum EncodableKeys: String, CodingKey {
-    {% for variable in type.allVariables where variable|!annotated:"skipCoding" %}
-    case {{ variable.name }} = "{% call keyedNameFor type variable %}"
+  private enum EncodableKeys: String, CodingKey {
+    {% for variable in type.instanceVariables where variable|!annotated:"skipCoding" %}
+    case {{ variable.name }} {% call keyedNameFor type variable %}
     {% endfor %}
   }
 {% endmacro %}
 
-{% for type in types.all|!protocol|!enum where type.based.AutoEncodable or type|annotated:"AutoEncodable" %}
+{% for type in types.all|!class|!enum where type.based.AutoEncodable and not type.supertype.based.AutoDecodable or type|annotated:"AutoEncodable" and type.name != "AutoCodable" and type.name != "AutoEncodable" %}
 // MARK: {{ type.name }}+Encodable | AutoEncodable
-extension {{ type.name }}: Encodable {
+extension {{ type.name }} {
   {% call codingKeys type %}
 
   {% call encode type %}

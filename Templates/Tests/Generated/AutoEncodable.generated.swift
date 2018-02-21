@@ -6,18 +6,18 @@
 
 
 
-// MARK: AutoCodableAnnotated+Encodable | AutoEncodable
-extension AutoCodableAnnotated: Encodable {
-  fileprivate enum EncodableKeys: String, CodingKey {
-    case bool = "auto_codable_bool"
-    case optional = "optional"
-    case prim1 = "auto_codable_prim_1"
-    case prim2 = "auto_codable_prim_2"
-    case prim3 = "auto_codable_prim_3"
-    case arr = "arr"
-    case arrOpt = "arrOpt"
-    case date = "date"
-    case optDate = "optDate"
+// MARK: AutoDecodableTest+Encodable | AutoEncodable
+extension AutoDecodableTest {
+  private enum EncodableKeys: String, CodingKey {
+    case bool  = "auto_codable_bool"
+    case optional 
+    case prim1  = "auto_codable_prim_1"
+    case prim2  = "auto_codable_prim_2"
+    case prim3  = "auto_codable_prim_3"
+    case arr 
+    case arrOpt 
+    case date 
+    case optDate 
   }
 
   internal func encode(to encoder: Encoder) throws {
