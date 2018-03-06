@@ -56,7 +56,7 @@ Sourcery treat all the templates as independent and so will generate files based
 Swift templates syntax is very similar to EJS:
 
 - Control flow with `<% %>`
-- Output value withn `<%= %>`
+- Output value with `<%= %>`
 - Trim extra new line after control flow tag with `-%>`
 - Trim _all_ whitespaces before/after control flow tag with `<%_` and `_%>`
 - Use `<%# %>` for comments
