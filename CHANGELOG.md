@@ -57,6 +57,7 @@ This is a breaking change for template code like this:
 - Automockable will not generate mocks for methods defined in protocol extensions
 - Fixed parsing typealiases of generic types
 - Fixed resolving actual type name for generics with inner types
+- Fixed parsing nested types from extensions
 
 ## 0.10.1
 

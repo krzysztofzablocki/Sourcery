@@ -278,6 +278,7 @@ import Foundation
         self.methods += type.methods
         self.subscripts += type.subscripts
         self.inheritedTypes += type.inheritedTypes
+        self.containedTypes += type.containedTypes
 
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
         type.inherits.forEach { self.inherits[$0.key] = $0.value }
