@@ -24,3 +24,12 @@ struct Room: AutoLenses {
 struct Person: AutoLenses {
     let name: String
 }
+
+struct Rectangle: AutoLenses {
+    let x: Int
+    let y: Int
+    
+    var area: Int {
+        return x*y
+    }
+}

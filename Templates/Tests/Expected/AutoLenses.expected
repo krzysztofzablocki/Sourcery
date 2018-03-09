@@ -54,6 +54,20 @@ extension Person {
     }
   )
 }
+extension Rectangle {
+  static let xLens = Lens<Rectangle, Int>(
+    get: { $0.x },
+    set: { x, rectangle in
+       Rectangle(x: x, y: rectangle.y)
+    }
+  )
+  static let yLens = Lens<Rectangle, Int>(
+    get: { $0.y },
+    set: { y, rectangle in
+       Rectangle(x: rectangle.x, y: y)
+    }
+  )
+}
 extension Room {
   static let peopleLens = Lens<Room, [Person]>(
     get: { $0.people },

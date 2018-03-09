@@ -56,6 +56,7 @@ This is a breaking change for template code like this:
 - Fixed trying to process files which do not exist
 - Automockable will not generate mocks for methods defined in protocol extensions
 - Fixed parsing typealiases of generic types
+- AutoLenses template will create lenses only for stored properties
 - Fixed resolving actual type name for generics with inner types
 - Fixed parsing nested types from extensions
 
