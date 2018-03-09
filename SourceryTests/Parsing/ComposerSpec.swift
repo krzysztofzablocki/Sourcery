@@ -832,6 +832,20 @@ class ParserComposerSpec: QuickSpec {
                         expect(method?.definedInType).to(equal(types.last))
                     }
 
+                    it("extracts property of nested generic type properly") {
+                        let expectedActualTypeName = TypeName("Blah.Foo<Blah.FooBar>?")
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo<FooBar>?", actualTypeName: expectedActualTypeName), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "FooBar"), Struct(name: "Foo<T>"), Struct(name: "Bar", variables: [expectedVariable])])
+                        expectedActualTypeName.generic = GenericType(name: "Blah.Foo", typeParameters: [GenericTypeParameter(typeName: TypeName("Blah.FooBar"), type: expectedBlah.containedType["FooBar"])])
+                        expectedVariable.typeName.generic = expectedActualTypeName.generic
+
+                        let types = parse("struct Blah { struct FooBar {}; struct Foo<T> {}; struct Bar { let foo: Foo<FooBar>? }}")
+                        let bar = types.first(where: { $0.name == "Blah.Bar" })
+
+                        expect(bar?.variables.first).to(equal(expectedVariable))
+                        expect(bar?.variables.first?.actualTypeName).to(equal(expectedVariable.actualTypeName))
+                    }
+
                     it("extracts property of nested type properly") {
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName:TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])

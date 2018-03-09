@@ -57,7 +57,12 @@ internal enum Substring {
     }
 
     func extract(from source: [String: SourceKitRepresentable], contents: String) -> String? {
-        let substring = range(for: source).flatMap { contents.substringWithByteRange(start: Int($0.offset), length: Int($0.length)) }
+        let substring = range(for: source).flatMap { range -> String? in
+            guard let subdata = contents.data(using: .utf8)?.subdata(in: Int(range.offset)..<Int(range.offset + range.length)) else {
+                return nil
+            }
+            return String(data: subdata, encoding: .utf8)
+        }
         return substring?.isEmpty == true ? nil : substring?.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 

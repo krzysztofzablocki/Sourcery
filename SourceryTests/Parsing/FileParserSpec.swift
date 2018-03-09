@@ -107,13 +107,23 @@ class FileParserSpec: QuickSpec {
                     }
 
                     context("given nested struct") {
-                        it("extracts properly") {
+                        it("extracts properly from body") {
                             let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
 
                             expect(parse("public struct Foo { struct Bar { } }"))
                                     .to(equal([
                                             Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [], containedTypes: [innerType]),
                                             innerType
+                                    ]))
+                        }
+
+                        it("extracts properly from extension") {
+                            let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
+
+                            expect(parse("public struct Foo {}  extension Foo { struct Bar { } }"))
+                                .to(equal([
+                                    Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [], containedTypes: [innerType]),
+                                    innerType
                                     ]))
                         }
                     }
