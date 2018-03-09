@@ -58,6 +58,7 @@ This is a breaking change for template code like this:
 - Fixed parsing typealiases of generic types
 - Fixed resolving actual type name for generics with inner types
 - Fixed parsing nested types from extensions
+- Fixed removing back ticks in types names
 
 ## 0.10.1
 
