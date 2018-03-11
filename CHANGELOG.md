@@ -59,6 +59,7 @@ This is a breaking change for template code like this:
 - AutoLenses template will create lenses only for stored properties
 - Fixed resolving actual type name for generics with inner types
 - Fixed parsing nested types from extensions
+- Fixed removing back ticks in types names
 
 ## 0.10.1
 
