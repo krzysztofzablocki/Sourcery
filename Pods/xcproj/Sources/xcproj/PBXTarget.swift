@@ -72,8 +72,12 @@ public class PBXTarget: PBXObject {
         try super.init(from: decoder)
     }
 
-    public static func == (lhs: PBXTarget,
-                           rhs: PBXTarget) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? PBXTarget else {
+                return false
+        }
+        let lhs = self
         return lhs.buildConfigurationList == rhs.buildConfigurationList &&
             lhs.buildPhases == rhs.buildPhases &&
             lhs.buildRules == rhs.buildRules &&

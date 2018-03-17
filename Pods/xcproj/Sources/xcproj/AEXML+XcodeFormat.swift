@@ -60,6 +60,11 @@ let attributesOrder: [String: [String]] = [
     "ActionContent": [
         "title",
         "scriptText"
+    ],
+    "EnvironmentVariable": [
+        "key",
+        "value",
+        "isEnabled"
     ]
 ]
 

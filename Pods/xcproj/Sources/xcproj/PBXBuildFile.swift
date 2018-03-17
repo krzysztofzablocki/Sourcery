@@ -41,8 +41,12 @@ final public class PBXBuildFile: PBXObject {
 
     // MARK: - Hashable
 
-    public static func == (lhs: PBXBuildFile,
-                           rhs: PBXBuildFile) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? PBXBuildFile else {
+                return false
+        }
+        let lhs = self
         let settingsAreEqual: Bool = {
             switch (lhs.settings, rhs.settings) {
             case (.none, .none):

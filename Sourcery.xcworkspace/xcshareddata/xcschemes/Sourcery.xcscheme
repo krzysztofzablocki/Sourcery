@@ -35,7 +35,7 @@
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "NO"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
@@ -65,26 +65,6 @@
                BlueprintIdentifier = "CD754C991D853F000082B512"
                BuildableName = "SourceryTests.xctest"
                BlueprintName = "SourceryTests"
-               ReferencedContainer = "container:Sourcery.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6D6A24A91EB79E8900C1FB1A"
-               BuildableName = "TemplatesTests.xctest"
-               BlueprintName = "TemplatesTests"
-               ReferencedContainer = "container:Templates/Templates.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6393BC81201B4D600044E8CC"
-               BuildableName = "SourceryJSTests.xctest"
-               BlueprintName = "SourceryJSTests"
                ReferencedContainer = "container:Sourcery.xcodeproj">
             </BuildableReference>
          </TestableReference>

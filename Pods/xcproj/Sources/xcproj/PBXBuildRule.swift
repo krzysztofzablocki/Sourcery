@@ -78,8 +78,12 @@ final public class PBXBuildRule: PBXObject {
 
     // MARK: - Equatable
 
-    public static func == (lhs: PBXBuildRule,
-                           rhs: PBXBuildRule) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? PBXBuildRule else {
+                return false
+        }
+        let lhs = self
         let outputFilesCompilerFlagsAreEqual: Bool = {
             switch (lhs.outputFilesCompilerFlags, rhs.outputFilesCompilerFlags) {
                 case (.none, .none):

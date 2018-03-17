@@ -99,8 +99,8 @@ public extension PBXProj.Objects {
         sourceTree: PBXSourceTree = .group,
         sourceRoot: Path) throws -> ObjectReference<PBXFileReference> {
 
-        guard filePath.isFile else {
-            throw XCodeProjEditingError.notAFile(path: filePath)
+        guard filePath.exists else {
+            throw XCodeProjEditingError.fileNotExists(path: filePath)
         }
 
         guard let groupReference = groups.first(where: { $0.value == toGroup })?.key else {
@@ -196,17 +196,17 @@ public struct GroupAddingOptions: OptionSet {
         self.rawValue = rawValue
     }
     /// Create group without reference to folder
-    static let withoutFolder    = GroupAddingOptions(rawValue: 1 << 0)
+    public static let withoutFolder = GroupAddingOptions(rawValue: 1 << 0)
 }
 
 public enum XCodeProjEditingError: Error, CustomStringConvertible {
-    case notAFile(path: Path)
+    case fileNotExists(path: Path)
     case groupNotFound(group: PBXGroup)
 
     public var description: String {
         switch self {
-        case .notAFile(let path):
-            return "\(path) is not a file path"
+        case .fileNotExists(let path):
+            return "\(path) does not exist"
         case .groupNotFound(let group):
             return "Group not found in project: \(group)"
         }

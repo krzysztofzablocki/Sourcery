@@ -31,8 +31,12 @@ final public class XCConfigurationList: PBXObject {
         super.init()
     }
 
-    public static func == (lhs: XCConfigurationList,
-                           rhs: XCConfigurationList) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? XCConfigurationList else {
+                return false
+        }
+        let lhs = self
         return lhs.buildConfigurations == rhs.buildConfigurations &&
             lhs.defaultConfigurationIsVisible == rhs.defaultConfigurationIsVisible
     }

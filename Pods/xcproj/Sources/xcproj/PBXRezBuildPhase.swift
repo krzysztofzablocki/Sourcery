@@ -8,8 +8,12 @@ final public class PBXRezBuildPhase: PBXBuildPhase {
         return .carbonResources
     }
 
-    public static func == (lhs: PBXRezBuildPhase,
-                           rhs: PBXRezBuildPhase) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? PBXRezBuildPhase else {
+                return false
+        }
+        let lhs = self
         return lhs.buildActionMask == rhs.buildActionMask &&
             lhs.files == rhs.files &&
             lhs.runOnlyForDeploymentPostprocessing == rhs.runOnlyForDeploymentPostprocessing

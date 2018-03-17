@@ -30,8 +30,12 @@ public class PBXFileElement: PBXObject, PlistSerializable {
         super.init()
     }
     
-    public static func == (lhs: PBXFileElement,
-                           rhs: PBXFileElement) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? PBXFileElement else {
+                return false
+        }
+        let lhs = self
         return lhs.sourceTree == rhs.sourceTree &&
             lhs.path == rhs.path &&
             lhs.name == rhs.name

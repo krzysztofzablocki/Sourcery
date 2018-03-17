@@ -60,6 +60,8 @@ fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?)
 // MARK: - AutoHashableClass AutoHashable
 extension AutoHashableClass: Hashable {
     internal var hashValue: Int {
+        let laptopModelHashValue = laptopModel.hashValue
+        let phoneModelHashValue = phoneModel.hashValue
         let firstNameHashValue = firstName.hashValue
         let lastNameHashValue = lastName.hashValue
         let parentsHashValue = hashArray(parents)
@@ -69,6 +71,8 @@ extension AutoHashableClass: Hashable {
         let friendsHashValue = hashArray(friends)
 
         return combineHashes([
+            laptopModelHashValue,
+            phoneModelHashValue,
             firstNameHashValue,
             lastNameHashValue,
             parentsHashValue,
@@ -90,23 +94,31 @@ extension AutoHashableClassInherited: Hashable {
             0])
     }
 }
+// MARK: - AutoHashableEnum AutoHashable
+extension AutoHashableEnum: Hashable {
+    internal var hashValue: Int {
+
+        return combineHashes([
+            0])
+    }
+}
 // MARK: - AutoHashableProtocol AutoHashable
-extension AutoHashableProtocol {
+extension AutoHashableProtocol: Hashable {
     internal var hashValue: Int {
         let widthHashValue = width.hashValue
         let heightHashValue = height.hashValue
-        let type(of: self).nameHashValue = type(of: self).name.hashValue
 
         return combineHashes([
             widthHashValue,
             heightHashValue,
-            nameHashValue,
             0])
     }
 }
 // MARK: - AutoHashableStruct AutoHashable
 extension AutoHashableStruct: Hashable {
     internal var hashValue: Int {
+        let laptopModelHashValue = laptopModel.hashValue
+        let phoneModelHashValue = phoneModel.hashValue
         let firstNameHashValue = firstName.hashValue
         let lastNameHashValue = lastName.hashValue
         let parentsHashValue = hashArray(parents)
@@ -116,6 +128,8 @@ extension AutoHashableStruct: Hashable {
         let friendsHashValue = hashArray(friends)
 
         return combineHashes([
+            laptopModelHashValue,
+            phoneModelHashValue,
             firstNameHashValue,
             lastNameHashValue,
             parentsHashValue,

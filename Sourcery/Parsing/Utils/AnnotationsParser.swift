@@ -238,7 +238,7 @@ internal struct AnnotationsParser {
         var annotations = Annotations()
         annotationDefinitions.forEach { annotation in
             let parts = annotation
-                .components(separatedBy: "=", excludingDelimiterBetween:("", ""))
+                .components(separatedBy: "=", excludingDelimiterBetween: ("", ""))
                 .map({ $0.trimmingCharacters(in: .whitespaces) })
 
             if let name = parts.first, !name.isEmpty {

@@ -77,6 +77,8 @@ public enum SwiftDocKey: String {
     case parsedScopeStart     = "key.parsed_scope.start"
     /// Swift Declaration (String).
     case swiftDeclaration     = "key.swift_declaration"
+    /// Swift Name (String).
+    case swiftName            = "key.swift_name"
     /// Always deprecated (Bool).
     case alwaysDeprecated     = "key.always_deprecated"
     /// Always unavailable (Bool).

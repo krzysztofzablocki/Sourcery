@@ -99,25 +99,25 @@ final class FileParser {
     /// Parses given file context.
     ///
     /// - Returns: All types we could find.
-    public func parse() -> FileParserResult {
+    public func parse() throws -> FileParserResult {
         _ = parseContentsIfNeeded()
 
         if let path = path {
             Log.verbose("Processing file \(path)")
         }
         let file = File(contents: contents)
-        let source = Structure(file: file).dictionary
+        let source = try Structure(file: file).dictionary
 
         var processedGlobalTypes = [[String: SourceKitRepresentable]]()
-        let types = parseTypes(source, processed: &processedGlobalTypes)
+        let types = try parseTypes(source, processed: &processedGlobalTypes)
 
-        let typealiases = parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
+        let typealiases = try parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
         return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Sourcery.version)
     }
 
-    internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) -> [Type] {
+    internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) throws -> [Type] {
         var types = [Type]()
-        walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn, next in
+        try walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
 
             switch kind {
@@ -183,7 +183,7 @@ final class FileParser {
     ) -> Any?
 
     /// Walks all declarations in the source
-    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: FoundEntry) {
+    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: FoundEntry) throws {
         if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
             for (index, substructure) in substructures.enumerated() {
                 if let source = substructure as? [String: SourceKitRepresentable] {
@@ -191,7 +191,7 @@ final class FileParser {
                     let nextStructure = index < substructures.count - 1
                         ? substructures[index+1] as? [String: SourceKitRepresentable]
                         : nil
-                    walkDeclaration(
+                    try walkDeclaration(
                         source: source,
                         next: nextStructure,
                         containingIn: containingIn,
@@ -203,7 +203,7 @@ final class FileParser {
     }
 
     /// Walks single declaration in the source, recursively processing containing types
-    private func walkDeclaration(source: [String: SourceKitRepresentable], next: [String: SourceKitRepresentable]?, containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: FoundEntry) {
+    private func walkDeclaration(source: [String: SourceKitRepresentable], next: [String: SourceKitRepresentable]?, containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: FoundEntry) throws {
         var declaration = containingIn
 
         let inheritedTypes = extractInheritedTypes(source: source)
@@ -217,10 +217,10 @@ final class FileParser {
         }
 
         var processedInnerTypes = [[String: SourceKitRepresentable]]()
-        walkDeclarations(source: source, containingIn: declaration, processed: &processedInnerTypes, foundEntry: foundEntry)
+        try walkDeclarations(source: source, containingIn: declaration, processed: &processedInnerTypes, foundEntry: foundEntry)
 
         if let foundType = declaration?.0 as? Type {
-            parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
+            try parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
                 .forEach { foundType.typealiases[$0.aliasName] = $0 }
         }
     }
@@ -710,10 +710,9 @@ extension FileParser {
             return nil
         }
 
-        let `inout` = type.hasPrefix("inout ")
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), `inout`: `inout`)
+        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), isInout: type.hasPrefix("inout "))
         parameter.setSource(source)
         return parameter
     }
@@ -793,7 +792,7 @@ extension FileParser {
 // MARK: - Typealiases
 extension FileParser {
 
-    fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) -> [Typealias] {
+    fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) throws -> [Typealias] {
         // swiftlint:disable:next force_unwrapping
         var contentToParse = self.contents!
 
@@ -815,12 +814,12 @@ extension FileParser {
 
         guard containingType != nil else {
             let contents = voidReplaced(contentToParse)
-            return parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
+            return try parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
         }
 
         if let body = extract(.body, from: source, contents: contentToParse) {
             let contents = voidReplaced(body)
-            return parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
+            return try parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
         } else {
             return []
         }
@@ -1032,7 +1031,7 @@ extension String {
             finished = true
             let lines = stripped.lines()
             if lines.count > 1 {
-                stripped = lines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator:"")
+                stripped = lines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator: "")
                 finished = false
             }
             if let annotationStart = stripped.range(of: "/*")?.lowerBound, let annotationEnd = stripped.range(of: "*/")?.upperBound {

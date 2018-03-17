@@ -40,8 +40,12 @@ final public class PBXVariantGroup: PBXFileElement {
 
     // MARK: - Hashable
 
-    public static func == (lhs: PBXVariantGroup,
-                           rhs: PBXVariantGroup) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? PBXVariantGroup else {
+                return false
+        }
+        let lhs = self
         return lhs.children == rhs.children &&
         lhs.name == rhs.name &&
         lhs.sourceTree == rhs.sourceTree

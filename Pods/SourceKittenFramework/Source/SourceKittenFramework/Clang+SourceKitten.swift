@@ -194,7 +194,7 @@ extension CXCursor {
         return commentBody
     }
 
-    func swiftDeclaration(compilerArguments: [String]) -> String? {
+    func swiftDeclarationAndName(compilerArguments: [String]) -> (swiftDeclaration: String?, swiftName: String?) {
         let file = location().file
         let swiftUUID: String
 
@@ -204,26 +204,29 @@ extension CXCursor {
             swiftUUID = NSUUID().uuidString
             setUUIDString(uidString: swiftUUID, for: file)
             // Generate Swift interface, associating it with the UUID
-            _ = Request.interface(file: file, uuid: swiftUUID, arguments: compilerArguments).send()
+            do {
+                _ = try Request.interface(file: file, uuid: swiftUUID, arguments: compilerArguments).send()
+            } catch {
+                return (nil, nil)
+            }
         }
 
         guard let usr = usr(),
-              let usrOffset = Request.findUSR(file: swiftUUID, usr: usr).send()[SwiftDocKey.offset.rawValue] as? Int64 else {
-            return nil
+            let findUSR = try? Request.findUSR(file: swiftUUID, usr: usr).send(),
+            let usrOffset = findUSR[SwiftDocKey.offset.rawValue] as? Int64 else {
+                return (nil, nil)
         }
 
-        let cursorInfo = Request.cursorInfo(file: swiftUUID, offset: usrOffset, arguments: compilerArguments).send()
-        if let docsXML = cursorInfo[SwiftDocKey.fullXMLDocs.rawValue] as? String,
-           let swiftDeclaration = SWXMLHash.parse(docsXML).children.first?["Declaration"].element?.text {
-                return swiftDeclaration
+        guard let cursorInfo = try? Request.cursorInfo(file: swiftUUID, offset: usrOffset, arguments: compilerArguments).send() else {
+            return (nil, nil)
         }
 
-        if let annotatedDeclarationXML = cursorInfo[SwiftDocKey.annotatedDeclaration.rawValue] as? String,
-           let swiftDeclaration = SWXMLHash.parse(annotatedDeclarationXML).element?.recursiveText {
-                return swiftDeclaration
-        }
+        let swiftDeclaration = (cursorInfo[SwiftDocKey.annotatedDeclaration.rawValue] as? String)
+            .flatMap(SWXMLHash.parse)?.element?.recursiveText
 
-        return nil
+        let swiftName = cursorInfo[SwiftDocKey.name.rawValue] as? String
+
+        return (swiftDeclaration, swiftName)
     }
 }
 

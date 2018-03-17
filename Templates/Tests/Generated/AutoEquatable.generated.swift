@@ -27,6 +27,8 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
 // MARK: - AutoEquatableClass AutoEquatable
 extension AutoEquatableClass: Equatable {}
 internal func == (lhs: AutoEquatableClass, rhs: AutoEquatableClass) -> Bool {
+    guard lhs.laptopModel == rhs.laptopModel else { return false }
+    guard lhs.phoneModel == rhs.phoneModel else { return false }
     guard lhs.firstName == rhs.firstName else { return false }
     guard lhs.lastName == rhs.lastName else { return false }
     guard compareArrays(lhs: lhs.parents, rhs: rhs.parents, compare: ==) else { return false }
@@ -43,15 +45,17 @@ internal func == (lhs: AutoEquatableClassInherited, rhs: AutoEquatableClassInher
     return true
 }
 // MARK: - AutoEquatableProtocol AutoEquatable
+extension AutoEquatableProtocol: Equatable {}
 internal func == (lhs: AutoEquatableProtocol, rhs: AutoEquatableProtocol) -> Bool {
     guard lhs.width == rhs.width else { return false }
     guard lhs.height == rhs.height else { return false }
-    guard lhs.name == rhs.name else { return false }
     return true
 }
 // MARK: - AutoEquatableStruct AutoEquatable
 extension AutoEquatableStruct: Equatable {}
 internal func == (lhs: AutoEquatableStruct, rhs: AutoEquatableStruct) -> Bool {
+    guard lhs.laptopModel == rhs.laptopModel else { return false }
+    guard lhs.phoneModel == rhs.phoneModel else { return false }
     guard lhs.firstName == rhs.firstName else { return false }
     guard lhs.lastName == rhs.lastName else { return false }
     guard compareArrays(lhs: lhs.parents, rhs: rhs.parents, compare: ==) else { return false }

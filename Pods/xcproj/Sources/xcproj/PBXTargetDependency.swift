@@ -27,8 +27,12 @@ final public class PBXTargetDependency: PBXObject {
     
     // MARK: - Hashable
     
-    public static func == (lhs: PBXTargetDependency,
-                           rhs: PBXTargetDependency) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard super.isEqual(to: self),
+            let rhs = object as? PBXTargetDependency else {
+                return false
+        }
+        let lhs = self
         return lhs.target == rhs.target &&
         lhs.targetProxy == rhs.targetProxy
     }

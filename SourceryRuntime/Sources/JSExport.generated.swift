@@ -110,7 +110,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawTypeName: TypeName? { get }
     var hasRawType: Bool { get }
     var rawType: Type? { get }
-    var based: [String : String] { get }
+    var based: [String: String] { get }
     var hasAssociatedValues: Bool { get }
     var module: String? { get }
     var accessLevel: String { get }

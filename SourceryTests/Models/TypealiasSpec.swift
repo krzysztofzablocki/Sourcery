@@ -40,9 +40,9 @@ class TypealiasSpec: QuickSpec {
 
                 context("given different items") {
                     it("is not equal") {
-                        expect(sut).toNot(equal(Typealias(aliasName:"Foo", typeName: TypeName("Foo"))))
-                        expect(sut).toNot(equal(Typealias(aliasName:"Bar", typeName: TypeName("Bar"))))
-                        expect(sut).toNot(equal(Typealias(aliasName:"Bar", typeName: TypeName("Bar"), parent: Type(name: "Parent"))))
+                        expect(sut).toNot(equal(Typealias(aliasName: "Foo", typeName: TypeName("Foo"))))
+                        expect(sut).toNot(equal(Typealias(aliasName: "Bar", typeName: TypeName("Bar"))))
+                        expect(sut).toNot(equal(Typealias(aliasName: "Bar", typeName: TypeName("Bar"), parent: Type(name: "Parent"))))
                     }
                 }
 
