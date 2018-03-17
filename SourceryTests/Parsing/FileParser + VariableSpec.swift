@@ -63,8 +63,9 @@ class FileParserVariableSpec: QuickSpec {
                         expect(parse("var name = true")?.typeName).to(equal(TypeName("Bool")))
                         expect(parse("var name = false")?.typeName).to(equal(TypeName("Bool")))
                         expect(parse("var name = nil")?.typeName).to(equal(TypeName("Optional")))
-                        expect(parse("var name = Optional.none")?.typeName).to(equal(TypeName("<<unknown type, please add type attribution to variable 'var name = Optional.none'>>")))
-                        expect(parse("var name = Optional.some(1)")?.typeName).to(equal(TypeName("<<unknown type, please add type attribution to variable 'var name = Optional.some(1)'>>")))
+                        expect(parse("var name = Optional.none")?.typeName).to(equal(TypeName("Optional")))
+                        expect(parse("var name = Optional.some(1)")?.typeName).to(equal(TypeName("Optional")))
+                        expect(parse("var name = Foo.Bar()")?.typeName).to(equal(TypeName("Foo.Bar")))
                     }
 
                     it("extracts property with array literal value correctly") {

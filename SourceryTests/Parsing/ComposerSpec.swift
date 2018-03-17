@@ -340,7 +340,7 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given generic dictionary type") {
                     it("extracts key type properly") {
-                        let types = parse("struct Foo { var dictionary: Dictionary<Int, String>; var dictionaryOfArrays: Dictionary<[Int], [String]>; var dictonaryOfDictionaries: Dictionary<Int, [Int: String]>; var dictionaryOfTuples: Dictionary<Int, (String, String)>; var dictionaryOfClojures: Dictionary<Int, ()->()> }")
+                        let types = parse("struct Foo { var dictionary: Dictionary<Int, String>; var dictionaryOfArrays: Dictionary<[Int], [String]>; var dictonaryOfDictionaries: Dictionary<Int, [Int: String]>; var dictionaryOfTuples: Dictionary<Int, (String, String)>; var dictionaryOfClojures = Dictionary<Int, ()->()>() }")
                         let variables = types.first?.variables
 
                         expect(variables?[0].typeName.dictionary).to(equal(
