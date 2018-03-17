@@ -122,7 +122,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/ilyapuchka/dev/Sourcery/SourceryRuntime/Sources"
+            argument = "$SRCROOT/SourceryRuntime/Sources"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -130,7 +130,15 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/ilyapuchka/dev/Sourcery/Sourcery/Templates"
+            argument = "$SRCROOT/Sourcery/Templates"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--output"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "$SRCROOT/SourceryRuntime/Sources"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

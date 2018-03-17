@@ -61,6 +61,7 @@ This is a breaking change for template code like this:
 - Fixed resolving actual type name for generics with inner types
 - Fixed parsing nested types from extensions
 - Fixed removing back ticks in types names
+- Fixed creating output folder if it does not exist
 
 ## 0.10.1
 
