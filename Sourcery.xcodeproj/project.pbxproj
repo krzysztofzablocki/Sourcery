@@ -513,8 +513,8 @@
 				E291DB6A95BAECDB6E978A76 /* Sourcery.swift */,
 				6D40A8331EF3241E00E77293 /* Version.swift */,
 				094415C71E78A46A00ABE04A /* Configuration.swift */,
-				CD754C951D853F000082B512 /* Info.plist */,
 				CD9C459C1DFAF76D00161C2C /* main.swift */,
+				CD754C951D853F000082B512 /* Info.plist */,
 			);
 			path = Sourcery;
 			sourceTree = "<group>";

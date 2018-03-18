@@ -238,9 +238,9 @@ struct Configuration {
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 
-    init(sources: [Path], templates: [Path], output: Path, forceParse: [String], args: [String: NSObject]) {
-        self.source = .sources(Paths(include: sources))
-        self.templates = Paths(include: templates)
+    init(sources: Paths, templates: Paths, output: Path, forceParse: [String], args: [String: NSObject]) {
+        self.source = .sources(sources)
+        self.templates = templates
         self.output = Output(output, linkTo: nil)
         self.forceParse = forceParse
         self.args = args

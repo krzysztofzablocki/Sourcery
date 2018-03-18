@@ -19,6 +19,7 @@
 - You can now link generated files to projects using config file
 - You can now use AutoMockable with annotations
 - Updated to latest version of Stencil (commit 9184720)
+- Added `--exclude-sources` and `--exclude-templates` CLI options
 
 ** Breaking **
 
