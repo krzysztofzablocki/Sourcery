@@ -86,6 +86,15 @@ class AnnotationsParserSpec: QuickSpec {
                         "var name: Int { return 2 }")
                     expect(result).to(equal(annotations))
                 }
+
+                it("extracts namespace annotations") {
+                    let annotations: [String: NSObject] = ["smth": ["key": "aKey" as NSObject, "default": NSNumber(value: 0), "prune": NSNumber(value: true)] as NSObject]
+                    let result = parse("// sourcery:decoding:smth: key='aKey', default=0\n" +
+                        "// sourcery:decoding:smth: prune\n" +
+                        "var name: Int { return 2 }")
+
+                    expect(result["decoding"] as? Annotations).to(equal(annotations))
+                }
             }
         }
     }
