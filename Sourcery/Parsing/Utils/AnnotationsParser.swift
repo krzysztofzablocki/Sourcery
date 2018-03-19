@@ -182,9 +182,11 @@ internal struct AnnotationsParser {
     }
 
     private static func searchForAnnotations(commentLine: String) -> AnnotationType {
-        guard commentLine.contains("sourcery:") else { return .annotations([:]) }
+        let comment = commentLine.trimmingPrefix("///").trimmingPrefix("//").trimmingPrefix("/*").stripped()
 
-        if commentLine.contains("sourcery:inline:") {
+        guard comment.hasPrefix("sourcery:") else { return .annotations([:]) }
+
+        if comment.hasPrefix("sourcery:inline:") {
             return .inlineStart
         }
 
@@ -193,13 +195,13 @@ internal struct AnnotationsParser {
         var insideBlock: Bool = false
         var insideFileBlock: Bool = false
 
-        if commentLine.contains("sourcery:begin:") {
+        if comment.hasPrefix("sourcery:begin:") {
             lowerBound = commentLine.range(of: "sourcery:begin:")?.upperBound
             upperBound = commentLine.indices.endIndex
             insideBlock = true
-        } else if commentLine.contains("sourcery:end") {
+        } else if comment.hasPrefix("sourcery:end") {
             return .end
-        } else if commentLine.contains("sourcery:file") {
+        } else if comment.hasPrefix("sourcery:file") {
             lowerBound = commentLine.range(of: "sourcery:file:")?.upperBound
             upperBound = commentLine.indices.endIndex
             insideFileBlock = true
@@ -231,9 +233,12 @@ internal struct AnnotationsParser {
     /// - Parameter line: Line to parse.
     /// - Returns: Dictionary containing all annotations.
     static func parse(line: String) -> Annotations {
-        let annotationDefinitions = line.trimmingCharacters(in: .whitespaces)
+        var annotationDefinitions = line.trimmingCharacters(in: .whitespaces)
             .commaSeparated()
             .map { $0.trimmingCharacters(in: .whitespaces) }
+
+        var namespaces = annotationDefinitions[0].components(separatedBy: ":", excludingDelimiterBetween: (open: "\"'", close: "\"'"))
+        annotationDefinitions[0] = namespaces.removeLast()
 
         var annotations = Annotations()
         annotationDefinitions.forEach { annotation in
@@ -260,7 +265,17 @@ internal struct AnnotationsParser {
             }
         }
 
-        return annotations
+        if namespaces.isEmpty {
+            return annotations
+        } else {
+            var namespaced = Annotations()
+            for namespace in namespaces.reversed() {
+                namespaced[namespace] = annotations as NSObject
+                annotations = namespaced
+                namespaced = Annotations()
+            }
+            return annotations
+        }
     }
 
     static func append(key: String, value: NSObject, to annotations: inout Annotations) {
@@ -270,6 +285,11 @@ internal struct AnnotationsParser {
                     array.append(value)
                     annotations[key] = array as NSObject
                 }
+            } else if var oldDict = oldValue as? [String: NSObject], let newDict = value as? [String: NSObject] {
+                newDict.forEach({ (key, value) in
+                    append(key: key, value: value, to: &oldDict)
+                })
+                annotations[key] = oldDict as NSObject
             } else if oldValue != value {
                 annotations[key] = [oldValue, value] as NSObject
             }
