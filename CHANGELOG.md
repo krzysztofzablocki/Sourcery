@@ -62,6 +62,7 @@ This is a breaking change for template code like this:
 - Fixed resolving actual type name for generics with inner types
 - Fixed parsing nested types from extensions
 - Fixed removing back ticks in types names
+- Fixed inferring variable types with closures and improved inferring types of enum default values
 
 ## 0.10.1
 
