@@ -144,6 +144,13 @@ struct Output {
     let path: Path
     let linkTo: LinkTo?
 
+    var isDirectory: Bool {
+        guard path.exists else {
+            return path.lastComponentWithoutExtension == path.lastComponent || path.string.hasSuffix("/")
+        }
+        return path.isDirectory
+    }
+
     init(dict: [String: Any], relativePath: Path) throws {
         guard let path = dict["path"] as? String else {
             throw Configuration.Error.invalidOutput(message: "No path provided.")
