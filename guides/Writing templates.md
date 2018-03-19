@@ -116,6 +116,13 @@ To attribute any declaration in the file use `sourcery:file` at the top of the f
   var firstVariable: Int
   var secondVariable: Int
 ```
+To group annotations of the same domain you can use annotation namespcases:
+
+```swift
+// sourcery:decoding: key="first", default=0
+  var firstVariable: Int
+```
+This will effectively annotate with `decoding.key` and `decoding.default` annotations
 
 #### Rules:
 
