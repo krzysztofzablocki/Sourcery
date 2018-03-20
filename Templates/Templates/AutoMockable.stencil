@@ -107,7 +107,7 @@ class {{ type.name }}Mock: {{ type.name }} {
     {% if variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}
 {% endfor %}
 
-{% for method in type.allMethods|!definedInExtension %}
+{% for method in type.allMethods|!definedInExtension|!annotated:"ignore" %}
     {% call mockMethod method %}
 {% endfor %}
 }
