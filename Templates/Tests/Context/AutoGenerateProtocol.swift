@@ -10,7 +10,7 @@ import Foundation
 
 protocol AutoGenerateProtocol {}
 
-struct Car: AutoGenerateProtocol {
+struct AutoGenerate: AutoGenerateProtocol {
 
     var mutable: String
     let immutable: String
