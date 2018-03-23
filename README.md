@@ -139,8 +139,6 @@ args:
   <name>: <value>
 ```
 
-Read more about configuration file [here](#configuration-file).
-
 ## Contributing
 
 Contributions to Sourcery are welcomed and encouraged!
