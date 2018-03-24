@@ -53,8 +53,7 @@ import Nimble
 {% endmacro %}
 
 // MARK: AutoSpecs
-
-{% for type in types.implementing.AutoSpecable|!enum %}
+{% macro generateSpecForType type%}
 // MARK: - {{type.name}}AutoSpec
 
 final class {{type.name}}AutoSpec: QuickSpec {
@@ -119,4 +118,8 @@ final class {{type.name}}AutoSpec: QuickSpec {
       }
     }
 }
+{% endmacro %}
+
+{% for type in types.implementing.AutoSpecable|!enum %}
+{% call generateSpecForType type %}
 {% endfor %}
