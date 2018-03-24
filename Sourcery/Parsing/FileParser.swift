@@ -8,6 +8,8 @@ import SourceKittenFramework
 import PathKit
 import SourceryRuntime
 
+// swiftlint:disable file_length
+
 protocol Parsable: class {
     var __parserData: Any? { get set }
 }
