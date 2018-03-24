@@ -34,6 +34,10 @@
 		6D6C19261FC4CE7900CD2A34 /* Decorator.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 6D6C19251FC4CE7900CD2A34 /* Decorator.swifttemplate */; };
 		6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6DC27BD71EC6592700B73CAF /* AutoHashable.expected */; };
 		C03FD2E6F7645376C192094D /* Pods_TemplatesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */; };
+		FD7A15CE20664E7B008FA3F7 /* AutoSpecable.stencil in Resources */ = {isa = PBXBuildFile; fileRef = FD7A15CD20664E7B008FA3F7 /* AutoSpecable.stencil */; };
+		FD7A15D420665158008FA3F7 /* AutoSpecable.expected in Resources */ = {isa = PBXBuildFile; fileRef = FD7A15D320665158008FA3F7 /* AutoSpecable.expected */; };
+		FD7A15D5206651A6008FA3F7 /* AutoSpecable.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = FD7A15D120664F32008FA3F7 /* AutoSpecable.generated.swift */; };
+		FD7A15D6206664DF008FA3F7 /* AutoSpecable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7A15CF20664F17008FA3F7 /* AutoSpecable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +72,10 @@
 		6DC27BD71EC6592700B73CAF /* AutoHashable.expected */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoHashable.expected; sourceTree = "<group>"; };
 		8BC863822106BD763A8B145B /* Pods-TemplatesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AD6C4A9866B1F8FDB6B02DA5 /* Pods-TemplatesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.release.xcconfig"; sourceTree = "<group>"; };
+		FD7A15CD20664E7B008FA3F7 /* AutoSpecable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoSpecable.stencil; sourceTree = "<group>"; };
+		FD7A15CF20664F17008FA3F7 /* AutoSpecable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoSpecable.swift; sourceTree = "<group>"; };
+		FD7A15D120664F32008FA3F7 /* AutoSpecable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoSpecable.generated.swift; sourceTree = "<group>"; };
+		FD7A15D320665158008FA3F7 /* AutoSpecable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoSpecable.expected; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +108,7 @@
 				6D342C931EBA155A006EEBEC /* AutoCases.swift */,
 				6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */,
 				6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */,
+				FD7A15CF20664F17008FA3F7 /* AutoSpecable.swift */,
 				6D130B781ECACCDF00E9642A /* AutoLenses.swift */,
 				6D6645C41ECC184A004C1948 /* AutoMockable.swift */,
 				6D6645C91ECC219C004C1948 /* LinuxMain.swift */,
@@ -113,6 +122,7 @@
 				6DC27BD71EC6592700B73CAF /* AutoHashable.expected */,
 				6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */,
 				6D342CA11EBA35E9006EEBEC /* AutoCases.expected */,
+				FD7A15D320665158008FA3F7 /* AutoSpecable.expected */,
 				6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */,
 				6D6645C21ECC1824004C1948 /* AutoMockable.expected */,
 				6D6645C71ECC2187004C1948 /* LinuxMain.expected */,
@@ -127,6 +137,7 @@
 				6D342C971EBA3156006EEBEC /* AutoCases.generated.swift */,
 				6D342C981EBA3156006EEBEC /* AutoEquatable.generated.swift */,
 				6D342C991EBA3156006EEBEC /* AutoHashable.generated.swift */,
+				FD7A15D120664F32008FA3F7 /* AutoSpecable.generated.swift */,
 				6D342C9A1EBA3156006EEBEC /* AutoLenses.generated.swift */,
 				6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */,
 			);
@@ -157,6 +168,7 @@
 			children = (
 				6D6C19251FC4CE7900CD2A34 /* Decorator.swifttemplate */,
 				6D342C7C1EBA13DF006EEBEC /* AutoCases.stencil */,
+				FD7A15CD20664E7B008FA3F7 /* AutoSpecable.stencil */,
 				6D342C7D1EBA13DF006EEBEC /* AutoEquatable.stencil */,
 				6D342C7E1EBA13DF006EEBEC /* AutoHashable.stencil */,
 				6D342C7F1EBA13DF006EEBEC /* AutoLenses.stencil */,
@@ -248,10 +260,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD7A15D5206651A6008FA3F7 /* AutoSpecable.generated.swift in Resources */,
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
 				6D6645CB1ECC22A3004C1948 /* LinuxMain.generated.swift in Resources */,
+				FD7A15CE20664E7B008FA3F7 /* AutoSpecable.stencil in Resources */,
 				6D6645C81ECC2187004C1948 /* LinuxMain.expected in Resources */,
 				6D130B7B1ECACD0F00E9642A /* AutoLenses.expected in Resources */,
 				6D342C841EBA13DF006EEBEC /* AutoEquatable.stencil in Resources */,
@@ -259,6 +273,7 @@
 				6D342C891EBA13DF006EEBEC /* LinuxMain.stencil in Resources */,
 				6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
+				FD7A15D420665158008FA3F7 /* AutoSpecable.expected in Resources */,
 				6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */,
 				6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */,
 				6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */,
@@ -366,6 +381,7 @@
 				6D342C941EBA155A006EEBEC /* AutoCases.swift in Sources */,
 				6D6645C51ECC184A004C1948 /* AutoMockable.swift in Sources */,
 				6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */,
+				FD7A15D6206664DF008FA3F7 /* AutoSpecable.swift in Sources */,
 				6D342C911EBA146F006EEBEC /* TemplatesTests.swift in Sources */,
 				6D6645CA1ECC219C004C1948 /* LinuxMain.swift in Sources */,
 			);
@@ -484,6 +500,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.Sourcery.TemplatesTests;
@@ -498,6 +515,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.Sourcery.TemplatesTests;

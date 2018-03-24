@@ -1,9 +1,26 @@
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+
+// swiftlint:disable line_length
+// swiftlint:disable variable_name
+
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
 #elseif os(OSX)
 import AppKit
 #endif
+
+
+
+
+
+
+
+
+
+
+
 
 
 class AnnotatedProtocolMock: AnnotatedProtocol {
@@ -202,6 +219,22 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         startPlaneOfCallsCount += 1
         startPlaneOfReceivedArguments = (plane: plane, model: model)
         startPlaneOfClosure?(plane, model)
+    }
+
+}
+class ServiceProtocolMock: ServiceProtocol {
+
+    //MARK: - fetch
+
+    var fetchCallsCount = 0
+    var fetchCalled: Bool {
+        return fetchCallsCount > 0
+    }
+    var fetchClosure: (() -> Void)?
+
+    func fetch() {
+        fetchCallsCount += 1
+        fetchClosure?()
     }
 
 }
