@@ -25,4 +25,9 @@ struct BusService: AutoSpecable {
         self.name = name
         self.service = service
     }
+
+    func timeTableBus() {
+        service.fetch()
+    }
+
 }

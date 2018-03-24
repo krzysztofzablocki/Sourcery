@@ -30,26 +30,26 @@ import Nimble
 {#Methods#}
 {% macro resultOrNot method %}{%if method.throws %} attempt { {% if method.returnTypeName.name != "Void" %}result = {% endif %}try {% else %}{% if method.returnTypeName.name != "Void" %}result = {% endif %}{% endif %}{% endmacro %}
 {% macro testMethod method%}
-{% if method.returnTypeName.name != "Void" %}{%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}//{% endif %}var result: {{method.returnTypeName.name}}?{% endif %}
+          {% if method.returnTypeName.name != "Void" %}{%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}//{% endif %}var result: {{method.returnTypeName.name}}?{% endif %}
 
-beforeEach {
-  {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}/*{% endif%}
-  {% call resultOrNot method%}sut.{{method.callName}}({% if method.parameters.count == 0 %}) {% else %}
-    {%for parameter in method.parameters %}
-    {{ parameter.name }}: {{parameter.annotations.testValue}}{% if not method.parameters.last.name == parameter.name %},{% endif %}
-    {% endfor %}
-  ){% endif %}{%if method.throws %}}{% endif %}
-  {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}*/{%endif%}
-}
+          beforeEach {
+            {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}/*{% endif%}
+            {% call resultOrNot method%}sut.{{method.callName}}({% if method.parameters.count == 0 %}) {% else %}
+              {%for parameter in method.parameters %}
+              {{ parameter.name }}: {{parameter.annotations.testValue}}{% if not method.parameters.last.name == parameter.name %},{% endif %}
+              {% endfor %}
+            ){% endif %}{%if method.throws %}}{% endif %}
+            {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}*/{%endif%}
+          }
 
-{% if method.returnTypeName.name != "Void" %}
-it("returns a result") {
-    {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}// {% endif %}expect(result){%if method.annotations.expectedReturnValue %} == {{method.annotations.expectedReturnValue}} {% else %}.toNot(beNil()){% endif %}
-}
-{% endif %}
-it("asks mock to ...") {
-  // expect(mock.fooCalled) == true // replace with mock test
-}
+          {% if method.returnTypeName.name != "Void" %}
+          it("returns a result") {
+              {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}// {% endif %}expect(result){%if method.annotations.expectedReturnValue %} == {{method.annotations.expectedReturnValue}} {% else %}.toNot(beNil()){% endif %}
+          }
+          {% endif %}
+          it("asks mock to ...") {
+            // expect(mock.fooCalled) == true // replace with mock test
+          }
 {% endmacro %}
 
 // MARK: AutoSpecs

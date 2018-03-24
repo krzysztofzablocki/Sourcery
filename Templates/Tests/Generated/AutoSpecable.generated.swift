@@ -43,6 +43,36 @@ final class BusServiceAutoSpec: QuickSpec {
                     service: service
                  )
         }
+        // MARK: - Test functions
+
+        // MARK: - timeTableBus
+
+        context("timeTableBus called and succeeds") {
+
+          beforeEach {
+            /*
+            sut.timeTableBus() 
+            */
+          }
+
+          it("asks mock to ...") {
+            // expect(mock.fooCalled) == true // replace with mock test
+          }
+        }
+
+        context("timeTableBus called and failes") {
+
+          beforeEach {
+            /*
+            sut.timeTableBus() 
+            */
+          }
+
+          it("asks mock to ...") {
+            // expect(mock.fooCalled) == true // replace with mock test
+          }
+        }
+
       }
     }
 }
