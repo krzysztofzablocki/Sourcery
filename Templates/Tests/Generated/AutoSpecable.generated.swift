@@ -1,7 +1,6 @@
 // Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
-//: Code only works auto generated for files implementing file tags
 //: This code is not build or run. You can just copy paste it into your test file to have a start for the tests
 
 /*
@@ -20,6 +19,7 @@ import Quick
 import Nimble
 // @testable import TemplateTests
 
+
 // MARK: AutoSpecs
 
 // MARK: - BusServiceAutoSpec
@@ -31,10 +31,10 @@ final class BusServiceAutoSpec: QuickSpec {
       describe("BusService") {
         var sut: BusService!
 
-        var name:  String! 
+        var name:  String!
 
         beforeEach {
-          name = "Johny safely" 
+          name = "Johny safely"
 
            sut =  BusService(
   name: name

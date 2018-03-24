@@ -1,4 +1,3 @@
-//: Code only works auto generated for files implementing file tags
 //: This code is not build or run. You can just copy paste it into your test file to have a start for the tests
 
 /*
@@ -16,6 +15,7 @@ For variables an methods you can use the following annotations:
 import Quick
 import Nimble
 // @testable import TemplateTests
+
 {# Macros #}
 {# Variables #}
 {% macro nonOptionalVariableType variable %} {{variable.typeName|replace:"?","" |replace:"!",""}}{% endmacro %}
@@ -66,12 +66,12 @@ final class {{type.name}}AutoSpec: QuickSpec {
         var sut: {{type.name}}!
 
         {%for variable in type.variables %}
-        {% if not variable.annotations.skipSpec %}var {{variable.name}}: {% call mockType variable %} {% endif %}
+        {% if not variable.annotations.skipSpec %}var {{variable.name}}: {% call mockType variable %}{% endif %}
         {% endfor %}
 
         beforeEach {
           {%for variable in type.variables %}
-          {% if not variable.annotations.skipSpec %}{{variable.name}} = {% call mockedVariableValue variable %} {% endif %}
+          {% if not variable.annotations.skipSpec %}{{variable.name}} = {% call mockedVariableValue variable %}{% endif %}
           {% endfor %}
 
           {%if type.initializers.first.annotations.throwableInitializer %} attempt { sut = try {% else %} sut = {% endif %} {% call sutValue type %}{%if type.initializers.first.annotations.throwableInitializer %}}{% endif %}
