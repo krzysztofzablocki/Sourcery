@@ -31,19 +31,17 @@ final class BusServiceAutoSpec: QuickSpec {
       describe("BusService") {
         var sut: BusService!
 
-        var name:  String!
+        var name: String!
+        var service: ServiceProtocolMock!
 
         beforeEach {
           name = "Johny safely"
+          service = ServiceProtocolMock()
 
-           sut =  BusService(
-  name: name
-)
-        }
-        // MARK: - Test variables
-
-        it("sets name") {
-          expect(sut.name) == "Johny safely"
+           sut = BusService(
+                    name: name,
+                    service: service
+                 )
         }
       }
     }

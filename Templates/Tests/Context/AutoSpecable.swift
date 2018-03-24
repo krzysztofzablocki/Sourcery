@@ -10,12 +10,19 @@ import Foundation
 
 protocol AutoSpecable { }
 
+protocol ServiceProtocol: AutoMockable {
+    func fetch()
+}
+
 struct BusService: AutoSpecable {
     // sourcery: testValue = ""Johny safely""
     // sourcery: customMock = ""Johny safely""
     let name: String
 
-    init(name: String) {
+    private let service: ServiceProtocol
+
+    init(name: String, service: ServiceProtocol) {
         self.name = name
+        self.service = service
     }
 }

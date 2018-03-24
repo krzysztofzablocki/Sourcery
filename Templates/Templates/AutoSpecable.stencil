@@ -18,14 +18,14 @@ import Nimble
 
 {# Macros #}
 {# Variables #}
-{% macro nonOptionalVariableType variable %} {{variable.typeName|replace:"?","" |replace:"!",""}}{% endmacro %}
+{% macro nonOptionalVariableType variable %}{{variable.typeName|replace:"?","" |replace:"!",""}}{% endmacro %}
 {% macro mockedVariableValue variable %}{% if not variable.annotations.customMock %}{% call nonOptionalVariableType variable %}Mock(){% else %}{{variable.annotations.customMock}}{% endif %}{% endmacro %}
 {% macro mockType variable %}{% call nonOptionalVariableType variable %}{% if variable.annotations.customMock%}!{% else %}Mock!{% endif %}{% endmacro %}
-{% macro sutValue type %}{{type.name}}({%if not type.initializers or type.initializers.first.parameters.count == 0 %}){% else %}
-  {%for parameter in type.initializers.first.parameters %}
-  {{ parameter.name }}: {{ parameter.name }}{% if not type.initializers.first.parameters.last.name == parameter.name %},{% endif %}
-  {% endfor %}
-){% endif %}
+{% macro initializeSutValue type %}{{type.name}}({%if not type.initializers or type.initializers.first.parameters.count == 0 %}){% else %}
+            {%for parameter in type.initializers.first.parameters %}
+                    {{ parameter.name }}: {{ parameter.name }}{% if not type.initializers.first.parameters.last.name == parameter.name %},{% endif %}
+            {% endfor %}
+                 ){% endif %}
 {% endmacro %}
 {#Methods#}
 {% macro resultOrNot method %}{%if method.throws %} attempt { {% if method.returnTypeName.name != "Void" %}result = {% endif %}try {% else %}{% if method.returnTypeName.name != "Void" %}result = {% endif %}{% endif %}{% endmacro %}
@@ -74,7 +74,7 @@ final class {{type.name}}AutoSpec: QuickSpec {
           {% if not variable.annotations.skipSpec %}{{variable.name}} = {% call mockedVariableValue variable %}{% endif %}
           {% endfor %}
 
-          {%if type.initializers.first.annotations.throwableInitializer %} attempt { sut = try {% else %} sut = {% endif %} {% call sutValue type %}{%if type.initializers.first.annotations.throwableInitializer %}}{% endif %}
+          {%if type.initializers.first.annotations.throwableInitializer %} attempt { sut = try {% else %} sut = {% endif %}{% call initializeSutValue type %}{%if type.initializers.first.annotations.throwableInitializer %}}{% endif %}
         }
         {% map type.variables into varAccess%} {{ maploop.item.readAccess}} {% endmap %}
         {% if not varAccess|join:","|contains:"private" %}

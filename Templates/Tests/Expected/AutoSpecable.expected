@@ -1,3 +1,6 @@
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+
 //: This code is not build or run. You can just copy paste it into your test file to have a start for the tests
 
 /*
@@ -28,19 +31,17 @@ final class BusServiceAutoSpec: QuickSpec {
       describe("BusService") {
         var sut: BusService!
 
-        var name:  String!
+        var name: String!
+        var service: ServiceProtocolMock!
 
         beforeEach {
           name = "Johny safely"
+          service = ServiceProtocolMock()
 
-           sut =  BusService(
-  name: name
-)
-        }
-        // MARK: - Test variables
-
-        it("sets name") {
-          expect(sut.name) == "Johny safely"
+           sut = BusService(
+                    name: name,
+                    service: service
+                 )
         }
       }
     }
