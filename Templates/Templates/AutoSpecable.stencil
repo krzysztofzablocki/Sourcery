@@ -1,4 +1,3 @@
-
 //: Code only works auto generated for files implementing file tags
 //: This code is not build or run. You can just copy paste it into your test file to have a start for the tests
 
@@ -16,113 +15,108 @@ For variables an methods you can use the following annotations:
 
 import Quick
 import Nimble
-// add custom import here
-// @testable import <AddTestTarget>
+// @testable import TemplateTests
+{# Macros #}
+{# Variables #}
+{% macro nonOptionalVariableType variable %} {{variable.typeName|replace:"?","" |replace:"!",""}}{% endmacro %}
+{% macro mockedVariableValue variable %}{% if not variable.annotations.customMock %}{% call nonOptionalVariableType variable %}Mock(){% else %}{{variable.annotations.customMock}}{% endif %}{% endmacro %}
+{% macro mockType variable %}{% call nonOptionalVariableType variable %}{% if variable.annotations.customMock%}!{% else %}Mock!{% endif %}{% endmacro %}
+{% macro sutValue type %}{{type.name}}({%if not type.initializers or type.initializers.first.parameters.count == 0 %}){% else %}
+  {%for parameter in type.initializers.first.parameters %}
+  {{ parameter.name }}: {{ parameter.name }}{% if not type.initializers.first.parameters.last.name == parameter.name %},{% endif %}
+  {% endfor %}
+){% endif %}
+{% endmacro %}
+{#Methods#}
+{% macro resultOrNot method %}{%if method.throws %} attempt { {% if method.returnTypeName.name != "Void" %}result = {% endif %}try {% else %}{% if method.returnTypeName.name != "Void" %}result = {% endif %}{% endif %}{% endmacro %}
+{% macro testMethod method%}
+{% if method.returnTypeName.name != "Void" %}{%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}//{% endif %}var result: {{method.returnTypeName.name}}?{% endif %}
 
-{% for type in types.implementing.AutoSpecable %}
+beforeEach {
+  {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}/*{% endif%}
+  {% call resultOrNot method%}sut.{{method.callName}}({% if method.parameters.count == 0 %}) {% else %}
+    {%for parameter in method.parameters %}
+    {{ parameter.name }}: {{parameter.annotations.testValue}}{% if not method.parameters.last.name == parameter.name %},{% endif %}
+    {% endfor %}
+  ){% endif %}{%if method.throws %}}{% endif %}
+  {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}*/{%endif%}
+}
+
+{% if method.returnTypeName.name != "Void" %}
+it("returns a result") {
+    {%if not method.annotations.methodHasTestValues or methods.parameters.count > 0 %}// {% endif %}expect(result){%if method.annotations.expectedReturnValue %} == {{method.annotations.expectedReturnValue}} {% else %}.toNot(beNil()){% endif %}
+}
+{% endif %}
+it("asks mock to ...") {
+  // expect(mock.fooCalled) == true // replace with mock test
+}
+{% endmacro %}
+
+// MARK: AutoSpecs
+
+{% for type in types.implementing.AutoSpecable|!enum %}
 // MARK: - {{type.name}}AutoSpec
 
-{%if type.methods.count > 4 and type.variables.count > 3%} // swiftlint:disable type_body_length{% endif %}
 final class {{type.name}}AutoSpec: QuickSpec {
-func testSpec() { spec() }
+  func testSpec() { spec() }
 
-{%if type.methods.count > 0 and type.variables.count > 3%} // swiftlint:disable function_body_length{% endif %}
-override func spec() {
-describe("{{type.name}}") {
-var sut: {{type.name}}!
+  {%if type.methods.count > 2 and type.variables.count > 3%} // swiftlint:disable function_body_length{% endif %}
+  override func spec() {
+      describe("{{type.name}}") {
+        var sut: {{type.name}}!
 
-{%for variable in type.variables %}
-{% if not variable.annotations.skipSpec %}var {{variable.name}}: {{variable.typeName}}{% if variable.annotations.typeNotMockable%}!{% else %}Mock!{% endif %}{% endif %}
-{% endfor %}
+        {%for variable in type.variables %}
+        {% if not variable.annotations.skipSpec %}var {{variable.name}}: {% call mockType variable %} {% endif %}
+        {% endfor %}
 
-beforeEach {
-{%for variable in type.variables %}
-{% if not variable.annotations.skipSpec %}{{variable.name}} = {% if variable.annotations.customMock %}{{variable.annotations.customMock}}{% else %}{{variable.typeName}}{% if variable.annotations.typeNotMockable%}(){% else %}Mock(){% endif %}{% endif %}{% endif %}
-{% endfor %}
-{%if type.initializers.first.annotations.throwableInitializer %} attempt { sut = try {% else %} sut = {% endif %}{{type.name}}({%if type.initializers.first.parameters.count == 0%}){% else %}
-{%for parameter in type.initializers.first.parameters %}
-{{ parameter.name }}: {{ parameter.name }}{% if not type.initializers.first.parameters.last.name == parameter.name %},{% endif %}
-{% endfor %}
-){%if type.initializers.first.annotations.throwableInitializer %}}{% endif %}
-{% endif %}
-}
-{% map type.variables into varAccess%} {{ maploop.item.readAccess}} {% endmap %}
-{% if not varAccess|join:","|contains:"private" %}
-// MARK: - Test variables
+        beforeEach {
+          {%for variable in type.variables %}
+          {% if not variable.annotations.skipSpec %}{{variable.name}} = {% call mockedVariableValue variable %} {% endif %}
+          {% endfor %}
 
-{%for variable in type.variables where variable.annotations.testValue %}
-it("sets {{variable.name}}") {
-expect(sut.{{variable.name}}{%if variable.annotations.nestedVariableToTest %}.{{variable.annotations.nestedVariableToTest }}{% endif %}) == {{variable.annotations.testValue }}
-}
-{% endfor %}
-{% endif %}
-{% if type.methods.count != type.initializers.count %}
-// MARK: - Test functions
+          {%if type.initializers.first.annotations.throwableInitializer %} attempt { sut = try {% else %} sut = {% endif %} {% call sutValue type %}{%if type.initializers.first.annotations.throwableInitializer %}}{% endif %}
+        }
+        {% map type.variables into varAccess%} {{ maploop.item.readAccess}} {% endmap %}
+        {% if not varAccess|join:","|contains:"private" %}
+        // MARK: - Test variables
 
-{%for method in type.methods where method.isInitializer == 0 and method.accessLevel != "private" %}
-{% if not method.annotations.skipSpec %}
-// MARK: - {{method.selectorName}}
+        {%for variable in type.variables where variable.annotations.testValue %}
+        it("sets {{variable.name}}") {
+          {%if not variable.annotations.testValue %}// add sourcery: testValue = value to generate test //{% endif %}expect(sut.{{variable.name}}{%if variable.annotations.nestedVariableToTest %}.{{variable.annotations.nestedVariableToTest }}{% endif %}) == {{variable.annotations.testValue }}
+        }
+        {% endfor %}
+        {% endif %}
+        {% if type.methods.count != type.initializers.count %}
+        // MARK: - Test functions
 
-context("{{method.selectorName}} called and succeeds") {
-{% if method.returnTypeName.name != "Void" %}var result: {{method.returnTypeName.name}}?{% endif %}
+        {%for method in type.methods where method.isInitializer == 0 and method.accessLevel != "private" and method.isDeinitializer == 0 %}
+        {% if not method.annotations.skipSpec %}
+        // MARK: - {{method.selectorName}}
 
-beforeEach {
-{%if method.throws %} attempt { {% if method.returnTypeName.name != "Void" %}result = {% endif %}try {% else %}{% if method.returnTypeName.name != "Void" %}result = {% endif %}{% endif %} sut.{{method.callName}}({% if method.parameters.count == 0 %}) {% else %}
-{%for parameter in method.parameters %}
-{{ parameter.name }}: {{parameter.annotations.testValue}}{% if not method.parameters.last.name == parameter.name %},{% endif %}
-{% endfor %}
-){% endif %}{%if method.throws %}}{% endif %}
-}
+        context("{{method.selectorName}} called and succeeds") {
+          {% call testMethod method %}
+        }
 
-{% if method.returnTypeName.name != "Void" %}
-it("returns a result") {
-expect(result){%if method.annotations.expectedReturnValue %} == {{method.annotations.expectedReturnValue}} {% else %}.toNot(beNil()){% endif %}
-}
-{% endif %}
-it("asks mock to ...") {
-// expect(mock.fooCalled) == true // replace with mock test
-}
+        context("{{method.selectorName}} called and failes") {
+          {% call testMethod method %}
+        }
 
-}
+        {% if method.throws %}
+        context("{{method.selectorName}} throws") {
+          beforeEach {
+            // mock.throwError = Error.general // replace with mocked error
+          }
 
-context("{{method.selectorName}} called and failes") {
-{% if method.returnTypeName.name != "Void" %}var result: {{method.returnTypeName.name}}?{% endif %}
+          it("throws <Error>") {
+            // expect{sut.{{method.name}}}.to(throwError())
+          }
 
-beforeEach {
-{%if method.throws %} attempt { {% if method.returnTypeName.name != "Void" %}result = {% endif %}try {% else %}{% if method.returnTypeName.name != "Void" %}result = {% endif %}{% endif %} sut.{{method.callName}}({% if method.parameters.count == 0 %}) {% else %}
-{%for parameter in method.parameters %}
-{{ parameter.name }}: {{parameter.annotations.testValue}}{% if not method.parameters.last.name == parameter.name %},{% endif %}
-{% endfor %}
-){% endif %}{%if method.throws %}}{% endif %}
-}
-
-{% if method.returnTypeName.name != "Void" %}
-it("returns a result") {
-expect(result){%if method.annotations.expectedReturnValue %} == {{method.annotations.expectedReturnValue}} {% else %}.toNot(beNil()){% endif %}
-}
-{% endif %}
-it("asks mock to ...") {
-// expect(mock.fooCalled) == true // replace with mock test
-}
-
-}
-
-{% if method.throws %}
-context("{{method.selectorName}} throws") {
-beforeEach {
-// mock.throwError = Error.general // replace with mocked error
-}
-
-it("throws <Error>") {
-// expect{sut.{{method.name}}}.to(throwError())
-}
-
-}
-{% endif %}
-{% endif %}
-{% endfor %}
-{% endif %}
-}
-}
+        }
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+      }
+    }
 }
 {% endfor %}

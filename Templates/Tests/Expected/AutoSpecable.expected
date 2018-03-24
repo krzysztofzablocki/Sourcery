@@ -31,10 +31,10 @@ final class BusServiceAutoSpec: QuickSpec {
       describe("BusService") {
         var sut: BusService!
 
-        var name:  String! 
+        var name:  String!
 
         beforeEach {
-          name = "Johny safely" 
+          name = "Johny safely"
 
            sut =  BusService(
   name: name

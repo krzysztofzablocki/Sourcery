@@ -10,8 +10,7 @@ import Foundation
 
 protocol AutoSpecable { }
 
-struct BusService: Decodable, AutoSpecable {
-    // sourcery: typeNotMockable
+struct BusService: AutoSpecable {
     // sourcery: testValue = ""Johny safely""
     // sourcery: customMock = ""Johny safely""
     let name: String
