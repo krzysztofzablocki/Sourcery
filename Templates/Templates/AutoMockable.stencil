@@ -103,11 +103,11 @@ import AppKit
 
 {% for type in types.protocols where type.based.AutoMockable or type|annotated:"AutoMockable" %}{% if type.name != "AutoMockable" %}
 class {{ type.name }}Mock: {{ type.name }} {
-{% for variable in type.allVariables|!definedInExtension %}
+{% for variable in type.allVariables|!definedInExtension|!annotated:"skipMock" %}
     {% if variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}
 {% endfor %}
 
-{% for method in type.allMethods|!definedInExtension %}
+{% for method in type.allMethods|!definedInExtension|!annotated:"skipMock" %}
     {% call mockMethod method %}
 {% endfor %}
 }
