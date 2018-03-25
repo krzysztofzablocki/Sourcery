@@ -19,6 +19,7 @@
 - You can now link generated files to projects using config file
 - You can now use AutoMockable with annotations
 - Updated to latest version of Stencil (commit 9184720)
+- Added support for annotation namespaces
 - Added `--exclude-sources` and `--exclude-templates` CLI options
 
 ** Breaking **
@@ -62,6 +63,8 @@ This is a breaking change for template code like this:
 - Fixed resolving actual type name for generics with inner types
 - Fixed parsing nested types from extensions
 - Fixed removing back ticks in types names
+- Fixed creating output folder if it does not exist
+- Fixed inferring variable types with closures and improved inferring types of enum default values
 
 ## 0.10.1
 

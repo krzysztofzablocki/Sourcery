@@ -354,7 +354,7 @@ extension Sourcery {
         Log.info("Generating code...")
         status = ""
 
-        if output.path.isDirectory {
+        if output.isDirectory {
             try allTemplates.forEach { template in
                 let result = try generate(template, forParsingResult: parsingResult, outputPath: output.path)
                 let outputPath = output.path + generatedPath(for: template.sourcePath)

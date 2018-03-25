@@ -414,15 +414,32 @@ extension FileParser {
                 return "[\(genericType(from: keysTypes)): \(genericType(from: valuesTypes))]"
             }
         } else if let initializer = string.range(of: ".init(") {
-            //initializer
+            //initializer with `init`
             inferredType = String(string[string.startIndex..<initializer.lowerBound])
             return inferredType
-        } else if let parens = string.range(of: "("), string.last == ")" {
-            inferredType = String(string[string.startIndex..<parens.lowerBound])
-            //to avoid inferring i.e. 'Optional.some' for 'Optional.some(...)'
-            return inferredType.contains(".") ? nil : inferredType
         } else {
-            return nil
+            // Enums, i.e. `Optional.some(...)` or `Optional.none` should be inferred to `Optional`
+            // Contained types, i.e. `Foo.Bar()` should be inferred to `Foo.Bar`
+            // But rarely enum cases can also start with capital letters, so we still may wrongly infer them as a type
+            func possibleEnumType(_ string: String) -> String? {
+                let components = string.components(separatedBy: ".", excludingDelimiterBetween: ("<[(", ")]>"))
+                if components.count > 1, let lastComponentFirstLetter = components.last?.first.map(String.init) {
+                    if lastComponentFirstLetter.lowercased() == lastComponentFirstLetter {
+                        return components.dropLast().joined(separator: ".")
+                    }
+                }
+                return nil
+            }
+
+            // get everything before `(`
+            let components = string.components(separatedBy: "(", excludingDelimiterBetween: ("<[(", ")]>"))
+            if components.count > 1 && string.last == ")" {
+                //initializer without `init`
+                inferredType = components[0]
+                return possibleEnumType(inferredType) ?? inferredType
+            } else {
+                return possibleEnumType(string)
+            }
         }
     }
 
