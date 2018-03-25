@@ -270,7 +270,7 @@ extension Sourcery {
             var accumulator = 0
             let step = sources.count / 10 // every 10%
 
-            let results = sources.parallelMap({ self.loadOrParse(parser: $0, cachesPath: Path.cachesDir(sourcePath: from)) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+            let results = try sources.parallelMap({ try self.loadOrParse(parser: $0, cachesPath: Path.cachesDir(sourcePath: from)) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
                 if accumulator > previousUpdate + step {
                     previousUpdate = accumulator
                     let percentage = accumulator * 100 / sources.count
@@ -298,11 +298,11 @@ extension Sourcery {
         return (Types(types: types), inlineRanges)
     }
 
-    private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path) -> FileParserResult {
+    private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path) throws -> FileParserResult {
         guard let pathString = parser.path else { fatalError("Unable to retrieve \(String(describing: parser.path))") }
 
         if cacheDisabled {
-            return parser.parse()
+            return try parser.parse()
         }
 
         let path = Path(pathString)
@@ -312,7 +312,7 @@ extension Sourcery {
               let contentSha = parser.initialContents.sha256(),
               let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
 
-            let result = parser.parse()
+            let result = try parser.parse()
 
             let data = NSKeyedArchiver.archivedData(withRootObject: result)
             do {
