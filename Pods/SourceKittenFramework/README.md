@@ -4,7 +4,7 @@ An adorable little framework and command line tool for interacting with [SourceK
 
 SourceKitten links and communicates with `sourcekitd.framework` to parse the Swift AST, extract comment docs for Swift or Objective-C projects, get syntax data for a Swift file and lots more!
 
-[![Test Status](https://travis-ci.org/jpsim/SourceKitten.svg?branch=master)](https://travis-ci.org/jpsim/SourceKitten)
+[![Test Status](https://circleci.com/gh/jpsim/SourceKitten.svg?style=shield)](https://circleci.com/gh/jpsim/SourceKitten)
 
 ## Installation
 
@@ -66,6 +66,79 @@ SourceKitten searches for SourceKit in the following order:
 On Linux, SourceKit is expected to be located in
 `/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
 environment variable.
+
+## Projects Built With SourceKitten
+
+* [SwiftLint](https://github.com/realm/SwiftLint):
+  A tool to enforce Swift style and conventions.
+* [Jazzy](https://github.com/realm/Jazzy):
+  Soulful docs for Swift & Objective-C.
+* [Sourcery](https://github.com/krzysztofzablocki/Sourcery):
+  Meta-programming for Swift, stop writing boilerplate code.
+* [SwiftyMocky](https://github.com/MakeAWishFoundation/SwiftyMocky):
+  Framework for mock genertion.
+* [SourceKittenDaemon](https://github.com/terhechte/SourceKittenDaemon):
+  Swift Auto Completions for any Text Editor.
+* [SourceDocs](https://github.com/eneko/SourceDocs):
+  Command Line Tool that generates Markdown documentation from inline source
+  code comments.
+* [Cuckoo](https://github.com/Brightify/Cuckoo):
+  First boilerplate-free mocking framework for Swift.
+* [IBAnalyzer](https://github.com/fastred/IBAnalyzer): Find common xib and
+  storyboard-related problems without running your app or writing unit tests.
+* [Taylor](https://github.com/yopeso/Taylor): Measure Swift code metrics and
+  get reports in Xcode, Jenkins and other CI platforms.
+
+<summary>See More</summary>>
+<details>
+
+* https://github.com/appsquickly/TyphoonSwift
+* https://github.com/banjun/bansan
+* https://github.com/Beaver/BeaverCodeGen
+* https://github.com/Ben-G/Meet
+* https://github.com/dfreemanRIIS/ETAMock
+* https://github.com/dostu/SwiftMetric
+* https://github.com/draven-archive/MetaKit
+* https://github.com/geosor/SwiftVisualizer
+* https://github.com/godfreynolan/AgileSwiftTst
+* https://github.com/godfreynolan/CodeCraftsman
+* https://github.com/ilyapuchka/dipgen
+* https://github.com/ilyapuchka/SourceKittenEditorExtension
+* https://github.com/interstateone/Unused
+* https://github.com/ishkawa/DIKit
+* https://github.com/IvanovGeorge/FBAuth
+* https://github.com/jmpg93/NavigatorSwift
+* https://github.com/jpmartha/Pancake
+* https://github.com/jpweber/Kontext
+* https://github.com/KenichiroSato/CatDogTube
+* https://github.com/klundberg/grift
+* https://github.com/kovtun1/DependenciesGraph
+* https://github.com/maralla/completor-swift
+* https://github.com/marcsnts/Shopify-Winter18-Technical
+* https://github.com/momentumworks/Formula
+* https://github.com/nevil/UNClassDiagram
+* https://github.com/norio-nomura/LinuxSupportForXcode
+* https://github.com/paulofaria/swift-package-crawler-data
+* https://github.com/rajat-explorer/Github-Profiler
+* https://github.com/rockbruno/swiftshield
+* https://github.com/S2dentik/Enlight
+* https://github.com/seanhenry/SwiftMockGeneratorForXcode
+* https://github.com/sharplet/swiftags
+* https://github.com/siejkowski/Croupier
+* https://github.com/SwiftKit/CuckooGenerator
+* https://github.com/SwiftKit/Torch
+* https://github.com/SwiftTools/SwiftFelisCatus
+* https://github.com/swizzlr/lux
+* https://github.com/tid-kijyun/XcodeSourceEditorExtension-ProtocolImplementation
+* https://github.com/tjarratt/fake4swift
+* https://github.com/tkohout/Genie
+* https://github.com/tomquist/MagicMirror
+* https://github.com/TurfDb/TurfGen
+* https://github.com/vadimue/AwesomeWeather
+* https://github.com/yonaskolb/Beak
+* https://github.com/zenzz/vs-swifter-server
+* https://github.com/zenzz/zxxswifter-server
+</details>
 
 ## Complete
 

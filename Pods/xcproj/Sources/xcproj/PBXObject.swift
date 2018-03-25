@@ -21,6 +21,10 @@ public class PBXObject: Decodable, Equatable {
 
     public static func == (lhs: PBXObject,
                            rhs: PBXObject) -> Bool {
+        return lhs.isEqual(to: rhs)
+    }
+
+    func isEqual(to object: PBXObject) -> Bool {
         return true
     }
 

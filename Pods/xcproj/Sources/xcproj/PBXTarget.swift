@@ -1,7 +1,7 @@
 import Foundation
 
 /// This element is an abstract parent for specialized targets.
-public class PBXTarget: PBXObject {
+public class PBXTarget: PBXContainerItem {
 
     /// Target build configuration list.
     public var buildConfigurationList: String?
@@ -72,8 +72,12 @@ public class PBXTarget: PBXObject {
         try super.init(from: decoder)
     }
 
-    public static func == (lhs: PBXTarget,
-                           rhs: PBXTarget) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard let rhs = object as? PBXTarget,
+            super.isEqual(to: rhs) else {
+                return false
+        }
+        let lhs = self
         return lhs.buildConfigurationList == rhs.buildConfigurationList &&
             lhs.buildPhases == rhs.buildPhases &&
             lhs.buildRules == rhs.buildRules &&
@@ -84,7 +88,7 @@ public class PBXTarget: PBXObject {
     }
 
     func plistValues(proj: PBXProj, isa: String, reference: String) -> (key: CommentedString, value: PlistValue) {
-        var dictionary: [CommentedString: PlistValue] = [:]
+        var dictionary = super.plistValues(proj: proj, reference: reference)
         dictionary["isa"] = .string(CommentedString(isa))
         let buildConfigurationListComment = "Build configuration list for \(isa) \"\(name)\""
         if let buildConfigurationList = buildConfigurationList {
@@ -96,9 +100,9 @@ public class PBXTarget: PBXObject {
                 return .string(CommentedString(buildPhase, comment: comment))
         })
 
-        // Xcode doesn't write empty PBXLegacyTarget buildRules
-        if !(self is PBXLegacyTarget) || !buildRules.isEmpty {
-            dictionary["buildRules"] = .array(buildRules.map {.string(CommentedString($0))})
+        // Xcode doesn't write PBXAggregateTarget buildRules or empty PBXLegacyTarget buildRules
+        if !(self is PBXAggregateTarget), !(self is PBXLegacyTarget) || !buildRules.isEmpty {
+            dictionary["buildRules"] = .array(buildRules.map {.string(CommentedString($0, comment: PBXBuildRule.isa))})
         }
         
         dictionary["dependencies"] = .array(dependencies.map {.string(CommentedString($0, comment: PBXTargetDependency.isa))})

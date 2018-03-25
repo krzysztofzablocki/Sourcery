@@ -20,7 +20,17 @@ public func toJSON(_ object: Any) -> String {
         return "[\n\n]"
     }
     do {
-        let prettyJSONData = try JSONSerialization.data(withJSONObject: object, options: .prettyPrinted)
+        let options: JSONSerialization.WritingOptions
+#if os(Linux)
+        options = [.prettyPrinted, .sortedKeys]
+#else
+        if #available(macOS 10.13, *) {
+            options = [.prettyPrinted, .sortedKeys]
+        } else {
+            options = .prettyPrinted
+        }
+#endif
+        let prettyJSONData = try JSONSerialization.data(withJSONObject: object, options: options)
         if let jsonString = String(data: prettyJSONData, encoding: .utf8) {
             return jsonString
         }
@@ -63,7 +73,7 @@ public func toNSDictionary(_ dictionary: [String: SourceKitRepresentable]) -> NS
 #if !os(Linux)
 
 public func declarationsToJSON(_ decl: [String: [SourceDeclaration]]) -> String {
-    let keyValueToDictionary: ((String, [SourceDeclaration])) -> [String:Any] = { [$0.0: toOutputDictionary($0.1)] }
+    let keyValueToDictionary: ((String, [SourceDeclaration])) -> [String: Any] = { [$0.0: toOutputDictionary($0.1)] }
     let dictionaries: [[String: Any]] = decl.map(keyValueToDictionary).sorted { $0.keys.first! < $1.keys.first! }
     return toJSON(dictionaries)
 }
@@ -93,6 +103,7 @@ private func toOutputDictionary(_ decl: SourceDeclaration) -> [String: Any] {
     set(.parsedScopeStart, Int(decl.extent.start.line))
     set(.parsedScopeEnd, Int(decl.extent.end.line))
     set(.swiftDeclaration, decl.swiftDeclaration)
+    set(.swiftName, decl.swiftName)
     set(.alwaysDeprecated, decl.availability?.alwaysDeprecated)
     set(.alwaysUnavailable, decl.availability?.alwaysUnavailable)
     set(.deprecationMessage, decl.availability?.deprecationMessage)

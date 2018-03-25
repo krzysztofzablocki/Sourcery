@@ -31,8 +31,12 @@ final public class XCBuildConfiguration: PBXObject {
         super.init()
     }
     
-    public static func == (lhs: XCBuildConfiguration,
-                           rhs: XCBuildConfiguration) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard let rhs = object as? XCBuildConfiguration,
+            super.isEqual(to: rhs) else {
+                return false
+        }
+        let lhs = self
         return lhs.baseConfigurationReference == rhs.baseConfigurationReference &&
             lhs.name == rhs.name &&
             NSDictionary(dictionary: lhs.buildSettings).isEqual(to: rhs.buildSettings)

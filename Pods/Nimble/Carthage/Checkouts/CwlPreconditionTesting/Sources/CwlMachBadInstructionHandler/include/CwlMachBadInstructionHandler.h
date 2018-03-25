@@ -1,5 +1,5 @@
 //
-//  CwlMachBadExceptionHandler.h
+//  CwlMachBadInstructionHandler.h
 //  CwlPreconditionTesting
 //
 //  Created by Matt Gallagher on 2016/01/10.
