@@ -67,6 +67,10 @@ This is a breaking change for template code like this:
 - Fixed creating output folder if it does not exist
 - Fixed inferring variable types with closures and improved inferring types of enum default values
 
+## 0.10.2
+
+* Added `skipMock` annotation to variables and methods in `AutoMockable` stencil.
+
 ## 0.10.1
 
 * When installing Sourcery via CocoaPods, the unneeded `file.zip` is not kept in `Pods/Sourcery/` anymore _(freeing ~12MB on each install of Sourcery made via CocoaPods!)_.  
