@@ -551,7 +551,7 @@ yaml_parser_parse_node(yaml_parser_t *parser, yaml_event_t *event,
 
     else
     {
-        start_mark = end_mark = token->start_mark;
+        start_mark = end_mark = tag_mark = token->start_mark;
 
         if (token->type == YAML_ANCHOR_TOKEN)
         {
@@ -1291,7 +1291,7 @@ yaml_parser_process_directives(yaml_parser_t *parser,
         token = PEEK_TOKEN(parser);
         if (!token) goto error;
     }
-    
+
     for (default_tag_directive = default_tag_directives;
             default_tag_directive->handle; default_tag_directive++) {
         if (!yaml_parser_append_tag_directive(parser, *default_tag_directive, 1,

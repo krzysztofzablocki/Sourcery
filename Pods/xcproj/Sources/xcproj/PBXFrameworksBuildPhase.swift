@@ -7,8 +7,12 @@ final public class PBXFrameworksBuildPhase: PBXBuildPhase {
         return .frameworks
     }
     
-    public static func == (lhs: PBXFrameworksBuildPhase,
-                           rhs: PBXFrameworksBuildPhase) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard let rhs = object as? PBXFrameworksBuildPhase,
+            super.isEqual(to: rhs) else {
+                return false
+        }
+        let lhs = self
         return lhs.files == rhs.files &&
             lhs.runOnlyForDeploymentPostprocessing == rhs.runOnlyForDeploymentPostprocessing
     }

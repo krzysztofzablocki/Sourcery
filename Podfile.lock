@@ -2,23 +2,23 @@ PODS:
   - AEXML (4.2.2)
   - Commander (0.6.0)
   - libCommonCrypto (0.1.1)
-  - Nimble (7.0.1)
+  - Nimble (7.0.3)
   - PathKit (0.8.0)
-  - Quick (1.1.0)
-  - SourceKittenFramework (0.18.1):
+  - Quick (1.2.0)
+  - SourceKittenFramework (0.19.1):
     - SWXMLHash (~> 4.1)
-    - Yams (~> 0.3)
-  - Stencil (0.9.0):
+    - Yams (~> 0.5.0)
+  - Stencil (0.10.1):
     - PathKit (~> 0.8.0)
-  - StencilSwiftKit (2.3.0):
-    - Stencil (~> 0.9.0)
+  - StencilSwiftKit (2.4.0):
+    - Stencil (~> 0.10)
   - SwiftLint (0.22.0)
   - SwiftTryCatch (1.0.0)
-  - SWXMLHash (4.2.1)
-  - xcproj (4.0.0):
+  - SWXMLHash (4.6.0)
+  - xcproj (4.2.0):
     - AEXML (~> 4.1)
     - PathKit (~> 0.8)
-  - Yams (0.3.6)
+  - Yams (0.5.0)
 
 DEPENDENCIES:
   - Commander
@@ -42,7 +42,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   StencilSwiftKit:
-    :commit: 3e925b213825ae76a60706cf7d749b7252602c53
+    :commit: 66c519882da29e8297c61b584db80124a4c91114
     :git: https://github.com/SwiftGen/StencilSwiftKit.git
   SwiftTryCatch:
     :commit: 798c512
@@ -52,17 +52,17 @@ SPEC CHECKSUMS:
   AEXML: 5ebafc1b75e0bcf0f1b09b8ca8fed2d5a199479b
   Commander: fba7c96c9e787ecc8ebe0737be875e1e18ef47ff
   libCommonCrypto: 8bc2f53375ef9815ddd9dd663e110e1cced41747
-  Nimble: 657d000e11df8aebe27cdaf9d244de7f30ed87f7
+  Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   PathKit: dcab05d701474011aae0e40cf892298a831f63d6
-  Quick: dafc587e21eed9f4cab3249b9f9015b0b7a7f71d
-  SourceKittenFramework: 7c508d6deb5df1c9d7b50d44199dda0c0abe6a51
-  Stencil: 510f0b0518a366b67b6a9c5085a0399741b6d2f9
-  StencilSwiftKit: d999d11b18adaba32dcb9273669698a5f3d595d1
+  Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
+  SourceKittenFramework: ef76be16e76ffa0a64b00c5eb053e87c6770dcdb
+  Stencil: 40b382c52edab08f1e800e6144c1f04ae47a7a9a
+  StencilSwiftKit: 41693610fdab5a3782f9722b420d87eb4b287f33
   SwiftLint: 1134786caedd2caab0560d2f36b76414a5a56808
   SwiftTryCatch: 8dec58919b07ddba4f23c80e814f7e49f05da548
-  SWXMLHash: a4e70d15b73f825ce7b2f4ecb3dc1a3a4ff1cfb9
-  xcproj: 4e2bcd38e36e30205d3038923f146240556b1838
-  Yams: 33b90105277731bc2035a309a718b51fb655005c
+  SWXMLHash: 3c39a53723202800e9e1a87f14b2fe7ac1da98ec
+  xcproj: bf5339a8c8b295e3364a16074d842b3ea71a4f5b
+  Yams: 58b13424ca380835c4c797bc775ce6cbb3bc0167
 
 PODFILE CHECKSUM: 06f3e29025b54c59f82aff9f18fca589cc01225b
 

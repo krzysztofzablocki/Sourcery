@@ -433,7 +433,7 @@ extension XMLElement {
      */
     internal func nonEmptyTextOrThrow() throws -> String {
         let textVal = text
-        if !textVal.characters.isEmpty {
+        if !textVal.isEmpty {
             return textVal
         }
 

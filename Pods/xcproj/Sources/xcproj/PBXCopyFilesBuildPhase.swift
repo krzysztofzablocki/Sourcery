@@ -57,8 +57,12 @@ final public class PBXCopyFilesBuildPhase: PBXBuildPhase {
             runOnlyForDeploymentPostprocessing)
     }
 
-    public static func == (lhs: PBXCopyFilesBuildPhase,
-                           rhs: PBXCopyFilesBuildPhase) -> Bool {
+    public override func isEqual(to object: PBXObject) -> Bool {
+        guard let rhs = object as? PBXCopyFilesBuildPhase,
+            super.isEqual(to: rhs) else {
+                return false
+        }
+        let lhs = self
         return lhs.dstPath == rhs.dstPath &&
             lhs.name == rhs.name &&
             lhs.buildActionMask == rhs.buildActionMask &&

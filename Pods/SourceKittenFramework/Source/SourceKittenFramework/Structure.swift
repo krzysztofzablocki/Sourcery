@@ -28,9 +28,10 @@ public struct Structure {
     Initialize a Structure by passing in a File.
 
     - parameter file: File to parse for structural information.
+    - throws: Request.Error
     */
-    public init(file: File) {
-        self.init(sourceKitResponse: Request.editorOpen(file: file).send())
+    public init(file: File) throws {
+        self.init(sourceKitResponse: try Request.editorOpen(file: file).send())
     }
 }
 
