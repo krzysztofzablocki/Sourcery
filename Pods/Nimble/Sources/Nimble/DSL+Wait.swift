@@ -11,11 +11,6 @@ private enum ErrorResult {
 /// bridges to Objective-C via the @objc keyword. This class encapsulates callback-style
 /// asynchronous waiting logic so that it may be called from Objective-C and Swift.
 internal class NMBWait: NSObject {
-// About these kind of lines, `@objc` attributes are only required for Objective-C
-// support, so that should be conditional on Darwin platforms and normal Xcode builds
-// (non-SwiftPM builds).
-#if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE
-    @objc
     internal class func until(
         timeout: TimeInterval,
         file: FileString = #file,
@@ -25,17 +20,6 @@ internal class NMBWait: NSObject {
                 action(done)
             }
     }
-#else
-    internal class func until(
-        timeout: TimeInterval,
-        file: FileString = #file,
-        line: UInt = #line,
-        action: @escaping (@escaping () -> Void) -> Void) {
-            return throwableUntil(timeout: timeout, file: file, line: line) { done in
-                action(done)
-            }
-    }
-#endif
 
     // Using a throwable closure makes this method not objc compatible.
     internal class func throwableUntil(
@@ -45,8 +29,7 @@ internal class NMBWait: NSObject {
         action: @escaping (@escaping () -> Void) throws -> Void) {
             let awaiter = NimbleEnvironment.activeInstance.awaiter
             let leeway = timeout / 2.0
-            // swiftlint:disable:next line_length
-            let result = awaiter.performBlock(file: file, line: line) { (done: @escaping (ErrorResult) -> Void) throws -> Void in
+        let result = awaiter.performBlock(file: file, line: line) { (done: @escaping (ErrorResult) -> Void) throws -> Void in
                 DispatchQueue.main.async {
                     let capture = NMBExceptionCapture(
                         handler: ({ exception in
@@ -87,20 +70,19 @@ internal class NMBWait: NSObject {
             }
     }
 
-#if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE
+    #if SWIFT_PACKAGE
+    internal class func until(_ file: FileString = #file, line: UInt = #line, action: @escaping (() -> Void) -> Void) {
+        until(timeout: 1, file: file, line: line, action: action)
+    }
+    #else
     @objc(untilFile:line:action:)
     internal class func until(_ file: FileString = #file, line: UInt = #line, action: @escaping (() -> Void) -> Void) {
         until(timeout: 1, file: file, line: line, action: action)
     }
-#else
-    internal class func until(_ file: FileString = #file, line: UInt = #line, action: @escaping (() -> Void) -> Void) {
-        until(timeout: 1, file: file, line: line, action: action)
-    }
-#endif
+    #endif
 }
 
 internal func blockedRunLoopErrorMessageFor(_ fnName: String, leeway: TimeInterval) -> String {
-    // swiftlint:disable:next line_length
     return "\(fnName) timed out but was unable to run the timeout handler because the main thread is unresponsive (\(leeway) seconds is allow after the wait times out). Conditions that may cause this include processing blocking IO on the main thread, calls to sleep(), deadlocks, and synchronous IPC. Nimble forcefully stopped run loop which may cause future failures in test run."
 }
 

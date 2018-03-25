@@ -1,18 +1,5 @@
 import Foundation
 
-// `#if swift(>=3.2) && (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE`
-// does not work as expected.
-#if swift(>=3.2)
-    #if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE
-    @objcMembers
-    public class _FilterBase: NSObject {}
-    #else
-    public class _FilterBase: NSObject {}
-    #endif
-#else
-public class _FilterBase: NSObject {}
-#endif
-
 /**
     A mapping of string keys to booleans that can be used to
     filter examples or example groups. For example, a "focused"
@@ -24,7 +11,7 @@ public typealias FilterFlags = [String: Bool]
     A namespace for filter flag keys, defined primarily to make the
     keys available in Objective-C.
 */
-final public class Filter: _FilterBase {
+final public class Filter: NSObject {
     /**
         Example and example groups with [Focused: true] are included in test runs,
         excluding all other examples without this flag. Use this to only run one or

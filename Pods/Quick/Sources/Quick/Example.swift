@@ -1,26 +1,12 @@
 import Foundation
 
 private var numberOfExamplesRun = 0
-private var numberOfIncludedExamples = 0
-
-// `#if swift(>=3.2) && (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE`
-// does not work as expected.
-#if swift(>=3.2)
-    #if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE
-    @objcMembers
-    public class _ExampleBase: NSObject {}
-    #else
-    public class _ExampleBase: NSObject {}
-    #endif
-#else
-public class _ExampleBase: NSObject {}
-#endif
 
 /**
     Examples, defined with the `it` function, use assertions to
     demonstrate how code should behave. These are like "tests" in XCTest.
 */
-final public class Example: _ExampleBase {
+final public class Example: NSObject {
     /**
         A boolean indicating whether the example is a shared example;
         i.e.: whether it is an example defined with `itBehavesLike`.
@@ -71,10 +57,6 @@ final public class Example: _ExampleBase {
     public func run() {
         let world = World.sharedWorld
 
-        if numberOfIncludedExamples == 0 {
-            numberOfIncludedExamples = world.includedExampleCount
-        }
-
         if numberOfExamplesRun == 0 {
             world.suiteHooks.executeBefores()
         }
@@ -100,7 +82,7 @@ final public class Example: _ExampleBase {
 
         numberOfExamplesRun += 1
 
-        if !world.isRunningAdditionalSuites && numberOfExamplesRun >= numberOfIncludedExamples {
+        if !world.isRunningAdditionalSuites && numberOfExamplesRun >= world.includedExampleCount {
             world.suiteHooks.executeAfters()
         }
     }

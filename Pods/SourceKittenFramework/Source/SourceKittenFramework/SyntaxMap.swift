@@ -47,10 +47,9 @@ public struct SyntaxMap {
     Create a SyntaxMap from a File to be parsed.
 
     - parameter file: File to be parsed.
-    - throws: Request.Error
     */
-    public init(file: File) throws {
-        self.init(sourceKitResponse: try Request.editorOpen(file: file).send())
+    public init(file: File) {
+        self.init(sourceKitResponse: Request.editorOpen(file: file).send())
     }
 }
 

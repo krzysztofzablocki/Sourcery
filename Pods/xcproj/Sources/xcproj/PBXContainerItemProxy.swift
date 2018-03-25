@@ -39,12 +39,8 @@ final public class PBXContainerItemProxy: PBXObject {
         super.init()
     }
     
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXContainerItemProxy else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXContainerItemProxy,
+                           rhs: PBXContainerItemProxy) -> Bool {
         return lhs.proxyType == rhs.proxyType &&
             lhs.containerPortal == rhs.containerPortal &&
             lhs.remoteGlobalIDString == rhs.remoteGlobalIDString &&

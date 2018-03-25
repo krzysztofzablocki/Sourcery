@@ -12,7 +12,7 @@ import SourceKittenFramework
 @testable import SourceryRuntime
 
 private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
+    return Structure(file: File(contents: source)).dictionary
 }
 
 class ParserComposerSpec: QuickSpec {
@@ -847,7 +847,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName: TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName:TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: Foo? }}")

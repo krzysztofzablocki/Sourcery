@@ -27,7 +27,6 @@ public indirect enum ExpectationMessage {
         let asStr = toString(actual: "<ACTUAL>", expected: "expected", to: "to")
         let asFailureMessage = FailureMessage()
         update(failureMessage: asFailureMessage)
-        // swiftlint:disable:next line_length
         return "(toString(actual:expected:to:) -> \(asStr) || update(failureMessage:) -> \(asFailureMessage.stringValue))"
     }
 
@@ -206,7 +205,7 @@ extension FailureMessage {
     }
 }
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if _runtime(_ObjC)
 
 public class NMBExpectationMessage: NSObject {
     private let msg: ExpectationMessage

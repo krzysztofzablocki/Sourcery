@@ -6,7 +6,7 @@ import SourceKittenFramework
 @testable import SourceryRuntime
 
 private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
+    return Structure(file: File(contents: source)).dictionary
 }
 
 class FileParserVariableSpec: QuickSpec {
@@ -21,7 +21,7 @@ class FileParserVariableSpec: QuickSpec {
                         fail()
                         return nil
                     }
-                    _ = try? parser.parse()
+                    _ = parser.parse()
                     return parser.parseVariable(src, definedIn: nil)
                 }
 

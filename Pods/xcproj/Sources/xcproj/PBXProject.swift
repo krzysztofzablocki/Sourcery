@@ -129,12 +129,8 @@ final public class PBXProject: PBXObject {
     
     // MARK: - Hashable
     
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXProject else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXProject,
+                           rhs: PBXProject) -> Bool {
         let equalRegion = lhs.developmentRegion == rhs.developmentRegion
         let equalHasScannedForEncodings = lhs.hasScannedForEncodings == rhs.hasScannedForEncodings
         let equalProductRefGroup = lhs.productRefGroup == rhs.productRefGroup
@@ -173,11 +169,8 @@ extension PBXProject: PlistSerializable {
             dictionary["developmentRegion"] = .string(CommentedString(developmentRegion))
         }
         dictionary["hasScannedForEncodings"] = .string(CommentedString("\(hasScannedForEncodings)"))
-
-        if !knownRegions.isEmpty {
-            dictionary["knownRegions"] = PlistValue.array(knownRegions
+        dictionary["knownRegions"] = PlistValue.array(knownRegions
             .map {.string(CommentedString("\($0)")) })
-        }
         
         dictionary["mainGroup"] = .string(CommentedString(mainGroup))
         if let productRefGroup = productRefGroup {

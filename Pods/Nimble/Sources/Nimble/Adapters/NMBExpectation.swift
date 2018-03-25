@@ -1,8 +1,8 @@
 import Foundation
 
-#if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE
+#if _runtime(_ObjC)
 
-private func from(objcPredicate: NMBPredicate) -> Predicate<NSObject> {
+fileprivate func from(objcPredicate: NMBPredicate) -> Predicate<NSObject> {
     return Predicate { actualExpression in
         let result = objcPredicate.satisfies(({ try! actualExpression.evaluate() }),
                                              location: actualExpression.location)
@@ -36,7 +36,7 @@ public class NMBExpectation: NSObject {
     internal let _line: UInt
     internal var _timeout: TimeInterval = 1.0
 
-    @objc public init(actualBlock: @escaping () -> NSObject!, negative: Bool, file: FileString, line: UInt) {
+    public init(actualBlock: @escaping () -> NSObject!, negative: Bool, file: FileString, line: UInt) {
         self._actualBlock = actualBlock
         self._negative = negative
         self._file = file
@@ -49,13 +49,13 @@ public class NMBExpectation: NSObject {
         }
     }
 
-    @objc public var withTimeout: (TimeInterval) -> NMBExpectation {
+    public var withTimeout: (TimeInterval) -> NMBExpectation {
         return ({ timeout in self._timeout = timeout
             return self
         })
     }
 
-    @objc public var to: (NMBMatcher) -> Void {
+    public var to: (NMBMatcher) -> Void {
         return ({ matcher in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.to(from(objcPredicate: pred))
@@ -65,7 +65,7 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var toWithDescription: (NMBMatcher, String) -> Void {
+    public var toWithDescription: (NMBMatcher, String) -> Void {
         return ({ matcher, description in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.to(from(objcPredicate: pred), description: description)
@@ -75,7 +75,7 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var toNot: (NMBMatcher) -> Void {
+    public var toNot: (NMBMatcher) -> Void {
         return ({ matcher in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.toNot(from(objcPredicate: pred))
@@ -85,7 +85,7 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var toNotWithDescription: (NMBMatcher, String) -> Void {
+    public var toNotWithDescription: (NMBMatcher, String) -> Void {
         return ({ matcher, description in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.toNot(from(objcPredicate: pred), description: description)
@@ -95,11 +95,11 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var notTo: (NMBMatcher) -> Void { return toNot }
+    public var notTo: (NMBMatcher) -> Void { return toNot }
 
-    @objc public var notToWithDescription: (NMBMatcher, String) -> Void { return toNotWithDescription }
+    public var notToWithDescription: (NMBMatcher, String) -> Void { return toNotWithDescription }
 
-    @objc public var toEventually: (NMBMatcher) -> Void {
+    public var toEventually: (NMBMatcher) -> Void {
         return ({ matcher in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.toEventually(
@@ -117,7 +117,7 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var toEventuallyWithDescription: (NMBMatcher, String) -> Void {
+    public var toEventuallyWithDescription: (NMBMatcher, String) -> Void {
         return ({ matcher, description in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.toEventually(
@@ -135,7 +135,7 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var toEventuallyNot: (NMBMatcher) -> Void {
+    public var toEventuallyNot: (NMBMatcher) -> Void {
         return ({ matcher in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.toEventuallyNot(
@@ -153,7 +153,7 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var toEventuallyNotWithDescription: (NMBMatcher, String) -> Void {
+    public var toEventuallyNotWithDescription: (NMBMatcher, String) -> Void {
         return ({ matcher, description in
             if let pred = matcher as? NMBPredicate {
                 self.expectValue.toEventuallyNot(
@@ -171,15 +171,11 @@ public class NMBExpectation: NSObject {
         })
     }
 
-    @objc public var toNotEventually: (NMBMatcher) -> Void {
-        return toEventuallyNot
-    }
+    public var toNotEventually: (NMBMatcher) -> Void { return toEventuallyNot }
 
-    @objc public var toNotEventuallyWithDescription: (NMBMatcher, String) -> Void {
-        return toEventuallyNotWithDescription
-    }
+    public var toNotEventuallyWithDescription: (NMBMatcher, String) -> Void { return toEventuallyNotWithDescription }
 
-    @objc public class func failWithMessage(_ message: String, file: FileString, line: UInt) {
+    public class func failWithMessage(_ message: String, file: FileString, line: UInt) {
         fail(message, location: SourceLocation(file: file, line: line))
     }
 }

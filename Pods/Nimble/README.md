@@ -374,10 +374,9 @@ You can also provide a callback by using the `waitUntil` function:
 // Swift
 
 waitUntil { done in
-    ocean.goFish { success in
-        expect(success).to(beTrue())
-        done()
-    }
+    // do some stuff that takes a while...
+    NSThread.sleepForTimeInterval(0.5)
+    done()
 }
 ```
 
@@ -385,10 +384,9 @@ waitUntil { done in
 // Objective-C
 
 waitUntil(^(void (^done)(void)){
-    [ocean goFishWithHandler:^(BOOL success){
-        expect(success).to(beTrue());
-        done();
-    }];
+    // do some stuff that takes a while...
+    [NSThread sleepForTimeInterval:0.5];
+    done();
 });
 ```
 
@@ -398,10 +396,9 @@ waitUntil(^(void (^done)(void)){
 // Swift
 
 waitUntil(timeout: 10) { done in
-    ocean.goFish { success in
-        expect(success).to(beTrue())
-        done()
-    }
+    // do some stuff that takes a while...
+    NSThread.sleepForTimeInterval(1)
+    done()
 }
 ```
 
@@ -409,14 +406,13 @@ waitUntil(timeout: 10) { done in
 // Objective-C
 
 waitUntilTimeout(10, ^(void (^done)(void)){
-    [ocean goFishWithHandler:^(BOOL success){
-        expect(success).to(beTrue());
-        done();
-    }];
+    // do some stuff that takes a while...
+    [NSThread sleepForTimeInterval:1];
+    done();
 });
 ```
 
-Note: `waitUntil` triggers its timeout code on the main thread. Blocking the main
+Note: waitUntil triggers its timeout code on the main thread. Blocking the main
 thread will cause Nimble to stop the run loop to continue. This can cause test
 pollution for whatever incomplete code that was running on the main thread.
 Blocking the main thread can be caused by blocking IO, calls to sleep(),
@@ -1241,10 +1237,10 @@ Note: This matcher allows you to chain any number of matchers together. This pro
 ```swift
 // Swift
 
-// passes if .succeeded is returned from the closure
+// passes if .succeed is returned from the closure
 expect({
     guard case .enumCaseWithAssociatedValueThatIDontCareAbout = actual else {
-        return .failed(reason: "wrong enum case")
+        return .failed("wrong enum case")
     }
 
     return .succeeded
@@ -1253,7 +1249,7 @@ expect({
 // passes if .failed is returned from the closure
 expect({
     guard case .enumCaseWithAssociatedValueThatIDontCareAbout = actual else {
-        return .failed(reason: "wrong enum case")
+        return .failed("wrong enum case")
     }
 
     return .succeeded

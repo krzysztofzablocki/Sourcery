@@ -80,12 +80,8 @@ final public class PBXShellScriptBuildPhase: PBXBuildPhase {
         try super.init(from: decoder)
     }
 
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXShellScriptBuildPhase else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXShellScriptBuildPhase,
+                           rhs: PBXShellScriptBuildPhase) -> Bool {
         return lhs.buildActionMask == rhs.buildActionMask &&
             lhs.files == rhs.files &&
             lhs.name == rhs.name &&

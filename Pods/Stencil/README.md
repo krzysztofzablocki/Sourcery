@@ -34,7 +34,7 @@ let context = [
 ]
 
 let environment = Environment(loader: FileSystemLoader(paths: ["templates/"]))
-let rendered = try environment.renderTemplate(name: "article_list.html", context: context)
+let rendered = try environment.renderTemplate(name: context)
 
 print(rendered)
 ```
@@ -62,12 +62,6 @@ Resources to help you integrate Stencil into a Swift project:
 - [Getting Started](http://stencil.fuller.li/en/latest/getting-started.html)
 - [API Reference](http://stencil.fuller.li/en/latest/api.html)
 - [Custom Template Tags and Filters](http://stencil.fuller.li/en/latest/custom-template-tags-and-filters.html)
-
-## Projects that use Stencil
-
-[Sourcery](https://github.com/krzysztofzablocki/Sourcery),
-[SwiftGen](https://github.com/SwiftGen/SwiftGen),
-[Kitura](https://github.com/IBM-Swift/Kitura)
 
 ## License
 

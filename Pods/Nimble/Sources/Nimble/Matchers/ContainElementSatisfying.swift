@@ -25,13 +25,12 @@ public func containElementSatisfying<S: Sequence, T>(_ predicate: @escaping ((T)
     }.requireNonNil
 }
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if _runtime(_ObjC)
     extension NMBObjCMatcher {
-        @objc public class func containElementSatisfyingMatcher(_ predicate: @escaping ((NSObject) -> Bool)) -> NMBObjCMatcher {
+        public class func containElementSatisfyingMatcher(_ predicate: @escaping ((NSObject) -> Bool)) -> NMBObjCMatcher {
             return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
                 let value = try! actualExpression.evaluate()
                 guard let enumeration = value as? NSFastEnumeration else {
-                    // swiftlint:disable:next line_length
                     failureMessage.postfixMessage = "containElementSatisfying must be provided an NSFastEnumeration object"
                     failureMessage.actualValue = nil
                     failureMessage.expected = ""

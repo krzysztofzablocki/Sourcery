@@ -43,12 +43,7 @@ public func matchError<T: Error>(_ errorType: T.Type) -> Predicate<Error> {
     return Predicate.fromDeprecatedClosure { actualExpression, failureMessage in
         let actualError: Error? = try actualExpression.evaluate()
 
-        setFailureMessageForError(
-            failureMessage,
-            postfixMessageVerb: "match",
-            actualError: actualError,
-            errorType: errorType
-        )
+        setFailureMessageForError(failureMessage, postfixMessageVerb: "match", actualError: actualError, errorType: errorType)
         var matches = false
         if actualError as? T != nil {
             matches = true

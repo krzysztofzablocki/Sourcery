@@ -9,12 +9,8 @@ final public class PBXSourcesBuildPhase: PBXBuildPhase {
 
     // MARK: - Hashable
     
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXSourcesBuildPhase else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXSourcesBuildPhase,
+                           rhs: PBXSourcesBuildPhase) -> Bool {
         return lhs.buildActionMask == rhs.buildActionMask &&
         lhs.files == rhs.files &&
         lhs.runOnlyForDeploymentPostprocessing == rhs.runOnlyForDeploymentPostprocessing

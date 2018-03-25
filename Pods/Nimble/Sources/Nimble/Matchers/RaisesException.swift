@@ -1,7 +1,7 @@
 import Foundation
 
 // This matcher requires the Objective-C, and being built by Xcode rather than the Swift Package Manager 
-#if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE
+#if _runtime(_ObjC) && !SWIFT_PACKAGE
 
 /// A Nimble matcher that succeeds when the actual expression raises an
 /// exception with the specified name, reason, and/or userInfo.
@@ -29,25 +29,11 @@ public func raiseException(
                 return
             }
 
-            setFailureMessageForException(
-                failureMessage,
-                exception: exception,
-                named: named,
-                reason: reason,
-                userInfo: userInfo,
-                closure: closure
-            )
-            return exceptionMatchesNonNilFieldsOrClosure(
-                exception,
-                named: named,
-                reason: reason,
-                userInfo: userInfo,
-                closure: closure
-            )
+            setFailureMessageForException(failureMessage, exception: exception, named: named, reason: reason, userInfo: userInfo, closure: closure)
+            return exceptionMatchesNonNilFieldsOrClosure(exception, named: named, reason: reason, userInfo: userInfo, closure: closure)
         }
 }
 
-// swiftlint:disable:next function_parameter_count
 internal func setFailureMessageForException(
     _ failureMessage: FailureMessage,
     exception: NSException?,
@@ -74,7 +60,6 @@ internal func setFailureMessageForException(
         }
 
         if let exception = exception {
-            // swiftlint:disable:next line_length
             failureMessage.actualValue = "\(String(describing: type(of: exception))) { name=\(exception.name), reason='\(stringify(exception.reason))', userInfo=\(stringify(exception.userInfo)) }"
         } else {
             failureMessage.actualValue = "no exception"
@@ -129,7 +114,7 @@ public class NMBObjCRaiseExceptionMatcher: NSObject, NMBMatcher {
         _block = block
     }
 
-    @objc public func matches(_ actualBlock: @escaping () -> NSObject!, failureMessage: FailureMessage, location: SourceLocation) -> Bool {
+    public func matches(_ actualBlock: @escaping () -> NSObject!, failureMessage: FailureMessage, location: SourceLocation) -> Bool {
         let block: () -> Any? = ({ _ = actualBlock(); return nil })
         let expr = Expression(expression: block, location: location)
 
@@ -141,11 +126,11 @@ public class NMBObjCRaiseExceptionMatcher: NSObject, NMBMatcher {
         ).matches(expr, failureMessage: failureMessage)
     }
 
-    @objc public func doesNotMatch(_ actualBlock: @escaping () -> NSObject!, failureMessage: FailureMessage, location: SourceLocation) -> Bool {
+    public func doesNotMatch(_ actualBlock: @escaping () -> NSObject!, failureMessage: FailureMessage, location: SourceLocation) -> Bool {
         return !matches(actualBlock, failureMessage: failureMessage, location: location)
     }
 
-    @objc public var named: (_ name: String) -> NMBObjCRaiseExceptionMatcher {
+    public var named: (_ name: String) -> NMBObjCRaiseExceptionMatcher {
         return ({ name in
             return NMBObjCRaiseExceptionMatcher(
                 name: name,
@@ -156,7 +141,7 @@ public class NMBObjCRaiseExceptionMatcher: NSObject, NMBMatcher {
         })
     }
 
-    @objc public var reason: (_ reason: String?) -> NMBObjCRaiseExceptionMatcher {
+    public var reason: (_ reason: String?) -> NMBObjCRaiseExceptionMatcher {
         return ({ reason in
             return NMBObjCRaiseExceptionMatcher(
                 name: self._name,
@@ -167,7 +152,7 @@ public class NMBObjCRaiseExceptionMatcher: NSObject, NMBMatcher {
         })
     }
 
-    @objc public var userInfo: (_ userInfo: NSDictionary?) -> NMBObjCRaiseExceptionMatcher {
+    public var userInfo: (_ userInfo: NSDictionary?) -> NMBObjCRaiseExceptionMatcher {
         return ({ userInfo in
             return NMBObjCRaiseExceptionMatcher(
                 name: self._name,
@@ -178,7 +163,7 @@ public class NMBObjCRaiseExceptionMatcher: NSObject, NMBMatcher {
         })
     }
 
-    @objc public var satisfyingBlock: (_ block: ((NSException) -> Void)?) -> NMBObjCRaiseExceptionMatcher {
+    public var satisfyingBlock: (_ block: ((NSException) -> Void)?) -> NMBObjCRaiseExceptionMatcher {
         return ({ block in
             return NMBObjCRaiseExceptionMatcher(
                 name: self._name,
@@ -191,7 +176,7 @@ public class NMBObjCRaiseExceptionMatcher: NSObject, NMBMatcher {
 }
 
 extension NMBObjCMatcher {
-    @objc public class func raiseExceptionMatcher() -> NMBObjCRaiseExceptionMatcher {
+    public class func raiseExceptionMatcher() -> NMBObjCRaiseExceptionMatcher {
         return NMBObjCRaiseExceptionMatcher(name: nil, reason: nil, userInfo: nil, block: nil)
     }
 }

@@ -6,7 +6,7 @@ import SourceKittenFramework
 @testable import SourceryRuntime
 
 private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
+    return Structure(file: File(contents: source)).dictionary
 }
 
 class FileParserSpec: QuickSpec {
@@ -315,7 +315,7 @@ class FileParserSpec: QuickSpec {
                                             "block": NSNumber(value: true),
                                             "third": NSNumber(value: true)
                                             ]),
-                                        EnumCase(name: "optionC", annotations: [
+                                        EnumCase(name: "optionC", annotations:[
                                             "block": NSNumber(value: true)
                                             ])
                                         ])

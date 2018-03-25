@@ -42,9 +42,9 @@ public func beginWith(_ startingSubstring: String) -> Predicate<String> {
     }
 }
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if _runtime(_ObjC)
 extension NMBObjCMatcher {
-    @objc public class func beginWithMatcher(_ expected: Any) -> NMBObjCMatcher {
+    public class func beginWithMatcher(_ expected: Any) -> NMBObjCMatcher {
         return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
             let actual = try! actualExpression.evaluate()
             if (actual as? String) != nil {

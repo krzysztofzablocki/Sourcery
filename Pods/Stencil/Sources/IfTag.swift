@@ -14,7 +14,6 @@ enum Operator {
 
 
 let operators: [Operator] = [
-  .infix("in", 5, InExpression.self),
   .infix("or", 6, OrExpression.self),
   .infix("and", 7, AndExpression.self),
   .prefix("not", 8, NotExpression.self),

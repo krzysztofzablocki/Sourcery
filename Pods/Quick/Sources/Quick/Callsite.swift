@@ -1,23 +1,10 @@
 import Foundation
 
-// `#if swift(>=3.2) && (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE`
-// does not work as expected.
-#if swift(>=3.2)
-    #if (os(macOS) || os(iOS) || os(tvOS) || os(watchOS)) && !SWIFT_PACKAGE
-    @objcMembers
-    public class _CallsiteBase: NSObject {}
-    #else
-    public class _CallsiteBase: NSObject {}
-    #endif
-#else
-public class _CallsiteBase: NSObject {}
-#endif
-
 /**
     An object encapsulating the file and line number at which
     a particular example is defined.
 */
-final public class Callsite: _CallsiteBase {
+final public class Callsite: NSObject {
     /**
         The absolute path of the file in which an example is defined.
     */

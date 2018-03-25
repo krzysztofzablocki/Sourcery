@@ -1,5 +1,5 @@
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+@import Foundation;
+@import XCTest;
 
 @interface _QuickSelectorWrapper : NSObject
 - (instancetype)initWithSelector:(SEL)selector;

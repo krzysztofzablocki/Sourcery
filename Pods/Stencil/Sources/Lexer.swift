@@ -5,17 +5,11 @@ struct Lexer {
     self.templateString = templateString
   }
 
-  func createToken(string: String) -> Token {
+  func createToken(string:String) -> Token {
     func strip() -> String {
-      guard string.characters.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
-      let trimmed = String(string[start..<end])
-        .components(separatedBy: "\n")
-        .filter({ !$0.isEmpty })
-        .map({ $0.trim(character: " ") })
-        .joined(separator: " ")
-      return trimmed
+      return string[start..<end].trim(character: " ")
     }
 
     if string.hasPrefix("{{") {
@@ -96,7 +90,6 @@ class Scanner {
       index = content.index(after: index)
     }
 
-    content = ""
     return ""
   }
 
@@ -154,6 +147,6 @@ extension String {
   func trim(character: Character) -> String {
     let first = findFirstNot(character: character) ?? startIndex
     let last = findLastNot(character: character) ?? endIndex
-    return String(self[first..<last])
+    return self[first..<last]
   }
 }

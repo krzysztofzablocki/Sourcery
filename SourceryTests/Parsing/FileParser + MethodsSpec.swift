@@ -6,7 +6,7 @@ import SourceKittenFramework
 @testable import SourceryRuntime
 
 private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
+    return Structure(file: File(contents: source)).dictionary
 }
 
 class FileParserMethodsSpec: QuickSpec {
@@ -29,7 +29,7 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(methods[4]).to(equal(Method(name: "fooVoid()", selectorName: "fooVoid", returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
                     expect(methods[5]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
                     MethodParameter(name: "some", typeName: TypeName("Int")),
-                    MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), isInout: true)
+                    MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), `inout`: true)
                     ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
                     expect(methods[6]).to(equal(Method(name: "deinit", selectorName: "deinit", definedInTypeName: TypeName("Foo"))))
                 }
@@ -45,7 +45,7 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(methods[4]).to(equal(Method(name: "fooVoid()", selectorName: "fooVoid", returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
                     expect(methods[5]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
                         MethodParameter(name: "some", typeName: TypeName("Int")),
-                        MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), isInout: true)
+                        MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), `inout`: true)
                         ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
                 }
 
@@ -160,7 +160,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo(a: inout Int) {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(a: inout Int)", selectorName: "foo(a:)", parameters: [
-                                    MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("inout Int"), isInout: true)
+                                    MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("inout Int"), `inout`: true)
                                     ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
                                 ])
                             ]))

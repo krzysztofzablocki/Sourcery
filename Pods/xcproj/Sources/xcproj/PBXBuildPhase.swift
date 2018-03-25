@@ -45,12 +45,8 @@ public class PBXBuildPhase: PBXObject {
         try super.init(from: decoder)
     }
 
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXBuildPhase else {
-            return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXBuildPhase,
+                           rhs: PBXBuildPhase) -> Bool {
         return lhs.files == rhs.files &&
             lhs.runOnlyForDeploymentPostprocessing == rhs.runOnlyForDeploymentPostprocessing
     }

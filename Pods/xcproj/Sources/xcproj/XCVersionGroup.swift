@@ -30,12 +30,8 @@ final public class XCVersionGroup: PBXFileElement {
         super.init(sourceTree: sourceTree, path: path, name: name)
     }
 
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? XCVersionGroup else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: XCVersionGroup,
+                           rhs: XCVersionGroup) -> Bool {
         return lhs.currentVersion == rhs.currentVersion &&
         lhs.versionGroupType == rhs.versionGroupType &&
         lhs.children == rhs.children

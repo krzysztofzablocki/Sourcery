@@ -34,8 +34,7 @@ public func dump<Objects>(
     lineBreak: Emitter.LineBreak = .ln,
     explicitStart: Bool = false,
     explicitEnd: Bool = false,
-    version: (major: Int, minor: Int)? = nil,
-    sortKeys: Bool = false) throws -> String
+    version: (major: Int, minor: Int)? = nil) throws -> String
     where Objects: Sequence {
         func representable(from object: Any) throws -> NodeRepresentable {
             if let representable = object as? NodeRepresentable {
@@ -53,8 +52,7 @@ public func dump<Objects>(
             lineBreak: lineBreak,
             explicitStart: explicitStart,
             explicitEnd: explicitEnd,
-            version: version,
-            sortKeys: sortKeys)
+            version: version)
 }
 
 /// Produce YAML String from object
@@ -80,8 +78,7 @@ public func dump(
     lineBreak: Emitter.LineBreak = .ln,
     explicitStart: Bool = false,
     explicitEnd: Bool = false,
-    version: (major: Int, minor: Int)? = nil,
-    sortKeys: Bool = false) throws -> String {
+    version: (major: Int, minor: Int)? = nil) throws -> String {
     return try serialize(
         node: object.represented(),
         canonical: canonical,
@@ -91,8 +88,7 @@ public func dump(
         lineBreak: lineBreak,
         explicitStart: explicitStart,
         explicitEnd: explicitEnd,
-        version: version,
-        sortKeys: sortKeys)
+        version: version)
 }
 
 /// Produce YAML String from `Node`
@@ -118,8 +114,7 @@ public func serialize<Nodes>(
     lineBreak: Emitter.LineBreak = .ln,
     explicitStart: Bool = false,
     explicitEnd: Bool = false,
-    version: (major: Int, minor: Int)? = nil,
-    sortKeys: Bool = false) throws -> String
+    version: (major: Int, minor: Int)? = nil) throws -> String
     where Nodes: Sequence, Nodes.Iterator.Element == Node {
         let emitter = Emitter(
             canonical: canonical,
@@ -129,8 +124,7 @@ public func serialize<Nodes>(
             lineBreak: lineBreak,
             explicitStart: explicitStart,
             explicitEnd: explicitEnd,
-            version: version,
-            sortKeys: sortKeys)
+            version: version)
         try emitter.open()
         try nodes.forEach(emitter.serialize)
         try emitter.close()
@@ -164,8 +158,7 @@ public func serialize(
     lineBreak: Emitter.LineBreak = .ln,
     explicitStart: Bool = false,
     explicitEnd: Bool = false,
-    version: (major: Int, minor: Int)? = nil,
-    sortKeys: Bool = false) throws -> String {
+    version: (major: Int, minor: Int)? = nil) throws -> String {
     return try serialize(
         nodes: [node],
         canonical: canonical,
@@ -175,8 +168,7 @@ public func serialize(
         lineBreak: lineBreak,
         explicitStart: explicitStart,
         explicitEnd: explicitEnd,
-        version: version,
-        sortKeys: sortKeys)
+        version: version)
 }
 
 public final class Emitter {
@@ -191,34 +183,9 @@ public final class Emitter {
 
     public var data = Data()
 
-    public struct Options {
-        /// Set if the output should be in the "canonical" format as in the YAML specification.
-        public var canonical: Bool = false
-        /// Set the intendation increment.
-        public var indent: Int = 0
-        /// Set the preferred line width. -1 means unlimited.
-        public var width: Int = 0
-        /// Set if unescaped non-ASCII characters are allowed.
-        public var allowUnicode: Bool = false
-        /// Set the preferred line break.
-        public var lineBreak: LineBreak = .ln
-
-        // internal since we don't know if these should be exposed.
-        var explicitStart: Bool = false
-        var explicitEnd: Bool = false
-
-        /// The %YAML directive value or nil
-        public var version: (major: Int, minor: Int)?
-
-        /// Set if emitter should sort keys in lexicographic order.
-        public var sortKeys: Bool = false
-    }
-
-    public var options: Options {
-        didSet {
-            applyOptionsToEmitter()
-        }
-    }
+    let documentStartImplicit: Int32
+    let documentEndImplicit: Int32
+    let version: (major: Int, minor: Int)?
 
     public init(canonical: Bool = false,
                 indent: Int = 0,
@@ -227,19 +194,14 @@ public final class Emitter {
                 lineBreak: LineBreak = .ln,
                 explicitStart: Bool = false,
                 explicitEnd: Bool = false,
-                version: (major: Int, minor: Int)? = nil,
-                sortKeys: Bool = false) {
-        options = Options(canonical: canonical,
-                          indent: indent,
-                          width: width,
-                          allowUnicode: allowUnicode,
-                          lineBreak: lineBreak,
-                          explicitStart: explicitStart,
-                          explicitEnd: explicitEnd,
-                          version: version,
-                          sortKeys: sortKeys)
+                version: (major: Int, minor: Int)? = nil) {
+        documentStartImplicit = explicitStart ? 0 : 1
+        documentEndImplicit = explicitStart ? 0 : 1
+        self.version = version
+
         // configure emitter
         yaml_emitter_initialize(&emitter)
+
         yaml_emitter_set_output(&self.emitter, { pointer, buffer, size in
             guard let buffer = buffer else { return 0 }
             let emitter = unsafeBitCast(pointer, to: Emitter.self)
@@ -247,7 +209,15 @@ public final class Emitter {
             return 1
         }, unsafeBitCast(self, to: UnsafeMutableRawPointer.self))
 
-        applyOptionsToEmitter()
+        yaml_emitter_set_canonical(&emitter, canonical ? 1 : 0)
+        yaml_emitter_set_indent(&emitter, Int32(indent))
+        yaml_emitter_set_width(&emitter, Int32(width))
+        yaml_emitter_set_unicode(&emitter, allowUnicode ? 1 : 0)
+        switch lineBreak {
+        case .cr: yaml_emitter_set_break(&emitter, YAML_CR_BREAK)
+        case .ln: yaml_emitter_set_break(&emitter, YAML_LN_BREAK)
+        case .crln: yaml_emitter_set_break(&emitter, YAML_CRLN_BREAK)
+        }
 
         #if USE_UTF8
             yaml_emitter_set_encoding(&emitter, YAML_UTF8_ENCODING)
@@ -305,16 +275,16 @@ public final class Emitter {
         var event = yaml_event_t()
         var versionDirective: UnsafeMutablePointer<yaml_version_directive_t>?
         var versionDirectiveValue = yaml_version_directive_t()
-        if let (major, minor) = options.version {
+        if let (major, minor) = version {
             versionDirectiveValue.major = Int32(major)
             versionDirectiveValue.minor = Int32(minor)
             versionDirective = UnsafeMutablePointer(&versionDirectiveValue)
         }
         // TODO: Support tags
-        yaml_document_start_event_initialize(&event, versionDirective, nil, nil, options.explicitStart ? 0 : 1)
+        yaml_document_start_event_initialize(&event, versionDirective, nil, nil, documentStartImplicit)
         try emit(&event)
         try serializeNode(node)
-        yaml_document_end_event_initialize(&event, options.explicitEnd ? 0 : 1)
+        yaml_document_end_event_initialize(&event, documentEndImplicit)
         try emit(&event)
     }
 
@@ -323,32 +293,6 @@ public final class Emitter {
 
     fileprivate enum State { case initialized, opened, closed }
     fileprivate var state: State = .initialized
-
-    private func applyOptionsToEmitter() {
-        yaml_emitter_set_canonical(&emitter, options.canonical ? 1 : 0)
-        yaml_emitter_set_indent(&emitter, Int32(options.indent))
-        yaml_emitter_set_width(&emitter, Int32(options.width))
-        yaml_emitter_set_unicode(&emitter, options.allowUnicode ? 1 : 0)
-        switch options.lineBreak {
-        case .cr: yaml_emitter_set_break(&emitter, YAML_CR_BREAK)
-        case .ln: yaml_emitter_set_break(&emitter, YAML_LN_BREAK)
-        case .crln: yaml_emitter_set_break(&emitter, YAML_CRLN_BREAK)
-        }
-    }
-}
-
-extension Emitter.Options {
-    // initializer without exposing internal properties
-    public init(canonical: Bool = false, indent: Int = 0, width: Int = 0, allowUnicode: Bool = false,
-                lineBreak: Emitter.LineBreak = .ln, version: (major: Int, minor: Int)? = nil, sortKeys: Bool = false) {
-        self.canonical = canonical
-        self.indent = indent
-        self.width = width
-        self.allowUnicode = allowUnicode
-        self.lineBreak = lineBreak
-        self.version = version
-        self.sortKeys = sortKeys
-    }
 }
 
 // MARK: implementation details
@@ -425,16 +369,9 @@ extension Emitter {
                 mapping_style)
         }
         try emit(&event)
-        if options.sortKeys {
-            try mapping.keys.sorted().forEach {
-                try self.serializeNode($0)
-                try self.serializeNode(mapping[$0]!) // swiftlint:disable:this force_unwrapping
-            }
-        } else {
-            try mapping.forEach {
-                try self.serializeNode($0.key)
-                try self.serializeNode($0.value)
-            }
+        try mapping.forEach {
+            try self.serializeNode($0.key)
+            try self.serializeNode($0.value)
         }
         yaml_mapping_end_event_initialize(&event)
         try emit(&event)
@@ -442,4 +379,3 @@ extension Emitter {
 }
 
 private let isLittleEndian = 1 == 1.littleEndian
-// swiftlint:disable:this file_length

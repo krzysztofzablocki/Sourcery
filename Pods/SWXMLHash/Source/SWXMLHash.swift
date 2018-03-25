@@ -50,13 +50,6 @@ public class SWXMLHashOptions {
 
     /// Encoding used for XML parsing. Default is set to UTF8
     public var encoding = String.Encoding.utf8
-
-    /// Any contextual information set by the user for encoding
-    public var userInfo = [CodingUserInfoKey: Any]()
-
-    /// Detect XML parsing errors... defaults to false as this library will
-    /// attempt to handle HTML which isn't always XML-compatible
-    public var detectParsingErrors = false
 }
 
 /// Simple XML parser
@@ -216,7 +209,7 @@ extension XMLParserDelegate {
                 didStartElement elementName: String,
                 namespaceURI: String?,
                 qualifiedName qName: String?,
-                attributes attributeDict: [String: String]) { }
+                attributes attributeDict: [String : String]) { }
 
     func parser(_ parser: Foundation.XMLParser,
                 didEndElement elementName: String,
@@ -227,11 +220,9 @@ extension XMLParserDelegate {
                 didStartMappingPrefix prefix: String,
                 toURI namespaceURI: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
-                didEndMappingPrefix prefix: String) { }
+    func parser(_ parser: Foundation.XMLParser, didEndMappingPrefix prefix: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
-                foundCharacters string: String) { }
+    func parser(_ parser: Foundation.XMLParser, foundCharacters string: String) { }
 
     func parser(_ parser: Foundation.XMLParser,
                 foundIgnorableWhitespace whitespaceString: String) { }
@@ -240,21 +231,18 @@ extension XMLParserDelegate {
                 foundProcessingInstructionWithTarget target: String,
                 data: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
-                foundComment comment: String) { }
+    func parser(_ parser: Foundation.XMLParser, foundComment comment: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
-                foundCDATA CDATABlock: Data) { }
+    func parser(_ parser: Foundation.XMLParser, foundCDATA CDATABlock: Data) { }
 
     func parser(_ parser: Foundation.XMLParser,
                 resolveExternalEntityName name: String,
                 systemID: String?) -> Data? { return nil }
 
-    func parser(_ parser: Foundation.XMLParser,
-                parseErrorOccurred parseError: Error) { }
+    func parser(_ parser: Foundation.XMLParser, parseErrorOccurred parseError: NSError) { }
 
     func parser(_ parser: Foundation.XMLParser,
-                validationErrorOccurred validationError: Error) { }
+                validationErrorOccurred validationError: NSError) { }
 }
 
 #endif
@@ -262,12 +250,12 @@ extension XMLParserDelegate {
 /// The implementation of XMLParserDelegate and where the lazy parsing actually happens.
 class LazyXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
     required init(_ options: SWXMLHashOptions) {
-        root = XMLElement(name: rootElementName, options: options)
         self.options = options
+        self.root.caseInsensitive = options.caseInsensitive
         super.init()
     }
 
-    let root: XMLElement
+    var root = XMLElement(name: rootElementName, caseInsensitive: false)
     var parentStack = Stack<XMLElement>()
     var elementStack = Stack<String>()
 
@@ -284,6 +272,7 @@ class LazyXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         // clear any prior runs of parse... expected that this won't be necessary,
         // but you never know
         parentStack.removeAll()
+        root = XMLElement(name: rootElementName, caseInsensitive: options.caseInsensitive)
         parentStack.push(root)
 
         self.ops = ops
@@ -321,18 +310,6 @@ class LazyXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         current.addText(string)
     }
 
-    func parser(_ parser: XMLParser, foundCDATA CDATABlock: Data) {
-        if !onMatch() {
-            return
-        }
-
-        if let cdataText = String(data: CDATABlock, encoding: String.Encoding.utf8) {
-            let current = parentStack.top()
-
-            current.addText(cdataText)
-        }
-    }
-
     func parser(_ parser: Foundation.XMLParser,
                 didEndElement elementName: String,
                 namespaceURI: String?,
@@ -361,15 +338,14 @@ class LazyXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
 /// The implementation of XMLParserDelegate and where the parsing actually happens.
 class FullXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
     required init(_ options: SWXMLHashOptions) {
-        root = XMLElement(name: rootElementName, options: options)
         self.options = options
+        self.root.caseInsensitive = options.caseInsensitive
         super.init()
     }
 
-    let root: XMLElement
+    var root = XMLElement(name: rootElementName, caseInsensitive: false)
     var parentStack = Stack<XMLElement>()
     let options: SWXMLHashOptions
-    var parsingError: ParsingError?
 
     func parse(_ data: Data) -> XMLIndexer {
         // clear any prior runs of parse... expected that this won't be necessary,
@@ -383,11 +359,7 @@ class FullXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         parser.delegate = self
         _ = parser.parse()
 
-        if options.detectParsingErrors, let err = parsingError {
-            return XMLIndexer.parsingError(err)
-        } else {
-            return XMLIndexer(root)
-        }
+        return XMLIndexer(root)
     }
 
     func parser(_ parser: Foundation.XMLParser,
@@ -415,27 +387,6 @@ class FullXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
                 qualifiedName qName: String?) {
 
         parentStack.drop()
-    }
-
-    func parser(_ parser: XMLParser, foundCDATA CDATABlock: Data) {
-        if let cdataText = String(data: CDATABlock, encoding: String.Encoding.utf8) {
-            let current = parentStack.top()
-
-            current.addText(cdataText)
-        }
-    }
-
-    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
-#if os(Linux)
-        if let err = parseError as? NSError {
-            parsingError = ParsingError(line: err.userInfo["NSXMLParserErrorLineNumber"] as? Int ?? 0,
-                                        column: err.userInfo["NSXMLParserErrorColumn"] as? Int ?? 0)
-        }
-#else
-        let err = parseError as NSError
-        parsingError = ParsingError(line: err.userInfo["NSXMLParserErrorLineNumber"] as? Int ?? 0,
-                                    column: err.userInfo["NSXMLParserErrorColumn"] as? Int ?? 0)
-#endif
     }
 }
 
@@ -492,11 +443,6 @@ public class IndexOps {
     }
 }
 
-public struct ParsingError: Error {
-    public let line: Int
-    public let column: Int
-}
-
 /// Error type that is thrown when an indexing or parsing operation fails.
 public enum IndexingError: Error {
     case attribute(attr: String)
@@ -542,7 +488,6 @@ public enum XMLIndexer {
     case list([XMLElement])
     case stream(IndexOps)
     case xmlError(IndexingError)
-    case parsingError(ParsingError)
 
 // swiftlint:disable identifier_name
     // unavailable
@@ -583,18 +528,18 @@ public enum XMLIndexer {
 
     /// All elements at the currently indexed level
     public var all: [XMLIndexer] {
-        return allElements.map { XMLIndexer($0) }
-    }
-
-    private var allElements: [XMLElement] {
         switch self {
         case .list(let list):
-            return list
+            var xmlList = [XMLIndexer]()
+            for elem in list {
+                xmlList.append(XMLIndexer(elem))
+            }
+            return xmlList
         case .element(let elem):
-            return [elem]
+            return [XMLIndexer(elem)]
         case .stream(let ops):
             let list = ops.findElements()
-            return list.allElements
+            return list.all
         default:
             return []
         }
@@ -602,54 +547,13 @@ public enum XMLIndexer {
 
     /// All child elements from the currently indexed level
     public var children: [XMLIndexer] {
-        return childElements.map { XMLIndexer($0) }
-    }
-
-    private var childElements: [XMLElement] {
-        var list = [XMLElement]()
-        for elem in all.compactMap({ $0.element }) {
+        var list = [XMLIndexer]()
+        for elem in all.flatMap({ $0.element }) {
             for elem in elem.xmlChildren {
-                list.append(elem)
+                list.append(XMLIndexer(elem))
             }
         }
         return list
-    }
-
-    @available(*, unavailable, renamed: "filterChildren(_:)")
-    public func filter(_ included: (_ elem: XMLElement, _ index: Int) -> Bool) -> XMLIndexer {
-        return filterChildren(included)
-    }
-
-    public func filterChildren(_ included: (_ elem: XMLElement, _ index: Int) -> Bool) -> XMLIndexer {
-        let children = handleFilteredResults(list: childElements, included: included)
-        if let current = self.element {
-            let filteredElem = XMLElement(name: current.name, index: current.index, options: current.options)
-            filteredElem.children = children.allElements
-            return .element(filteredElem)
-        }
-        return .xmlError(IndexingError.error)
-    }
-
-    public func filterAll(_ included: (_ elem: XMLElement, _ index: Int) -> Bool) -> XMLIndexer {
-        return handleFilteredResults(list: allElements, included: included)
-    }
-
-    private func handleFilteredResults(list: [XMLElement],
-                                       included: (_ elem: XMLElement, _ index: Int) -> Bool) -> XMLIndexer {
-        let results = zip(list.indices, list).filter { included($1, $0) }.map { $1 }
-        if results.count == 1 {
-            return .element(results.first!)
-        }
-        return .list(results)
-    }
-
-    public var userInfo: [CodingUserInfoKey: Any] {
-        switch self {
-        case .element(let elem):
-            return elem.userInfo
-        default:
-            return [:]
-        }
     }
 
     /**
@@ -737,7 +641,7 @@ public enum XMLIndexer {
                     return .list(match)
                 }
             }
-            throw IndexingError.key(key: key)
+            fallthrough
         default:
             throw IndexingError.key(key: key)
         }
@@ -772,7 +676,7 @@ public enum XMLIndexer {
             opStream.ops[opStream.ops.count - 1].index = index
             return .stream(opStream)
         case .list(let list):
-            if index < list.count {
+            if index <= list.count {
                 return .element(list[index])
             }
             return .xmlError(IndexingError.index(idx: index))
@@ -780,7 +684,7 @@ public enum XMLIndexer {
             if index == 0 {
                 return .element(elem)
             }
-            return .xmlError(IndexingError.index(idx: index))
+            fallthrough
         default:
             return .xmlError(IndexingError.index(idx: index))
         }
@@ -871,19 +775,11 @@ public class XMLElement: XMLContent {
     /// The name of the element
     public let name: String
 
-    /// Whether the element is case insensitive or not
-    public var caseInsensitive: Bool {
-        return options.caseInsensitive
-    }
-
-    var userInfo: [CodingUserInfoKey: Any] {
-        return options.userInfo
-    }
+    public var caseInsensitive: Bool
 
     /// All attributes
     public var allAttributes = [String: XMLAttribute]()
 
-    /// Find an attribute by name
     public func attribute(by name: String) -> XMLAttribute? {
         if caseInsensitive {
             return allAttributes.first(where: { $0.key.compare(name, true) })?.value
@@ -917,13 +813,11 @@ public class XMLElement: XMLContent {
 
     /// All child elements (text or XML)
     public var children = [XMLContent]()
-
     var count: Int = 0
     var index: Int
-    let options: SWXMLHashOptions
 
     var xmlChildren: [XMLElement] {
-        return children.compactMap { $0 as? XMLElement }
+        return children.flatMap { $0 as? XMLElement }
     }
 
     /**
@@ -932,12 +826,11 @@ public class XMLElement: XMLContent {
     - parameters:
         - name: The name of the element to be initialized
         - index: The index of the element to be initialized
-        - options: The SWXMLHash options
     */
-    init(name: String, index: Int = 0, options: SWXMLHashOptions) {
+    init(name: String, index: Int = 0, caseInsensitive: Bool) {
         self.name = name
+        self.caseInsensitive = caseInsensitive
         self.index = index
-        self.options = options
     }
 
     /**
@@ -950,7 +843,7 @@ public class XMLElement: XMLContent {
     */
 
     func addElement(_ name: String, withAttributes attributes: [String: String], caseInsensitive: Bool) -> XMLElement {
-        let element = XMLElement(name: name, index: count, options: options)
+        let element = XMLElement(name: name, index: count, caseInsensitive: caseInsensitive)
         count += 1
 
         children.append(element)

@@ -52,12 +52,8 @@ final public class PBXReferenceProxy: PBXObject {
     
     // MARK: - Hashable
     
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXReferenceProxy else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXReferenceProxy,
+                           rhs: PBXReferenceProxy) -> Bool {
         return lhs.fileType == rhs.fileType &&
             lhs.path == rhs.path &&
             lhs.remoteRef == rhs.remoteRef &&

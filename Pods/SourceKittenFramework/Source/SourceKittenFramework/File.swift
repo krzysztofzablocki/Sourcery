@@ -20,32 +20,9 @@ public final class File {
     /// File path. Nil if initialized directly with `File(contents:)`.
     public let path: String?
     /// File contents.
-    public var contents: String {
-        get {
-            if _contents == nil {
-                _contents = try! String(contentsOfFile: path!, encoding: .utf8)
-            }
-            return _contents!
-        }
-        set {
-            _contents = newValue
-        }
-    }
+    public var contents: String
     /// File lines.
-    public var lines: [Line] {
-        get {
-            if _lines == nil {
-                _lines = contents.bridge().lines()
-            }
-            return _lines!
-        }
-        set {
-            _lines = newValue
-        }
-    }
-
-    private var _contents: String?
-    private var _lines: [Line]?
+    public var lines: [Line]
 
     /**
     Failable initializer by path. Fails if file contents could not be read as a UTF8 string.
@@ -63,10 +40,6 @@ public final class File {
         }
     }
 
-    public init(pathDeferringReading path: String) {
-        self.path = path.bridge().absolutePathRepresentation()
-    }
-
     /**
     Initializer by file contents. File path is nil.
 
@@ -78,25 +51,20 @@ public final class File {
         lines = contents.bridge().lines()
     }
 
-    /// Formats the file.
-    ///
-    /// - Parameters:
-    ///   - trimmingTrailingWhitespace: Boolean
-    ///   - useTabs: Boolean
-    ///   - indentWidth: Int
-    /// - Returns: formatted String
-    /// - Throws: Request.Error
+    /**
+     Formats the file.
+     */
     public func format(trimmingTrailingWhitespace: Bool,
                        useTabs: Bool,
-                       indentWidth: Int) throws -> String {
+                       indentWidth: Int) -> String {
         guard let path = path else {
             return contents
         }
-        _ = try Request.editorOpen(file: self).send()
+        _ = Request.editorOpen(file: self).send()
         var newContents = [String]()
         var offset = 0
         for line in lines {
-            let formatResponse = try Request.format(file: path,
+            let formatResponse = Request.format(file: path,
                                                 line: Int64(line.index),
                                                 useTabs: useTabs,
                                                 indentWidth: Int64(indentWidth)).send()
@@ -105,7 +73,7 @@ public final class File {
 
             guard newText != line.content else { continue }
 
-            _ = try Request.replaceText(file: path,
+            _ = Request.replaceText(file: path,
                                     offset: Int64(line.byteRange.location + offset),
                                     length: Int64(line.byteRange.length - 1),
                                     sourceText: newText).send()
@@ -141,8 +109,7 @@ public final class File {
         } else {
             substring = contents.bridge().substringLinesWithByteRange(start: start, length: 0)
         }
-        return substring?.removingCommonLeadingWhitespaceFromLines()
-                         .trimmingWhitespaceAndOpeningCurlyBrace()
+        return substring?.trimmingWhitespaceAndOpeningCurlyBrace()
     }
 
     /**

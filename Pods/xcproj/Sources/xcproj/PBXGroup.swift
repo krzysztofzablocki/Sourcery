@@ -40,12 +40,8 @@ final public class PBXGroup: PBXFileElement {
         super.init(sourceTree: sourceTree, path: path, name: name)
     }
 
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXGroup else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXGroup,
+                           rhs: PBXGroup) -> Bool {
         return lhs.children == rhs.children &&
             lhs.name == rhs.name &&
             lhs.sourceTree == rhs.sourceTree &&

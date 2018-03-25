@@ -169,50 +169,6 @@ final public class XCScheme {
         }
     }
 
-    public struct EnvironmentVariable {
-        public let variable: String
-        public let value: String
-        public let enabled: Bool
-
-        public init(variable: String, value: String, enabled: Bool) {
-            self.variable = variable
-            self.value = value
-            self.enabled = enabled
-        }
-
-        fileprivate func xmlElement() -> AEXMLElement {
-            return AEXMLElement(name: "EnvironmentVariable",
-                                value: nil,
-                                attributes: ["key": variable, "value": value, "isEnabled": enabled ? "YES" : "NO" ])
-        }
-
-        fileprivate static func parseVariables(from element: AEXMLElement) throws -> [EnvironmentVariable] {
-            return try element.children.map { elt in
-                guard let variableKey = elt.attributes["key"] else {
-                    throw XCSchemeError.missing(property: "key")
-                }
-                guard let variableValue = elt.attributes["value"] else {
-                    throw XCSchemeError.missing(property: "value")
-                }
-                guard let variableEnabledRaw = elt.attributes["isEnabled"] else {
-                    throw XCSchemeError.missing(property: "isEnabled")
-                }
-
-                return EnvironmentVariable(variable: variableKey, value: variableValue, enabled: variableEnabledRaw == "YES")
-            }
-        }
-
-        fileprivate static func xmlElement(from variables: [EnvironmentVariable]) -> AEXMLElement {
-            let element = AEXMLElement(name: "EnvironmentVariables",
-                                       value: nil)
-            variables.forEach { arg in
-                element.addChild(arg.xmlElement())
-            }
-
-            return element
-        }
-    }
-
     final public class ExecutionAction {
         public var title: String
         public var scriptText: String
@@ -403,7 +359,6 @@ final public class XCScheme {
         public var allowLocationSimulation: Bool
         public var locationScenarioReference: LocationScenarioReference?
         public var commandlineArguments: CommandLineArguments?
-        public var environmentVariables: [EnvironmentVariable]?
         public var language: String?
         public var region: String?
 
@@ -422,7 +377,6 @@ final public class XCScheme {
                     allowLocationSimulation: Bool = true,
                     locationScenarioReference: LocationScenarioReference? = nil,
                     commandlineArguments: CommandLineArguments? = nil,
-                    environmentVariables: [EnvironmentVariable]? = nil,
                     language: String? = nil,
                     region: String? = nil) {
             self.buildableProductRunnable = buildableProductRunnable
@@ -438,7 +392,6 @@ final public class XCScheme {
             self.allowLocationSimulation = allowLocationSimulation
             self.locationScenarioReference = locationScenarioReference
             self.commandlineArguments = commandlineArguments
-            self.environmentVariables = environmentVariables
             self.language = language
             self.region = region
             super.init(preActions, postActions)
@@ -474,12 +427,6 @@ final public class XCScheme {
             if commandlineOptions.error == nil {
                 self.commandlineArguments = try CommandLineArguments(element: commandlineOptions)
             }
-
-            let environmentVariables = element["EnvironmentVariables"]
-            if environmentVariables.error == nil {
-                self.environmentVariables = try EnvironmentVariable.parseVariables(from: environmentVariables)
-            }
-
             self.language = element.attributes["language"]
             self.region = element.attributes["region"]
             try super.init(element: element)
@@ -506,21 +453,17 @@ final public class XCScheme {
                 element.addChild(locationScenarioReference.xmlElement())
             }
 
-            if let macroExpansion = macroExpansion {
-                let macro = element.addChild(name: "MacroExpansion")
-                macro.addChild(macroExpansion.xmlElement())
-            }
-
             if let commandlineArguments = commandlineArguments {
                 element.addChild(commandlineArguments.xmlElement())
             }
 
-            if let environmentVariables = environmentVariables {
-                element.addChild(EnvironmentVariable.xmlElement(from: environmentVariables))
-            }
-
             if let region = region {
                 element.attributes["region"] = region
+            }
+
+            if let macroExpansion = macroExpansion {
+                let macro = element.addChild(name: "MacroExpansion")
+                macro.addChild(macroExpansion.xmlElement())
             }
 
             element.addChild(AEXMLElement(name: "AdditionalOptions"))
@@ -539,7 +482,6 @@ final public class XCScheme {
         public var useCustomWorkingDirectory: Bool
         public var debugDocumentVersioning: Bool
         public var commandlineArguments: CommandLineArguments?
-        public var environmentVariables: [EnvironmentVariable]?
         public var macroExpansion: BuildableReference?
         public var enableTestabilityWhenProfilingTests: Bool
 
@@ -554,7 +496,6 @@ final public class XCScheme {
                     useCustomWorkingDirectory: Bool = false,
                     debugDocumentVersioning: Bool = true,
                     commandlineArguments: CommandLineArguments? = nil,
-                    environmentVariables: [EnvironmentVariable]? = nil,
                     enableTestabilityWhenProfilingTests: Bool = true) {
             self.buildableProductRunnable = buildableProductRunnable
             self.buildConfiguration = buildConfiguration
@@ -564,7 +505,6 @@ final public class XCScheme {
             self.useCustomWorkingDirectory = useCustomWorkingDirectory
             self.debugDocumentVersioning = debugDocumentVersioning
             self.commandlineArguments = commandlineArguments
-            self.environmentVariables = environmentVariables
             self.ignoresPersistentStateOnLaunch = ignoresPersistentStateOnLaunch
             self.enableTestabilityWhenProfilingTests = enableTestabilityWhenProfilingTests
             super.init(preActions, postActions)
@@ -588,10 +528,6 @@ final public class XCScheme {
             let commandlineOptions = element["CommandLineArguments"]
             if commandlineOptions.error == nil {
                 self.commandlineArguments = try CommandLineArguments(element: commandlineOptions)
-            }
-            let environmentVariables = element["EnvironmentVariables"]
-            if environmentVariables.error == nil {
-                self.environmentVariables = try EnvironmentVariable.parseVariables(from: environmentVariables)
             }
             enableTestabilityWhenProfilingTests = element.attributes["enableTestabilityWhenProfilingTests"].map { $0 != "No" } ?? true
             try super.init(element: element)
@@ -619,9 +555,6 @@ final public class XCScheme {
             if let commandlineArguments = commandlineArguments {
                 element.addChild(commandlineArguments.xmlElement())
             }
-            if let environmentVariables = environmentVariables {
-                element.addChild(EnvironmentVariable.xmlElement(from: environmentVariables))
-            }
 
             if let macroExpansion = macroExpansion {
                 let macro = element.addChild(name: "MacroExpansion")
@@ -643,7 +576,6 @@ final public class XCScheme {
         public var codeCoverageEnabled: Bool
         public var macroExpansion: BuildableReference?
         public var commandlineArguments: CommandLineArguments?
-        public var environmentVariables: [EnvironmentVariable]?
         public var language: String?
         public var region: String?
 
@@ -663,7 +595,6 @@ final public class XCScheme {
                     shouldUseLaunchSchemeArgsEnv: Bool = true,
                     codeCoverageEnabled: Bool = false,
                     commandlineArguments: CommandLineArguments? = nil,
-                    environmentVariables: [EnvironmentVariable]? = nil,
                     language: String? = nil,
                     region: String? = nil,
                     systemAttachmentLifetime: AttachmentLifetime? = nil,
@@ -676,7 +607,6 @@ final public class XCScheme {
             self.shouldUseLaunchSchemeArgsEnv = shouldUseLaunchSchemeArgsEnv
             self.codeCoverageEnabled = codeCoverageEnabled
             self.commandlineArguments = commandlineArguments
-            self.environmentVariables = environmentVariables
             self.language = language
             self.region = region
             self.systemAttachmentLifetime = systemAttachmentLifetime
@@ -702,12 +632,6 @@ final public class XCScheme {
             if commandlineOptions.error == nil {
                 self.commandlineArguments = try CommandLineArguments(element: commandlineOptions)
             }
-
-            let environmentVariables = element["EnvironmentVariables"]
-            if environmentVariables.error == nil {
-                self.environmentVariables = try EnvironmentVariable.parseVariables(from: environmentVariables)
-            }
-
             self.language = element.attributes["language"]
             self.region = element.attributes["region"]
 
@@ -722,7 +646,7 @@ final public class XCScheme {
             attributes["buildConfiguration"] = buildConfiguration
             attributes["selectedDebuggerIdentifier"] = selectedDebuggerIdentifier
             attributes["selectedLauncherIdentifier"] = selectedLauncherIdentifier
-            attributes["language"] = language ?? ""
+            attributes["language"] = language
             attributes["region"] = region
             attributes["shouldUseLaunchSchemeArgsEnv"] = shouldUseLaunchSchemeArgsEnv.xmlString
             if codeCoverageEnabled {
@@ -746,10 +670,6 @@ final public class XCScheme {
 
             if let commandlineArguments = commandlineArguments {
                 element.addChild(commandlineArguments.xmlElement())
-            }
-
-            if let environmentVariables = environmentVariables {
-                element.addChild(EnvironmentVariable.xmlElement(from: environmentVariables))
             }
 
             element.addChild(AEXMLElement(name: "AdditionalOptions"))

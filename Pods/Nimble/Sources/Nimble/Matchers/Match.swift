@@ -16,10 +16,10 @@ public func match(_ expectedValue: String?) -> Predicate<String> {
     }.requireNonNil
 }
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if _runtime(_ObjC)
 
 extension NMBObjCMatcher {
-    @objc public class func matchMatcher(_ expected: NSString) -> NMBMatcher {
+    public class func matchMatcher(_ expected: NSString) -> NMBMatcher {
         return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
             let actual = actualExpression.cast { $0 as? String }
             return try! match(expected.description).matches(actual, failureMessage: failureMessage)

@@ -50,12 +50,8 @@ final public class PBXFileReference: PBXFileElement {
         super.init(sourceTree: sourceTree, path: path, name: name)
     }
 
-    public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXFileReference else {
-                return false
-        }
-        let lhs = self
+    public static func == (lhs: PBXFileReference,
+                           rhs: PBXFileReference) -> Bool {
         return lhs.fileEncoding == rhs.fileEncoding &&
             lhs.explicitFileType == rhs.explicitFileType &&
             lhs.lastKnownFileType == rhs.lastKnownFileType &&

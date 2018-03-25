@@ -63,9 +63,9 @@ private func createPredicate<S>(_ elementMatcher: Predicate<S.Iterator.Element>)
         }
 }
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if _runtime(_ObjC)
 extension NMBObjCMatcher {
-    @objc public class func allPassMatcher(_ matcher: NMBMatcher) -> NMBPredicate {
+    public class func allPassMatcher(_ matcher: NMBMatcher) -> NMBPredicate {
         return NMBPredicate { actualExpression in
             let location = actualExpression.location
             let actualValue = try! actualExpression.evaluate()
@@ -90,7 +90,6 @@ extension NMBObjCMatcher {
                 return NMBPredicateResult(
                     status: NMBPredicateStatus.fail,
                     message: NMBExpectationMessage(
-                        // swiftlint:disable:next line_length
                         fail: "allPass can only be used with types which implement NSFastEnumeration (NSArray, NSSet, ...), and whose elements subclass NSObject, got <\(actualValue?.description ?? "nil")>"
                     )
                 )

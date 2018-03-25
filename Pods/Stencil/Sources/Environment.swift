@@ -1,6 +1,6 @@
 public struct Environment {
   public let templateClass: Template.Type
-  public var extensions: [Extension]
+  public let extensions: [Extension]
 
   public var loader: Loader?
 
