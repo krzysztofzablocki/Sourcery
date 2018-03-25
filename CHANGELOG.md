@@ -20,6 +20,7 @@
 - You can now use AutoMockable with annotations
 - Updated to latest version of Stencil (commit 9184720)
 - Added support for annotation namespaces
+- Added `--exclude-sources` and `--exclude-templates` CLI options
 
 ** Breaking **
 
