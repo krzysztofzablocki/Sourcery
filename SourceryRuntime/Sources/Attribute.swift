@@ -46,9 +46,18 @@ import Foundation
         case mutating
         case escaping
         case final
+        case open
+        case `public` = "public"
+        case `internal` = "internal"
+        case `private` = "private"
+        case `fileprivate` = "fileprivate"
+        case publicSetter = "setter_access.public"
+        case internalSetter = "setter_access.internal"
+        case privateSetter = "setter_access.private"
+        case fileprivateSetter = "setter_access.fileprivate"
 
         public init?(identifier: String) {
-            let identifier = identifier.replacingOccurrences(of: "source.decl.attribute.", with: "")
+            let identifier = identifier.trimmingPrefix("source.decl.attribute.")
             if identifier == "objc.name" {
                 self.init(rawValue: "objc")
             } else {
@@ -85,6 +94,14 @@ import Foundation
                 return "IBInspectable"
             case .IBDesignable:
                 return "IBDesignable"
+            case .fileprivateSetter:
+                return "fileprivate"
+            case .privateSetter:
+                return "private"
+            case .internalSetter:
+                return "internal"
+            case .publicSetter:
+                return "public"
             default:
                 return rawValue
             }
@@ -96,13 +113,25 @@ import Foundation
 
         public var hasAtPrefix: Bool {
             switch self {
-            case .convenience,
-                 .required,
-                 .mutating,
-                 .final:
-                return false
-            default:
+            case .available,
+                 .discardableResult,
+                 .GKInspectable,
+                 .objc,
+                 .objcMembers,
+                 .nonobjc,
+                 .NSApplicationMain,
+                 .NSCopying,
+                 .NSManaged,
+                 .UIApplicationMain,
+                 .IBOutlet,
+                 .IBInspectable,
+                 .IBDesignable,
+                 .autoclosure,
+                 .convention,
+                 .escaping:
                 return true
+            default:
+                return false
             }
         }
     }

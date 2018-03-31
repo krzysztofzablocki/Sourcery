@@ -464,7 +464,7 @@ extension FileParser {
 
         let typeName: TypeName
         if let type = maybeType {
-            typeName = TypeName(type, attributes: parseTypeAttributes(type))
+            typeName = TypeName(type)
         } else {
             let declaration = extract(.key, from: source)
             // swiftlint:disable:next force_unwrapping
@@ -908,11 +908,14 @@ extension FileParser {
 // MARK: - Attributes
 extension FileParser {
 
+    // used to parse attributes of declarations (type, variable, method, subscript) from sourcekit response
     internal func parseDeclarationAttributes(_ source: [String: SourceKitRepresentable]) -> [String: Attribute] {
         if let attributes = source["key.attributes"] as? [[String: SourceKitRepresentable]] {
             let parsedAttributes = attributes.compactMap { (attributeDict) -> Attribute? in
                 guard let key = extract(.key, from: attributeDict) else { return nil }
-                return parseAttribute(key.trimmingPrefix("@"))
+                guard let identifier = (attributeDict["key.attribute"] as? String).flatMap(Attribute.Identifier.init(identifier:)) else { return nil }
+
+                return parseAttribute(key.trimmingPrefix("@"), identifier: identifier)
             }
             var attributesByName = [String: Attribute]()
             parsedAttributes.forEach { attributesByName[$0.name] = $0 }
@@ -921,27 +924,26 @@ extension FileParser {
         return [:]
     }
 
+    // used to parse attributes from type names of method parameters and enum associated values
+    // (sourcekit does not provide strucutred information for such attributes)
     internal func parseTypeAttributes(_ typeName: String) -> [String: Attribute] {
-        return parseAttributes(typeName)
-    }
-
-    private func parseAttributes(_ string: String) -> [String: Attribute] {
-        let items = string.components(separatedBy: "@", excludingDelimiterBetween: ("(", ")"))
+        let items = typeName.components(separatedBy: "@", excludingDelimiterBetween: ("(", ")"))
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
         guard items.count > 1 else { return [:] }
 
-        let attributes: [Attribute] = items.filter({ !$0.isEmpty }).compactMap(parseAttribute)
+        let attributes: [Attribute] = items.filter({ !$0.isEmpty }).compactMap({ parseAttribute($0) })
         var attributesByName = [String: Attribute]()
         attributes.forEach { attributesByName[$0.name] = $0 }
         return attributesByName
     }
 
-    private func parseAttribute(_ string: String) -> Attribute? {
+    private func parseAttribute(_ string: String, identifier: Attribute.Identifier? = nil) -> Attribute? {
         guard let attributeString = string.trimmingCharacters(in: .whitespaces)
             .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
 
         if let openIndex = attributeString.index(of: "(") {
             let name = String(attributeString.prefix(upTo: openIndex))
+            guard let identifier = identifier ?? Attribute.Identifier.from(string: name) else { return nil }
 
             let chars = attributeString
             let startIndex = chars.index(openIndex, offsetBy: 1)
@@ -949,9 +951,9 @@ extension FileParser {
             let argumentsString = String(chars[startIndex ..< endIndex])
             let arguments = parseAttributeArguments(argumentsString, attribute: name)
 
-            return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")
+            return Attribute(name: name, arguments: arguments, description: "\(identifier.description)(\(argumentsString))")
         } else {
-            guard let identifier = Attribute.Identifier.from(string: attributeString) else { return nil }
+            guard let identifier = identifier ?? Attribute.Identifier.from(string: attributeString) else { return nil }
             return Attribute(name: identifier.name, description: identifier.description)
         }
     }
@@ -961,6 +963,7 @@ extension FileParser {
         string.components(separatedBy: ",", excludingDelimiterBetween: ("\"", "\""))
             .map({ $0.trimmingCharacters(in: .whitespaces) })
             .forEach { argument in
+                // TODO: @objc can be used only for getter or settor of computed property
                 if attribute == "objc" {
                     arguments["name"] = argument as NSString
                     return
