@@ -928,26 +928,14 @@ extension FileParser {
 extension FileParser {
 
     internal func parseDeclarationAttributes(_ source: [String: SourceKitRepresentable]) -> [String: Attribute] {
-        guard var prefix = extract(.keyPrefix, from: source)?.bridge() else { return [:] }
-        if let attributesValue = source["key.attributes"] as? [[String: String]] {
-            var ranges = [NSRange]()
-            attributesValue
-                .map { $0.values }
-                .joined()
-                .compactMap(Attribute.Identifier.init(identifier:))
-                .forEach {
-                    var attributeRange = prefix.range(of: $0.description, options: .backwards)
-                    // we expect all attributes to be prefixed with `@`
-                    // but some attribute does not need it...
-                    if !$0.hasAtPrefix {
-                        prefix = prefix.replacingCharacters(in: attributeRange, with: "@\($0)") as NSString
-                        attributeRange.length += 1
-                        attributeRange.location = max(0, attributeRange.location - 1)
-                    }
-                    ranges.append(attributeRange)
+        if let attributes = source["key.attributes"] as? [[String: SourceKitRepresentable]] {
+            let parsedAttributes = attributes.compactMap { (attributeDict) -> Attribute? in
+                guard let key = extract(.key, from: attributeDict) else { return nil }
+                return parseAttribute(key.trimmingPrefix("@"))
             }
-            guard let location = ranges.min(by: { $0.location < $1.location })?.location else { return [:] }
-            return parseAttributes(prefix.substring(from: location))
+            var attributesByName = [String: Attribute]()
+            parsedAttributes.forEach { attributesByName[$0.name] = $0 }
+            return attributesByName
         }
         return [:]
     }
@@ -961,28 +949,30 @@ extension FileParser {
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
         guard items.count > 1 else { return [:] }
 
-        var attributes = [String: Attribute]()
-        let _attributes: [Attribute] = items.filter({ !$0.isEmpty }).compactMap {
-            guard let attributeString = $0.trimmingCharacters(in: .whitespaces)
-                .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
+        let attributes: [Attribute] = items.filter({ !$0.isEmpty }).compactMap(parseAttribute)
+        var attributesByName = [String: Attribute]()
+        attributes.forEach { attributesByName[$0.name] = $0 }
+        return attributesByName
+    }
 
-            if let openIndex = attributeString.index(of: "(") {
-                let name = String(attributeString.prefix(upTo: openIndex))
+    private func parseAttribute(_ string: String) -> Attribute? {
+        guard let attributeString = string.trimmingCharacters(in: .whitespaces)
+            .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
 
-                let chars = attributeString
-                let startIndex = chars.index(openIndex, offsetBy: 1)
-                let endIndex = chars.index(chars.endIndex, offsetBy: -1)
-                let argumentsString = String(chars[startIndex ..< endIndex])
-                let arguments = parseAttributeArguments(argumentsString, attribute: name)
+        if let openIndex = attributeString.index(of: "(") {
+            let name = String(attributeString.prefix(upTo: openIndex))
 
-                return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")
-            } else {
-                guard let identifier = Attribute.Identifier.from(string: attributeString) else { return nil }
-                return Attribute(name: identifier.name, description: identifier.description)
-            }
+            let chars = attributeString
+            let startIndex = chars.index(openIndex, offsetBy: 1)
+            let endIndex = chars.index(chars.endIndex, offsetBy: -1)
+            let argumentsString = String(chars[startIndex ..< endIndex])
+            let arguments = parseAttributeArguments(argumentsString, attribute: name)
+
+            return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")
+        } else {
+            guard let identifier = Attribute.Identifier.from(string: attributeString) else { return nil }
+            return Attribute(name: identifier.name, description: identifier.description)
         }
-        _attributes.forEach { attributes[$0.name] = $0 }
-        return attributes
     }
 
     private func parseAttributeArguments(_ string: String, attribute: String) -> [String: NSObject] {
