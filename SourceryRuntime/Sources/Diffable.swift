@@ -79,7 +79,7 @@ extension DiffableResult {
 
     @discardableResult func trackDifference<T: Equatable>(actual: T?, expected: T?) -> DiffableResult {
         if actual != expected {
-            let result = DiffableResult(results: ["<expected: \(String(describing: expected)), received: \(String(describing: actual))>"])
+            let result = DiffableResult(results: ["<expected: \(expected.map({ "\($0)" }) ?? "nil"), received: \(actual.map({ "\($0)" }) ?? "nil")>"])
             append(contentsOf: result)
         }
         return self
