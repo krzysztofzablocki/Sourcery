@@ -110,9 +110,9 @@ class FileParserSpec: QuickSpec {
                         it("extracts properly from body") {
                             let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
 
-                            expect(parse("public struct Foo { struct Bar { } }"))
+                            expect(parse("struct Foo { struct Bar { } }"))
                                     .to(equal([
-                                            Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [], containedTypes: [innerType]),
+                                            Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], containedTypes: [innerType]),
                                             innerType
                                     ]))
                         }
@@ -120,9 +120,9 @@ class FileParserSpec: QuickSpec {
                         it("extracts properly from extension") {
                             let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
 
-                            expect(parse("public struct Foo {}  extension Foo { struct Bar { } }"))
+                            expect(parse("struct Foo {}  extension Foo { struct Bar { } }"))
                                 .to(equal([
-                                    Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [], containedTypes: [innerType]),
+                                    Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], containedTypes: [innerType]),
                                     innerType
                                     ]))
                         }
@@ -146,11 +146,11 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts annotations correctly") {
-                        let expectedType = Class(name: "Foo", accessLevel: .public, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
                         expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
 
-                        expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\npublic class Foo: TestProtocol { }"))
+                        expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\nclass Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
                     }
                 }

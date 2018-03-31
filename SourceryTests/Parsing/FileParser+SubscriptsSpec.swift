@@ -27,8 +27,8 @@ class FileParserSubscriptsSpec: QuickSpec {
                             returnTypeName: TypeName("Int"),
                             accessLevel: (.private, .private),
                             attributes: [
-                                Attribute.Identifier.final.name: Attribute(name: "final", description: "final"),
-                                Attribute.Identifier.private.name: Attribute(name: "private", description: "private")
+                                "final": Attribute(name: "final", description: "final"),
+                                "private": Attribute(name: "private", description: "private")
                             ],
                             annotations: [:],
                             definedInTypeName: TypeName("Foo")
@@ -43,8 +43,8 @@ class FileParserSubscriptsSpec: QuickSpec {
                             returnTypeName: TypeName("String"),
                             accessLevel: (.public, .private),
                             attributes: [
-                                Attribute.Identifier.public.name: Attribute(name: "public", description: "public"),
-                                Attribute.Identifier.private.name: Attribute(name: "private", arguments: ["set": NSNumber(value: true)], description: "private(set)")
+                                "public": Attribute(name: "public", description: "public"),
+                                "private": Attribute(name: "private", arguments: ["set": NSNumber(value: true)], description: "private(set)")
                             ],
                             annotations: [:],
                             definedInTypeName: TypeName("Foo")
