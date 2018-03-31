@@ -29,6 +29,8 @@ import Foundation
         }
     }
 
+    // TODO: access level
+
     public init(aliasName: String = "", typeName: TypeName, parent: Type? = nil) {
         self.aliasName = aliasName
         self.typeName = typeName

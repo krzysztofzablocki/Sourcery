@@ -109,14 +109,15 @@ final class FileParser {
         let source = try Structure(file: file).dictionary
 
         var processedGlobalTypes = [[String: SourceKitRepresentable]]()
-        let types = try parseTypes(source, processed: &processedGlobalTypes)
+        let (types, typealiases) = try parseTypes(source, processed: &processedGlobalTypes)
 
-        let typealiases = try parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
+//        let typealiases = try parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
         return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Sourcery.version)
     }
 
-    internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) throws -> [Type] {
+    internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) throws -> ([Type], [Typealias]) {
         var types = [Type]()
+        var typealiases = [Typealias]()
         try walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
 
@@ -151,6 +152,12 @@ final class FileParser {
                 return parseSubscript(source, definedIn: definedIn as? Type, nextStructure: next)
             case .varParameter:
                 return parseParameter(source)
+            case .typealias:
+                guard let `typealias` = parseTypealias(source, containingType: definedIn as? Type) else { return nil }
+                if definedIn == nil {
+                    typealiases.append(`typealias`)
+                }
+                return `typealias`
             default:
                 Log.verbose("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
@@ -166,7 +173,8 @@ final class FileParser {
             return type
         }
 
-        return finishedParsing(types: types)
+        finishedParsing(types: types)
+        return (types, typealiases)
     }
 
     typealias FoundEntry = (
@@ -181,21 +189,21 @@ final class FileParser {
 
     /// Walks all declarations in the source
     private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: FoundEntry) throws {
-        if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
-            for (index, substructure) in substructures.enumerated() {
-                if let source = substructure as? [String: SourceKitRepresentable] {
-                    processed.append(source)
-                    let nextStructure = index < substructures.count - 1
-                        ? substructures[index+1] as? [String: SourceKitRepresentable]
-                        : nil
-                    try walkDeclaration(
-                        source: source,
-                        next: nextStructure,
-                        containingIn: containingIn,
-                        foundEntry: foundEntry
-                    )
-                }
-            }
+        guard let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] else { return }
+
+        for (index, substructure) in substructures.enumerated() {
+            guard let source = substructure as? [String: SourceKitRepresentable] else { continue }
+
+            processed.append(source)
+            let nextStructure = index < substructures.count - 1
+                ? substructures[index+1] as? [String: SourceKitRepresentable]
+                : nil
+            try walkDeclaration(
+                source: source,
+                next: nextStructure,
+                containingIn: containingIn,
+                foundEntry: foundEntry
+            )
         }
     }
 
@@ -216,10 +224,10 @@ final class FileParser {
         var processedInnerTypes = [[String: SourceKitRepresentable]]()
         try walkDeclarations(source: source, containingIn: declaration, processed: &processedInnerTypes, foundEntry: foundEntry)
 
-        if let foundType = declaration?.0 as? Type {
-            try parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
-                .forEach { foundType.typealiases[$0.aliasName] = $0 }
-        }
+//        if let foundType = declaration?.0 as? Type {
+//            try parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
+//                .forEach { foundType.typealiases[$0.aliasName] = $0 }
+//        }
     }
 
     private func processContainedDeclaration(_ declaration: Any, within containing: (declaration: Any, source: [String: SourceKitRepresentable])) {
@@ -250,6 +258,8 @@ final class FileParser {
             childType.parent = type
         case let (enumeration as Enum, enumCase as EnumCase):
             enumeration.cases += [enumCase]
+        case let (_, `typealias` as Typealias):
+            type.typealiases[`typealias`.aliasName] = `typealias`
         default:
             break
         }
@@ -277,8 +287,9 @@ final class FileParser {
         }
     }
 
-    private func finishedParsing(types: [Type]) -> [Type] {
+    private func finishedParsing(types: [Type]) {
         for type in types {
+
             // find actual methods parameters types and their argument labels
             for method in type.allMethods {
                 let argumentLabels: [String]
@@ -302,8 +313,6 @@ final class FileParser {
                 }
             }
         }
-
-        return types
     }
 }
 
@@ -691,97 +700,13 @@ extension FileParser {
 // MARK: - Typealiases
 extension FileParser {
 
-    fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) throws -> [Typealias] {
-        // swiftlint:disable:next force_unwrapping
-        var contentToParse = self.contents!
+    fileprivate func parseTypealias(_ source: [String: SourceKitRepresentable], containingType: Type?) -> Typealias? {
+        guard let (name, _, accessibility) = parseTypeRequirements(source),
+            let nameSuffix = extract(.nameSuffix, from: source)?
+                .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
+            else { return nil }
 
-        // replace all processed substructures with whitespaces so that we don't process their typealiases again
-        for substructure in processed {
-            if let substring = extract(.key, from: substructure) {
-
-                let replacementCharacter = " "
-                let count = substring.lengthOfBytes(using: .utf8) / replacementCharacter.lengthOfBytes(using: .utf8)
-                let replacement = String(repeating: replacementCharacter, count: count)
-                contentToParse = contentToParse.bridge().replacingOccurrences(of: substring, with: replacement)
-            }
-        }
-
-        // `()` is not recognized as type identifier token, this needs to be delayed otherwise we will break byteRanges
-        let voidReplaced: (String) -> String = { string in
-            return string.replacingOccurrences(of: "()", with: "(Void)")
-        }
-
-        guard containingType != nil else {
-            let contents = voidReplaced(contentToParse)
-            return try parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
-        }
-
-        if let body = extract(.body, from: source, contents: contentToParse) {
-            let contents = voidReplaced(body)
-            return try parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
-        } else {
-            return []
-        }
-    }
-
-    private func parseTypealiases(_ tokens: [SyntaxToken], contents: String, existingTypealiases: [Typealias] = []) -> [Typealias] {
-        var typealiases = existingTypealiases
-
-        for (index, token) in tokens.enumerated() {
-            guard token.type == SyntaxKind.keyword.rawValue,
-                extract(token, contents: contents) == "typealias" else {
-                    continue
-            }
-
-            let aliasNameToken = tokens[index + 1]
-            guard let aliasName = extract(aliasNameToken, contents: contents) else {
-                continue
-            }
-
-            //get all subsequent type identifiers
-            var index = index + 1
-            var lastTypeToken: SyntaxToken?
-            while index < tokens.count - 1 {
-                index += 1
-                let tokenType = tokens[index].type
-                let token = extract(tokens[index], contents: contents)
-                if tokenType == SyntaxKind.typeidentifier.rawValue {
-                    lastTypeToken = tokens[index]
-                } else if tokenType == SyntaxKind.keyword.rawValue && (token == "Any" || token == "AnyObject") {
-                    lastTypeToken = tokens[index]
-                } else { break }
-            }
-            if let lastTypeToken = lastTypeToken,
-                var typeName = extract(from: aliasNameToken, to: lastTypeToken, contents: contents)?
-                    .trimmingPrefix(aliasName)
-                    .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-                    .trimmingPrefix("=")
-                    .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines),
-                var typeNameSuffix = extract(after: lastTypeToken, contents: contents) {
-
-                // token has only type name without closing brackets optional
-                // so we pick them from the suffix string one by one
-                while true {
-                    if typeNameSuffix.hasPrefix("]") {
-                        typeName += "]"
-                    } else if typeNameSuffix.hasPrefix(")") {
-                        typeName += ")"
-                    } else if typeNameSuffix.hasPrefix(">") {
-                        typeName += ">"
-                    } else if typeNameSuffix.hasPrefix("?") {
-                        typeName += "?"
-                    } else if typeNameSuffix.hasPrefix("!") {
-                        typeName += "!"
-                    } else {
-                        break
-                    }
-                    typeNameSuffix = String(typeNameSuffix.dropFirst())
-                }
-
-                typealiases.append(Typealias(aliasName: aliasName, typeName: TypeName(typeName.bracketsBalancing())))
-            }
-        }
-        return typealiases
+        return Typealias(aliasName: name, typeName: TypeName(nameSuffix), parent: containingType)
     }
 
 }
