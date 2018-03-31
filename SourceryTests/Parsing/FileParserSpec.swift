@@ -211,7 +211,7 @@ class FileParserSpec: QuickSpec {
                         it("extracts typealias for void") {
                             expect(parse("typealias GlobalAlias = () -> ()").typealiases)
                                 .to(equal([
-                                    Typealias(aliasName: "GlobalAlias", typeName: TypeName("(Void) -> (Void)"))
+                                    Typealias(aliasName: "GlobalAlias", typeName: TypeName("() -> ()"))
                                     ]))
                         }
 
