@@ -80,7 +80,7 @@ import Foundation
 
     /// :nodoc:
     public init(parameters: [MethodParameter] = [],
-                returnTypeName: TypeName = TypeName("Void"),
+                returnTypeName: TypeName,
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
