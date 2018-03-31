@@ -514,7 +514,7 @@ struct Composer {
         }
 
         let name = genericComponents[0]
-        let typeParametersString = genericComponents[1].dropLast()
+        let typeParametersString = String(genericComponents[1].dropLast())
         return GenericType(name: name, typeParameters: parseGenericTypeParameters(typeParametersString))
     }
 

@@ -894,7 +894,7 @@ extension FileParser {
                     } else {
                         break
                     }
-                    typeNameSuffix = typeNameSuffix.dropFirst()
+                    typeNameSuffix = String(typeNameSuffix.dropFirst())
                 }
 
                 typealiases.append(Typealias(aliasName: aliasName, typeName: TypeName(typeName.bracketsBalancing())))

@@ -47,16 +47,6 @@ public extension String {
     }
 
     /// :nodoc:
-    func dropFirst(_ n: Int = 1) -> String {
-        return String(self.dropFirst(n))
-    }
-
-    /// :nodoc:
-    func dropLast(_ n: Int = 1) -> String {
-        return String(self.dropLast(n))
-    }
-
-    /// :nodoc:
     func dropFirstAndLast(_ n: Int = 1) -> String {
         return drop(first: n, last: n)
     }
@@ -168,7 +158,7 @@ public extension String {
 
             if char == matchedDelimiter.leftToMatch.first {
                 matchedDelimiter.alreadyMatched.append(char)
-                matchedDelimiter.leftToMatch = matchedDelimiter.leftToMatch.dropFirst()
+                matchedDelimiter.leftToMatch = String(matchedDelimiter.leftToMatch.dropFirst())
                 if matchedDelimiter.leftToMatch.isEmpty {
                     items.append(item)
                     item = ""
