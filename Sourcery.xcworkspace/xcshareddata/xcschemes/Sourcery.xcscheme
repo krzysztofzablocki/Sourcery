@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0910"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -120,7 +120,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "$SRCROOT/SourceryRuntime/Sources"
+            argument = "/Users/ilyapuchka/dev/Sourcery/SourceryRuntime/Sources"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -128,15 +128,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "$SRCROOT/Sourcery/Templates"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--output"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "$SRCROOT/SourceryRuntime/Sources"
+            argument = "/Users/ilyapuchka/dev/Sourcery/Sourcery/Templates"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

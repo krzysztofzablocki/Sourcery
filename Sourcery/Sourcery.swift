@@ -107,7 +107,7 @@ class Sourcery {
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
                     .filter { $0.flags.contains(.isFile) }
-                    .flatMap {
+                    .compactMap {
                         let path = Path($0.path)
                         return path.isSwiftSourceFile ? path : nil
                     }
@@ -192,7 +192,7 @@ class Sourcery {
     }
 
     fileprivate func templates(from: Paths) throws -> [Template] {
-        return try templatePaths(from: from).flatMap {
+        return try templatePaths(from: from).compactMap {
             if $0.extension == "swifttemplate" {
                 #if SWIFT_PACKAGE
                     Log.warning("Skipping template \($0). Swift templates are not supported when using Sourcery built with Swift Package Manager yet. Please use only Stencil or EJS templates. See https://github.com/krzysztofzablocki/Sourcery/issues/244 for details.")
@@ -241,10 +241,10 @@ extension Sourcery {
                 .filter {
                     let exclude = exclude
                         .map { $0.isDirectory ? try? $0.recursiveChildren() : [$0] }
-                        .flatMap({ $0 }).flatMap({ $0 })
+                        .compactMap({ $0 }).flatMap({ $0 })
                     return !exclude.contains($0)
                 }
-                .flatMap { (path: Path) -> (path: Path, contents: String)? in
+                .compactMap { (path: Path) -> (path: Path, contents: String)? in
                     do {
                         return (path: path, contents: try path.read(.utf8))
                     } catch {
@@ -446,7 +446,7 @@ extension Sourcery {
 
         try inline.annotatedRanges
             .map { (key: $0, range: $1) }
-            .flatMap { (key, range) -> MappedInlineAnnotations? in
+            .compactMap { (key, range) -> MappedInlineAnnotations? in
                 let generatedBody = contents.bridge().substring(with: range)
 
                 guard let (filePath, ranges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {

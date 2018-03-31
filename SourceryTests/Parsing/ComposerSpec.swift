@@ -916,7 +916,7 @@ class ParserComposerSpec: QuickSpec {
 
                 context("given type name with module name") {
                     func parseModules(_ modules: (name: String?, contents: String)...) -> [Type] {
-                        let moduleResults = modules.flatMap {
+                        let moduleResults = modules.compactMap {
                             try? FileParser(contents: $0.contents, module: $0.name).parse()
                         }
 

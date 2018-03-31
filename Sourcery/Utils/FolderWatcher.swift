@@ -82,7 +82,7 @@ enum FolderWatcher {
                 let eventStream = unsafeBitCast(clientCallbackInfo, to: Local.self)
                 let paths = unsafeBitCast(eventPaths, to: NSArray.self)
 
-                let events = (0..<numEvents).flatMap { idx in
+                let events = (0..<numEvents).compactMap { idx in
                     return (paths[idx] as? String).flatMap { Event(path: $0, flags: Event.Flag(rawValue: eventFlags[idx])) }
                 }
 

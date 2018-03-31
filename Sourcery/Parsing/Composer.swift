@@ -483,7 +483,7 @@ struct Composer {
 
         let parameters = parametersString
             .commaSeparated()
-            .flatMap({ parameter -> MethodParameter? in
+            .compactMap({ parameter -> MethodParameter? in
                 let components = parameter.trimmingCharacters(in: .whitespacesAndNewlines)
                     .colonSeparated()
                     .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
