@@ -13,7 +13,7 @@ extension XcodeProj {
 
     func sourceFilesPaths(target: PBXTarget, sourceRoot: Path) -> [Path] {
         return pbxproj.objects.sourceFiles(target: target)
-            .flatMap({ fullPath(fileElement: $0, sourceRoot: sourceRoot) })
+            .compactMap({ fullPath(fileElement: $0, sourceRoot: sourceRoot) })
     }
 
     var rootGroup: PBXGroup {

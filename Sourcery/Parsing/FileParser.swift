@@ -316,7 +316,7 @@ extension FileParser {
     }
 
     internal func extractInheritedTypes(source: [String: SourceKitRepresentable]) -> [String] {
-        return (source[SwiftDocKey.inheritedtypes.rawValue] as? [[String: SourceKitRepresentable]])?.flatMap { type in
+        return (source[SwiftDocKey.inheritedtypes.rawValue] as? [[String: SourceKitRepresentable]])?.compactMap { type in
             return type[SwiftDocKey.name.rawValue] as? String
         } ?? []
     }
@@ -912,8 +912,10 @@ extension FileParser {
         guard var prefix = extract(.keyPrefix, from: source)?.bridge() else { return [:] }
         if let attributesValue = source["key.attributes"] as? [[String: String]] {
             var ranges = [NSRange]()
-            attributesValue.map({ $0.values }).joined()
-                .flatMap(Attribute.Identifier.init(identifier:))
+            attributesValue
+                .map { $0.values }
+                .joined()
+                .compactMap(Attribute.Identifier.init(identifier:))
                 .forEach {
                     var attributeRange = prefix.range(of: $0.description, options: .backwards)
                     // we expect all attributes to be prefixed with `@`
@@ -941,7 +943,7 @@ extension FileParser {
         guard items.count > 1 else { return [:] }
 
         var attributes = [String: Attribute]()
-        let _attributes: [Attribute] = items.filter({ !$0.isEmpty }).flatMap {
+        let _attributes: [Attribute] = items.filter({ !$0.isEmpty }).compactMap {
             guard let attributeString = $0.trimmingCharacters(in: .whitespaces)
                 .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
 

@@ -486,7 +486,7 @@ class FileParserSpec: QuickSpec {
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar) }")
-                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))
                             expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
@@ -497,7 +497,7 @@ class FileParserSpec: QuickSpec {
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar?) }")
-                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))
                             expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
@@ -508,7 +508,7 @@ class FileParserSpec: QuickSpec {
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar2) }")
-                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))
                             expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
@@ -520,7 +520,7 @@ class FileParserSpec: QuickSpec {
                             associatedValue.type = item
 
                             let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(Foo) }")
-                            let parsedItem = parsed.flatMap { $0 as? Enum }.first
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
 
                             expect(parsedItem).to(equal(item))
                             expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
