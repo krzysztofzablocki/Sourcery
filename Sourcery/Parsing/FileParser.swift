@@ -108,17 +108,14 @@ final class FileParser {
         let file = File(contents: contents)
         let source = try Structure(file: file).dictionary
 
-        var processedGlobalTypes = [[String: SourceKitRepresentable]]()
-        let (types, typealiases) = try parseTypes(source, processed: &processedGlobalTypes)
-
-//        let typealiases = try parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
+        let (types, typealiases) = try parseTypes(source)
         return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Sourcery.version)
     }
 
-    internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) throws -> ([Type], [Typealias]) {
+    internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [Typealias]) {
         var types = [Type]()
         var typealiases = [Typealias]()
-        try walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn, next in
+        try walkDeclarations(source: source) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
 
             switch kind {
@@ -173,7 +170,6 @@ final class FileParser {
             return type
         }
 
-        finishedParsing(types: types)
         return (types, typealiases)
     }
 
@@ -188,16 +184,16 @@ final class FileParser {
     ) -> Any?
 
     /// Walks all declarations in the source
-    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: FoundEntry) throws {
+    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: FoundEntry) throws {
         guard let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] else { return }
 
         for (index, substructure) in substructures.enumerated() {
             guard let source = substructure as? [String: SourceKitRepresentable] else { continue }
 
-            processed.append(source)
             let nextStructure = index < substructures.count - 1
                 ? substructures[index+1] as? [String: SourceKitRepresentable]
                 : nil
+
             try walkDeclaration(
                 source: source,
                 next: nextStructure,
@@ -221,13 +217,7 @@ final class FileParser {
             declaration = foundDeclaration.map({ ($0, source) })
         }
 
-        var processedInnerTypes = [[String: SourceKitRepresentable]]()
-        try walkDeclarations(source: source, containingIn: declaration, processed: &processedInnerTypes, foundEntry: foundEntry)
-
-//        if let foundType = declaration?.0 as? Type {
-//            try parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
-//                .forEach { foundType.typealiases[$0.aliasName] = $0 }
-//        }
+        try walkDeclarations(source: source, containingIn: declaration, foundEntry: foundEntry)
     }
 
     private func processContainedDeclaration(_ declaration: Any, within containing: (declaration: Any, source: [String: SourceKitRepresentable])) {
@@ -287,33 +277,6 @@ final class FileParser {
         }
     }
 
-    private func finishedParsing(types: [Type]) {
-        for type in types {
-
-            // find actual methods parameters types and their argument labels
-            for method in type.allMethods {
-                let argumentLabels: [String]
-                if let labels = method.selectorName.range(of: "(")
-                        .map({ String(method.selectorName[$0.upperBound...]) })?
-                        .trimmingCharacters(in: CharacterSet(charactersIn: ")"))
-                        .components(separatedBy: ":")
-                        .dropLast() {
-                    argumentLabels = Array(labels)
-                } else {
-                    argumentLabels = []
-                }
-
-                for (index, parameter) in method.parameters.enumerated() where index < argumentLabels.count {
-                    parameter.argumentLabel = argumentLabels[index] != "_" ? argumentLabels[index] : nil
-                }
-
-                // adjust method selector name as methods without parameters do not have ()
-                if method.parameters.isEmpty {
-                    method.selectorName.trimSuffix("()")
-                }
-            }
-        }
-    }
 }
 
 // MARK: - Details parsing
@@ -623,7 +586,7 @@ extension FileParser {
         }
 
         let definedInTypeName  = definedIn.map { TypeName($0.name) }
-        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
+        let method = Method(name: fullName, selectorName: name.trimmingSuffix("()"), returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         method.setSource(source)
 
         return method
