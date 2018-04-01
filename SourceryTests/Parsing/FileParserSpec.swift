@@ -468,13 +468,13 @@ class FileParserSpec: QuickSpec {
                                 ]))
                     }
 
-                    it("extracts enums with empty parenthesis as ones without associated type") {
+                    it("extracts enums with empty parenthesis as ones with Void associated type") {
                         expect(parse("enum Foo { case optionA(); case optionB() }"))
                                 .to(equal([
                                                   Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                                   [
-                                                          EnumCase(name: "optionA", associatedValues: []),
-                                                          EnumCase(name: "optionB", associatedValues: [])
+                                                          EnumCase(name: "optionA", associatedValues: [AssociatedValue(typeName: TypeName("Void"))]),
+                                                          EnumCase(name: "optionB", associatedValues: [AssociatedValue(typeName: TypeName("Void"))])
                                                   ])
                                           ]))
                     }
