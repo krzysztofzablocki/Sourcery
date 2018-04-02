@@ -2,7 +2,7 @@
 
 ---
 
-## Master
+## 0.11.0
 
 ### New Features
 
