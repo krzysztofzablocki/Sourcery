@@ -104,14 +104,14 @@ end
 desc "Update docs"
 task :docs do
   print_info "Updating docs"
-  sh "sourcekitten doc --module-name SourceryRuntime > docs.json && bundle exec jazzy --clean --skip-undocumented && rm docs.json"
+  sh "sourcekitten doc --module-name SourceryRuntime > docs.json && bundle exec jazzy --clean --skip-undocumented --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
 end
 
 desc "Validate docs"
 task :validate_docs do
   print_info "Checking docs are up to date"
   temp_build_dir = "#{BUILD_DIR}tmp/"
-  sh "sourcekitten doc --module-name SourceryRuntime -- -workspace Sourcery.xcworkspace -scheme Sourcery-Release -derivedDataPath build/tmp/ > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.jsoni"
+  sh "sourcekitten doc --module-name SourceryRuntime -- -workspace Sourcery.xcworkspace -scheme Sourcery-Release -derivedDataPath build/tmp/ > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
   sh "rm -fr #{temp_build_dir}"
 end
 
