@@ -7,9 +7,6 @@ github_url: https://github.com/krzysztofzablocki/Sourcery
 copyright: 'Copyright © 2016 Pixle. All rights reserved.'
 readme: About.md
 documentation: guides/*.md
-exclude: 
-  - SourceryFramework/Utils/*
-  - SourceryFramework/CodeGenerated/*
 
 custom_categories:
   - name: Guides
@@ -42,10 +39,13 @@ custom_categories:
       - Variable 
       - Method
       - MethodParameter
+      - Subscript
       - TypeName
       - TupleType
       - TupleElement
       - ArrayType
       - DictionaryType
       - ClosureType
+      - GenericType
+      - GenericTypeParameter
       - Attribute

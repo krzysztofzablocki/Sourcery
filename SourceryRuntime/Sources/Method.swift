@@ -1,6 +1,6 @@
 import Foundation
 
-//typealias used to avoid types ambiguty in tests
+/// :nodoc:
 public typealias SourceryMethod = Method
 
 /// Describes method parameter

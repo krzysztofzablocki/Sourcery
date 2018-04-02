@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Protocol Class Reference</title>
+    <title>GenericType Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/Protocol" class="dashAnchor"></a>
-    <a title="Protocol Class Reference"></a>
+    <a name="//apple_ref/swift/Class/GenericType" class="dashAnchor"></a>
+    <a title="GenericType Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery Docs</a> (100% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        Protocol Class Reference
+        GenericType Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -158,14 +158,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Protocol</h1>
+            <h1>GenericType</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">@objcMembers</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Protocol</span><span class="p">:</span> <span class="k">Type</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">@objcMembers</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericType</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
 
                 </div>
               </div>
-            <p>Describes Swift protocol</p>
+            <p>Descibes Swift generic type</p>
 
           </section>
           <section class="section task-group-section">
@@ -174,9 +174,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Protocol(py)kind"></a>
-                    <a name="//apple_ref/swift/Property/kind" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Protocol(py)kind">kind</a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericType(py)name"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericType(py)name">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -184,14 +184,41 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Returns <q>protocol</q></p>
+                        <p>The name of the base type, i.e. <code>Array</code> for <code>Array&lt;Int&gt;</code></p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">override</span> <span class="k">var</span> <span class="nv">kind</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericType(py)typeParameters"></a>
+                    <a name="//apple_ref/swift/Property/typeParameters" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericType(py)typeParameters">typeParameters</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>This generic type parameters</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">typeParameters</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/GenericTypeParameter.html">GenericTypeParameter</a></span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>

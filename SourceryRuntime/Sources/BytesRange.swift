@@ -5,20 +5,17 @@
 
 import Foundation
 
-/// Represents a range of bytes
+/// :nodoc:
 @objcMembers public final class BytesRange: NSObject, SourceryModel {
-    /// :nodoc:
+
     public let offset: Int64
-    /// :nodoc:
     public let length: Int64
 
-    /// :nodoc:
     public init(offset: Int64, length: Int64) {
         self.offset = offset
         self.length = length
     }
 
-    /// :nodoc:
     public convenience init(range: (offset: Int64, length: Int64)) {
         self.init(offset: range.offset, length: range.length)
     }
