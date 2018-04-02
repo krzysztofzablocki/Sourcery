@@ -56,7 +56,6 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
-    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -124,7 +123,6 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
-    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -236,7 +234,6 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
-    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -275,7 +272,6 @@ extension Protocol: ProtocolAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
-    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
@@ -362,7 +358,6 @@ extension TupleType: TupleTypeAutoJSExport {}
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
-    var bodyBytesRange: BytesRange? { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
     var staticVariables: [Variable] { get }
