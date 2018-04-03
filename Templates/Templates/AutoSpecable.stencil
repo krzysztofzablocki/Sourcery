@@ -53,21 +53,14 @@ import Nimble
 {% endmacro %}
 
 // MARK: AutoSpecs
-{% macro generateSpecForType type%}
-// MARK: - {{type.name}}AutoSpec
-
-final class {{type.name}}AutoSpec: QuickSpec {
-  func testSpec() { spec() }
-
-  {%if type.methods.count > 2 and type.variables.count > 3%} // swiftlint:disable function_body_length{% endif %}
-  override func spec() {
-      describe("{{type.name}}") {
+{% macro declareSutAndMocksForType type %}
         var sut: {{type.name}}!
 
         {%for variable in type.variables %}
         {% if not variable.annotations.skipSpec %}var {{variable.name}}: {% call mockType variable %}{% endif %}
         {% endfor %}
-
+{% endmacro %}
+{% macro beforeEachForType type %}
         beforeEach {
           {%for variable in type.variables %}
           {% if not variable.annotations.skipSpec %}{{variable.name}} = {% call mockedVariableValue variable %}{% endif %}
@@ -75,6 +68,8 @@ final class {{type.name}}AutoSpec: QuickSpec {
 
           {%if type.initializers.first.annotations.throwableInitializer %} attempt { sut = try {% else %} sut = {% endif %}{% call initializeSutValue type %}{%if type.initializers.first.annotations.throwableInitializer %}}{% endif %}
         }
+{% endmacro %}
+{% macro testInternalAndPublicVariablesOfType type %}
         {% map type.variables into varAccess%} {{ maploop.item.readAccess}} {% endmap %}
         {% if not varAccess|join:","|contains:"private" %}
         // MARK: - Test variables
@@ -85,6 +80,8 @@ final class {{type.name}}AutoSpec: QuickSpec {
         }
         {% endfor %}
         {% endif %}
+{% endmacro %}
+{% macro testInternalAndPublicFunctionsForType type %}
         {% if type.methods.count != type.initializers.count %}
         // MARK: - Test functions
 
@@ -115,6 +112,23 @@ final class {{type.name}}AutoSpec: QuickSpec {
         {% endif %}
         {% endfor %}
         {% endif %}
+{% endmacro %}
+{% macro generateSpecForType type %}
+// MARK: - {{type.name}}AutoSpec
+
+final class {{type.name}}AutoSpec: QuickSpec {
+  func testSpec() { spec() }
+
+  {%if type.methods.count > 2 and type.variables.count > 3%} // swiftlint:disable function_body_length{% endif %}
+  override func spec() {
+      describe("{{type.name}}") {
+        {% call declareSutAndMocksForType type %}
+
+        {% call beforeEachForType type %}
+
+        {% call testInternalAndPublicVariablesOfType type %}
+
+        {% call testInternalAndPublicFunctionsForType type %}
       }
     }
 }

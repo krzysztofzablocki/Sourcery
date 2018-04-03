@@ -43,6 +43,8 @@ final class BusServiceAutoSpec: QuickSpec {
                     service: service
                  )
         }
+
+
         // MARK: - Test functions
 
         // MARK: - timeTableBus
