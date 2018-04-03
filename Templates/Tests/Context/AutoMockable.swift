@@ -12,6 +12,9 @@ protocol AutoMockable {}
 
 protocol BasicProtocol: AutoMockable {
     func loadConfiguration() -> String?
+    /// Asks a Duck to quack
+    ///
+    /// - Parameter times: How many times the Duck will quack
     func save(configuration: String)
 }
 
