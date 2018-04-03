@@ -28,6 +28,12 @@ struct CommentedString {
         return invalidSet
     }()
 
+    /// Substrings that cause Xcode to quote the string content.
+    private let invalidStrings = [
+        "___",
+        "//"
+    ]
+
     var validString: String {
         switch string {
             case "": return "".quoted
@@ -54,7 +60,10 @@ struct CommentedString {
             escaped = escaped.replacingOccurrences(of: "\n", with: "\\n")
         }
 
-        if !escaped.isQuoted && escaped.rangeOfCharacter(from: CommentedString.invalidCharacters) != nil {
+        if !escaped.isQuoted &&
+            (escaped.rangeOfCharacter(from: CommentedString.invalidCharacters) != nil ||
+            invalidStrings.contains(where: { escaped.range(of: $0) != nil })) {
+
             escaped = escaped.quoted
         }
 

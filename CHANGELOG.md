@@ -2,7 +2,7 @@
 
 ---
 
-## Master
+## 0.11.0
 
 ### New Features
 
@@ -20,6 +20,7 @@
 - You can now use AutoMockable with annotations
 - Updated to latest version of Stencil (commit 9184720)
 - Added support for annotation namespaces
+- Added `--exclude-sources` and `--exclude-templates` CLI options
 
 ** Breaking **
 
@@ -43,6 +44,7 @@ This is a breaking change for template code like this:
 - `selectorName` for methods without parameters now will not contain `()`
 - `returnTypeName` for initializers will be the type name of defining type, with `?` for failable initializers
 - Improved compile time of AutoHashable template
+- Updated StencilSwiftKit and Stencil to 0.10.1
 
 ### Bug fixes 
 
@@ -64,6 +66,7 @@ This is a breaking change for template code like this:
 - Fixed removing back ticks in types names
 - Fixed creating output folder if it does not exist
 - Fixed inferring variable types with closures and improved inferring types of enum default values
+- Fixed enum cases with empty parenthesis not having () associated value
 
 ## 0.10.1
 

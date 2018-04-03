@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// :nodoc:
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol

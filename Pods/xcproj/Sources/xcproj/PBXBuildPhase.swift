@@ -1,7 +1,7 @@
 import Foundation
 
 /// An absctract class for all the build phase objects
-public class PBXBuildPhase: PBXObject {
+public class PBXBuildPhase: PBXContainerItem {
     
     /// Default build action mask.
     public static let defaultBuildActionMask: UInt = 2147483647
@@ -46,17 +46,17 @@ public class PBXBuildPhase: PBXObject {
     }
 
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXBuildPhase else {
-            return false
+        guard let rhs = object as? PBXBuildPhase,
+            super.isEqual(to: rhs) else {
+                return false
         }
         let lhs = self
         return lhs.files == rhs.files &&
             lhs.runOnlyForDeploymentPostprocessing == rhs.runOnlyForDeploymentPostprocessing
     }
 
-    func plistValues(proj: PBXProj, reference: String) -> [CommentedString: PlistValue] {
-        var dictionary: [CommentedString: PlistValue] = [:]
+    override func plistValues(proj: PBXProj, reference: String) -> [CommentedString: PlistValue] {
+        var dictionary = super.plistValues(proj: proj, reference: reference)
         dictionary["buildActionMask"] = .string(CommentedString("\(buildActionMask)"))
         dictionary["files"] = .array(files.map { fileReference in
             let name = proj.objects.fileName(buildFileReference: fileReference)

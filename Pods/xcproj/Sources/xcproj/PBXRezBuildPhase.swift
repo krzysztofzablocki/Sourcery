@@ -9,8 +9,8 @@ final public class PBXRezBuildPhase: PBXBuildPhase {
     }
 
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXRezBuildPhase else {
+        guard let rhs = object as? PBXRezBuildPhase,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self

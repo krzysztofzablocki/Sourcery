@@ -29,28 +29,28 @@ extension Array {
         let queueLabelPrefix = "io.pixle.Sourcery.map.\(uuid)"
         let resultAccumulatorQueue = DispatchQueue(label: "\(queueLabelPrefix).resultAccumulator")
 
-        var error: Error?
-        withoutActuallyEscaping(transform) { escapingTransform in
+        var mapError: Error?
+        withoutActuallyEscaping(transform) { escapingtransform in
             for jobIndex in stride(from: 0, to: count, by: jobCount) {
                 let queue = DispatchQueue(label: "\(queueLabelPrefix).\(jobIndex / jobCount)")
                 queue.async(group: group) {
                     let jobElements = self[jobIndex..<Swift.min(count, jobIndex + jobCount)]
                     do {
-                        let jobIndexAndResults = (jobIndex, try jobElements.map(escapingTransform))
+                        let jobIndexAndResults = try (jobIndex, jobElements.map(escapingtransform))
                         resultAccumulatorQueue.sync {
                             result.append(jobIndexAndResults)
                         }
-                    } catch let transformError {
+                    } catch {
                         resultAccumulatorQueue.sync {
-                            error = transformError
+                            mapError = error
                         }
                     }
                 }
             }
             group.wait()
         }
-        if let error = error {
-            throw error
+        if let mapError = mapError {
+            throw mapError
         }
         return result.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
     }

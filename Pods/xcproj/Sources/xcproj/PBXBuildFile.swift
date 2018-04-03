@@ -42,8 +42,8 @@ final public class PBXBuildFile: PBXObject {
     // MARK: - Hashable
 
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXBuildFile else {
+        guard let rhs = object as? PBXBuildFile,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self

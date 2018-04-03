@@ -108,6 +108,9 @@
                 <a href="../Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Subscript.html">Subscript</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
@@ -126,15 +129,13 @@
                 <a href="../Classes/ClosureType.html">ClosureType</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/Attribute.html">Attribute</a>
+                <a href="../Classes/GenericType.html">GenericType</a>
               </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Other Extensions.html">Other Extensions</a>
-            <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Extensions/Typealias.html">Typealias</a>
+                <a href="../Classes/GenericTypeParameter.html">GenericTypeParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Attribute.html">Attribute</a>
               </li>
             </ul>
           </li>
@@ -160,7 +161,7 @@
             <h1>Method</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">@objc(SwiftMethod)</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Definition.html">Definition</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">@objc(SwiftMethod)</span> <span class="kd">@objcMembers</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Definition.html">Definition</a></span></code></pre>
 
                 </div>
               </div>
@@ -217,7 +218,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">selectorName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">selectorName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -785,6 +786,33 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isMutating</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isGeneric"></a>
+                    <a name="//apple_ref/swift/Property/isGeneric" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isGeneric">isGeneric</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether method is generic</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isGeneric</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>

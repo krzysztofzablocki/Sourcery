@@ -270,9 +270,7 @@ extension Sourcery {
             var accumulator = 0
             let step = sources.count / 10 // every 10%
 
-            let results = try sources.parallelMap({
-                try self.loadOrParse(parser: $0, cachesPath: Path.cachesDir(sourcePath: from))
-            }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+            let results = try sources.parallelMap({ try self.loadOrParse(parser: $0, cachesPath: Path.cachesDir(sourcePath: from)) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
                 if accumulator > previousUpdate + step {
                     previousUpdate = accumulator
                     let percentage = accumulator * 100 / sources.count

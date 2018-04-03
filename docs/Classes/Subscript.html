@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Subscript Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/Subscript" class="dashAnchor"></a>
+    <a title="Subscript Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Sourcery Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Sourcery Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        Subscript Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../installing.html">Installing</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../usage.html">Usage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../writing-templates.html">Writing templates</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Examples.html">Examples</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../equatable.html">Equatable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../hashable.html">Hashable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../enum-cases.html">Enum cases</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../lenses.html">Lenses</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../mocks.html">Mocks</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../diffable.html">Diffable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../linuxmain.html">LinuxMain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../decorator.html">Decorator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Types.html">Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Types.html">Types</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Protocol.html">Protocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Class.html">Class</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Struct.html">Struct</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MethodParameter.html">MethodParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Subscript.html">Subscript</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleElement.html">TupleElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ArrayType.html">ArrayType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DictionaryType.html">DictionaryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ClosureType.html">ClosureType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/GenericType.html">GenericType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/GenericTypeParameter.html">GenericTypeParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Attribute.html">Attribute</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/Annotated.html">Annotated</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Definition.html">Definition</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Typed.html">Typed</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Subscript</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">@objcMembers</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Subscript</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Definition.html">Definition</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>Describes subscript</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)parameters"></a>
+                    <a name="//apple_ref/swift/Property/parameters" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)parameters">parameters</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Method parameters</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">parameters</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/MethodParameter.html">MethodParameter</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)returnTypeName"></a>
+                    <a name="//apple_ref/swift/Property/returnTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)returnTypeName">returnTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return value type name used in declaration, including generic constraints, i.e. <code>where T: Equatable</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">returnTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)actualReturnTypeName"></a>
+                    <a name="//apple_ref/swift/Property/actualReturnTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)actualReturnTypeName">actualReturnTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Actual return value type name if declaration uses typealias, otherwise just a <code><a href="../Classes/Subscript.html#/c:@M@SourceryRuntime@objc(cs)Subscript(py)returnTypeName">returnTypeName</a></code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">actualReturnTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)returnType"></a>
+                    <a name="//apple_ref/swift/Property/returnType" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)returnType">returnType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Actual return value type, if known</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">returnType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)isOptionalReturnType"></a>
+                    <a name="//apple_ref/swift/Property/isOptionalReturnType" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)isOptionalReturnType">isOptionalReturnType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether return value type is optional</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isOptionalReturnType</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)isImplicitlyUnwrappedOptionalReturnType"></a>
+                    <a name="//apple_ref/swift/Property/isImplicitlyUnwrappedOptionalReturnType" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)isImplicitlyUnwrappedOptionalReturnType">isImplicitlyUnwrappedOptionalReturnType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether return value type is implicitly unwrapped optional</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isImplicitlyUnwrappedOptionalReturnType</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)unwrappedReturnTypeName"></a>
+                    <a name="//apple_ref/swift/Property/unwrappedReturnTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)unwrappedReturnTypeName">unwrappedReturnTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Return value type name without attributes and optional type information</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">unwrappedReturnTypeName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)isFinal"></a>
+                    <a name="//apple_ref/swift/Property/isFinal" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)isFinal">isFinal</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether method is final</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isFinal</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)readAccess"></a>
+                    <a name="//apple_ref/swift/Property/readAccess" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)readAccess">readAccess</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Variable read access level, i.e. <code>internal</code>, <code>private</code>, <code>fileprivate</code>, <code>public</code>, <code>open</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">readAccess</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)writeAccess"></a>
+                    <a name="//apple_ref/swift/Property/writeAccess" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)writeAccess">writeAccess</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Variable write access, i.e. <code>internal</code>, <code>private</code>, <code>fileprivate</code>, <code>public</code>, <code>open</code>.
+For immutable variables this value is empty string</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">writeAccess</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)isMutable"></a>
+                    <a name="//apple_ref/swift/Property/isMutable" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)isMutable">isMutable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether variable is mutable or not</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isMutable</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)annotations"></a>
+                    <a name="//apple_ref/swift/Property/annotations" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)annotations">annotations</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Annotations, that were created with // sourcery: annotation1, other = <q>annotation value</q>, alterantive = 2</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">annotations</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)definedInTypeName"></a>
+                    <a name="//apple_ref/swift/Property/definedInTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)definedInTypeName">definedInTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to type name where the method is defined,
+nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">definedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)actualDefinedInTypeName"></a>
+                    <a name="//apple_ref/swift/Property/actualDefinedInTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)actualDefinedInTypeName">actualDefinedInTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a <code><a href="../Classes/Subscript.html#/c:@M@SourceryRuntime@objc(cs)Subscript(py)definedInTypeName">definedInTypeName</a></code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">actualDefinedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)definedInType"></a>
+                    <a name="//apple_ref/swift/Property/definedInType" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)definedInType">definedInType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reference to actual type where the object is defined,
+nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc or type is unknown</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">definedInType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)attributes"></a>
+                    <a name="//apple_ref/swift/Property/attributes" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)attributes">attributes</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Method attributes, i.e. <code>@discardableResult</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">attributes</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt"><a href="../Classes/Attribute.html">Attribute</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2016 Pixle. All rights reserved.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

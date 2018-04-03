@@ -53,8 +53,8 @@ final public class PBXReferenceProxy: PBXObject {
     // MARK: - Hashable
     
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXReferenceProxy else {
+        guard let rhs = object as? PBXReferenceProxy,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self

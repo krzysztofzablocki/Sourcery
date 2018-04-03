@@ -108,6 +108,9 @@
                 <a href="../Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Subscript.html">Subscript</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
@@ -126,15 +129,13 @@
                 <a href="../Classes/ClosureType.html">ClosureType</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/Attribute.html">Attribute</a>
+                <a href="../Classes/GenericType.html">GenericType</a>
               </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Other Extensions.html">Other Extensions</a>
-            <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Extensions/Typealias.html">Typealias</a>
+                <a href="../Classes/GenericTypeParameter.html">GenericTypeParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Attribute.html">Attribute</a>
               </li>
             </ul>
           </li>
@@ -160,7 +161,7 @@
             <h1>Type</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">@objcMembers</span> <span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span></code></pre>
 
                 </div>
               </div>
@@ -438,6 +439,89 @@ in superclasses (for classes only) and protocols</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">allMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)subscripts"></a>
+                    <a name="//apple_ref/swift/Property/subscripts" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)subscripts">subscripts</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Subscripts defined in this type only, inluding subscripts defined in its extensions,
+but not including subscripts inherited from superclasses (for classes only) and protocols</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">subscripts</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Subscript.html">Subscript</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)allSubscripts"></a>
+                    <a name="//apple_ref/swift/Property/allSubscripts" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)allSubscripts">allSubscripts</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All subscripts defined for this type, including subscripts defined in extensions,
+in superclasses (for classes only) and protocols</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">allSubscripts</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Subscript.html">Subscript</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)bodyBytesRange"></a>
+                    <a name="//apple_ref/swift/Property/bodyBytesRange" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)bodyBytesRange">bodyBytesRange</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Bytes position of the body of this type in its declaration file if available.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">bodyBytesRange</span><span class="p">:</span> <span class="kt">BytesRange</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>

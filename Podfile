@@ -22,7 +22,6 @@ end
 
 target 'Sourcery' do
   pod 'StencilSwiftKit', :git=>'https://github.com/SwiftGen/StencilSwiftKit.git', :branch=>'master'
-  pod 'Stencil', :git=>'https://github.com/kylef/Stencil', :branch=>'master'
   pod 'Commander'
   pod 'PathKit'
   pod "xcproj"
@@ -45,13 +44,13 @@ target 'SourcerySwift' do
   pod 'libCommonCrypto'
 end
 
-swift3 = []
+swift4 = ['xcproj']
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-    swift_version = '4.0'
-    if swift3.include?(target.name)
-      swift_version = '3.2'
+    swift_version = '3.2'
+    if swift4.include?(target.name)
+      swift_version = '4.0'
     end
     target.build_configurations.each do |config|
       config.build_settings['SWIFT_VERSION'] = swift_version

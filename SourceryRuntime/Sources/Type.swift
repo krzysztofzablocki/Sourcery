@@ -86,7 +86,7 @@ import Foundation
         return flattenAll({ $0.subscripts })
     }
 
-    // sourcery: skipEquality, skipDescription
+    // sourcery: skipEquality, skipDescription, skipJSExport
     /// Bytes position of the body of this type in its declaration file if available.
     public var bodyBytesRange: BytesRange?
 

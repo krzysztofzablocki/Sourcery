@@ -40,8 +40,8 @@ final public class PBXContainerItemProxy: PBXObject {
     }
     
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXContainerItemProxy else {
+        guard let rhs = object as? PBXContainerItemProxy,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self
