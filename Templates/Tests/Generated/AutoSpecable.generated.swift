@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.11.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 //: This code is not build or run. You can just copy paste it into your test file to have a start for the tests
