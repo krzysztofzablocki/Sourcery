@@ -1,6 +1,6 @@
 import Foundation
 
-//typealias used to avoid types ambiguty in tests
+/// :nodoc:
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
@@ -38,25 +38,25 @@ public typealias SourceryMethod = Method
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], `inout`: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
-        self.`inout` = isInout
+        self.`inout` = `inout`
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], `inout`: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
-        self.`inout` = isInout
+        self.`inout` = `inout`
     }
 
     // sourcery:inline:MethodParameter.AutoCoding

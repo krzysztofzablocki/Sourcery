@@ -10,12 +10,7 @@ struct Lexer {
       guard string.characters.count > 4 else { return "" }
       let start = string.index(string.startIndex, offsetBy: 2)
       let end = string.index(string.endIndex, offsetBy: -2)
-      let trimmed = String(string[start..<end])
-        .components(separatedBy: "\n")
-        .filter({ !$0.isEmpty })
-        .map({ $0.trim(character: " ") })
-        .joined(separator: " ")
-      return trimmed
+      return String(string[start..<end]).trim(character: " ")
     }
 
     if string.hasPrefix("{{") {

@@ -239,7 +239,7 @@ public protocol Typed {
     public let typeName: TypeName
 
     // sourcery: skipEquality, skipDescription
-    /// Generic parameter type name
+    /// Generic parameter type, if known
     public var type: Type?
 
     /// :nodoc:
@@ -266,9 +266,7 @@ public protocol Typed {
 
 /// Descibes Swift generic type
 @objcMembers public final class GenericType: NSObject, SourceryModel {
-    /// the name of the base type.
-    ///
-    /// `Array<Int>`'s GenericType.name is `Array`
+    /// The name of the base type, i.e. `Array` for `Array<Int>`
     public let name: String
 
     /// This generic type parameters

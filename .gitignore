@@ -84,3 +84,6 @@ Sourcery/CodeGenerated/TypedSpec.generated.swift
 # jazzy
 docs/docsets
 docs/undocumented.json
+
+# IDEA based IDEs (AppCode, CLion) configuration
+.idea

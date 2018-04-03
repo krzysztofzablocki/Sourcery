@@ -5,6 +5,7 @@
 
 import Foundation
 
+/// :nodoc:
 public typealias SourceryVariable = Variable
 
 /// Defines variable

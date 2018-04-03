@@ -315,7 +315,7 @@ class FileParserSpec: QuickSpec {
                                             "block": NSNumber(value: true),
                                             "third": NSNumber(value: true)
                                             ]),
-                                        EnumCase(name: "optionC", annotations: [
+                                        EnumCase(name: "optionC", annotations:[
                                             "block": NSNumber(value: true)
                                             ])
                                         ])
@@ -468,13 +468,13 @@ class FileParserSpec: QuickSpec {
                                 ]))
                     }
 
-                    it("extracts enums with empty parenthesis as ones without associated type") {
+                    it("extracts enums with empty parenthesis as ones with () associated type") {
                         expect(parse("enum Foo { case optionA(); case optionB() }"))
                                 .to(equal([
                                                   Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                                   [
-                                                          EnumCase(name: "optionA", associatedValues: []),
-                                                          EnumCase(name: "optionB", associatedValues: [])
+                                                          EnumCase(name: "optionA", associatedValues: [AssociatedValue(typeName: TypeName("()"))]),
+                                                          EnumCase(name: "optionB", associatedValues: [AssociatedValue(typeName: TypeName("()"))])
                                                   ])
                                           ]))
                     }

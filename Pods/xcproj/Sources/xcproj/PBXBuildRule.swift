@@ -79,8 +79,8 @@ final public class PBXBuildRule: PBXObject {
     // MARK: - Equatable
 
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXBuildRule else {
+        guard let rhs = object as? PBXBuildRule,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self

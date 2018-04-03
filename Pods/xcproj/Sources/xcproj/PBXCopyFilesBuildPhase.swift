@@ -58,8 +58,8 @@ final public class PBXCopyFilesBuildPhase: PBXBuildPhase {
     }
 
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXCopyFilesBuildPhase else {
+        guard let rhs = object as? PBXCopyFilesBuildPhase,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self

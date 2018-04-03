@@ -1,20 +1,11 @@
 import Foundation
 
-final public class PBXGroup: PBXFileElement {
+public class PBXGroup: PBXFileElement {
 
     // MARK: - Attributes
 
     /// Element children.
     public var children: [String]
-
-    /// Element uses tabs.
-    public var usesTabs: Bool?
-    
-    /// Element indent width.
-    public var indentWidth: UInt?
-    
-    /// Element tab width.
-    public var tabWidth: UInt?
 
     // MARK: - Init
 
@@ -24,52 +15,50 @@ final public class PBXGroup: PBXFileElement {
     ///   - children: group children.
     ///   - sourceTree: group source tree.
     ///   - name: group name.
-    ///   - path: group path.
+    ///   - path: group relative path from `sourceTree`, if different than `name`.
+    ///   - includeInIndex: should the IDE index the files in the group?
+    ///   - wrapsLines: should the IDE wrap lines for files in the group?
     ///   - usesTabs: group uses tabs.
+    ///   - indentWidth: the number of positions to indent blocks of code
+    ///   - tabWidth: the visual width of tab characters
     public init(children: [String],
                 sourceTree: PBXSourceTree? = nil,
                 name: String? = nil,
                 path: String? = nil,
+                includeInIndex: Bool? = nil,
+                wrapsLines: Bool? = nil,
                 usesTabs: Bool? = nil,
                 indentWidth: UInt? = nil,
                 tabWidth: UInt? = nil) {
         self.children = children
-        self.usesTabs = usesTabs
-        self.indentWidth = indentWidth
-        self.tabWidth = tabWidth
-        super.init(sourceTree: sourceTree, path: path, name: name)
+        super.init(sourceTree: sourceTree,
+                   path: path,
+                   name: name,
+                   includeInIndex: includeInIndex,
+                   usesTabs: usesTabs,
+                   indentWidth: indentWidth,
+                   tabWidth: tabWidth,
+                   wrapsLines: wrapsLines)
     }
 
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXGroup else {
+        guard let rhs = object as? PBXGroup,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self
-        return lhs.children == rhs.children &&
-            lhs.name == rhs.name &&
-            lhs.sourceTree == rhs.sourceTree &&
-            lhs.path == rhs.path &&
-            lhs.usesTabs == rhs.usesTabs &&
-            lhs.indentWidth == rhs.indentWidth &&
-            lhs.tabWidth == rhs.tabWidth
+        return lhs.children == rhs.children
     }
     
     // MARK: - Decodable
     
     fileprivate enum CodingKeys: String, CodingKey {
         case children
-        case usesTabs
-        case indentWidth
-        case tabWidth
     }
     
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.children = (try container.decodeIfPresent(.children)) ?? []
-        self.usesTabs = try container.decodeIntBoolIfPresent(.usesTabs)
-        self.indentWidth = try container.decodeIntIfPresent(.indentWidth)
-        self.tabWidth = try container.decodeIntIfPresent(.tabWidth)
         try super.init(from: decoder)
     }
     
@@ -77,23 +66,12 @@ final public class PBXGroup: PBXFileElement {
     
     override func plistKeyAndValue(proj: PBXProj, reference: String) -> (key: CommentedString, value: PlistValue) {
         var dictionary: [CommentedString: PlistValue] = super.plistKeyAndValue(proj: proj, reference: reference).value.dictionary ?? [:]
-        dictionary["isa"] = .string(CommentedString(PBXGroup.isa))
+        dictionary["isa"] = .string(CommentedString(type(of: self).isa))
         dictionary["children"] = .array(children.map({ (fileReference) -> PlistValue in
             let comment = proj.objects.fileName(fileReference: fileReference)
             return .string(CommentedString(fileReference, comment: comment))
         }))
-        if let usesTabs = usesTabs {
-            dictionary["usesTabs"] = .string(CommentedString("\(usesTabs.int)"))
-        }
 
-        [("indentWidth" as CommentedString, indentWidth),
-         ("tabWidth", tabWidth)]
-            .forEach { name, valueOption in
-            if let value = valueOption {
-                dictionary[name] = .string(CommentedString("\(value)"))
-            }
-        }
-        
         return (key: CommentedString(reference,
                                      comment: self.name ?? self.path),
                 value: .dictionary(dictionary))

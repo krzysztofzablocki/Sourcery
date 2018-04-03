@@ -182,7 +182,8 @@ public extension PBXProj.Objects {
         case .group?:
             guard let group = groups.first(where: { $0.value.children.contains(reference) }) else { return sourceRoot }
             guard let groupPath = fullPath(fileElement: group.value, reference: group.key, sourceRoot: sourceRoot) else { return nil }
-            return fileElement.path.flatMap({ Path($0, relativeTo: groupPath) })
+            guard let fileElementPath = fileElement.path else { return groupPath }
+            return Path(fileElementPath, relativeTo: groupPath)
         default:
             return nil
         }

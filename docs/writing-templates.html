@@ -107,6 +107,9 @@
                 <a href="Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/Subscript.html">Subscript</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
@@ -125,15 +128,13 @@
                 <a href="Classes/ClosureType.html">ClosureType</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/Attribute.html">Attribute</a>
+                <a href="Classes/GenericType.html">GenericType</a>
               </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="Other Extensions.html">Other Extensions</a>
-            <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Extensions/Typealias.html">Typealias</a>
+                <a href="Classes/GenericTypeParameter.html">GenericTypeParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Attribute.html">Attribute</a>
               </li>
             </ul>
           </li>
@@ -220,7 +221,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 
 <ul>
 <li>Control flow with <code>&lt;% %&gt;</code></li>
-<li>Output value withn <code>&lt;%= %&gt;</code></li>
+<li>Output value with <code>&lt;%= %&gt;</code></li>
 <li>Trim extra new line after control flow tag with <code>-%&gt;</code></li>
 <li>Trim <em>all</em> whitespaces before/after control flow tag with <code>&lt;%_</code> and <code>_%&gt;</code></li>
 <li>Use <code>&lt;%# %&gt;</code> for comments</li>
@@ -244,6 +245,12 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <p>JavaScript templates are powered by <a href="http://ejs.co">EJS</a> and support all the features available in this template engine.</p>
 
 <p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/JSExport.ejs">JSExport.ejs</a></p>
+
+<blockquote>
+<p>Note: when using JavaScript templates with Sourcery built using Swift Package Manager you must provide path to EJS source code using <code>--ejsPath</code> command line argument. Download EJS source code <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryJS/Sources/ejs.js">here</a>, put it in some path and pass it when running Sourcery. Otherwise JavaScript templates will be ignored (you will see a warning in the console output).</p>
+</blockquote>
+
+<p>You can also use <code>SourceryJS</code> framework independently of Sourcery. You can add it as a Carthge or SPM dependency.</p>
 <h2 id='using-source-annotations' class='heading'>Using Source Annotations</h2>
 
 <p>Sourcery supports annotating your classes and variables with special annotations, similar to how attributes work in Rust / Java</p>
@@ -265,6 +272,13 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
   <span class="k">var</span> <span class="nv">firstVariable</span><span class="p">:</span> <span class="kt">Int</span>
   <span class="k">var</span> <span class="nv">secondVariable</span><span class="p">:</span> <span class="kt">Int</span>
 </code></pre>
+
+<p>To group annotations of the same domain you can use annotation namespcases:</p>
+<pre class="highlight swift"><code><span class="c1">// sourcery:decoding: key="first", default=0</span>
+  <span class="k">var</span> <span class="nv">firstVariable</span><span class="p">:</span> <span class="kt">Int</span>
+</code></pre>
+
+<p>This will effectively annotate with <code>decoding.key</code> and <code>decoding.default</code> annotations</p>
 <h4 id='rules' class='heading'>Rules:</h4>
 
 <ul>

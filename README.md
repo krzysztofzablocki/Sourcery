@@ -139,7 +139,7 @@ args:
   <name>: <value>
 ```
 
-Read more about configuration file [here](#configuration-file).
+Read more about configuration file [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/usage.html#configuration-file).
 
 ## Contributing
 

@@ -59,8 +59,8 @@ final public class PBXLegacyTarget: PBXTarget {
     }
     
     public override func isEqual(to object: PBXObject) -> Bool {
-        guard super.isEqual(to: self),
-            let rhs = object as? PBXLegacyTarget else {
+        guard let rhs = object as? PBXLegacyTarget,
+            super.isEqual(to: rhs) else {
                 return false
         }
         let lhs = self
