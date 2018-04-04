@@ -101,6 +101,10 @@ class FileParserAttributesSpec: QuickSpec {
                     "objc": Attribute(name: "objc", arguments: ["name": "objcName:" as NSString], description: "@objc(objcName:)")
                     ]))
 
+				expect(parse("class Foo { @NSManaged var name: String }").first?.variables.first?.attributes).to(equal([
+					"NSManaged": Attribute(name: "NSManaged")
+					]))
+
                 expect(parse("struct Foo { mutating var some: Int }").first?.variables.first?.attributes).to(equal([
                     "mutating": Attribute(name: "mutating", description: "mutating")
                     ]))
