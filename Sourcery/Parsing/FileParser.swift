@@ -685,6 +685,9 @@ extension FileParser {
             }
         } else if let nameSuffixRange = Substring.nameSuffix.range(for: source) {
             // if declaration has no body, usually in protocols, parse it manually
+
+            // The problem is that generic constraint and throws/rethrows with Void return type is not part of the key...
+            // so we have to scan manully until next structure, but also should drop any comments in between
             var upperBound: Int?
             if let nextStructure = nextStructure, let range = Substring.key.range(for: nextStructure) {
                 // if there is next declaration, parse until its start
@@ -693,12 +696,28 @@ extension FileParser {
                 // if there are no fiurther declarations, parse until end of containing declaration
                 upperBound = Int(range.offset) + Int(range.length) - 1
             }
+
             if let upperBound = upperBound {
                 let start = Int(nameSuffixRange.offset)
                 let length = upperBound - Int(nameSuffixRange.offset)
-                nameSuffix = contents.bridge()
+                let nameSuffixUpToNextStruct = contents.bridge()
                     .substringWithByteRange(start: start, length: length)?
                     .trimmingCharacters(in: CharacterSet(charactersIn: ";").union(.whitespacesAndNewlines))
+
+                if let nameSuffixUpToNextStruct = nameSuffixUpToNextStruct {
+                    let tokens = try? SyntaxMap(file: File(contents: nameSuffixUpToNextStruct)).tokens
+                    let firstDocToken = tokens?.first(where: {
+                        $0.type.hasPrefix("source.lang.swift.syntaxtype.comment")
+                            || $0.type.hasPrefix("source.lang.swift.syntaxtype.doccomment")
+                    })
+                    if let firstDocToken = firstDocToken {
+                        nameSuffix = nameSuffixUpToNextStruct.bridge()
+                            .substringWithByteRange(start: 0, length: firstDocToken.offset)?
+                            .trimmingCharacters(in: CharacterSet(charactersIn: ";").union(.whitespacesAndNewlines))
+                    } else {
+                        nameSuffix = nameSuffixUpToNextStruct
+                    }
+                }
             }
         }
 
