@@ -46,15 +46,17 @@ public extension String {
         return String(self.prefix(self.count - suffix.count))
     }
 
-    /// :nodoc:
-    func dropFirst(_ n: Int = 1) -> String {
-        return String(self.dropFirst(n))
-    }
+	/// :nodoc:
+	func dropFirst(_ n: Int = 1) -> String {
+		let substring: Substring = self.dropFirst(n)
+		return String(substring)
+	}
 
-    /// :nodoc:
-    func dropLast(_ n: Int = 1) -> String {
-        return String(self.dropLast(n))
-    }
+	/// :nodoc:
+	func dropLast(_ n: Int = 1) -> String {
+		let substring: Substring = self.dropLast(n)
+		return String(substring)
+	}
 
     /// :nodoc:
     func dropFirstAndLast(_ n: Int = 1) -> String {
