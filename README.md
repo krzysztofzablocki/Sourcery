@@ -9,7 +9,7 @@
 
 **Sourcery** is a code generator for Swift language, built on top of Apple's own SourceKit. It extends the language abstractions to allow you to generate boilerplate code automatically.
 
-It's used in over 8000 projects on both iOS and macOS and it powers some of the most popular and critically-acclaimed apps you have used. Its massive community adoption was one of the factors that pushed Apple to implement derived Equality and automatic Codable conformance. Sourcery is maintained by a growing community of [contributors](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors).
+It's used in over 8,000 projects on both iOS and macOS and it powers some of the most popular and critically-acclaimed apps you have used. Its massive community adoption was one of the factors that pushed Apple to implement derived Equality and automatic Codable conformance. Sourcery is maintained by a growing community of [contributors](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors).
 
 Try **Sourcery** for your next project or add it to an existing one -- you'll save a lot of time and be happy you did!
 
@@ -67,7 +67,7 @@ There are plenty of tutorials for different uses of Sourcery:
 
 - _[CocoaPods](https://cocoapods.org)_
 
-    Add pod 'Sourcery' to your Podfile and run `pod update Sourcery`. This will download the latest release binary and will put it in your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
+    Add `pod 'Sourcery'` to your `Podfile` and run `pod update Sourcery`. This will download the latest release binary and will put it in your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
 
 - _[Mint](https://github.com/yonaskolb/Mint)_
@@ -95,13 +95,13 @@ Full documentation for the latest release is available [here](https://cdn.rawgit
 
 ## Usage
 
-Sourcery is a command line tool, you can either run it manually or in a custom build phase using the following command:
+Sourcery is a command line tool; you can either run it manually or in a custom build phase using the following command:
 
 ```
 $ ./sourcery --sources <sources path> --templates <templates path> --output <output path>
 ```
 
-> Note: this command may be different depending on the way in which you installed Sourcery (see [Installing](#installing))
+> Note: this command differs depending on how you installed Sourcery (see [Installing](#installing))
 
 ### Command line options
 
@@ -121,7 +121,7 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 
 ### Configuration file
 
-Instead of CLI arguments you can use  `.sourcery.yml` configuration file, like this:
+Instead of CLI arguments you can use a `.sourcery.yml` configuration file:
 
 ```yaml
 sources:
@@ -139,7 +139,7 @@ args:
   <name>: <value>
 ```
 
-Read more about configuration file [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/usage.html#configuration-file).
+Read more about this configuration file [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/usage.html#configuration-file).
 
 ## Contributing
 
@@ -147,9 +147,9 @@ Contributions to Sourcery are welcomed and encouraged!
 
 It is easy to get involved. Please see the [Contributing guide](CONTRIBUTING.md) for more details.
 
-[A list of contributors is available through GitHub.](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors)
+[A list of contributors is available through GitHub](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors).
 
-To give clarity of what is expected of our community, Sourcery has adopted the code of conduct defined by the Contributor Covenant. This document is used across many open source communities, and I think it articulates my values well. For more, see the [Code of Conduct](CODE_OF_CONDUCT.md).
+To clarify what is expected of our community, Sourcery has adopted the code of conduct defined by the Contributor Covenant. This document is used across many open source communities, and articulates my values well. For more, see the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -162,7 +162,7 @@ This tool is powered by
 - [SourceKitten](https://github.com/jpsim/SourceKitten) by [JP Simard](https://github.com/jpsim)
 - [Stencil](https://github.com/kylef/Stencil) and few other libs by [Kyle Fuller](https://github.com/kylef)
 
-Thank you! for:
+Thank you! to:
 
 - [Mariusz Ostrowski](http://twitter.com/faktory) for creating the logo.
 - [Artsy Eidolon](https://github.com/artsy/eidolon) team, because we use their codebase as a stub data for performance testing the parser.
