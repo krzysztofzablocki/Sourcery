@@ -12,7 +12,6 @@ jobs:
       - checkout
       - run: brew update 1> /dev/null 2> /dev/null
       - run: brew install sourcekitten
-      - run: gem install bundler
       - run: bundle install
       - run: rake validate_docs
       - run: bundle exec danger || true
