@@ -18,13 +18,13 @@ jobs:
       - run: brew install sourcekitten
       - run: echo "ruby-2.4" > ~/.ruby-version
       - run: bundle install
-      - run: rake validate_docs
+      - run: bundle exec rake validate_docs
       - run: bundle exec danger || true
       - run: set -o pipefail
-      - run: xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO build | xcpretty
-      - run: xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | tee $CIRCLE_ARTIFACTS/xcode_raw.log | xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+      - run: bundle exec rake build
+      - run: bundle exec rake tests
       - run: swift build
-      - run: bundle exec slather coverage --scheme "$XCODE_SCHEME" --workspace "$XCODE_WORKSPACE" --output-directory $CIRCLE_ARTIFACTS --binary-basename SourceryRuntime --binary-basename Sourcery --cobertura-xml Sourcery.xcodeproj
+      - run: bundle exec slather coverage --scheme "$XCODE_SCHEME" --workspace "$XCODE_WORKSPACE" --output-directory $CIRCLE_ARTIFACTS --binary-basename SourceryRuntime --binary-basename Sourcery --cobertura-xml Sourcery.xcodeproj || true
       - run: bash <(curl -s https://codecov.io/bash) -f $CIRCLE_ARTIFACTS/cobertura.xml -X coveragepy -X gcov -X xcode
 
 workflows:
