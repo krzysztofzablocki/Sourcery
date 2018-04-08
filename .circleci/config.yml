@@ -1,0 +1,34 @@
+version: 2
+
+jobs:
+  test:
+    macos:
+      xcode: "9.3.0"
+    environment:
+      - XCODE_WORKSPACE: Sourcery.xcworkspace
+      - XCODE_PROJECT: Sourcery.xcodeproj
+      - XCODE_SCHEME: Sourcery
+      - BUNDLE_JOBS: 3
+      - BUNDLE_RETRY: 3
+      - BUNDLE_PATH: vendor/bundle
+    shell: /bin/bash --login -eo pipefail
+    steps:
+      - checkout
+      - run: brew update 1> /dev/null 2> /dev/null
+      - run: brew install sourcekitten
+      - run: echo "ruby-2.4" > ~/.ruby-version
+      - run: bundle install
+      - run: rake validate_docs
+      - run: bundle exec danger || true
+      - run: set -o pipefail
+      - run: xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO build | xcpretty
+      - run: xcodebuild -workspace "$XCODE_WORKSPACE" -scheme "$XCODE_SCHEME" ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | tee $CIRCLE_ARTIFACTS/xcode_raw.log | xcpretty --color --report junit --output $CIRCLE_TEST_REPORTS/xcode/results.xml
+      - run: swift build
+      - run: bundle exec slather coverage --scheme "$XCODE_SCHEME" --workspace "$XCODE_WORKSPACE" --output-directory $CIRCLE_ARTIFACTS --binary-basename SourceryRuntime --binary-basename Sourcery --cobertura-xml Sourcery.xcodeproj
+      - run: bash <(curl -s https://codecov.io/bash) -f $CIRCLE_ARTIFACTS/cobertura.xml -X coveragepy -X gcov -X xcode
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - test
