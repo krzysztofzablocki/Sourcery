@@ -192,12 +192,12 @@
 			buildPhases = (
 				D775B999DCC76F43E995E441 /* [CP] Check Pods Manifest.lock */,
 				6D483FFA1ECDC815006B778D /* Run SwiftLint */,
-				6D342C951EBA1881006EEBEC /* Sourcery */,
 				6D6A24A61EB79E8900C1FB1A /* Sources */,
 				6D6A24A71EB79E8900C1FB1A /* Frameworks */,
 				6D6A24A81EB79E8900C1FB1A /* Resources */,
 				7139144942C834B5880D5184 /* [CP] Embed Pods Frameworks */,
 				93D530EC4A61BDDCB5AF3B21 /* [CP] Copy Pods Resources */,
+				6D342C951EBA1881006EEBEC /* Sourcery */,
 			);
 			buildRules = (
 			);
