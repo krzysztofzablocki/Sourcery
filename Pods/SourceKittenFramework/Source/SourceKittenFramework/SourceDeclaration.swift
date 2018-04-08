@@ -134,7 +134,7 @@ extension SourceDeclaration {
         declaration = cursor.declaration()
         documentation = Documentation(comment: cursor.parsedComment())
         commentBody = cursor.commentBody()
-        children = cursor.flatMap({
+        children = cursor.compactMap({
             SourceDeclaration(cursor: $0, compilerArguments: compilerArguments)
         }).rejectPropertyMethods()
         (swiftDeclaration, swiftName) = cursor.swiftDeclarationAndName(compilerArguments: compilerArguments)

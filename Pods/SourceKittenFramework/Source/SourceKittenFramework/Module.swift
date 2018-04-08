@@ -22,7 +22,7 @@ public struct Module {
     public var docs: [SwiftDocs] {
         var fileIndex = 1
         let sourceFilesCount = sourceFiles.count
-        return sourceFiles.flatMap {
+        return sourceFiles.sorted().compactMap {
             let filename = $0.bridge().lastPathComponent
             if let file = File(path: $0) {
                 fputs("Parsing \(filename) (\(fileIndex)/\(sourceFilesCount))\n", stderr)
@@ -42,7 +42,7 @@ public struct Module {
         }
         guard let moduleCommand = commands.first(where: { $0["module-name"]?.string == spmName }) else {
             fputs("Could not find SPM module '\(spmName)'. Here are the modules available:\n", stderr)
-            let availableModules = commands.flatMap({ $0["module-name"]?.string })
+            let availableModules = commands.compactMap({ $0["module-name"]?.string })
             fputs("\(availableModules.map({ "  - " + $0 }).joined(separator: "\n"))\n", stderr)
             return nil
         }

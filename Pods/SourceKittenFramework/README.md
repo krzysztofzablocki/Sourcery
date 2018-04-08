@@ -43,9 +43,12 @@ Once SourceKitten is installed, you may use it from the command line.
 $ sourcekitten help
 Available commands:
 
-   complete    Generate code completion options.
-   doc         Print Swift docs as JSON or Objective-C docs as XML
+   complete    Generate code completion options
+   doc         Print Swift or Objective-C docs as JSON
+   format      Format Swift file
    help        Display general or command-specific help
+   index       Index Swift file and print as JSON
+   request     Run a raw sourcekit request
    structure   Print Swift structure information as JSON
    syntax      Print Swift syntax information as JSON
    version     Display the current version of SourceKitten
@@ -89,55 +92,55 @@ environment variable.
 * [Taylor](https://github.com/yopeso/Taylor): Measure Swift code metrics and
   get reports in Xcode, Jenkins and other CI platforms.
 
-<summary>See More</summary>>
 <details>
-
-* https://github.com/appsquickly/TyphoonSwift
-* https://github.com/banjun/bansan
-* https://github.com/Beaver/BeaverCodeGen
-* https://github.com/Ben-G/Meet
-* https://github.com/dfreemanRIIS/ETAMock
-* https://github.com/dostu/SwiftMetric
-* https://github.com/draven-archive/MetaKit
-* https://github.com/geosor/SwiftVisualizer
-* https://github.com/godfreynolan/AgileSwiftTst
-* https://github.com/godfreynolan/CodeCraftsman
-* https://github.com/ilyapuchka/dipgen
-* https://github.com/ilyapuchka/SourceKittenEditorExtension
-* https://github.com/interstateone/Unused
-* https://github.com/ishkawa/DIKit
-* https://github.com/IvanovGeorge/FBAuth
-* https://github.com/jmpg93/NavigatorSwift
-* https://github.com/jpmartha/Pancake
-* https://github.com/jpweber/Kontext
-* https://github.com/KenichiroSato/CatDogTube
-* https://github.com/klundberg/grift
-* https://github.com/kovtun1/DependenciesGraph
-* https://github.com/maralla/completor-swift
-* https://github.com/marcsnts/Shopify-Winter18-Technical
-* https://github.com/momentumworks/Formula
-* https://github.com/nevil/UNClassDiagram
-* https://github.com/norio-nomura/LinuxSupportForXcode
-* https://github.com/paulofaria/swift-package-crawler-data
-* https://github.com/rajat-explorer/Github-Profiler
-* https://github.com/rockbruno/swiftshield
-* https://github.com/S2dentik/Enlight
-* https://github.com/seanhenry/SwiftMockGeneratorForXcode
-* https://github.com/sharplet/swiftags
-* https://github.com/siejkowski/Croupier
-* https://github.com/SwiftKit/CuckooGenerator
-* https://github.com/SwiftKit/Torch
-* https://github.com/SwiftTools/SwiftFelisCatus
-* https://github.com/swizzlr/lux
-* https://github.com/tid-kijyun/XcodeSourceEditorExtension-ProtocolImplementation
-* https://github.com/tjarratt/fake4swift
-* https://github.com/tkohout/Genie
-* https://github.com/tomquist/MagicMirror
-* https://github.com/TurfDb/TurfGen
-* https://github.com/vadimue/AwesomeWeather
-* https://github.com/yonaskolb/Beak
-* https://github.com/zenzz/vs-swifter-server
-* https://github.com/zenzz/zxxswifter-server
+  <summary>See More</summary>
+  
+  * https://github.com/appsquickly/TyphoonSwift
+  * https://github.com/banjun/bansan
+  * https://github.com/Beaver/BeaverCodeGen
+  * https://github.com/Ben-G/Meet
+  * https://github.com/dfreemanRIIS/ETAMock
+  * https://github.com/dostu/SwiftMetric
+  * https://github.com/draven-archive/MetaKit
+  * https://github.com/geosor/SwiftVisualizer
+  * https://github.com/godfreynolan/AgileSwiftTst
+  * https://github.com/godfreynolan/CodeCraftsman
+  * https://github.com/ilyapuchka/dipgen
+  * https://github.com/ilyapuchka/SourceKittenEditorExtension
+  * https://github.com/interstateone/Unused
+  * https://github.com/ishkawa/DIKit
+  * https://github.com/IvanovGeorge/FBAuth
+  * https://github.com/jmpg93/NavigatorSwift
+  * https://github.com/jpmartha/Pancake
+  * https://github.com/jpweber/Kontext
+  * https://github.com/KenichiroSato/CatDogTube
+  * https://github.com/klundberg/grift
+  * https://github.com/kovtun1/DependenciesGraph
+  * https://github.com/maralla/completor-swift
+  * https://github.com/marcsnts/Shopify-Winter18-Technical
+  * https://github.com/momentumworks/Formula
+  * https://github.com/nevil/UNClassDiagram
+  * https://github.com/norio-nomura/LinuxSupportForXcode
+  * https://github.com/paulofaria/swift-package-crawler-data
+  * https://github.com/rajat-explorer/Github-Profiler
+  * https://github.com/rockbruno/swiftshield
+  * https://github.com/S2dentik/Enlight
+  * https://github.com/seanhenry/SwiftMockGeneratorForXcode
+  * https://github.com/sharplet/swiftags
+  * https://github.com/siejkowski/Croupier
+  * https://github.com/SwiftKit/CuckooGenerator
+  * https://github.com/SwiftKit/Torch
+  * https://github.com/SwiftTools/SwiftFelisCatus
+  * https://github.com/swizzlr/lux
+  * https://github.com/tid-kijyun/XcodeSourceEditorExtension-ProtocolImplementation
+  * https://github.com/tjarratt/fake4swift
+  * https://github.com/tkohout/Genie
+  * https://github.com/tomquist/MagicMirror
+  * https://github.com/TurfDb/TurfGen
+  * https://github.com/vadimue/AwesomeWeather
+  * https://github.com/yonaskolb/Beak
+  * https://github.com/zenzz/vs-swifter-server
+  * https://github.com/zenzz/zxxswifter-server
 </details>
 
 ## Complete

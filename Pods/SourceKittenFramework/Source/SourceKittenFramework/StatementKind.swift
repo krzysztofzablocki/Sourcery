@@ -10,7 +10,7 @@
 
 /// Swift declaration kinds.
 /// Found in `strings SourceKitService | grep source.lang.swift.stmt.`.
-public enum StatementKind: String, SwiftLangSyntax {
+public enum StatementKind: String {
     /// `brace`.
     case brace = "source.lang.swift.stmt.brace"
     /// `case`.
