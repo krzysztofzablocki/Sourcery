@@ -63,7 +63,7 @@ extension File {
         // Recurse!
         if let substructure = SwiftDocKey.getSubstructure(dictionary) {
             for subDict in substructure {
-                offsetMap = mapOffsets(subDict as! [String: SourceKitRepresentable], offsetMap: offsetMap)
+                offsetMap = mapOffsets(subDict, offsetMap: offsetMap)
             }
         }
         return offsetMap

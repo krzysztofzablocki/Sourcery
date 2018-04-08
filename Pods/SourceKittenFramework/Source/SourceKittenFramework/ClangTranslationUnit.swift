@@ -33,8 +33,8 @@ extension Sequence {
 extension Dictionary {
     fileprivate init(_ pairs: [Element]) {
         self.init()
-        for (k, v) in pairs {
-            self[k] = v
+        for (key, value) in pairs {
+            self[key] = value
         }
     }
 
@@ -61,7 +61,7 @@ public struct ClangTranslationUnit {
         let clangIndex = ClangIndex()
         clangTranslationUnits = headerFiles.map { clangIndex.open(file: $0, args: cStringCompilerArguments) }
         declarations = clangTranslationUnits
-            .flatMap { $0.cursor().flatMap({ SourceDeclaration(cursor: $0, compilerArguments: compilerArguments) }) }
+            .flatMap { $0.cursor().compactMap({ SourceDeclaration(cursor: $0, compilerArguments: compilerArguments) }) }
             .rejectEmptyDuplicateEnums()
             .distinct()
             .sorted()

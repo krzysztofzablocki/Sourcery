@@ -167,7 +167,7 @@ extension CXCursor {
         return clang_Cursor_getParsedComment(self)
     }
 
-    func flatMap<T>(_ block: @escaping (CXCursor) -> T?) -> [T] {
+    func compactMap<T>(_ block: @escaping (CXCursor) -> T?) -> [T] {
         var ret = [T]()
         visit { cursor, _ in
             if let val = block(cursor) {

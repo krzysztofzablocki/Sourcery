@@ -8,7 +8,7 @@
 
 /// Syntax kind values.
 /// Found in `strings SourceKitService | grep source.lang.swift.syntaxtype.`.
-public enum SyntaxKind: String, SwiftLangSyntax {
+public enum SyntaxKind: String {
     /// `argument`.
     case argument = "source.lang.swift.syntaxtype.argument"
     /// `attribute.builtin`.

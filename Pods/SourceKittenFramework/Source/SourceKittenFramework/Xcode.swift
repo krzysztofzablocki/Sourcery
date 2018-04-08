@@ -157,6 +157,10 @@ public func parseHeaderFilesAndXcodebuildArguments(sourcekittenArguments: [Strin
 }
 
 public func sdkPath() -> String {
+    #if os(Linux)
+    // xcrun does not exist on Linux
+    return ""
+    #else
     let task = Process()
     task.launchPath = "/usr/bin/xcrun"
     task.arguments = ["--show-sdk-path"]
@@ -170,4 +174,5 @@ public func sdkPath() -> String {
     let sdkPath = String(data: file.readDataToEndOfFile(), encoding: .utf8)
     file.closeFile()
     return sdkPath?.replacingOccurrences(of: "\n", with: "") ?? ""
+    #endif
 }

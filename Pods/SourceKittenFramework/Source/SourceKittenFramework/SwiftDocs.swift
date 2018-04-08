@@ -47,7 +47,7 @@ public struct SwiftDocs {
     - parameter dictionary:        editor.open response from SourceKit.
     - parameter cursorInfoRequest: SourceKit dictionary to use to send cursorinfo request.
     */
-    public init(file: File, dictionary: [String: SourceKitRepresentable], cursorInfoRequest: sourcekitd_object_t?) {
+    public init(file: File, dictionary: [String: SourceKitRepresentable], cursorInfoRequest: SourceKitObject?) {
         self.file = file
         var dictionary = dictionary
         let syntaxMapData = dictionary.removeValue(forKey: SwiftDocKey.syntaxMap.rawValue) as! [SourceKitRepresentable]
