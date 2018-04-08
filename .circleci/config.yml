@@ -8,11 +8,15 @@ jobs:
       - XCODE_WORKSPACE: Sourcery.xcworkspace
       - XCODE_PROJECT: Sourcery.xcodeproj
       - XCODE_SCHEME: Sourcery
+      - BUNDLE_JOBS: 3
+      - BUNDLE_RETRY: 3
+      - BUNDLE_PATH: vendor/bundle
+    shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - run: brew update 1> /dev/null 2> /dev/null
       - run: brew install sourcekitten
-      - run: gem install sqlite3 -- --with-sqlite3-dir=/opt/local
+      - run: echo "ruby-2.4" > ~/.ruby-version
       - run: bundle install
       - run: rake validate_docs
       - run: bundle exec danger || true
