@@ -11,8 +11,8 @@ jobs:
     steps:
       - checkout
       - run: brew update 1> /dev/null 2> /dev/null
-      - run: brew install sqlite3
       - run: brew install sourcekitten
+      - run: gem install sqlite3 -- --with-sqlite3-dir=/opt/local
       - run: bundle install
       - run: rake validate_docs
       - run: bundle exec danger || true
