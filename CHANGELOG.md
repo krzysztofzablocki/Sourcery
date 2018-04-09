@@ -4,6 +4,9 @@
 
 ## Master
 
+### Bug fixes
+
+- Ensure SPM and CocoaPods dependencies match
 
 ## 0.11.1
 
