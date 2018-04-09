@@ -154,7 +154,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  cocoapods
+  cocoapods (= 1.4.0)
   cocoapods-update-if-you-dare
   danger
   danger-jazzy
