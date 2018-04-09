@@ -4,6 +4,9 @@
 
 ## Master
 
+### Bug fixes
+
+- Autocases template not respecting type access level
 
 ## 0.11.1
 
