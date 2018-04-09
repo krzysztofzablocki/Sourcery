@@ -44,7 +44,7 @@ target 'SourcerySwift' do
   pod 'libCommonCrypto'
 end
 
-swift4 = ['xcproj']
+swift4 = ['SourceKittenFramework', 'Yams', 'xcproj']
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
