@@ -4,6 +4,14 @@
 
 ## Master
 
+### Internal changes
+
+- Do not fail the build if slather fails
+- Updated SourceKitten to 0.20.0
+
+### Bug fixes
+
+- Fixed parsing protocol methods return type (#579)
 
 ## 0.11.0
 
