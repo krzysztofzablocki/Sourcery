@@ -145,7 +145,7 @@ class MethodSpec: QuickSpec {
 
             context("given method parameter with attributes") {
                 beforeEach {
-                    sut = MethodParameter(typeName: TypeName("@escaping ConversationApiResponse", attributes: ["escaping": Attribute(name:"escaping")]))
+                    sut = MethodParameter(typeName: TypeName("@escaping ConversationApiResponse", attributes: ["escaping": Attribute(name: "escaping")]))
                 }
 
                 it("returns unwrapped type name") {
@@ -156,7 +156,7 @@ class MethodSpec: QuickSpec {
 
             context("when inout") {
                 beforeEach {
-                    sut = MethodParameter(typeName: TypeName("Bar"), `inout`: true)
+                    sut = MethodParameter(typeName: TypeName("Bar"), isInout: true)
                 }
 
                 it("is inout") {
@@ -180,7 +180,7 @@ class MethodSpec: QuickSpec {
                         expect(sut).toNot(equal(MethodParameter(name: "bar", typeName: TypeName("Int"))))
                         expect(sut).toNot(equal(MethodParameter(argumentLabel: "bar", name: "foo", typeName: TypeName("Int"))))
                         expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName("String"))))
-                        expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName("String"), `inout`: true)))
+                        expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName("String"), isInout: true)))
                     }
                 }
 
