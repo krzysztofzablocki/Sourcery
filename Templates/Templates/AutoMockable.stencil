@@ -56,7 +56,7 @@ import AppKit
     var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}{% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
-    var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}!
+    var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}{% if not method.isOptionalReturnType %}!{% endif %}
     {% endif %}
     {% call methodClosureDeclaration method %}
 
