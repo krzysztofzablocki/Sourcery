@@ -1,8 +1,8 @@
-// Generated using Sourcery 0.11.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.11.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 
-extension AutoCasesEnum {
+internal extension AutoCasesEnum {
   static let count: Int = 4
   static let allCases: [AutoCasesEnum] = [
     .north,
@@ -11,10 +11,10 @@ extension AutoCasesEnum {
     .west
   ]
 }
-extension AutoCasesHasAssociatedValuesEnum {
+public extension AutoCasesHasAssociatedValuesEnum {
   static let count: Int = 2
 }
-extension AutoCasesOneValueEnum {
+internal extension AutoCasesOneValueEnum {
   static let count: Int = 1
   static let allCases: [AutoCasesOneValueEnum] = [
     .one

@@ -1,5 +1,5 @@
 {% for enum in types.implementing.AutoCases|enum %}
-extension {{ enum.name }} {
+{{ enum.accessLevel }} extension {{ enum.name }} {
   static let count: Int = {{ enum.cases.count }}
   {% if not enum.hasAssociatedValues %}
   static let allCases: [{{ enum.name }}] = [
