@@ -70,7 +70,7 @@ end
 
 task :build do
   print_info "Building project"
-  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery-Release -sdk macosx -derivedDataPath #{BUILD_DIR}/tmp/)
+  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery-Release -sdk macosx -derivedDataPath #{BUILD_DIR}tmp/)
   sh %Q(rm -fr bin/Sourcery.app)
   `mv #{BUILD_DIR}tmp/Build/Products/Release/Sourcery.app bin/`
   sh %Q(rm -fr #{BUILD_DIR}tmp/)
@@ -121,7 +121,7 @@ end
 
 namespace :release do
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :generate_internal_boilerplate_code, :tests, :update_metadata, :check_versions, :build, :tag_release, :github, :cocoapods, :homebrew]
+  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci,  :update_metadata, :generate_internal_boilerplate_code, :tests, :build, :check_versions, :tag_release, :github, :cocoapods, :homebrew]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The code is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
