@@ -2,7 +2,7 @@
 
 ---
 
-## Master
+## 0.11.2
 
 ### Bug fixes
 
