@@ -6,6 +6,7 @@
 
 ### Bug fixes
 
+- Autocases template not respecting type access level
 - Ensure SPM and CocoaPods dependencies match
 
 ## 0.11.1
