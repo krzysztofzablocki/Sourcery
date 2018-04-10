@@ -148,7 +148,7 @@ import Foundation
 
     // sourcery: skipEquality, skipDescription, skipCoding
     /// Names of types or protocols this type inherits from, including unknown (not scanned) types
-    public override var based: [String : String] {
+    public override var based: [String: String] {
         didSet {
             if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
                 based[rawTypeName.name] = nil
