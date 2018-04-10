@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.11.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace trailing_newline
@@ -109,7 +109,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawTypeName: TypeName? { get }
     var hasRawType: Bool { get }
     var rawType: Type? { get }
-    var based: [String : String] { get }
+    var based: [String: String] { get }
     var hasAssociatedValues: Bool { get }
     var module: String? { get }
     var accessLevel: String { get }

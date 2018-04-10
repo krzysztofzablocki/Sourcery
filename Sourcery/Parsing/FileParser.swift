@@ -602,7 +602,7 @@ extension FileParser {
         let `inout` = type.hasPrefix("inout ")
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(argumentLabel: argumentLabel, name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), `inout`: `inout`)
+        let parameter = MethodParameter(argumentLabel: argumentLabel, name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), isInout: `inout`)
         parameter.setSource(source)
         return parameter
     }
@@ -832,7 +832,7 @@ extension String {
             finished = true
             let lines = stripped.lines()
             if lines.count > 1 {
-                stripped = lines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator:"")
+                stripped = lines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator: "")
                 finished = false
             }
             if let annotationStart = stripped.range(of: "/*")?.lowerBound, let annotationEnd = stripped.range(of: "*/")?.upperBound {

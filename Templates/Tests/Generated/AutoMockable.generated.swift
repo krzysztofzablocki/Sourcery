@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.11.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable line_length
@@ -49,7 +49,7 @@ class BasicProtocolMock: BasicProtocol {
     var loadConfigurationCalled: Bool {
         return loadConfigurationCallsCount > 0
     }
-    var loadConfigurationReturnValue: String?!
+    var loadConfigurationReturnValue: String?
     var loadConfigurationClosure: (() -> String?)?
 
     func loadConfiguration() -> String? {

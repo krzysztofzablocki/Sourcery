@@ -8,6 +8,15 @@
 
 - Migrate to Swift 4.1 and Xcode 9.3
 
+## 0.11.2
+
+### Bug fixes
+
+- Autocases template not respecting type access level
+- Ensure SPM and CocoaPods dependencies match
+- Improve AutoMockable template to handle methods with optional return values
+- Fixed crash while compiling swift templates
+
 ## 0.11.1
 
 ### Internal changes

@@ -315,7 +315,7 @@ class FileParserSpec: QuickSpec {
                                             "block": NSNumber(value: true),
                                             "third": NSNumber(value: true)
                                             ]),
-                                        EnumCase(name: "optionC", annotations:[
+                                        EnumCase(name: "optionC", annotations: [
                                             "block": NSNumber(value: true)
                                             ])
                                         ])

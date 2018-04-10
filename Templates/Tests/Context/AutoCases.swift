@@ -21,7 +21,7 @@ enum AutoCasesOneValueEnum: AutoCases {
     case one
 }
 
-enum AutoCasesHasAssociatedValuesEnum: AutoCases {
+public enum AutoCasesHasAssociatedValuesEnum: AutoCases {
     case foo(test: String)
     case bar(number: Int)
 }
