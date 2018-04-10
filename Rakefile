@@ -12,10 +12,10 @@ BUILD_DIR = 'build/'
 ## [ Utils ] ##################################################################
 
 def version_select
-  # Find all Xcode 9 versions on this computer
-  xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '9.*'"`.chomp.split("\n")
+  # Find all Xcode versions on this computer and get path to latest
+  xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode'"`.chomp.split("\n")
   if xcodes.empty?
-    raise "\n[!!!] You need to have Xcode 9.x to compile Sourcery.\n\n"
+    raise "\n[!!!] You need to have Xcode to compile Sourcery.\n\n"
   end
   # Order by version and get the latest one
   vers = lambda { |path| `mdls -name kMDItemVersion -raw "#{path}"` }
