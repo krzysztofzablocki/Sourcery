@@ -4,6 +4,10 @@
 
 ## Master
 
+### New Features
+
+- Improve AutoMockable template to handle methods with optional return values
+
 ### Bug fixes
 
 - Autocases template not respecting type access level
