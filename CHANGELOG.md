@@ -8,6 +8,7 @@
 
 - Autocases template not respecting type access level
 - Improve AutoMockable template to handle methods with optional return values
+- Fixed crash while compiling swift templates
 
 ## 0.11.1
 
