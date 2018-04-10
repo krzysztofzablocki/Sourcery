@@ -8,6 +8,7 @@
 
 - Autocases template not respecting type access level
 - Ensure SPM and CocoaPods dependencies match
+- Improve AutoMockable template to handle methods with optional return values
 
 ## 0.11.1
 

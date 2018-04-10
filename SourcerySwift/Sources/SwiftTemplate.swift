@@ -273,7 +273,7 @@ private extension String {
 }
 
 private extension Process {
-    static func runCommand(path: String, arguments: [String], environment: [String: String] = ProcessInfo.processInfo.environment) throws -> ProcessResult {
+    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:]) throws -> ProcessResult {
         let task = Process()
         task.launchPath = path
         task.arguments = arguments

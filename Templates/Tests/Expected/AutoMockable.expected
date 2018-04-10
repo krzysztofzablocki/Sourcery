@@ -32,7 +32,7 @@ class BasicProtocolMock: BasicProtocol {
     var loadConfigurationCalled: Bool {
         return loadConfigurationCallsCount > 0
     }
-    var loadConfigurationReturnValue: String?!
+    var loadConfigurationReturnValue: String?
     var loadConfigurationClosure: (() -> String?)?
 
     func loadConfiguration() -> String? {
