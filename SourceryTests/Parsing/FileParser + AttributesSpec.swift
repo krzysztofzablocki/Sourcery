@@ -38,6 +38,10 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("@objcMembers class Foo {}").first?.attributes).to(equal([
                     "objcMembers": Attribute(name: "objcMembers", arguments: [:], description: "@objcMembers")
                     ]))
+
+                expect(parse("public class Foo {}").first?.attributes).to(equal([
+                    "public": Attribute(name: "public", arguments: [:], description: "public")
+                    ]))
             }
 
             context("given attribute with arguments") {
@@ -97,7 +101,7 @@ class FileParserAttributesSpec: QuickSpec {
 
             it("extracts variable attributes") {
                 expect(parse("class Foo { @NSCopying @objc(objcName:) var name: String }").first?.variables.first?.attributes).to(equal([
-                    "NSCopying": Attribute(name: "NSCopying"),
+                    "NSCopying": Attribute(name: "NSCopying", description: "@NSCopying"),
                     "objc": Attribute(name: "objc", arguments: ["name": "objcName:" as NSString], description: "@objc(objcName:)")
                     ]))
 
@@ -108,6 +112,29 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("class Foo { final var some: Int }").first?.variables.first?.attributes).to(equal([
                     "final": Attribute(name: "final", description: "final")
                     ]))
+
+                func assertSetterAccess(_ access: String, line: UInt = #line) {
+                    expect(parse("public class Foo { \(access)(set) var some: Int }").first?.variables.first?.attributes, line: line).to(equal([
+                        access: Attribute(name: access, arguments: ["set": NSNumber(value: true)], description: "\(access)(set)")
+                        ]))
+                }
+
+                assertSetterAccess("private")
+                assertSetterAccess("fileprivate")
+                assertSetterAccess("internal")
+                assertSetterAccess("public")
+
+                func assertGetterAccess(_ access: String, line: UInt = #line) {
+                    expect(parse("public class Foo { \(access) var some: Int }").first?.variables.first?.attributes, line: line).to(equal([
+                        access: Attribute(name: access, arguments: [:], description: "\(access)")
+                        ]))
+                }
+
+                assertSetterAccess("private")
+                assertSetterAccess("fileprivate")
+                assertSetterAccess("internal")
+                assertSetterAccess("public")
+
             }
 
             it("extracts type attributes") {

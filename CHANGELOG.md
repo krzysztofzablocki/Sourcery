@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### Internal Changes
+
+- Migrate to Swift 4.1 and Xcode 9.3
+
 ## 0.11.2
 
 ### Bug fixes

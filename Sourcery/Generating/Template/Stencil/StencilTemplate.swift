@@ -253,7 +253,7 @@ private struct Filter<T> {
                 return filter(type)
 
             case let array as NSArray:
-                return array.flatMap { $0 as? T }.filter(filter)
+                return array.compactMap { $0 as? T }.filter(filter)
 
             default:
                 return any
@@ -268,7 +268,7 @@ private struct Filter<T> {
                 return filter(type)
 
             case let array as NSArray:
-                return array.flatMap { $0 as? T }.flatMap(filter)
+                return array.compactMap { $0 as? T }.compactMap(filter)
 
             default:
                 return any
@@ -283,7 +283,7 @@ private struct Filter<T> {
                 return filter(type, arg)
 
             case let array as NSArray:
-                return array.flatMap { $0 as? T }.filter({ filter($0, arg) })
+                return array.compactMap { $0 as? T }.filter { filter($0, arg) }
 
             default:
                 return any
@@ -304,9 +304,9 @@ private struct FilterOr<T, Y> {
 
             case let array as NSArray:
                 if array.firstObject is T {
-                    return array.flatMap { $0 as? T }.filter(filter)
+                    return array.compactMap { $0 as? T }.filter(filter)
                 } else {
-                    return array.flatMap { $0 as? Y }.filter(other)
+                    return array.compactMap { $0 as? Y }.filter(other)
                 }
 
             default:
@@ -326,9 +326,9 @@ private struct FilterOr<T, Y> {
 
             case let array as NSArray:
                 if array.firstObject is T {
-                    return array.flatMap { $0 as? T }.flatMap(filter)
+                    return array.compactMap { $0 as? T }.compactMap(filter)
                 } else {
-                    return array.flatMap { $0 as? Y }.flatMap(other)
+                    return array.compactMap { $0 as? Y }.compactMap(other)
                 }
 
             default:
@@ -348,9 +348,9 @@ private struct FilterOr<T, Y> {
 
             case let array as NSArray:
                 if array.firstObject is T {
-                    return array.flatMap { $0 as? T }.filter({ filter($0, arg) })
+                    return array.compactMap { $0 as? T }.filter({ filter($0, arg) })
                 } else {
-                    return array.flatMap { $0 as? Y }.filter({ other($0, arg) })
+                    return array.compactMap { $0 as? Y }.filter({ other($0, arg) })
                 }
 
             default:

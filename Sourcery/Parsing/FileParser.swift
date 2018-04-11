@@ -108,16 +108,14 @@ final class FileParser {
         let file = File(contents: contents)
         let source = try Structure(file: file).dictionary
 
-        var processedGlobalTypes = [[String: SourceKitRepresentable]]()
-        let types = try parseTypes(source, processed: &processedGlobalTypes)
-
-        let typealiases = try parseTypealiases(from: source, containingType: nil, processed: processedGlobalTypes)
+        let (types, typealiases) = try parseTypes(source)
         return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Sourcery.version)
     }
 
-    internal func parseTypes(_ source: [String: SourceKitRepresentable], processed: inout [[String: SourceKitRepresentable]]) throws -> [Type] {
+    internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [Typealias]) {
         var types = [Type]()
-        try walkDeclarations(source: source, processed: &processed) { kind, name, access, inheritedTypes, source, definedIn, next in
+        var typealiases = [Typealias]()
+        try walkDeclarations(source: source) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
 
             switch kind {
@@ -147,13 +145,16 @@ final class FileParser {
                  .functionMethodInstance,
                  .functionMethodStatic:
                 return parseMethod(source, definedIn: definedIn as? Type, nextStructure: next)
+            case .functionSubscript:
+                return parseSubscript(source, definedIn: definedIn as? Type, nextStructure: next)
             case .varParameter:
-                if definedIn is SourceryMethod {
-                    return parseParameter(source)
-                } else {
-                    // if we get parameter defined out of the method, it should be subscript
-                    return parseSubscript(source, definedIn: definedIn as? Type)
+                return parseParameter(source)
+            case .typealias:
+                guard let `typealias` = parseTypealias(source, containingType: definedIn as? Type) else { return nil }
+                if definedIn == nil {
+                    typealiases.append(`typealias`)
                 }
+                return `typealias`
             default:
                 Log.verbose("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
@@ -169,7 +170,7 @@ final class FileParser {
             return type
         }
 
-        return finishedParsing(types: types)
+        return (types, typealiases)
     }
 
     typealias FoundEntry = (
@@ -183,22 +184,22 @@ final class FileParser {
     ) -> Any?
 
     /// Walks all declarations in the source
-    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, processed: inout [[String: SourceKitRepresentable]], foundEntry: FoundEntry) throws {
-        if let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] {
-            for (index, substructure) in substructures.enumerated() {
-                if let source = substructure as? [String: SourceKitRepresentable] {
-                    processed.append(source)
-                    let nextStructure = index < substructures.count - 1
-                        ? substructures[index+1] as? [String: SourceKitRepresentable]
-                        : nil
-                    try walkDeclaration(
-                        source: source,
-                        next: nextStructure,
-                        containingIn: containingIn,
-                        foundEntry: foundEntry
-                    )
-                }
-            }
+    private func walkDeclarations(source: [String: SourceKitRepresentable], containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: FoundEntry) throws {
+        guard let substructures = source[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable] else { return }
+
+        for (index, substructure) in substructures.enumerated() {
+            guard let source = substructure as? [String: SourceKitRepresentable] else { continue }
+
+            let nextStructure = index < substructures.count - 1
+                ? substructures[index+1] as? [String: SourceKitRepresentable]
+                : nil
+
+            try walkDeclaration(
+                source: source,
+                next: nextStructure,
+                containingIn: containingIn,
+                foundEntry: foundEntry
+            )
         }
     }
 
@@ -216,13 +217,7 @@ final class FileParser {
             declaration = foundDeclaration.map({ ($0, source) })
         }
 
-        var processedInnerTypes = [[String: SourceKitRepresentable]]()
-        try walkDeclarations(source: source, containingIn: declaration, processed: &processedInnerTypes, foundEntry: foundEntry)
-
-        if let foundType = declaration?.0 as? Type {
-            try parseTypealiases(from: source, containingType: foundType, processed: processedInnerTypes)
-                .forEach { foundType.typealiases[$0.aliasName] = $0 }
-        }
+        try walkDeclarations(source: source, containingIn: declaration, foundEntry: foundEntry)
     }
 
     private func processContainedDeclaration(_ declaration: Any, within containing: (declaration: Any, source: [String: SourceKitRepresentable])) {
@@ -231,6 +226,8 @@ final class FileParser {
             process(declaration: declaration, containedIn: containingType)
         case let containingMethod as SourceryMethod:
             process(declaration: declaration, containedIn: (containingMethod, containing.source))
+        case let containingSubscript as Subscript:
+            process(declaration: declaration, containedIn: (containingSubscript, containing.source))
         default: break
         }
     }
@@ -251,12 +248,14 @@ final class FileParser {
             childType.parent = type
         case let (enumeration as Enum, enumCase as EnumCase):
             enumeration.cases += [enumCase]
+        case let (_, `typealias` as Typealias):
+            type.typealiases[`typealias`.aliasName] = `typealias`
         default:
             break
         }
     }
 
-    private func process(declaration: Any, containedIn: (method: SourceryMethod, source: [String: SourceKitRepresentable])) {
+    private func process(declaration: Any, containedIn: (declaration: Any, source: [String: SourceKitRepresentable])) {
         switch declaration {
         case let (parameter as MethodParameter):
             //add only parameters that are in range of method name 
@@ -265,40 +264,19 @@ final class FileParser {
                 nameRange.offset + nameRange.length >= paramKeyRange.offset + paramKeyRange.length
                 else { return }
 
-            containedIn.method.parameters += [parameter]
+            switch containedIn.declaration {
+            case let (method as SourceryMethod):
+                method.parameters += [parameter]
+            case let (`subscript` as Subscript):
+                `subscript`.parameters += [parameter]
+            default:
+                break
+            }
         default:
             break
         }
     }
 
-    private func finishedParsing(types: [Type]) -> [Type] {
-        for type in types {
-            // find actual methods parameters types and their argument labels
-            for method in type.allMethods {
-                let argumentLabels: [String]
-                if let labels = method.selectorName.range(of: "(")
-                        .map({ String(method.selectorName[$0.upperBound...]) })?
-                        .trimmingCharacters(in: CharacterSet(charactersIn: ")"))
-                        .components(separatedBy: ":")
-                        .dropLast() {
-                    argumentLabels = Array(labels)
-                } else {
-                    argumentLabels = []
-                }
-
-                for (index, parameter) in method.parameters.enumerated() where index < argumentLabels.count {
-                    parameter.argumentLabel = argumentLabels[index] != "_" ? argumentLabels[index] : nil
-                }
-
-                // adjust method selector name as methods without parameters do not have ()
-                if method.parameters.isEmpty {
-                    method.selectorName.trimSuffix("()")
-                }
-            }
-        }
-
-        return types
-    }
 }
 
 // MARK: - Details parsing
@@ -316,7 +294,7 @@ extension FileParser {
     }
 
     internal func extractInheritedTypes(source: [String: SourceKitRepresentable]) -> [String] {
-        return (source[SwiftDocKey.inheritedtypes.rawValue] as? [[String: SourceKitRepresentable]])?.flatMap { type in
+        return (source[SwiftDocKey.inheritedtypes.rawValue] as? [[String: SourceKitRepresentable]])?.compactMap { type in
             return type[SwiftDocKey.name.rawValue] as? String
         } ?? []
     }
@@ -324,6 +302,21 @@ extension FileParser {
     fileprivate func isGeneric(source: [String: SourceKitRepresentable]) -> Bool {
         guard let substring = extract(.nameSuffix, from: source), substring.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<") == true else { return false }
         return true
+    }
+
+    fileprivate func setterAccessibility(source: [String: SourceKitRepresentable]) -> AccessLevel? {
+        if let setter = source["key.setter_accessibility"] as? String {
+            return AccessLevel(rawValue: setter.trimmingPrefix("source.lang.swift.accessibility."))
+        } else {
+            guard let attributes = source["key.attributes"] as? [[String: SourceKitRepresentable]],
+                let setterAccess = attributes
+                    .compactMap({ $0["key.attribute"] as? String })
+                    .first(where: { $0.hasPrefix("source.decl.attribute.setter_access.") }) else {
+                        return nil
+            }
+
+            return AccessLevel(rawValue: setterAccess.trimmingPrefix("source.decl.attribute.setter_access."))
+        }
     }
 
 }
@@ -444,7 +437,7 @@ extension FileParser {
     }
 
     internal func parseVariable(_ source: [String: SourceKitRepresentable], definedIn: Type?, isStatic: Bool = false) -> Variable? {
-        guard let (name, _, accesibility) = parseTypeRequirements(source) else { return nil }
+        guard let (name, _, accessibility) = parseTypeRequirements(source) else { return nil }
 
         let definedInProtocol = (definedIn != nil) ? definedIn is SourceryProtocol : false
         var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
@@ -464,27 +457,26 @@ extension FileParser {
 
         let typeName: TypeName
         if let type = maybeType {
-            typeName = TypeName(type, attributes: parseTypeAttributes(type))
+            typeName = TypeName(type)
         } else {
             let declaration = extract(.key, from: source)
             // swiftlint:disable:next force_unwrapping
             typeName = TypeName("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
         }
 
-        let setter = source["key.setter_accessibility"] as? String
+        let setterAccessibility = self.setterAccessibility(source: source)
         let body = extract(Substring.body, from: source) ?? ""
         let constant = extract(Substring.key, from: source)?.hasPrefix("let") == true
         let hasPropertyObservers = body.hasPrefix("didSet") || body.hasPrefix("willSet")
         let computed = !definedInProtocol && (
-            (setter == nil && !constant) ||
-            (setter != nil && !body.isEmpty && hasPropertyObservers == false)
+            (setterAccessibility == nil && !constant) ||
+            (setterAccessibility != nil && !body.isEmpty && hasPropertyObservers == false)
         )
-        let writeAccessibility = setter.flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "")) }) ?? .none
-
+        let accessLevel = (read: accessibility, write: setterAccessibility ?? .none)
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
         let definedInTypeName = definedIn.map { TypeName($0.name) }
 
-        let variable = Variable(name: name, typeName: typeName, accessLevel: (read: accesibility, write: writeAccessibility), isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
+        let variable = Variable(name: name, typeName: typeName, accessLevel: accessLevel, isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         variable.setSource(source)
 
         return variable
@@ -495,154 +487,14 @@ extension FileParser {
 // MARK: - Subscripts
 extension FileParser {
 
-    func parseSubscript(_ source: [String: SourceKitRepresentable], definedIn: Type? = nil) -> Subscript? {
-        guard let (returnTypeName, body) = parseSubscriptReturnTypeNameAndBody(source) else { return nil }
-        guard let param = parseParameter(source), let key = extract(.key, from: source) else { return nil }
+    internal func parseSubscript(_ source: [String: SourceKitRepresentable], definedIn: Type? = nil, nextStructure: [String: SourceKitRepresentable]? = nil) -> Subscript? {
+        guard let method = parseMethod(source, definedIn: definedIn, nextStructure: nextStructure) else { return nil }
+        guard let accessibility = AccessLevel(rawValue: method.accessLevel) else { return nil }
 
-        let names = key.components(separatedBy: ":").first?.components(separatedBy: .whitespaces) ?? [""]
-        if key.hasPrefix("_") || names.count == 1 { param.argumentLabel = nil }
+        let setterAccessibility = self.setterAccessibility(source: source)
+        let accessLevel = (read: accessibility, write: setterAccessibility ?? .none)
 
-        let hasSetter = body.components(separatedBy: "set", excludingDelimiterBetween: (open: "{", close: "}")).count > 1
-        let definedInTypeName  = definedIn.map { TypeName($0.name) }
-
-        guard var keyPrefix = extract(.keyPrefix, from: source) else { return nil }
-        keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        // subscript can be broken in several lines with annotation comments in-between
-        // so we go line by line _up_ skipping comments and empty lines
-        // to find first non-comment-starting line. It should start with "subscript" keyword or previous subscript parameter definition
-        if let lastNonCommentStartingLine = self.lastNonCommentStartingLine(keyPrefix) {
-            let length = lastNonCommentStartingLine.byteRange.location + lastNonCommentStartingLine.byteRange.length
-            keyPrefix = keyPrefix.substringWithByteRange(start: 0, length: length) ?? keyPrefix
-        }
-
-        // if we have "subscript(" prefix that means that parameter belongs to new subscript,
-        // otherwise it belongs to the last subscript added to the type
-        let trimmedKeyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-            .trimmingSuffix("(").trimmingCharacters(in: .whitespacesAndNewlines)
-            .trimmingSuffix("subscript").trimmingCharacters(in: .whitespacesAndNewlines)
-        let newSubscript = trimmedKeyPrefix != keyPrefix
-
-        if newSubscript {
-            // extract access levels and `final` attribute
-            keyPrefix = trimmedKeyPrefix
-
-            var (readAccessLevel, writeAccessLevel, isFinal) = parseSubscriptAccessLevel(&keyPrefix, definedIn: definedIn)
-            if hasSetter && writeAccessLevel == .none {
-                writeAccessLevel = readAccessLevel
-            }
-            let attributes = isFinal ? [Attribute.Identifier.final.name: Attribute(name: "final", description: "final")] : [:]
-
-            // extract annotations
-            // read all the lines from the end until first non-comment-starting line
-            if let lastNonCommentStartingLine = self.lastNonCommentStartingLine(keyPrefix) {
-                let start = lastNonCommentStartingLine.byteRange.location + lastNonCommentStartingLine.byteRange.length
-                let length = keyPrefix.count - start
-                keyPrefix = keyPrefix.substringWithByteRange(start: start, length: max(0, length)) ?? keyPrefix
-            }
-            let annotations = AnnotationsParser(contents: keyPrefix).all
-
-            let `subscript` = Subscript(parameters: [param], returnTypeName: TypeName(returnTypeName), accessLevel: (readAccessLevel, writeAccessLevel), attributes: attributes, annotations: annotations, definedInTypeName: definedInTypeName)
-            `subscript`.setSource(source)
-            return `subscript`
-        } else if let `subscript` = definedIn?.subscripts.last {
-            `subscript`.returnTypeName = TypeName(returnTypeName)
-            `subscript`.parameters.append(param)
-            if hasSetter && `subscript`.writeAccess == AccessLevel.none.rawValue {
-                `subscript`.writeAccess = `subscript`.readAccess
-            }
-            return nil
-        }
-        return nil
-    }
-
-    private func parseSubscriptReturnTypeNameAndBody(_ source: [String: SourceKitRepresentable]) -> (returnTypeName: String, body: String)? {
-        let returnTypeName: String
-        let body: String
-        if let key = extract(.key, from: source),
-            var line = extractLines(.key, from: source, contents: contents, trimWhitespacesAndNewlines: false),
-            let range = line.range(of: key) {
-
-            // if parameter line ends with new line we just append everything to it so that we can read return type
-            if line.trimmingCharacters(in: .whitespacesAndNewlines) != line {
-                let lines = contents.lines()
-                if let linesRange = extractLinesNumbers(.key, from: source, contents: contents), lines.count >= linesRange.end {
-                    line += lines.suffix(from: linesRange.end).map({ $0.content }).joined()
-                }
-            }
-
-            let lineSuffix = String(line.suffix(from: range.lowerBound))
-            let components = lineSuffix.semicolonSeparated()
-            if let suffix = components.first {
-                var nameSuffix = suffix
-                    .trimmingCharacters(in: .whitespaces)
-                    .trimmingPrefix(key)
-                    .trimmingCharacters(in: CharacterSet(charactersIn: ")").union(.whitespacesAndNewlines))
-
-                if nameSuffix.trimPrefix("->"), let openBraceIndex = nameSuffix.index(of: "{") {
-                    returnTypeName = nameSuffix
-                        .prefix(upTo: openBraceIndex)
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                    body = String(nameSuffix.suffix(from: openBraceIndex))
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                        .trimmingPrefix("{")
-                        .trimmingSuffix("}")
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                    return (returnTypeName, body)
-                } else {
-                    // actual type name should be set when last parameter is processed
-                    return ("", "")
-                }
-            } else { return nil }
-        } else { return nil }
-    }
-
-    private func parseSubscriptAccessLevel(_ keyPrefix: inout String, definedIn: Type?) -> (readAccessLevel: AccessLevel, writeAccessLevel: AccessLevel, isFinal: Bool) {
-        var readAccessLevel: AccessLevel = definedIn.flatMap({ AccessLevel(rawValue: $0.accessLevel) }) ?? .`internal`
-        var writeAccessLevel: AccessLevel = .none
-        var isFinal: Bool = false
-
-        let accessLevels: [AccessLevel] = [.`private`, .`fileprivate`, .`internal`, .`public`, .`open`]
-        var readAllPrefixes: Bool = false
-
-        while !readAllPrefixes {
-            var readReadAccessLevel: Bool = false
-            var readWriteAccessLevel: Bool = false
-            var readFinalAttribute: Bool = false
-
-            if let _readAccessLevel = accessLevels.first(where: { keyPrefix.trimSuffix($0.rawValue) }) {
-                readAccessLevel = _readAccessLevel
-                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-                readReadAccessLevel = true
-            }
-            if let _writeAccessLevel = accessLevels.first(where: { keyPrefix.trimSuffix("\($0.rawValue)(set)") }) {
-                writeAccessLevel = _writeAccessLevel
-                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-                readWriteAccessLevel = true
-            }
-            if keyPrefix.trimSuffix("final") {
-                isFinal = true
-                keyPrefix = keyPrefix.trimmingCharacters(in: .whitespacesAndNewlines)
-                readFinalAttribute = true
-            }
-            readAllPrefixes =
-                (readReadAccessLevel && readWriteAccessLevel && readFinalAttribute) ||
-                (!readReadAccessLevel && !readWriteAccessLevel && !readFinalAttribute)
-        }
-
-        return (readAccessLevel, writeAccessLevel, isFinal)
-    }
-
-    private func lastNonCommentStartingLine(_ keyPrefix: String) -> Line? {
-        let keyPrefixLines = keyPrefix.lines()
-        for keyPrefixLine in keyPrefixLines.reversed() {
-            let line = keyPrefixLine.content.trimmingCharacters(in: .whitespacesAndNewlines)
-            let isCommmentLine = line.hasPrefix("//") || line.hasPrefix("/*")
-            if !isCommmentLine && !line.isEmpty {
-                return keyPrefixLine
-            }
-        }
-        return nil
+        return Subscript(parameters: method.parameters, returnTypeName: method.returnTypeName, accessLevel: accessLevel, attributes: method.attributes, annotations: method.annotations, definedInTypeName: method.definedInTypeName)
     }
 
 }
@@ -734,7 +586,7 @@ extension FileParser {
         }
 
         let definedInTypeName  = definedIn.map { TypeName($0.name) }
-        let method = Method(name: fullName, selectorName: name, returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
+        let method = Method(name: fullName, selectorName: name.trimmingSuffix("()"), returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         method.setSource(source)
 
         return method
@@ -742,14 +594,15 @@ extension FileParser {
 
     internal func parseParameter(_ source: [String: SourceKitRepresentable]) -> MethodParameter? {
         guard let (name, _, _) = parseTypeRequirements(source),
-              let type = source[SwiftDocKey.typeName.rawValue] as? String else {
-            return nil
+            let type = source[SwiftDocKey.typeName.rawValue] as? String else {
+                return nil
         }
 
+        let argumentLabel = extract(.name, from: source)
         let `inout` = type.hasPrefix("inout ")
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), isInout: `inout`)
+        let parameter = MethodParameter(argumentLabel: argumentLabel, name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), isInout: `inout`)
         parameter.setSource(source)
         return parameter
     }
@@ -829,97 +682,13 @@ extension FileParser {
 // MARK: - Typealiases
 extension FileParser {
 
-    fileprivate func parseTypealiases(from source: [String: SourceKitRepresentable], containingType: Type?, processed: [[String: SourceKitRepresentable]]) throws -> [Typealias] {
-        // swiftlint:disable:next force_unwrapping
-        var contentToParse = self.contents!
+    fileprivate func parseTypealias(_ source: [String: SourceKitRepresentable], containingType: Type?) -> Typealias? {
+        guard let (name, _, accessibility) = parseTypeRequirements(source),
+            let nameSuffix = extract(.nameSuffix, from: source)?
+                .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
+            else { return nil }
 
-        // replace all processed substructures with whitespaces so that we don't process their typealiases again
-        for substructure in processed {
-            if let substring = extract(.key, from: substructure) {
-
-                let replacementCharacter = " "
-                let count = substring.lengthOfBytes(using: .utf8) / replacementCharacter.lengthOfBytes(using: .utf8)
-                let replacement = String(repeating: replacementCharacter, count: count)
-                contentToParse = contentToParse.bridge().replacingOccurrences(of: substring, with: replacement)
-            }
-        }
-
-        // `()` is not recognized as type identifier token, this needs to be delayed otherwise we will break byteRanges
-        let voidReplaced: (String) -> String = { string in
-            return string.replacingOccurrences(of: "()", with: "(Void)")
-        }
-
-        guard containingType != nil else {
-            let contents = voidReplaced(contentToParse)
-            return try parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
-        }
-
-        if let body = extract(.body, from: source, contents: contentToParse) {
-            let contents = voidReplaced(body)
-            return try parseTypealiases(SyntaxMap(file: File(contents: contents)).tokens, contents: contents)
-        } else {
-            return []
-        }
-    }
-
-    private func parseTypealiases(_ tokens: [SyntaxToken], contents: String, existingTypealiases: [Typealias] = []) -> [Typealias] {
-        var typealiases = existingTypealiases
-
-        for (index, token) in tokens.enumerated() {
-            guard token.type == SyntaxKind.keyword.rawValue,
-                extract(token, contents: contents) == "typealias" else {
-                    continue
-            }
-
-            let aliasNameToken = tokens[index + 1]
-            guard let aliasName = extract(aliasNameToken, contents: contents) else {
-                continue
-            }
-
-            //get all subsequent type identifiers
-            var index = index + 1
-            var lastTypeToken: SyntaxToken?
-            while index < tokens.count - 1 {
-                index += 1
-                let tokenType = tokens[index].type
-                let token = extract(tokens[index], contents: contents)
-                if tokenType == SyntaxKind.typeidentifier.rawValue {
-                    lastTypeToken = tokens[index]
-                } else if tokenType == SyntaxKind.keyword.rawValue && (token == "Any" || token == "AnyObject") {
-                    lastTypeToken = tokens[index]
-                } else { break }
-            }
-            if let lastTypeToken = lastTypeToken,
-                var typeName = extract(from: aliasNameToken, to: lastTypeToken, contents: contents)?
-                    .trimmingPrefix(aliasName)
-                    .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-                    .trimmingPrefix("=")
-                    .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines),
-                var typeNameSuffix = extract(after: lastTypeToken, contents: contents) {
-
-                // token has only type name without closing brackets optional
-                // so we pick them from the suffix string one by one
-                while true {
-                    if typeNameSuffix.hasPrefix("]") {
-                        typeName += "]"
-                    } else if typeNameSuffix.hasPrefix(")") {
-                        typeName += ")"
-                    } else if typeNameSuffix.hasPrefix(">") {
-                        typeName += ">"
-                    } else if typeNameSuffix.hasPrefix("?") {
-                        typeName += "?"
-                    } else if typeNameSuffix.hasPrefix("!") {
-                        typeName += "!"
-                    } else {
-                        break
-                    }
-                    typeNameSuffix = typeNameSuffix.dropFirst()
-                }
-
-                typealiases.append(Typealias(aliasName: aliasName, typeName: TypeName(typeName.bracketsBalancing())))
-            }
-        }
-        return typealiases
+        return Typealias(aliasName: name, typeName: TypeName(nameSuffix), parent: containingType)
     }
 
 }
@@ -927,60 +696,54 @@ extension FileParser {
 // MARK: - Attributes
 extension FileParser {
 
+    // used to parse attributes of declarations (type, variable, method, subscript) from sourcekit response
     internal func parseDeclarationAttributes(_ source: [String: SourceKitRepresentable]) -> [String: Attribute] {
-        guard var prefix = extract(.keyPrefix, from: source)?.bridge() else { return [:] }
-        if let attributesValue = source["key.attributes"] as? [[String: String]] {
-            var ranges = [NSRange]()
-            attributesValue.map({ $0.values }).joined()
-                .flatMap(Attribute.Identifier.init(identifier:))
-                .forEach {
-                    var attributeRange = prefix.range(of: $0.description, options: .backwards)
-                    // we expect all attributes to be prefixed with `@`
-                    // but some attribute does not need it...
-                    if !$0.hasAtPrefix {
-                        prefix = prefix.replacingCharacters(in: attributeRange, with: "@\($0)") as NSString
-                        attributeRange.length += 1
-                        attributeRange.location = max(0, attributeRange.location - 1)
-                    }
-                    ranges.append(attributeRange)
+        if let attributes = source["key.attributes"] as? [[String: SourceKitRepresentable]] {
+            let parsedAttributes = attributes.compactMap { (attributeDict) -> Attribute? in
+                guard let key = extract(.key, from: attributeDict) else { return nil }
+                guard let identifier = (attributeDict["key.attribute"] as? String).flatMap(Attribute.Identifier.init(identifier:)) else { return nil }
+
+                return parseAttribute(key.trimmingPrefix("@"), identifier: identifier)
             }
-            guard let location = ranges.min(by: { $0.location < $1.location })?.location else { return [:] }
-            return parseAttributes(prefix.substring(from: location))
+            var attributesByName = [String: Attribute]()
+            parsedAttributes.forEach { attributesByName[$0.name] = $0 }
+            return attributesByName
         }
         return [:]
     }
 
+    // used to parse attributes from type names of method parameters and enum associated values
+    // (sourcekit does not provide strucutred information for such attributes)
     internal func parseTypeAttributes(_ typeName: String) -> [String: Attribute] {
-        return parseAttributes(typeName)
-    }
-
-    private func parseAttributes(_ string: String) -> [String: Attribute] {
-        let items = string.components(separatedBy: "@", excludingDelimiterBetween: ("(", ")"))
+        let items = typeName.components(separatedBy: "@", excludingDelimiterBetween: ("(", ")"))
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
         guard items.count > 1 else { return [:] }
 
-        var attributes = [String: Attribute]()
-        let _attributes: [Attribute] = items.filter({ !$0.isEmpty }).flatMap {
-            guard let attributeString = $0.trimmingCharacters(in: .whitespaces)
-                .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
+        let attributes: [Attribute] = items.filter({ !$0.isEmpty }).compactMap({ parseAttribute($0) })
+        var attributesByName = [String: Attribute]()
+        attributes.forEach { attributesByName[$0.name] = $0 }
+        return attributesByName
+    }
 
-            if let openIndex = attributeString.index(of: "(") {
-                let name = String(attributeString.prefix(upTo: openIndex))
+    private func parseAttribute(_ string: String, identifier: Attribute.Identifier? = nil) -> Attribute? {
+        guard let attributeString = string.trimmingCharacters(in: .whitespaces)
+            .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
 
-                let chars = attributeString
-                let startIndex = chars.index(openIndex, offsetBy: 1)
-                let endIndex = chars.index(chars.endIndex, offsetBy: -1)
-                let argumentsString = String(chars[startIndex ..< endIndex])
-                let arguments = parseAttributeArguments(argumentsString, attribute: name)
+        if let openIndex = attributeString.index(of: "(") {
+            let name = String(attributeString.prefix(upTo: openIndex))
+            guard let identifier = identifier ?? Attribute.Identifier.from(string: name) else { return nil }
 
-                return Attribute(name: name, arguments: arguments, description: "@\(attributeString)")
-            } else {
-                guard let identifier = Attribute.Identifier.from(string: attributeString) else { return nil }
-                return Attribute(name: identifier.name, description: identifier.description)
-            }
+            let chars = attributeString
+            let startIndex = chars.index(openIndex, offsetBy: 1)
+            let endIndex = chars.index(chars.endIndex, offsetBy: -1)
+            let argumentsString = String(chars[startIndex ..< endIndex])
+            let arguments = parseAttributeArguments(argumentsString, attribute: name)
+
+            return Attribute(name: name, arguments: arguments, description: "\(identifier.description)(\(argumentsString))")
+        } else {
+            guard let identifier = identifier ?? Attribute.Identifier.from(string: attributeString) else { return nil }
+            return Attribute(name: identifier.name, description: identifier.description)
         }
-        _attributes.forEach { attributes[$0.name] = $0 }
-        return attributes
     }
 
     private func parseAttributeArguments(_ string: String, attribute: String) -> [String: NSObject] {
@@ -988,6 +751,7 @@ extension FileParser {
         string.components(separatedBy: ",", excludingDelimiterBetween: ("\"", "\""))
             .map({ $0.trimmingCharacters(in: .whitespaces) })
             .forEach { argument in
+                // TODO: @objc can be used only for getter or settor of computed property
                 if attribute == "objc" {
                     arguments["name"] = argument as NSString
                     return

@@ -12,15 +12,8 @@ BUILD_DIR = 'build/'
 ## [ Utils ] ##################################################################
 
 def version_select
-  # Find all Xcode 8 versions on this computer
-  xcodes = `mdfind "kMDItemCFBundleIdentifier = 'com.apple.dt.Xcode' && kMDItemVersion = '9.*'"`.chomp.split("\n")
-  if xcodes.empty?
-    raise "\n[!!!] You need to have Xcode 8.x to compile Sourcery.\n\n"
-  end
-  # Order by version and get the latest one
-  vers = lambda { |path| `mdls -name kMDItemVersion -raw "#{path}"` }
-  latest_xcode_version = xcodes.sort { |p1, p2| vers.call(p1) <=> vers.call(p2) }.last
-  %Q(DEVELOPER_DIR="#{latest_xcode_version}/Contents/Developer" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
+  latest_xcode_version = `xcode-select -p`.chomp 
+  %Q(DEVELOPER_DIR="#{latest_xcode_version}" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
 end
 
 def xcpretty(cmd)
@@ -53,12 +46,14 @@ end
 desc "Run the Unit Tests on Templates project"
 task :test_templates do
   print_info "Running Sourcery Templates Tests"
+  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx)
   xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme TemplatesTests -sdk macosx test)
 end
 
 desc "Run the Unit Tests on all projects"
 task :tests do
   print_info "Running Unit Tests"
+  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx)
   xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx test)
 end
 

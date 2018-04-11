@@ -111,31 +111,31 @@ extension ProcessInfo {
     // sourcery: skipDescription, skipEquality, skipCoding
     /// All known protocols
     public lazy internal(set) var protocols: [Protocol] = {
-        return self.types.flatMap { $0 as? Protocol }
+        return self.types.compactMap { $0 as? Protocol }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// All known classes
     public lazy internal(set) var classes: [Class] = {
-        return self.all.flatMap { $0 as? Class }
+        return self.all.compactMap { $0 as? Class }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// All known structs
     public lazy internal(set) var structs: [Struct] = {
-        return self.all.flatMap { $0 as? Struct }
+        return self.all.compactMap { $0 as? Struct }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// All known enums
     public lazy internal(set) var enums: [Enum] = {
-        return self.all.flatMap { $0 as? Enum }
+        return self.all.compactMap { $0 as? Enum }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// All known extensions
     public lazy internal(set) var extensions: [Type] = {
-        return self.all.flatMap { $0.isExtension ? $0 : nil }
+        return self.all.compactMap { $0.isExtension ? $0 : nil }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding

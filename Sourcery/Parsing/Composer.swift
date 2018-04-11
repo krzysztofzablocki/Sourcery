@@ -483,7 +483,7 @@ struct Composer {
 
         let parameters = parametersString
             .commaSeparated()
-            .flatMap({ parameter -> MethodParameter? in
+            .compactMap({ parameter -> MethodParameter? in
                 let components = parameter.trimmingCharacters(in: .whitespacesAndNewlines)
                     .colonSeparated()
                     .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
@@ -514,7 +514,7 @@ struct Composer {
         }
 
         let name = genericComponents[0]
-        let typeParametersString = genericComponents[1].dropLast()
+        let typeParametersString = String(genericComponents[1].dropLast())
         return GenericType(name: name, typeParameters: parseGenericTypeParameters(typeParametersString))
     }
 
