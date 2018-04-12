@@ -71,5 +71,23 @@ class TemplatesTests: QuickSpec {
                 check(template: "LinuxMain")
             }
         }
+
+        describe("AutoDecodable template") {
+            it("generates expected code") {
+                check(template: "AutoDecodable")
+            }
+        }
+
+        describe("AutoEncodable template") {
+          it("generates expected code") {
+            check(template: "AutoEncodable")
+          }
+        }
+
+        describe("AutoDictionaryConvertable template") {
+          it("generates expected code") {
+            check(template: "AutoDictionaryConvertable")
+          }
+        }
     }
 }

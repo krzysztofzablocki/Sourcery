@@ -1,0 +1,96 @@
+import Foundation
+
+extension KeyedDecodingContainer {
+  public func decodeOrDefault<T: Decodable>(_ type: T.Type, forKey key: Key, defaultValue: T) throws -> T {
+    guard let value: T = try decodeIfPresent(type, forKey: key) else {
+      return defaultValue
+    }
+    return value
+  }
+}
+
+{# these are a giant line because of spacing, to debug just seperate the if into lines#}
+{% macro defaultValueFor variable %}{% set typename %}{{ variable.typeName.name }}{% endset %}{% if variable|annotated:"codingDefaultValue" %}{{ variable.annotations.codingDefaultValue }}){% elif variable.isOptional %}nil){% elif variable.isArray %}[]){% elif typename == "String" %}""){% elif typename == "Int" or typename == "Double" or typename == "Float" or typename == "NSNumber" %}0){% elif typename == "Bool" %}false){% endif %}{% endmacro %}
+{% macro decodeNameWithTransform name transform %}{% if transform == "camelToSnake" or not transform %}{{ name|camelToSnakeCase }}{% elif transform == "camelToSnake:idToUUID" %}{{ name|camelToSnakeCase|replace:"id","uuid" }}{% elif transform == "idToUUID" %}{{ name|replace:"id","uuid" }}{% endif %}{% endmacro %}
+{% macro keyedNameFor type  variable %}{% if variable|annotated:"codingKey" %} = "{{ variable.annotations.codingKey }}"{% elif type|annotated:"codingKeyTransform" %}= "{% call decodeNameWithTransform variable.name type.annotations.codingKeyTransform %}"{% endif %}{% endmacro %}
+
+{# the keys to use to decoding #}
+{% macro codingKeys type %}
+  private enum CodableKeys: String, CodingKey {
+    {% for variable in type.instanceVariables where variable|!annotated:"skipCoding" %}
+    case {{ variable.name }} {% call keyedNameFor type variable %}
+    {% endfor %}
+  }
+{% endmacro %}
+
+{% macro inheritanceInitializer type %}
+  {% if type.supertype.based.AutoDecodable or type.supertype.based.Decodable %}
+    try self.init(from: decoder)
+  {% else %}
+    self.init()
+  {% endif %}
+{% endmacro %}
+
+
+{% macro convertTypeForEncoder var %}
+  {% set encodeCall %}{% if var.isOptional %}encodeIfPresent{% else %}encode{% endif %}{% endset %}
+  {% if var|!annotated:"encodingType" %}
+    try container.{{ encodeCall }}({{ var.name }}, forKey: .{{ var.name }})
+  {% else %}
+  {% set typename %}{{ var.typeName.name }}{% endset %}
+  {% set encodingType %}{{ var.annotations.encodingType }}{% endset %}
+  {% if typename == "Bool" and encodingType == "String" %}
+    try container.encode({{ var.name }} ? 'true' : 'false', forKey: .{{ var.name }})
+  {% elif typename == "Bool" and encodingType == "Int" %}
+    try container.encode({{ var.name }} ? 1 : 0, forKey: .{{ var.name }})
+  {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro encode type %}
+  {{ type.accessLevel }} {% if type.supertype.implements.Encodable or type.supertype.implements.AutoEncodable %}override {% endif %}func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodableKeys.self)
+    {% for variable in type.instanceVariables where variable|!annotated:"skipCoding" %}
+    {% call convertTypeForEncoder variable %}
+    {% endfor %}
+  }
+{% endmacro %}
+
+{% for type in types.all|!class where type.based.AutoDecodable or type|annotated:"AutoDecodable" and type.name != "AutoCodable" and type.name != "AutoDecodable" %}
+// MARK: {{ type.name }}+Decodable | AutoDecodable
+extension {{ type.name }} {
+  {% call codingKeys type %}
+
+  {{ type.accessLevel }} init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodableKeys.self)
+    {% for var in type.instanceVariables where var|!annotated:"skipCoding" %}
+    {% if var|annotated:"codingDefaultValue" or var.isOptional %}
+    {{ var.name }} = try container.decodeOrDefault({{ var.typeName.name }}.self, forKey: .{{ var.name }}, defaultValue: {% call defaultValueFor var %}
+    {% else %}
+    {{ var.name }} = try container.decode({{ var.typeName.name }}.self, forKey: .{{ var.name }})
+    {% endif %}
+    {% endfor %}
+  }
+}
+{% endfor %}
+
+{# todo inheritance #}
+{% for type in types.all|class where type.based.AutoDecodable or type|annotated:"AutoDecodable" and type.name != "AutoCodable" and type.name != "AutoDecodable" %}
+  // sourcery:inline:auto:{{ type.name }}.AutoDecodable
+  {% call codingKeys type %}
+  {% if type.supertype.based.AutoEncodable or type.based.AutoEncodable %}
+  {% call encode type %}
+  {% endif %}
+  {{ type.accessLevel }} convenience required init(from decoder: Decoder) throws {
+    {% call inheritanceInitializer type %}
+    let container = try decoder.container(keyedBy: CodableKeys.self)
+    {% for var in type.instanceVariables where var|!annotated:"skipCoding" %}
+    {% if var|annotated:"codingDefaultValue" or var.isOptional %}
+    {{ var.name }} = try container.decodeOrDefault({{ var.typeName.name }}.self, forKey: .{{ var.name }}, defaultValue: {% call defaultValueFor var %}
+    {% else %}
+    {{ var.name }} = try container.decode({{ var.typeName.name }}.self, forKey: .{{ var.name }})
+    {% endif %}
+    {% endfor %}
+  }
+  // sourcery:end
+{% endfor %}
