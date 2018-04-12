@@ -12,6 +12,7 @@ import Foundation
     // sourcery: skipJSExport
     let _description: String
 
+    /// :nodoc:
     public var __parserData: Any?
 
     /// :nodoc:
