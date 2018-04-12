@@ -12,6 +12,8 @@ import Foundation
     // sourcery: skipJSExport
     let _description: String
 
+    public var __parserData: Any?
+
     /// :nodoc:
     public init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name

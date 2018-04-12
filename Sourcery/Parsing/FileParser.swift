@@ -53,6 +53,7 @@ extension SourceryMethod: Parsable {}
 extension MethodParameter: Parsable {}
 extension EnumCase: Parsable {}
 extension Subscript: Parsable {}
+extension Attribute: Parsable {}
 
 final class FileParser {
 
@@ -543,7 +544,13 @@ extension FileParser {
             var upperBound: Int?
             if let nextStructure = nextStructure, let range = Substring.key.range(for: nextStructure) {
                 // if there is next declaration, parse until its start
-                upperBound = Int(range.offset)
+                let nextAttributesOffests = parseDeclarationAttributes(nextStructure)
+                    .values.compactMap { Substring.key.range(for: $0.__underlyingSource)?.offset }
+                if let firstNextAttributeOffset = nextAttributesOffests.min() {
+                    upperBound = min(Int(range.offset), Int(firstNextAttributeOffset))
+                } else {
+                    upperBound = Int(range.offset)
+                }
             } else if let definedInSource = definedIn?.__underlyingSource, let range = Substring.key.range(for: definedInSource) {
                 // if there are no fiurther declarations, parse until end of containing declaration
                 upperBound = Int(range.offset) + Int(range.length) - 1
@@ -703,7 +710,9 @@ extension FileParser {
                 guard let key = extract(.key, from: attributeDict) else { return nil }
                 guard let identifier = (attributeDict["key.attribute"] as? String).flatMap(Attribute.Identifier.init(identifier:)) else { return nil }
 
-                return parseAttribute(key.trimmingPrefix("@"), identifier: identifier)
+                let attribute = parseAttribute(key.trimmingPrefix("@"), identifier: identifier)
+                attribute?.setSource(attributeDict)
+                return attribute
             }
             var attributesByName = [String: Attribute]()
             parsedAttributes.forEach { attributesByName[$0.name] = $0 }
