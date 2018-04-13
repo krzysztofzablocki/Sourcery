@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		636D78482080251800160CC4 /* AutoCodable.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 636D78472080251800160CC4 /* AutoCodable.swifttemplate */; };
+		636D784A2080256500160CC4 /* AutoCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636D78492080256500160CC4 /* AutoCodable.swift */; };
 		6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */; };
 		6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */; };
 		6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */; };
@@ -38,6 +40,8 @@
 
 /* Begin PBXFileReference section */
 		26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TemplatesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		636D78472080251800160CC4 /* AutoCodable.swifttemplate */ = {isa = PBXFileReference; lastKnownFileType = text; path = AutoCodable.swifttemplate; sourceTree = "<group>"; };
+		636D78492080256500160CC4 /* AutoCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoCodable.swift; sourceTree = "<group>"; };
 		6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoEquatable.swift; sourceTree = "<group>"; };
 		6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoEquatable.expected; sourceTree = "<group>"; };
 		6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoHashable.swift; sourceTree = "<group>"; };
@@ -103,6 +107,7 @@
 				6D130B781ECACCDF00E9642A /* AutoLenses.swift */,
 				6D6645C41ECC184A004C1948 /* AutoMockable.swift */,
 				6D6645C91ECC219C004C1948 /* LinuxMain.swift */,
+				636D78492080256500160CC4 /* AutoCodable.swift */,
 			);
 			path = Context;
 			sourceTree = "<group>";
@@ -162,6 +167,7 @@
 				6D342C7F1EBA13DF006EEBEC /* AutoLenses.stencil */,
 				6D342C801EBA13DF006EEBEC /* AutoMockable.stencil */,
 				6D342C821EBA13DF006EEBEC /* LinuxMain.stencil */,
+				636D78472080251800160CC4 /* AutoCodable.swifttemplate */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -250,6 +256,7 @@
 			files = (
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
+				636D78482080251800160CC4 /* AutoCodable.swifttemplate in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
 				6D6645CB1ECC22A3004C1948 /* LinuxMain.generated.swift in Resources */,
 				6D6645C81ECC2187004C1948 /* LinuxMain.expected in Resources */,
@@ -285,7 +292,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\" --disableCache";
+			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\" --disableCache --verbose";
 		};
 		6D483FFA1ECDC815006B778D /* Run SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -368,6 +375,7 @@
 				6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */,
 				6D342C911EBA146F006EEBEC /* TemplatesTests.swift in Sources */,
 				6D6645CA1ECC219C004C1948 /* LinuxMain.swift in Sources */,
+				636D784A2080256500160CC4 /* AutoCodable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

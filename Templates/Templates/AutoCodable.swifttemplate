@@ -1,0 +1,16 @@
+<% for type in types.implementing["AutoDecodable"] where type is Struct { %>
+
+<% if let codingKeysType = type.containedType["CodingKeys"] as? Enum { %>
+<% let definedKeys = Set(codingKeysType.cases.map({ $0.name })) %>
+<% let allKeys = type.instanceVariables.filter({ !$0.isComputed }).map({ $0.name }) %>
+
+<% if allKeys.count > definedKeys.count { %>
+// sourcery:inline:auto:<%= codingKeysType.name %>.AutoCodable
+<% for key in allKeys where !definedKeys.contains(key) { -%>
+        case <%= key %>
+<% } %>
+// sourcery:end
+
+<% } %>
+<% } %>
+<% } %>
