@@ -6,6 +6,7 @@
 
 <% if allKeys.count > definedKeys.count { %>
 // sourcery:inline:auto:<%= codingKeysType.name %>.AutoCodable
+        // following keys are added automatically by Sourcery
 <% for key in allKeys where !definedKeys.contains(key) { -%>
         case <%= key %>
 <% } %>

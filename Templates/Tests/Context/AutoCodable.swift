@@ -21,6 +21,7 @@ struct CustomKeyDecodableStruct: AutoDecodable {
         case int = "integer"
 
 // sourcery:inline:auto:CustomKeyDecodableStruct.CodingKeys.AutoCodable
+        // following keys are added automatically by Sourcery
         case string
         case bool
 // sourcery:end
