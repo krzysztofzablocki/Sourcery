@@ -8,8 +8,8 @@
 
 import Foundation
 
-protocol AutoDecodable {}
-protocol AutoEncodable {}
+protocol AutoDecodable: Swift.Decodable {}
+protocol AutoEncodable: Swift.Encodable {}
 protocol AutoCodable: AutoDecodable, AutoEncodable {}
 
 struct CustomKeyDecodableStruct: AutoDecodable {
