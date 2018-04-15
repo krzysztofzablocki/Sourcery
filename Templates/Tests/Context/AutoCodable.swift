@@ -12,19 +12,38 @@ protocol AutoDecodable: Swift.Decodable {}
 protocol AutoEncodable: Swift.Encodable {}
 protocol AutoCodable: AutoDecodable, AutoEncodable {}
 
-struct CustomKeyDecodableStruct: AutoDecodable {
-    let string: String
-    let bool: Bool
-    let int: Int
+public struct CustomKeyDecodableStruct: AutoDecodable {
+    let stringValue: String
+    let boolValue: Bool
+    let intValue: Int
 
     enum CodingKeys: String, CodingKey {
-        case int = "integer"
+        case intValue = "integer"
 
 // sourcery:inline:auto:CustomKeyDecodableStruct.CodingKeys.AutoCodable
-        // following keys are added automatically by Sourcery
-        case string
-        case bool
+        case stringValue
+        case boolValue
 // sourcery:end
+    }
+
 }
+
+public struct CustomMethodsDecodableStruct: AutoDecodable {
+    let boolValue: Bool
+    let intValue: Int?
+    let optionalString: String?
+    let requiredString: String
+    let requiredStringWithDefault: String
+
+    static let defaultIntValue: Int = 0
+    static let defaultRequiredStringWithDefault: String = ""
+
+    static func decodeIntValue(from container: KeyedDecodingContainer<CodingKeys>) -> Int? {
+        return (try? container.decode(String.self, forKey: .intValue)).flatMap(Int.init)
+    }
+
+    static func decodeBoolValue(from decoder: Decoder) throws -> Bool {
+        return try decoder.container(keyedBy: CodingKeys.self).decode(Bool.self, forKey: .boolValue)
+    }
 
 }

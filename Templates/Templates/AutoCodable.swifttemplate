@@ -12,13 +12,12 @@ Ex.:
 struct Person: AutoDecodable {
   let id: String
   let firstName: Bool
-  let surname: Int
+  let surname: String
 
   enum CodingKeys: String, CodingKey {
     case firstName = "first_name"
 
 // sourcery:inline:auto:Person.CodingKeys.AutoCodable
-    // following keys are added automatically by Sourcery
     case id
     case surname
 // sourcery:end
@@ -28,20 +27,56 @@ struct Person: AutoDecodable {
 ```
 
 %>
-<% for type in types.implementing["AutoDecodable"] where type is Struct { %>
+<% for type in types.implementing["AutoDecodable"] where type is Struct { -%>
+    <%_ if let codingKeysType = type.containedType["CodingKeys"] as? Enum { -%>
+        <%_ let definedKeys = Set(codingKeysType.cases.map({ $0.name })) -%>
+        <%_ let allKeys = type.instanceVariables.filter({ !$0.isComputed }).map({ $0.name }) -%>
 
-<% if let codingKeysType = type.containedType["CodingKeys"] as? Enum { %>
-<% let definedKeys = Set(codingKeysType.cases.map({ $0.name })) %>
-<% let allKeys = type.instanceVariables.filter({ !$0.isComputed }).map({ $0.name }) %>
-
-<% if allKeys.count > definedKeys.count { %>
+        <%_ if allKeys.count > definedKeys.count { -%>
 // sourcery:inline:auto:<%= codingKeysType.name %>.AutoCodable
-        // following keys are added automatically by Sourcery
-<% for key in allKeys where !definedKeys.contains(key) { -%>
+        <%_ for key in allKeys where !definedKeys.contains(key) { -%>
         case <%= key %>
-<% } %>
+        <%_ } -%>
 // sourcery:end
 
-<% } %>
-<% } %>
-<% } %>
+<%      } -%>
+<%_ } -%>
+
+    <%_ let needsDecodableImplementation = true -%><%# TODO: detect if implementation is needed by presence of custom methods or default values %>
+    <%_ let needsEncodableImplementation = true -%>
+    <%_ guard needsDecodableImplementation || needsEncodableImplementation else { continue } -%>
+extension <%= type.name %> {
+    <%_ let storedVariables = type.instanceVariables.filter({ !$0.isComputed }) -%>
+    <%_ if type.containedType["CodingKeys"] as? Enum == nil { -%>
+
+    enum CodingKeys: String, CodingKey {
+        <%_ for variable in storedVariables { -%>
+        case <%= variable.name %>
+        <%_ } -%>
+    }
+    <%_ } -%>
+
+    <%= type.accessLevel %> init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+
+        <%_ for variable in type.instanceVariables.filter({ !$0.isComputed }) { -%>
+        <%_ let VariableName = "\(String(variable.name.first!).capitalized)\(String(variable.name.dropFirst()))" -%>
+        <%_ let defaultValue = type.staticVariables.first { $0.name == "default\(VariableName)" } -%>
+        <%_ let customMethod = type.staticMethods.first { $0.selectorName == "decode\(VariableName)(from:)" } -%>
+        <%_ let shouldWrapTry = defaultValue != nil && (customMethod?.throws == true || customMethod == nil) -%>
+        <%_ let tryOpen = shouldWrapTry ? "(try?" : "try" -%>
+        <%_ let tryClose = shouldWrapTry ? ")" : "" -%>
+        <%_ if let customMethod = customMethod { -%>
+        <%= variable.name %> = <% if customMethod.throws { %><%= tryOpen %> <% } %><%= type.name %>.<%= customMethod.callName %>(from: <% if customMethod.parameters.first?.name == "decoder" { %>decoder<% } else { %>values<% } %>)<% -%>
+        <%_ } else { -%>
+        <%= variable.name %> = <%= tryOpen %> values.decode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.unwrappedTypeName %>.self, forKey: .<%= variable.name %>)<% -%>
+        <%_ } -%>
+        <%_ %><%= tryClose -%>
+        <%_ if let defaultValue = defaultValue { %> ?? <%= type.name %>.default<%= VariableName %>
+        <%_ } else { %>
+        <%_ } -%>
+        <%_ } -%>
+    }
+
+}
+<% } -%>
