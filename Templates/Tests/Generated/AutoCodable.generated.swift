@@ -5,20 +5,7 @@
 
 
 
-extension CustomKeyDecodableStruct {
-
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-
-        stringValue = try values.decode(String.self, forKey: .stringValue)
-        boolValue = try values.decode(Bool.self, forKey: .boolValue)
-        intValue = try values.decode(Int.self, forKey: .intValue)
-    }
-
-}
-
-
-extension CustomMethodsDecodableStruct {
+extension CustomMethodsCodableStruct {
 
     enum CodingKeys: String, CodingKey {
         case boolValue
@@ -26,16 +13,29 @@ extension CustomMethodsDecodableStruct {
         case optionalString
         case requiredString
         case requiredStringWithDefault
+        case computedPropertyToEncode
     }
 
     public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        boolValue = try CustomMethodsDecodableStruct.decodeBoolValue(from: decoder)
-        intValue = CustomMethodsDecodableStruct.decodeIntValue(from: values) ?? CustomMethodsDecodableStruct.defaultIntValue
-        optionalString = try values.decodeIfPresent(String.self, forKey: .optionalString)
-        requiredString = try values.decode(String.self, forKey: .requiredString)
-        requiredStringWithDefault = (try? values.decode(String.self, forKey: .requiredStringWithDefault)) ?? CustomMethodsDecodableStruct.defaultRequiredStringWithDefault
+        boolValue = try CustomMethodsCodableStruct.decodeBoolValue(from: decoder)
+        intValue = CustomMethodsCodableStruct.decodeIntValue(from: container) ?? CustomMethodsCodableStruct.defaultIntValue
+        optionalString = try container.decodeIfPresent(String.self, forKey: .optionalString)
+        requiredString = try container.decode(String.self, forKey: .requiredString)
+        requiredStringWithDefault = (try? container.decode(String.self, forKey: .requiredStringWithDefault)) ?? CustomMethodsCodableStruct.defaultRequiredStringWithDefault
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try encodeBoolValue(to: encoder)
+        encodeIntValue(to: &container)
+        try container.encodeIfPresent(optionalString, forKey: .optionalString)
+        try container.encode(requiredString, forKey: .requiredString)
+        try container.encode(requiredStringWithDefault, forKey: .requiredStringWithDefault)
+        encodeComputedPropertyToEncode(to: &container)
+        try encodeAdditionalVariables(to: encoder)
     }
 
 }

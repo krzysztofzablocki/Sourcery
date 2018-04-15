@@ -28,12 +28,16 @@ public struct CustomKeyDecodableStruct: AutoDecodable {
 
 }
 
-public struct CustomMethodsDecodableStruct: AutoDecodable {
+public struct CustomMethodsCodableStruct: AutoCodable {
     let boolValue: Bool
     let intValue: Int?
     let optionalString: String?
     let requiredString: String
     let requiredStringWithDefault: String
+
+    var computedPropertyToEncode: Int {
+        return 0
+    }
 
     static let defaultIntValue: Int = 0
     static let defaultRequiredStringWithDefault: String = ""
@@ -44,6 +48,23 @@ public struct CustomMethodsDecodableStruct: AutoDecodable {
 
     static func decodeBoolValue(from decoder: Decoder) throws -> Bool {
         return try decoder.container(keyedBy: CodingKeys.self).decode(Bool.self, forKey: .boolValue)
+    }
+
+    func encodeIntValue(to container: inout KeyedEncodingContainer<CodingKeys>) {
+        try? container.encode(String(intValue ?? 0), forKey: .intValue)
+    }
+
+    func encodeBoolValue(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(boolValue, forKey: .boolValue)
+    }
+
+    func encodeComputedPropertyToEncode(to container: inout KeyedEncodingContainer<CodingKeys>) {
+        try? container.encode(computedPropertyToEncode, forKey: .computedPropertyToEncode)
+    }
+
+    func encodeAdditionalVariables(to encoder: Encoder) throws {
+
     }
 
 }

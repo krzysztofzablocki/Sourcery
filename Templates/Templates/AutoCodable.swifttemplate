@@ -1,11 +1,45 @@
-<% for type in types.implementing["AutoDecodable"] where type is Struct { -%>
+<%
+func capitalizedName(for variable: Variable) -> String {
+    return "\(String(variable.name.first!).capitalized)\(String(variable.name.dropFirst()))"
+}
+func customDecodingMethod(for variable: Variable, of type: Type) -> SourceryMethod? {
+    return type.staticMethods.first { $0.selectorName == "decode\(capitalizedName(for: variable))(from:)" }
+}
+func defaultDecodingValue(for variable: Variable, of type: Type) -> Variable? {
+    return type.staticVariables.first { $0.name == "default\(capitalizedName(for: variable))" }
+}
+func customEncodingMethod(for variable: Variable, of type: Type) -> SourceryMethod? {
+    return type.instanceMethods.first { $0.selectorName == "encode\(capitalizedName(for: variable))(to:)" }
+}
+func encodeAdditionalVariablesMethod(for type: Type) -> SourceryMethod? {
+    return type.instanceMethods.first { $0.selectorName == "encodeAdditionalVariables(to:)" }
+}
+func needsDecodableImplementation(for type: Type) -> Bool {
+    let implementsProtocol = type.implements["AutoDecodable"] != nil
+    let hasCustomMethods = type.storedVariables.contains(where: { customDecodingMethod(for: $0, of: type) != nil })
+    let hasDefaultValues = type.storedVariables.contains(where: { defaultDecodingValue(for: $0, of: type) != nil })
+    return implementsProtocol && (hasCustomMethods || hasDefaultValues)
+}
+func needsEncodableImplementation(for type: Type) -> Bool {
+    let implementsProtocol = type.implements["AutoEncodable"] != nil
+    let hasCustomMethods = type.variables.contains(where: { customEncodingMethod(for: $0, of: type) != nil })
+    let hasAdditionalMethod = encodeAdditionalVariablesMethod(for: type) != nil
+    return implementsProtocol && (hasCustomMethods || hasAdditionalMethod)
+}
+-%>
+<%_ for type in types.structs { -%>
+    <%_ guard type.implements["AutoDecodable"] != nil || type.implements["AutoEncodable"] != nil else { continue } -%>
     <%_ if let codingKeysType = type.containedType["CodingKeys"] as? Enum { -%>
         <%_ let definedKeys = Set(codingKeysType.cases.map({ $0.name })) -%>
-        <%_ let allKeys = type.instanceVariables.filter({ !$0.isComputed }).map({ $0.name }) -%>
+        <%_ let allStoredVariablesKeys = type.storedVariables.map({ $0.name }) -%>
+        <%_ let allComputedVariablesKeys = type.computedVariables.filter({ customEncodingMethod(for: $0, of: type) != nil }).map({ $0.name }) -%>
 
-        <%_ if allKeys.count > definedKeys.count { -%>
+        <%_ if (allStoredVariablesKeys.count + allComputedVariablesKeys.count) > definedKeys.count { -%>
 // sourcery:inline:auto:<%= codingKeysType.name %>.AutoCodable
-        <%_ for key in allKeys where !definedKeys.contains(key) { -%>
+        <%_ for key in allStoredVariablesKeys where !definedKeys.contains(key) { -%>
+        case <%= key %>
+        <%_ } -%>
+        <%_ for key in allComputedVariablesKeys where !definedKeys.contains(key) { -%>
         case <%= key %>
         <%_ } -%>
 // sourcery:end
@@ -13,41 +47,65 @@
 <%      } -%>
 <%_ } -%>
 
-    <%_ let needsDecodableImplementation = true -%><%# TODO: detect if implementation is needed by presence of custom methods or default values %>
-    <%_ let needsEncodableImplementation = true -%>
-    <%_ guard needsDecodableImplementation || needsEncodableImplementation else { continue } -%>
+    <%_ let typeNeedsDecodableImplementation = needsDecodableImplementation(for: type) -%>
+    <%_ let typeNeedsEncodableImplementation = needsEncodableImplementation(for: type) -%>
+    <%_ guard typeNeedsDecodableImplementation || typeNeedsEncodableImplementation else { continue } -%>
 extension <%= type.name %> {
-    <%_ let storedVariables = type.instanceVariables.filter({ !$0.isComputed }) -%>
     <%_ if type.containedType["CodingKeys"] as? Enum == nil { -%>
 
     enum CodingKeys: String, CodingKey {
-        <%_ for variable in storedVariables { -%>
+        <%_ for variable in type.storedVariables { -%>
+        case <%= variable.name %>
+        <%_ } -%>
+        <%_ for variable in type.computedVariables { -%>
+        <%_ guard customEncodingMethod(for: variable, of: type) != nil else { continue }-%>
         case <%= variable.name %>
         <%_ } -%>
     }
+
+    <%_ } else { -%>
+
     <%_ } -%>
-
+    <%_ if typeNeedsDecodableImplementation { -%>
     <%= type.accessLevel %> init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        <%_ for variable in type.instanceVariables.filter({ !$0.isComputed }) { -%>
-        <%_ let VariableName = "\(String(variable.name.first!).capitalized)\(String(variable.name.dropFirst()))" -%>
-        <%_ let defaultValue = type.staticVariables.first { $0.name == "default\(VariableName)" } -%>
-        <%_ let customMethod = type.staticMethods.first { $0.selectorName == "decode\(VariableName)(from:)" } -%>
+        <%_ for variable in type.storedVariables { -%>
+        <%_ let defaultValue = defaultDecodingValue(for: variable, of: type) -%>
+        <%_ let customMethod = customDecodingMethod(for: variable, of: type) -%>
         <%_ let shouldWrapTry = defaultValue != nil && (customMethod?.throws == true || customMethod == nil) -%>
         <%_ let tryOpen = shouldWrapTry ? "(try?" : "try" -%>
         <%_ let tryClose = shouldWrapTry ? ")" : "" -%>
         <%_ if let customMethod = customMethod { -%>
-        <%= variable.name %> = <% if customMethod.throws { %><%= tryOpen %> <% } %><%= type.name %>.<%= customMethod.callName %>(from: <% if customMethod.parameters.first?.name == "decoder" { %>decoder<% } else { %>values<% } %>)<% -%>
+        <%= variable.name %> = <% if customMethod.throws { %><%= tryOpen %> <% } %><%= type.name %>.<%= customMethod.callName %>(from: <% if customMethod.parameters.first?.name == "decoder" { %>decoder<% } else { %>container<% } %>)<% -%>
         <%_ } else { -%>
-        <%= variable.name %> = <%= tryOpen %> values.decode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.unwrappedTypeName %>.self, forKey: .<%= variable.name %>)<% -%>
+        <%= variable.name %> = <%= tryOpen %> container.decode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.unwrappedTypeName %>.self, forKey: .<%= variable.name %>)<% -%>
         <%_ } -%>
         <%_ %><%= tryClose -%>
-        <%_ if let defaultValue = defaultValue { %> ?? <%= type.name %>.default<%= VariableName %>
+        <%_ if let defaultValue = defaultValue { %> ?? <%= type.name %>.<%= defaultValue.name %>
         <%_ } else { %>
         <%_ } -%>
         <%_ } -%>
     }
 
+    <%_ } -%>
+    <%_ if typeNeedsEncodableImplementation { -%>
+    <%= type.accessLevel %> func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        <%_ for variable in type.variables { -%>
+        <%_ let customMethod = customEncodingMethod(for: variable, of: type) -%>
+        <%_ if let customMethod = customMethod { -%>
+        <% if customMethod.throws { %>try <% } %><%= customMethod.callName %>(to: <% if customMethod.parameters.first?.name == "encoder" { %>encoder<% } else { %>&container<% } %>)
+        <%_ } else if !variable.isComputed && !variable.isStatic { -%>
+        try container.encode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.name %>, forKey: .<%= variable.name %>)
+        <%_ } -%>
+        <%_ } -%>
+        <%_ if let encodeAdditional = encodeAdditionalVariablesMethod(for: type) { -%>
+        <% if encodeAdditional.throws { %>try <% } %><%= encodeAdditional.callName %>(to: <% if encodeAdditional.parameters.first?.name == "encoder" { %>encoder<% } else { %>&container<% } %>)
+        <%_ } -%>
+    }
+
+    <%_ } -%>
 }
 <% } -%>

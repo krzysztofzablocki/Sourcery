@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		636D78572081781E00160CC4 /* AutoCodable.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 636D78472080251800160CC4 /* AutoCodable.swifttemplate */; };
 		636D785D20821B8200160CC4 /* AutoCodable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636D784C208169E100160CC4 /* AutoCodable.generated.swift */; };
-		636D785E20821B8800160CC4 /* AutoCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636D78492080256500160CC4 /* AutoCodable.swift */; };
+		636D785F20838F0900160CC4 /* AutoCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636D78492080256500160CC4 /* AutoCodable.swift */; };
 		6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */; };
 		6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */; };
 		6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */; };
@@ -373,7 +373,7 @@
 			files = (
 				6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */,
 				6D130B791ECACCDF00E9642A /* AutoLenses.swift in Sources */,
-				636D785E20821B8800160CC4 /* AutoCodable.swift in Sources */,
+				636D785F20838F0900160CC4 /* AutoCodable.swift in Sources */,
 				6D342C941EBA155A006EEBEC /* AutoCases.swift in Sources */,
 				6D6645C51ECC184A004C1948 /* AutoMockable.swift in Sources */,
 				6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */,
