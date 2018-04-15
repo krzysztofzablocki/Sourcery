@@ -15,7 +15,7 @@ func customEncodingMethod(for variable: Variable, of type: Type) -> SourceryMeth
     return type.instanceMethods.first { $0.selectorName == "encode\(capitalizedName(for: variable))(to:)" }
 }
 func encodeAdditionalVariablesMethod(for type: Type) -> SourceryMethod? {
-    return type.instanceMethods.first { $0.selectorName == "encodeAdditionalVariables(to:)" }
+    return type.instanceMethods.first { $0.selectorName == "encodeAdditionalValues(to:)" }
 }
 func encodingContainerMethod(for type: Type) -> SourceryMethod? {
     return type.instanceMethods.first { $0.selectorName == "encodingContainer(_:)" }

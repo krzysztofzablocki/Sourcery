@@ -63,7 +63,7 @@ public struct CustomMethodsCodableStruct: AutoCodable {
         try? container.encode(computedPropertyToEncode, forKey: .computedPropertyToEncode)
     }
 
-    func encodeAdditionalVariables(to encoder: Encoder) throws {
+    func encodeAdditionalValues(to encoder: Encoder) throws {
 
     }
 

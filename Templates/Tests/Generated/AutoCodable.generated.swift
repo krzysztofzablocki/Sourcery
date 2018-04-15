@@ -52,7 +52,7 @@ extension CustomMethodsCodableStruct {
         try container.encode(requiredString, forKey: .requiredString)
         try container.encode(requiredStringWithDefault, forKey: .requiredStringWithDefault)
         encodeComputedPropertyToEncode(to: &container)
-        try encodeAdditionalVariables(to: encoder)
+        try encodeAdditionalValues(to: encoder)
     }
 
 }
