@@ -20,12 +20,18 @@ func encodeAdditionalVariablesMethod(for type: Type) -> SourceryMethod? {
 func encodingContainerMethod(for type: Type) -> SourceryMethod? {
     return type.instanceMethods.first { $0.selectorName == "encodingContainer(_:)" }
 }
+func typeHasMoreCodingKeysThanStoredProperties(_ type: Type, codingKeys: [String]) -> Bool {
+    let allKeysSet = Set(codingKeys)
+    let allStoredPropertiesNames = Set(type.storedVariables.map({ $0.name }))
+    let hasMoreKeys = allKeysSet.subtracting(allStoredPropertiesNames).count > 0
+    return hasMoreKeys
+}
 func needsDecodableImplementation(for type: Type, codingKeys: (generated: [String], all: [String])) -> Bool {
     let implementsProtocol = type.implements["AutoDecodable"] != nil
     let hasCustomMethods = type.storedVariables.contains(where: { customDecodingMethod(for: $0, of: type) != nil })
     let hasDefaultValues = type.storedVariables.contains(where: { defaultDecodingValue(for: $0, of: type) != nil })
     let hasContainerMethod = decodingContainerMethod(for: type) != nil
-    let hasMoreKeys = codingKeys.all.count > type.storedVariables.count
+    let hasMoreKeys = typeHasMoreCodingKeysThanStoredProperties(type, codingKeys: codingKeys.all)
     return implementsProtocol && (hasCustomMethods || hasDefaultValues || hasContainerMethod || hasMoreKeys)
 }
 func needsEncodableImplementation(for type: Type, codingKeys: (generated: [String], all: [String])) -> Bool {
@@ -33,7 +39,7 @@ func needsEncodableImplementation(for type: Type, codingKeys: (generated: [Strin
     let hasCustomMethods = type.variables.contains(where: { customEncodingMethod(for: $0, of: type) != nil })
     let hasAdditionalMethod = encodeAdditionalVariablesMethod(for: type) != nil
     let hasContainerMethod = decodingContainerMethod(for: type) != nil
-    let hasMoreKeys = codingKeys.all.count > type.storedVariables.count
+    let hasMoreKeys = typeHasMoreCodingKeysThanStoredProperties(type, codingKeys: codingKeys.all)
     let hasKeysToSkip = ((type.containedType["SkipEncodingKeys"] as? Enum)?.cases.count ?? 0) > 0
     return implementsProtocol && (hasCustomMethods || hasAdditionalMethod || hasContainerMethod || hasMoreKeys || hasKeysToSkip)
 }
@@ -136,11 +142,11 @@ extension <%= type.name %> {
         <%_ let skipKeys = type.containedType["SkipEncodingKeys"] as? Enum -%>
         <%_ for key in codingKeys.all { -%>
         <%_ if let skipKeys = skipKeys, skipKeys.cases.contains(where: { $0.name == key }) { continue } -%>
-        <%_ guard let variable = type.instanceVariables.first(where: { $0.name == key })  else { continue } -%>
+        <%_ guard let variable = type.instanceVariables.first(where: { $0.name == key }) ?? type.computedVariables.first(where: { $0.name == key }) else { continue } -%>
         <%_ let customMethod = customEncodingMethod(for: variable, of: type) -%>
         <%_ if let customMethod = customMethod { -%>
         <% if customMethod.throws { %>try <% } %><%= customMethod.callName %>(to: <% if customMethod.parameters.first?.name == "encoder" { %>encoder<% } else { %>&container<% } %>)
-        <%_ } else if !variable.isComputed && !variable.isStatic { -%>
+        <%_ } else { -%>
         try container.encode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.name %>, forKey: .<%= variable.name %>)
         <%_ } -%>
         <%_ } -%>

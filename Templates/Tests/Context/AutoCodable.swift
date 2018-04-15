@@ -88,24 +88,14 @@ public struct CustomContainerCodable: AutoCodable {
     }
 }
 
-struct DefaultDecodingCustomEncodingWithAllDefinedKeys: AutoCodable {
-    let value: Int
-    var computedValue: Int { return 0 }
-
-    enum CodingKeys: String, CodingKey {
-        case value
-        case computedValue
-    }
-}
-
-struct DefaultDecodingCustomEncodingWithNotAllDefinedKeys: AutoCodable {
+struct CustomCodingWithNotAllDefinedKeys: AutoCodable {
     let value: Int
     var computedValue: Int { return 0 }
 
     enum CodingKeys: String, CodingKey {
         case value
 
-// sourcery:inline:auto:DefaultDecodingCustomEncodingWithNotAllDefinedKeys.CodingKeys.AutoCodable
+// sourcery:inline:auto:CustomCodingWithNotAllDefinedKeys.CodingKeys.AutoCodable
         case computedValue
 // sourcery:end
     }
@@ -116,18 +106,20 @@ struct DefaultDecodingCustomEncodingWithNotAllDefinedKeys: AutoCodable {
 
 }
 
-struct SkipDecodingWithDefaultValue: AutoCodable {
+struct SkipDecodingWithDefaultValueOrComputedProperty: AutoCodable {
     let value: Int
     let skipValue: Int = 0
+    var computedValue: Int { return 0 }
 
     enum CodingKeys: String, CodingKey {
         case value
+        case computedValue
     }
 }
 
 struct SkipEncodingKeys: AutoCodable {
     let value: Int
-    let skipValue: Int = 0
+    let skipValue: Int
 
     enum SkipEncodingKeys {
         case skipValue

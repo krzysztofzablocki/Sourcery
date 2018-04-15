@@ -2,6 +2,24 @@
 // DO NOT EDIT
 
 
+
+extension CustomCodingWithNotAllDefinedKeys {
+
+    internal init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        value = try container.decode(Int.self, forKey: .value)
+    }
+
+    internal func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(value, forKey: .value)
+        encodeComputedValue(to: &container)
+    }
+
+}
+
 extension CustomContainerCodable {
 
     public init(from decoder: Decoder) throws {
@@ -55,7 +73,7 @@ extension CustomMethodsCodable {
 
 }
 
-extension DefaultDecodingCustomEncodingWithAllDefinedKeys {
+extension SkipDecodingWithDefaultValueOrComputedProperty {
 
     internal init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -67,28 +85,10 @@ extension DefaultDecodingCustomEncodingWithAllDefinedKeys {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(value, forKey: .value)
+        try container.encode(computedValue, forKey: .computedValue)
     }
 
 }
-
-
-extension DefaultDecodingCustomEncodingWithNotAllDefinedKeys {
-
-    internal init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        value = try container.decode(Int.self, forKey: .value)
-    }
-
-    internal func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(value, forKey: .value)
-        encodeComputedValue(to: &container)
-    }
-
-}
-
 
 extension SkipEncodingKeys {
 
