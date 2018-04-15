@@ -99,10 +99,8 @@ extension <%= type.name %> {
         case <%= key %>
         <%_ } -%>
     }
+    <%_ }-%>
 
-    <%_ } else { -%>
-
-    <%_ } -%>
     <%_ if typeNeedsDecodableImplementation { -%>
     <%= type.accessLevel %> init(from decoder: Decoder) throws {
         <%_ if let containerMethod = decodingContainerMethod(for: type) { -%>
@@ -124,9 +122,7 @@ extension <%= type.name %> {
         <%_ %>container.decode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.unwrappedTypeName %>.self, forKey: .<%= variable.name %>)<% -%>
         <%_ } -%>
         <%_ %><% if shouldWrapTry { %>)<% } -%>
-        <%_ if let defaultValue = defaultValue { %> ?? <%= type.name %>.<%= defaultValue.name %>
-        <%_ } else { %>
-        <%_ } -%>
+        <%_ if let defaultValue = defaultValue { %> ?? <%= type.name %>.<%= defaultValue.name -%><%_ } %>
         <%_ } -%>
     }
 
