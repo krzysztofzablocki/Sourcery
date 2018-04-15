@@ -71,5 +71,11 @@ class TemplatesTests: QuickSpec {
                 check(template: "LinuxMain")
             }
         }
+
+        describe("AutoCodable template") {
+            it("generates expected code") {
+                check(template: "AutoCodable")
+            }
+        }
     }
 }
