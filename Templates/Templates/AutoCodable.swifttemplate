@@ -42,7 +42,7 @@ func codingKeysFor(_ type: Type) -> (generated: [String], all: [String]) {
     if let codingKeysType = type.containedType["CodingKeys"] as? Enum {
         allCodingKeys = codingKeysType.cases.map({ $0.name })
         let definedKeys = Set(allCodingKeys)
-        let storedVariablesKeys = type.storedVariables.map({ $0.name })
+        let storedVariablesKeys = type.storedVariables.filter({ $0.defaultValue == nil }).map({ $0.name })
         let computedVariablesKeys = type.computedVariables.filter({ customEncodingMethod(for: $0, of: type) != nil }).map({ $0.name })
 
         if (storedVariablesKeys.count + computedVariablesKeys.count) > definedKeys.count {

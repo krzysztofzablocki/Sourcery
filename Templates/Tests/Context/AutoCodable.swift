@@ -116,3 +116,12 @@ struct DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys: AutoCodable {
     }
 
 }
+
+struct SkipDecodingWithDefaultValue: AutoCodable {
+    let value: Int
+    let skipValue: Int = 0
+
+    enum CodingKeys: String, CodingKey {
+        case value
+    }
+}
