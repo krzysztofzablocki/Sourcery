@@ -68,3 +68,22 @@ public struct CustomMethodsCodableStruct: AutoCodable {
     }
 
 }
+
+public struct CustomContainerCodableStruct: AutoCodable {
+    let value: Int
+
+    enum CodingKeys: String, CodingKey {
+        case nested
+        case value
+    }
+
+    static func decodingContainer(_ decoder: Decoder) throws -> KeyedDecodingContainer<CodingKeys> {
+        return try decoder.container(keyedBy: CodingKeys.self)
+            .nestedContainer(keyedBy: CodingKeys.self, forKey: .nested)
+    }
+
+    func encodingContainer(_ encoder: Encoder) -> KeyedEncodingContainer<CodingKeys> {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        return container.nestedContainer(keyedBy: CodingKeys.self, forKey: .nested)
+    }
+}

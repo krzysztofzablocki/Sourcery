@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		636D78572081781E00160CC4 /* AutoCodable.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 636D78472080251800160CC4 /* AutoCodable.swifttemplate */; };
 		636D78672083AD0700160CC4 /* AutoCodable.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 636D784C208169E100160CC4 /* AutoCodable.generated.swift */; };
-		636D78682083AD1C00160CC4 /* AutoCodable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 636D78602083A99D00160CC4 /* AutoCodable.expected */; };
+		636D786A2083B4CE00160CC4 /* AutoCodable.swift in Resources */ = {isa = PBXBuildFile; fileRef = 636D78492080256500160CC4 /* AutoCodable.swift */; };
+		636D786D2083B91A00160CC4 /* AutoCodable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 636D786B2083B8D700160CC4 /* AutoCodable.expected */; };
 		6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */; };
 		6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */; };
 		6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */; };
@@ -44,7 +45,7 @@
 		636D78472080251800160CC4 /* AutoCodable.swifttemplate */ = {isa = PBXFileReference; explicitFileType = text; path = AutoCodable.swifttemplate; sourceTree = "<group>"; };
 		636D78492080256500160CC4 /* AutoCodable.swift */ = {isa = PBXFileReference; explicitFileType = text; path = AutoCodable.swift; sourceTree = "<group>"; };
 		636D784C208169E100160CC4 /* AutoCodable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoCodable.generated.swift; sourceTree = "<group>"; };
-		636D78602083A99D00160CC4 /* AutoCodable.expected */ = {isa = PBXFileReference; lastKnownFileType = text; path = AutoCodable.expected; sourceTree = "<group>"; };
+		636D786B2083B8D700160CC4 /* AutoCodable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoCodable.expected; sourceTree = "<group>"; };
 		6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoEquatable.swift; sourceTree = "<group>"; };
 		6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoEquatable.expected; sourceTree = "<group>"; };
 		6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoHashable.swift; sourceTree = "<group>"; };
@@ -124,7 +125,7 @@
 				6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */,
 				6D6645C21ECC1824004C1948 /* AutoMockable.expected */,
 				6D6645C71ECC2187004C1948 /* LinuxMain.expected */,
-				636D78602083A99D00160CC4 /* AutoCodable.expected */,
+				636D786B2083B8D700160CC4 /* AutoCodable.expected */,
 			);
 			path = Expected;
 			sourceTree = "<group>";
@@ -260,7 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				636D78672083AD0700160CC4 /* AutoCodable.generated.swift in Resources */,
-				636D78682083AD1C00160CC4 /* AutoCodable.expected in Resources */,
+				636D786D2083B91A00160CC4 /* AutoCodable.expected in Resources */,
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
@@ -273,6 +274,7 @@
 				6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
 				6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */,
+				636D786A2083B4CE00160CC4 /* AutoCodable.swift in Resources */,
 				6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */,
 				6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */,
 				6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */,

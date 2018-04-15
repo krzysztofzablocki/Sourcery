@@ -3,6 +3,23 @@
 
 
 
+extension CustomContainerCodableStruct {
+
+    public init(from decoder: Decoder) throws {
+        let container = try CustomContainerCodableStruct.decodingContainer(decoder)
+
+        value = try container.decode(Int.self, forKey: .value)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encodingContainer(encoder)
+
+        try container.encode(value, forKey: .value)
+    }
+
+}
+
+
 
 
 extension CustomMethodsCodableStruct {
