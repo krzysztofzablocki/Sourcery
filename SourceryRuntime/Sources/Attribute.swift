@@ -13,6 +13,9 @@ import Foundation
     let _description: String
 
     /// :nodoc:
+    public var __parserData: Any?
+
+    /// :nodoc:
     public init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name
         self.arguments = arguments

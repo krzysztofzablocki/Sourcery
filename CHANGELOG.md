@@ -8,6 +8,10 @@
 
 - Added AutoCodable template
 
+### Bug fixes
+
+- Fixed parsing protocol method return type followed by declaration with attribute
+
 ## 0.12.0
 
 ### Internal Changes
