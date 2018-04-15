@@ -5,7 +5,6 @@
 //  Created by Ilya Puchka on 13/04/2018.
 //  Copyright © 2018 Pixle. All rights reserved.
 //
-// swiftlint:disable type_name
 
 import Foundation
 
@@ -13,7 +12,7 @@ protocol AutoDecodable: Swift.Decodable {}
 protocol AutoEncodable: Swift.Encodable {}
 protocol AutoCodable: AutoDecodable, AutoEncodable {}
 
-public struct CustomKeyDecodableStruct: AutoDecodable {
+public struct CustomKeyDecodable: AutoDecodable {
     let stringValue: String
     let boolValue: Bool
     let intValue: Int
@@ -21,7 +20,7 @@ public struct CustomKeyDecodableStruct: AutoDecodable {
     enum CodingKeys: String, CodingKey {
         case intValue = "integer"
 
-// sourcery:inline:auto:CustomKeyDecodableStruct.CodingKeys.AutoCodable
+// sourcery:inline:auto:CustomKeyDecodable.CodingKeys.AutoCodable
         case stringValue
         case boolValue
 // sourcery:end
@@ -29,7 +28,7 @@ public struct CustomKeyDecodableStruct: AutoDecodable {
 
 }
 
-public struct CustomMethodsCodableStruct: AutoCodable {
+public struct CustomMethodsCodable: AutoCodable {
     let boolValue: Bool
     let intValue: Int?
     let optionalString: String?
@@ -70,7 +69,7 @@ public struct CustomMethodsCodableStruct: AutoCodable {
 
 }
 
-public struct CustomContainerCodableStruct: AutoCodable {
+public struct CustomContainerCodable: AutoCodable {
     let value: Int
 
     enum CodingKeys: String, CodingKey {
@@ -89,7 +88,7 @@ public struct CustomContainerCodableStruct: AutoCodable {
     }
 }
 
-struct DefaultDecodingCustomEncodingStructWithAllDefinedKeys: AutoCodable {
+struct DefaultDecodingCustomEncodingWithAllDefinedKeys: AutoCodable {
     let value: Int
     var computedValue: Int { return 0 }
 
@@ -99,14 +98,14 @@ struct DefaultDecodingCustomEncodingStructWithAllDefinedKeys: AutoCodable {
     }
 }
 
-struct DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys: AutoCodable {
+struct DefaultDecodingCustomEncodingWithNotAllDefinedKeys: AutoCodable {
     let value: Int
     var computedValue: Int { return 0 }
 
     enum CodingKeys: String, CodingKey {
         case value
 
-// sourcery:inline:auto:DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys.CodingKeys.AutoCodable
+// sourcery:inline:auto:DefaultDecodingCustomEncodingWithNotAllDefinedKeys.CodingKeys.AutoCodable
         case computedValue
 // sourcery:end
     }
@@ -123,5 +122,14 @@ struct SkipDecodingWithDefaultValue: AutoCodable {
 
     enum CodingKeys: String, CodingKey {
         case value
+    }
+}
+
+struct SkipEncodingKeys: AutoCodable {
+    let value: Int
+    let skipValue: Int = 0
+
+    enum SkipEncodingKeys {
+        case skipValue
     }
 }

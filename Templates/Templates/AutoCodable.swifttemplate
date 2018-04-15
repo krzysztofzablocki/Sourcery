@@ -34,7 +34,8 @@ func needsEncodableImplementation(for type: Type, codingKeys: (generated: [Strin
     let hasAdditionalMethod = encodeAdditionalVariablesMethod(for: type) != nil
     let hasContainerMethod = decodingContainerMethod(for: type) != nil
     let hasMoreKeys = codingKeys.all.count > type.storedVariables.count
-    return implementsProtocol && (hasCustomMethods || hasAdditionalMethod || hasContainerMethod || hasMoreKeys)
+    let hasKeysToSkip = ((type.containedType["SkipEncodingKeys"] as? Enum)?.cases.count ?? 0) > 0
+    return implementsProtocol && (hasCustomMethods || hasAdditionalMethod || hasContainerMethod || hasMoreKeys || hasKeysToSkip)
 }
 func codingKeysFor(_ type: Type) -> (generated: [String], all: [String]) {
     var generatedKeys = [String]()
@@ -132,7 +133,9 @@ extension <%= type.name %> {
         var container = encoder.container(keyedBy: CodingKeys.self)
         <%_ } -%>
 
+        <%_ let skipKeys = type.containedType["SkipEncodingKeys"] as? Enum -%>
         <%_ for key in codingKeys.all { -%>
+        <%_ if let skipKeys = skipKeys, skipKeys.cases.contains(where: { $0.name == key }) { continue } -%>
         <%_ guard let variable = type.instanceVariables.first(where: { $0.name == key })  else { continue } -%>
         <%_ let customMethod = customEncodingMethod(for: variable, of: type) -%>
         <%_ if let customMethod = customMethod { -%>

@@ -2,10 +2,10 @@
 // DO NOT EDIT
 
 
-extension CustomContainerCodableStruct {
+extension CustomContainerCodable {
 
     public init(from decoder: Decoder) throws {
-        let container = try CustomContainerCodableStruct.decodingContainer(decoder)
+        let container = try CustomContainerCodable.decodingContainer(decoder)
 
         value = try container.decode(Int.self, forKey: .value)
     }
@@ -20,7 +20,7 @@ extension CustomContainerCodableStruct {
 
 
 
-extension CustomMethodsCodableStruct {
+extension CustomMethodsCodable {
 
     enum CodingKeys: String, CodingKey {
         case boolValue
@@ -34,11 +34,11 @@ extension CustomMethodsCodableStruct {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        boolValue = try CustomMethodsCodableStruct.decodeBoolValue(from: decoder)
-        intValue = CustomMethodsCodableStruct.decodeIntValue(from: container) ?? CustomMethodsCodableStruct.defaultIntValue
+        boolValue = try CustomMethodsCodable.decodeBoolValue(from: decoder)
+        intValue = CustomMethodsCodable.decodeIntValue(from: container) ?? CustomMethodsCodable.defaultIntValue
         optionalString = try container.decodeIfPresent(String.self, forKey: .optionalString)
         requiredString = try container.decode(String.self, forKey: .requiredString)
-        requiredStringWithDefault = (try? container.decode(String.self, forKey: .requiredStringWithDefault)) ?? CustomMethodsCodableStruct.defaultRequiredStringWithDefault
+        requiredStringWithDefault = (try? container.decode(String.self, forKey: .requiredStringWithDefault)) ?? CustomMethodsCodable.defaultRequiredStringWithDefault
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -55,7 +55,7 @@ extension CustomMethodsCodableStruct {
 
 }
 
-extension DefaultDecodingCustomEncodingStructWithAllDefinedKeys {
+extension DefaultDecodingCustomEncodingWithAllDefinedKeys {
 
     internal init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -72,7 +72,7 @@ extension DefaultDecodingCustomEncodingStructWithAllDefinedKeys {
 }
 
 
-extension DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys {
+extension DefaultDecodingCustomEncodingWithNotAllDefinedKeys {
 
     internal init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -85,6 +85,22 @@ extension DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys {
 
         try container.encode(value, forKey: .value)
         encodeComputedValue(to: &container)
+    }
+
+}
+
+
+extension SkipEncodingKeys {
+
+    enum CodingKeys: String, CodingKey {
+        case value
+        case skipValue
+    }
+
+    internal func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(value, forKey: .value)
     }
 
 }
