@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Added AutoCodable template
+
 ## 0.12.0
 
 ### Internal Changes
