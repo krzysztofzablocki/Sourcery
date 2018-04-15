@@ -115,15 +115,15 @@ extension <%= type.name %> {
         <%_ guard let variable = type.instanceVariables.first(where: { $0.name == key && !$0.isComputed }) else { continue } -%>
         <%_ let defaultValue = defaultDecodingValue(for: variable, of: type) -%>
         <%_ let customMethod = customDecodingMethod(for: variable, of: type) -%>
-        <%_ let shouldWrapTry = defaultValue != nil && (customMethod?.throws == true || customMethod == nil) -%>
-        <%_ let tryOpen = shouldWrapTry ? "(try?" : "try" -%>
-        <%_ let tryClose = shouldWrapTry ? ")" : "" -%>
+        <%_ let shouldTry = customMethod?.throws == true || customMethod == nil -%>
+        <%_ let shouldWrapTry = shouldTry && defaultValue != nil -%>
+        <%= variable.name %> = <% if shouldWrapTry { %>(try? <% } else if shouldTry { %>try <% } -%>
         <%_ if let customMethod = customMethod { -%>
-        <%= variable.name %> = <% if customMethod.throws { %><%= tryOpen %> <% } %><%= type.name %>.<%= customMethod.callName %>(from: <% if customMethod.parameters.first?.name == "decoder" { %>decoder<% } else { %>container<% } %>)<% -%>
+        <%_ %><%= type.name %>.<%= customMethod.callName %>(from: <% if customMethod.parameters.first?.name == "decoder" { %>decoder<% } else { %>container<% } %>)<% -%>
         <%_ } else { -%>
-        <%= variable.name %> = <%= tryOpen %> container.decode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.unwrappedTypeName %>.self, forKey: .<%= variable.name %>)<% -%>
+        <%_ %>container.decode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.unwrappedTypeName %>.self, forKey: .<%= variable.name %>)<% -%>
         <%_ } -%>
-        <%_ %><%= tryClose -%>
+        <%_ %><% if shouldWrapTry { %>)<% } -%>
         <%_ if let defaultValue = defaultValue { %> ?? <%= type.name %>.<%= defaultValue.name %>
         <%_ } else { %>
         <%_ } -%>
