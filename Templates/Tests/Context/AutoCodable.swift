@@ -5,6 +5,7 @@
 //  Created by Ilya Puchka on 13/04/2018.
 //  Copyright © 2018 Pixle. All rights reserved.
 //
+// swiftlint:disable type_name
 
 import Foundation
 
@@ -86,4 +87,32 @@ public struct CustomContainerCodableStruct: AutoCodable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         return container.nestedContainer(keyedBy: CodingKeys.self, forKey: .nested)
     }
+}
+
+struct DefaultDecodingCustomEncodingStructWithAllDefinedKeys: AutoCodable {
+    let value: Int
+    var computedValue: Int { return 0 }
+
+    enum CodingKeys: String, CodingKey {
+        case value
+        case computedValue
+    }
+}
+
+struct DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys: AutoCodable {
+    let value: Int
+    var computedValue: Int { return 0 }
+
+    enum CodingKeys: String, CodingKey {
+        case value
+
+// sourcery:inline:auto:DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys.CodingKeys.AutoCodable
+        case computedValue
+// sourcery:end
+    }
+
+    func encodeComputedValue(to container: inout KeyedEncodingContainer<CodingKeys>) {
+        try? container.encode(computedValue, forKey: .computedValue)
+    }
+
 }

@@ -2,7 +2,6 @@
 // DO NOT EDIT
 
 
-
 extension CustomContainerCodableStruct {
 
     public init(from decoder: Decoder) throws {
@@ -18,7 +17,6 @@ extension CustomContainerCodableStruct {
     }
 
 }
-
 
 
 
@@ -53,6 +51,40 @@ extension CustomMethodsCodableStruct {
         try container.encode(requiredStringWithDefault, forKey: .requiredStringWithDefault)
         encodeComputedPropertyToEncode(to: &container)
         try encodeAdditionalValues(to: encoder)
+    }
+
+}
+
+extension DefaultDecodingCustomEncodingStructWithAllDefinedKeys {
+
+    internal init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        value = try container.decode(Int.self, forKey: .value)
+    }
+
+    internal func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(value, forKey: .value)
+    }
+
+}
+
+
+extension DefaultDecodingCustomEncodingStructWithNotAllDefinedKeys {
+
+    internal init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        value = try container.decode(Int.self, forKey: .value)
+    }
+
+    internal func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(value, forKey: .value)
+        encodeComputedValue(to: &container)
     }
 
 }
