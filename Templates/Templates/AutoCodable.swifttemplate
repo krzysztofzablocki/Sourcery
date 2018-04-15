@@ -1,32 +1,3 @@
-<%#
-This template generates all the coding keys that are matching to property names
-so you only need to manually define those which do not match.
-
-First define marker protocol as `protocol AutoDecodable: Swift.Decodable {}`.
-Then define your coding keys as usual (as `enum CodingKeys: String, CodingKey`) and define
-custom keys only, the rest of the keys will be inlined by template.
-
-Ex.:
-
-```swift
-struct Person: AutoDecodable {
-  let id: String
-  let firstName: Bool
-  let surname: String
-
-  enum CodingKeys: String, CodingKey {
-    case firstName = "first_name"
-
-// sourcery:inline:auto:Person.CodingKeys.AutoCodable
-    case id
-    case surname
-// sourcery:end
-  }
-
-}
-```
-
-%>
 <% for type in types.implementing["AutoDecodable"] where type is Struct { -%>
     <%_ if let codingKeysType = type.containedType["CodingKeys"] as? Enum { -%>
         <%_ let definedKeys = Set(codingKeysType.cases.map({ $0.name })) -%>
