@@ -41,8 +41,10 @@ extension Type {
 
     func rangeToAppendBody() throws -> NSRange? {
         guard let contents = try self.contents() else { return nil }
-        guard let range = bodyRange(contents) else { return nil }
-        return NSRange(location: NSMaxRange(range), length: 0)
+        guard let bodyRange = bodyRange(contents) else { return nil }
+        let bodyEndRange = NSRange(location: NSMaxRange(bodyRange), length: 0)
+        let bodyEndLineRange = contents.bridge().lineRange(for: bodyEndRange)
+        return NSRange(location: max(bodyRange.location, bodyEndLineRange.location), length: 0)
     }
 
 }

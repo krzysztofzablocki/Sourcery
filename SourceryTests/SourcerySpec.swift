@@ -235,6 +235,54 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(equal(expectedResult))
                     }
 
+                    it("insert generated code line before the end of type body") {
+                        update(code: """
+                        class Foo {
+                            var property = 1 }
+
+                        class Bar {
+                            var property = 1
+                        }
+                        """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Foo.Inlined
+                                var property = 2
+                            // Line Three
+                            // sourcery:end
+                            // Line One
+                            // sourcery:inline:auto:Bar.Inlined
+                                var property = 2
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let expectedResult = """
+                            class Foo {
+
+                            // sourcery:inline:auto:Foo.Inlined
+                                var property = 2
+                            // Line Three
+                            // sourcery:end
+                                var property = 1 }
+
+                            class Bar {
+                                var property = 1
+
+                            // sourcery:inline:auto:Bar.Inlined
+                                var property = 2
+                            // Line Three
+                            // sourcery:end
+                            }
+                            """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
                     it("insert generated code in multiple types") {
                         update(code: """
                             class Foo {}
