@@ -34,7 +34,7 @@ Computed properties are not encoded by default, but if you define a coding key f
 
 Template will generate implementation of  `init(from:)`. You can define additional methods and properties on your type to be used to decode it.
   
-  - method to get decoding container. This is usefull if your type needs to be decoded from a nested key(s):
+  - method to get decoding container. This is useful if your type needs to be decoded from a nested key(s):
   
 ```swift
 struct MyStruct: AutoDecodable {
@@ -52,7 +52,7 @@ struct MyStruct: AutoDecodable {
 }
 ```
 
-  - method to decode a property. This is usefull if you need to decode some property manually:
+  - method to decode a property. This is useful if you need to decode some property manually:
   
 ```swift
 struct MyStruct: AutoDecodable {
@@ -85,7 +85,7 @@ struct MyStruct: AutoDecodable {
 
 Template will generate implementation of `encode(to:)` method. You can define additional methods to be used to encode it.
 
-  - method to get encoding container. This is usefull if your type needs to be encoded into a nested key(s):
+  - method to get encoding container. This is useful if your type needs to be encoded into a nested key(s):
   
 ```swift
 struct MyStruct: AutoDecodable {
@@ -103,7 +103,7 @@ struct MyStruct: AutoDecodable {
 }
 ```
 
-  - method to encode a property. This is usefull when you need to manually encode a property:
+  - method to encode a property. This is useful when you need to manually encode a property:
 
 ```swift
 struct MyStruct: AutoDecodable {
@@ -115,7 +115,7 @@ struct MyStruct: AutoDecodable {
 	//or 
 	func encodeMyProperty(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
-       try container.encode(String(myProperty), forKey: .myProperty)
+        try container.encode(String(myProperty), forKey: .myProperty)
 	}
 }
 ```
@@ -124,7 +124,7 @@ These methods may throw or not.
 
 If you need to manually encode computed property and you defined custom encoding method for it, template will generate a coding key for it too, so you don't have to define it manually (though you may still need to define it if it needs custom raw value).
 
-  - method to encode any additional values. This is usefull when you need to encode computed properties or constant values:
+  - method to encode any additional values. This is useful when you need to encode computed properties or constant values:
 
 ```swift
 struct MyStruct: AutoDecodable {
