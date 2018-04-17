@@ -56,16 +56,16 @@ struct MyStruct: AutoDecodable {
   
 ```swift
 struct MyStruct: AutoDecodable {
-	let myProperty: Int
+    let myProperty: Int
 
-	static func decodeMyProperty(from container: KeyedDecodingContainer<CodingKeys>) -> Int? {
-		return (try? container.decode(String.self, forKey: .myProperty)).flatMap(Int.init)
-	}
-	//or 
-	static func decodeMyProperty(from decoder: Decoder) throws -> Int {
-		return try decoder.container(keyedBy: CodingKeys.self)
-						  .decode(Int.self, forKey: .myProperty)
-	}
+    static func decodeMyProperty(from container: KeyedDecodingContainer<CodingKeys>) -> Int? {
+        return (try? container.decode(String.self, forKey: .myProperty)).flatMap(Int.init)
+    }
+    //or
+    static func decodeMyProperty(from decoder: Decoder) throws -> Int {
+        return try decoder.container(keyedBy: CodingKeys.self)
+            .decode(Int.self, forKey: .myProperty)
+    }
 }
 ```
 
@@ -75,9 +75,9 @@ These methods can throw or not and can return optional or non-optional result.
 
 ```
 struct MyStruct: AutoDecodable {
-	let myProperty: Int
-	
-	static let defaultMyProperty: Int = 0
+    let myProperty: Int
+
+    static let defaultMyProperty: Int = 0
 }
 ```
 
@@ -107,16 +107,16 @@ struct MyStruct: AutoDecodable {
 
 ```swift
 struct MyStruct: AutoDecodable {
-	let myProperty: Int
+    let myProperty: Int
 
-	func encodeMyProperty(to container: inout KeyedEncodingContainer<CodingKeys>) {
-		try? container.decode(String(myProperty), forKey: .myProperty)
-	}
-	//or 
-	func encodeMyProperty(to encoder: Encoder) throws {
-		var container = encoder.container(keyedBy: CodingKeys.self)
+    func encodeMyProperty(to container: inout KeyedEncodingContainer<CodingKeys>) {
+        try? container.decode(String(myProperty), forKey: .myProperty)
+    }
+    //or
+    func encodeMyProperty(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(String(myProperty), forKey: .myProperty)
-	}
+    }
 }
 ```
 
@@ -128,13 +128,13 @@ If you need to manually encode computed property and you defined custom encoding
 
 ```swift
 struct MyStruct: AutoDecodable {
-	func encodeAdditionalValues(to container: inout KeyedEncodingContainer<CodingKeys>) throws {
-		...
-	}
-	// or
-	func encodeAdditionalValues(to encoder: Encoder) throws {
-		...
-	}
+    func encodeAdditionalValues(to container: inout KeyedEncodingContainer<CodingKeys>) throws {
+        ...
+    }
+    // or
+    func encodeAdditionalValues(to encoder: Encoder) throws {
+        ...
+    }
 }
 ```
   
