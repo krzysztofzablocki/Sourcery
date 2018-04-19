@@ -1,0 +1,156 @@
+<%
+func capitalizedName(for variable: Variable) -> String {
+    return "\(String(variable.name.first!).capitalized)\(String(variable.name.dropFirst()))"
+}
+func customDecodingMethod(for variable: Variable, of type: Type) -> SourceryMethod? {
+    return type.staticMethods.first { $0.selectorName == "decode\(capitalizedName(for: variable))(from:)" }
+}
+func defaultDecodingValue(for variable: Variable, of type: Type) -> Variable? {
+    return type.staticVariables.first { $0.name == "default\(capitalizedName(for: variable))" }
+}
+func decodingContainerMethod(for type: Type) -> SourceryMethod? {
+    return type.staticMethods.first { $0.selectorName == "decodingContainer(_:)" }
+}
+func customEncodingMethod(for variable: Variable, of type: Type) -> SourceryMethod? {
+    return type.instanceMethods.first { $0.selectorName == "encode\(capitalizedName(for: variable))(to:)" }
+}
+func encodeAdditionalVariablesMethod(for type: Type) -> SourceryMethod? {
+    return type.instanceMethods.first { $0.selectorName == "encodeAdditionalValues(to:)" }
+}
+func encodingContainerMethod(for type: Type) -> SourceryMethod? {
+    return type.instanceMethods.first { $0.selectorName == "encodingContainer(_:)" }
+}
+func typeHasMoreCodingKeysThanStoredProperties(_ type: Type, codingKeys: [String]) -> Bool {
+    let allKeysSet = Set(codingKeys)
+    let allStoredPropertiesNames = Set(type.storedVariables.map({ $0.name }))
+    let hasMoreKeys = allKeysSet.subtracting(allStoredPropertiesNames).count > 0
+    return hasMoreKeys
+}
+func needsDecodableImplementation(for type: Type, codingKeys: (generated: [String], all: [String])) -> Bool {
+    let implementsProtocol = type.implements["AutoDecodable"] != nil
+    let hasCustomMethods = type.storedVariables.contains(where: { customDecodingMethod(for: $0, of: type) != nil })
+    let hasDefaultValues = type.storedVariables.contains(where: { defaultDecodingValue(for: $0, of: type) != nil })
+    let hasContainerMethod = decodingContainerMethod(for: type) != nil
+    let hasMoreKeys = typeHasMoreCodingKeysThanStoredProperties(type, codingKeys: codingKeys.all)
+    return implementsProtocol && (hasCustomMethods || hasDefaultValues || hasContainerMethod || hasMoreKeys)
+}
+func needsEncodableImplementation(for type: Type, codingKeys: (generated: [String], all: [String])) -> Bool {
+    let implementsProtocol = type.implements["AutoEncodable"] != nil
+    let hasCustomMethods = type.variables.contains(where: { customEncodingMethod(for: $0, of: type) != nil })
+    let hasAdditionalMethod = encodeAdditionalVariablesMethod(for: type) != nil
+    let hasContainerMethod = decodingContainerMethod(for: type) != nil
+    let hasMoreKeys = typeHasMoreCodingKeysThanStoredProperties(type, codingKeys: codingKeys.all)
+    let hasKeysToSkip = ((type.containedType["SkipEncodingKeys"] as? Enum)?.cases.count ?? 0) > 0
+    return implementsProtocol && (hasCustomMethods || hasAdditionalMethod || hasContainerMethod || hasMoreKeys || hasKeysToSkip)
+}
+func codingKeysFor(_ type: Type) -> (generated: [String], all: [String]) {
+    var generatedKeys = [String]()
+    var allCodingKeys = [String]()
+    if let codingKeysType = type.containedType["CodingKeys"] as? Enum {
+        allCodingKeys = codingKeysType.cases.map({ $0.name })
+        let definedKeys = Set(allCodingKeys)
+        let storedVariablesKeys = type.storedVariables.filter({ $0.defaultValue == nil }).map({ $0.name })
+        let computedVariablesKeys = type.computedVariables.filter({ customEncodingMethod(for: $0, of: type) != nil }).map({ $0.name })
+
+        if (storedVariablesKeys.count + computedVariablesKeys.count) > definedKeys.count {
+            for key in storedVariablesKeys where !definedKeys.contains(key) {
+                generatedKeys.append(key)
+                allCodingKeys.append(key)
+            }
+            for key in computedVariablesKeys where !definedKeys.contains(key) {
+                generatedKeys.append(key)
+                allCodingKeys.append(key)
+            }
+        }
+        return (generated: generatedKeys, all: allCodingKeys)
+    } else {
+        for variable in type.storedVariables {
+            generatedKeys.append(variable.name)
+            allCodingKeys.append(variable.name)
+        }
+        for variable in type.computedVariables {
+            guard customEncodingMethod(for: variable, of: type) != nil else { continue }
+            generatedKeys.append(variable.name)
+            allCodingKeys.append(variable.name)
+        }
+        return (generated: generatedKeys, all: allCodingKeys)
+    }
+}
+-%>
+<%_ for type in types.structs { -%>
+    <%_ guard type.implements["AutoDecodable"] != nil || type.implements["AutoEncodable"] != nil else { continue } -%>
+    <%_ let codingKeys = codingKeysFor(type) -%>
+    <%_ if let codingKeysType = type.containedType["CodingKeys"] as? Enum, codingKeys.generated.count > 0 { -%>
+// sourcery:inline:auto:<%= codingKeysType.name %>.AutoCodable
+        <%_ for key in codingKeys.generated { -%>
+        case <%= key %>
+        <%_ } -%>
+// sourcery:end
+<%_ } -%>
+
+    <%_ let typeNeedsDecodableImplementation = needsDecodableImplementation(for: type, codingKeys: codingKeys) -%>
+    <%_ let typeNeedsEncodableImplementation = needsEncodableImplementation(for: type, codingKeys: codingKeys) -%>
+    <%_ guard typeNeedsDecodableImplementation || typeNeedsEncodableImplementation else { continue } -%>
+extension <%= type.name %> {
+    <%_ if type.containedType["CodingKeys"] as? Enum == nil { -%>
+
+    enum CodingKeys: String, CodingKey {
+        <%_ for key in codingKeys.generated { -%>
+        case <%= key %>
+        <%_ } -%>
+    }
+    <%_ }-%>
+
+    <%_ if typeNeedsDecodableImplementation { -%>
+    <%= type.accessLevel %> init(from decoder: Decoder) throws {
+        <%_ if let containerMethod = decodingContainerMethod(for: type) { -%>
+        let container = <% if containerMethod.throws { %>try <% } %><%= type.name %>.decodingContainer(decoder)
+        <%_ } else { -%>
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        <%_ } -%>
+
+        <%_ for key in codingKeys.all { -%>
+        <%_ guard let variable = type.instanceVariables.first(where: { $0.name == key && !$0.isComputed }) else { continue } -%>
+        <%_ let defaultValue = defaultDecodingValue(for: variable, of: type) -%>
+        <%_ let customMethod = customDecodingMethod(for: variable, of: type) -%>
+        <%_ let shouldTry = customMethod?.throws == true || customMethod == nil -%>
+        <%_ let shouldWrapTry = shouldTry && defaultValue != nil -%>
+        <%= variable.name %> = <% if shouldWrapTry { %>(try? <% } else if shouldTry { %>try <% } -%>
+        <%_ if let customMethod = customMethod { -%>
+        <%_ %><%= type.name %>.<%= customMethod.callName %>(from: <% if customMethod.parameters.first?.name == "decoder" { %>decoder<% } else { %>container<% } %>)<% -%>
+        <%_ } else { -%>
+        <%_ %>container.decode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.unwrappedTypeName %>.self, forKey: .<%= variable.name %>)<% -%>
+        <%_ } -%>
+        <%_ %><% if shouldWrapTry { %>)<% } -%>
+        <%_ if let defaultValue = defaultValue { %> ?? <%= type.name %>.<%= defaultValue.name -%><%_ } %>
+        <%_ } -%>
+    }
+
+    <%_ } -%>
+    <%_ if typeNeedsEncodableImplementation { -%>
+    <%= type.accessLevel %> func encode(to encoder: Encoder) throws {
+        <%_ if let containerMethod = encodingContainerMethod(for: type) { -%>
+        var container = encodingContainer(encoder)
+        <%_ } else { -%>
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        <%_ } -%>
+
+        <%_ let skipKeys = type.containedType["SkipEncodingKeys"] as? Enum -%>
+        <%_ for key in codingKeys.all { -%>
+        <%_ if let skipKeys = skipKeys, skipKeys.cases.contains(where: { $0.name == key }) { continue } -%>
+        <%_ guard let variable = type.instanceVariables.first(where: { $0.name == key }) ?? type.computedVariables.first(where: { $0.name == key }) else { continue } -%>
+        <%_ let customMethod = customEncodingMethod(for: variable, of: type) -%>
+        <%_ if let customMethod = customMethod { -%>
+        <% if customMethod.throws { %>try <% } %><%= customMethod.callName %>(to: <% if customMethod.parameters.first?.name == "encoder" { %>encoder<% } else { %>&container<% } %>)
+        <%_ } else { -%>
+        try container.encode<% if variable.isOptional { %>IfPresent<% } %>(<%= variable.name %>, forKey: .<%= variable.name %>)
+        <%_ } -%>
+        <%_ } -%>
+        <%_ if let encodeAdditional = encodeAdditionalVariablesMethod(for: type) { -%>
+        <% if encodeAdditional.throws { %>try <% } %><%= encodeAdditional.callName %>(to: <% if encodeAdditional.parameters.first?.name == "encoder" { %>encoder<% } else { %>&container<% } %>)
+        <%_ } -%>
+    }
+
+    <%_ } -%>
+}
+<% } -%>

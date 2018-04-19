@@ -4,11 +4,14 @@
 
 ## Master
 
+### New Features
+
+- Added AutoCodable template
+
 ### Bug fixes
 
 - Fixed parsing protocol method return type followed by declaration with attribute
 - Fixed inserting auto-inlined code on the last line of declaration body
-
 
 ## 0.12.0
 

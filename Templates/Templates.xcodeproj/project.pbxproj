@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		636D78572081781E00160CC4 /* AutoCodable.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 636D78472080251800160CC4 /* AutoCodable.swifttemplate */; };
+		636D78672083AD0700160CC4 /* AutoCodable.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 636D784C208169E100160CC4 /* AutoCodable.generated.swift */; };
+		636D786A2083B4CE00160CC4 /* AutoCodable.swift in Resources */ = {isa = PBXBuildFile; fileRef = 636D78492080256500160CC4 /* AutoCodable.swift */; };
+		636D786D2083B91A00160CC4 /* AutoCodable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 636D786B2083B8D700160CC4 /* AutoCodable.expected */; };
 		6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */; };
 		6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */; };
 		6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */; };
@@ -38,6 +42,10 @@
 
 /* Begin PBXFileReference section */
 		26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TemplatesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		636D78472080251800160CC4 /* AutoCodable.swifttemplate */ = {isa = PBXFileReference; explicitFileType = text; path = AutoCodable.swifttemplate; sourceTree = "<group>"; };
+		636D78492080256500160CC4 /* AutoCodable.swift */ = {isa = PBXFileReference; explicitFileType = text; path = AutoCodable.swift; sourceTree = "<group>"; };
+		636D784C208169E100160CC4 /* AutoCodable.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = AutoCodable.generated.swift; sourceTree = "<group>"; };
+		636D786B2083B8D700160CC4 /* AutoCodable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoCodable.expected; sourceTree = "<group>"; };
 		6D037EA01EC26E6300FA6C91 /* AutoEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoEquatable.swift; sourceTree = "<group>"; };
 		6D037EA21EC26E6A00FA6C91 /* AutoEquatable.expected */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AutoEquatable.expected; sourceTree = "<group>"; };
 		6D0AF6BB1EC5EDD100F9A410 /* AutoHashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoHashable.swift; sourceTree = "<group>"; };
@@ -103,6 +111,7 @@
 				6D130B781ECACCDF00E9642A /* AutoLenses.swift */,
 				6D6645C41ECC184A004C1948 /* AutoMockable.swift */,
 				6D6645C91ECC219C004C1948 /* LinuxMain.swift */,
+				636D78492080256500160CC4 /* AutoCodable.swift */,
 			);
 			path = Context;
 			sourceTree = "<group>";
@@ -116,6 +125,7 @@
 				6D130B7A1ECACD0F00E9642A /* AutoLenses.expected */,
 				6D6645C21ECC1824004C1948 /* AutoMockable.expected */,
 				6D6645C71ECC2187004C1948 /* LinuxMain.expected */,
+				636D786B2083B8D700160CC4 /* AutoCodable.expected */,
 			);
 			path = Expected;
 			sourceTree = "<group>";
@@ -129,6 +139,7 @@
 				6D342C991EBA3156006EEBEC /* AutoHashable.generated.swift */,
 				6D342C9A1EBA3156006EEBEC /* AutoLenses.generated.swift */,
 				6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */,
+				636D784C208169E100160CC4 /* AutoCodable.generated.swift */,
 			);
 			path = Generated;
 			sourceTree = "<group>";
@@ -162,6 +173,7 @@
 				6D342C7F1EBA13DF006EEBEC /* AutoLenses.stencil */,
 				6D342C801EBA13DF006EEBEC /* AutoMockable.stencil */,
 				6D342C821EBA13DF006EEBEC /* LinuxMain.stencil */,
+				636D78472080251800160CC4 /* AutoCodable.swifttemplate */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -191,13 +203,13 @@
 			buildConfigurationList = 6D6A24B61EB79E8900C1FB1A /* Build configuration list for PBXNativeTarget "TemplatesTests" */;
 			buildPhases = (
 				D775B999DCC76F43E995E441 /* [CP] Check Pods Manifest.lock */,
+				6D342C951EBA1881006EEBEC /* Sourcery */,
 				6D483FFA1ECDC815006B778D /* Run SwiftLint */,
 				6D6A24A61EB79E8900C1FB1A /* Sources */,
 				6D6A24A71EB79E8900C1FB1A /* Frameworks */,
 				6D6A24A81EB79E8900C1FB1A /* Resources */,
 				7139144942C834B5880D5184 /* [CP] Embed Pods Frameworks */,
 				93D530EC4A61BDDCB5AF3B21 /* [CP] Copy Pods Resources */,
-				6D342C951EBA1881006EEBEC /* Sourcery */,
 			);
 			buildRules = (
 			);
@@ -248,6 +260,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				636D78672083AD0700160CC4 /* AutoCodable.generated.swift in Resources */,
+				636D786D2083B91A00160CC4 /* AutoCodable.expected in Resources */,
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
@@ -260,10 +274,12 @@
 				6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
 				6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */,
+				636D786A2083B4CE00160CC4 /* AutoCodable.swift in Resources */,
 				6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */,
 				6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */,
 				6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */,
 				6D342C831EBA13DF006EEBEC /* AutoCases.stencil in Resources */,
+				636D78572081781E00160CC4 /* AutoCodable.swifttemplate in Resources */,
 				6D342CA31EBA5415006EEBEC /* AutoCases.expected in Resources */,
 				6D342CA41EBA54DF006EEBEC /* AutoCases.generated.swift in Resources */,
 				6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */,
@@ -285,7 +301,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\" --disableCache";
+			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\" --disableCache --verbose";
 		};
 		6D483FFA1ECDC815006B778D /* Run SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
