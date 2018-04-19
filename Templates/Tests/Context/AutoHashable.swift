@@ -144,3 +144,12 @@ class AutoHashableClassInherited: AutoHashableClass {
         super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
     }
 }
+
+/// Should not add Hashable conformance
+class AutoHashableNSObject: NSObject, AutoHashable {
+    let firstName: String
+
+    init(firstName: String) {
+        self.firstName = firstName
+    }
+}

@@ -39,6 +39,11 @@ internal func == (lhs: AutoEquatableClassInherited, rhs: AutoEquatableClassInher
     guard compareOptionals(lhs: lhs.middleName, rhs: rhs.middleName, compare: ==) else { return false }
     return true
 }
+// MARK: - AutoEquatableNSObject AutoEquatable
+internal func == (lhs: AutoEquatableNSObject, rhs: AutoEquatableNSObject) -> Bool {
+    guard lhs.firstName == rhs.firstName else { return false }
+    return true
+}
 // MARK: - AutoEquatableProtocol AutoEquatable
 internal func == (lhs: AutoEquatableProtocol, rhs: AutoEquatableProtocol) -> Bool {
     guard lhs.width == rhs.width else { return false }

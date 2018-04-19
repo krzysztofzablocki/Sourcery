@@ -90,6 +90,16 @@ extension AutoHashableClassInherited: Hashable {
             0])
     }
 }
+// MARK: - AutoHashableNSObject AutoHashable
+extension AutoHashableNSObject {
+    internal var hashValue: Int {
+        let firstNameHashValue = firstName.hashValue
+
+        return combineHashes([
+            firstNameHashValue,
+            0])
+    }
+}
 // MARK: - AutoHashableProtocol AutoHashable
 extension AutoHashableProtocol {
     internal var hashValue: Int {
