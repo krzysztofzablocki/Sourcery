@@ -149,3 +149,12 @@ class AutoEquatableClassInherited: AutoEquatableClass {
         super.init(firstName: "", lastName: "", parents: [], laptopModel: "", phoneModel: "")
     }
 }
+
+/// Should not add Equatable conformance
+class AutoEquatableNSObject: NSObject, AutoEquatable {
+    let firstName: String
+
+    init(firstName: String) {
+        self.firstName = firstName
+    }
+}
