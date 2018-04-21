@@ -83,7 +83,7 @@ These methods can throw or not and can return optional or non-optional result.
 
   - default property value. You can define a static variable that will be used as a default value of a property if decoding results in `nil` value:
 
-```
+```swift
 struct MyStruct: AutoDecodable {
     let myProperty: Int
 

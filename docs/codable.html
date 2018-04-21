@@ -238,11 +238,11 @@
 <ul>
 <li>default property value. You can define a static variable that will be used as a default value of a property if decoding results in <code>nil</code> value:</li>
 </ul>
-<pre class="highlight plaintext"><code>struct MyStruct: AutoDecodable {
-    let myProperty: Int
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">myProperty</span><span class="p">:</span> <span class="kt">Int</span>
 
-    static let defaultMyProperty: Int = 0
-}
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultMyProperty</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
 </code></pre>
 <h3 id='generating-code-encode-to-code-method' class='heading'>Generating <code>encode(to:)</code> method.</h3>
 
