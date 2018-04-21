@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Lenses  Reference</title>
+    <title>Other Guides  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,7 +10,7 @@
     
   </head>
   <body>
-    <a title="Lenses  Reference"></a>
+    <a title="Other Guides  Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="index.html">Sourcery Reference</a>
         <img id="carat" src="img/carat.png" />
-        Lenses  Reference
+        Other Guides  Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -165,33 +165,11 @@
       <article class="main-content">
         <section>
           <section class="section">
-            
-            <h2 id='i-want-to-generate-lenses-for-all-structs' class='heading'>I want to generate Lenses for all structs</h2>
+            <h1>Other Guides</h1>
+            <p>The following guides are available globally.</p>
 
-<p><em>Contributed by <a href="http://twitter.com/filip_zawada">@filip_zawada</a></em></p>
-
-<p>What are Lenses? Great explanation by @mbrandonw</p>
-
-<p>This script assumes you follow swift naming convention, e.g. structs start with an upper letter.</p>
-<h3 id='a-href-https-github-com-krzysztofzablocki-sourcery-blob-master-templates-templates-autolenses-stencil-stencil-template-a' class='heading'><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/AutoLenses.stencil">Stencil template</a></h3>
-<h4 id='example-output' class='heading'>Example output:</h4>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">House</span> <span class="p">{</span>
-
-  <span class="kd">static</span> <span class="k">let</span> <span class="nv">roomsLens</span> <span class="o">=</span> <span class="kt">Lens</span><span class="o">&lt;</span><span class="kt">House</span><span class="p">,</span> <span class="kt">Room</span><span class="o">&gt;</span><span class="p">(</span>
-    <span class="nv">get</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">rooms</span> <span class="p">},</span>
-    <span class="nv">set</span><span class="p">:</span> <span class="p">{</span> <span class="n">rooms</span><span class="p">,</span> <span class="n">house</span> <span class="k">in</span>
-       <span class="kt">House</span><span class="p">(</span><span class="nv">rooms</span><span class="p">:</span> <span class="n">rooms</span><span class="p">,</span> <span class="nv">address</span><span class="p">:</span> <span class="n">house</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="nv">size</span><span class="p">:</span> <span class="n">house</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
-    <span class="p">}</span>
-  <span class="p">)</span>
-  <span class="kd">static</span> <span class="k">let</span> <span class="nv">addressLens</span> <span class="o">=</span> <span class="kt">Lens</span><span class="o">&lt;</span><span class="kt">House</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span>
-  <span class="nv">get</span><span class="p">:</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">address</span> <span class="p">},</span>
-  <span class="nv">set</span><span class="p">:</span> <span class="p">{</span> <span class="n">address</span><span class="p">,</span> <span class="n">house</span> <span class="k">in</span>
-     <span class="kt">House</span><span class="p">(</span><span class="nv">rooms</span><span class="p">:</span> <span class="n">house</span><span class="o">.</span><span class="n">rooms</span><span class="p">,</span> <span class="nv">address</span><span class="p">:</span> <span class="n">address</span><span class="p">,</span> <span class="nv">size</span><span class="p">:</span> <span class="n">house</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
-    <span class="p">}</span>
-  <span class="p">)</span>
-  <span class="o">...</span>
-</code></pre>
-
+          </section>
+          <section class="section task-group-section">
           </section>
         </section>
         <section id="footer">
