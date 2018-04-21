@@ -125,3 +125,8 @@ struct SkipEncodingKeys: AutoCodable {
         case skipValue
     }
 }
+
+enum SimpleEnum: AutoCodable {
+    case someCase
+    case anotherCase
+}

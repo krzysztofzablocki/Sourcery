@@ -73,6 +73,35 @@ extension CustomMethodsCodable {
 
 }
 
+extension SimpleEnum {
+
+    enum CodingKeys: String, CodingKey {
+        case someCase
+        case anotherCase
+    }
+
+    internal init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+
+        let enumCase = try container.decode(String.self)
+        switch CodingKeys(rawValue: enumCase) {
+        case .someCase?: self = .someCase
+        case .anotherCase?: self = .anotherCase
+        default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case for key '\(enumCase)'"))
+        }
+    }
+
+    internal func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+
+        switch self {
+        case .someCase: try container.encode(CodingKeys.someCase.rawValue)
+        case .anotherCase: try container.encode(CodingKeys.anotherCase.rawValue)
+        }
+    }
+
+}
+
 extension SkipDecodingWithDefaultValueOrComputedProperty {
 
     internal init(from decoder: Decoder) throws {
