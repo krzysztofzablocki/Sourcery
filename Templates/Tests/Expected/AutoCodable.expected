@@ -3,6 +3,39 @@
 
 
 
+extension AssociatedValuesEnum {
+
+    internal init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let enumCase = try container.decode(String.self, forKey: .enumCaseKey)
+        switch CodingKeys(rawValue: enumCase) {
+        case .someCase?:
+            let id = try container.decode(Int.self, forKey: .id)
+            let name = try container.decode(String.self, forKey: .name)
+            self = .someCase(id: id, name: name)
+        case .anotherCase?:
+            self = .anotherCase
+        default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
+        }
+    }
+
+    internal func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        switch self {
+        case let .someCase(id, name):
+            try container.encode(CodingKeys.someCase.rawValue, forKey: .enumCaseKey)
+            try container.encode(id, forKey: .id)
+            try container.encode(name, forKey: .name)
+        case .anotherCase:
+            try container.encode(CodingKeys.anotherCase.rawValue, forKey: .enumCaseKey)
+        }
+    }
+
+}
+
+
 extension CustomCodingWithNotAllDefinedKeys {
 
     internal init(from decoder: Decoder) throws {
@@ -87,7 +120,7 @@ extension SimpleEnum {
         switch CodingKeys(rawValue: enumCase) {
         case .someCase?: self = .someCase
         case .anotherCase?: self = .anotherCase
-        default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case for key '\(enumCase)'"))
+        default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
         }
     }
 

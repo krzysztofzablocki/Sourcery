@@ -130,3 +130,19 @@ enum SimpleEnum: AutoCodable {
     case someCase
     case anotherCase
 }
+
+enum AssociatedValuesEnum: AutoCodable {
+    case someCase(id: Int, name: String)
+    case anotherCase
+
+    enum CodingKeys: String, CodingKey {
+        case enumCaseKey = "type"
+
+// sourcery:inline:auto:AssociatedValuesEnum.CodingKeys.AutoCodable
+        case someCase
+        case anotherCase
+        case id
+        case name
+// sourcery:end
+    }
+}
