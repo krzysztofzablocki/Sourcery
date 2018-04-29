@@ -146,3 +146,8 @@ enum AssociatedValuesEnum: AutoCodable {
 // sourcery:end
     }
 }
+
+enum AssociatedValuesEnumNoCaseKey: AutoCodable {
+    case someCase(id: Int, name: String)
+    case anotherCase
+}

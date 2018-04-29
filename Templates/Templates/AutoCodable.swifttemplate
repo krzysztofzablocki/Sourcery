@@ -51,7 +51,7 @@ func needsEncodableImplementation(for type: Type, codingKeys: (generated: [Strin
     if decodingContainerMethod(for: type) != nil { return true }
     if typeHasMoreCodingKeysThanStoredProperties(type, codingKeys: codingKeys.all) { return true }
     if ((type.containedType["SkipEncodingKeys"] as? Enum)?.cases.count ?? 0) > 0 { return true }
-    return true
+    return false
 }
 func codingKeysFor(_ type: Type) -> (generated: [String], all: [String]) {
     var generatedKeys = [String]()
@@ -147,9 +147,9 @@ extension <%= type.name %> {
         <%_ if enumType.hasAssociatedValues { -%>
         <%_ if codingKeys.all.contains("enumCaseKey") { -%>
         let enumCase = try container.decode(String.self, forKey: .enumCaseKey)
-        switch CodingKeys(rawValue: enumCase) {
+        switch enumCase {
         <%_ for enumCase in enumType.cases { -%>
-        case .<%= enumCase.name %>?:
+        case CodingKeys.<%= enumCase.name %>.rawValue:
             <%_ for associatedValue in enumCase.associatedValues where associatedValue.localName != nil { -%>
             let <%= associatedValue.localName! %> = try container.decode(<%= associatedValue.typeName %>.self, forKey: .<%= associatedValue.localName! %>)
             <%_ } -%>
@@ -163,12 +163,28 @@ extension <%= type.name %> {
         default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
         }
         <%_ } else { -%>
+        <%_ for enumCase in enumType.cases { -%>
+        if container.allKeys.contains(.<%= enumCase.name %>), try container.decodeNil(forKey: .<%= enumCase.name %>) == false {
+            <%_ if enumCase.associatedValues.isEmpty { -%>
+            self = .<%= enumCase.name %>
+            <%_ } else { -%>
+            let associatedValues = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
+            <%_ for associatedValue in enumCase.associatedValues where associatedValue.localName != nil { -%>
+            let <%= associatedValue.localName! %> = try associatedValues.decode(<%= associatedValue.typeName %>.self, forKey: .<%= associatedValue.localName! %>)
+            <%_ } -%>
+            self = .<%= enumCase.name %>(<% -%>
+            <%_ %><%= enumCase.associatedValues.map({ "\($0.localName!): \($0.localName!)" }).joined(separator: ", ") %>)
+            <%_ } -%>
+            return
+        }
+        <%_ } -%>
+        throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case"))
         <%_ } -%>
         <%_ } else { -%>
         let enumCase = try container.decode(String.self)
-        switch CodingKeys(rawValue: enumCase) {
+        switch enumCase {
         <%_ for enumCase in enumType.cases { -%>
-        case .<%= enumCase.name %>?: self = .<%= enumCase.name %>
+        case CodingKeys.<%= enumCase.name %>.rawValue: self = .<%= enumCase.name %>
         <%_ } -%>
         default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
         }
@@ -219,6 +235,20 @@ extension <%= type.name %> {
         <%_ } -%>
         }
         <%_ } else { -%>
+        switch self {
+        <%_ for enumCase in enumType.cases { -%>
+        <%_ if enumCase.associatedValues.isEmpty { -%>
+        case .<%= enumCase.name %>:
+            _ = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
+        <%_ } else { -%>
+        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.map({ "\($0.localName ?? "_")" }).joined(separator: ", ") %>):
+            var associatedValues = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
+            <%_ for accociatedValue in enumCase.associatedValues where accociatedValue.localName != nil { -%>
+            try associatedValues.encode(<%= accociatedValue.localName! %>, forKey: .<%= accociatedValue.localName! %>)
+        <%_ } -%>
+        <%_ } -%>
+        <%_ } -%>
+        }
         <%_ } -%>
         <%_ } else { -%>
         switch self {

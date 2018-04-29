@@ -9,12 +9,12 @@ extension AssociatedValuesEnum {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let enumCase = try container.decode(String.self, forKey: .enumCaseKey)
-        switch CodingKeys(rawValue: enumCase) {
-        case .someCase?:
+        switch enumCase {
+        case CodingKeys.someCase.rawValue:
             let id = try container.decode(Int.self, forKey: .id)
             let name = try container.decode(String.self, forKey: .name)
             self = .someCase(id: id, name: name)
-        case .anotherCase?:
+        case CodingKeys.anotherCase.rawValue:
             self = .anotherCase
         default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
         }
@@ -30,6 +30,47 @@ extension AssociatedValuesEnum {
             try container.encode(name, forKey: .name)
         case .anotherCase:
             try container.encode(CodingKeys.anotherCase.rawValue, forKey: .enumCaseKey)
+        }
+    }
+
+}
+
+extension AssociatedValuesEnumNoCaseKey {
+
+    enum CodingKeys: String, CodingKey {
+        case someCase
+        case anotherCase
+        case id
+        case name
+    }
+
+    internal init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        if container.allKeys.contains(.someCase), try container.decodeNil(forKey: .someCase) == false {
+            let associatedValues = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .someCase)
+            let id = try associatedValues.decode(Int.self, forKey: .id)
+            let name = try associatedValues.decode(String.self, forKey: .name)
+            self = .someCase(id: id, name: name)
+            return
+        }
+        if container.allKeys.contains(.anotherCase), try container.decodeNil(forKey: .anotherCase) == false {
+            self = .anotherCase
+            return
+        }
+        throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case"))
+    }
+
+    internal func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        switch self {
+        case let .someCase(id, name):
+            var associatedValues = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .someCase)
+            try associatedValues.encode(id, forKey: .id)
+            try associatedValues.encode(name, forKey: .name)
+        case .anotherCase:
+            _ = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .anotherCase)
         }
     }
 
@@ -117,9 +158,9 @@ extension SimpleEnum {
         let container = try decoder.singleValueContainer()
 
         let enumCase = try container.decode(String.self)
-        switch CodingKeys(rawValue: enumCase) {
-        case .someCase?: self = .someCase
-        case .anotherCase?: self = .anotherCase
+        switch enumCase {
+        case CodingKeys.someCase.rawValue: self = .someCase
+        case CodingKeys.anotherCase.rawValue: self = .anotherCase
         default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
         }
     }
