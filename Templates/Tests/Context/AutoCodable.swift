@@ -131,7 +131,7 @@ enum SimpleEnum: AutoCodable {
     case anotherCase
 }
 
-enum AssociatedValuesEnum: AutoCodable {
+enum AssociatedValuesEnum: AutoCodable, Equatable {
     case someCase(id: Int, name: String)
     case anotherCase
 
@@ -147,7 +147,7 @@ enum AssociatedValuesEnum: AutoCodable {
     }
 }
 
-enum AssociatedValuesEnumNoCaseKey: AutoCodable {
+enum AssociatedValuesEnumNoCaseKey: AutoCodable, Equatable {
     case someCase(id: Int, name: String)
     case anotherCase
 }
