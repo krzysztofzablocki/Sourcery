@@ -142,4 +142,75 @@ This method will be called in the end of generated encoding method.
 
   - enum for keys to be skipped during encoding. This is useful when you have stored properties that you don't want to encode, i.e. constants:
 
+### Codable enums
+
+Enums with numeric or string raw values are `Codable` by default. For enums with no raw value or with associated values template will generate `Codable` implementation.
+
+#### Enums with no raw values and no associated values
+
+For such enums template will generate decoding/encoding code that will expect values in JSON to be exactly the same as cases' names.
+
+```swift
+enum SimpleEnum {
+  case someCase
+  case anotherCase
+}
+```
+
+For such enum template will generate code that will successfully decode from/encode to JSON of following form:
+
+```
+{
+"value": "someCase"
+"anotherValue": "anotherCase"
+}
+```
+
+You can define coding keys to change the values:
+
+```swift
+enum SimpleEnum {
+  case someCase
+  case anotherCase
   
+  enum CodingKeys: String, CodingKey {
+    case someCase = "some_case"
+    case anotherCase = "another_case"
+  }
+}
+```
+
+#### Enums with assoicated values
+
+In such enums all associated values should be named. Template supports two different representations of such enums in JSON format.
+
+```swift
+enum SimpleEnum {
+  case someCase(id: Int, name: String)
+  case anotherCase
+}
+```
+
+For such enum template will generate code that will successfully decode from/encode to JSON of following forms:
+
+```
+{
+  "type": "someCase" // enum case is encoded in a special key
+  "id": 1,
+  "name": "Jhon"
+}
+```
+
+or
+
+```
+{
+  "someCase": {
+    "id": 1,
+    "name": "Jhon"
+  }
+}
+```
+
+To make template generate code for the first form you need to define a special coding key named `enumCaseKey`. If this key is not defined, template will generate code for the second form.
+You can use all other customisation methods described for structs as well for enums.
