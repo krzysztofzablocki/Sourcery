@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Equatable  Reference</title>
+    <title>Other Guides  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,7 +10,7 @@
     
   </head>
   <body>
-    <a title="Equatable  Reference"></a>
+    <a title="Other Guides  Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="index.html">Sourcery Reference</a>
         <img id="carat" src="img/carat.png" />
-        Equatable  Reference
+        Other Guides  Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -58,9 +58,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="mocks.html">Mocks</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="codable.html">Codable</a>
               </li>
               <li class="nav-group-task">
                 <a href="diffable.html">Diffable</a>
@@ -142,6 +139,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a href="Other Guides.html">Other Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="codable.html">Codable</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a href="Other Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -160,36 +165,11 @@
       <article class="main-content">
         <section>
           <section class="section">
-            
-            <h2 id='i-want-to-generate-code-equatable-code-implementation' class='heading'>I want to generate <code>Equatable</code> implementation</h2>
+            <h1>Other Guides</h1>
+            <p>The following guides are available globally.</p>
 
-<p>Template used to generate equality for all types that conform to <code>:AutoEquatable</code>, allowing us to avoid writing boilerplate code.</p>
-
-<p>It adds <code>:Equatable</code> conformance to all types, except protocols (because it would require turning them into PAT&rsquo;s).
-For protocols it&rsquo;s just generating <code>func ==</code>.</p>
-<h3 id='a-href-https-github-com-krzysztofzablocki-sourcery-blob-master-templates-templates-autoequatable-stencil-stencil-template-a' class='heading'><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/AutoEquatable.stencil">Stencil template</a></h3>
-<h4 id='available-variable-annotations' class='heading'>Available variable annotations:</h4>
-
-<ul>
-<li><code>skipEquality</code> allows you to skip variable from being compared.</li>
-<li><code>arrayEquality</code> mark this to use array comparsion for variables that have array of items that don&rsquo;t implement <code>Equatable</code> but have <code>==</code> operator e.g. Protocols</li>
-</ul>
-<h4 id='example-output' class='heading'>Example output:</h4>
-<pre class="highlight swift"><code><span class="c1">// MARK: - AdNodeViewModel AutoEquatable</span>
-<span class="kd">extension</span> <span class="kt">AdNodeViewModel</span><span class="p">:</span> <span class="kt">Equatable</span> <span class="p">{}</span>
-
-<span class="kd">internal</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">AdNodeViewModel</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">AdNodeViewModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
-    <span class="k">guard</span> <span class="n">lhs</span><span class="o">.</span><span class="n">remoteAdView</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">remoteAdView</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
-    <span class="k">guard</span> <span class="n">lhs</span><span class="o">.</span><span class="n">hidesDisclaimer</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">hidesDisclaimer</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
-    <span class="k">guard</span> <span class="n">lhs</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">type</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
-    <span class="k">guard</span> <span class="n">lhs</span><span class="o">.</span><span class="n">height</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">height</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
-
-    <span class="k">guard</span> <span class="n">lhs</span><span class="o">.</span><span class="n">attributedDisclaimer</span> <span class="o">==</span> <span class="n">rhs</span><span class="o">.</span><span class="n">attributedDisclaimer</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span> <span class="p">}</span>
-
-    <span class="k">return</span> <span class="kc">true</span>
-<span class="p">}</span>
-</code></pre>
-
+          </section>
+          <section class="section task-group-section">
           </section>
         </section>
         <section id="footer">

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Codable  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Codable  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Sourcery Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Codable  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="installing.html">Installing</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="usage.html">Usage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="writing-templates.html">Writing templates</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Examples.html">Examples</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="equatable.html">Equatable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="hashable.html">Hashable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="enum-cases.html">Enum cases</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="lenses.html">Lenses</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="mocks.html">Mocks</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="codable.html">Codable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="diffable.html">Diffable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="linuxmain.html">LinuxMain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="decorator.html">Decorator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Types.html">Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/Types.html">Types</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Protocol.html">Protocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Class.html">Class</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Struct.html">Struct</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AssociatedValue.html">AssociatedValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/MethodParameter.html">MethodParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Subscript.html">Subscript</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleElement.html">TupleElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ArrayType.html">ArrayType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/DictionaryType.html">DictionaryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ClosureType.html">ClosureType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/GenericType.html">GenericType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/GenericTypeParameter.html">GenericTypeParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Attribute.html">Attribute</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Annotated.html">Annotated</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Definition.html">Definition</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Typed.html">Typed</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h2 id='i-want-to-generate-code-codable-code-implementation' class='heading'>I want to generate <code>Codable</code> implementation</h2>
+
+<p>This template generates <code>Codable</code> implementation for structs that implement  <code>AutoCodable</code>, <code>AutoDecodable</code> or  <code>AutoEncodable</code> protocols. You should define these protocols as follows:</p>
+<pre class="highlight swift"><code><span class="kd">protocol</span> <span class="kt">AutoDecodable</span><span class="p">:</span> <span class="kt">Decodable</span> <span class="p">{}</span>
+<span class="kd">protocol</span> <span class="kt">AutoEncodable</span><span class="p">:</span> <span class="kt">Encodable</span> <span class="p">{}</span>
+<span class="kd">protocol</span> <span class="kt">AutoCodable</span><span class="p">:</span> <span class="kt">AutoDecodable</span><span class="p">,</span> <span class="kt">AutoEncodable</span> <span class="p">{}</span>
+</code></pre>
+<h3 id='a-href-https-github-com-krzysztofzablocki-sourcery-blob-master-templates-templates-autocodable-swifttemplate-swift-template-a' class='heading'><a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/AutoCodable.swifttemplate">Swift template</a></h3>
+<h3 id='generating-coding-keys' class='heading'>Generating coding keys.</h3>
+
+<p>If you have few keys that are not matching default key strategy you have to specify only these keys, all other keys will be generated and inlined by the template:  </p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Person</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">firstName</span><span class="p">:</span> <span class="kt">Bool</span>
+    <span class="k">let</span> <span class="nv">surname</span><span class="p">:</span> <span class="kt">String</span>
+
+    <span class="kd">enum</span> <span class="kt">CodingKeys</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">CodingKey</span> <span class="p">{</span>
+        <span class="c1">// this is the custom key that you define manually</span>
+        <span class="k">case</span> <span class="n">firstName</span> <span class="o">=</span> <span class="s">"first_name"</span>
+
+<span class="c1">// sourcery:inline:auto:Person.CodingKeys.AutoCodable</span>
+        <span class="c1">// the rest is generated by the template</span>
+        <span class="k">case</span> <span class="n">id</span>
+        <span class="k">case</span> <span class="n">surname</span>
+<span class="c1">// sourcery:end</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+
+<p>Computed properties are not encoded by default, but if you define a coding key for computed property, template will generate code that will encode it.</p>
+
+<p>If you don&rsquo;t define any keys manually the template will generate <code>CodingKeys</code> enum with the keys for all stored properties, but only if custom implementation of <code>init(from:)</code> or <code>encode(to:)</code> is needed.</p>
+<h3 id='generating-code-init-from-code-constructor' class='heading'>Generating <code>init(from:)</code> constructor.</h3>
+
+<p>Template will generate implementation of  <code>init(from:)</code> when needed. You can define additional methods and properties on your type to be used to decode it.</p>
+
+<ul>
+<li>method to get decoding container. This is useful if your type needs to be decoded from a nested key(s):</li>
+</ul>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Int</span>
+
+    <span class="kd">enum</span> <span class="kt">CodingKeys</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">CodingKey</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="n">nested</span>
+        <span class="k">case</span> <span class="n">value</span>
+    <span class="p">}</span>
+
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">decodingContainer</span><span class="p">(</span><span class="n">_</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">Decoder</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">KeyedDecodingContainer</span><span class="o">&lt;</span><span class="kt">CodingKeys</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">try</span> <span class="n">decoder</span><span class="o">.</span><span class="nf">container</span><span class="p">(</span><span class="nv">keyedBy</span><span class="p">:</span> <span class="kt">CodingKeys</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">nestedContainer</span><span class="p">(</span><span class="nv">keyedBy</span><span class="p">:</span> <span class="kt">CodingKeys</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="o">.</span><span class="n">nested</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<ul>
+<li>method to decode a property. This is useful if you need to decode some property manually:</li>
+</ul>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">myProperty</span><span class="p">:</span> <span class="kt">Int</span>
+
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">decodeMyProperty</span><span class="p">(</span><span class="n">from</span> <span class="nv">container</span><span class="p">:</span> <span class="kt">KeyedDecodingContainer</span><span class="o">&lt;</span><span class="kt">CodingKeys</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span>
+        <span class="nf">return</span> <span class="p">(</span><span class="k">try</span><span class="p">?</span> <span class="n">container</span><span class="o">.</span><span class="nf">decode</span><span class="p">(</span><span class="kt">String</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="o">.</span><span class="n">myProperty</span><span class="p">))</span><span class="o">.</span><span class="nf">flatMap</span><span class="p">(</span><span class="kt">Int</span><span class="o">.</span><span class="kd">init</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="c1">//or</span>
+    <span class="kd">static</span> <span class="kd">func</span> <span class="nf">decodeMyProperty</span><span class="p">(</span><span class="n">from</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">Decoder</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">try</span> <span class="n">decoder</span><span class="o">.</span><span class="nf">container</span><span class="p">(</span><span class="nv">keyedBy</span><span class="p">:</span> <span class="kt">CodingKeys</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+            <span class="o">.</span><span class="nf">decode</span><span class="p">(</span><span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="o">.</span><span class="n">myProperty</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>These methods can throw or not and can return optional or non-optional result.</p>
+
+<ul>
+<li>default property value. You can define a static variable that will be used as a default value of a property if decoding results in <code>nil</code> value:</li>
+</ul>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">myProperty</span><span class="p">:</span> <span class="kt">Int</span>
+
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultMyProperty</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+</code></pre>
+<h3 id='generating-code-encode-to-code-method' class='heading'>Generating <code>encode(to:)</code> method.</h3>
+
+<p>Template will generate implementation of <code>encode(to:)</code> method when needed. You can define additional methods to be used to encode it.</p>
+
+<ul>
+<li>method to get encoding container. This is useful if your type needs to be encoded into a nested key(s):</li>
+</ul>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Int</span>
+
+    <span class="kd">enum</span> <span class="kt">CodingKeys</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">CodingKey</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="n">nested</span>
+        <span class="k">case</span> <span class="n">value</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">encodingContainer</span><span class="p">(</span><span class="n">_</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt">Encoder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">KeyedEncodingContainer</span><span class="o">&lt;</span><span class="kt">CodingKeys</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">container</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="nf">container</span><span class="p">(</span><span class="nv">keyedBy</span><span class="p">:</span> <span class="kt">CodingKeys</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">container</span><span class="o">.</span><span class="nf">nestedContainer</span><span class="p">(</span><span class="nv">keyedBy</span><span class="p">:</span> <span class="kt">CodingKeys</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="o">.</span><span class="n">nested</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<ul>
+<li>method to encode a property. This is useful when you need to manually encode a property:</li>
+</ul>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">myProperty</span><span class="p">:</span> <span class="kt">Int</span>
+
+    <span class="kd">func</span> <span class="nf">encodeMyProperty</span><span class="p">(</span><span class="n">to</span> <span class="nv">container</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">KeyedEncodingContainer</span><span class="o">&lt;</span><span class="kt">CodingKeys</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">try</span><span class="p">?</span> <span class="n">container</span><span class="o">.</span><span class="nf">decode</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="n">myProperty</span><span class="p">),</span> <span class="nv">forKey</span><span class="p">:</span> <span class="o">.</span><span class="n">myProperty</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="c1">//or</span>
+    <span class="kd">func</span> <span class="nf">encodeMyProperty</span><span class="p">(</span><span class="n">to</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt">Encoder</span><span class="p">)</span> <span class="k">throws</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">container</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="nf">container</span><span class="p">(</span><span class="nv">keyedBy</span><span class="p">:</span> <span class="kt">CodingKeys</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+        <span class="k">try</span> <span class="n">container</span><span class="o">.</span><span class="nf">encode</span><span class="p">(</span><span class="kt">String</span><span class="p">(</span><span class="n">myProperty</span><span class="p">),</span> <span class="nv">forKey</span><span class="p">:</span> <span class="o">.</span><span class="n">myProperty</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>These methods may throw or not. </p>
+
+<p>If you need to manually encode computed property and you have defined custom encoding method for it, template will generate a coding key for it too, so you don&rsquo;t have to define it manually (though you may still need to define it if it needs custom raw value).</p>
+
+<ul>
+<li>method to encode any additional values. This is useful when you need to encode computed properties or constant values:</li>
+</ul>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
+
+    <span class="kd">func</span> <span class="nf">encodeAdditionalValues</span><span class="p">(</span><span class="n">to</span> <span class="nv">container</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">KeyedEncodingContainer</span><span class="o">&lt;</span><span class="kt">CodingKeys</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">throws</span> <span class="p">{</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+    <span class="c1">// or</span>
+    <span class="kd">func</span> <span class="nf">encodeAdditionalValues</span><span class="p">(</span><span class="n">to</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt">Encoder</span><span class="p">)</span> <span class="k">throws</span> <span class="p">{</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>This method will be called in the end of generated encoding method.</p>
+
+<ul>
+<li>enum <code>SkipEncodingKeys</code> for keys to be skipped during encoding. This is useful when you have stored properties that you don&rsquo;t want to encode, i.e. constants:</li>
+</ul>
+<pre class="highlight swift"><code>  <span class="kd">struct</span> <span class="kt">MyStruct</span><span class="p">:</span> <span class="kt">AutoCodable</span> <span class="p">{</span>
+      <span class="k">let</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Int</span>
+      <span class="k">let</span> <span class="nv">skipValue</span><span class="p">:</span> <span class="kt">Int</span>
+
+      <span class="kd">enum</span> <span class="kt">SkipEncodingKeys</span> <span class="p">{</span>
+          <span class="k">case</span> <span class="n">skipValue</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+</code></pre>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2016 Pixle. All rights reserved.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
