@@ -19,6 +19,11 @@ target 'TemplatesTests' do
   meta
   test_pods
 end
+target 'CodableContextTests' do
+  project 'Templates/Templates.xcodeproj'
+  meta
+  test_pods
+end
 
 target 'Sourcery' do
   pod 'Stencil', '0.10.1'

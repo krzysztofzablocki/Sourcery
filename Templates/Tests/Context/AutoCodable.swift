@@ -125,3 +125,29 @@ struct SkipEncodingKeys: AutoCodable {
         case skipValue
     }
 }
+
+enum SimpleEnum: AutoCodable {
+    case someCase
+    case anotherCase
+}
+
+enum AssociatedValuesEnum: AutoCodable, Equatable {
+    case someCase(id: Int, name: String)
+    case anotherCase
+
+    enum CodingKeys: String, CodingKey {
+        case enumCaseKey = "type"
+
+// sourcery:inline:auto:AssociatedValuesEnum.CodingKeys.AutoCodable
+        case someCase
+        case anotherCase
+        case id
+        case name
+// sourcery:end
+    }
+}
+
+enum AssociatedValuesEnumNoCaseKey: AutoCodable, Equatable {
+    case someCase(id: Int, name: String)
+    case anotherCase
+}
