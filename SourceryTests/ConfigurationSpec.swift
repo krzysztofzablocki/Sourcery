@@ -109,6 +109,11 @@ class ConfigurationSpec: QuickSpec {
                     expect(configError(config)).to(equal("Invalid output. 'output' key is missing or is not a string or object."))
                 }
 
+                it("throws error on invalid cacheBasePath format") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."], "output": ".", "cacheBasePath": ["."]]
+                    expect(configError(config)).to(equal("Invalid cacheBasePath. 'cacheBasePath' key is not a string."))
+                }
+
             }
 
         }
@@ -159,6 +164,17 @@ class ConfigurationSpec: QuickSpec {
                     let templates = try? Configuration(dict: config, relativePath: relativePath).templates
                     let expected = Paths(include: [relativePath], exclude: [relativePath + "excludedPath"])
                     expect(templates).to(equal(expected))
+                }
+            }
+        }
+
+        describe("Cache Base Path") {
+            context("provided with cacheBasePath") {
+                it("has the correct cacheBasePath") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."], "output": ".", "cacheBasePath": "test-base-path"]
+                    let cacheBasePath = try? Configuration(dict: config, relativePath: relativePath).cacheBasePath
+                    let expected = Path("test-base-path", relativeTo: relativePath)
+                    expect(cacheBasePath).to(equal(expected))
                 }
             }
         }

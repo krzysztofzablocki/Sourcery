@@ -179,6 +179,7 @@ struct Configuration {
         case invalidSources(message: String)
         case invalidTemplates(message: String)
         case invalidOutput(message: String)
+        case invalidCacheBasePath(message: String)
         case invalidPaths(message: String)
 
         var description: String {
@@ -191,6 +192,8 @@ struct Configuration {
                 return "Invalid templates. \(message)"
             case .invalidOutput(let message):
                 return "Invalid output. \(message)"
+            case .invalidCacheBasePath(let message):
+                return "Invalid cacheBasePath. \(message)"
             case .invalidPaths(let message):
                 return "\(message)"
             }
@@ -200,6 +203,7 @@ struct Configuration {
     let source: Source
     let templates: Paths
     let output: Output
+    let cacheBasePath: Path
     let forceParse: [String]
     let args: [String: NSObject]
 
@@ -242,13 +246,22 @@ struct Configuration {
             throw Configuration.Error.invalidOutput(message: "'output' key is missing or is not a string or object.")
         }
 
+        if let cacheBasePath = dict["cacheBasePath"] as? String {
+            self.cacheBasePath = Path(cacheBasePath, relativeTo: relativePath)
+        } else if dict["cacheBasePath"] != nil {
+            throw Configuration.Error.invalidCacheBasePath(message: "'cacheBasePath' key is not a string.")
+        } else {
+            self.cacheBasePath = Path.defaultBaseCachePath
+        }
+
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 
-    init(sources: Paths, templates: Paths, output: Path, forceParse: [String], args: [String: NSObject]) {
+    init(sources: Paths, templates: Paths, output: Path, cacheBasePath: Path, forceParse: [String], args: [String: NSObject]) {
         self.source = .sources(sources)
         self.templates = templates
         self.output = Output(output, linkTo: nil)
+        self.cacheBasePath = cacheBasePath
         self.forceParse = forceParse
         self.args = args
     }

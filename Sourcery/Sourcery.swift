@@ -28,6 +28,7 @@ class Sourcery {
     fileprivate let watcherEnabled: Bool
     fileprivate let arguments: [String: NSObject]
     fileprivate let cacheDisabled: Bool
+    fileprivate let cacheBasePath: Path?
     fileprivate let prune: Bool
 
     fileprivate var status = ""
@@ -38,11 +39,12 @@ class Sourcery {
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
     /// - Parameter arguments: Additional arguments to pass to templates.
-    init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, prune: Bool = false, arguments: [String: NSObject] = [:]) {
+    init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, prune: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
         self.cacheDisabled = cacheDisabled
+        self.cacheBasePath = cacheBasePath
         self.prune = prune
     }
 
@@ -181,12 +183,24 @@ class Sourcery {
         return top.map { $0.0 }
     }
 
+    /// This function should be used to retrieve the path to the cache instead of `Path.cachesDir`,
+    /// as it considers the `--cacheDisabled` and `--cacheBasePath` command line parameters.
+    fileprivate func cachesDir(sourcePath: Path, createIfMissing: Bool = true) -> Path? {
+        return cacheDisabled
+            ? nil
+            : Path.cachesDir(sourcePath: sourcePath, basePath: cacheBasePath, createIfMissing: createIfMissing)
+    }
+
     /// Remove the existing cache artifacts if it exists.
+    /// Currently this is only called from tests, and the `--cacheDisabled` and `--cacheBasePath` command line parameters are not considered.
     ///
     /// - Parameter sources: paths of the sources you want to delete the
-    static func removeCache(for sources: [Path]) {
+    static func removeCache(for sources: [Path], cacheDisabled: Bool = false, cacheBasePath: Path? = nil) {
+        if cacheDisabled {
+            return
+        }
         sources.forEach { path in
-            let cacheDir = Path.cachesDir(sourcePath: path, createIfMissing: false)
+            let cacheDir = Path.cachesDir(sourcePath: path, basePath: cacheBasePath, createIfMissing: false)
             _ = try? cacheDir.delete()
         }
     }
@@ -198,7 +212,7 @@ class Sourcery {
                     Log.warning("Skipping template \($0). Swift templates are not supported when using Sourcery built with Swift Package Manager yet. Please use only Stencil or EJS templates. See https://github.com/krzysztofzablocki/Sourcery/issues/244 for details.")
                     return nil
                 #else
-                    let cachePath = cacheDisabled ? nil : Path.cachesDir(sourcePath: $0)
+                    let cachePath = cachesDir(sourcePath: $0)
                     return try SwiftTemplate(path: $0, cachePath: cachePath)
                 #endif
             } else if $0.extension == "ejs" {
@@ -270,7 +284,7 @@ extension Sourcery {
             var accumulator = 0
             let step = sources.count / 10 // every 10%
 
-            let results = try sources.parallelMap({ try self.loadOrParse(parser: $0, cachesPath: Path.cachesDir(sourcePath: from)) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+            let results = try sources.parallelMap({ try self.loadOrParse(parser: $0, cachesPath: cachesDir(sourcePath: from)) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
                 if accumulator > previousUpdate + step {
                     previousUpdate = accumulator
                     let percentage = accumulator * 100 / sources.count
@@ -298,15 +312,15 @@ extension Sourcery {
         return (Types(types: types), inlineRanges)
     }
 
-    private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path) throws -> FileParserResult {
+    private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult {
         guard let pathString = parser.path else { fatalError("Unable to retrieve \(String(describing: parser.path))") }
 
-        if cacheDisabled {
+        guard let cachesPath = cachesPath() else {
             return try parser.parse()
         }
 
         let path = Path(pathString)
-        let artifacts = cachesPath() + "\(pathString.hash).srf"
+        let artifacts = cachesPath + "\(pathString.hash).srf"
 
         guard artifacts.exists,
               let contentSha = parser.initialContents.sha256(),
