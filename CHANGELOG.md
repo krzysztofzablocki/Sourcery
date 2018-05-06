@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### New Features
+
+- Added support for enums in AutoCodable template
+
 ## 0.13.0
 
 ### New Features
