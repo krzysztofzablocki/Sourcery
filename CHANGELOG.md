@@ -7,6 +7,7 @@
 ### New Features
 
 - Added support for enums in AutoCodable template
+- You can now specify the base path for the Sourcery cache directory with a `cacheBasePath` key in the yaml
 
 ## 0.13.0
 
