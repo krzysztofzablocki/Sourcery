@@ -1,3 +1,4 @@
 ---
 BUNDLE_DISABLE_SHARED_GEMS: "true"
+BUNDLE_PATH: "Vendor/bundle"
 BUNDLE_WITHOUT: "test:development"

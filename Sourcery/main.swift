@@ -118,6 +118,7 @@ func runCLI() {
                 configuration = Configuration(sources: Paths(include: sources, exclude: excludeSources) ,
                                               templates: Paths(include: templates, exclude: excludeTemplates),
                                               output: output.string.isEmpty ? "." : output,
+                                              cacheBasePath: Path.defaultBaseCachePath,
                                               forceParse: forceParse,
                                               args: arguments)
             } else {
@@ -157,6 +158,7 @@ func runCLI() {
             let sourcery = Sourcery(verbose: verboseLogging,
                                     watcherEnabled: watcherEnabled,
                                     cacheDisabled: disableCache,
+                                    cacheBasePath: configuration.cacheBasePath,
                                     prune: prune,
                                     arguments: configuration.args)
             if let keepAlive = try sourcery.processFiles(
