@@ -21,7 +21,10 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--disableCache` [default: false] - Turn off caching of parsed data
 - `--prune` [default: false] - Prune empty generated files
 - `--version` - Display the current version of Sourcery
-- `--help` - Display help information
+- `--help` - Display help information.
+- `--cacheBasePath` - Path to Sourcery internal cache (available only in configuration file)
+
+Use `--help` to see the list of all available options.
 
 ### Configuration file
 

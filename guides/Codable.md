@@ -153,7 +153,7 @@ This method will be called in the end of generated encoding method.
 
   - enum `SkipEncodingKeys` for keys to be skipped during encoding. This is useful when you have stored properties that you don't want to encode, i.e. constants:
   
-  ```swift
+```swift
   struct MyStruct: AutoCodable {
       let value: Int
       let skipValue: Int
@@ -181,10 +181,10 @@ enum SimpleEnum {
 
 For such enum template will generate code that will successfully decode from/encode to JSON of following form:
 
-```
+```json
 {
-"value": "someCase"
-"anotherValue": "anotherCase"
+  "value": "someCase"
+  "anotherValue": "anotherCase"
 }
 ```
 
@@ -215,7 +215,7 @@ enum SimpleEnum {
 
 For such enum template will generate code that will successfully decode from/encode to JSON of following forms:
 
-```
+```json
 {
   "type": "someCase" // enum case is encoded in a special key
   "id": 1,
@@ -225,7 +225,7 @@ For such enum template will generate code that will successfully decode from/enc
 
 or
 
-```
+```json
 {
   "someCase": {
     "id": 1,
