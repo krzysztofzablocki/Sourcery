@@ -26,7 +26,7 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
 // MARK: - AutoEquatable for classes, protocols, structs
 // MARK: - AutoEquatableClass AutoEquatable
 extension AutoEquatableClass: Equatable {}
-internal func == (lhs: AutoEquatableClass, rhs: AutoEquatableClass) -> Bool {
+public func == (lhs: AutoEquatableClass, rhs: AutoEquatableClass) -> Bool {
     guard lhs.firstName == rhs.firstName else { return false }
     guard lhs.lastName == rhs.lastName else { return false }
     guard compareArrays(lhs: lhs.parents, rhs: rhs.parents, compare: ==) else { return false }
@@ -38,17 +38,17 @@ internal func == (lhs: AutoEquatableClass, rhs: AutoEquatableClass) -> Bool {
 // MARK: - AutoEquatableClassInherited AutoEquatable
 extension AutoEquatableClassInherited: Equatable {}
 THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoEquatable
-internal func == (lhs: AutoEquatableClassInherited, rhs: AutoEquatableClassInherited) -> Bool {
+public func == (lhs: AutoEquatableClassInherited, rhs: AutoEquatableClassInherited) -> Bool {
     guard compareOptionals(lhs: lhs.middleName, rhs: rhs.middleName, compare: ==) else { return false }
     return true
 }
 // MARK: - AutoEquatableNSObject AutoEquatable
-internal func == (lhs: AutoEquatableNSObject, rhs: AutoEquatableNSObject) -> Bool {
+public func == (lhs: AutoEquatableNSObject, rhs: AutoEquatableNSObject) -> Bool {
     guard lhs.firstName == rhs.firstName else { return false }
     return true
 }
 // MARK: - AutoEquatableProtocol AutoEquatable
-internal func == (lhs: AutoEquatableProtocol, rhs: AutoEquatableProtocol) -> Bool {
+public func == (lhs: AutoEquatableProtocol, rhs: AutoEquatableProtocol) -> Bool {
     guard lhs.width == rhs.width else { return false }
     guard lhs.height == rhs.height else { return false }
     guard lhs.name == rhs.name else { return false }
@@ -56,7 +56,7 @@ internal func == (lhs: AutoEquatableProtocol, rhs: AutoEquatableProtocol) -> Boo
 }
 // MARK: - AutoEquatableStruct AutoEquatable
 extension AutoEquatableStruct: Equatable {}
-internal func == (lhs: AutoEquatableStruct, rhs: AutoEquatableStruct) -> Bool {
+public func == (lhs: AutoEquatableStruct, rhs: AutoEquatableStruct) -> Bool {
     guard lhs.firstName == rhs.firstName else { return false }
     guard lhs.lastName == rhs.lastName else { return false }
     guard compareArrays(lhs: lhs.parents, rhs: rhs.parents, compare: ==) else { return false }
@@ -69,7 +69,7 @@ internal func == (lhs: AutoEquatableStruct, rhs: AutoEquatableStruct) -> Bool {
 // MARK: - AutoEquatable for Enums
 // MARK: - AutoEquatableEnum AutoEquatable
 extension AutoEquatableEnum: Equatable {}
-internal func == (lhs: AutoEquatableEnum, rhs: AutoEquatableEnum) -> Bool {
+public func == (lhs: AutoEquatableEnum, rhs: AutoEquatableEnum) -> Bool {
     switch (lhs, rhs) {
     case (.one, .one):
         return true
@@ -84,7 +84,7 @@ internal func == (lhs: AutoEquatableEnum, rhs: AutoEquatableEnum) -> Bool {
 }
 // MARK: - AutoEquatableEnumWithOneCase AutoEquatable
 extension AutoEquatableEnumWithOneCase: Equatable {}
-internal func == (lhs: AutoEquatableEnumWithOneCase, rhs: AutoEquatableEnumWithOneCase) -> Bool {
+public func == (lhs: AutoEquatableEnumWithOneCase, rhs: AutoEquatableEnumWithOneCase) -> Bool {
     switch (lhs, rhs) {
     case (.one, .one):
         return true
