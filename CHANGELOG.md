@@ -2,6 +2,12 @@
 
 ---
 
+## Master
+
+### Bug fixes
+
+- Fixed AutoEquatable access level for `==` func
+
 ## 0.13.1
 
 ### New Features
