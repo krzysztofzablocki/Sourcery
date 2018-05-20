@@ -11,6 +11,7 @@
 ### Bug fixes
 
 - Fixed AutoEquatable access level for `==` func
+- Fixed path of generated files when linked to Xcode project
 
 ## 0.13.1
 

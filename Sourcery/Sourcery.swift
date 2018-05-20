@@ -399,7 +399,7 @@ extension Sourcery {
 
         let fileGroup = linkTo.project.addGroup(named: linkTo.group ?? "SourceryGenerated", to: linkTo.project.rootGroup)
         do {
-            try linkTo.project.addSourceFile(at: output, toGroup: fileGroup, target: target, sourceRoot: linkTo.projectPath)
+            try linkTo.project.addSourceFile(at: output, toGroup: fileGroup, target: target, sourceRoot: linkTo.projectPath.parent())
         } catch {
             Log.warning("Failed to link file at \(output) to \(linkTo.projectPath). \(error)")
         }
