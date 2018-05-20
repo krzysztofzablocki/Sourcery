@@ -4,6 +4,10 @@
 
 ## Master
 
+### New Features
+
+- You can now use AutoEquatable with annotations
+
 ### Bug fixes
 
 - Fixed AutoEquatable access level for `==` func

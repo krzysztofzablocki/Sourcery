@@ -158,3 +158,29 @@ class AutoEquatableNSObject: NSObject, AutoEquatable {
         self.firstName = firstName
     }
 }
+
+/// It should generate correct code for general class
+/// sourcery: AutoEquatable
+class AutoEquatableAnnotatedClass {
+
+    // Variable
+    var moneyInThePocket: Double = 0
+
+}
+
+// It won't be generated
+class AutoEquatableAnnotatedClassInherited: AutoEquatableAnnotatedClass {
+
+    // Variable
+    var middleName: String = "Poor"
+
+}
+
+// Sourcery doesn't support inheritance for AutoEqualtable so it won't be generated
+/// sourcery: AutoEquatable
+class AutoEquatableAnnotatedClassAnnotatedInherited: AutoEquatableAnnotatedClass {
+
+    // Variable
+    var middleName: String = "Poor"
+
+}

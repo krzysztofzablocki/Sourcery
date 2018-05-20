@@ -1,7 +1,7 @@
 ## I want to generate `Equatable` implementation
 
 
-Template used to generate equality for all types that conform to `:AutoEquatable`, allowing us to avoid writing boilerplate code.
+Template used to generate equality for all types that either conform to the `AutoEquatable` protocol or are [annotated](Writing%20templates.md#using-source-annotations) with `AutoEquatable` annotation, allowing us to avoid writing boilerplate code.
 
 It adds `:Equatable` conformance to all types, except protocols (because it would require turning them into PAT's).
 For protocols it's just generating `func ==`.

@@ -21,6 +21,19 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
 
 
 // MARK: - AutoEquatable for classes, protocols, structs
+// MARK: - AutoEquatableAnnotatedClass AutoEquatable
+extension AutoEquatableAnnotatedClass: Equatable {}
+public func == (lhs: AutoEquatableAnnotatedClass, rhs: AutoEquatableAnnotatedClass) -> Bool {
+    guard lhs.moneyInThePocket == rhs.moneyInThePocket else { return false }
+    return true
+}
+// MARK: - AutoEquatableAnnotatedClassAnnotatedInherited AutoEquatable
+extension AutoEquatableAnnotatedClassAnnotatedInherited: Equatable {}
+THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoEquatable
+public func == (lhs: AutoEquatableAnnotatedClassAnnotatedInherited, rhs: AutoEquatableAnnotatedClassAnnotatedInherited) -> Bool {
+    guard lhs.middleName == rhs.middleName else { return false }
+    return true
+}
 // MARK: - AutoEquatableClass AutoEquatable
 extension AutoEquatableClass: Equatable {}
 public func == (lhs: AutoEquatableClass, rhs: AutoEquatableClass) -> Bool {
