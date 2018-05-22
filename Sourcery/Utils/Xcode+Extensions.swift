@@ -7,7 +7,7 @@ extension XcodeProj {
         return pbxproj.objects.targets(named: targetName).first?.object
     }
 
-    func fullPath(fileElement: ObjectReference<PBXFileElement>, sourceRoot: Path) -> Path? {
+    func fullPath<E: PBXFileElement>(fileElement: ObjectReference<E>, sourceRoot: Path) -> Path? {
         return pbxproj.objects.fullPath(fileElement: fileElement.object, reference: fileElement.reference, sourceRoot: sourceRoot)
     }
 
@@ -20,9 +20,9 @@ extension XcodeProj {
         return pbxproj.rootGroup
     }
 
-    func addGroup(named groupName: String, to toGroup: PBXGroup, options: GroupAddingOptions = []) -> PBXGroup {
+    func addGroup(named groupName: String, to toGroup: PBXGroup, options: GroupAddingOptions = []) -> ObjectReference<PBXGroup> {
         // swiftlint:disable:next force_unwrapping
-        return pbxproj.objects.addGroup(named: groupName, to: toGroup, options: options).last!.object
+        return pbxproj.objects.addGroup(named: groupName, to: toGroup, options: options).last!
     }
 
     func addSourceFile(at filePath: Path, toGroup: PBXGroup, target: PBXTarget, sourceRoot: Path) throws {

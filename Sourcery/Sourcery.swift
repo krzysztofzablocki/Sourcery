@@ -8,6 +8,7 @@ import PathKit
 import SwiftTryCatch
 import SourceryRuntime
 import SourceryJS
+import xcproj
 
 #if SWIFT_PACKAGE
 #else
@@ -397,9 +398,23 @@ extension Sourcery {
     private func link(_ output: Path, to linkTo: Output.LinkTo) {
         guard let target = linkTo.project.target(named: linkTo.target) else { return }
 
-        let fileGroup = linkTo.project.addGroup(named: linkTo.group ?? "SourceryGenerated", to: linkTo.project.rootGroup)
+        let sourceRoot = linkTo.projectPath.parent()
+        let fileGroup: PBXGroup
+        if let group = linkTo.group {
+            do {
+                let addedGroup = linkTo.project.addGroup(named: group, to: linkTo.project.rootGroup, options: [])
+                fileGroup = addedGroup.object
+                if let groupPath = linkTo.project.fullPath(fileElement: addedGroup, sourceRoot: sourceRoot) {
+                    try groupPath.mkpath()
+                }
+            } catch {
+                Log.warning("Failed to create a folter for group '\(fileGroup.name ?? "")'. \(error)")
+            }
+        } else {
+            fileGroup = linkTo.project.rootGroup
+        }
         do {
-            try linkTo.project.addSourceFile(at: output, toGroup: fileGroup, target: target, sourceRoot: linkTo.projectPath.parent())
+            try linkTo.project.addSourceFile(at: output, toGroup: fileGroup, target: target, sourceRoot: sourceRoot)
         } catch {
             Log.warning("Failed to link file at \(output) to \(linkTo.projectPath). \(error)")
         }
