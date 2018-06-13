@@ -139,7 +139,7 @@ internal struct AnnotationsParser {
                 .map { line in
                     let content = line.content.trimmingCharacters(in: .whitespaces)
                     var annotations = Annotations()
-                    let isComment = content.hasPrefix("//") || content.hasPrefix("/*")
+                    let isComment = content.hasPrefix("//") || content.hasPrefix("/*") || content.hasPrefix("*")
                     var type: Line.LineType = isComment ? .comment : .other
                     if isComment {
                         switch searchForAnnotations(commentLine: content) {
@@ -182,7 +182,7 @@ internal struct AnnotationsParser {
     }
 
     private static func searchForAnnotations(commentLine: String) -> AnnotationType {
-        let comment = commentLine.trimmingPrefix("///").trimmingPrefix("//").trimmingPrefix("/**").trimmingPrefix("/*").stripped()
+        let comment = commentLine.trimmingPrefix("///").trimmingPrefix("//").trimmingPrefix("/**").trimmingPrefix("/*").trimmingPrefix("*").stripped()
 
         guard comment.hasPrefix("sourcery:") else { return .annotations([:]) }
 
@@ -207,7 +207,7 @@ internal struct AnnotationsParser {
             insideFileBlock = true
         } else {
             lowerBound = commentLine.range(of: "sourcery:")?.upperBound
-            if commentLine.hasPrefix("//") {
+            if commentLine.hasPrefix("//") || commentLine.hasPrefix("*") {
                 upperBound = commentLine.indices.endIndex
             } else {
                 upperBound = commentLine.range(of: "*/")?.lowerBound
