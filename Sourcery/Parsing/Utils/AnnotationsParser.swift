@@ -182,7 +182,7 @@ internal struct AnnotationsParser {
     }
 
     private static func searchForAnnotations(commentLine: String) -> AnnotationType {
-        let comment = commentLine.trimmingPrefix("///").trimmingPrefix("//").trimmingPrefix("/*").stripped()
+        let comment = commentLine.trimmingPrefix("///").trimmingPrefix("//").trimmingPrefix("/**").trimmingPrefix("/*").stripped()
 
         guard comment.hasPrefix("sourcery:") else { return .annotations([:]) }
 
