@@ -50,6 +50,14 @@ class AnnotationsParserSpec: QuickSpec {
                         ]))
                 }
 
+                it("extracts inline annotations from multi line comments") {
+                    let result = parse("//**\n*Comment\n*sourcery: skipDescription\n*sourcery: skipEquality\n*/var name: Int { return 2 }")
+                    expect(result).to(equal([
+                        "skipDescription": NSNumber(value: true),
+                        "skipEquality": NSNumber(value: true)
+                        ]))
+                }
+
                 it("extracts multi-line annotations, including numbers") {
                     let annotations = ["skipEquality": NSNumber(value: true),
                                        "placeholder": "geo:37.332112,-122.0329753?q=1 Infinite Loop" as NSString,
