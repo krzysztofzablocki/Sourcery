@@ -12,7 +12,7 @@
 
 - Fixed AutoEquatable access level for `==` func
 - Fixed path of generated files when linked to Xcode project
-- Fixed  extraction of inline annotations in comments like /** sourcery: skipDescription */
+- Fixed extraction of inline annotations in multi line comments with documentation style
 
 ## 0.13.1
 
