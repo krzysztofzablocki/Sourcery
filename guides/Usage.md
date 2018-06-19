@@ -96,7 +96,7 @@ project:
 
 #### Output
 
-You can specify output file using `output` key. This can be a path to directory or file. If it's a file path, all generated content will be written into this file. If it's a directory path, for each template a separate file will be created with `TemplateName.geneareted.swift` name.
+You can specify the output file using `output` key. This can be a directory path or a file path. If it's a file path, all generated content will be written into this file. If it's a directory path, for each template a separate file will be created with `TemplateName.generated.swift` name.
 
 ```yaml
 output:
