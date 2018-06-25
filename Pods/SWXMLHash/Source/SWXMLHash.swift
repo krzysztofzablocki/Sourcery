@@ -473,10 +473,10 @@ public class IndexOps {
         parser.startParsing(ops)
         let indexer = XMLIndexer(parser.root)
         var childIndex = indexer
-        for op in ops {
-            childIndex = childIndex[op.key]
-            if op.index >= 0 {
-                childIndex = childIndex[op.index]
+        for oper in ops {
+            childIndex = childIndex[oper.key]
+            if oper.index >= 0 {
+                childIndex = childIndex[oper.index]
             }
         }
         ops.removeAll(keepingCapacity: false)
@@ -484,11 +484,11 @@ public class IndexOps {
     }
 
     func stringify() -> String {
-        var s = ""
-        for op in ops {
-            s += "[" + op.toString() + "]"
+        var ret = ""
+        for oper in ops {
+            ret += "[" + oper.toString() + "]"
         }
-        return s
+        return ret
     }
 }
 
@@ -723,8 +723,8 @@ public enum XMLIndexer {
     public func byKey(_ key: String) throws -> XMLIndexer {
         switch self {
         case .stream(let opStream):
-            let op = IndexOp(key)
-            opStream.ops.append(op)
+            let oper = IndexOp(key)
+            opStream.ops.append(oper)
             return .stream(opStream)
         case .element(let elem):
             let match = elem.xmlChildren.filter({
@@ -912,6 +912,12 @@ public class XMLElement: XMLContent {
             } else {
                 return $0
             }
+        })
+    }
+
+    public var innerXML: String {
+        return children.reduce("", {
+            return $0.description + $1.description
         })
     }
 

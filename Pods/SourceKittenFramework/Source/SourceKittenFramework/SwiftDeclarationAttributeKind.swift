@@ -69,7 +69,7 @@ public enum SwiftDeclarationAttributeKind: String {
     case staticInitializeObjCMetadata = "source.decl.attribute._staticInitializeObjCMetadata"
     case restatedObjCConformance = "source.decl.attribute._restatedObjCConformance"
 
-    #if (swift(>=4.1) || (swift(>=3.3) && !swift(>=4.0)))
+    // only available in Swift >= 4.1
     case `private` = "source.decl.attribute.private"
     case `fileprivate` = "source.decl.attribute.fileprivate"
     case `internal` = "source.decl.attribute.internal"
@@ -83,8 +83,8 @@ public enum SwiftDeclarationAttributeKind: String {
     case optimize = "source.decl.attribute._optimize"
     case consuming = "source.decl.attribute.__consuming"
     case implicitlyUnwrappedOptional = "source.decl.attribute._implicitly_unwrapped_optional"
-    #else
+
+    // only available in Swift < 4.1
     case autoclosure = "source.decl.attribute.autoclosure"
     case noescape = "source.decl.attribute.noescape"
-    #endif
 }

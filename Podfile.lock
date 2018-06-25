@@ -5,20 +5,20 @@ PODS:
   - Nimble (7.0.3)
   - PathKit (0.8.0)
   - Quick (1.2.0)
-  - SourceKittenFramework (0.20.0):
-    - SWXMLHash (~> 4.1)
-    - Yams (~> 0.7.0)
+  - SourceKittenFramework (0.21.1):
+    - SWXMLHash (~> 4.7)
+    - Yams (~> 1.0)
   - Stencil (0.10.1):
     - PathKit (~> 0.8.0)
   - StencilSwiftKit (2.4.0):
     - Stencil (~> 0.10)
   - SwiftLint (0.25.1)
   - SwiftTryCatch (1.0.0)
-  - SWXMLHash (4.6.0)
+  - SWXMLHash (4.7.0)
   - xcproj (4.2.0):
     - AEXML (~> 4.1)
     - PathKit (~> 0.8)
-  - Yams (0.7.0)
+  - Yams (1.0.0)
 
 DEPENDENCIES:
   - AEXML (= 4.2.2)
@@ -28,7 +28,7 @@ DEPENDENCIES:
   - PathKit
   - PathKit (= 0.8.0)
   - Quick
-  - SourceKittenFramework (= 0.20.0)
+  - SourceKittenFramework (= 0.21.1)
   - Stencil (= 0.10.1)
   - StencilSwiftKit (= 2.4.0)
   - SwiftLint
@@ -52,15 +52,15 @@ SPEC CHECKSUMS:
   Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   PathKit: dcab05d701474011aae0e40cf892298a831f63d6
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
-  SourceKittenFramework: 3c733d68f52378ed0295052c135cea8deba45b2d
+  SourceKittenFramework: 422ab99cb9fc7a61df4650ae5bd779f71edf1bc2
   Stencil: 40b382c52edab08f1e800e6144c1f04ae47a7a9a
   StencilSwiftKit: b2d282c788559bc19166eee070ffa513fedf8c05
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
   SwiftTryCatch: 8dec58919b07ddba4f23c80e814f7e49f05da548
-  SWXMLHash: 3c39a53723202800e9e1a87f14b2fe7ac1da98ec
+  SWXMLHash: f4522438189f72b41e39676d19469a8969d60dd1
   xcproj: bf5339a8c8b295e3364a16074d842b3ea71a4f5b
-  Yams: 9dfe90be5b942df6fa42ead8e6f0313e05600755
+  Yams: a01cdee527b3a82a3e192255b34ad5aacdf96b8c
 
-PODFILE CHECKSUM: a008021c953bec76efacff91815cac6020c3ae35
+PODFILE CHECKSUM: 1889280aa219d96bfbfbd345812334c52a11f023
 
 COCOAPODS: 1.4.0
