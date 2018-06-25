@@ -11,12 +11,14 @@
 #endif
 
 #import "BuildSystem.h"
+#import "Clang_C.h"
 #import "CXCompilationDatabase.h"
 #import "CXErrorCode.h"
 #import "CXString.h"
 #import "Documentation.h"
 #import "Index.h"
 #import "Platform.h"
+#import "SourceKit.h"
 #import "sourcekitd.h"
 
 FOUNDATION_EXPORT double SourceKittenFrameworkVersionNumber;

@@ -8,14 +8,6 @@
 
 import Foundation
 
-#if !os(Linux) && !swift(>=4.0)
-extension NSTextCheckingResult {
-    func range(at idx: Int) -> NSRange {
-        return rangeAt(idx)
-    }
-}
-#endif
-
 extension Array {
     public func bridge() -> NSArray {
 #if os(Linux)

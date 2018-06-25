@@ -116,6 +116,7 @@ environment variable.
   * https://github.com/KenichiroSato/CatDogTube
   * https://github.com/klundberg/grift
   * https://github.com/kovtun1/DependenciesGraph
+  * https://github.com/lvsti/Bridgecraft
   * https://github.com/maralla/completor-swift
   * https://github.com/marcsnts/Shopify-Winter18-Technical
   * https://github.com/momentumworks/Formula
@@ -141,6 +142,8 @@ environment variable.
   * https://github.com/yonaskolb/Beak
   * https://github.com/zenzz/vs-swifter-server
   * https://github.com/zenzz/zxxswifter-server
+  * https://github.com/scribd/Weaver
+  * https://github.com/Nonchalant/FactoryProvider
 </details>
 
 ## Complete

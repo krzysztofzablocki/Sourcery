@@ -650,14 +650,10 @@ extension String {
 
     /// Returns the byte offset of the section of the string following the last dot ".", or 0 if no dots.
     internal func byteOffsetOfInnerTypeName() -> Int64 {
-        guard let range = range(of: ".", options: .backwards) else {
+        guard let range = range(of: ".", options: .backwards),
+            let utf8pos = index(after: range.lowerBound).samePosition(in: utf8) else {
             return 0
         }
-#if swift(>=4.0)
-        let utf8pos = index(after: range.lowerBound).samePosition(in: utf8)!
-#else
-        let utf8pos = index(after: range.lowerBound).samePosition(in: utf8)
-#endif
         return Int64(utf8.distance(from: utf8.startIndex, to: utf8pos))
     }
 }

@@ -148,6 +148,11 @@ The available options at this time are:
   * See
     [Codable's userInfo docs](https://developer.apple.com/documentation/swift/encoder/2894907-userinfo)
   * The default is [:]
+* `detectParsingErrors`
+  * This setting attempts to detect XML parsing errors. `parse` will return an
+    `XMLIndexer.parsingError` if any parsing issues are found.
+  * Defaults to `false` (because of backwards compatibility and because many
+    users attempt to parse HTML with this library)
 
 ## Examples
 
