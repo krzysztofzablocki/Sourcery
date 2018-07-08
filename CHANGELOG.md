@@ -8,6 +8,10 @@
 
 - You can now use AutoEquatable with annotations
 
+### Internal Changes
+
+- Use AnyObject for class-only protocols
+
 ### Bug fixes
 
 - Fixed AutoEquatable access level for `==` func
