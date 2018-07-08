@@ -4,7 +4,7 @@ import RxSwift
 
 // We abstract this out so that we don't have network models, etc, aware of the view controller.
 // This is a "source of truth" that should be referenced in lieu of many independent variables. 
-protocol FulfillmentController: class {
+protocol FulfillmentController: AnyObject {
     var bidDetails: BidDetails { get set }
     var auctionID: String! { get set }
 }

@@ -8,7 +8,7 @@ import SourceKittenFramework
 import PathKit
 import SourceryRuntime
 
-protocol Parsable: class {
+protocol Parsable: AnyObject {
     var __parserData: Any? { get set }
 }
 
