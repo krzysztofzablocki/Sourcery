@@ -44,9 +44,9 @@ private enum Validators {
         return path
     }
 
-    static func isWriteable(path: Path) -> Path {
+    static func isWritable(path: Path) -> Path {
         if path.exists && !path.isWritable {
-            Log.error("'\(path)' isn't writeable.")
+            Log.error("'\(path)' isn't writable.")
             exit(.invalidePath)
         }
         return path
@@ -68,7 +68,7 @@ extension Configuration {
             Log.error("No templates provided.")
             exit(.invalidConfig)
         }
-        _ = output.path.map(Validators.isWriteable(path:))
+        _ = output.path.map(Validators.isWritable(path:))
     }
 
 }
