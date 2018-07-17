@@ -16,12 +16,12 @@ internal enum TemplateAnnotationsParser {
         return regex
     }
 
-    static func parseAnnotations(_ annotation: String, contents: String) -> (contents: String, annotatedRanges: [String: NSRange]) {
+    static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false) -> (contents: String, annotatedRanges: [String: [NSRange]]) {
         var bridged = contents.bridge()
         let regex = try? self.regex(annotation: annotation)
 
         var rangesToReplace = [NSRange]()
-        var annotatedRanges = [String: NSRange]()
+        var annotatedRanges = [String: [NSRange]]()
 
         regex?.enumerateMatches(in: contents, options: [], range: bridged.entireRange) { result, _, _ in
             guard let result = result, result.numberOfRanges == 5 else {
@@ -37,7 +37,13 @@ internal enum TemplateAnnotationsParser {
                 location: startLineRange.location,
                 length: endLineRange.location - startLineRange.location
             )
-            annotatedRanges[name] = range
+            if aggregate {
+                var ranges = annotatedRanges[name] ?? []
+                ranges.append(range)
+                annotatedRanges[name] = ranges
+            } else {
+                annotatedRanges[name] = [range]
+            }
             rangesToReplace.append(range)
         }
 

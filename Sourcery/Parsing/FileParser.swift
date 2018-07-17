@@ -65,7 +65,7 @@ final class FileParser {
 
     fileprivate var contents: String!
     fileprivate var annotations: AnnotationsParser!
-    fileprivate var inlineRanges: [String: NSRange]!
+    fileprivate var inlineRanges: [String: [NSRange]]!
 
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0):" } ?? ""

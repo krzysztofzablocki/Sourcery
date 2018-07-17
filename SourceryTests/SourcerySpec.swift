@@ -647,6 +647,43 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(beNil())
                     }
 
+                    it("appends content of several annotations into one file") {
+                        update(code: """
+                            // Line One
+                            // sourcery:file:Generated/Foo
+                            extension Foo {
+                            var property1 = 1
+                            }
+                            // sourcery:end
+                            // sourcery:file:Generated/Foo
+                            extension Foo {
+                            var property2 = 2
+                            }
+                            // sourcery:end
+                            """, in: templatePath)
+
+                        let expectedResult = """
+                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            extension Foo {
+                            var property1 = 1
+                            }
+
+                            extension Foo {
+                            var property2 = 2
+                            }
+
+                            """
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, prune: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let generatedPath = outputDir + Path("Generated/Foo.generated.swift")
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
                 }
 
                 context("given a restricted file") {

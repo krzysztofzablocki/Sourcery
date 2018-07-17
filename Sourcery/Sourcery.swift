@@ -36,6 +36,9 @@ class Sourcery {
     fileprivate var templatesPaths = Paths(include: [])
     fileprivate var outputPath = Output("", linkTo: nil)
 
+    // content annotated with file annotations per file path to write it to
+    fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
+
     /// Creates Sourcery processor
     ///
     /// - Parameter verbose: Whether to turn on verbose logs.
@@ -237,7 +240,7 @@ class Sourcery {
 // MARK: - Parsing
 
 extension Sourcery {
-    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange])])
+    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: [NSRange]])])
 
     fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
@@ -246,7 +249,7 @@ extension Sourcery {
 
         Log.info("Scanning sources...")
 
-        var inlineRanges = [(file: String, ranges: [String: NSRange])]()
+        var inlineRanges = [(file: String, ranges: [String: [NSRange]])]()
         var allResults = [FileParserResult]()
 
         try from.enumerated().forEach { index, from in
@@ -392,6 +395,10 @@ extension Sourcery {
             try linkTo.project.writePBXProj(path: linkTo.projectPath)
         }
 
+        try fileAnnotatedContent.forEach { (path, contents) in
+            try self.output(result: contents.joined(separator: "\n"), to: path)
+        }
+
         Log.info("Finished.")
     }
 
@@ -458,7 +465,7 @@ extension Sourcery {
 
     private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path) throws -> String {
         var result = result
-        result = try processFileRanges(for: parsingResult, in: result, outputPath: outputPath)
+        result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath)
         result = try processInlineRanges(for: parsingResult, in: result)
         return TemplateAnnotationsParser.removingEmptyAnnotations(from: result)
     }
@@ -475,7 +482,8 @@ extension Sourcery {
 
         try inline.annotatedRanges
             .map { (key: $0, range: $1) }
-            .compactMap { (key, range) -> MappedInlineAnnotations? in
+            .compactMap { (key, ranges) -> MappedInlineAnnotations? in
+                let range = ranges[0]
                 let generatedBody = contents.bridge().substring(with: range)
 
                 guard let (filePath, ranges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {
@@ -491,7 +499,7 @@ extension Sourcery {
                     return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
                 }
                 // swiftlint:disable:next force_unwrapping
-                return MappedInlineAnnotations(range, Path(filePath), ranges[key]!, generatedBody)
+                return MappedInlineAnnotations(range, Path(filePath), ranges[key]![0], generatedBody)
             }
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location
@@ -504,16 +512,18 @@ extension Sourcery {
         return inline.contents
     }
 
-    private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path) throws -> String {
-        let files = TemplateAnnotationsParser.parseAnnotations("file", contents: contents)
+    private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path) -> String {
+        let files = TemplateAnnotationsParser.parseAnnotations("file", contents: contents, aggregate: true)
 
-        try files
+        files
             .annotatedRanges
             .map { ($0, $1) }
-            .forEach({ (filePath, range) in
-                let generatedBody = contents.bridge().substring(with: range)
+            .forEach({ (filePath, ranges) in
+                let generatedBody = ranges.map(contents.bridge().substring(with:)).joined(separator: "\n")
                 let path = outputPath + (Path(filePath).extension == nil ? "\(filePath).generated.swift" : filePath)
-                try self.output(result: generatedBody, to: path)
+                var fileContents = fileAnnotatedContent[path] ?? []
+                fileContents.append(generatedBody)
+                fileAnnotatedContent[path] = fileContents
             })
         return files.contents
     }
