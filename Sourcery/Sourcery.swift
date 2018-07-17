@@ -240,7 +240,7 @@ class Sourcery {
 // MARK: - Parsing
 
 extension Sourcery {
-    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: [NSRange]])])
+    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange])])
 
     fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
@@ -249,7 +249,7 @@ extension Sourcery {
 
         Log.info("Scanning sources...")
 
-        var inlineRanges = [(file: String, ranges: [String: [NSRange]])]()
+        var inlineRanges = [(file: String, ranges: [String: NSRange])]()
         var allResults = [FileParserResult]()
 
         try from.enumerated().forEach { index, from in
@@ -499,7 +499,7 @@ extension Sourcery {
                     return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
                 }
                 // swiftlint:disable:next force_unwrapping
-                return MappedInlineAnnotations(range, Path(filePath), ranges[key]![0], generatedBody)
+                return MappedInlineAnnotations(range, Path(filePath), ranges[key]!, generatedBody)
             }
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location

@@ -22,12 +22,12 @@ import Foundation
         }
     }
     public var typealiases = [Typealias]()
-    public var inlineRanges = [String: [NSRange]]()
+    public var inlineRanges = [String: NSRange]()
 
     public var contentSha: String?
     public var sourceryVersion: String
 
-    public init(path: String?, module: String?, types: [Type], typealiases: [Typealias] = [], inlineRanges: [String: [NSRange]] = [:], contentSha: String = "", sourceryVersion: String = "") {
+    public init(path: String?, module: String?, types: [Type], typealiases: [Typealias] = [], inlineRanges: [String: NSRange] = [:], contentSha: String = "", sourceryVersion: String = "") {
         self.path = path
         self.module = module
         self.types = types
@@ -46,7 +46,7 @@ import Foundation
             self.module = aDecoder.decode(forKey: "module")
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
-            guard let inlineRanges: [String: [NSRange]] = aDecoder.decode(forKey: "inlineRanges") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineRanges"])); fatalError() }; self.inlineRanges = inlineRanges
+            guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineRanges"])); fatalError() }; self.inlineRanges = inlineRanges
             self.contentSha = aDecoder.decode(forKey: "contentSha")
             guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["sourceryVersion"])); fatalError() }; self.sourceryVersion = sourceryVersion
         }
