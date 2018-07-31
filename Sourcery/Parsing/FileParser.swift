@@ -94,7 +94,7 @@ final class FileParser {
 
         let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents)
         contents = inline.contents
-        inlineRanges = inline.annotatedRanges
+        inlineRanges = inline.annotatedRanges.mapValues({ $0[0] })
         annotations = AnnotationsParser(contents: contents)
         return contents
     }

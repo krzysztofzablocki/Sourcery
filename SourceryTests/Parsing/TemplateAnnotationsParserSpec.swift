@@ -26,7 +26,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                     TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
 
             it("tracks it") {
-                expect(result.annotatedRanges["Type.AutoCoding"]).to(equal(NSRange(location: 35, length: 19)))
+                expect(result.annotatedRanges["Type.AutoCoding"]).to(equal([NSRange(location: 35, length: 19)]))
             }
 
             it("removes content between the markup") {
