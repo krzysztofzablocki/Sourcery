@@ -46,6 +46,9 @@ import Foundation
     /// Whether type is generic
     public var isGeneric: Bool
 
+    /// Generic type names
+    public var genericTypes: [String]
+
     /// Type name in its own scope.
     public var localName: String
 
@@ -240,7 +243,8 @@ import Foundation
                 typealiases: [Typealias] = [],
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
-                isGeneric: Bool = false) {
+                isGeneric: Bool = false,
+                genericTypes: [String] = []) {
 
         self.localName = name
         self.accessLevel = accessLevel.rawValue
@@ -256,6 +260,7 @@ import Foundation
         self.attributes = attributes
         self.annotations = annotations
         self.isGeneric = isGeneric
+        self.genericTypes = genericTypes
 
         super.init()
         containedTypes.forEach {
@@ -292,6 +297,7 @@ import Foundation
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
+            self.genericTypes = aDecoder.decode(forKey: "genericTypes") ?? []
             guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName
             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods
@@ -318,6 +324,7 @@ import Foundation
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isGeneric, forKey: "isGeneric")
+            aCoder.encode(self.genericTypes, forKey: "genericTypes")
             aCoder.encode(self.localName, forKey: "localName")
             aCoder.encode(self.variables, forKey: "variables")
             aCoder.encode(self.methods, forKey: "methods")

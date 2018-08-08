@@ -227,6 +227,7 @@ extension Type {
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
+        if self.genericTypes != rhs.genericTypes { return false }
         if self.localName != rhs.localName { return false }
         if self.variables != rhs.variables { return false }
         if self.methods != rhs.methods { return false }
