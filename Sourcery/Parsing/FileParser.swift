@@ -164,6 +164,9 @@ final class FileParser {
             }
 
             type.isGeneric = isGeneric(source: source)
+            if type.isGeneric {
+                type.genericTypes = extractGenerics(source: source)
+            }
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.bodyBytesRange = Substring.body.range(for: source).map { BytesRange(range: $0) }
@@ -305,6 +308,25 @@ extension FileParser {
     fileprivate func isGeneric(source: [String: SourceKitRepresentable]) -> Bool {
         guard let substring = extract(.nameSuffix, from: source), substring.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<") == true else { return false }
         return true
+    }
+
+    fileprivate func extractGenerics(source: [String: SourceKitRepresentable]) -> [String] {
+        if let name = extract(.nameSuffix, from: source),
+            let start = name.index(of: "<"),
+            let end = name.index(of: ">") {
+            let generics = String(name[name.index(after: start) ..< end])
+            return generics.components(separatedBy: ",")
+                .map { (type: String) -> String in
+                    if let constraintStart = type.index(of: ":") {
+                        return String(type[type.startIndex ..< constraintStart])
+                    } else {
+                        return type
+                    }
+                }
+                .map { type in type.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { type in !type.isEmpty }
+        }
+        return []
     }
 
     fileprivate func setterAccessibility(source: [String: SourceKitRepresentable]) -> AccessLevel? {
