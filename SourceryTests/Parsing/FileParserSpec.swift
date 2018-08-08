@@ -85,8 +85,18 @@ class FileParserSpec: QuickSpec {
                     it("extracts generic struct properly") {
                         expect(parse("struct Foo<Something> { }"))
                                 .to(equal([
-                                    Struct(name: "Foo", isGeneric: true)
+                                    Struct(name: "Foo", isGeneric: true, genericTypes: ["Something"])
                                           ]))
+
+                        expect(parse("struct Foo<  A  , B,C> { }"))
+                            .to(equal([
+                                Struct(name: "Foo", isGeneric: true, genericTypes: ["A", "B", "C"])
+                                ]))
+
+                        expect(parse("struct Foo<A : Equatable, B:Codable,\n\nC > { }"))
+                            .to(equal([
+                                Struct(name: "Foo", isGeneric: true, genericTypes: ["A", "B", "C"])
+                                ]))
                     }
 
                     it("extracts instance variables properly") {

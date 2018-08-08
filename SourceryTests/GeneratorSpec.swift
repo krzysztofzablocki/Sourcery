@@ -12,7 +12,7 @@ class GeneratorSpec: QuickSpec {
             var types: [Type] = []
             var arguments: [String: NSObject] = [:]
             var beforeEachGenerate: () -> Void = {
-                let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
+                let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"], isGeneric: true, genericTypes: ["T", "Element"])
                 let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
                 let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
 
@@ -159,6 +159,10 @@ class GeneratorSpec: QuickSpec {
 
                 it("can access supertype") {
                     expect(generate("{{ type.FooSubclass.supertype.name }}")).to(equal("Foo"))
+                }
+
+                it("can access genericTypes") {
+                    expect(generate("Foo has {{ type.Foo.genericTypes.count }} genericTypes, first: {{ type.Foo.genericTypes.first }}")).to(equal("Foo has 2 genericTypes, first: T"))
                 }
 
                 it("counts all variables including implements, inherits") {
