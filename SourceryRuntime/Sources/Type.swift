@@ -46,8 +46,8 @@ import Foundation
     /// Whether type is generic
     public var isGeneric: Bool
 
-    /// Generic type names
-    public var genericTypes: [String]
+    /// Generic types
+    public var genericTypes: [Generic]
 
     /// Type name in its own scope.
     public var localName: String
@@ -244,7 +244,7 @@ import Foundation
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
                 isGeneric: Bool = false,
-                genericTypes: [String] = []) {
+                genericTypes: [Generic] = []) {
 
         self.localName = name
         self.accessLevel = accessLevel.rawValue
@@ -297,7 +297,7 @@ import Foundation
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
-            self.genericTypes = aDecoder.decode(forKey: "genericTypes") ?? []
+            guard let genericTypes: [Generic] = aDecoder.decode(forKey: "genericTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypes"])); fatalError() }; self.genericTypes = genericTypes
             guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName
             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods

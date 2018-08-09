@@ -29,6 +29,9 @@ public typealias SourceryMethod = Method
     /// Method parameter default value expression
     public var defaultValue: String?
 
+    /// Generic types with constraints
+    public var genericTypes: [Generic]
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: [String: NSObject] = [:]
 
@@ -38,7 +41,7 @@ public typealias SourceryMethod = Method
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [Generic] = []) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -46,10 +49,11 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.genericTypes = genericTypes
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [Generic] = []) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -57,6 +61,7 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.genericTypes = genericTypes
     }
 
     // sourcery:inline:MethodParameter.AutoCoding
@@ -68,6 +73,7 @@ public typealias SourceryMethod = Method
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            guard let genericTypes: [Generic] = aDecoder.decode(forKey: "genericTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypes"])); fatalError() }; self.genericTypes = genericTypes
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
@@ -79,6 +85,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.`inout`, forKey: "`inout`")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
+            aCoder.encode(self.genericTypes, forKey: "genericTypes")
             aCoder.encode(self.annotations, forKey: "annotations")
         }
         // sourcery:end
@@ -226,6 +233,9 @@ public typealias SourceryMethod = Method
     /// Method attributes, i.e. `@discardableResult`
     public let attributes: [String: Attribute]
 
+    /// Generic types with constraints
+    public var genericTypes: [Generic]
+
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     /// :nodoc:
@@ -244,7 +254,8 @@ public typealias SourceryMethod = Method
                 isFailableInitializer: Bool = false,
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
-                definedInTypeName: TypeName? = nil) {
+                definedInTypeName: TypeName? = nil,
+                genericTypes: [Generic] = []) {
 
         self.name = name
         self.selectorName = selectorName ?? name
@@ -259,6 +270,7 @@ public typealias SourceryMethod = Method
         self.attributes = attributes
         self.annotations = annotations
         self.definedInTypeName = definedInTypeName
+        self.genericTypes = genericTypes
     }
 
     // sourcery:inline:Method.AutoCoding
@@ -279,6 +291,7 @@ public typealias SourceryMethod = Method
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let genericTypes: [Generic] = aDecoder.decode(forKey: "genericTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypes"])); fatalError() }; self.genericTypes = genericTypes
         }
 
         /// :nodoc:
@@ -298,6 +311,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.genericTypes, forKey: "genericTypes")
         }
      // sourcery:end
 }
