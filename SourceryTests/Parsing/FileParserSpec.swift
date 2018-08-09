@@ -163,7 +163,7 @@ class FileParserSpec: QuickSpec {
                         expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\nclass Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
                     }
-                    
+
                     it("extracts generics correctly") {
                         let result = parse("""
 class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> where C : CustomStringConvertible, B : Comparable & Decodable, C : CustomDebugStringConvertible {
@@ -173,10 +173,10 @@ class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> where C : CustomString
 }
 """)
                         let expected = Class(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [TypeName("Equatable"), TypeName("Codable")]), Generic(name: "B", constraints: [TypeName("Baz<A>"), TypeName("Comparable"), TypeName("Decodable")]), Generic(name: "C", constraints: [TypeName("CustomStringConvertible"), TypeName("CustomDebugStringConvertible")])])
-                        let method = Method(name: "f<T : Codable>(_ t : T)", selectorName: "f(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("T"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [TypeName("Codable")])])
+                        let method = Method(name: "f<T : Codable>(_ t : T)", selectorName: "f(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("T where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [TypeName("Codable"), TypeName("Equatable")])])
                         expected.inheritedTypes = ["Bar<B>"]
                         expected.methods.append(method)
-                        
+
                         expect(result).to(equal([expected]))
                     }
                 }
