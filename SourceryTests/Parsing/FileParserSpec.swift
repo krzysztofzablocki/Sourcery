@@ -85,17 +85,17 @@ class FileParserSpec: QuickSpec {
                     it("extracts generic struct properly") {
                         expect(parse("struct Foo<Something> { }"))
                                 .to(equal([
-                                    Struct(name: "Foo", isGeneric: true, genericTypes: ["Something"])
+                                    Struct(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "Something")])
                                           ]))
 
                         expect(parse("struct Foo<  A  , B,C> { }"))
                             .to(equal([
-                                Struct(name: "Foo", isGeneric: true, genericTypes: ["A", "B", "C"])
+                                Struct(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A"), Generic(name: "B"), Generic(name: "C")])
                                 ]))
 
-                        expect(parse("struct Foo<A : Equatable, B:Codable,\n\nC > { }"))
+                        expect(parse("struct Foo<A : Equatable & Codable, B:Codable,\n\nC > { }"))
                             .to(equal([
-                                Struct(name: "Foo", isGeneric: true, genericTypes: ["A", "B", "C"])
+                                Struct(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [TypeName("Equatable"), TypeName("Codable")]), Generic(name: "B", constraints: [TypeName("Codable")]), Generic(name: "C")])
                                 ]))
                     }
 
@@ -162,6 +162,22 @@ class FileParserSpec: QuickSpec {
 
                         expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\nclass Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
+                    }
+                    
+                    it("extracts generics correctly") {
+                        let result = parse("""
+class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> where C : CustomStringConvertible, B : Comparable & Decodable, C : CustomDebugStringConvertible {
+    func f<T : Codable>(_ t : T) -> T where T : Equatable {
+        return t
+    }
+}
+""")
+                        let expected = Class(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [TypeName("Equatable"), TypeName("Codable")]), Generic(name: "B", constraints: [TypeName("Baz<A>"), TypeName("Comparable"), TypeName("Decodable")]), Generic(name: "C", constraints: [TypeName("CustomStringConvertible"), TypeName("CustomDebugStringConvertible")])])
+                        let method = Method(name: "f<T : Codable>(_ t : T)", selectorName: "f(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("T"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [TypeName("Codable")])])
+                        expected.inheritedTypes = ["Bar<B>"]
+                        expected.methods.append(method)
+                        
+                        expect(result).to(equal([expected]))
                     }
                 }
 
