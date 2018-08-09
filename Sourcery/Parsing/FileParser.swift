@@ -164,8 +164,10 @@ final class FileParser {
             }
 
             type.isGeneric = isGeneric(source: source)
-            if type.isGeneric {
-                type.genericTypes = extractGenerics(source: source)
+            if let suffix = extract(.nameSuffixUpToBody, from: source) {
+                let declaration = extractGenericsDeclaration(source: suffix)
+                let whereClause = extractGenericsWhereClause(source: suffix)
+                type.genericTypes = parseGenerics(declaration: declaration, whereClause: whereClause)
             }
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
@@ -310,23 +312,71 @@ extension FileParser {
         return true
     }
 
-    fileprivate func extractGenerics(source: [String: SourceKitRepresentable]) -> [String] {
-        if let name = extract(.nameSuffix, from: source),
-            let start = name.index(of: "<"),
-            let end = name.index(of: ">") {
-            let generics = String(name[name.index(after: start) ..< end])
-            return generics.components(separatedBy: ",")
-                .map { (type: String) -> String in
-                    if let constraintStart = type.index(of: ":") {
-                        return String(type[type.startIndex ..< constraintStart])
-                    } else {
-                        return type
-                    }
-                }
-                .map { type in type.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { type in !type.isEmpty }
+    fileprivate func extractGenericsDeclaration(source: String) -> String {
+        var declaration = source
+        if let whereStart = declaration.index(of: "where") {
+            declaration = String(declaration[declaration.startIndex ..< whereStart])
         }
-        return []
+
+        if let start = source.index(of: "<") {
+            var end = start
+            var openingAngles = 1
+            while openingAngles > 0 && end != source.endIndex {
+                end = source.index(after: end)
+                if source[end] == ">" {
+                    openingAngles -= 1
+                } else if source[end] == "<" {
+                    openingAngles += 1
+                }
+            }
+
+            return String(source[source.index(after: start) ..< end])
+        }
+        return ""
+    }
+
+    fileprivate func extractGenericsWhereClause(source: String) -> String {
+        if let start = source.index(of: "where") {
+            return String(source[source.index(start, offsetBy: "where".count) ..< source.endIndex])
+        }
+        return ""
+    }
+
+    fileprivate func parseGenerics(declaration: String, whereClause: String) -> [Generic] {
+        func extractGenerics(source: String) -> [Generic] {
+            return source.components(separatedBy: ",")
+                .filter { component in !component.isEmpty }
+                .map { (type: String) -> Generic in
+                    if let constraintStart = type.index(of: ":") {
+                        let name = String(type[type.startIndex ..< constraintStart]).trimmingCharacters(in: .whitespacesAndNewlines)
+                        let constraints = String(type[type.index(after: constraintStart) ..< type.endIndex])
+                            .components(separatedBy: "&")
+                            .map { constraint in
+                                TypeName(constraint.trimmingCharacters(in: .whitespacesAndNewlines))
+                        }
+                        return Generic(name: name, constraints: constraints)
+                    } else {
+                        return Generic(name: type.trimmingCharacters(in: .whitespacesAndNewlines))
+                    }
+            }
+        }
+
+        func findGeneric(withName name: String, in array: [Generic]) -> Generic {
+            let filtered = array.filter { generic in generic.name == name }
+            if let generic = filtered.first {
+                return generic
+            }
+            fatalError("Undeclared generic found: \(name)")
+        }
+
+        let generics = extractGenerics(source: declaration)
+        let genericsWhere = extractGenerics(source: whereClause)
+        for generic in genericsWhere {
+            let type = findGeneric(withName: generic.name, in: generics)
+            type.constraints += generic.constraints
+        }
+
+        return generics
     }
 
     fileprivate func setterAccessibility(source: [String: SourceKitRepresentable]) -> AccessLevel? {
@@ -616,8 +666,17 @@ extension FileParser {
             }
         }
 
+        var genericTypes: [Generic] = []
+        if let genericSource = extract(.name, from: source),
+            let parameterStartIndex = genericSource.index(of: "("),
+            let whereClauseSource = extract(.nameSuffixUpToBody, from: source) {
+            let declaration = extractGenericsDeclaration(source: String(genericSource[genericSource.startIndex ..< parameterStartIndex]))
+            let whereClause = extractGenericsWhereClause(source: whereClauseSource)
+            genericTypes = parseGenerics(declaration: declaration, whereClause: whereClause)
+        }
+
         let definedInTypeName  = definedIn.map { TypeName($0.name) }
-        let method = Method(name: fullName, selectorName: name.trimmingSuffix("()"), returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
+        let method = Method(name: fullName, selectorName: name.trimmingSuffix("()"), returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName, genericTypes: genericTypes)
         method.setSource(source)
 
         return method
