@@ -113,6 +113,15 @@ extension FileParserResult {
         return true
     }
 }
+extension Generic {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Generic else { return false }
+        if self.name != rhs.name { return false }
+        if self.constraints != rhs.constraints { return false }
+        return true
+    }
+}
 extension GenericType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -147,6 +156,7 @@ extension Method {
         if self.annotations != rhs.annotations { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.genericTypes != rhs.genericTypes { return false }
         return true
     }
 }
@@ -159,6 +169,7 @@ extension MethodParameter {
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
         if self.defaultValue != rhs.defaultValue { return false }
+        if self.genericTypes != rhs.genericTypes { return false }
         if self.annotations != rhs.annotations { return false }
         return true
     }
