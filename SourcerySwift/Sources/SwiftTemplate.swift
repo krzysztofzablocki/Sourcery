@@ -152,7 +152,7 @@ open class SwiftTemplate {
             } else if code.trimPrefix("=") {
                 commands.append(.output(code))
             } else if code.trimPrefix("^") {
-              commands.append(.topLevelDeclarations(code))
+                commands.append(.topLevelDeclarations(code))
             } else {
                 if !code.hasPrefix("#") && !code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     commands.append(.controlFlow(code))
