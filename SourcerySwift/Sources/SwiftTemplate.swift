@@ -44,12 +44,14 @@ open class SwiftTemplate {
         case output(String)
         case controlFlow(String)
         case outputEncoded(String)
+        case topLevelDeclarations(String)
     }
 
     static func parse(sourcePath: Path) throws -> String {
 
         let commands = try SwiftTemplate.parseCommands(in: sourcePath)
 
+        var topLevelDeclarations = [String]()
         var outputFile = [String]()
         for command in commands {
             switch command {
@@ -61,14 +63,17 @@ open class SwiftTemplate {
                 if !code.isEmpty {
                     outputFile.append(("print(\"") + code.stringEncoded + "\", terminator: \"\");")
                 }
+            case let .topLevelDeclarations(code):
+                topLevelDeclarations.append(code)
             }
         }
 
+        let topLevelContents = !topLevelDeclarations.isEmpty ? "\n\(topLevelDeclarations.joined(separator: "\n"))\n" : ""
         let contents = outputFile.joined(separator: "\n")
         let code = """
         import Foundation
         import SourceryRuntime
-
+        \(topLevelContents)
         extension TemplateContext {
             func generate() throws {
                 \(contents)
@@ -146,6 +151,8 @@ open class SwiftTemplate {
                 commands.append(contentsOf: includedCommands)
             } else if code.trimPrefix("=") {
                 commands.append(.output(code))
+            } else if code.trimPrefix("^") {
+                commands.append(.topLevelDeclarations(code))
             } else {
                 if !code.hasPrefix("#") && !code.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     commands.append(.controlFlow(code))
@@ -319,4 +326,3 @@ extension String {
         #endif
     }
 }
-
