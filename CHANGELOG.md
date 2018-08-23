@@ -6,6 +6,7 @@
 
 ### New Features
 
+- You can now include entire Swift files in Swift templates
 - You can now use AutoEquatable with annotations
 - Content from multiple file annotations will now be concatenated instead of writing only the latest generated content.
 
