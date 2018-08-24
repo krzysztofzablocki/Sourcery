@@ -85,7 +85,7 @@ extension AutoHashableClassInherited: Hashable {
 }
 // MARK: - AutoHashableNSObject AutoHashable
 extension AutoHashableNSObject {
-    internal var hashValue: Int {
+    internal override var hashValue: Int {
         let firstNameHashValue = firstName.hashValue
 
         return combineHashes([
