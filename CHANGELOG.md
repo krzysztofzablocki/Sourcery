@@ -39,6 +39,7 @@ line two
 
 ### Bug fixes
 
+- Fixed parsing associated enum cases in Xcode 10 
 - Fixed AutoEquatable access level for `==` func
 - Fixed path of generated files when linked to Xcode project
 - Fixed extraction of inline annotations in multi line comments with documentation style
