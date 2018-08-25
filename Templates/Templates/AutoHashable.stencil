@@ -126,7 +126,7 @@ fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?)
 // MARK: - {{ type.name }} AutoHashable
 extension {{ type.name }}{% if not type.kind == "protocol" and not type.based.NSObject %}: Hashable{% endif %} {
     {% if type.supertype.based.Hashable or type.supertype.implements.AutoHashable %}THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable{% endif %}
-    {{ type.accessLevel }} var hashValue: Int {
+    {{ type.accessLevel }}{% if type.based.NSObject %} override{% endif %} var hashValue: Int {
         {% if not type.kind == "protocol" %}
         {% call letCombineVariableHashes type.storedVariables %}
         {% else %}

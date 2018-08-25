@@ -44,6 +44,7 @@ line two
 - Fixed AutoEquatable access level for `==` func
 - Fixed path of generated files when linked to Xcode project
 - Fixed extraction of inline annotations in multi line comments with documentation style
+- Fixed compile error when used AutoHashable in NSObject subclass.
 
 ## 0.13.1
 
