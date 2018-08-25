@@ -288,6 +288,11 @@ extension FileParser {
     fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
         guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }),
               var name = dict[SwiftDocKey.name.rawValue] as? String else { return nil }
+
+        if case .enumelement = kind, let colon = name.index(of: "(") {
+            name = String(name[..<colon])
+        }
+
         if extract(.name, from: dict)?.hasPrefix("`") == true {
             name = "`\(name)`"
         }
