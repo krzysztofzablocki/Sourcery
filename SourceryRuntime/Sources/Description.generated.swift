@@ -154,7 +154,7 @@ extension Method {
         string += "annotations = \(String(describing: self.annotations)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
         string += "attributes = \(String(describing: self.attributes)), "
-        string += "genericTypes = \(String(describing: self.genericTypes))"
+        string += "genericTypeParameters = \(String(describing: self.genericTypeParameters))"
         return string
     }
 }
@@ -248,7 +248,7 @@ extension Type {
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "name = \(String(describing: self.name)), "
         string += "isGeneric = \(String(describing: self.isGeneric)), "
-        string += "genericTypes = \(String(describing: self.genericTypes)), "
+        string += "genericTypeParameters = \(String(describing: self.genericTypeParameters)), "
         string += "localName = \(String(describing: self.localName)), "
         string += "variables = \(String(describing: self.variables)), "
         string += "methods = \(String(describing: self.methods)), "

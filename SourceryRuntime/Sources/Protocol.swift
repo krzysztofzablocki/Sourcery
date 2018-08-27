@@ -31,7 +31,7 @@ public typealias SourceryProtocol = Protocol
                          attributes: [String: Attribute] = [:],
                          annotations: [String: NSObject] = [:],
                          isGeneric: Bool = false,
-                         genericTypes: [Generic] = []) {
+                         genericTypeParameters: [Generic] = []) {
         super.init(
             name: name,
             parent: parent,
@@ -45,7 +45,7 @@ public typealias SourceryProtocol = Protocol
             typealiases: typealiases,
             annotations: annotations,
             isGeneric: isGeneric,
-            genericTypes: genericTypes
+            genericTypeParameters: genericTypeParameters
         )
     }
 

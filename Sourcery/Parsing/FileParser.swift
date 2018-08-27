@@ -167,7 +167,7 @@ final class FileParser {
             if let suffix = extract(.nameSuffixUpToBody, from: source) {
                 let declaration = extractGenericsDeclaration(source: suffix)
                 let whereClause = extractGenericsWhereClause(source: suffix)
-                type.genericTypes = parseGenerics(declaration: declaration, whereClause: whereClause)
+                type.genericTypeParameters = parseGenerics(declaration: declaration, whereClause: whereClause)
             }
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
@@ -683,7 +683,7 @@ extension FileParser {
         }
 
         let definedInTypeName  = definedIn.map { TypeName($0.name) }
-        let method = Method(name: fullName, selectorName: name.trimmingSuffix("()"), returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName, genericTypes: genericTypes)
+        let method = Method(name: fullName, selectorName: name.trimmingSuffix("()"), returnTypeName: TypeName(returnTypeName), throws: `throws`, rethrows: `rethrows`, accessLevel: accessibility, isStatic: isStatic, isClass: isClass, isFailableInitializer: isFailableInitializer, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName, genericTypeParameters: genericTypes)
         method.setSource(source)
 
         return method
