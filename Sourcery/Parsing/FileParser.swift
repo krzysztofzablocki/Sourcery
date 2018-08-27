@@ -362,7 +362,7 @@ extension FileParser {
                         let constraints = String(type[type.index(after: constraintStart) ..< type.endIndex])
                             .components(separatedBy: "&")
                             .map { constraint in
-                                TypeName(constraint.trimmingCharacters(in: .whitespacesAndNewlines))
+                                GenericTypeParameterConstraint(name: TypeName(constraint.trimmingCharacters(in: .whitespacesAndNewlines)))
                         }
                         return Generic(name: name, constraints: constraints)
                     } else {

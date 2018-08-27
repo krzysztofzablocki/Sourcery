@@ -139,6 +139,15 @@ extension GenericTypeParameter {
         return true
     }
 }
+extension GenericTypeParameterConstraint {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypeParameterConstraint else { return false }
+        if self.name != rhs.name { return false }
+        if self.type != rhs.type { return false }
+        return true
+    }
+}
 extension Method {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {

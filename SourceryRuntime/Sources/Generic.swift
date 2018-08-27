@@ -2,9 +2,9 @@ import Foundation
 
 @objcMembers public final class Generic: NSObject, SourceryModel {
     public let name: String
-    public var constraints: [TypeName]
+    public var constraints: [GenericTypeParameterConstraint]
 
-    public init(name: String, constraints: [TypeName] = []) {
+    public init(name: String, constraints: [GenericTypeParameterConstraint] = []) {
         self.name = name
         self.constraints = constraints
     }
@@ -13,7 +13,7 @@ import Foundation
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let constraints: [TypeName] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
+            guard let constraints: [GenericTypeParameterConstraint] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
         }
 
         /// :nodoc:
