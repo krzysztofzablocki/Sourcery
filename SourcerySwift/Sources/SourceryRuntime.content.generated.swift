@@ -102,6 +102,7 @@ import Foundation
         case escaping
         case final
         case open
+        case lazy
         case `public` = "public"
         case `internal` = "internal"
         case `private` = "private"
@@ -191,22 +192,19 @@ import Foundation
         }
     }
 
-    // sourcery:inline:sourcery:.AutoCoding
+    // sourcery:inline:Attribute.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
             guard let _description: String = aDecoder.decode(forKey: "_description") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["_description"])); fatalError() }; self._description = _description
-
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
-
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.arguments, forKey: "arguments")
             aCoder.encode(self._description, forKey: "_description")
-
         }
         // sourcery:end
 
@@ -281,7 +279,8 @@ import Foundation
                          typealiases: [Typealias] = [],
                          attributes: [String: Attribute] = [:],
                          annotations: [String: NSObject] = [:],
-                         isGeneric: Bool = false) {
+                         isGeneric: Bool = false,
+                         genericTypeParameters: [GenericTypeParameter] = []) {
         super.init(
             name: name,
             parent: parent,
@@ -294,7 +293,8 @@ import Foundation
             containedTypes: containedTypes,
             typealiases: typealiases,
             annotations: annotations,
-            isGeneric: isGeneric
+            isGeneric: isGeneric,
+            genericTypeParameters: genericTypeParameters
         )
     }
 
@@ -379,6 +379,8 @@ extension FileParserResult: NSCoding {}
 extension GenericType: NSCoding {}
 
 extension GenericTypeParameter: NSCoding {}
+
+extension GenericTypeParameterConstraint: NSCoding {}
 
 extension Method: NSCoding {}
 
@@ -545,7 +547,17 @@ extension GenericTypeParameter {
     /// :nodoc:
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "typeName = \\(String(describing: self.typeName))"
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "constraints = \\(String(describing: self.constraints))"
+        return string
+    }
+}
+extension GenericTypeParameterConstraint {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "type = \\(String(describing: self.type))"
         return string
     }
 }
@@ -565,7 +577,8 @@ extension Method {
         string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
         string += "annotations = \\(String(describing: self.annotations)), "
         string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "attributes = \\(String(describing: self.attributes))"
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "genericTypeParameters = \\(String(describing: self.genericTypeParameters))"
         return string
     }
 }
@@ -579,6 +592,7 @@ extension MethodParameter {
         string += "`inout` = \\(String(describing: self.`inout`)), "
         string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
         string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "genericTypes = \\(String(describing: self.genericTypes)), "
         string += "annotations = \\(String(describing: self.annotations))"
         return string
     }
@@ -624,7 +638,7 @@ extension TemplateContext {
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string += "types = \\(String(describing: self.types)), "
-        string += "arguments = \\(String(describing: self.arguments)), "
+        string += "argument = \\(String(describing: self.argument)), "
         string += "stencilContext = \\(String(describing: self.stencilContext))"
         return string
     }
@@ -658,6 +672,7 @@ extension Type {
         string += "accessLevel = \\(String(describing: self.accessLevel)), "
         string += "name = \\(String(describing: self.name)), "
         string += "isGeneric = \\(String(describing: self.isGeneric)), "
+        string += "genericTypeParameters = \\(String(describing: self.genericTypeParameters)), "
         string += "localName = \\(String(describing: self.localName)), "
         string += "variables = \\(String(describing: self.variables)), "
         string += "methods = \\(String(describing: self.methods)), "
@@ -713,6 +728,7 @@ extension Variable {
         string += "annotations = \\(String(describing: self.annotations)), "
         string += "attributes = \\(String(describing: self.attributes)), "
         string += "isFinal = \\(String(describing: self.isFinal)), "
+        string += "isLazy = \\(String(describing: self.isLazy)), "
         string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
         string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName))"
         return string
@@ -880,6 +896,19 @@ extension GenericTypeParameter: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "constraints").trackDifference(actual: self.constraints, expected: castObject.constraints))
+        return results
+    }
+}
+extension GenericTypeParameterConstraint: Diffable {
+    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericTypeParameterConstraint else {
+            results.append("Incorrect type <expected: GenericTypeParameterConstraint, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
         return results
     }
 }
@@ -903,6 +932,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         return results
     }
 }
@@ -918,6 +948,7 @@ extension MethodParameter: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypes").trackDifference(actual: self.genericTypes, expected: castObject.genericTypes))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         return results
     }
@@ -969,7 +1000,7 @@ extension TemplateContext: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
-        results.append(contentsOf: DiffableResult(identifier: "arguments").trackDifference(actual: self.arguments, expected: castObject.arguments))
+        results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
         return results
     }
 }
@@ -1009,6 +1040,7 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
         results.append(contentsOf: DiffableResult(identifier: "variables").trackDifference(actual: self.variables, expected: castObject.variables))
         results.append(contentsOf: DiffableResult(identifier: "methods").trackDifference(actual: self.methods, expected: castObject.methods))
@@ -1634,6 +1666,16 @@ extension GenericTypeParameter {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? GenericTypeParameter else { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.constraints != rhs.constraints { return false }
+        return true
+    }
+}
+extension GenericTypeParameterConstraint {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypeParameterConstraint else { return false }
+        if self.name != rhs.name { return false }
+        if self.type != rhs.type { return false }
         return true
     }
 }
@@ -1654,6 +1696,7 @@ extension Method {
         if self.annotations != rhs.annotations { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         return true
     }
 }
@@ -1666,6 +1709,7 @@ extension MethodParameter {
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
         if self.defaultValue != rhs.defaultValue { return false }
+        if self.genericTypes != rhs.genericTypes { return false }
         if self.annotations != rhs.annotations { return false }
         return true
     }
@@ -1703,7 +1747,7 @@ extension TemplateContext {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TemplateContext else { return false }
         if self.types != rhs.types { return false }
-        if self.arguments != rhs.arguments { return false }
+        if self.argument != rhs.argument { return false }
         return true
     }
 }
@@ -1734,6 +1778,7 @@ extension Type {
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
+        if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.localName != rhs.localName { return false }
         if self.variables != rhs.variables { return false }
         if self.methods != rhs.methods { return false }
@@ -2057,6 +2102,37 @@ import Foundation
 }
 
 """),
+    .init(name: "GenericTypeParameterConstraint.swift", content:
+"""
+import Foundation
+
+/// Represents an inheritance/implementation constraint in a generic type parameter
+@objcMembers public final class GenericTypeParameterConstraint: NSObject, SourceryModel {
+    public let name: TypeName
+    public let type: Type?
+
+    /// :nodoc:
+    public init(name: TypeName, type: Type? = nil) {
+        self.name = name
+        self.type = type
+    }
+
+    // sourcery:inline:GenericTypeParameterConstraint.AutoCoding
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: TypeName = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            self.type = aDecoder.decode(forKey: "type")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.type, forKey: "type")
+        }
+    // sourcery:end
+}
+
+"""),
     .init(name: "JSExport.generated.swift", content:
 """
 // Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
@@ -2110,6 +2186,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2177,6 +2254,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2215,7 +2293,6 @@ extension Enum: EnumAutoJSExport {}
 }
 
 extension EnumCase: EnumCaseAutoJSExport {}
-
 
 @objc protocol GenericTypeAutoJSExport: JSExport {
     var name: String { get }
@@ -2261,6 +2338,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
     var attributes: [String: Attribute] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -2273,6 +2351,7 @@ extension Method: MethodAutoJSExport {}
     var type: Type? { get }
     var typeAttributes: [String: Attribute] { get }
     var defaultValue: String? { get }
+    var genericTypes: [GenericTypeParameter] { get }
     var annotations: [String: NSObject] { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -2288,6 +2367,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2326,6 +2406,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2379,7 +2460,7 @@ extension Subscript: SubscriptAutoJSExport {}
 
 @objc protocol TemplateContextAutoJSExport: JSExport {
     var types: Types { get }
-    var arguments: [String: NSObject] { get }
+    var argument: [String: NSObject] { get }
     var type: [String: Type] { get }
     var stencilContext: [String: Any] { get }
     var jsContext: [String: Any] { get }
@@ -2412,6 +2493,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2486,6 +2568,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
     var isFinal: Bool { get }
+    var isLazy: Bool { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -2579,6 +2662,9 @@ public typealias SourceryMethod = Method
     /// Method parameter default value expression
     public var defaultValue: String?
 
+    /// Generic types with constraints
+    public var genericTypes: [GenericTypeParameter]
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: [String: NSObject] = [:]
 
@@ -2588,7 +2674,7 @@ public typealias SourceryMethod = Method
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [GenericTypeParameter] = []) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -2596,10 +2682,11 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.genericTypes = genericTypes
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [GenericTypeParameter] = []) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -2607,6 +2694,7 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.genericTypes = genericTypes
     }
 
     // sourcery:inline:MethodParameter.AutoCoding
@@ -2618,6 +2706,7 @@ public typealias SourceryMethod = Method
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            guard let genericTypes: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypes"])); fatalError() }; self.genericTypes = genericTypes
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
@@ -2629,6 +2718,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.`inout`, forKey: "`inout`")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
+            aCoder.encode(self.genericTypes, forKey: "genericTypes")
             aCoder.encode(self.annotations, forKey: "annotations")
         }
         // sourcery:end
@@ -2776,6 +2866,9 @@ public typealias SourceryMethod = Method
     /// Method attributes, i.e. `@discardableResult`
     public let attributes: [String: Attribute]
 
+    /// Generic type parameters with constraints
+    public var genericTypeParameters: [GenericTypeParameter]
+
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     /// :nodoc:
@@ -2794,7 +2887,8 @@ public typealias SourceryMethod = Method
                 isFailableInitializer: Bool = false,
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
-                definedInTypeName: TypeName? = nil) {
+                definedInTypeName: TypeName? = nil,
+                genericTypeParameters: [GenericTypeParameter] = []) {
 
         self.name = name
         self.selectorName = selectorName ?? name
@@ -2809,6 +2903,7 @@ public typealias SourceryMethod = Method
         self.attributes = attributes
         self.annotations = annotations
         self.definedInTypeName = definedInTypeName
+        self.genericTypeParameters = genericTypeParameters
     }
 
     // sourcery:inline:Method.AutoCoding
@@ -2829,6 +2924,7 @@ public typealias SourceryMethod = Method
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let genericTypeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
         }
 
         /// :nodoc:
@@ -2848,6 +2944,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.genericTypeParameters, forKey: "genericTypeParameters")
         }
      // sourcery:end
 }
@@ -2914,7 +3011,8 @@ public typealias SourceryProtocol = Protocol
                          typealiases: [Typealias] = [],
                          attributes: [String: Attribute] = [:],
                          annotations: [String: NSObject] = [:],
-                         isGeneric: Bool = false) {
+                         isGeneric: Bool = false,
+                         genericTypeParameters: [GenericTypeParameter] = []) {
         super.init(
             name: name,
             parent: parent,
@@ -2927,7 +3025,8 @@ public typealias SourceryProtocol = Protocol
             containedTypes: containedTypes,
             typealiases: typealiases,
             annotations: annotations,
-            isGeneric: isGeneric
+            isGeneric: isGeneric,
+            genericTypeParameters: genericTypeParameters
         )
     }
 
@@ -2984,7 +3083,8 @@ import Foundation
                          typealiases: [Typealias] = [],
                          attributes: [String: Attribute] = [:],
                          annotations: [String: NSObject] = [:],
-                         isGeneric: Bool = false) {
+                         isGeneric: Bool = false,
+                         genericTypeParameters: [GenericTypeParameter] = []) {
         super.init(
             name: name,
             parent: parent,
@@ -2997,7 +3097,8 @@ import Foundation
             containedTypes: containedTypes,
             typealiases: typealiases,
             annotations: annotations,
-            isGeneric: isGeneric
+            isGeneric: isGeneric,
+            genericTypeParameters: genericTypeParameters
         )
     }
 
@@ -3157,7 +3258,7 @@ import Foundation
 /// :nodoc:
 @objcMembers public final class TemplateContext: NSObject, SourceryModel {
     public let types: Types
-    public let arguments: [String: NSObject]
+    public let argument: [String: NSObject]
 
     // sourcery: skipDescription
     public var type: [String: Type] {
@@ -3166,20 +3267,20 @@ import Foundation
 
     public init(types: Types, arguments: [String: NSObject]) {
         self.types = types
-        self.arguments = arguments
+        self.argument = arguments
     }
 
     // sourcery:inline:TemplateContext.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let types: Types = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
-            guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
+            guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argument"])); fatalError() }; self.argument = argument
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.types, forKey: "types")
-            aCoder.encode(self.arguments, forKey: "arguments")
+            aCoder.encode(self.argument, forKey: "argument")
         }
     // sourcery:end
 
@@ -3187,7 +3288,7 @@ import Foundation
         return [
             "types": types,
             "type": types.typesByName,
-            "argument": arguments
+            "argument": argument
         ]
     }
 
@@ -3206,7 +3307,7 @@ import Foundation
                 "implementing": types.implementing
             ],
             "type": types.typesByName,
-            "argument": arguments
+            "argument": argument
         ]
     }
 
@@ -3379,6 +3480,9 @@ extension ProcessInfo {
         }
     }
 
+    public override func responds(to aSelector: Selector!) -> Bool {
+        return true
+    }
 }
 
 """),
@@ -3431,6 +3535,9 @@ import Foundation
 
     /// Whether type is generic
     public var isGeneric: Bool
+
+    /// Generic type parameters
+    public var genericTypeParameters: [GenericTypeParameter]
 
     /// Type name in its own scope.
     public var localName: String
@@ -3626,7 +3733,8 @@ import Foundation
                 typealiases: [Typealias] = [],
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
-                isGeneric: Bool = false) {
+                isGeneric: Bool = false,
+                genericTypeParameters: [GenericTypeParameter] = []) {
 
         self.localName = name
         self.accessLevel = accessLevel.rawValue
@@ -3642,6 +3750,7 @@ import Foundation
         self.attributes = attributes
         self.annotations = annotations
         self.isGeneric = isGeneric
+        self.genericTypeParameters = genericTypeParameters
 
         super.init()
         containedTypes.forEach {
@@ -3678,6 +3787,7 @@ import Foundation
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
+            guard let genericTypeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
             guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName
             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods
@@ -3704,6 +3814,7 @@ import Foundation
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isGeneric, forKey: "isGeneric")
+            aCoder.encode(self.genericTypeParameters, forKey: "genericTypeParameters")
             aCoder.encode(self.localName, forKey: "localName")
             aCoder.encode(self.variables, forKey: "variables")
             aCoder.encode(self.methods, forKey: "methods")
@@ -3981,10 +4092,14 @@ public protocol Typed {
     /// Generic parameter type, if known
     public var type: Type?
 
+    /// Generic type parameter constraints
+    public var constraints: [GenericTypeParameterConstraint]
+
     /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil) {
+    public init(typeName: TypeName, type: Type? = nil, constraints: [GenericTypeParameterConstraint] = []) {
         self.typeName = typeName
         self.type = type
+        self.constraints = constraints
     }
 
     // sourcery:inline:GenericTypeParameter.AutoCoding
@@ -3992,12 +4107,14 @@ public protocol Typed {
         required public init?(coder aDecoder: NSCoder) {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
+            guard let constraints: [GenericTypeParameterConstraint] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.constraints, forKey: "constraints")
         }
 
     // sourcery:end
@@ -4480,6 +4597,11 @@ public typealias SourceryVariable = Variable
     /// Whether variable is final or not
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
+    }
+
+    /// Whether variable is lazy or not
+    public var isLazy: Bool {
+        return attributes[Attribute.Identifier.lazy.name] != nil
     }
 
     /// Reference to type name where the variable is defined,

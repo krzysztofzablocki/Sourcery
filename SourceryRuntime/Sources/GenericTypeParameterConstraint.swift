@@ -1,9 +1,11 @@
 import Foundation
 
+/// Represents an inheritance/implementation constraint in a generic type parameter
 @objcMembers public final class GenericTypeParameterConstraint: NSObject, SourceryModel {
     public let name: TypeName
     public let type: Type?
 
+    /// :nodoc:
     public init(name: TypeName, type: Type? = nil) {
         self.name = name
         self.type = type
