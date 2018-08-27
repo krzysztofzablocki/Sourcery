@@ -324,6 +324,11 @@ extension FileParser {
         }
 
         if let start = source.index(of: "<") {
+            if let inheritance = source.index(of: ":") {
+                if inheritance < start {
+                    return ""
+                }
+            }
             var end = start
             var openingAngles = 1
             while openingAngles > 0 && end != source.endIndex {
