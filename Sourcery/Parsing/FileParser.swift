@@ -352,11 +352,11 @@ extension FileParser {
         return ""
     }
 
-    fileprivate func parseGenerics(declaration: String, whereClause: String) -> [Generic] {
-        func extractGenerics(source: String) -> [Generic] {
+    fileprivate func parseGenerics(declaration: String, whereClause: String) -> [GenericTypeParameter] {
+        func extractGenerics(source: String) -> [GenericTypeParameter] {
             return source.commaSeparated()
                 .filter { component in !component.isEmpty }
-                .map { (type: String) -> Generic in
+                .map { (type: String) -> GenericTypeParameter in
                     if let constraintStart = type.index(of: ":") {
                         let name = String(type[type.startIndex ..< constraintStart]).trimmingCharacters(in: .whitespacesAndNewlines)
                         let constraints = String(type[type.index(after: constraintStart) ..< type.endIndex])
@@ -364,15 +364,15 @@ extension FileParser {
                             .map { constraint in
                                 GenericTypeParameterConstraint(name: TypeName(constraint.trimmingCharacters(in: .whitespacesAndNewlines)))
                         }
-                        return Generic(name: name, constraints: constraints)
+                        return GenericTypeParameter(typeName: TypeName(name), constraints: constraints)
                     } else {
-                        return Generic(name: type.trimmingCharacters(in: .whitespacesAndNewlines))
+                        return GenericTypeParameter(typeName: TypeName(type.trimmingCharacters(in: .whitespacesAndNewlines)))
                     }
             }
         }
 
-        func findGeneric(withName name: String, in array: [Generic]) -> Generic? {
-            let filtered = array.filter { generic in generic.name == name }
+        func findGeneric(withName name: String, in array: [GenericTypeParameter]) -> GenericTypeParameter? {
+            let filtered = array.filter { generic in generic.typeName.name == name }
             if let generic = filtered.first {
                 return generic
             }
@@ -383,7 +383,7 @@ extension FileParser {
         let generics = extractGenerics(source: declaration)
         let genericsWhere = extractGenerics(source: whereClause)
         for generic in genericsWhere {
-            if let type = findGeneric(withName: generic.name, in: generics) {
+            if let type = findGeneric(withName: generic.typeName.name, in: generics) {
                 type.constraints += generic.constraints
             }
         }
@@ -678,7 +678,7 @@ extension FileParser {
             }
         }
 
-        var genericTypes: [Generic] = []
+        var genericTypes: [GenericTypeParameter] = []
         if let genericSource = extract(.name, from: source),
             let parameterStartIndex = genericSource.index(of: "("),
             let whereClauseSource = nameSuffix {

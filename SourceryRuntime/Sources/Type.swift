@@ -47,7 +47,7 @@ import Foundation
     public var isGeneric: Bool
 
     /// Generic type parameters
-    public var genericTypeParameters: [Generic]
+    public var genericTypeParameters: [GenericTypeParameter]
 
     /// Type name in its own scope.
     public var localName: String
@@ -244,7 +244,7 @@ import Foundation
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
                 isGeneric: Bool = false,
-                genericTypeParameters: [Generic] = []) {
+                genericTypeParameters: [GenericTypeParameter] = []) {
 
         self.localName = name
         self.accessLevel = accessLevel.rawValue
@@ -297,7 +297,7 @@ import Foundation
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
-            guard let genericTypeParameters: [Generic] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
+            guard let genericTypeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
             guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName
             guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
             guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods

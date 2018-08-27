@@ -136,18 +136,6 @@ extension FileParserResult: Diffable {
         return results
     }
 }
-extension Generic: Diffable {
-    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Generic else {
-            results.append("Incorrect type <expected: Generic, received: \(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "constraints").trackDifference(actual: self.constraints, expected: castObject.constraints))
-        return results
-    }
-}
 extension GenericType: Diffable {
     @objc func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -168,6 +156,7 @@ extension GenericTypeParameter: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "constraints").trackDifference(actual: self.constraints, expected: castObject.constraints))
         return results
     }
 }
