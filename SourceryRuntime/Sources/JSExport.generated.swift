@@ -49,7 +49,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
-    var genericTypeParameters: [Generic] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -117,7 +117,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
-    var genericTypeParameters: [Generic] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -156,14 +156,6 @@ extension Enum: EnumAutoJSExport {}
 }
 
 extension EnumCase: EnumCaseAutoJSExport {}
-
-
-@objc protocol GenericAutoJSExport: JSExport {
-    var name: String { get }
-    var constraints: [GenericTypeParameterConstraint] { get }
-}
-
-extension Generic: GenericAutoJSExport {}
 
 @objc protocol GenericTypeAutoJSExport: JSExport {
     var name: String { get }
@@ -209,7 +201,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
     var attributes: [String: Attribute] { get }
-    var genericTypeParameters: [Generic] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -222,7 +214,7 @@ extension Method: MethodAutoJSExport {}
     var type: Type? { get }
     var typeAttributes: [String: Attribute] { get }
     var defaultValue: String? { get }
-    var genericTypes: [Generic] { get }
+    var genericTypes: [GenericTypeParameter] { get }
     var annotations: [String: NSObject] { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -238,7 +230,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
-    var genericTypeParameters: [Generic] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -277,7 +269,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
-    var genericTypeParameters: [Generic] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -364,7 +356,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
-    var genericTypeParameters: [Generic] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }

@@ -242,10 +242,14 @@ public protocol Typed {
     /// Generic parameter type, if known
     public var type: Type?
 
+    /// Generic type parameter constraints
+    public var constraints: [GenericTypeParameterConstraint]
+
     /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil) {
+    public init(typeName: TypeName, type: Type? = nil, constraints: [GenericTypeParameterConstraint] = []) {
         self.typeName = typeName
         self.type = type
+        self.constraints = constraints
     }
 
     // sourcery:inline:GenericTypeParameter.AutoCoding
@@ -253,12 +257,14 @@ public protocol Typed {
         required public init?(coder aDecoder: NSCoder) {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
+            guard let constraints: [GenericTypeParameterConstraint] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.constraints, forKey: "constraints")
         }
 
     // sourcery:end

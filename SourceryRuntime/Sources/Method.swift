@@ -30,7 +30,7 @@ public typealias SourceryMethod = Method
     public var defaultValue: String?
 
     /// Generic types with constraints
-    public var genericTypes: [Generic]
+    public var genericTypes: [GenericTypeParameter]
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: [String: NSObject] = [:]
@@ -41,7 +41,7 @@ public typealias SourceryMethod = Method
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [Generic] = []) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [GenericTypeParameter] = []) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -53,7 +53,7 @@ public typealias SourceryMethod = Method
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [Generic] = []) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypes: [GenericTypeParameter] = []) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -73,7 +73,7 @@ public typealias SourceryMethod = Method
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let genericTypes: [Generic] = aDecoder.decode(forKey: "genericTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypes"])); fatalError() }; self.genericTypes = genericTypes
+            guard let genericTypes: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypes"])); fatalError() }; self.genericTypes = genericTypes
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
@@ -234,7 +234,7 @@ public typealias SourceryMethod = Method
     public let attributes: [String: Attribute]
 
     /// Generic type parameters with constraints
-    public var genericTypeParameters: [Generic]
+    public var genericTypeParameters: [GenericTypeParameter]
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
@@ -255,7 +255,7 @@ public typealias SourceryMethod = Method
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
                 definedInTypeName: TypeName? = nil,
-                genericTypeParameters: [Generic] = []) {
+                genericTypeParameters: [GenericTypeParameter] = []) {
 
         self.name = name
         self.selectorName = selectorName ?? name
@@ -291,7 +291,7 @@ public typealias SourceryMethod = Method
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
-            guard let genericTypeParameters: [Generic] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
+            guard let genericTypeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
         }
 
         /// :nodoc:

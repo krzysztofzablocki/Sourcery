@@ -60,8 +60,6 @@ extension EnumCase: NSCoding {}
 
 extension FileParserResult: NSCoding {}
 
-extension Generic: NSCoding {}
-
 extension GenericType: NSCoding {}
 
 extension GenericTypeParameter: NSCoding {}

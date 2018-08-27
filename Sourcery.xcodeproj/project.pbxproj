@@ -44,7 +44,6 @@
 		09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
-		115FBA49211C34A00083BBDD /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115FBA48211C34A00083BBDD /* Generic.swift */; };
 		115FBA4B211C54B80083BBDD /* StringProtocol+Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115FBA4A211C54B80083BBDD /* StringProtocol+Index.swift */; };
 		11CA511C213433FD00014693 /* GenericTypeParameterConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CA511B213433FD00014693 /* GenericTypeParameterConstraint.swift */; };
 		524A2EA71FFD3C40001CD8F9 /* BytesRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524A2EA61FFD3C40001CD8F9 /* BytesRange.swift */; };
@@ -189,7 +188,6 @@
 		09C61FA31E760FF2005EA58A /* Xcode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Xcode.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Sourcery-gbqvopozrlnehjdzvxfvrvqwyvsg/Build/Products/Debug/Xcode.framework"; sourceTree = "<group>"; };
 		09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Xcode+Extensions.swift"; sourceTree = "<group>"; };
 		09C6B0D31E11C1C500246CDF /* ClassSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassSpec.swift; sourceTree = "<group>"; };
-		115FBA48211C34A00083BBDD /* Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Generic.swift; path = SourceryRuntime/Sources/Generic.swift; sourceTree = SOURCE_ROOT; };
 		115FBA4A211C54B80083BBDD /* StringProtocol+Index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringProtocol+Index.swift"; sourceTree = "<group>"; };
 		11CA511B213433FD00014693 /* GenericTypeParameterConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenericTypeParameterConstraint.swift; path = SourceryRuntime/Sources/GenericTypeParameterConstraint.swift; sourceTree = SOURCE_ROOT; };
 		1C89B1773424486B9D4C5369 /* Pods_SourcerySwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourcerySwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -376,7 +374,6 @@
 				09334E6F1EB916040092806F /* Typealias.swift */,
 				09334E701EB916040092806F /* TypeName.swift */,
 				09334E711EB916040092806F /* Variable.swift */,
-				115FBA48211C34A00083BBDD /* Generic.swift */,
 				11CA511B213433FD00014693 /* GenericTypeParameterConstraint.swift */,
 			);
 			path = Models;
@@ -1208,7 +1205,6 @@
 				09334E801EB916040092806F /* TypeName.swift in Sources */,
 				09334E7C1EB916040092806F /* Struct.swift in Sources */,
 				09334E7A1EB916040092806F /* PhantomProtocols.swift in Sources */,
-				115FBA49211C34A00083BBDD /* Generic.swift in Sources */,
 				09334E5B1EB915E00092806F /* Coding.generated.swift in Sources */,
 				09334E7D1EB916040092806F /* TemplateContext.swift in Sources */,
 				63D25BE71FD0356E007592AA /* Subscript.swift in Sources */,

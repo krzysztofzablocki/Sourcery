@@ -102,15 +102,6 @@ extension FileParserResult {
         return string
     }
 }
-extension Generic {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "constraints = \(String(describing: self.constraints))"
-        return string
-    }
-}
 extension GenericType {
     /// :nodoc:
     override public var description: String {
@@ -124,7 +115,8 @@ extension GenericTypeParameter {
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "typeName = \(String(describing: self.typeName))"
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "constraints = \(String(describing: self.constraints))"
         return string
     }
 }
