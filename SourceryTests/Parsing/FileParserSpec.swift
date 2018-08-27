@@ -589,6 +589,18 @@ class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> \nwhere C : CustomStri
                                 Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
                                 ))
                     }
+
+                    it("extracts generics from method") {
+                        let result = parse("""
+protocol Foo {
+    func doSomething<T : Bar>(_ value : T) -> Int where T : Equatable
+}
+""")
+                        let expected = Protocol(name: "Foo")
+                        let method = Method(name: "doSomething<T : Bar>(_ value : T)", selectorName: "doSomething(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "value", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("Int where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [TypeName("Bar"), TypeName("Equatable")])])
+                        expected.methods = [method]
+                        expect(result).to(equal([expected]))
+                    }
                 }
             }
         }
