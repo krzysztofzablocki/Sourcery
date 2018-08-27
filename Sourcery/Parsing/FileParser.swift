@@ -349,7 +349,7 @@ extension FileParser {
 
     fileprivate func parseGenerics(declaration: String, whereClause: String) -> [Generic] {
         func extractGenerics(source: String) -> [Generic] {
-            return source.components(separatedBy: ",")
+            return source.commaSeparated()
                 .filter { component in !component.isEmpty }
                 .map { (type: String) -> Generic in
                     if let constraintStart = type.index(of: ":") {
