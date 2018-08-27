@@ -361,19 +361,21 @@ extension FileParser {
             }
         }
 
-        func findGeneric(withName name: String, in array: [Generic]) -> Generic {
+        func findGeneric(withName name: String, in array: [Generic]) -> Generic? {
             let filtered = array.filter { generic in generic.name == name }
             if let generic = filtered.first {
                 return generic
             }
-            fatalError("Undeclared generic found: \(name)")
+            Log.error("Undeclared generic found: \(name)")
+            return nil
         }
 
         let generics = extractGenerics(source: declaration)
         let genericsWhere = extractGenerics(source: whereClause)
         for generic in genericsWhere {
-            let type = findGeneric(withName: generic.name, in: generics)
-            type.constraints += generic.constraints
+            if let type = findGeneric(withName: generic.name, in: generics) {
+                type.constraints += generic.constraints
+            }
         }
 
         return generics
