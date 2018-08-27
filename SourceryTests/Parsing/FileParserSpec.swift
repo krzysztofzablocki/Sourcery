@@ -186,6 +186,12 @@ class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> \nwhere C : CustomStri
                         expected.inheritedTypes = ["Bar<Int>"]
                         expect(result).to(equal([expected]))
                     }
+
+                    it("extracts generics with complex types with commas") {
+                        let result = parse("class Foo<A : [(String, Int)]> {}")
+                        let expected = Class(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [TypeName("[(String, Int)]")])])
+                        expect(result).to(equal([expected]))
+                    }
                 }
 
                 context("given unknown type") {
