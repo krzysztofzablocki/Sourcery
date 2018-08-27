@@ -95,7 +95,7 @@ class FileParserSpec: QuickSpec {
 
                         expect(parse("struct Foo<A : Equatable & Codable, B:Codable,\n\nC > { }"))
                             .to(equal([
-                                Struct(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [TypeName("Equatable"), TypeName("Codable")]), Generic(name: "B", constraints: [TypeName("Codable")]), Generic(name: "C")])
+                                Struct(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [GenericTypeParameterConstraint(name: TypeName("Equatable")), GenericTypeParameterConstraint(name: TypeName("Codable"))]), Generic(name: "B", constraints: [GenericTypeParameterConstraint(name: TypeName("Codable"))]), Generic(name: "C")])
                                 ]))
                     }
 
@@ -172,8 +172,8 @@ class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> \nwhere C : CustomStri
     }
 }
 """)
-                        let expected = Class(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [TypeName("Equatable"), TypeName("Codable")]), Generic(name: "B", constraints: [TypeName("Baz<A>"), TypeName("Comparable"), TypeName("Decodable")]), Generic(name: "C", constraints: [TypeName("CustomStringConvertible"), TypeName("CustomDebugStringConvertible")])])
-                        let method = Method(name: "f<T : Codable>(_ t : T)", selectorName: "f(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("T where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [TypeName("Codable"), TypeName("Equatable")])])
+                        let expected = Class(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [GenericTypeParameterConstraint(name: TypeName("Equatable")), GenericTypeParameterConstraint(name: TypeName("Codable"))]), Generic(name: "B", constraints: [GenericTypeParameterConstraint(name: TypeName("Baz<A>")), GenericTypeParameterConstraint(name: TypeName("Comparable")), GenericTypeParameterConstraint(name: TypeName("Decodable"))]), Generic(name: "C", constraints: [GenericTypeParameterConstraint(name: TypeName("CustomStringConvertible")), GenericTypeParameterConstraint(name: TypeName("CustomDebugStringConvertible"))])])
+                        let method = Method(name: "f<T : Codable>(_ t : T)", selectorName: "f(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("T where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [GenericTypeParameterConstraint(name: TypeName("Codable")), GenericTypeParameterConstraint(name: TypeName("Equatable"))])])
                         expected.inheritedTypes = ["Bar<B>"]
                         expected.methods.append(method)
 
@@ -189,7 +189,7 @@ class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> \nwhere C : CustomStri
 
                     it("extracts generics with complex types with commas") {
                         let result = parse("class Foo<A : [(String, Int)]> {}")
-                        let expected = Class(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [TypeName("[(String, Int)]")])])
+                        let expected = Class(name: "Foo", isGeneric: true, genericTypes: [Generic(name: "A", constraints: [GenericTypeParameterConstraint(name: TypeName("[(String, Int)]"))])])
                         expect(result).to(equal([expected]))
                     }
                 }
@@ -597,7 +597,7 @@ protocol Foo {
 }
 """)
                         let expected = Protocol(name: "Foo")
-                        let method = Method(name: "doSomething<T : Bar>(_ value : T)", selectorName: "doSomething(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "value", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("Int where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [TypeName("Bar"), TypeName("Equatable")])])
+                        let method = Method(name: "doSomething<T : Bar>(_ value : T)", selectorName: "doSomething(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "value", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("Int where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypes: [Generic(name: "T", constraints: [GenericTypeParameterConstraint(name: TypeName("Bar")), GenericTypeParameterConstraint(name: TypeName("Equatable"))])])
                         expected.methods = [method]
                         expect(result).to(equal([expected]))
                     }

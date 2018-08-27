@@ -171,6 +171,18 @@ extension GenericTypeParameter: Diffable {
         return results
     }
 }
+extension GenericTypeParameterConstraint: Diffable {
+    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericTypeParameterConstraint else {
+            results.append("Incorrect type <expected: GenericTypeParameterConstraint, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
+        return results
+    }
+}
 extension Method: Diffable {
     @objc func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
