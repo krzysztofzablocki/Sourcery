@@ -25,7 +25,7 @@ import Foundation
                          attributes: [String: Attribute] = [:],
                          annotations: [String: NSObject] = [:],
                          isGeneric: Bool = false,
-                         genericTypes: [Generic] = []) {
+                         genericTypeParameters: [Generic] = []) {
         super.init(
             name: name,
             parent: parent,
@@ -39,7 +39,7 @@ import Foundation
             typealiases: typealiases,
             annotations: annotations,
             isGeneric: isGeneric,
-            genericTypes: genericTypes
+            genericTypeParameters: genericTypeParameters
         )
     }
 

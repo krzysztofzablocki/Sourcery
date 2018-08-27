@@ -203,7 +203,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "genericTypes").trackDifference(actual: self.genericTypes, expected: castObject.genericTypes))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         return results
     }
 }
@@ -311,7 +311,7 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
-        results.append(contentsOf: DiffableResult(identifier: "genericTypes").trackDifference(actual: self.genericTypes, expected: castObject.genericTypes))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
         results.append(contentsOf: DiffableResult(identifier: "variables").trackDifference(actual: self.variables, expected: castObject.variables))
         results.append(contentsOf: DiffableResult(identifier: "methods").trackDifference(actual: self.methods, expected: castObject.methods))

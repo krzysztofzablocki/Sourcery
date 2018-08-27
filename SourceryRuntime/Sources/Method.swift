@@ -233,8 +233,8 @@ public typealias SourceryMethod = Method
     /// Method attributes, i.e. `@discardableResult`
     public let attributes: [String: Attribute]
 
-    /// Generic types with constraints
-    public var genericTypes: [Generic]
+    /// Generic type parameters with constraints
+    public var genericTypeParameters: [Generic]
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
@@ -255,7 +255,7 @@ public typealias SourceryMethod = Method
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
                 definedInTypeName: TypeName? = nil,
-                genericTypes: [Generic] = []) {
+                genericTypeParameters: [Generic] = []) {
 
         self.name = name
         self.selectorName = selectorName ?? name
@@ -270,7 +270,7 @@ public typealias SourceryMethod = Method
         self.attributes = attributes
         self.annotations = annotations
         self.definedInTypeName = definedInTypeName
-        self.genericTypes = genericTypes
+        self.genericTypeParameters = genericTypeParameters
     }
 
     // sourcery:inline:Method.AutoCoding
@@ -291,7 +291,7 @@ public typealias SourceryMethod = Method
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
-            guard let genericTypes: [Generic] = aDecoder.decode(forKey: "genericTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypes"])); fatalError() }; self.genericTypes = genericTypes
+            guard let genericTypeParameters: [Generic] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
         }
 
         /// :nodoc:
@@ -311,7 +311,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
-            aCoder.encode(self.genericTypes, forKey: "genericTypes")
+            aCoder.encode(self.genericTypeParameters, forKey: "genericTypeParameters")
         }
      // sourcery:end
 }
