@@ -179,6 +179,13 @@ class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> \nwhere C : CustomStri
 
                         expect(result).to(equal([expected]))
                     }
+
+                    it("doesn't extract generics if they are concrete parameters to the supertype") {
+                        let result = parse("class Foo : Bar<Int> {}")
+                        let expected = Class(name: "Foo", isGeneric: false)
+                        expected.inheritedTypes = ["Bar<Int>"]
+                        expect(result).to(equal([expected]))
+                    }
                 }
 
                 context("given unknown type") {
