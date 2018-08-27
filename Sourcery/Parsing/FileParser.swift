@@ -676,7 +676,7 @@ extension FileParser {
         var genericTypes: [Generic] = []
         if let genericSource = extract(.name, from: source),
             let parameterStartIndex = genericSource.index(of: "("),
-            let whereClauseSource = extract(.nameSuffixUpToBody, from: source) {
+            let whereClauseSource = nameSuffix {
             let declaration = extractGenericsDeclaration(source: String(genericSource[genericSource.startIndex ..< parameterStartIndex]))
             let whereClause = extractGenericsWhereClause(source: whereClauseSource)
             genericTypes = parseGenerics(declaration: declaration, whereClause: whereClause)
