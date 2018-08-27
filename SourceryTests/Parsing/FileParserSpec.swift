@@ -166,7 +166,7 @@ class FileParserSpec: QuickSpec {
 
                     it("extracts generics correctly") {
                         let result = parse("""
-class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> where C : CustomStringConvertible, B : Comparable & Decodable, C : CustomDebugStringConvertible {
+class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> \nwhere C : CustomStringConvertible, \nB : Comparable & Decodable, \n\nC : CustomDebugStringConvertible {
     func f<T : Codable>(_ t : T) -> T where T : Equatable {
         return t
     }
