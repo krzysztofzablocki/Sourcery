@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable file_length
@@ -92,7 +92,7 @@ extension AutoHashableClassInherited: Hashable {
 }
 // MARK: - AutoHashableNSObject AutoHashable
 extension AutoHashableNSObject {
-    internal var hashValue: Int {
+    internal override var hashValue: Int {
         let firstNameHashValue = firstName.hashValue
 
         return combineHashes([
