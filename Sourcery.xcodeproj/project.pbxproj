@@ -1097,7 +1097,6 @@
 				"${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftTryCatch/SwiftTryCatch.framework",
 				"${BUILT_PRODUCTS_DIR}/Yams/Yams.framework",
-				"${BUILT_PRODUCTS_DIR}/libCommonCrypto/CommonCrypto.framework",
 				"${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1111,7 +1110,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StencilSwiftKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftTryCatch.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Yams.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CommonCrypto.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/xcproj.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
