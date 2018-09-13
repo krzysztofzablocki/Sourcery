@@ -104,6 +104,16 @@ class AnnotationsParserSpec: QuickSpec {
 
                     expect(result["decoding"] as? Annotations).to(equal(annotations))
                 }
+
+                it("extracts json string annotations into arrays of dictionaries") {
+                    let parsedAnnotations = parse("// sourcery: propertyMapping=\"[{\"from\": \"lockVersion\", \"to\": \"version\"},{\"from\": \"goalStatus\", \"to\": \"status\"}]\"")
+                    expect(parsedAnnotations["propertyMapping"] as? [[String: String]]).to(equal([["from": "lockVersion", "to": "version"], ["from": "goalStatus", "to": "status"]]))
+                }
+
+                it("extracts json string annotations into dictionaries of arrays") {
+                    let parsedAnnotations = parse("// sourcery: theArrays=\"{\"firstArray\":[22,55,88],\"secondArray\":[1,2,3,4]}\"")
+                    expect(parsedAnnotations["theArrays"] as? [String: [Int]]).to(equal(["firstArray": [22, 55, 88], "secondArray": [1, 2, 3, 4]]))
+                }
             }
         }
     }

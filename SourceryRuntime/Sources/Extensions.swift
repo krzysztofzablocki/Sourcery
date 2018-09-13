@@ -113,13 +113,13 @@ public extension String {
     /// :nodoc:
     /// Returns components separated with a comma respecting nested types
     func commaSeparated() -> [String] {
-        return components(separatedBy: ",", excludingDelimiterBetween: ("<[(", ")]>"))
+        return components(separatedBy: ",", excludingDelimiterBetween: ("<[({", "})]>"))
     }
 
     /// :nodoc:
     /// Returns components separated with colon respecting nested types
     func colonSeparated() -> [String] {
-        return components(separatedBy: ":", excludingDelimiterBetween: ("<[(", ")]>"))
+        return components(separatedBy: ":", excludingDelimiterBetween: ("<[({", "})]>"))
     }
 
     /// :nodoc:
