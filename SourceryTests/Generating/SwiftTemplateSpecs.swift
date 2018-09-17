@@ -155,5 +155,56 @@ class SwiftTemplateTests: QuickSpec {
                     }))
             }
         }
+
+        describe("FolderSynchronizer") {
+            let outputDir: Path = {
+                return Stubs.cleanTemporarySourceryDir()
+            }()
+            let files: [FolderSynchronizer.File] = [.init(name: "file.swift", content: "Swift code")]
+
+            it("adds its files to an empty folder") {
+                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+                    .toNot(throwError())
+
+                let newFile = outputDir + Path("file.swift")
+                expect(newFile.exists).to(equal(true))
+                expect(try? newFile.read()).to(equal("Swift code"))
+            }
+
+            it("creates the target folder if it does not exist") {
+                let synchronizedFolder = outputDir + Path("Folder")
+
+                expect { try FolderSynchronizer().sync(files: files, to: synchronizedFolder) }
+                    .toNot(throwError())
+
+                expect(synchronizedFolder.exists).to(equal(true))
+                expect(synchronizedFolder.isDirectory).to(equal(true))
+            }
+
+            it("deletes files not present in the synchronized files") {
+                let existingFile = outputDir + Path("Existing.swift")
+                expect { try existingFile.write("Discarded") }
+                    .toNot(throwError())
+
+                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+                    .toNot(throwError())
+
+                expect(existingFile.exists).to(equal(false))
+                let newFile = outputDir + Path("file.swift")
+                expect(newFile.exists).to(equal(true))
+                expect(try? newFile.read()).to(equal("Swift code"))
+            }
+
+            it("replaces the content of a file if a file with the same name already exists") {
+                let existingFile = outputDir + Path("file.swift")
+                expect { try existingFile.write("Discarded") }
+                    .toNot(throwError())
+
+                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+                    .toNot(throwError())
+
+                expect(try? existingFile.read()).to(equal("Swift code"))
+            }
+        }
     }
 }
