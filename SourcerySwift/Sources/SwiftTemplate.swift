@@ -29,9 +29,7 @@ open class SwiftTemplate {
 
     private lazy var buildDir: Path = {
         guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate.build") else { fatalError("Unable to get temporary path") }
-        _ = try? FileManager.default.removeItem(at: tempDirURL)
         // swiftlint:disable:next force_try
-        try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
         return Path(tempDirURL.path)
     }()
 
@@ -184,7 +182,6 @@ open class SwiftTemplate {
                 try? cachePath.delete() // clear old cache
                 try cachePath.mkdir()
                 try build().move(binaryPath)
-                try copyFramework(to: cachePath.parent())
             }
         } else {
             try binaryPath = build()
@@ -203,57 +200,68 @@ open class SwiftTemplate {
     }
 
     func build() throws -> Path {
-        let mainFile = buildDir + Path("main.swift")
-        let binaryFile = buildDir + Path("bin")
+        let sourcesDir = buildDir + Path("Sources")
+        let templateFilesDir = sourcesDir + Path("SwiftTemplate")
+        let mainFile = templateFilesDir + Path("main.swift")
+        let manifestFile = buildDir + Path("Package.swift")
 
-        try copyFramework(to: buildDir.parent())
+        try sourcesDir.mkpath()
+        try? templateFilesDir.delete()
+        try templateFilesDir.mkpath()
+
+        try copyRuntimePackage(to: sourcesDir)
+        try manifestFile.write(manifestCode)
         try mainFile.write(code)
 
-        let includedFileDescriptions = includedFiles.map { $0.description }
-        let arguments = [mainFile.description] + includedFileDescriptions +
-            [
-                "-suppress-warnings",
-                "-Onone",
-                "-module-name", "main",
-                "-target", "x86_64-apple-macosx10.11",
-                "-F", buildDir.parent().description,
-                "-o", binaryFile.description,
-                "-Xlinker", "-headerpad_max_install_names"
+        let binaryFile = buildDir + Path(".build/debug/SwiftTemplate")
+
+        try includedFiles.forEach { includedFile in
+            try includedFile.copy(templateFilesDir + Path(includedFile.lastComponent))
+        }
+
+        let arguments = [
+            "xcrun",
+            "swift",
+            "build",
+            "-Xswiftc", "-Onone",
+            "-Xswiftc", "-suppress-warnings",
+            "--disable-sandbox"
         ]
+        let compilationResult = try Process.runCommand(path: "/usr/bin/env",
+                                                       arguments: arguments,
+                                                       currentDirectoryPath: buildDir)
 
-        let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
-                                                       arguments: arguments)
         if !compilationResult.error.isEmpty {
-            throw compilationResult.error
+            throw compilationResult.output
         }
-        
-        let linkingResult = try Process.runCommand(path: "/usr/bin/install_name_tool",
-                                                   arguments: [
-                                                    "-add_rpath",
-                                                    "@executable_path/../",
-                                                    binaryFile.description])
-        if !linkingResult.error.isEmpty {
-            throw linkingResult.error
-        }
-
-        try? mainFile.delete()
 
         return binaryFile
     }
 
-    private func copyFramework(to path: Path) throws {
-        let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryRuntime.framework"
+    private var manifestCode: String {
+        return """
+        // swift-tools-version:4.0
+        // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-        let copyFramework = try Process.runCommand(path: "/usr/bin/rsync", arguments: [
-            "-av",
-            "--force",
-            sourceryFramework.description,
-            path.description
-            ])
+        import PackageDescription
 
-        if !copyFramework.error.isEmpty {
-            throw copyFramework.error
-        }
+        let package = Package(
+            name: "SwiftTemplate",
+            products: [
+                .executable(name: "SwiftTemplate", targets: ["SwiftTemplate"])
+            ],
+            targets: [
+                .target(name: "SourceryRuntime"),
+                .target(
+                    name: "SwiftTemplate",
+                    dependencies: ["SourceryRuntime"]),
+            ]
+        )
+        """
+    }
+
+    private func copyRuntimePackage(to path: Path) throws {
+        try FolderSynchronizer().sync(files: sourceryRuntimeFiles, to: path + Path("SourceryRuntime"))
     }
 
 }
@@ -282,11 +290,19 @@ private extension String {
 }
 
 private extension Process {
-    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:]) throws -> ProcessResult {
+    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:], currentDirectoryPath: Path? = nil) throws -> ProcessResult {
         let task = Process()
         task.launchPath = path
         task.arguments = arguments
         task.environment = environment
+        if let currentDirectoryPath = currentDirectoryPath {
+            if #available(OSX 10.13, *) {
+                task.currentDirectoryURL = currentDirectoryPath.url
+            } else {
+                task.currentDirectoryPath = currentDirectoryPath.description
+            }
+        }
+        task.environment = ProcessInfo.processInfo.environment
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
