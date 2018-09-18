@@ -45,6 +45,7 @@
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		318C19AAFC31E399EDCDD13D /* Pods_SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C99CD10C34CBEFBE35F3CA2 /* Pods_SourceryJS.framework */; };
+		47379D2B215962BF002C1DAA /* SourceryRuntime.content.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */; };
 		524A2EA71FFD3C40001CD8F9 /* BytesRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524A2EA61FFD3C40001CD8F9 /* BytesRange.swift */; };
 		52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */; };
 		6359E6651FE409250015AF8F /* FileParser+SubscriptsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359E6641FE409250015AF8F /* FileParser+SubscriptsSpec.swift */; };
@@ -188,6 +189,7 @@
 		09C6B0D31E11C1C500246CDF /* ClassSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassSpec.swift; sourceTree = "<group>"; };
 		0ECBC00661CC5D0A2D4A77DD /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
 		450EF887CFA35EEC009A0752 /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceryRuntime.content.generated.swift; sourceTree = "<group>"; };
 		4BBF7447571BAF1EAB6585CD /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
 		524A2EA61FFD3C40001CD8F9 /* BytesRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BytesRange.swift; path = SourceryRuntime/Sources/BytesRange.swift; sourceTree = SOURCE_ROOT; };
 		52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationSpec.swift; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 		635AB277201F2E5E00342C13 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */,
 				635AB278201F2E8700342C13 /* SwiftTemplate.swift */,
 			);
 			path = Sources;
@@ -716,6 +719,7 @@
 			buildConfigurationList = 635AB275201F2E5400342C13 /* Build configuration list for PBXNativeTarget "SourcerySwift" */;
 			buildPhases = (
 				FE81FAF234D5C6596947BBE5 /* [CP] Check Pods Manifest.lock */,
+				471019502150EA5300F50715 /* Package SourceryRuntime code */,
 				635AB265201F2E5300342C13 /* Sources */,
 				635AB266201F2E5300342C13 /* Frameworks */,
 				635AB267201F2E5300342C13 /* Headers */,
@@ -918,6 +922,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		471019502150EA5300F50715 /* Package SourceryRuntime code */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Package SourceryRuntime code";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Scripts/PackageContent.sh\" \"${SRCROOT}/SourceryRuntime/Sources/\" > \"${SRCROOT}/SourcerySwift/Sources/SourceryRuntime.content.generated.swift\"\n";
+			showEnvVarsInLog = 0;
+		};
 		635AB27F201F3A8200342C13 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1109,6 +1128,7 @@
 			files = (
 				635AB280201F413500342C13 /* Sha.swift in Sources */,
 				635AB279201F2E8700342C13 /* SwiftTemplate.swift in Sources */,
+				47379D2B215962BF002C1DAA /* SourceryRuntime.content.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
