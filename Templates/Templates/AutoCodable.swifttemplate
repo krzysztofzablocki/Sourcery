@@ -87,7 +87,11 @@ func codingKeysFor(_ type: Type) -> (generated: [String], all: [String]) {
     } else if let enumType = type as? Enum {
         let casesKeys: [String]
         if enumType.hasAssociatedValues {
-            casesKeys = enumType.cases.map({ $0.name }) + enumType.cases.flatMap({ $0.associatedValues }).flatMap({ $0.localName })
+            casesKeys = enumType.cases.map({ $0.name }) + enumType.cases.flatMap({ enumCase in
+              enumCase.associatedValues.enumerated().map({ (index, associatedValue) in
+                associatedValue.localName ?? "\(enumCase.name)_\(index)"
+              })
+            })
         } else {
             casesKeys = enumType.cases.map({ $0.name })
         }
@@ -108,9 +112,7 @@ func codingKeysFor(_ type: Type) -> (generated: [String], all: [String]) {
     return (generated: generatedKeys, all: allCodingKeys)
 }
 -%>
-<%_ for type in types.all
-                where (type is Struct || type is Enum)
-                && (type.implements["AutoDecodable"] != nil || type.implements["AutoEncodable"] != nil) { -%>
+<%_ for type in types.all where (type is Struct || type is Enum) && (type.implements["AutoDecodable"] != nil || type.implements["AutoEncodable"] != nil) { -%>
     <%_ let codingKeys = codingKeysFor(type) -%>
     <%_ if let codingKeysType = type.containedType["CodingKeys"] as? Enum, codingKeys.generated.count > 0 { -%>
 // sourcery:inline:auto:<%= codingKeysType.name %>.AutoCodable
@@ -150,14 +152,15 @@ extension <%= type.name %> {
         switch enumCase {
         <%_ for enumCase in enumType.cases { -%>
         case CodingKeys.<%= enumCase.name %>.rawValue:
-            <%_ for associatedValue in enumCase.associatedValues where associatedValue.localName != nil { -%>
-            let <%= associatedValue.localName! %> = try container.decode(<%= associatedValue.typeName %>.self, forKey: .<%= associatedValue.localName! %>)
+          <%_ for (index, associatedValue) in enumCase.associatedValues.enumerated() { -%>
+            <%_ let name = associatedValue.localName ?? "\(enumCase.name)_\(index)" %>
+            let <%= name %> = try container.decode(<%= associatedValue.typeName %>.self, forKey: .<%= name %>)
             <%_ } -%>
             <%_ if enumCase.associatedValues.isEmpty { -%>
             self = .<%= enumCase.name %>
             <%_ } else { -%>
             self = .<%= enumCase.name %>(<% -%>
-                <%_ %><%= enumCase.associatedValues.map({ "\($0.localName!): \($0.localName!)" }).joined(separator: ", ") %>)
+            <%_ %><%= enumCase.associatedValues.enumerated().map({ $1.localName != nil ? "\($1.localName!): \($1.localName!)" : "\(enumCase.name)_\($0)" }).joined(separator: ", ") %>)
             <%_ } -%>
         <%_ } -%>
         default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
@@ -169,11 +172,12 @@ extension <%= type.name %> {
             self = .<%= enumCase.name %>
             <%_ } else { -%>
             let associatedValues = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
-            <%_ for associatedValue in enumCase.associatedValues where associatedValue.localName != nil { -%>
-            let <%= associatedValue.localName! %> = try associatedValues.decode(<%= associatedValue.typeName %>.self, forKey: .<%= associatedValue.localName! %>)
+            <%_ for (index, associatedValue) in enumCase.associatedValues.enumerated() { -%>
+            <%_ let name = associatedValue.localName ?? "\(enumCase.name)_\(index)" %>
+            let <%= name %> = try associatedValues.decode(<%= associatedValue.typeName %>.self, forKey: .<%= name %>)
             <%_ } -%>
             self = .<%= enumCase.name %>(<% -%>
-            <%_ %><%= enumCase.associatedValues.map({ "\($0.localName!): \($0.localName!)" }).joined(separator: ", ") %>)
+            <%_ %><%= enumCase.associatedValues.enumerated().map({ $1.localName != nil ? "\($1.localName!): \($1.localName!)" : "\(enumCase.name)_\($0)" }).joined(separator: ", ") %>)
             <%_ } -%>
             return
         }
@@ -226,10 +230,11 @@ extension <%= type.name %> {
         case .<%= enumCase.name %>:
             try container.encode(CodingKeys.<%= enumCase.name %>.rawValue, forKey: .enumCaseKey)
         <%_ } else { -%>
-        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.map({ "\($0.localName ?? "_")" }).joined(separator: ", ") %>):
+        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.enumerated().map({ "\($1.localName ?? "\(enumCase.name)_\($0)")" }).joined(separator: ", ") %>):
             try container.encode(CodingKeys.<%= enumCase.name %>.rawValue, forKey: .enumCaseKey)
-            <%_ for accociatedValue in enumCase.associatedValues where accociatedValue.localName != nil { -%>
-            try container.encode(<%= accociatedValue.localName! %>, forKey: .<%= accociatedValue.localName! %>)
+            <%_ for associatedValue in enumCase.associatedValues { -%>
+            <%_ let name = associatedValue.localName ?? "\(enumCase.name)_\(index)" %>
+            try container.encode(<%= name %>, forKey: .<%= name %>)
             <%_ } -%>
         <%_ } -%>
         <%_ } -%>
@@ -241,10 +246,11 @@ extension <%= type.name %> {
         case .<%= enumCase.name %>:
             _ = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
         <%_ } else { -%>
-        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.map({ "\($0.localName ?? "_")" }).joined(separator: ", ") %>):
+        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.enumerated().map({ "\($1.localName ?? "\(enumCase.name)_\($0)")" }).joined(separator: ", ") %>):
             var associatedValues = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
-            <%_ for accociatedValue in enumCase.associatedValues where accociatedValue.localName != nil { -%>
-            try associatedValues.encode(<%= accociatedValue.localName! %>, forKey: .<%= accociatedValue.localName! %>)
+            <%_ for (index, associatedValue) in enumCase.associatedValues.enumerated() { -%>
+            <%_ let name = associatedValue.localName ?? "\(enumCase.name)_\(index)" %>
+            try associatedValues.encode(<%= name %>, forKey: .<%= name %>)
         <%_ } -%>
         <%_ } -%>
         <%_ } -%>
