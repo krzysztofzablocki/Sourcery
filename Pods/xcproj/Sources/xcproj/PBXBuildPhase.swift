@@ -2,7 +2,7 @@ import Foundation
 
 /// An absctract class for all the build phase objects
 public class PBXBuildPhase: PBXContainerItem {
-    
+
     /// Default build action mask.
     public static let defaultBuildActionMask: UInt = 2147483647
 
@@ -30,7 +30,6 @@ public class PBXBuildPhase: PBXContainerItem {
     }
 
     // MARK: - Decodable
-
     fileprivate enum CodingKeys: String, CodingKey {
         case buildActionMask
         case files
@@ -58,13 +57,14 @@ public class PBXBuildPhase: PBXContainerItem {
     override func plistValues(proj: PBXProj, reference: String) -> [CommentedString: PlistValue] {
         var dictionary = super.plistValues(proj: proj, reference: reference)
         dictionary["buildActionMask"] = .string(CommentedString("\(buildActionMask)"))
-        dictionary["files"] = .array(files.map { fileReference in
+        let files: PlistValue = .array(self.files.map { fileReference in
             let name = proj.objects.fileName(buildFileReference: fileReference)
             let type = proj.objects.buildPhaseName(buildFileReference: fileReference)
             let fileName = name ?? "(null)"
             let comment = (type.flatMap { "\(fileName) in \($0)" }) ?? name
             return .string(CommentedString(fileReference, comment: comment))
         })
+        dictionary["files"] = files
         dictionary["runOnlyForDeploymentPostprocessing"] = .string(CommentedString("\(runOnlyForDeploymentPostprocessing.int)"))
         return dictionary
     }

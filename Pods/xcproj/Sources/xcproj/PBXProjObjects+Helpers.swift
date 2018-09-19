@@ -31,8 +31,8 @@ public extension PBXProj.Objects {
     /// - Returns: all files in target's sources build phase, or empty array if sources build phase is not found.
     public func sourceFiles(target: PBXTarget) -> [ObjectReference<PBXFileElement>] {
         return sourcesBuildPhase(target: target)?.files
-            .flatMap { buildFiles[$0]?.fileRef }
-            .flatMap { fileRef in getFileElement(reference: fileRef).map { ObjectReference(reference: fileRef, object: $0) }}
+            .compactMap { buildFiles[$0]?.fileRef }
+            .compactMap { fileRef in getFileElement(reference: fileRef).map { ObjectReference(reference: fileRef, object: $0) }}
             ?? []
     }
 

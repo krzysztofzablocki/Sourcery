@@ -1,6 +1,6 @@
 # Stencil
 
-[![Build Status](https://travis-ci.org/kylef/Stencil.svg?branch=master)](https://travis-ci.org/kylef/Stencil)
+[![Build Status](https://travis-ci.org/stencilproject/Stencil.svg?branch=master)](https://travis-ci.org/stencilproject/Stencil)
 
 Stencil is a simple and powerful template language for Swift. It provides a
 syntax similar to Django and Mustache. If you're familiar with these, you will
@@ -62,6 +62,13 @@ Resources to help you integrate Stencil into a Swift project:
 - [Getting Started](http://stencil.fuller.li/en/latest/getting-started.html)
 - [API Reference](http://stencil.fuller.li/en/latest/api.html)
 - [Custom Template Tags and Filters](http://stencil.fuller.li/en/latest/custom-template-tags-and-filters.html)
+
+## Projects that use Stencil
+
+[Sourcery](https://github.com/krzysztofzablocki/Sourcery),
+[SwiftGen](https://github.com/SwiftGen/SwiftGen),
+[Kitura](https://github.com/IBM-Swift/Kitura),
+[Weaver](https://github.com/scribd/Weaver)
 
 ## License
 

@@ -119,7 +119,6 @@ final public class PBXFileReference: PBXFileElement {
         try super.init(from: decoder)
     }
     
-    
     // MARK: - PlistSerializable
     
     override var multiline: Bool { return false }
@@ -153,7 +152,7 @@ final public class PBXFileReference: PBXFileElement {
     }
 }
 
-fileprivate let fileTypeHash: [String: String] = [
+private let fileTypeHash: [String: String] = [
     "a": "archive.ar",
     "apns": "text",
     "app": "wrapper.application",
@@ -202,4 +201,3 @@ extension PBXFileReference {
     }
     
 }
-

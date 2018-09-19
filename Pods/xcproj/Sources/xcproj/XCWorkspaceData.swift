@@ -35,7 +35,7 @@ extension XCWorkspaceData: Writable {
         let children = try xml
             .root
             .children
-            .flatMap(XCWorkspaceDataElement.init(element:))
+            .compactMap(XCWorkspaceDataElement.init(element:))
 
         self.init(children: children)
     }
@@ -73,7 +73,6 @@ public enum XCWorkspaceDataError: Error, CustomStringConvertible {
     }
 
 }
-
 
 // MARK: - XCWorkspaceDataElement AEXMLElement decoding and encoding
 

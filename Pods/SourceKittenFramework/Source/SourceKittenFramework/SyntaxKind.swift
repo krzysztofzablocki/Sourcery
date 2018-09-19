@@ -47,6 +47,8 @@ public enum SyntaxKind: String {
     case stringInterpolationAnchor = "source.lang.swift.syntaxtype.string_interpolation_anchor"
     /// `typeidentifier`.
     case typeidentifier = "source.lang.swift.syntaxtype.typeidentifier"
+    /// `pounddirective.keyword`.
+    case poundDirectiveKeyword = "source.lang.swift.syntaxtype.pounddirective.keyword"
 
     /// Returns the valid documentation comment syntax kinds.
     internal static func docComments() -> [SyntaxKind] {

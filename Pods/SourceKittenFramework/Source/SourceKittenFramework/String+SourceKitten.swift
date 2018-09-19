@@ -506,7 +506,7 @@ extension String {
                 column: 1, offset: UInt32(markByteRange.location))
             return SourceDeclaration(type: .mark, location: location, extent: (location, location), name: markString,
                                      usr: nil, declaration: nil, documentation: nil, commentBody: nil, children: [],
-                                     swiftDeclaration: nil, swiftName: nil, availability: nil)
+                                     annotations: nil, swiftDeclaration: nil, swiftName: nil, availability: nil)
         }
     }
 #endif

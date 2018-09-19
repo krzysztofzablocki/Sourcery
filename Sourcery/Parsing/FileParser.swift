@@ -630,7 +630,7 @@ extension FileParser {
         guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
 
         var associatedValues: [AssociatedValue] = []
-        var rawValue: String? = nil
+        var rawValue: String?
 
         guard let keyString = extract(.key, from: source), let nameRange = keyString.range(of: name) else {
             Log.warning("\(logPrefix)parseEnumCase: Unable to extract enum body from \(source)")

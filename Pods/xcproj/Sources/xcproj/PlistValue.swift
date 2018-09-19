@@ -113,7 +113,7 @@ extension Dictionary where Key == String {
 extension Array {
     
     func plist() -> PlistValue {
-        return .array(self.flatMap({ (element) -> PlistValue? in
+        return .array(self.compactMap({ (element) -> PlistValue? in
             if let array = element as? [Any] {
                 return array.plist()
             } else if let dictionary = element as? [String: Any] {

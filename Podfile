@@ -26,14 +26,14 @@ target 'CodableContextTests' do
 end
 
 target 'Sourcery' do
-  pod 'Stencil', '0.10.1'
-  pod 'StencilSwiftKit', '2.4.0' 
-  pod 'Commander', '0.6.0'
-  pod 'PathKit', '0.8.0'
-  pod "xcproj", '4.2.0'
-  pod 'SourceKittenFramework', '0.21.1'
+  pod 'Stencil', '0.12.1'
+  pod 'StencilSwiftKit', '2.6.0'
+  pod 'Commander', '0.7.0'
+  pod 'PathKit', '0.9.2'
+  pod "xcproj", :git =>'git@github.com:tuist/xcodeproj.git', :tag => '4.3.1'
+  pod 'SourceKittenFramework', '0.21.2'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
-  pod 'AEXML', '4.2.2'
+  pod 'AEXML', '4.3.3'
 
   target 'SourceryTests' do
     inherit! :search_paths
@@ -42,23 +42,19 @@ target 'Sourcery' do
 end
 
 target 'SourceryJS' do
-  pod 'PathKit', '0.8.0'
+  pod 'PathKit', '0.9.2'
 end
 
 target 'SourcerySwift' do
-  pod 'PathKit', '0.8.0'
+  pod 'PathKit', '0.9.2'
 end
 
 swift4 = ['SourceKittenFramework', 'Yams', 'xcproj']
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-    swift_version = '3.2'
-    if swift4.include?(target.name)
-      swift_version = '4.0'
-    end
     target.build_configurations.each do |config|
-      config.build_settings['SWIFT_VERSION'] = swift_version
+      config.build_settings['SWIFT_VERSION'] = '4.0'
     end
   end
 end

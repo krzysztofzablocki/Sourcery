@@ -1,0 +1,30 @@
+{
+  "name": "xcproj",
+  "version": "4.3.0",
+  "summary": "Read/Modify/Write your Xcode projects",
+  "homepage": "https://github.com/xcodeswift/xcproj",
+  "social_media_url": "https://twitter.com/xcodeswiftio",
+  "license": "MIT",
+  "authors": [
+    "Pedro Pinñera",
+    "Yonas Kolb"
+  ],
+  "source": {
+    "git": "https://github.com/xcodeswift/xcproj.git",
+    "tag": "4.3.0"
+  },
+  "requires_arc": true,
+  "platforms": {
+    "osx": "10.10",
+    "ios": "8.0"
+  },
+  "source_files": "Sources/**/*.{swift}",
+  "dependencies": {
+    "PathKit": [
+      "~> 0.9.1"
+    ],
+    "AEXML": [
+      "~> 4.3"
+    ]
+  }
+}

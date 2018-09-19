@@ -1,6 +1,11 @@
 import Foundation
 import PathKit
 
+#if os(Linux)
+import Glibc
+import SwiftShims
+#endif
+
 /// Model that represents a .xcodeproj project.
 final public class XcodeProj {
 
