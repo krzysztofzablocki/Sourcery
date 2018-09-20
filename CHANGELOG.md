@@ -16,6 +16,12 @@
 - You can now pass a json string as a command line arg or annotation and have it parsed into a Dictionary or Array to be used in the template.
 - Support for Xcode 10 and Swift 4.2
 
+## master
+
+### Internal Changes
+
+- Replace `swiftc` with the Swift Package Manager to build Swift templates
+
 ## 0.14.0
 
 ### New Features
