@@ -934,7 +934,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Scripts/PackageContent.sh\" \"${SRCROOT}/SourceryRuntime/Sources/\" > \"${SRCROOT}/SourcerySwift/Sources/SourceryRuntime.content.generated.swift\"\n";
+			shellScript = "\"${SRCROOT}/Scripts/package_content\" \"${SRCROOT}/SourceryRuntime/Sources/\" > \"${SRCROOT}/SourcerySwift/Sources/SourceryRuntime.content.generated.swift\"\n";
 			showEnvVarsInLog = 0;
 		};
 		635AB27F201F3A8200342C13 /* ShellScript */ = {

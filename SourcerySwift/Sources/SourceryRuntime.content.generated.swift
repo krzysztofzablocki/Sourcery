@@ -17,6 +17,7 @@ public enum AccessLevel: String {
     case `open` = "open"
     case none = ""
 }
+
 """),
     .init(name: "Annotations.swift", content:
 """
@@ -44,6 +45,7 @@ public protocol Annotated {
     */
     var annotations: [String: NSObject] { get }
 }
+
 """),
     .init(name: "Attribute.swift", content:
 """
@@ -209,6 +211,7 @@ import Foundation
         // sourcery:end
 
 }
+
 """),
     .init(name: "BytesRange.swift", content:
 """
@@ -248,6 +251,7 @@ import Foundation
         }
     // sourcery:end
 }
+
 """),
     .init(name: "Class.swift", content:
 """
@@ -306,6 +310,7 @@ import Foundation
         }
         // sourcery:end
 }
+
 """),
     .init(name: "Coding.generated.swift", content:
 """
@@ -399,6 +404,7 @@ extension Types: NSCoding {}
 
 extension Variable: NSCoding {}
 
+
 """),
     .init(name: "Definition.swift", content:
 """
@@ -418,6 +424,7 @@ public protocol Definition: AnyObject {
     /// Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
     var actualDefinedInTypeName: TypeName? { get }
 }
+
 """),
     .init(name: "Description.generated.swift", content:
 """
@@ -711,6 +718,7 @@ extension Variable {
         return string
     }
 }
+
 """),
     .init(name: "Diffable.generated.swift", content:
 """
@@ -1075,6 +1083,7 @@ extension Variable: Diffable {
         return results
     }
 }
+
 """),
     .init(name: "Diffable.swift", content:
 """
@@ -1278,6 +1287,7 @@ extension DiffableResult {
         return self
     }
 }
+
 """),
     .init(name: "Enum.swift", content:
 """
@@ -1491,6 +1501,7 @@ import Foundation
         }
      // sourcery:end
 }
+
 """),
     .init(name: "Equality.generated.swift", content:
 """
@@ -1786,6 +1797,7 @@ extension Variable {
         return true
     }
 }
+
 """),
     .init(name: "Extensions.swift", content:
 """
@@ -1974,6 +1986,7 @@ public extension NSString {
         return NSRange(location: 0, length: self.length)
     }
 }
+
 """),
     .init(name: "FileParserResult.swift", content:
 """
@@ -2042,6 +2055,7 @@ import Foundation
         }
         // sourcery:end
 }
+
 """),
     .init(name: "JSExport.generated.swift", content:
 """
@@ -2483,6 +2497,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
 extension Variable: VariableAutoJSExport {}
 
 
+
 """),
     .init(name: "Log.swift", content:
 """
@@ -2529,6 +2544,7 @@ public enum Log {
 }
 
 extension String: Error {}
+
 """),
     .init(name: "Method.swift", content:
 """
@@ -2835,6 +2851,7 @@ public typealias SourceryMethod = Method
         }
      // sourcery:end
 }
+
 """),
     .init(name: "PhantomProtocols.swift", content:
 """
@@ -2861,6 +2878,7 @@ protocol AutoJSExport {}
 
 /// Phantom protocol for NSCoding, Equatable and Diffable
 protocol SourceryModel: AutoDiffable, AutoEquatable, AutoCoding, AutoDescription, AutoJSExport {}
+
 """),
     .init(name: "Protocol.swift", content:
 """
@@ -2932,6 +2950,7 @@ public typealias SourceryProtocol = Protocol
         }
         // sourcery:end
 }
+
 """),
     .init(name: "Struct.swift", content:
 """
@@ -2994,6 +3013,7 @@ import Foundation
         }
         // sourcery:end
 }
+
 """),
     .init(name: "Subscript.swift", content:
 """
@@ -3123,6 +3143,7 @@ import Foundation
     // sourcery:end
 
 }
+
 """),
     .init(name: "TemplateContext.swift", content:
 """
@@ -3359,6 +3380,7 @@ extension ProcessInfo {
     }
 
 }
+
 """),
     .init(name: "Type.swift", content:
 """
@@ -3711,6 +3733,7 @@ extension Type {
         return !isNotClass && !isExtension
     }
 }
+
 """),
     .init(name: "TypeName.swift", content:
 """
@@ -4236,6 +4259,7 @@ public protocol Typed {
     // sourcery:end
 
 }
+
 """),
     .init(name: "Typealias.swift", content:
 """
@@ -4299,6 +4323,7 @@ import Foundation
         }
         // sourcery:end
 }
+
 """),
     .init(name: "Typed.generated.swift", content:
 """
@@ -4398,6 +4423,7 @@ extension Variable {
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
+
 """),
     .init(name: "Variable.swift", content:
 """
@@ -4534,5 +4560,6 @@ public typealias SourceryVariable = Variable
         }
         // sourcery:end
 }
+
 """),
 ]
