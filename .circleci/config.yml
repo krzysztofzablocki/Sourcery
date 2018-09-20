@@ -3,7 +3,7 @@ version: 2
 jobs:
   test:
     macos:
-      xcode: "9.3.0"
+      xcode: "10.0.0"
     environment:
       - XCODE_WORKSPACE: Sourcery.xcworkspace
       - XCODE_PROJECT: Sourcery.xcodeproj
