@@ -266,7 +266,7 @@ internal struct AnnotationsParser {
                             append(key: name, value: value as NSString, to: &annotations)
                             return
                     }
-                    if let array = json as? [[String: Any]] {
+                    if let array = json as? [Any] {
                         append(key: name, value: array as NSArray, to: &annotations)
                     } else if let dict = json as? [String: Any] {
                         append(key: name, value: dict as NSDictionary, to: &annotations)
