@@ -1,6 +1,7 @@
 PODS:
   - AEXML (4.2.2)
   - Commander (0.6.0)
+  - libCommonCrypto (0.1.1)
   - Nimble (7.0.3)
   - PathKit (0.8.0)
   - Quick (1.2.0)
@@ -22,7 +23,9 @@ PODS:
 DEPENDENCIES:
   - AEXML (= 4.2.2)
   - Commander (= 0.6.0)
+  - libCommonCrypto
   - Nimble
+  - PathKit
   - PathKit (= 0.8.0)
   - Quick
   - SourceKittenFramework (= 0.21.1)
@@ -45,6 +48,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AEXML: 5ebafc1b75e0bcf0f1b09b8ca8fed2d5a199479b
   Commander: fba7c96c9e787ecc8ebe0737be875e1e18ef47ff
+  libCommonCrypto: 8bc2f53375ef9815ddd9dd663e110e1cced41747
   Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   PathKit: dcab05d701474011aae0e40cf892298a831f63d6
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
@@ -57,6 +61,6 @@ SPEC CHECKSUMS:
   xcproj: bf5339a8c8b295e3364a16074d842b3ea71a4f5b
   Yams: a01cdee527b3a82a3e192255b34ad5aacdf96b8c
 
-PODFILE CHECKSUM: d6379d2c6790c374d10731218b49f0989e079ef1
+PODFILE CHECKSUM: 1889280aa219d96bfbfbd345812334c52a11f023
 
 COCOAPODS: 1.4.0

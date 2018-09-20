@@ -33,6 +33,7 @@ target 'Sourcery' do
   pod "xcproj", '4.2.0'
   pod 'SourceKittenFramework', '0.21.1'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
+  pod 'libCommonCrypto'
   pod 'AEXML', '4.2.2'
 
   target 'SourceryTests' do
@@ -42,11 +43,12 @@ target 'Sourcery' do
 end
 
 target 'SourceryJS' do
-  pod 'PathKit', '0.8.0'
+  pod 'PathKit'
 end
 
 target 'SourcerySwift' do
-  pod 'PathKit', '0.8.0'
+  pod 'PathKit'
+  pod 'libCommonCrypto'
 end
 
 swift4 = ['SourceKittenFramework', 'Yams', 'xcproj']
