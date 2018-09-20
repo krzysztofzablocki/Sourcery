@@ -697,7 +697,7 @@ extension FileParser {
 extension FileParser {
 
     fileprivate func parseTypealias(_ source: [String: SourceKitRepresentable], containingType: Type?) -> Typealias? {
-        guard let (name, _, accessibility) = parseTypeRequirements(source),
+        guard let (name, _, _) = parseTypeRequirements(source),
             let nameSuffix = extract(.nameSuffix, from: source)?
                 .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
             else { return nil }
