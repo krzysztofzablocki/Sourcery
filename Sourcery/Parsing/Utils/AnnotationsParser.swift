@@ -261,17 +261,15 @@ internal struct AnnotationsParser {
                         value = value.trimmingCharacters(in: .whitespaces)
                     }
 
-                    guard let data = (value as String).data(using: .utf8) else {
-                        append(key: name, value: value as NSString, to: &annotations)
-                        return
+                    guard let data = (value as String).data(using: .utf8),
+                        let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) else {
+                            append(key: name, value: value as NSString, to: &annotations)
+                            return
                     }
-
-                    if let jsonArray = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]],
-                        let json = jsonArray as NSArray? {
-                        append(key: name, value: json, to: &annotations)
-                    } else if let jsonArray = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
-                        let json = jsonArray as NSDictionary? {
-                        append(key: name, value: json, to: &annotations)
+                    if let array = json as? [[String: Any]] {
+                        append(key: name, value: array as NSArray, to: &annotations)
+                    } else if let dict = json as? [String: Any] {
+                        append(key: name, value: dict as NSDictionary, to: &annotations)
                     } else {
                         append(key: name, value: value as NSString, to: &annotations)
                     }
