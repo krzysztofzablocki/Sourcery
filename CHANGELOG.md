@@ -2,6 +2,10 @@
 
 ---
 
+## Master
+
+- Adding support for Xcode 10
+
 ## 0.14.0
 
 ### New Features
