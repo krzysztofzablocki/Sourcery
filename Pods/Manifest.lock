@@ -29,23 +29,37 @@ DEPENDENCIES:
   - Stencil (= 0.12.1)
   - StencilSwiftKit (= 2.6.0)
   - SwiftLint
-  - SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)
-  - xcproj (from `git@github.com:tuist/xcodeproj.git`, tag `4.3.1`)
+  - "SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)"
+  - "xcproj (from `git@github.com:tuist/xcodeproj.git`, tag `4.3.1`)"
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AEXML
+    - Commander
+    - Nimble
+    - PathKit
+    - Quick
+    - SourceKittenFramework
+    - Stencil
+    - StencilSwiftKit
+    - SwiftLint
+    - SWXMLHash
+    - Yams
 
 EXTERNAL SOURCES:
   SwiftTryCatch:
     :commit: 798c512
-    :git: git@github.com:seanparsons/SwiftTryCatch
+    :git: "git@github.com:seanparsons/SwiftTryCatch"
   xcproj:
-    :git: git@github.com:tuist/xcodeproj.git
+    :git: "git@github.com:tuist/xcodeproj.git"
     :tag: 4.3.1
 
 CHECKOUT OPTIONS:
   SwiftTryCatch:
     :commit: 798c512
-    :git: git@github.com:seanparsons/SwiftTryCatch
+    :git: "git@github.com:seanparsons/SwiftTryCatch"
   xcproj:
-    :git: git@github.com:tuist/xcodeproj.git
+    :git: "git@github.com:tuist/xcodeproj.git"
     :tag: 4.3.1
 
 SPEC CHECKSUMS:
@@ -63,6 +77,6 @@ SPEC CHECKSUMS:
   xcproj: 7a9fe0c5f00617c0fa306b37858f157c786aff42
   Yams: 572f625a8b719b73e0b57fd313c680f3e2161fe9
 
-PODFILE CHECKSUM: 6420078304b6181f8a16f96228a39662f867ae9f
+PODFILE CHECKSUM: d072fe255fefa86388b5800fe904429576aa2822
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.6.0.beta.1
