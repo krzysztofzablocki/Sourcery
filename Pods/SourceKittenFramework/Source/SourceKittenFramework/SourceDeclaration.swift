@@ -41,6 +41,7 @@ public struct SourceDeclaration {
     public let documentation: Documentation?
     public let commentBody: String?
     public var children: [SourceDeclaration]
+    public let annotations: [String]?
     public let swiftDeclaration: String?
     public let swiftName: String?
     public let availability: ClangAvailability?
@@ -139,6 +140,14 @@ extension SourceDeclaration {
         }).rejectPropertyMethods()
         (swiftDeclaration, swiftName) = cursor.swiftDeclarationAndName(compilerArguments: compilerArguments)
         availability = cursor.platformAvailability()
+
+        let annotations: [String] = cursor.compactMap({
+            if $0.kind == CXCursor_AnnotateAttr {
+                return clang_getCursorSpelling($0).str()
+            }
+            return nil
+        })
+        self.annotations = annotations.isEmpty ? nil : annotations
     }
 }
 
@@ -186,6 +195,6 @@ extension SourceDeclaration: Comparable {}
 /// A [strict total order](http://en.wikipedia.org/wiki/Total_order#Strict_total_order)
 /// over instances of `Self`.
 public func < (lhs: SourceDeclaration, rhs: SourceDeclaration) -> Bool {
-    return lhs.location < rhs.location
+    return lhs.location == rhs.location ? lhs.extent.end < rhs.extent.end : lhs.location < rhs.location
 }
 #endif

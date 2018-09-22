@@ -84,6 +84,16 @@ public enum SwiftDeclarationAttributeKind: String {
     case consuming = "source.decl.attribute.__consuming"
     case implicitlyUnwrappedOptional = "source.decl.attribute._implicitly_unwrapped_optional"
 
+    // only available in Swift >= 4.1.50
+    case underscoredObjcNonLazyRealization = "source.decl.attribute._objc_non_lazy_realization"
+    case clangImporterSynthesizedType = "source.decl.attribute._clangImporterSynthesizedType"
+    case forbidSerializingReference = "source.decl.attribute._forbidSerializingReference"
+    case usableFromInline = "source.decl.attribute.usableFromInline"
+    case weakLinked = "source.decl.attribute._weakLinked"
+    case inlinable = "source.decl.attribute.inlinable"
+    case dynamicMemberLookup = "source.decl.attribute.dynamicMemberLookup"
+    case frozen = "source.decl.attribute._frozen"
+
     // only available in Swift < 4.1
     case autoclosure = "source.decl.attribute.autoclosure"
     case noescape = "source.decl.attribute.noescape"

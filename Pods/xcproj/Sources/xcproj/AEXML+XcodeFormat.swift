@@ -32,8 +32,8 @@ let attributesOrder: [String: [String]] = [
         "selectedLauncherIdentifier",
         "language",
         "region",
-        "shouldUseLaunchSchemeArgsEnv",
-        "codeCoverageEnabled"
+        "codeCoverageEnabled",
+        "shouldUseLaunchSchemeArgsEnv"
     ],
     "LaunchAction": [
         "buildConfiguration",

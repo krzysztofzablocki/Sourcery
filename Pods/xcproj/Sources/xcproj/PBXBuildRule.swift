@@ -2,35 +2,35 @@ import Foundation
 
 /// A PBXBuildRule is used to specify a method for transforming an input file in to an output file(s).
 final public class PBXBuildRule: PBXObject {
-
+    
     // MARK: - Attributes
-
+    
     /// Element compiler spec.
     public var compilerSpec: String
-
+    
     /// Element file patterns.
     public var filePatterns: String?
-
+    
     /// Element file type.
     public var fileType: String
-
+    
     /// Element is editable.
     public var isEditable: Bool
-
+    
     /// Element name.
     public var name: String?
-
+    
     /// Element output files.
     public var outputFiles: [String]
-
+    
     /// Element output files compiler flags.
     public var outputFilesCompilerFlags: [String]?
-
+    
     /// Element script.
     public var script: String?
-
+    
     // MARK: - Init
-
+    
     public init(compilerSpec: String,
                 fileType: String,
                 isEditable: Bool = true,
@@ -49,9 +49,9 @@ final public class PBXBuildRule: PBXObject {
         self.script = script
         super.init()
     }
-
+    
     // MARK: - Decodable
-
+    
     enum CodingKeys: String, CodingKey {
         case compilerSpec
         case filePatterns
@@ -62,7 +62,7 @@ final public class PBXBuildRule: PBXObject {
         case outputFilesCompilerFlags
         case script
     }
-
+    
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.compilerSpec = try container.decodeIfPresent(.compilerSpec) ?? ""
@@ -75,9 +75,9 @@ final public class PBXBuildRule: PBXObject {
         self.script = try container.decodeIfPresent(.script)
         try super.init(from: decoder)
     }
-
+    
     // MARK: - Equatable
-
+    
     public override func isEqual(to object: PBXObject) -> Bool {
         guard let rhs = object as? PBXBuildRule,
             super.isEqual(to: rhs) else {
@@ -86,12 +86,12 @@ final public class PBXBuildRule: PBXObject {
         let lhs = self
         let outputFilesCompilerFlagsAreEqual: Bool = {
             switch (lhs.outputFilesCompilerFlags, rhs.outputFilesCompilerFlags) {
-                case (.none, .none):
-                    return true
-                case (.none, .some), (.some, .none):
-                    return false
-                case (.some(let lhsOutputFilesCompilerFlags), .some(let rhsOutputFilesCompilerFlags)):
-                    return lhsOutputFilesCompilerFlags == rhsOutputFilesCompilerFlags
+            case (.none, .none):
+                return true
+            case (.none, .some), (.some, .none):
+                return false
+            case (.some(let lhsOutputFilesCompilerFlags), .some(let rhsOutputFilesCompilerFlags)):
+                return lhsOutputFilesCompilerFlags == rhsOutputFilesCompilerFlags
             }
         }()
         return lhs.compilerSpec == rhs.compilerSpec &&
@@ -108,9 +108,9 @@ final public class PBXBuildRule: PBXObject {
 // MARK: - PBXBuildRule Extension (PlistSerializable)
 
 extension PBXBuildRule: PlistSerializable {
-
+    
     var multiline: Bool { return true }
-
+    
     func plistKeyAndValue(proj: PBXProj, reference: String) -> (key: CommentedString, value: PlistValue) {
         var dictionary: [CommentedString: PlistValue] = [:]
         dictionary["isa"] = .string(CommentedString(PBXBuildRule.isa))
@@ -133,5 +133,5 @@ extension PBXBuildRule: PlistSerializable {
         return (key: CommentedString(reference, comment: PBXBuildRule.isa),
                 value: .dictionary(dictionary))
     }
-
+    
 }

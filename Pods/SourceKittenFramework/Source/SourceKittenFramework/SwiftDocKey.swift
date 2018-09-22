@@ -89,6 +89,8 @@ public enum SwiftDocKey: String {
     case deprecationMessage   = "key.deprecation_message"
     /// Always unavailable (String).
     case unavailableMessage   = "key.unavailable_message"
+    /// Annotations ([String]).
+    case annotations          = "key.annotations"
 
     // MARK: Typed SwiftDocKey Getters
 

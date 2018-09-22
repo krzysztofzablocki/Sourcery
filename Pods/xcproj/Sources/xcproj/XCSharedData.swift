@@ -31,7 +31,7 @@ final public class XCSharedData {
             throw XCSharedDataError.notFound(path: path)
         }
         self.schemes = path.glob("xcschemes/*.xcscheme")
-            .flatMap { try? XCScheme(path: $0) }
+            .compactMap { try? XCScheme(path: $0) }
         self.breakpoints = try? XCBreakpointList(path: path + "xcdebugger/Breakpoints_v2.xcbkptlist")
     }
 

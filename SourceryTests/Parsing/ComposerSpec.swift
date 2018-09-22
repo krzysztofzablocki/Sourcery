@@ -50,8 +50,8 @@ class ParserComposerSpec: QuickSpec {
                         expect(barType.allVariables[0].definedInType).to(equal(barType))
                         expect(barType.allVariables[1].definedInType).to(equal(fooType))
                         expect(bazType.allVariables[0].definedInType).to(equal(bazType))
-                        expect(bazType.allVariables[1].definedInType).to(equal(fooType))
-                        expect(bazType.allVariables[2].definedInType).to(equal(barType))
+                        expect(bazType.allVariables[1].definedInType).to(equal(barType))
+                        expect(bazType.allVariables[2].definedInType).to(equal(fooType))
                     }
                 }
 

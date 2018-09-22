@@ -114,7 +114,7 @@ final public class XCScheme {
         }
         init(element: AEXMLElement) throws {
             self.runnableDebuggingMode = element.attributes["runnableDebuggingMode"] ?? "0"
-            self.buildableReference = try BuildableReference(element:  element["BuildableReference"])
+            self.buildableReference = try BuildableReference(element: element["BuildableReference"])
         }
         fileprivate func xmlElement() -> AEXMLElement {
             let element = AEXMLElement(name: "BuildableProductRunnable",
@@ -143,7 +143,7 @@ final public class XCScheme {
         }
         public let arguments: [CommandLineArgument]
 
-        public init(arguments args:[CommandLineArgument]) {
+        public init(arguments args: [CommandLineArgument]) {
             self.arguments = args
         }
 
@@ -490,7 +490,6 @@ final public class XCScheme {
                                        attributes: ["buildConfiguration": buildConfiguration,
                                                     "selectedDebuggerIdentifier": selectedDebuggerIdentifier,
                                                     "selectedLauncherIdentifier": selectedLauncherIdentifier,
-                                                    "language": language ?? "",
                                                     "launchStyle": launchStyle.rawValue,
                                                     "useCustomWorkingDirectory": useCustomWorkingDirectory.xmlString,
                                                     "ignoresPersistentStateOnLaunch": ignoresPersistentStateOnLaunch.xmlString,
@@ -517,6 +516,10 @@ final public class XCScheme {
 
             if let environmentVariables = environmentVariables {
                 element.addChild(EnvironmentVariable.xmlElement(from: environmentVariables))
+            }
+
+            if let language = language {
+                element.attributes["language"] = language
             }
 
             if let region = region {
@@ -722,7 +725,9 @@ final public class XCScheme {
             attributes["buildConfiguration"] = buildConfiguration
             attributes["selectedDebuggerIdentifier"] = selectedDebuggerIdentifier
             attributes["selectedLauncherIdentifier"] = selectedLauncherIdentifier
-            attributes["language"] = language ?? ""
+            if let language = language {
+              attributes["language"] = language
+            }
             attributes["region"] = region
             attributes["shouldUseLaunchSchemeArgsEnv"] = shouldUseLaunchSchemeArgsEnv.xmlString
             if codeCoverageEnabled {

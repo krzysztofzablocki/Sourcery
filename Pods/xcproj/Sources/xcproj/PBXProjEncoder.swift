@@ -17,6 +17,7 @@ final class PBXProjEncoder {
     var output: String = ""
     var multiline: Bool = true
     
+    // swiftlint:disable function_body_length
     func encode(proj: PBXProj) -> String {
         writeUtf8()
         writeNewLine()

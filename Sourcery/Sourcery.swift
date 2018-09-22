@@ -118,7 +118,7 @@ class Sourcery {
                         return path.isSwiftSourceFile ? path : nil
                     }
 
-                var pathThatForcedRegeneration: Path? = nil
+                var pathThatForcedRegeneration: Path?
                 for path in eventPaths {
                     guard let file = try? path.read(.utf8) else { continue }
                     if !file.hasPrefix(Sourcery.generationMarker) {
@@ -346,7 +346,7 @@ extension Sourcery {
     }
 
     private func load(artifacts: String, contentSha: String) -> FileParserResult? {
-        var unarchivedResult: FileParserResult? = nil
+        var unarchivedResult: FileParserResult?
         SwiftTryCatch.try({
                               if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
                                   unarchivedResult = unarchived

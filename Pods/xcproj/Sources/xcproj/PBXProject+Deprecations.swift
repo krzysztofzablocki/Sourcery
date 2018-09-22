@@ -1,5 +1,5 @@
 public extension PBXProject {
-
+    
     @available(*, deprecated, message: "Use projectRoots instead")
     var projectRoot: String {
         get {
@@ -13,21 +13,21 @@ public extension PBXProject {
             }
         }
     }
-
+    
     @available(*, deprecated, message: "use init(name: ... projectRoots: ... attributes:) instead")
     convenience init(name: String,
-                buildConfigurationList: String,
-                compatibilityVersion: String,
-                mainGroup: String,
-                developmentRegion: String? = nil,
-                hasScannedForEncodings: Int = 0,
-                knownRegions: [String] = [],
-                productRefGroup: String? = nil,
-                projectDirPath: String = "",
-                projectReferences: [[String : String]] = [],
-                projectRoot: String,
-                targets: [String] = [],
-                attributes: [String: Any] = [:]) {
+                     buildConfigurationList: String,
+                     compatibilityVersion: String,
+                     mainGroup: String,
+                     developmentRegion: String? = nil,
+                     hasScannedForEncodings: Int = 0,
+                     knownRegions: [String] = [],
+                     productRefGroup: String? = nil,
+                     projectDirPath: String = "",
+                     projectReferences: [[String: String]] = [],
+                     projectRoot: String,
+                     targets: [String] = [],
+                     attributes: [String: Any] = [:]) {
         self.init(name: name,
                   buildConfigurationList: buildConfigurationList,
                   compatibilityVersion: compatibilityVersion,

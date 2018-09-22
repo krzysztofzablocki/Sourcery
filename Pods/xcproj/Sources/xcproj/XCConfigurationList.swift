@@ -73,7 +73,7 @@ extension XCConfigurationList: PlistSerializable {
         if let defaultConfigurationName = defaultConfigurationName {
             dictionary["defaultConfigurationName"] = .string(CommentedString(defaultConfigurationName))
         }
-        return (key: CommentedString(reference,comment: plistComment(proj: proj, reference: reference)),
+        return (key: CommentedString(reference, comment: plistComment(proj: proj, reference: reference)),
                 value: .dictionary(dictionary))
     }
     

@@ -1,5 +1,5 @@
 public extension PBXVariantGroup {
-
+    
     /// Initializes the PBXVariantGroup with its values.
     ///
     /// - Parameters:
@@ -9,13 +9,13 @@ public extension PBXVariantGroup {
     ///   - sourceTree: the group source tree.
     @available(*, deprecated, message: "use the initializer inherited from PBXGroup instead")
     convenience init(children: [String] = [],
-                path: String? = nil,
-                name: String? = nil,
-                sourceTree: PBXSourceTree? = nil) {
+                     path: String? = nil,
+                     name: String? = nil,
+                     sourceTree: PBXSourceTree? = nil) {
         self.init(children: children,
                   sourceTree: sourceTree,
                   name: name,
                   path: path)
     }
-
+    
 }

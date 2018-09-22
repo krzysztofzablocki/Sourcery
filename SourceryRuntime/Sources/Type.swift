@@ -105,8 +105,8 @@ import Foundation
             }
         }
 
-        inherits.values.forEach { all.addObjects(from: filteredExtraction($0)) }
-        implements.values.forEach { all.addObjects(from: filteredExtraction($0)) }
+        inherits.values.sorted(by: { $0.name < $1.name }).forEach { all.addObjects(from: filteredExtraction($0)) }
+        implements.values.sorted(by: { $0.name < $1.name }).forEach { all.addObjects(from: filteredExtraction($0)) }
 
         return all.array.compactMap { $0 as? T }
     }
