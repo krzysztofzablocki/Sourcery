@@ -30,8 +30,6 @@ class StencilTemplateSpec: QuickSpec {
                 context("given array") {
                     it("doesnt modify the value") {
                         let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | toArray }}{% endfor %}")
-                        // TODO: apparently something changed in the `toArray` filter?
-//                        expect(result).to(equal("(\n    Hello,\n    beautiful,\n    World\n)"))
                         expect(result).to(equal("[Hello, beautiful, World]"))
                     }
                 }

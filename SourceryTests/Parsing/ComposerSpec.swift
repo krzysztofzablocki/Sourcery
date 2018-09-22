@@ -50,10 +50,8 @@ class ParserComposerSpec: QuickSpec {
                         expect(barType.allVariables[0].definedInType).to(equal(barType))
                         expect(barType.allVariables[1].definedInType).to(equal(fooType))
                         expect(bazType.allVariables[0].definedInType).to(equal(bazType))
-                        // TODO: seems like the inherited types are not always in the same order (any more)
-//                        expect(bazType.allVariables[1].definedInType).to(equal(fooType))
-//                        expect(bazType.allVariables[2].definedInType).to(equal(barType))
-                        expect(bazType.allVariables.map({$0.definedInType})).to(contain([fooType, barType]))
+                        expect(bazType.allVariables[1].definedInType).to(equal(barType))
+                        expect(bazType.allVariables[2].definedInType).to(equal(fooType))
                     }
                 }
 
