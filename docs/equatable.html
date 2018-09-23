@@ -163,7 +163,7 @@
             
             <h2 id='i-want-to-generate-code-equatable-code-implementation' class='heading'>I want to generate <code>Equatable</code> implementation</h2>
 
-<p>Template used to generate equality for all types that conform to <code>:AutoEquatable</code>, allowing us to avoid writing boilerplate code.</p>
+<p>Template used to generate equality for all types that either conform to the <code>AutoEquatable</code> protocol or are <a href="Writing%20templates.md#using-source-annotations">annotated</a> with <code>AutoEquatable</code> annotation, allowing us to avoid writing boilerplate code.</p>
 
 <p>It adds <code>:Equatable</code> conformance to all types, except protocols (because it would require turning them into PAT&rsquo;s).
 For protocols it&rsquo;s just generating <code>func ==</code>.</p>
