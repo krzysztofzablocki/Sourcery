@@ -1,16 +1,12 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 0.15.0
 
 ### New Features
 
 - You can now pass a json string as a command line arg or annotation and have it parsed into a Dictionary or Array to be used in the template.
-
-
-## Master
-
-- Adding support for Xcode 10
+- Support for Xcode 10 and Swift 4.2
 
 ## 0.14.0
 
