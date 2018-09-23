@@ -149,5 +149,6 @@ enum AssociatedValuesEnum: AutoCodable, Equatable {
 
 enum AssociatedValuesEnumNoCaseKey: AutoCodable, Equatable {
     case someCase(id: Int, name: String)
+    case unnamedCase(Int, String)
     case anotherCase
 }

@@ -71,6 +71,24 @@ class CodableContextTests: QuickSpec {
                     expect(decoded).to(equal(value))
                 }
 
+                it("codes value with unnamed associated values") {
+                    let value = AssociatedValuesEnumNoCaseKey.unnamedCase(0, "a")
+
+                    let encoded = try! encoder.encode(value)
+                    expect(String(data: encoded, encoding: .utf8)).to(equal("""
+                    {
+                      "unnamedCase" : [
+                        0,
+                        "a"
+                      ]
+                    }
+                    """
+                    ))
+
+                    let decoded = try! decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded)
+                    expect(decoded).to(equal(value))
+                }
+
                 it("codes value without assoicated values") {
                     let value = AssociatedValuesEnumNoCaseKey.anotherCase
 

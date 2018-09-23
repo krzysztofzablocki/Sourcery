@@ -20,6 +20,20 @@
                ReferencedContainer = "container:../Sourcery.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "6D6A24A91EB79E8900C1FB1A"
+               BuildableName = "TemplatesTests.xctest"
+               BlueprintName = "TemplatesTests"
+               ReferencedContainer = "container:Templates.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

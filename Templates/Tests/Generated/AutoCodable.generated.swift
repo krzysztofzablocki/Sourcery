@@ -39,6 +39,7 @@ extension AssociatedValuesEnumNoCaseKey {
 
     enum CodingKeys: String, CodingKey {
         case someCase
+        case unnamedCase
         case anotherCase
         case id
         case name
@@ -52,6 +53,13 @@ extension AssociatedValuesEnumNoCaseKey {
             let id = try associatedValues.decode(Int.self, forKey: .id)
             let name = try associatedValues.decode(String.self, forKey: .name)
             self = .someCase(id: id, name: name)
+            return
+        }
+        if container.allKeys.contains(.unnamedCase), try container.decodeNil(forKey: .unnamedCase) == false {
+            var associatedValues = try container.nestedUnkeyedContainer(forKey: .unnamedCase)
+            let associatedValue0 = try associatedValues.decode(Int.self)
+            let associatedValue1 = try associatedValues.decode(String.self)
+            self = .unnamedCase(associatedValue0, associatedValue1)
             return
         }
         if container.allKeys.contains(.anotherCase), try container.decodeNil(forKey: .anotherCase) == false {
@@ -69,6 +77,10 @@ extension AssociatedValuesEnumNoCaseKey {
             var associatedValues = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .someCase)
             try associatedValues.encode(id, forKey: .id)
             try associatedValues.encode(name, forKey: .name)
+        case let .unnamedCase(associatedValue0, associatedValue1):
+            var associatedValues = container.nestedUnkeyedContainer(forKey: .unnamedCase)
+            try associatedValues.encode(associatedValue0)
+            try associatedValues.encode(associatedValue1)
         case .anotherCase:
             _ = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .anotherCase)
         }
