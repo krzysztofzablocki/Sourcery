@@ -127,10 +127,10 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
+                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath, version: "version"))
                     }
                     .to(throwError(closure: { (error) in
-                        let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate.build/Sources/SwiftTemplate/main.swift"
+                        let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
                         expect("\(error)").to(contain("\(path):9:11: error: expected expression in list of expressions\nprint(\"\\( )\", terminator: \"\");\n          ^\n"))
                     }))
             }

@@ -217,7 +217,7 @@ class Sourcery {
                     return nil
                 #else
                     let cachePath = cachesDir(sourcePath: $0)
-                    return try SwiftTemplate(path: $0, cachePath: cachePath)
+                    return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version)
                 #endif
             } else if $0.extension == "ejs" {
                 guard EJSTemplate.ejsPath != nil else {
