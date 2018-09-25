@@ -204,7 +204,7 @@ enum SimpleEnum {
 
 #### Enums with assoicated values
 
-In such enums all associated values should be named. Template supports two different representations of such enums in JSON format.
+Template supports two different representations of such enums in JSON format.
 
 ```swift
 enum SimpleEnum {
@@ -213,7 +213,7 @@ enum SimpleEnum {
 }
 ```
 
-For such enum template will generate code that will successfully decode from/encode to JSON of following forms:
+If you define a coding key named `enumCaseKey` then the template will genearaet code that will encode/decode enum in/from following format:
 
 ```json
 {
@@ -222,8 +222,9 @@ For such enum template will generate code that will successfully decode from/enc
   "name": "Jhon"
 }
 ```
+All enum cases associated values must be named.
 
-or
+If you don't define `enumCaseKey` then the template will generate code that will encode/decode enum in/from following format:
 
 ```json
 {
@@ -234,5 +235,16 @@ or
 }
 ```
 
-To make template generate code for the first form you need to define a special coding key named `enumCaseKey`. If this key is not defined, template will generate code for the second form.
-You can use all other customisation methods described for structs as well for enums.
+Associated values of each enum case must be either all named or all unnamed.
+For cases with unnamed associated values JSON format will use array instead of dictionary for associated values, in the same order in which they are defined:
+
+```json
+{
+  "someCase": [
+    1,
+    "Jhon"
+  ]
+}
+```
+
+You can use all other customisation methods described for structs to decode/encode enum case associated values individually. 

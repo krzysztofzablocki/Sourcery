@@ -133,6 +133,8 @@ enum SimpleEnum: AutoCodable {
 
 enum AssociatedValuesEnum: AutoCodable, Equatable {
     case someCase(id: Int, name: String)
+    case unnamedCase(Int, String)
+    case mixCase(Int, name: String)
     case anotherCase
 
     enum CodingKeys: String, CodingKey {
@@ -140,6 +142,8 @@ enum AssociatedValuesEnum: AutoCodable, Equatable {
 
 // sourcery:inline:auto:AssociatedValuesEnum.CodingKeys.AutoCodable
         case someCase
+        case unnamedCase
+        case mixCase
         case anotherCase
         case id
         case name
@@ -149,5 +153,7 @@ enum AssociatedValuesEnum: AutoCodable, Equatable {
 
 enum AssociatedValuesEnumNoCaseKey: AutoCodable, Equatable {
     case someCase(id: Int, name: String)
+    case unnamedCase(Int, String)
+    case mixCase(Int, name: String)
     case anotherCase
 }

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		328D9E935602E7E23C76D3C3 /* Pods_CodableContextTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 433370DB5CFA428C5E58DD79 /* Pods_CodableContextTests.framework */; };
 		636D78572081781E00160CC4 /* AutoCodable.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 636D78472080251800160CC4 /* AutoCodable.swifttemplate */; };
-		636D786D2083B91A00160CC4 /* AutoCodable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 636D786B2083B8D700160CC4 /* AutoCodable.expected */; };
 		63A4F4D120964FB3000F8CDF /* CodableContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 63A4F4CF20964FB3000F8CDF /* CodableContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		63A4F4D520964FBE000F8CDF /* AutoCodable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636D784C208169E100160CC4 /* AutoCodable.generated.swift */; };
 		63A4F4D620964FC5000F8CDF /* AutoCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636D78492080256500160CC4 /* AutoCodable.swift */; };
@@ -42,6 +41,7 @@
 		6D6645CB1ECC22A3004C1948 /* LinuxMain.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = 6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */; };
 		6D6C19261FC4CE7900CD2A34 /* Decorator.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = 6D6C19251FC4CE7900CD2A34 /* Decorator.swifttemplate */; };
 		6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6DC27BD71EC6592700B73CAF /* AutoHashable.expected */; };
+		B50435DF2157222E00F120DF /* AutoCodable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 636D786B2083B8D700160CC4 /* AutoCodable.expected */; };
 		C03FD2E6F7645376C192094D /* Pods_TemplatesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -329,8 +329,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6D6A24B61EB79E8900C1FB1A /* Build configuration list for PBXNativeTarget "TemplatesTests" */;
 			buildPhases = (
-				D775B999DCC76F43E995E441 /* [CP] Check Pods Manifest.lock */,
 				6D342C951EBA1881006EEBEC /* Sourcery */,
+				D775B999DCC76F43E995E441 /* [CP] Check Pods Manifest.lock */,
 				6D6A24A61EB79E8900C1FB1A /* Sources */,
 				6D6A24A71EB79E8900C1FB1A /* Frameworks */,
 				6D6A24A81EB79E8900C1FB1A /* Resources */,
@@ -410,7 +410,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				636D786D2083B91A00160CC4 /* AutoCodable.expected in Resources */,
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
@@ -419,6 +418,7 @@
 				6D130B7B1ECACD0F00E9642A /* AutoLenses.expected in Resources */,
 				6D342C841EBA13DF006EEBEC /* AutoEquatable.stencil in Resources */,
 				6D6C19261FC4CE7900CD2A34 /* Decorator.swifttemplate in Resources */,
+				B50435DF2157222E00F120DF /* AutoCodable.expected in Resources */,
 				6D342C891EBA13DF006EEBEC /* LinuxMain.stencil in Resources */,
 				6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
@@ -469,7 +469,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\" --disableCache --verbose";
+			shellScript = "\"${BUILD_DIR}/Debug/Sourcery.app/Contents/MacOS/Sourcery\" --sources \"${SRCROOT}/Tests/Context\" --templates \"${SRCROOT}/Templates\" --output \"${SRCROOT}/Tests/Generated\" --disableCache --verbose\n";
 		};
 		7139144942C834B5880D5184 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

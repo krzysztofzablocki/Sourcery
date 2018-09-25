@@ -85,11 +85,16 @@ func codingKeysFor(_ type: Type) -> (generated: [String], all: [String]) {
             }
         }
     } else if let enumType = type as? Enum {
-        let casesKeys: [String]
+        var casesKeys: [String] = enumType.cases.map({ $0.name })
         if enumType.hasAssociatedValues {
-            casesKeys = enumType.cases.map({ $0.name }) + enumType.cases.flatMap({ $0.associatedValues }).flatMap({ $0.localName })
-        } else {
-            casesKeys = enumType.cases.map({ $0.name })
+            enumType.cases
+                .flatMap({ $0.associatedValues })
+                .compactMap({ $0.localName })
+                .forEach({
+                    if !casesKeys.contains($0) {
+                        casesKeys.append($0)
+                    }
+                })
         }
         if let codingKeysType = type.containedType["CodingKeys"] as? Enum {
             allCodingKeys = codingKeysType.cases.map({ $0.name })
@@ -150,32 +155,51 @@ extension <%= type.name %> {
         switch enumCase {
         <%_ for enumCase in enumType.cases { -%>
         case CodingKeys.<%= enumCase.name %>.rawValue:
-            <%_ for associatedValue in enumCase.associatedValues where associatedValue.localName != nil { -%>
-            let <%= associatedValue.localName! %> = try container.decode(<%= associatedValue.typeName %>.self, forKey: .<%= associatedValue.localName! %>)
-            <%_ } -%>
             <%_ if enumCase.associatedValues.isEmpty { -%>
             self = .<%= enumCase.name %>
-            <%_ } else { -%>
+            <%_ } else if enumCase.associatedValues.filter({ $0.localName == nil }).count == enumCase.associatedValues.count { -%>
+            // Enum cases with unnamed associated values can't be decoded
+            throw DecodingError.dataCorruptedError(forKey: .enumCaseKey, in: container, debugDescription: "Can't decode '\(enumCase)'")
+            <%_ } else if enumCase.associatedValues.filter({ $0.localName != nil }).count == enumCase.associatedValues.count { -%>
+            <%_ for associatedValue in enumCase.associatedValues { -%>
+            let <%= associatedValue.localName! %> = try container.decode(<%= associatedValue.typeName %>.self, forKey: .<%= associatedValue.localName! %>)
+            <%_ } -%>
             self = .<%= enumCase.name %>(<% -%>
                 <%_ %><%= enumCase.associatedValues.map({ "\($0.localName!): \($0.localName!)" }).joined(separator: ", ") %>)
+            <%_ } else { -%>
+            // Enum cases with mixed named and unnamed associated values can't be decoded
+            throw DecodingError.dataCorruptedError(forKey: .enumCaseKey, in: container, debugDescription: "Can't decode '\(enumCase)'")
             <%_ } -%>
         <%_ } -%>
-        default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
+        default:
+            throw DecodingError.dataCorruptedError(forKey: .enumCaseKey, in: container, debugDescription: "Unknown enum case '\(enumCase)'")
         }
         <%_ } else { -%>
         <%_ for enumCase in enumType.cases { -%>
         if container.allKeys.contains(.<%= enumCase.name %>), try container.decodeNil(forKey: .<%= enumCase.name %>) == false {
             <%_ if enumCase.associatedValues.isEmpty { -%>
             self = .<%= enumCase.name %>
-            <%_ } else { -%>
+            return
+            <%_ } else if enumCase.associatedValues.filter({ $0.localName == nil }).count == enumCase.associatedValues.count { -%>
+            var associatedValues = try container.nestedUnkeyedContainer(forKey: .<%= enumCase.name %>)
+            <%_ for (index, associatedValue) in enumCase.associatedValues.enumerated() { -%>
+            let associatedValue<%= index %> = try associatedValues.decode(<%= associatedValue.typeName %>.self)
+            <%_ } -%>
+            self = .<%= enumCase.name %>(<% -%>
+            <%_ %><%= enumCase.associatedValues.indices.map({ "associatedValue\($0)" }).joined(separator: ", ") %>)
+            return
+            <%_ } else if enumCase.associatedValues.filter({ $0.localName != nil }).count == enumCase.associatedValues.count { -%>
             let associatedValues = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
-            <%_ for associatedValue in enumCase.associatedValues where associatedValue.localName != nil { -%>
+            <%_ for associatedValue in enumCase.associatedValues { -%>
             let <%= associatedValue.localName! %> = try associatedValues.decode(<%= associatedValue.typeName %>.self, forKey: .<%= associatedValue.localName! %>)
             <%_ } -%>
             self = .<%= enumCase.name %>(<% -%>
             <%_ %><%= enumCase.associatedValues.map({ "\($0.localName!): \($0.localName!)" }).joined(separator: ", ") %>)
-            <%_ } -%>
             return
+            <%_ } else { -%>
+            // Enum cases with mixed named and unnamed associated values can't be decoded
+            throw DecodingError.dataCorruptedError(forKey: .<%= enumCase.name %>, in: container, debugDescription: "Can't decode `.<%= enumCase.name %>`")
+            <%_ } -%>
         }
         <%_ } -%>
         throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case"))
@@ -225,12 +249,20 @@ extension <%= type.name %> {
         <%_ if enumCase.associatedValues.isEmpty { -%>
         case .<%= enumCase.name %>:
             try container.encode(CodingKeys.<%= enumCase.name %>.rawValue, forKey: .enumCaseKey)
-        <%_ } else { -%>
-        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.map({ "\($0.localName ?? "_")" }).joined(separator: ", ") %>):
+        <%_ } else if enumCase.associatedValues.filter({ $0.localName == nil }).count == enumCase.associatedValues.count { -%>
+        case .<%= enumCase.name %>:
+            // Enum cases with unnamed associated values can't be encoded
+            throw EncodingError.invalidValue(self, .init(codingPath: encoder.codingPath, debugDescription: "Can't encode '\(self)'"))
+        <%_ } else if enumCase.associatedValues.filter({ $0.localName != nil }).count == enumCase.associatedValues.count { -%>
+        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.map({ "\($0.localName!)" }).joined(separator: ", ") %>):
             try container.encode(CodingKeys.<%= enumCase.name %>.rawValue, forKey: .enumCaseKey)
-            <%_ for accociatedValue in enumCase.associatedValues where accociatedValue.localName != nil { -%>
+            <%_ for accociatedValue in enumCase.associatedValues { -%>
             try container.encode(<%= accociatedValue.localName! %>, forKey: .<%= accociatedValue.localName! %>)
             <%_ } -%>
+        <%_ } else { -%>
+        case .<%= enumCase.name %>:
+            // Enum cases with mixed named and unnamed associated values can't be encoded
+            throw EncodingError.invalidValue(self, .init(codingPath: encoder.codingPath, debugDescription: "Can't encode '\(self)'"))
         <%_ } -%>
         <%_ } -%>
         }
@@ -240,12 +272,22 @@ extension <%= type.name %> {
         <%_ if enumCase.associatedValues.isEmpty { -%>
         case .<%= enumCase.name %>:
             _ = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
-        <%_ } else { -%>
-        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.map({ "\($0.localName ?? "_")" }).joined(separator: ", ") %>):
+        <%_ } else if enumCase.associatedValues.filter({ $0.localName == nil }).count == enumCase.associatedValues.count { -%>
+        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.indices.map({ "associatedValue\($0)" }).joined(separator: ", ") %>):
+            var associatedValues = container.nestedUnkeyedContainer(forKey: .<%= enumCase.name %>)
+            <%_ for (index, associatedValue) in enumCase.associatedValues.enumerated() { -%>
+            try associatedValues.encode(associatedValue<%= index %>)
+        <%_ } -%>
+        <%_ } else if enumCase.associatedValues.filter({ $0.localName != nil }).count == enumCase.associatedValues.count { -%>
+        case let .<%= enumCase.name %>(<%= enumCase.associatedValues.map({ "\($0.localName!)" }).joined(separator: ", ") %>):
             var associatedValues = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .<%= enumCase.name %>)
-            <%_ for accociatedValue in enumCase.associatedValues where accociatedValue.localName != nil { -%>
+            <%_ for accociatedValue in enumCase.associatedValues { -%>
             try associatedValues.encode(<%= accociatedValue.localName! %>, forKey: .<%= accociatedValue.localName! %>)
         <%_ } -%>
+        <%_ } else { -%>
+        case .<%= enumCase.name %>:
+            // Enum cases with mixed named and unnamed associated values can't be encoded
+            throw EncodingError.invalidValue(self, .init(codingPath: encoder.codingPath, debugDescription: "Can't encode '\(self)'"))
         <%_ } -%>
         <%_ } -%>
         }

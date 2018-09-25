@@ -14,9 +14,16 @@ extension AssociatedValuesEnum {
             let id = try container.decode(Int.self, forKey: .id)
             let name = try container.decode(String.self, forKey: .name)
             self = .someCase(id: id, name: name)
+        case CodingKeys.unnamedCase.rawValue:
+            // Enum cases with unnamed associated values can't be decoded
+            throw DecodingError.dataCorruptedError(forKey: .enumCaseKey, in: container, debugDescription: "Can't decode '\(enumCase)'")
+        case CodingKeys.mixCase.rawValue:
+            // Enum cases with mixed named and unnamed associated values can't be decoded
+            throw DecodingError.dataCorruptedError(forKey: .enumCaseKey, in: container, debugDescription: "Can't decode '\(enumCase)'")
         case CodingKeys.anotherCase.rawValue:
             self = .anotherCase
-        default: throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unknown enum case '\(enumCase)'"))
+        default:
+            throw DecodingError.dataCorruptedError(forKey: .enumCaseKey, in: container, debugDescription: "Unknown enum case '\(enumCase)'")
         }
     }
 
@@ -28,6 +35,12 @@ extension AssociatedValuesEnum {
             try container.encode(CodingKeys.someCase.rawValue, forKey: .enumCaseKey)
             try container.encode(id, forKey: .id)
             try container.encode(name, forKey: .name)
+        case .unnamedCase:
+            // Enum cases with unnamed associated values can't be encoded
+            throw EncodingError.invalidValue(self, .init(codingPath: encoder.codingPath, debugDescription: "Can't encode '\(self)'"))
+        case .mixCase:
+            // Enum cases with mixed named and unnamed associated values can't be encoded
+            throw EncodingError.invalidValue(self, .init(codingPath: encoder.codingPath, debugDescription: "Can't encode '\(self)'"))
         case .anotherCase:
             try container.encode(CodingKeys.anotherCase.rawValue, forKey: .enumCaseKey)
         }
@@ -39,6 +52,8 @@ extension AssociatedValuesEnumNoCaseKey {
 
     enum CodingKeys: String, CodingKey {
         case someCase
+        case unnamedCase
+        case mixCase
         case anotherCase
         case id
         case name
@@ -53,6 +68,17 @@ extension AssociatedValuesEnumNoCaseKey {
             let name = try associatedValues.decode(String.self, forKey: .name)
             self = .someCase(id: id, name: name)
             return
+        }
+        if container.allKeys.contains(.unnamedCase), try container.decodeNil(forKey: .unnamedCase) == false {
+            var associatedValues = try container.nestedUnkeyedContainer(forKey: .unnamedCase)
+            let associatedValue0 = try associatedValues.decode(Int.self)
+            let associatedValue1 = try associatedValues.decode(String.self)
+            self = .unnamedCase(associatedValue0, associatedValue1)
+            return
+        }
+        if container.allKeys.contains(.mixCase), try container.decodeNil(forKey: .mixCase) == false {
+            // Enum cases with mixed named and unnamed associated values can't be decoded
+            throw DecodingError.dataCorruptedError(forKey: .mixCase, in: container, debugDescription: "Can't decode `.mixCase`")
         }
         if container.allKeys.contains(.anotherCase), try container.decodeNil(forKey: .anotherCase) == false {
             self = .anotherCase
@@ -69,6 +95,13 @@ extension AssociatedValuesEnumNoCaseKey {
             var associatedValues = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .someCase)
             try associatedValues.encode(id, forKey: .id)
             try associatedValues.encode(name, forKey: .name)
+        case let .unnamedCase(associatedValue0, associatedValue1):
+            var associatedValues = container.nestedUnkeyedContainer(forKey: .unnamedCase)
+            try associatedValues.encode(associatedValue0)
+            try associatedValues.encode(associatedValue1)
+        case .mixCase:
+            // Enum cases with mixed named and unnamed associated values can't be encoded
+            throw EncodingError.invalidValue(self, .init(codingPath: encoder.codingPath, debugDescription: "Can't encode '\(self)'"))
         case .anotherCase:
             _ = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .anotherCase)
         }

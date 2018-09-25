@@ -35,6 +35,22 @@ class CodableContextTests: QuickSpec {
                     expect(decoded).to(equal(value))
                 }
 
+                it("can't use value with unnamed associated values") {
+                    let value = AssociatedValuesEnum.unnamedCase(0, "a")
+                    let encoded = "{\"type\" : \"unnamedCase\"}".data(using: .utf8)!
+
+                    expect { try encoder.encode(value) }.to(throwError())
+                    expect { try decoder.decode(AssociatedValuesEnum.self, from: encoded) }.to(throwError())
+                }
+
+                it("can't use value with mixed associated values") {
+                    let value = AssociatedValuesEnum.mixCase(0, name: "a")
+                    let encoded = "{\"type\" : \"mixCase\"}".data(using: .utf8)!
+
+                    expect { try encoder.encode(value) }.to(throwError())
+                    expect { try decoder.decode(AssociatedValuesEnum.self, from: encoded) }.to(throwError())
+                }
+
                 it("codes value without associated values") {
                     let value = AssociatedValuesEnum.anotherCase
 
@@ -69,6 +85,32 @@ class CodableContextTests: QuickSpec {
 
                     let decoded = try! decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded)
                     expect(decoded).to(equal(value))
+                }
+
+                it("codes value with unnamed associated values") {
+                    let value = AssociatedValuesEnumNoCaseKey.unnamedCase(0, "a")
+
+                    let encoded = try! encoder.encode(value)
+                    expect(String(data: encoded, encoding: .utf8)).to(equal("""
+                    {
+                      "unnamedCase" : [
+                        0,
+                        "a"
+                      ]
+                    }
+                    """
+                    ))
+
+                    let decoded = try! decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded)
+                    expect(decoded).to(equal(value))
+                }
+
+                it("can't use value with mixed associated values") {
+                    let value = AssociatedValuesEnumNoCaseKey.mixCase(0, name: "a")
+                    let encoded = "{\"type\" : \"mixCase\"}".data(using: .utf8)!
+
+                    expect { try encoder.encode(value) }.to(throwError())
+                    expect { try decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded) }.to(throwError())
                 }
 
                 it("codes value without assoicated values") {
