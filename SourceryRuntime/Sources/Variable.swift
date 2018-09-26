@@ -53,7 +53,7 @@ public typealias SourceryVariable = Variable
         return attributes[Attribute.Identifier.final.name] != nil
     }
     
-    // Whether variable is lazy or not
+    /// Whether variable is lazy or not
     public var isLazy: Bool {
         return attributes[Attribute.Identifier.lazy.name] != nil
     }
