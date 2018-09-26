@@ -115,10 +115,6 @@ class FileParserVariableSpec: QuickSpec {
                     expect(parse("var name: Int { didSet {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
-                it("extracts lazy property correctly") {
-                    expect(parse("lazy var name: String = \"Hello\"")).to(equal(Variable(name: "name", typeName: TypeName("String"), accessLevel: (read: .internal, write: .internal), isComputed: false, defaultValue: "Hello", attributes: ["lazy": Attribute(name: "lazy")])))
-                }
-
                 it("extracts generic property correctly") {
                     expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", typeName: TypeName("Observable<Int>"), accessLevel: (read: .internal, write: .none), isComputed: false)))
                 }
