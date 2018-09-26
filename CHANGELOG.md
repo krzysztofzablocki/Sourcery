@@ -3,6 +3,8 @@
 ---
 ## Master
 
+- Support for parsing lazy vars into Variable's attributes.
+
 ## 0.15.0
 
 ### New Features

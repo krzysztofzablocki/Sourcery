@@ -113,6 +113,10 @@ class FileParserAttributesSpec: QuickSpec {
                     "final": Attribute(name: "final", description: "final")
                     ]))
 
+                expect(parse("class Foo { lazy var name: String = \"Hello\" }").first?.variables.first?.attributes).to(equal([
+                    "lazy": Attribute(name: "lazy", description: "lazy")
+                    ]))
+
                 func assertSetterAccess(_ access: String, line: UInt = #line) {
                     expect(parse("public class Foo { \(access)(set) var some: Int }").first?.variables.first?.attributes, line: line).to(equal([
                         access: Attribute(name: access, arguments: ["set": NSNumber(value: true)], description: "\(access)(set)")

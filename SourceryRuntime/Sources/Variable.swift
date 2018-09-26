@@ -52,6 +52,11 @@ public typealias SourceryVariable = Variable
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
     }
+    
+    /// Whether variable is lazy or not
+    public var isLazy: Bool {
+        return attributes[Attribute.Identifier.lazy.name] != nil
+    }
 
     /// Reference to type name where the variable is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc

@@ -51,6 +51,7 @@ import Foundation
         case escaping
         case final
         case open
+        case lazy
         case `public` = "public"
         case `internal` = "internal"
         case `private` = "private"
