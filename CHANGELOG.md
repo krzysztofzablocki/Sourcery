@@ -4,6 +4,7 @@
 ## Master
 
 - Support for parsing lazy vars into Variable's attributes.
+- In Swift templates CLI arguments should now be accessed via `argument` instead of `arguments`, to be consistent with Stencil and JS templates.
 
 ## 0.15.0
 

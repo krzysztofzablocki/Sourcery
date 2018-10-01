@@ -318,7 +318,7 @@ extension Subscript: SubscriptAutoJSExport {}
 
 @objc protocol TemplateContextAutoJSExport: JSExport {
     var types: Types { get }
-    var arguments: [String: NSObject] { get }
+    var argument: [String: NSObject] { get }
     var type: [String: Type] { get }
     var stencilContext: [String: Any] { get }
     var jsContext: [String: Any] { get }
@@ -425,6 +425,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
     var isFinal: Bool { get }
+    var isLazy: Bool { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
