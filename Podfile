@@ -26,8 +26,8 @@ target 'CodableContextTests' do
 end
 
 target 'Sourcery' do
-  pod 'Stencil', '0.12.1'
-  pod 'StencilSwiftKit', '2.6.0'
+  pod 'Stencil', '0.13.1'
+  pod 'StencilSwiftKit', '2.7.0'
   pod 'Commander', '0.7.0'
   pod 'PathKit', '0.9.2'
   pod "xcproj", :git =>'git@github.com:tuist/xcodeproj.git', :tag => '4.3.1'
