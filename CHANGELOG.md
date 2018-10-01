@@ -4,6 +4,7 @@
 ## Master
 
 - Support for parsing lazy vars into Variable's attributes.
+- Updated Stencil to 0.13.1 and SwiftStencilKit to 2.7.0
 
 ## 0.15.0
 
