@@ -194,7 +194,7 @@ extension TemplateContext {
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string += "types = \(String(describing: self.types)), "
-        string += "arguments = \(String(describing: self.arguments)), "
+        string += "argument = \(String(describing: self.argument)), "
         string += "stencilContext = \(String(describing: self.stencilContext))"
         return string
     }
@@ -283,6 +283,7 @@ extension Variable {
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes)), "
         string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "isLazy = \(String(describing: self.isLazy)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
         string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName))"
         return string
