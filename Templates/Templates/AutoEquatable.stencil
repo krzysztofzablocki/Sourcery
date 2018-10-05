@@ -47,7 +47,7 @@ public func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
     switch (lhs, rhs) {
     {% for case in type.cases %}
     {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
-        {% ifnot case.hasAssociatedValue %}return true{% else %}
+        {% if not case.hasAssociatedValue %}return true{% else %}
         {% if case.associatedValues.count == 1 %}
         return lhs == rhs
         {% else %}
@@ -56,7 +56,7 @@ public func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
         {% endif %}
         {% endif %}
     {% endfor %}
-    {% if type.cases.count > 1 %}default: return false{% endif %}
+    {{ 'default: return false' if type.cases.count > 1 }}
     }
 }
 {% endfor %}

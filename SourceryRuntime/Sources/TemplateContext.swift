@@ -230,4 +230,7 @@ extension ProcessInfo {
         }
     }
 
+    public override func responds(to aSelector: Selector!) -> Bool {
+        return true
+    }
 }
