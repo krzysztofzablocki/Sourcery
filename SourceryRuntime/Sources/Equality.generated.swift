@@ -196,7 +196,7 @@ extension TemplateContext {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TemplateContext else { return false }
         if self.types != rhs.types { return false }
-        if self.arguments != rhs.arguments { return false }
+        if self.argument != rhs.argument { return false }
         return true
     }
 }
