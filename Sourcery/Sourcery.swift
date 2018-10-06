@@ -471,7 +471,7 @@ extension Sourcery {
     }
 
     private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
-        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: contents)
+        var inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: contents)
 
         typealias MappedInlineAnnotations = (
             range: NSRange,
@@ -480,14 +480,19 @@ extension Sourcery {
             toInsert: String
         )
 
+        var notFoundRanges = [(NSRange, String)]()
+
         try inline.annotatedRanges
             .map { (key: $0, range: $1) }
             .compactMap { (key, ranges) -> MappedInlineAnnotations? in
                 let range = ranges[0]
                 let generatedBody = contents.bridge().substring(with: range)
 
-                guard let (filePath, ranges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {
-                    guard key.hasPrefix("auto:") else { return nil }
+                guard let (filePath, inlineRanges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {
+                    guard key.hasPrefix("auto:") else {
+                        notFoundRanges.append((ranges[0], generatedBody))
+                        return nil
+                    }
                     let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".").dropLast().joined(separator: ".")
                     let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
@@ -499,7 +504,7 @@ extension Sourcery {
                     return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
                 }
                 // swiftlint:disable:next force_unwrapping
-                return MappedInlineAnnotations(range, Path(filePath), ranges[key]!, generatedBody)
+                return MappedInlineAnnotations(range, Path(filePath), inlineRanges[key]!, generatedBody)
             }
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location
@@ -507,6 +512,14 @@ extension Sourcery {
                 let content = try path.read(.utf8)
                 let updated = content.bridge().replacingCharacters(in: rangeInFile, with: toInsert)
                 try writeIfChanged(updated, to: path)
+        }
+
+        notFoundRanges
+            .reversed()
+            .forEach {
+                let (range, generatedBody) = $0
+                inline.contents = inline.contents.bridge()
+                    .replacingCharacters(in: NSRange(location: range.location, length: 0), with: generatedBody) as String
         }
 
         return inline.contents

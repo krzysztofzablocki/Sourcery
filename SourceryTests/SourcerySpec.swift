@@ -134,6 +134,36 @@ class SourcerySpecTests: QuickSpec {
                         expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
                     }
 
+                    it("does not remove code from within generated template when missing origin") {
+                        update(code: """
+                            class Foo {
+                            // sourcery:inline:Bar.Inlined
+
+                            // This will be replaced
+                            Last line
+                            // sourcery:end
+                            }
+                            """, in: sourcePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let expectedResult = """
+                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            // Line One
+                            // sourcery:inline:Foo.Inlined
+                            var property = 2
+                            // Line Three
+                            // sourcery:end
+                            """
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                    }
+
                     it("does not create generated file with empty content") {
                         update(code: """
                             // sourcery:inline:Foo.Inlined
