@@ -488,23 +488,25 @@ extension Sourcery {
                 let range = ranges[0]
                 let generatedBody = contents.bridge().substring(with: range)
 
-                guard let (filePath, inlineRanges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) else {
-                    guard key.hasPrefix("auto:") else {
-                        notFoundRanges.append((ranges[0], generatedBody))
-                        return nil
-                    }
-                    let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".").dropLast().joined(separator: ".")
-                    let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
-
-                    guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
-                        let path = definition.path,
-                        let rangeInFile = try definition.rangeToAppendBody() else {
-                            return nil
-                    }
-                    return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
+                if let (filePath, inlineRanges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) {
+                    // swiftlint:disable:next force_unwrapping
+                    return MappedInlineAnnotations(range, Path(filePath), inlineRanges[key]!, generatedBody)
                 }
-                // swiftlint:disable:next force_unwrapping
-                return MappedInlineAnnotations(range, Path(filePath), inlineRanges[key]!, generatedBody)
+
+                guard key.hasPrefix("auto:") else {
+                    notFoundRanges.append((range, generatedBody))
+                    return nil
+                }
+                let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".").dropLast().joined(separator: ".")
+                let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
+
+                guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
+                    let path = definition.path,
+                    let rangeInFile = try definition.rangeToAppendBody() else {
+                        notFoundRanges.append((range, generatedBody))
+                        return nil
+                }
+                return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
             }
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location
