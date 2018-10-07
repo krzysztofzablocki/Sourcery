@@ -471,7 +471,7 @@ extension Sourcery {
     }
 
     private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
-        var inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: contents)
+        var (annotatedRanges, rangesToReplace) = TemplateAnnotationsParser.annotationRanges("inline", contents: contents)
 
         typealias MappedInlineAnnotations = (
             range: NSRange,
@@ -480,9 +480,7 @@ extension Sourcery {
             toInsert: String
         )
 
-        var notFoundRanges = [(NSRange, String)]()
-
-        try inline.annotatedRanges
+        try annotatedRanges
             .map { (key: $0, range: $1) }
             .compactMap { (key, ranges) -> MappedInlineAnnotations? in
                 let range = ranges[0]
@@ -494,7 +492,7 @@ extension Sourcery {
                 }
 
                 guard key.hasPrefix("auto:") else {
-                    notFoundRanges.append((range, generatedBody))
+                    rangesToReplace.remove(range)
                     return nil
                 }
                 let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".").dropLast().joined(separator: ".")
@@ -503,7 +501,7 @@ extension Sourcery {
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
                     let path = definition.path,
                     let rangeInFile = try definition.rangeToAppendBody() else {
-                        notFoundRanges.append((range, generatedBody))
+                        rangesToReplace.remove(range)
                         return nil
                 }
                 return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
@@ -516,15 +514,13 @@ extension Sourcery {
                 try writeIfChanged(updated, to: path)
         }
 
-        notFoundRanges
-            .reversed()
+        var bridged = contents.bridge()
+        rangesToReplace
+            .sorted(by: { $0.location > $1.location })
             .forEach {
-                let (range, generatedBody) = $0
-                inline.contents = inline.contents.bridge()
-                    .replacingCharacters(in: NSRange(location: range.location, length: 0), with: generatedBody) as String
+                bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
         }
-
-        return inline.contents
+        return bridged as String
     }
 
     private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path) -> String {
