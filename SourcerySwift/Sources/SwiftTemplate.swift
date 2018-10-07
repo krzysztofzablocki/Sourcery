@@ -15,11 +15,6 @@ private enum Delimiters {
     static let close = "%>"
 }
 
-private struct ProcessResult {
-    let output: String
-    let error: String
-}
-
 open class SwiftTemplate {
 
     public let sourcePath: Path
@@ -199,14 +194,13 @@ open class SwiftTemplate {
         let data = NSKeyedArchiver.archivedData(withRootObject: context)
         try serializedContextPath.write(data)
 
-        let result = try Process.runCommand(path: binaryPath.description,
-                                            arguments: [serializedContextPath.description])
-
-        if !result.error.isEmpty {
-            throw "\(sourcePath): \(result.error)"
+        do {
+            let result = try Process.runCommand(path: binaryPath.description,
+                                                arguments: [serializedContextPath.description])
+            return result
+        } catch let error as SwiftTemplateError {
+            throw "\(sourcePath): \(error.reason)"
         }
-
-        return result.output
     }
 
     func build() throws -> Path {
@@ -228,21 +222,14 @@ open class SwiftTemplate {
                 "-Xlinker", "-headerpad_max_install_names"
         ]
 
-        let compilationResult = try Process.runCommand(path: "/usr/bin/swiftc",
-                                                       arguments: arguments)
-
-        if !compilationResult.error.isEmpty {
-            throw compilationResult.error
-        }
-
-        let linkingResult = try Process.runCommand(path: "/usr/bin/install_name_tool",
-                                                   arguments: [
-                                                    "-add_rpath",
-                                                    "@executable_path/../",
-                                                    binaryFile.description])
-        if !linkingResult.error.isEmpty {
-            throw linkingResult.error
-        }
+        try Process.runCommand(path: "/usr/bin/swiftc",
+                               arguments: arguments)
+        
+        try Process.runCommand(path: "/usr/bin/install_name_tool",
+                               arguments: [
+                                "-add_rpath",
+                                "@executable_path/../",
+                                binaryFile.description])
 
         try? mainFile.delete()
 
@@ -252,16 +239,12 @@ open class SwiftTemplate {
     private func copyFramework(to path: Path) throws {
         let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryRuntime.framework"
 
-        let copyFramework = try Process.runCommand(path: "/usr/bin/rsync", arguments: [
+        try Process.runCommand(path: "/usr/bin/rsync", arguments: [
             "-av",
             "--force",
             sourceryFramework.description,
             path.description
             ])
-
-        if !copyFramework.error.isEmpty {
-            throw copyFramework.error
-        }
     }
 
 }
@@ -272,6 +255,14 @@ fileprivate extension SwiftTemplate {
         return Path(Bundle(for: SwiftTemplate.self).bundlePath +  "/Versions/Current/Frameworks")
     }
 
+}
+
+struct SwiftTemplateError: Error, CustomStringConvertible {
+    let reason: String
+    
+    var description: String {
+        return reason
+    }
 }
 
 // swiftlint:disable:next force_try
@@ -290,7 +281,8 @@ private extension String {
 }
 
 private extension Process {
-    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:]) throws -> ProcessResult {
+    @discardableResult
+    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:]) throws -> String {
         let task = Process()
         task.launchPath = path
         task.arguments = arguments
@@ -316,14 +308,11 @@ private extension Process {
         let output = String(data: outputData, encoding: .utf8) ?? ""
         let error = String(data: errorData, encoding: .utf8) ?? ""
 
-        if task.terminationReason != .exit {
-            throw NSError(domain: NSOSStatusErrorDomain, code: -1, userInfo: [
-                "terminationReason": task.terminationReason,
-                "error": error
-                ])
+        if !errorData.isEmpty {
+            throw SwiftTemplateError(reason: error)
         }
 
-        return ProcessResult(output: output, error: error)
+        return output
     }
 }
 
