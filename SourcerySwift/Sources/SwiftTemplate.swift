@@ -69,17 +69,12 @@ open class SwiftTemplate {
         import Foundation
         import SourceryRuntime
 
-        extension TemplateContext {
-            func generate() throws {
-                \(contents)
-            }
-        }
+        let context = ProcessInfo().context!
+        let types = context.types
+        let type = context.types.typesByName
+        let argument = context.argument
 
-        do {
-            try ProcessInfo().context!.generate()
-        } catch {
-            Log.error(error)
-        }
+        \(contents)
         """
 
         return (code, includedFiles)

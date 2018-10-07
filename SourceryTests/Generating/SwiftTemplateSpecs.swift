@@ -131,7 +131,7 @@ class SwiftTemplateTests: QuickSpec {
                     }
                     .to(throwError(closure: { (error) in
                         let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate.build/main.swift"
-                        expect("\(error)").to(equal("\(path):6:19: error: expected expression in list of expressions\n        print(\"\\( )\", terminator: \"\");\n                  ^\n"))
+                        expect("\(error)").to(equal("\(path):9:11: error: expected expression in list of expressions\nprint(\"\\( )\", terminator: \"\");\n          ^\n"))
                     }))
             }
 
@@ -151,7 +151,7 @@ class SwiftTemplateTests: QuickSpec {
                     try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
-                        expect("\(error)").to(equal("\(templatePath): Template error"))
+                        expect("\(error)").to(equal("\(templatePath): Fatal error: Index out of range\n"))
                     }))
             }
         }
