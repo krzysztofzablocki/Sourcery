@@ -17,10 +17,22 @@ internal enum TemplateAnnotationsParser {
     }
 
     static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false) -> (contents: String, annotatedRanges: [String: [NSRange]]) {
+        let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate)
+
         var bridged = contents.bridge()
+        rangesToReplace
+            .sorted(by: { $0.location > $1.location })
+            .forEach {
+                bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
+        }
+        return (bridged as String, annotatedRanges)
+    }
+
+    static func annotationRanges(_ annotation: String, contents: String, aggregate: Bool = false) -> (annotatedRanges: [String: [NSRange]], rangesToReplace: Set<NSRange>) {
+        let bridged = contents.bridge()
         let regex = try? self.regex(annotation: annotation)
 
-        var rangesToReplace = [NSRange]()
+        var rangesToReplace = Set<NSRange>()
         var annotatedRanges = [String: [NSRange]]()
 
         regex?.enumerateMatches(in: contents, options: [], range: bridged.entireRange) { result, _, _ in
@@ -44,16 +56,10 @@ internal enum TemplateAnnotationsParser {
             } else {
                 annotatedRanges[name] = [range]
             }
-            rangesToReplace.append(range)
+            rangesToReplace.insert(range)
         }
 
-        rangesToReplace
-                .reversed()
-                .forEach {
-                    bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
-                }
-
-        return (bridged as String, annotatedRanges)
+        return (annotatedRanges, rangesToReplace)
     }
 
     static func removingEmptyAnnotations(from content: String) -> String {
