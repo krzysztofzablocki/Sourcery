@@ -6,6 +6,7 @@
 - Support for parsing lazy vars into Variable's attributes.
 - Updated Stencil to 0.13.1 and SwiftStencilKit to 2.7.0
 - In Swift templates CLI arguments should now be accessed via `argument` instead of `arguments`, to be consistent with Stencil and JS templates.
+- Now in swift templates you can define types, extensions and use other Swift features that require file scope, without using separate files. All templates code is now placed at the top level of the template executable code, instead of being placed inside an extension of `TemplateContext` type.
 
 ## 0.15.0
 
