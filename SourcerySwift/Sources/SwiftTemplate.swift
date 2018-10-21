@@ -15,24 +15,29 @@ private enum Delimiters {
     static let close = "%>"
 }
 
+private struct ProcessResult {
+    let output: String
+    let error: String
+}
+
 open class SwiftTemplate {
 
     public let sourcePath: Path
     let cachePath: Path?
     let code: String
+    let version: String?
     let includedFiles: [Path]
 
     private lazy var buildDir: Path = {
-        guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate.build") else { fatalError("Unable to get temporary path") }
-        _ = try? FileManager.default.removeItem(at: tempDirURL)
-        // swiftlint:disable:next force_try
-        try! FileManager.default.createDirectory(at: tempDirURL, withIntermediateDirectories: true, attributes: nil)
+        let pathComponent = "SwiftTemplate" + (version.map { "/\($0)" } ?? "")
+        guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(pathComponent) else { fatalError("Unable to get temporary path") }
         return Path(tempDirURL.path)
     }()
 
-    public init(path: Path, cachePath: Path? = nil) throws {
+    public init(path: Path, cachePath: Path? = nil, version: String? = nil) throws {
         self.sourcePath = path
         self.cachePath = cachePath
+        self.version = version
         (self.code, self.includedFiles) = try SwiftTemplate.parse(sourcePath: path)
     }
 
@@ -179,7 +184,6 @@ open class SwiftTemplate {
                 try? cachePath.delete() // clear old cache
                 try cachePath.mkdir()
                 try build().move(binaryPath)
-                try copyFramework(to: cachePath.parent())
             }
         } else {
             try binaryPath = build()
@@ -189,57 +193,77 @@ open class SwiftTemplate {
         let data = NSKeyedArchiver.archivedData(withRootObject: context)
         try serializedContextPath.write(data)
 
-        do {
-            let result = try Process.runCommand(path: binaryPath.description,
-                                                arguments: [serializedContextPath.description])
-            return result
-        } catch let error as SwiftTemplateError {
-            throw "\(sourcePath): \(error.reason)"
+        let result = try Process.runCommand(path: binaryPath.description,
+                                            arguments: [serializedContextPath.description])
+        if !result.error.isEmpty {
+            throw "\(sourcePath): \(result.error)"
         }
+        return result.output
     }
 
     func build() throws -> Path {
-        let mainFile = buildDir + Path("main.swift")
-        let binaryFile = buildDir + Path("bin")
+        let sourcesDir = buildDir + Path("Sources")
+        let templateFilesDir = sourcesDir + Path("SwiftTemplate")
+        let mainFile = templateFilesDir + Path("main.swift")
+        let manifestFile = buildDir + Path("Package.swift")
 
-        try copyFramework(to: buildDir.parent())
+        try sourcesDir.mkpath()
+        try? templateFilesDir.delete()
+        try templateFilesDir.mkpath()
+
+        try copyRuntimePackage(to: sourcesDir)
+        try manifestFile.write(manifestCode)
         try mainFile.write(code)
 
-        let includedFileDescriptions = includedFiles.map { $0.description }
-        let arguments = [mainFile.description] + includedFileDescriptions +
-            [
-                "-suppress-warnings",
-                "-Onone",
-                "-module-name", "main",
-                "-target", "x86_64-apple-macosx10.11",
-                "-F", buildDir.parent().description,
-                "-o", binaryFile.description,
-                "-Xlinker", "-headerpad_max_install_names"
+        let binaryFile = buildDir + Path(".build/debug/SwiftTemplate")
+
+        try includedFiles.forEach { includedFile in
+            try includedFile.copy(templateFilesDir + Path(includedFile.lastComponent))
+        }
+
+        let arguments = [
+            "xcrun",
+            "swift",
+            "build",
+            "-Xswiftc", "-Onone",
+            "-Xswiftc", "-suppress-warnings",
+            "--disable-sandbox"
         ]
+        let compilationResult = try Process.runCommand(path: "/usr/bin/env",
+                                                       arguments: arguments,
+                                                       currentDirectoryPath: buildDir)
 
-        try Process.runCommand(path: "/usr/bin/swiftc",
-                               arguments: arguments)
-        
-        try Process.runCommand(path: "/usr/bin/install_name_tool",
-                               arguments: [
-                                "-add_rpath",
-                                "@executable_path/../",
-                                binaryFile.description])
-
-        try? mainFile.delete()
+        if !compilationResult.error.isEmpty {
+            throw compilationResult.output
+        }
 
         return binaryFile
     }
 
-    private func copyFramework(to path: Path) throws {
-        let sourceryFramework = SwiftTemplate.frameworksPath + "SourceryRuntime.framework"
+    private var manifestCode: String {
+        return """
+        // swift-tools-version:4.0
+        // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-        try Process.runCommand(path: "/usr/bin/rsync", arguments: [
-            "-av",
-            "--force",
-            sourceryFramework.description,
-            path.description
-            ])
+        import PackageDescription
+
+        let package = Package(
+            name: "SwiftTemplate",
+            products: [
+                .executable(name: "SwiftTemplate", targets: ["SwiftTemplate"])
+            ],
+            targets: [
+                .target(name: "SourceryRuntime"),
+                .target(
+                    name: "SwiftTemplate",
+                    dependencies: ["SourceryRuntime"]),
+            ]
+        )
+        """
+    }
+
+    private func copyRuntimePackage(to path: Path) throws {
+        try FolderSynchronizer().sync(files: sourceryRuntimeFiles, to: path + Path("SourceryRuntime"))
     }
 
 }
@@ -250,14 +274,6 @@ fileprivate extension SwiftTemplate {
         return Path(Bundle(for: SwiftTemplate.self).bundlePath +  "/Versions/Current/Frameworks")
     }
 
-}
-
-struct SwiftTemplateError: Error, CustomStringConvertible {
-    let reason: String
-    
-    var description: String {
-        return reason
-    }
 }
 
 // swiftlint:disable:next force_try
@@ -276,12 +292,19 @@ private extension String {
 }
 
 private extension Process {
-    @discardableResult
-    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:]) throws -> String {
+    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:], currentDirectoryPath: Path? = nil) throws -> ProcessResult {
         let task = Process()
         task.launchPath = path
         task.arguments = arguments
         task.environment = environment
+        if let currentDirectoryPath = currentDirectoryPath {
+            if #available(OSX 10.13, *) {
+                task.currentDirectoryURL = currentDirectoryPath.url
+            } else {
+                task.currentDirectoryPath = currentDirectoryPath.description
+            }
+        }
+        task.environment = ProcessInfo.processInfo.environment
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
@@ -303,11 +326,7 @@ private extension Process {
         let output = String(data: outputData, encoding: .utf8) ?? ""
         let error = String(data: errorData, encoding: .utf8) ?? ""
 
-        if !errorData.isEmpty {
-            throw SwiftTemplateError(reason: error)
-        }
-
-        return output
+        return ProcessResult(output: output, error: error)
     }
 }
 
@@ -321,3 +340,27 @@ extension String {
     }
 }
 
+struct FolderSynchronizer {
+    struct File {
+        let name: String
+        let content: String
+    }
+
+    func sync(files: [File], to dir: Path) throws {
+        if dir.exists {
+            let synchronizedPaths = files.map { dir + Path($0.name) }
+            try dir.children().forEach({ path in
+                if synchronizedPaths.contains(path) {
+                    return
+                }
+                try path.delete()
+            })
+        } else {
+            try dir.mkpath()
+        }
+        try files.forEach { file in
+            let filePath = dir + Path(file.name)
+            try filePath.write(file.content)
+        }
+    }
+}

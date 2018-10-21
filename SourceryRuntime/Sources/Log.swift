@@ -16,7 +16,7 @@ public enum Log {
     public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
         // to return error when running swift templates which is done in a different process
-        if ProcessInfo().processName == "bin" {
+        if ProcessInfo().processName != "Sourcery" {
             fputs("\(message)", stderr)
         }
     }

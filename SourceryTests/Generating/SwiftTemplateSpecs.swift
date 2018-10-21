@@ -127,11 +127,11 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
+                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath, version: "version"))
                     }
                     .to(throwError(closure: { (error) in
-                        let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate.build/main.swift"
-                        expect("\(error)").to(equal("\(path):9:11: error: expected expression in list of expressions\nprint(\"\\( )\", terminator: \"\");\n          ^\n"))
+                        let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
+                        expect("\(error)").to(contain("\(path):9:11: error: expected expression in list of expressions\nprint(\"\\( )\", terminator: \"\");\n          ^\n"))
                     }))
             }
 
@@ -151,8 +151,59 @@ class SwiftTemplateTests: QuickSpec {
                     try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
-                        expect("\(error)").to(equal("\(templatePath): Fatal error: Index out of range\n"))
+                        expect("\(error)").to(contain("\(templatePath): Fatal error: Index out of range\n"))
                     }))
+            }
+        }
+
+        describe("FolderSynchronizer") {
+            let outputDir: Path = {
+                return Stubs.cleanTemporarySourceryDir()
+            }()
+            let files: [FolderSynchronizer.File] = [.init(name: "file.swift", content: "Swift code")]
+
+            it("adds its files to an empty folder") {
+                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+                    .toNot(throwError())
+
+                let newFile = outputDir + Path("file.swift")
+                expect(newFile.exists).to(equal(true))
+                expect(try? newFile.read()).to(equal("Swift code"))
+            }
+
+            it("creates the target folder if it does not exist") {
+                let synchronizedFolder = outputDir + Path("Folder")
+
+                expect { try FolderSynchronizer().sync(files: files, to: synchronizedFolder) }
+                    .toNot(throwError())
+
+                expect(synchronizedFolder.exists).to(equal(true))
+                expect(synchronizedFolder.isDirectory).to(equal(true))
+            }
+
+            it("deletes files not present in the synchronized files") {
+                let existingFile = outputDir + Path("Existing.swift")
+                expect { try existingFile.write("Discarded") }
+                    .toNot(throwError())
+
+                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+                    .toNot(throwError())
+
+                expect(existingFile.exists).to(equal(false))
+                let newFile = outputDir + Path("file.swift")
+                expect(newFile.exists).to(equal(true))
+                expect(try? newFile.read()).to(equal("Swift code"))
+            }
+
+            it("replaces the content of a file if a file with the same name already exists") {
+                let existingFile = outputDir + Path("file.swift")
+                expect { try existingFile.write("Discarded") }
+                    .toNot(throwError())
+
+                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+                    .toNot(throwError())
+
+                expect(try? existingFile.read()).to(equal("Swift code"))
             }
         }
     }
