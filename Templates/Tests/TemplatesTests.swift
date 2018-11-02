@@ -69,5 +69,11 @@ class TemplatesTests: QuickSpec {
                 check(template: "AutoCodable")
             }
         }
+
+        describe("EnumsDefaults template") {
+            it("generates expected code") {
+                check(template: "EnumsDefaults")
+            }
+        }
     }
 }

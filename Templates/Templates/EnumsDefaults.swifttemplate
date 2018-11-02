@@ -1,0 +1,74 @@
+// swiftlint:disable all
+
+<%
+typealias CaseInfo = (localName: String?, externalName: String, typeName: String, isClosure: Bool, defaultValue: String?)
+
+for type in types.enums where type.hasAssociatedValues {
+	var allValues: [String: [CaseInfo]] = [:]
+	for `case` in type.cases {
+		for (index, associatedValue) in `case`.associatedValues.enumerated() {
+			let associatedValueLocalName = associatedValue.localName
+			let associatedValueExternalName = associatedValue.externalName ?? "data"
+			let defaultValue = `case`.annotations[associatedValueExternalName] as? String
+			allValues[`case`.name, default: []].append((associatedValueLocalName, "arg\(index)", associatedValue.typeName.name, associatedValue.typeName.isClosure && !associatedValue.typeName.isOptional, defaultValue))
+		}
+	}
+
+	if allValues.flatMap({ $0.value }).compactMap({ $0.defaultValue }).isEmpty {
+		continue
+	}
+
+-%>
+extension <%= type.name %> {
+<%
+
+for (associatedValueName, allValues) in allValues {
+	func combos(_ elements: [CaseInfo]) -> [[CaseInfo]] {
+		guard let first = elements.first else {
+			return [[]]
+		}
+
+		var result: [[CaseInfo]] = []
+		let subcombos = combos(Array(elements.dropFirst()))
+		if first.defaultValue != nil {
+			result += subcombos.map { [(first.localName, first.externalName, first.typeName, first.isClosure, nil)] + $0 }
+		}
+		result += subcombos.map { [first] + $0 }
+		return result
+	}
+
+	var allCombinations: [[CaseInfo]] = combos(allValues)
+
+	for combinations in allCombinations where combinations.contains(where: { $0.defaultValue != nil }) {
+		let allParameters = combinations.filter { $0.defaultValue == nil }
+	-%>
+	<%= type.accessLevel %> static <% if allParameters.isEmpty { -%>var<% } else { -%>func<% } -%> <%= associatedValueName %><% if !allParameters.isEmpty { -%>(<% } %>
+<%
+		for i in allParameters.indices {
+			let (localName, externalName, typeName, isClosure, defaultValue) = allParameters[i]
+-%>
+			<% if let localName = localName { -%><%= localName %> <% } else {-%>_ <% } -%><%= externalName %>: <% if isClosure { -%>@escaping <% } -%><%= typeName %><% if i < allParameters.count - 1 { -%>,<% } -%><%_ %>
+<%
+		}
+-%>
+		<% if allParameters.isEmpty { -%>:<% } else { -%>) -><% } -%> <%= type.name %> {
+		return .<%= associatedValueName %>(
+			<%
+		for i in combinations.indices {
+			let (localName, externalName, typeName, _, defaultValue) = combinations[i]
+-%>
+			<%_ %><% if let localName = localName { -%><%= localName %>: <% }; if let defaultValue = defaultValue { -%><%= defaultValue %><% } else { -%><%= externalName %><% } -%><% if i < combinations.count - 1 { -%>,
+			<% } -%>
+<%
+		}
+-%><%_ %>
+		)
+	}
+
+<%
+	}
+}
+-%><%_ %>
+}
+
+<%_ } -%>

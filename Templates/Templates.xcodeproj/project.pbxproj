@@ -43,6 +43,11 @@
 		6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 6DC27BD71EC6592700B73CAF /* AutoHashable.expected */; };
 		B50435DF2157222E00F120DF /* AutoCodable.expected in Resources */ = {isa = PBXBuildFile; fileRef = 636D786B2083B8D700160CC4 /* AutoCodable.expected */; };
 		C03FD2E6F7645376C192094D /* Pods_TemplatesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26AD1250F60484521E03C14A /* Pods_TemplatesTests.framework */; };
+		DFBDBE68218CC9DC009AD3D2 /* EnumsDefaults.swifttemplate in Resources */ = {isa = PBXBuildFile; fileRef = DFBDBE67218CC9DC009AD3D2 /* EnumsDefaults.swifttemplate */; };
+		DFBDBE6A218CC9EC009AD3D2 /* EnumsDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBDBE69218CC9EC009AD3D2 /* EnumsDefaults.swift */; };
+		DFBDBE6C218CCAC6009AD3D2 /* EnumsDefaults.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFBDBE6B218CCAC6009AD3D2 /* EnumsDefaults.generated.swift */; };
+		DFBDBE6E218CCC7E009AD3D2 /* EnumsDefaults.expected in Resources */ = {isa = PBXBuildFile; fileRef = DFBDBE6D218CCC7E009AD3D2 /* EnumsDefaults.expected */; };
+		DFBDBE70218CCD60009AD3D2 /* EnumsDefaults.generated.swift in Resources */ = {isa = PBXBuildFile; fileRef = DFBDBE6B218CCAC6009AD3D2 /* EnumsDefaults.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +117,10 @@
 		8BC863822106BD763A8B145B /* Pods-TemplatesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A4E640041AB8FBF997174F87 /* Pods-CodableContextTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CodableContextTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-CodableContextTests/Pods-CodableContextTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AD6C4A9866B1F8FDB6B02DA5 /* Pods-TemplatesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TemplatesTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-TemplatesTests/Pods-TemplatesTests.release.xcconfig"; sourceTree = "<group>"; };
+		DFBDBE67218CC9DC009AD3D2 /* EnumsDefaults.swifttemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EnumsDefaults.swifttemplate; sourceTree = "<group>"; };
+		DFBDBE69218CC9EC009AD3D2 /* EnumsDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumsDefaults.swift; sourceTree = "<group>"; };
+		DFBDBE6B218CCAC6009AD3D2 /* EnumsDefaults.generated.swift */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = EnumsDefaults.generated.swift; sourceTree = "<group>"; };
+		DFBDBE6D218CCC7E009AD3D2 /* EnumsDefaults.expected */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnumsDefaults.expected; sourceTree = "<group>"; };
 		E0F526BDFB067A8F16ACE2F6 /* Pods-CodableContextTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CodableContextTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-CodableContextTests/Pods-CodableContextTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -183,6 +192,7 @@
 				6D6645C41ECC184A004C1948 /* AutoMockable.swift */,
 				6D6645C91ECC219C004C1948 /* LinuxMain.swift */,
 				636D78492080256500160CC4 /* AutoCodable.swift */,
+				DFBDBE69218CC9EC009AD3D2 /* EnumsDefaults.swift */,
 			);
 			path = Context;
 			sourceTree = "<group>";
@@ -197,6 +207,7 @@
 				6D6645C21ECC1824004C1948 /* AutoMockable.expected */,
 				6D6645C71ECC2187004C1948 /* LinuxMain.expected */,
 				636D786B2083B8D700160CC4 /* AutoCodable.expected */,
+				DFBDBE6D218CCC7E009AD3D2 /* EnumsDefaults.expected */,
 			);
 			path = Expected;
 			sourceTree = "<group>";
@@ -211,6 +222,7 @@
 				6D342C9A1EBA3156006EEBEC /* AutoLenses.generated.swift */,
 				6D342C9B1EBA3156006EEBEC /* LinuxMain.generated.swift */,
 				636D784C208169E100160CC4 /* AutoCodable.generated.swift */,
+				DFBDBE6B218CCAC6009AD3D2 /* EnumsDefaults.generated.swift */,
 			);
 			path = Generated;
 			sourceTree = "<group>";
@@ -249,6 +261,7 @@
 				6D342C801EBA13DF006EEBEC /* AutoMockable.stencil */,
 				6D342C821EBA13DF006EEBEC /* LinuxMain.stencil */,
 				636D78472080251800160CC4 /* AutoCodable.swifttemplate */,
+				DFBDBE67218CC9DC009AD3D2 /* EnumsDefaults.swifttemplate */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -410,6 +423,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFBDBE70218CCD60009AD3D2 /* EnumsDefaults.generated.swift in Resources */,
 				6D4D84481EC667630005932D /* AutoEquatable.generated.swift in Resources */,
 				6D6645C61ECC1CAA004C1948 /* AutoMockable.generated.swift in Resources */,
 				6D6645C31ECC1824004C1948 /* AutoMockable.expected in Resources */,
@@ -422,12 +436,14 @@
 				6D342C891EBA13DF006EEBEC /* LinuxMain.stencil in Resources */,
 				6D130B7C1ECACEB800E9642A /* AutoLenses.generated.swift in Resources */,
 				6D342C871EBA13DF006EEBEC /* AutoMockable.stencil in Resources */,
+				DFBDBE68218CC9DC009AD3D2 /* EnumsDefaults.swifttemplate in Resources */,
 				6D4D84491EC667650005932D /* AutoHashable.generated.swift in Resources */,
 				6D342C861EBA13DF006EEBEC /* AutoLenses.stencil in Resources */,
 				6D342C851EBA13DF006EEBEC /* AutoHashable.stencil in Resources */,
 				6DC27BD81EC6592700B73CAF /* AutoHashable.expected in Resources */,
 				6D342C831EBA13DF006EEBEC /* AutoCases.stencil in Resources */,
 				636D78572081781E00160CC4 /* AutoCodable.swifttemplate in Resources */,
+				DFBDBE6E218CCC7E009AD3D2 /* EnumsDefaults.expected in Resources */,
 				6D342CA31EBA5415006EEBEC /* AutoCases.expected in Resources */,
 				6D342CA41EBA54DF006EEBEC /* AutoCases.generated.swift in Resources */,
 				6D037EA31EC26E6A00FA6C91 /* AutoEquatable.expected in Resources */,
@@ -552,11 +568,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D037EA11EC26E6300FA6C91 /* AutoEquatable.swift in Sources */,
+				DFBDBE6C218CCAC6009AD3D2 /* EnumsDefaults.generated.swift in Sources */,
 				6D130B791ECACCDF00E9642A /* AutoLenses.swift in Sources */,
 				6D342C941EBA155A006EEBEC /* AutoCases.swift in Sources */,
 				6D6645C51ECC184A004C1948 /* AutoMockable.swift in Sources */,
 				6D0AF6BC1EC5EDD100F9A410 /* AutoHashable.swift in Sources */,
 				6D342C911EBA146F006EEBEC /* TemplatesTests.swift in Sources */,
+				DFBDBE6A218CC9EC009AD3D2 /* EnumsDefaults.swift in Sources */,
 				6D6645CA1ECC219C004C1948 /* LinuxMain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
