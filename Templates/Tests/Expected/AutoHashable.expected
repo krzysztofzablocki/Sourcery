@@ -14,17 +14,52 @@ extension AutoHashableClass: Hashable {
         friends.hash(into: &hasher)
     }
 }
+// MARK: - AutoHashableClassFromNonHashableInherited AutoHashable
+extension AutoHashableClassFromNonHashableInherited: Hashable {
+    internal func hash(into hasher: inout Hasher) {
+        lastName.hash(into: &hasher)
+    }
+}
+// MARK: - AutoHashableClassFromNonHashableInheritedInherited AutoHashable
+extension AutoHashableClassFromNonHashableInheritedInherited: Hashable {
+    internal override func hash(into hasher: inout Hasher) {
+        super.hash(into: hasher)
+        prefix.hash(into: &hasher)
+    }
+}
 // MARK: - AutoHashableClassInherited AutoHashable
 extension AutoHashableClassInherited: Hashable {
-#error Inheritance is not supported for AutoHashable
-    internal func hash(into hasher: inout Hasher) {
+    internal override func hash(into hasher: inout Hasher) {
+        super.hash(into: hasher)
         middleName.hash(into: &hasher)
+    }
+}
+// MARK: - AutoHashableClassInheritedInherited AutoHashable
+extension AutoHashableClassInheritedInherited: Hashable {
+    internal override func hash(into hasher: inout Hasher) {
+        super.hash(into: hasher)
+        prefix.hash(into: &hasher)
+    }
+}
+// MARK: - AutoHashableFromHashableInherited AutoHashable
+extension AutoHashableFromHashableInherited: Hashable {
+    internal override func hash(into hasher: inout Hasher) {
+        super.hash(into: hasher)
+        lastName.hash(into: &hasher)
     }
 }
 // MARK: - AutoHashableNSObject AutoHashable
 extension AutoHashableNSObject {
     internal override func hash(into hasher: inout Hasher) {
+        super.hash(into: hasher)
         firstName.hash(into: &hasher)
+    }
+}
+// MARK: - AutoHashableNSObjectInherited AutoHashable
+extension AutoHashableNSObjectInherited {
+    internal override func hash(into hasher: inout Hasher) {
+        super.hash(into: hasher)
+        lastName.hash(into: &hasher)
     }
 }
 // MARK: - AutoHashableProtocol AutoHashable
