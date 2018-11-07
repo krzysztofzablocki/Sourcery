@@ -23,7 +23,7 @@ import Foundation
                          variables: [Variable] = [],
                          methods: [Method] = [],
                          subscripts: [Subscript] = [],
-                         inheritedTypes: [String] = [],
+                         inheritedTypes: [Type] = [],
                          containedTypes: [Type] = [],
                          typealiases: [Typealias] = [],
                          attributes: [String: Attribute] = [:],

@@ -163,12 +163,12 @@ final class FileParser {
                 return nil
             }
 
-            type.isGeneric = isGeneric(source: source)
             if let suffix = extract(.nameSuffixUpToBody, from: source) {
                 let declaration = extractGenericsDeclaration(source: suffix)
                 let whereClause = extractGenericsWhereClause(source: suffix)
                 type.genericTypeParameters = parseGenerics(declaration: declaration, whereClause: whereClause)
             }
+            type.isGeneric = !type.genericTypeParameters.isEmpty
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.bodyBytesRange = Substring.body.range(for: source).map { BytesRange(range: $0) }
@@ -185,7 +185,7 @@ final class FileParser {
         /*kind:*/ SwiftDeclarationKind,
         /*name:*/ String,
         /*accessLevel:*/ AccessLevel,
-        /*inheritedTypes:*/ [String],
+        /*inheritedTypes:*/ [Type],
         /*source:*/ [String: SourceKitRepresentable],
         /*definedIn:*/ Any?,
         /*next:*/ [String: SourceKitRepresentable]?
@@ -215,10 +215,8 @@ final class FileParser {
     private func walkDeclaration(source: [String: SourceKitRepresentable], next: [String: SourceKitRepresentable]?, containingIn: (Any, [String: SourceKitRepresentable])? = nil, foundEntry: FoundEntry) throws {
         var declaration = containingIn
 
-        let inheritedTypes = extractInheritedTypes(source: source)
-
         if let requirements = parseTypeRequirements(source) {
-            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, inheritedTypes, source, containingIn?.0, next)
+            let foundDeclaration = foundEntry(requirements.kind, requirements.name, requirements.accessibility, requirements.inheritedTypes, source, containingIn?.0, next)
             if let foundDeclaration = foundDeclaration, let containingIn = containingIn {
                 processContainedDeclaration(foundDeclaration, within: containingIn)
             }
@@ -290,7 +288,7 @@ final class FileParser {
 // MARK: - Details parsing
 extension FileParser {
 
-    fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
+    fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel, inheritedTypes: [Type])? {
         guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }),
               var name = dict[SwiftDocKey.name.rawValue] as? String else { return nil }
 
@@ -303,18 +301,17 @@ extension FileParser {
         }
 
         let accessibility = (dict["key.accessibility"] as? String).flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "") ) }) ?? .none
-        return (name, kind, accessibility)
-    }
-
-    internal func extractInheritedTypes(source: [String: SourceKitRepresentable]) -> [String] {
-        return (source[SwiftDocKey.inheritedtypes.rawValue] as? [[String: SourceKitRepresentable]])?.compactMap { type in
-            return type[SwiftDocKey.name.rawValue] as? String
-        } ?? []
-    }
-
-    fileprivate func isGeneric(source: [String: SourceKitRepresentable]) -> Bool {
-        guard let substring = extract(.nameSuffix, from: source), substring.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<") == true else { return false }
-        return true
+        var inheritedTypes: [Type] = []
+        if let inheritedTypesArray = (dict[SwiftDocKey.inheritedtypes.rawValue] as? [[String: SourceKitRepresentable]]) {
+            inheritedTypes = inheritedTypesArray.compactMap { inheritedTypeDict in
+                guard let name = inheritedTypeDict[SwiftDocKey.name.rawValue] as? String else { return nil }
+                let declaration = extractGenericsDeclaration(source: name)
+                let genericTypes = parseGenerics(declaration: declaration, whereClause: "")
+                let trimmedName = name[..<(name.index(of: "<") ?? name.endIndex)]
+                return Type(name: String(trimmedName), isGeneric: !genericTypes.isEmpty, genericTypeParameters: genericTypes)
+            }
+        }
+        return (name, kind, accessibility, inheritedTypes)
     }
 
     fileprivate func extractGenericsDeclaration(source: String) -> String {
@@ -524,7 +521,7 @@ extension FileParser {
     }
 
     internal func parseVariable(_ source: [String: SourceKitRepresentable], definedIn: Type?, isStatic: Bool = false) -> Variable? {
-        guard let (name, _, accessibility) = parseTypeRequirements(source) else { return nil }
+        guard let (name, _, accessibility, _) = parseTypeRequirements(source) else { return nil }
 
         let definedInProtocol = (definedIn != nil) ? definedIn is SourceryProtocol : false
         var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
@@ -695,7 +692,7 @@ extension FileParser {
     }
 
     internal func parseParameter(_ source: [String: SourceKitRepresentable]) -> MethodParameter? {
-        guard let (name, _, _) = parseTypeRequirements(source),
+        guard let (name, _, _, _) = parseTypeRequirements(source),
             let type = source[SwiftDocKey.typeName.rawValue] as? String else {
                 return nil
         }
@@ -715,7 +712,7 @@ extension FileParser {
 extension FileParser {
 
     fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable]) -> EnumCase? {
-        guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
+        guard let (name, _, _, _) = parseTypeRequirements(source) else { return nil }
 
         var associatedValues: [AssociatedValue] = []
         var rawValue: String?
@@ -785,7 +782,7 @@ extension FileParser {
 extension FileParser {
 
     fileprivate func parseTypealias(_ source: [String: SourceKitRepresentable], containingType: Type?) -> Typealias? {
-        guard let (name, _, _) = parseTypeRequirements(source),
+        guard let (name, _, _, _) = parseTypeRequirements(source),
             let nameSuffix = extract(.nameSuffix, from: source)?
                 .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
             else { return nil }

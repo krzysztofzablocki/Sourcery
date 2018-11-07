@@ -12,9 +12,11 @@ class GeneratorSpec: QuickSpec {
             var types: [Type] = []
             var arguments: [String: NSObject] = [:]
             var beforeEachGenerate: () -> Void = {
-                let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"], isGeneric: true, genericTypeParameters: [GenericTypeParameter(typeName: TypeName("T")), GenericTypeParameter(typeName: TypeName("Element"))])
-                let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
-                let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
+                let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: [
+                    Type(name: "NSObject"), Type(name: "Decodable"), Type(name: "AlternativeProtocol")
+                    ], isGeneric: true, genericTypeParameters: [GenericTypeParameter(typeName: TypeName("T")), GenericTypeParameter(typeName: TypeName("Element"))])
+                let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: [Type(name: "Foo"), Type(name: "ProtocolBasedOnKnownProtocol")], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
+                let barType = Struct(name: "Bar", inheritedTypes: [Type(name: "KnownProtocol"), Type(name: "Decodable")], annotations: ["bar": NSNumber(value: true)])
 
                 let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
                 let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .private), isComputed: false, definedInTypeName: TypeName("Complex"))
@@ -55,7 +57,7 @@ class GeneratorSpec: QuickSpec {
                     Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
                     ])
                 innerOptionsType.variables.forEach { $0.definedInType = innerOptionsType }
-                let optionsType = Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], variables: [
+                let optionsType = Enum(name: "Options", accessLevel: .public, inheritedTypes: [Type(name: "KnownProtocol")], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], variables: [
                     Variable(name: "optionVar", typeName: TypeName("String"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Options"))
                     ], containedTypes: [innerOptionsType])
 
@@ -66,13 +68,13 @@ class GeneratorSpec: QuickSpec {
                     complexTypeExtension,
                     barType,
                     optionsType,
-                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
-                    Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
+                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: [Type(name: "Foo"), Type(name: "KnownProtocol")], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
+                    Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: [Type(name: "KnownProtocol")]),
                     Class(name: "ProjectClass", accessLevel: .open),
-                    Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),
+                    Class(name: "ProjectFooSubclass", inheritedTypes: [Type(name: "FooSubclass")]),
                     knownProtocol,
                     Protocol(name: "AlternativeProtocol"),
-                    Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: ["KnownProtocol"])
+                    Protocol(name: "ProtocolBasedOnKnownProtocol", inheritedTypes: [Type(name: "KnownProtocol")])
                 ]
 
                 arguments = ["some": "value" as NSString, "number": NSNumber(value: Float(4))]

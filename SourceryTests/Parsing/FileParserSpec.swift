@@ -160,12 +160,12 @@ class FileParserSpec: QuickSpec {
                     it("extracts inherited types properly") {
                         expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
                                 .to(equal([
-                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"].map { Type(name: $0)})
                                 ]))
                     }
 
                     it("extracts annotations correctly") {
-                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: [Type(name: "TestProtocol")])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
                         expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
 
@@ -208,7 +208,11 @@ class FileParserSpec: QuickSpec {
                                                     GenericTypeParameterConstraint(name: TypeName("Equatable"))
                                                     ])
                             ])
-                        expected.inheritedTypes = ["Bar<B>"]
+                        expected.inheritedTypes = [Type(name: "Bar",
+                                                             isGeneric: true,
+                                                             genericTypeParameters: [
+                                                                GenericTypeParameter(typeName: TypeName("B"))
+                            ])]
                         expected.methods.append(method)
 
                         expect(result).to(equal([expected]))
@@ -217,7 +221,9 @@ class FileParserSpec: QuickSpec {
                     it("doesn't extract generics if they are concrete parameters to the supertype") {
                         let result = parse("class Foo : Bar<Int> {}")
                         let expected = Class(name: "Foo", isGeneric: false)
-                        expected.inheritedTypes = ["Bar<Int>"]
+                        expected.inheritedTypes = [Type(name: "Bar", isGeneric: true, genericTypeParameters: [
+                                GenericTypeParameter(typeName: TypeName("Int"))
+                            ])]
                         expect(result).to(equal([expected]))
                     }
 
@@ -236,7 +242,9 @@ class FileParserSpec: QuickSpec {
                     it("extracts extensions properly") {
                         expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { return 0 } }"))
                             .to(equal([
-                                Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
+                                Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: [
+                                        Protocol(name: "Foo")
+                                    ]),
                                 Protocol(name: "Foo")
                                 ]))
                     }
@@ -483,7 +491,7 @@ class FileParserSpec: QuickSpec {
                         it("extracts inherited types properly") {
                             expect(parse("enum Foo: SomeProtocol { case optionA }; protocol SomeProtocol {}"))
                                 .to(equal([
-                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawTypeName: nil, cases: [EnumCase(name: "optionA")]),
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [Protocol(name: "SomeProtocol")], rawTypeName: nil, cases: [EnumCase(name: "optionA")]),
                                     Protocol(name: "SomeProtocol")
                                     ]))
 
@@ -492,7 +500,7 @@ class FileParserSpec: QuickSpec {
                         it("extracts types inherited in extension properly") {
                             expect(parse("enum Foo { case optionA }; extension Foo: SomeProtocol {}; protocol SomeProtocol {}"))
                                 .to(equal([
-                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawTypeName: nil, cases: [EnumCase(name: "optionA")]),
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [Protocol(name: "SomeProtocol")], rawTypeName: nil, cases: [EnumCase(name: "optionA")]),
                                     Protocol(name: "SomeProtocol")
                                     ]))
                         }
@@ -500,7 +508,7 @@ class FileParserSpec: QuickSpec {
                         it("does not use extension to infer rawType") {
                             expect(parse("enum Foo { case one }; extension Foo: Equatable {}")).to(equal([
                                 Enum(name: "Foo",
-                                     inheritedTypes: ["Equatable"],
+                                     inheritedTypes: [Type(name: "Equatable")],
                                      cases: [EnumCase(name: "one")]
                                 )
                                 ]))
@@ -559,7 +567,7 @@ class FileParserSpec: QuickSpec {
                     context("given associated value with its type existing") {
 
                         it("extracts associated value's type") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar"), type: Class(name: "Bar", inheritedTypes: [Protocol(name: "Baz")]))
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar) }")
@@ -570,7 +578,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts associated value's optional type") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar?"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar?"), type: Class(name: "Bar", inheritedTypes: [Protocol(name: "Baz")]))
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar?) }")
@@ -581,7 +589,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts associated value's typealias") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar2"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar2"), type: Class(name: "Bar", inheritedTypes: [Protocol(name: "Baz")]))
                             let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
 
                             let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar2) }")
@@ -593,7 +601,7 @@ class FileParserSpec: QuickSpec {
 
                         it("extracts associated value's same (indirect) enum type") {
                             let associatedValue = AssociatedValue(typeName: TypeName("Foo"))
-                            let item = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
+                            let item = Enum(name: "Foo", inheritedTypes: [Protocol(name: "Baz")], cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
                             associatedValue.type = item
 
                             let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(Foo) }")
@@ -624,7 +632,7 @@ class FileParserSpec: QuickSpec {
                     it("does consider type variables as computed when they are, even if they adhere to protocol") {
                         expect(parse("protocol Foo { var some: Int { get } }\nclass Bar: Foo { var some: Int { return 2 } }").first)
                             .to(equal(
-                                Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
+                                Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: [Protocol(name: "Foo")])
                                 ))
                     }
 

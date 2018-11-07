@@ -175,7 +175,7 @@ class ParserComposerSpec: QuickSpec {
                                                   Enum(name: "Foo",
                                                        accessLevel: .internal,
                                                        isExtension: false,
-                                                       inheritedTypes: ["SomeProtocol"],
+                                                       inheritedTypes: [Protocol(name: "SomeProtocol")],
                                                        rawTypeName: TypeName("String"),
                                                        cases: [EnumCase(name: "optionA")]),
                                                   Protocol(name: "SomeProtocol")
@@ -187,7 +187,7 @@ class ParserComposerSpec: QuickSpec {
                                 "enum Foo: RawRepresentable { case optionA; var rawValue: String { return \"\" }; init?(rawValue: String) { self = .optionA } }")).to(
                                         equal([
                                                       Enum(name: "Foo",
-                                                           inheritedTypes: ["RawRepresentable"],
+                                                           inheritedTypes: [Type(name: "RawRepresentable")],
                                                            rawTypeName: TypeName("String"),
                                                            cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
@@ -212,7 +212,7 @@ class ParserComposerSpec: QuickSpec {
                                 "enum Foo: RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(
                                         equal([
                                                       Enum(name: "Foo",
-                                                           inheritedTypes: ["RawRepresentable"],
+                                                           inheritedTypes: [Type(name: "RawRepresentable")],
                                                            rawTypeName: TypeName("String"),
                                                            cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
@@ -235,7 +235,7 @@ class ParserComposerSpec: QuickSpec {
                                 "enum Foo: CustomStringConvertible, RawRepresentable { case optionA; typealias RawValue = String; var rawValue: RawValue { return \"\" }; init?(rawValue: RawValue) { self = .optionA } }")).to(
                                         equal([
                                                       Enum(name: "Foo",
-                                                           inheritedTypes: ["CustomStringConvertible", "RawRepresentable"],
+                                                           inheritedTypes: [Type(name: "CustomStringConvertible"), Type(name: "RawRepresentable")],
                                                            rawTypeName: TypeName("String"),
                                                            cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
@@ -776,13 +776,13 @@ class ParserComposerSpec: QuickSpec {
                                                        accessLevel: .internal,
                                                        isExtension: false,
                                                        variables: [],
-                                                       inheritedTypes: ["TestProtocol", "AnotherProtocol"])
+                                                       inheritedTypes: ["TestProtocol", "AnotherProtocol"].map { Type(name: $0)})
                                           ]))
                     }
 
                     it("updates inheritedTypes with real type name") {
                         expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
-                                .to(contain([Class(name: "Bar", inheritedTypes: ["Foo"])]))
+                            .to(contain([Class(name: "Bar", inheritedTypes: [Class(name: "Foo")])]))
                     }
 
                     context("given local typealias") {

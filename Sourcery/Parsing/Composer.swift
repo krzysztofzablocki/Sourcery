@@ -55,7 +55,9 @@ struct Composer {
 
         //extend all types with their extensions
         types.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), typealiases: typealiases) ?? $0 }
+            type.inheritedTypes = type.inheritedTypes.map {
+                self.resolveType(typeName: TypeName($0.name), containingType: nil, unique: unique, modules: modules, typealiases: typealiases) ?? $0
+            }
 
             let uniqueType = unique[type.name] ?? typeFromModule(type.name, modules: modules)
 
@@ -64,7 +66,7 @@ struct Composer {
                 unique[type.name] = type
 
                 let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
-                        ": \(type.inheritedTypes.joined(separator: ", "))"
+                ": \(type.inheritedTypes.map { $0.name }.joined(separator: ", "))"
 
                 Log.verbose("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
                 return
@@ -224,7 +226,7 @@ struct Composer {
         if let rawValueVariable = enumeration.variables.first(where: { $0.name == "rawValue" && !$0.isStatic }) {
             enumeration.rawTypeName = rawValueVariable.actualTypeName
             enumeration.rawType = rawValueVariable.type
-        } else if let rawTypeName = enumeration.inheritedTypes.first {
+        } else if let rawTypeName = enumeration.inheritedTypes.first?.name {
             if let rawTypeCandidate = types[rawTypeName] {
                 if !(rawTypeCandidate is SourceryProtocol) {
                     enumeration.rawTypeName = TypeName(rawTypeName)
@@ -363,8 +365,10 @@ struct Composer {
 
         var processed = [String: Bool]()
         types.forEach { type in
-            if let type = type as? Class, let supertype = type.inheritedTypes.first.flatMap({ typesByName[$0] }) as? Class {
-                type.supertype = supertype
+            if let type = type as? Class,
+                let superType = type.inheritedTypes.first,
+                let superTypeName = typesByName[superType.name] as? Class {
+                type.supertype = superTypeName
             }
             processed[type.name] = true
             updateTypeRelationship(for: type, typesByName: typesByName, processed: &processed)

@@ -157,12 +157,12 @@ import Foundation
         return variables.filter { !$0.isComputed && !$0.isStatic }
     }
 
-    /// Names of types this type inherits from (for classes only) and protocols it implements, in order of definition
-    public var inheritedTypes: [String] {
+    /// Types this type inherits from (for classes only) and protocols it implements, in order of definition
+    public var inheritedTypes: [Type] {
         didSet {
             based.removeAll()
-            inheritedTypes.forEach { name in
-                self.based[name] = name
+            inheritedTypes.forEach { type in
+                self.based[type.name] = type.name
             }
         }
     }
@@ -238,7 +238,7 @@ import Foundation
                 variables: [Variable] = [],
                 methods: [Method] = [],
                 subscripts: [Subscript] = [],
-                inheritedTypes: [String] = [],
+                inheritedTypes: [Type] = [],
                 containedTypes: [Type] = [],
                 typealiases: [Typealias] = [],
                 attributes: [String: Attribute] = [:],
@@ -267,8 +267,8 @@ import Foundation
             containedType[$0.localName] = $0
             $0.parent = self
         }
-        inheritedTypes.forEach { name in
-            self.based[name] = name
+        inheritedTypes.forEach { type in
+            self.based[type.name] = type.name
         }
         typealiases.forEach({
             $0.parent = self
@@ -304,7 +304,7 @@ import Foundation
             guard let subscripts: [Subscript] = aDecoder.decode(forKey: "subscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["subscripts"])); fatalError() }; self.subscripts = subscripts
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-            guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
+            guard let inheritedTypes: [Type] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
             guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["implements"])); fatalError() }; self.implements = implements
