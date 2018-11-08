@@ -380,8 +380,6 @@ extension GenericType: NSCoding {}
 
 extension GenericTypeParameter: NSCoding {}
 
-extension GenericTypeParameterConstraint: NSCoding {}
-
 extension Method: NSCoding {}
 
 extension MethodParameter: NSCoding {}
@@ -549,15 +547,6 @@ extension GenericTypeParameter {
         var string = "\\(Swift.type(of: self)): "
         string += "typeName = \\(String(describing: self.typeName)), "
         string += "constraints = \\(String(describing: self.constraints))"
-        return string
-    }
-}
-extension GenericTypeParameterConstraint {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "type = \\(String(describing: self.type))"
         return string
     }
 }
@@ -897,18 +886,6 @@ extension GenericTypeParameter: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "constraints").trackDifference(actual: self.constraints, expected: castObject.constraints))
-        return results
-    }
-}
-extension GenericTypeParameterConstraint: Diffable {
-    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? GenericTypeParameterConstraint else {
-            results.append("Incorrect type <expected: GenericTypeParameterConstraint, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
         return results
     }
 }
@@ -1670,15 +1647,6 @@ extension GenericTypeParameter {
         return true
     }
 }
-extension GenericTypeParameterConstraint {
-    /// :nodoc:
-    override public func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericTypeParameterConstraint else { return false }
-        if self.name != rhs.name { return false }
-        if self.type != rhs.type { return false }
-        return true
-    }
-}
 extension Method {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -2102,37 +2070,6 @@ import Foundation
 }
 
 """),
-    .init(name: "GenericTypeParameterConstraint.swift", content:
-"""
-import Foundation
-
-/// Represents an inheritance/implementation constraint in a generic type parameter
-@objcMembers public final class GenericTypeParameterConstraint: NSObject, SourceryModel {
-    public let name: TypeName
-    public let type: Type?
-
-    /// :nodoc:
-    public init(name: TypeName, type: Type? = nil) {
-        self.name = name
-        self.type = type
-    }
-
-    // sourcery:inline:GenericTypeParameterConstraint.AutoCoding
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: TypeName = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            self.type = aDecoder.decode(forKey: "type")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.type, forKey: "type")
-        }
-    // sourcery:end
-}
-
-"""),
     .init(name: "JSExport.generated.swift", content:
 """
 // Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
@@ -2203,7 +2140,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
@@ -2271,7 +2208,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
@@ -2384,7 +2321,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
@@ -2423,7 +2360,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
@@ -2510,7 +2447,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
@@ -4093,10 +4030,10 @@ public protocol Typed {
     public var type: Type?
 
     /// Generic type parameter constraints
-    public var constraints: [GenericTypeParameterConstraint]
+    public var constraints: [Type]
 
     /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil, constraints: [GenericTypeParameterConstraint] = []) {
+    public init(typeName: TypeName, type: Type? = nil, constraints: [Type] = []) {
         self.typeName = typeName
         self.type = type
         self.constraints = constraints
@@ -4107,7 +4044,7 @@ public protocol Typed {
         required public init?(coder aDecoder: NSCoder) {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
-            guard let constraints: [GenericTypeParameterConstraint] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
+            guard let constraints: [Type] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
         }
 
         /// :nodoc:

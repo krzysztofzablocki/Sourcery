@@ -243,10 +243,10 @@ public protocol Typed {
     public var type: Type?
 
     /// Generic type parameter constraints
-    public var constraints: [GenericTypeParameterConstraint]
+    public var constraints: [Type]
 
     /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil, constraints: [GenericTypeParameterConstraint] = []) {
+    public init(typeName: TypeName, type: Type? = nil, constraints: [Type] = []) {
         self.typeName = typeName
         self.type = type
         self.constraints = constraints
@@ -257,7 +257,7 @@ public protocol Typed {
         required public init?(coder aDecoder: NSCoder) {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
-            guard let constraints: [GenericTypeParameterConstraint] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
+            guard let constraints: [Type] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
         }
 
         /// :nodoc:

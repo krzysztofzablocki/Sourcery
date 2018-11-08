@@ -100,10 +100,12 @@ class FileParserSpec: QuickSpec {
                             .to(equal([
                                 Struct(name: "Foo", isGeneric: true, genericTypeParameters: [
                                     GenericTypeParameter(typeName: TypeName("A"), constraints: [
-                                        GenericTypeParameterConstraint(name: TypeName("Equatable")),
-                                        GenericTypeParameterConstraint(name: TypeName("Codable"))]),
+                                        Type(name: "Equatable"),
+                                        Type(name: "Codable")
+                                        ]),
                                     GenericTypeParameter(typeName: TypeName("B"), constraints: [
-                                        GenericTypeParameterConstraint(name: TypeName("Codable"))]),
+                                        Type(name: "Codable")
+                                        ]),
                                     GenericTypeParameter(typeName: TypeName("C"))])
                                 ]))
                     }
@@ -173,6 +175,76 @@ class FileParserSpec: QuickSpec {
                                 .to(equal([expectedType]))
                     }
 
+                    it("Extracts protocol information for generic type arguments") {
+                        let result = parse("protocol Test {}; class Foo<T:Test> : Bar<T> {}")
+                        let expected = Class(name: "Foo", isGeneric: true, genericTypeParameters: [
+                            GenericTypeParameter(typeName: TypeName("T"), constraints: [
+                                Protocol(name: "Test")
+                                ])
+                            ])
+                        expected.inheritedTypes = [
+                            Type(name: "Bar", isGeneric: true, genericTypeParameters: [
+                                GenericTypeParameter(typeName: TypeName("T"))]
+                            )]
+                        expect(result).to(equal([expected, Protocol(name: "Test")]))
+                    }
+
+                    it("Extracts generic information recursively") {
+                        let result = parse("class Bar<A: B<C<D>>>")
+
+                        let dType = Type(name: "D")
+                        let cType = Type(name: "C", isGeneric: true, genericTypeParameters: [
+                            GenericTypeParameter(typeName: TypeName("D"), type: dType)
+                            ])
+                        let bType = Type(name: "B", isGeneric: true, genericTypeParameters: [
+                            GenericTypeParameter(typeName: TypeName("C"), type: cType)
+                            ])
+                        let aType = Type(name: "A", inheritedTypes: [ bType ] )
+                        expect(result).to(equal([
+                                Class(name: "Bar", isGeneric: true, genericTypeParameters: [
+                                    GenericTypeParameter(typeName: TypeName("A"), type: aType)
+                                    ])
+                            ]))
+                    }
+
+                    it("extracts generic type information for concrete generic declaration") {
+                        let result = parse("""
+                        protocol Bar {}
+                        class Ancestor {}
+                        class Sibling : Ancestor, Bar {}
+                        struct Foo<T: Ancestor> {}
+                        enum Namespace {
+                            static let variable = Foo<Sibling>()
+                        }
+                        """)
+
+                        let klass = Class(name: "Ancestor")
+                        let protokol = Protocol(name: "Bar")
+                        let strukt = Struct(name: "Foo", isGeneric: true, genericTypeParameters: [
+                            GenericTypeParameter(typeName: TypeName("T"), constraints: [
+                                Type(name: "Ancestor")
+                                ])
+                            ])
+                        let sibling = Class(name: "Sibling", inheritedTypes: [
+                            Class(name: "Ancestor"), Protocol(name: "Bar")
+                            ])
+                        let namespace = Enum(name: "Namespace", variables: [
+                            Variable(name: "variable",
+                                     typeName: TypeName("Foo"),
+                                     type: Struct(name: "Foo", isGeneric: true, genericTypeParameters: [
+                                        GenericTypeParameter(typeName: TypeName("Sibling"),
+                                                             type: Class(name: "Sibling",
+                                                                         parent: Class(name: "Ancestor"),
+                                                                         inheritedTypes: [
+                                                                            Class(name: "Ancestor"),
+                                                                            Protocol(name: "Bar")
+                                                                ]))
+                                        ]), isStatic: true)
+                            ])
+
+                        expect(result).to(equal([klass, protokol, strukt, namespace, sibling]))
+                    }
+
                     it("extracts generics correctly") {
                         let result = parse("""
                         class Foo<A : Equatable & Codable, B : Baz<A>,C> : Bar<B> \nwhere C : CustomStringConvertible, \nB : Comparable & Decodable, \n\nC : CustomDebugStringConvertible {
@@ -185,15 +257,19 @@ class FileParserSpec: QuickSpec {
                                              isGeneric: true,
                                              genericTypeParameters: [
                                                 GenericTypeParameter(typeName: TypeName("A"), constraints: [
-                                                    GenericTypeParameterConstraint(name: TypeName("Equatable")),
-                                                    GenericTypeParameterConstraint(name: TypeName("Codable"))]),
+                                                    Type(name: "Equatable"),
+                                                    Type(name: "Codable")
+                                                    ]),
                                                 GenericTypeParameter(typeName: TypeName("B"), constraints: [
-                                                    GenericTypeParameterConstraint(name: TypeName("Baz<A>")),
-                                                    GenericTypeParameterConstraint(name: TypeName("Comparable")),
-                                                    GenericTypeParameterConstraint(name: TypeName("Decodable"))]),
+                                                    Type(name: "Baz", isGeneric: true, genericTypeParameters: [
+                                                        GenericTypeParameter(typeName: TypeName("A"), type: Type(name: "A"))
+                                                        ]),
+                                                    Type(name: "Comparable"),
+                                                    Type(name: "Decodable")
+                                                    ]),
                                                 GenericTypeParameter(typeName: TypeName("C"), constraints: [
-                                                    GenericTypeParameterConstraint(name: TypeName("CustomStringConvertible")),
-                                                    GenericTypeParameterConstraint(name: TypeName("CustomDebugStringConvertible"))
+                                                    Type(name: "CustomStringConvertible"),
+                                                    Type(name: "CustomDebugStringConvertible")
                                                     ])
                             ])
                         let method = Method(name: "f<T : Codable>(_ t : T)",
@@ -204,8 +280,8 @@ class FileParserSpec: QuickSpec {
                                             isFailableInitializer: false, definedInTypeName: TypeName("Foo"),
                                             genericTypeParameters: [
                                                 GenericTypeParameter(typeName: TypeName("T"), constraints: [
-                                                    GenericTypeParameterConstraint(name: TypeName("Codable")),
-                                                    GenericTypeParameterConstraint(name: TypeName("Equatable"))
+                                                    Type(name: "Codable"),
+                                                    Type(name: "Equatable")
                                                     ])
                             ])
                         expected.inheritedTypes = [Type(name: "Bar",
@@ -231,7 +307,7 @@ class FileParserSpec: QuickSpec {
                         let result = parse("class Foo<A : [(String, Int)]> {}")
                         let expected = Class(name: "Foo", isGeneric: true, genericTypeParameters: [
                             GenericTypeParameter(typeName: TypeName("A"), constraints: [
-                                GenericTypeParameterConstraint(name: TypeName("[(String, Int)]"))
+                                Type(name: "[(String, Int)]")
                                 ])
                             ])
                         expect(result).to(equal([expected]))
@@ -643,7 +719,10 @@ protocol Foo {
 }
 """)
                         let expected = Protocol(name: "Foo")
-                        let method = Method(name: "doSomething<T : Bar>(_ value : T)", selectorName: "doSomething(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "value", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("Int where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypeParameters: [GenericTypeParameter(typeName: TypeName("T"), constraints: [GenericTypeParameterConstraint(name: TypeName("Bar")), GenericTypeParameterConstraint(name: TypeName("Equatable"))])])
+                        let method = Method(name: "doSomething<T : Bar>(_ value : T)", selectorName: "doSomething(_:)", parameters: [MethodParameter(argumentLabel: nil, name: "value", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)], returnTypeName: TypeName("Int where T : Equatable"), throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false, isFailableInitializer: false, definedInTypeName: TypeName("Foo"), genericTypeParameters: [GenericTypeParameter(typeName: TypeName("T"), constraints: [
+                                Type(name: "Bar"),
+                                Type(name: "Equatable")
+                            ])])
                         expected.methods = [method]
                         expect(result).to(equal([expected]))
                     }

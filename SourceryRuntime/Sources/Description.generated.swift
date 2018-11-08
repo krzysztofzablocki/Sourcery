@@ -120,15 +120,6 @@ extension GenericTypeParameter {
         return string
     }
 }
-extension GenericTypeParameterConstraint {
-    /// :nodoc:
-    override public var description: String {
-        var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "type = \(String(describing: self.type))"
-        return string
-    }
-}
 extension Method {
     /// :nodoc:
     override public var description: String {

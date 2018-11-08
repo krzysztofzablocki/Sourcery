@@ -13,7 +13,6 @@
 		09334E5C1EB915E00092806F /* Description.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E551EB915E00092806F /* Description.generated.swift */; };
 		09334E5D1EB915E00092806F /* Diffable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E561EB915E00092806F /* Diffable.generated.swift */; };
 		09334E5E1EB915E00092806F /* Equality.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E571EB915E00092806F /* Equality.generated.swift */; };
-		09334E5F1EB915E00092806F /* JSExport.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E581EB915E00092806F /* JSExport.generated.swift */; };
 		09334E601EB915E00092806F /* Typed.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E591EB915E00092806F /* Typed.generated.swift */; };
 		09334E721EB916040092806F /* AccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E621EB916040092806F /* AccessLevel.swift */; };
 		09334E731EB916040092806F /* Annotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E631EB916040092806F /* Annotations.swift */; };
@@ -45,8 +44,8 @@
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		115FBA4B211C54B80083BBDD /* StringProtocol+Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115FBA4A211C54B80083BBDD /* StringProtocol+Index.swift */; };
-		11CA511C213433FD00014693 /* GenericTypeParameterConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CA511B213433FD00014693 /* GenericTypeParameterConstraint.swift */; };
 		318C19AAFC31E399EDCDD13D /* Pods_SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C99CD10C34CBEFBE35F3CA2 /* Pods_SourceryJS.framework */; };
+		3EF0BF532199E5DC00AF3EC4 /* JSExport.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09334E581EB915E00092806F /* JSExport.generated.swift */; };
 		47379D2B215962BF002C1DAA /* SourceryRuntime.content.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */; };
 		524A2EA71FFD3C40001CD8F9 /* BytesRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524A2EA61FFD3C40001CD8F9 /* BytesRange.swift */; };
 		52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */; };
@@ -191,7 +190,6 @@
 		09C6B0D31E11C1C500246CDF /* ClassSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassSpec.swift; sourceTree = "<group>"; };
 		0ECBC00661CC5D0A2D4A77DD /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
 		115FBA4A211C54B80083BBDD /* StringProtocol+Index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringProtocol+Index.swift"; sourceTree = "<group>"; };
-		11CA511B213433FD00014693 /* GenericTypeParameterConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenericTypeParameterConstraint.swift; path = SourceryRuntime/Sources/GenericTypeParameterConstraint.swift; sourceTree = SOURCE_ROOT; };
 		450EF887CFA35EEC009A0752 /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceryRuntime.content.generated.swift; sourceTree = "<group>"; };
 		4BBF7447571BAF1EAB6585CD /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
@@ -376,7 +374,6 @@
 				09334E6F1EB916040092806F /* Typealias.swift */,
 				09334E701EB916040092806F /* TypeName.swift */,
 				09334E711EB916040092806F /* Variable.swift */,
-				11CA511B213433FD00014693 /* GenericTypeParameterConstraint.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -981,7 +978,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" autocorrect\n\"${PODS_ROOT}/SwiftLint/swiftlint\" lint";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" autocorrect\n\"${PODS_ROOT}/SwiftLint/swiftlint\" lint\n";
 		};
 		6EA661A7ED800BB1BED490CE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1150,6 +1147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EF0BF532199E5DC00AF3EC4 /* JSExport.generated.swift in Sources */,
 				09334E761EB916040092806F /* Diffable.swift in Sources */,
 				09334E751EB916040092806F /* Class.swift in Sources */,
 				09334E831EB916340092806F /* Log.swift in Sources */,
@@ -1168,13 +1166,11 @@
 				09334E5E1EB915E00092806F /* Equality.generated.swift in Sources */,
 				09334E7B1EB916040092806F /* Protocol.swift in Sources */,
 				09334E5D1EB915E00092806F /* Diffable.generated.swift in Sources */,
-				09334E5F1EB915E00092806F /* JSExport.generated.swift in Sources */,
 				09334E601EB915E00092806F /* Typed.generated.swift in Sources */,
 				09334E7E1EB916040092806F /* Type.swift in Sources */,
 				09334E851EB9163F0092806F /* Extensions.swift in Sources */,
 				6D31FC5F1F0C2DE4000E77E3 /* Definition.swift in Sources */,
 				09334E781EB916040092806F /* FileParserResult.swift in Sources */,
-				11CA511C213433FD00014693 /* GenericTypeParameterConstraint.swift in Sources */,
 				09334E5C1EB915E00092806F /* Description.generated.swift in Sources */,
 				09334E7F1EB916040092806F /* Typealias.swift in Sources */,
 				09334E791EB916040092806F /* Method.swift in Sources */,

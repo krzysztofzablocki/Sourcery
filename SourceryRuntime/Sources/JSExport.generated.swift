@@ -66,7 +66,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
@@ -134,7 +134,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
     var containedTypes: [Type] { get }
@@ -247,7 +247,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
@@ -286,7 +286,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }
@@ -373,7 +373,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var instanceMethods: [Method] { get }
     var computedVariables: [Variable] { get }
     var storedVariables: [Variable] { get }
-    var inheritedTypes: [String] { get }
+    var inheritedTypes: [Type] { get }
     var based: [String: String] { get }
     var inherits: [String: Type] { get }
     var implements: [String: Type] { get }

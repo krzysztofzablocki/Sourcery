@@ -53,10 +53,20 @@ struct Composer {
                 $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName
             }
 
+        let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
+            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+        }
+
         //extend all types with their extensions
         types.forEach { type in
             type.inheritedTypes = type.inheritedTypes.map {
-                self.resolveType(typeName: TypeName($0.name), containingType: nil, unique: unique, modules: modules, typealiases: typealiases) ?? $0
+                resolveType(TypeName($0.name), nil) ?? $0
+            }
+
+            type.inheritedTypes.forEach { inherited in
+                inherited.genericTypeParameters.forEach { genericTypeParameter in
+                    genericTypeParameter.type = resolveType(genericTypeParameter.typeName, inherited)
+                }
             }
 
             let uniqueType = unique[type.name] ?? typeFromModule(type.name, modules: modules)
@@ -78,10 +88,6 @@ struct Composer {
             unique[current.name] = current
         }
 
-        let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-        }
-
         for (_, type) in unique {
             type.typealiases.forEach { (_, alias) in
                 alias.type = resolveType(alias.typeName, type)
@@ -94,6 +100,9 @@ struct Composer {
             }
             type.subscripts.forEach {
                 resolveSubscriptTypes($0, of: type, resolve: resolveType)
+            }
+            type.genericTypeParameters.forEach { parameter in
+                parameter.type = resolveType(parameter.typeName, type)
             }
 
             if let enumeration = type as? Enum {

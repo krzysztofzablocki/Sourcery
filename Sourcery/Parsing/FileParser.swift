@@ -305,13 +305,22 @@ extension FileParser {
         if let inheritedTypesArray = (dict[SwiftDocKey.inheritedtypes.rawValue] as? [[String: SourceKitRepresentable]]) {
             inheritedTypes = inheritedTypesArray.compactMap { inheritedTypeDict in
                 guard let name = inheritedTypeDict[SwiftDocKey.name.rawValue] as? String else { return nil }
-                let declaration = extractGenericsDeclaration(source: name)
-                let genericTypes = parseGenerics(declaration: declaration, whereClause: "")
-                let trimmedName = name[..<(name.index(of: "<") ?? name.endIndex)]
-                return Type(name: String(trimmedName), isGeneric: !genericTypes.isEmpty, genericTypeParameters: genericTypes)
+                return recursivelyParseGenericDeclaration(source: name)
             }
         }
         return (name, kind, accessibility, inheritedTypes)
+    }
+
+    fileprivate func recursivelyParseGenericDeclaration(source: String) -> Type {
+        let declaration = extractGenericsDeclaration(source: source)
+        let typeName =  String(source[..<(source.index(of: "<") ?? source.endIndex)])
+        guard declaration.contains("<") else {
+            return Type(name: typeName.trimmingCharacters(in: .whitespacesAndNewlines),
+                        isGeneric: !declaration.isEmpty,
+                        genericTypeParameters: extractGenericTypeParameters(source: declaration))
+        }
+
+        return Type(name: typeName, isGeneric: true, genericTypeParameters: extractGenericTypeParameters(source: declaration))
     }
 
     fileprivate func extractGenericsDeclaration(source: String) -> String {
@@ -328,8 +337,9 @@ extension FileParser {
             }
             var end = start
             var openingAngles = 1
-            while openingAngles > 0 && end != source.endIndex {
+            while openingAngles > 0 {
                 end = source.index(after: end)
+                guard end != source.endIndex else { return "" }
                 if source[end] == ">" {
                     openingAngles -= 1
                 } else if source[end] == "<" {
@@ -349,36 +359,36 @@ extension FileParser {
         return ""
     }
 
-    fileprivate func parseGenerics(declaration: String, whereClause: String) -> [GenericTypeParameter] {
-        func extractGenerics(source: String) -> [GenericTypeParameter] {
-            return source.commaSeparated()
-                .filter { component in !component.isEmpty }
-                .map { (type: String) -> GenericTypeParameter in
-                    if let constraintStart = type.index(of: ":") {
-                        let name = String(type[type.startIndex ..< constraintStart]).trimmingCharacters(in: .whitespacesAndNewlines)
-                        let constraints = String(type[type.index(after: constraintStart) ..< type.endIndex])
-                            .components(separatedBy: "&")
-                            .map { constraint in
-                                GenericTypeParameterConstraint(name: TypeName(constraint.trimmingCharacters(in: .whitespacesAndNewlines)))
-                        }
-                        return GenericTypeParameter(typeName: TypeName(name), constraints: constraints)
-                    } else {
-                        return GenericTypeParameter(typeName: TypeName(type.trimmingCharacters(in: .whitespacesAndNewlines)))
+    fileprivate func extractGenericTypeParameters(source: String) -> [GenericTypeParameter] {
+        return source.commaSeparated()
+            .filter { component in !component.isEmpty }
+            .map { (type: String) -> GenericTypeParameter in
+                if let constraintStart = type.index(of: ":") {
+                    let name = String(type[type.startIndex ..< constraintStart]).trimmingCharacters(in: .whitespacesAndNewlines)
+                    let constraints = String(type[type.index(after: constraintStart) ..< type.endIndex])
+                        .components(separatedBy: "&")
+                        .map { constraint in
+                            recursivelyParseGenericDeclaration(source: constraint)
                     }
-            }
+                    return GenericTypeParameter(typeName: TypeName(name.trimmingCharacters(in: .whitespacesAndNewlines)), constraints: constraints)
+                } else {
+                    return GenericTypeParameter(typeName: TypeName(type.trimmingCharacters(in: .whitespacesAndNewlines)))
+                }
         }
+    }
 
-        func findGeneric(withName name: String, in array: [GenericTypeParameter]) -> GenericTypeParameter? {
-            let filtered = array.filter { generic in generic.typeName.name == name }
-            if let generic = filtered.first {
-                return generic
-            }
-            Log.error("Undeclared generic found: \(name)")
-            return nil
+    fileprivate func findGeneric(withName name: String, in array: [GenericTypeParameter]) -> GenericTypeParameter? {
+        let filtered = array.filter { generic in generic.typeName.name == name }
+        if let generic = filtered.first {
+            return generic
         }
+        Log.error("Undeclared generic found: \(name)")
+        return nil
+    }
 
-        let generics = extractGenerics(source: declaration)
-        let genericsWhere = extractGenerics(source: whereClause)
+    fileprivate func parseGenerics(declaration: String, whereClause: String) -> [GenericTypeParameter] {
+        let generics = extractGenericTypeParameters(source: declaration)
+        let genericsWhere = extractGenericTypeParameters(source: whereClause)
         for generic in genericsWhere {
             if let type = findGeneric(withName: generic.typeName.name, in: generics) {
                 type.constraints += generic.constraints
