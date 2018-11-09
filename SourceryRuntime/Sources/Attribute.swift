@@ -60,6 +60,7 @@ import Foundation
         case internalSetter = "setter_access.internal"
         case privateSetter = "setter_access.private"
         case fileprivateSetter = "setter_access.fileprivate"
+        case optional
 
         public init?(identifier: String) {
             let identifier = identifier.trimmingPrefix("source.decl.attribute.")
