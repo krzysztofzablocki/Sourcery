@@ -246,7 +246,7 @@ import Foundation
                 isGeneric: Bool = false,
                 genericTypeParameters: [GenericTypeParameter] = []) {
 
-        self.localName = name
+        self.localName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
         self.variables = variables

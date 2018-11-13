@@ -103,6 +103,7 @@ struct Composer {
             }
             type.genericTypeParameters.forEach { parameter in
                 parameter.type = resolveType(parameter.typeName, type)
+                parameter.constraints = parameter.constraints.map { resolveType(TypeName($0.name), parameter.type) ?? $0 }
             }
 
             if let enumeration = type as? Enum {

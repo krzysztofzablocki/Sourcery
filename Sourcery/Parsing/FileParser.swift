@@ -315,7 +315,7 @@ extension FileParser {
         let declaration = extractGenericsDeclaration(source: source)
         let typeName =  String(source[..<(source.index(of: "<") ?? source.endIndex)])
         guard declaration.contains("<") else {
-            return Type(name: typeName.trimmingCharacters(in: .whitespacesAndNewlines),
+            return Type(name: typeName,
                         isGeneric: !declaration.isEmpty,
                         genericTypeParameters: extractGenericTypeParameters(source: declaration))
         }
@@ -370,7 +370,9 @@ extension FileParser {
                         .map { constraint in
                             recursivelyParseGenericDeclaration(source: constraint)
                     }
-                    return GenericTypeParameter(typeName: TypeName(name.trimmingCharacters(in: .whitespacesAndNewlines)), constraints: constraints)
+                    return GenericTypeParameter(typeName: TypeName(name), constraints: constraints)
+                } else if type.contains("<") {
+                    return GenericTypeParameter(typeName: TypeName(String(type[..<(type.index(of: "<") ?? type.endIndex)])), type: recursivelyParseGenericDeclaration(source: type))
                 } else {
                     return GenericTypeParameter(typeName: TypeName(type.trimmingCharacters(in: .whitespacesAndNewlines)))
                 }

@@ -190,7 +190,7 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("Extracts generic information recursively") {
-                        let result = parse("class Bar<A: B<C<D>>>")
+                        let result = parse("class Bar<A: B<C<D>>> {}")
 
                         let dType = Type(name: "D")
                         let cType = Type(name: "C", isGeneric: true, genericTypeParameters: [
@@ -199,10 +199,9 @@ class FileParserSpec: QuickSpec {
                         let bType = Type(name: "B", isGeneric: true, genericTypeParameters: [
                             GenericTypeParameter(typeName: TypeName("C"), type: cType)
                             ])
-                        let aType = Type(name: "A", inheritedTypes: [ bType ] )
                         expect(result).to(equal([
                                 Class(name: "Bar", isGeneric: true, genericTypeParameters: [
-                                    GenericTypeParameter(typeName: TypeName("A"), type: aType)
+                                    GenericTypeParameter(typeName: TypeName("A"), constraints: [bType])
                                     ])
                             ]))
                     }
