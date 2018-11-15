@@ -91,6 +91,11 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("class Foo { final func some() {} }").first?.methods.first?.attributes).to(equal([
                     "final": Attribute(name: "final", description: "final")
                     ]))
+
+                expect(parse("@objc protocol Foo { @objc optional func some() {} }").first?.methods.first?.attributes).to(equal([
+                    "objc": Attribute(name: "objc", description: "@objc"),
+                    "optional": Attribute(name: "optional", description: "optional")
+                    ]))
             }
 
             it("extracts method parameter attributes") {
