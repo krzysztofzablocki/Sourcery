@@ -552,12 +552,21 @@ extension FileParser {
         }
 
         let typeName: TypeName
+        let maybeConcreteType: Type?
         if let type = maybeType {
-            typeName = TypeName(type)
+            // TODO: This awful workaround needs to be refactored unto proper parsing of tuple with generic types
+            if name == "tuple" {
+                typeName = TypeName(type)
+                maybeConcreteType = nil
+            } else {
+                maybeConcreteType = recursivelyParseGenericDeclaration(source: type)
+                typeName = TypeName(maybeConcreteType?.name ?? type)
+            }
         } else {
             let declaration = extract(.key, from: source)
             // swiftlint:disable:next force_unwrapping
             typeName = TypeName("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
+            maybeConcreteType = nil
         }
 
         let setterAccessibility = self.setterAccessibility(source: source)
@@ -572,7 +581,7 @@ extension FileParser {
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
         let definedInTypeName = definedIn.map { TypeName($0.name) }
 
-        let variable = Variable(name: name, typeName: typeName, accessLevel: accessLevel, isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
+        let variable = Variable(name: name, typeName: typeName, type: maybeConcreteType, accessLevel: accessLevel, isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         variable.setSource(source)
 
         return variable

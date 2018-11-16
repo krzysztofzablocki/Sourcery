@@ -65,7 +65,7 @@ struct Composer {
 
             type.inheritedTypes.forEach { inherited in
                 inherited.genericTypeParameters.forEach { genericTypeParameter in
-                    genericTypeParameter.type = resolveType(genericTypeParameter.typeName, inherited)
+                    genericTypeParameter.type = resolveType(genericTypeParameter.typeName, inherited) ?? genericTypeParameter.type
                 }
             }
 
@@ -90,7 +90,7 @@ struct Composer {
 
         for (_, type) in unique {
             type.typealiases.forEach { (_, alias) in
-                alias.type = resolveType(alias.typeName, type)
+                alias.type = resolveType(alias.typeName, type) ?? alias.type
             }
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
@@ -102,7 +102,7 @@ struct Composer {
                 resolveSubscriptTypes($0, of: type, resolve: resolveType)
             }
             type.genericTypeParameters.forEach { parameter in
-                parameter.type = resolveType(parameter.typeName, type)
+                parameter.type = resolveType(parameter.typeName, type) ?? parameter.type
                 parameter.constraints = parameter.constraints.map { resolveType(TypeName($0.name), parameter.type) ?? $0 }
             }
 
@@ -145,19 +145,19 @@ struct Composer {
         } else if let tuple = parseTupleType(lookupName) {
             lookupName.tuple = tuple
             tuple.elements.forEach { tupleElement in
-                tupleElement.type = resolveTypeWithName(tupleElement.typeName)
+                tupleElement.type = resolveTypeWithName(tupleElement.typeName) ?? tupleElement.type
             }
         } else if let closure = parseClosureType(lookupName) {
             lookupName.closure = closure
             closure.returnType = resolveTypeWithName(closure.returnTypeName)
             closure.parameters.forEach({ parameter in
-                parameter.type = resolveTypeWithName(parameter.typeName)
+                parameter.type = resolveTypeWithName(parameter.typeName) ?? parameter.type
             })
         } else if let generic = parseGenericType(lookupName) {
             // should also set generic data for optional types
             lookupName.generic = generic
-            generic.typeParameters.forEach {typeParameter in
-                typeParameter.type = resolveTypeWithName(typeParameter.typeName)
+            generic.typeParameters.forEach { typeParameter in
+                typeParameter.type = resolveTypeWithName(typeParameter.typeName) ?? typeParameter.type
             }
         }
 
@@ -174,7 +174,7 @@ struct Composer {
     typealias TypeResolver = (TypeName, Type?) -> Type?
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
-        variable.type = resolve(variable.typeName, type)
+        variable.type = resolve(variable.typeName, type) ?? variable.type
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
@@ -186,7 +186,7 @@ struct Composer {
 
     private func resolveSubscriptTypes(_ subscript: Subscript, of type: Type, resolve: TypeResolver) {
         `subscript`.parameters.forEach { (parameter) in
-            parameter.type = resolve(parameter.typeName, type)
+            parameter.type = resolve(parameter.typeName, type) ?? parameter.type
         }
 
         `subscript`.returnType = resolve(`subscript`.returnTypeName, type)
@@ -197,7 +197,7 @@ struct Composer {
 
     private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
         method.parameters.forEach { parameter in
-            parameter.type = resolve(parameter.typeName, type)
+            parameter.type = resolve(parameter.typeName, type) ?? parameter.type
         }
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
@@ -227,7 +227,7 @@ struct Composer {
     private func resolveEnumTypes(_ enumeration: Enum, types: [String: Type], resolve: TypeResolver) {
         enumeration.cases.forEach { enumCase in
             enumCase.associatedValues.forEach { associatedValue in
-                associatedValue.type = resolve(associatedValue.typeName, enumeration)
+                associatedValue.type = resolve(associatedValue.typeName, enumeration) ?? associatedValue.type
             }
         }
 

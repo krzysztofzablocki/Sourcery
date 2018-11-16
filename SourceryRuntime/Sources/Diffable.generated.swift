@@ -156,6 +156,7 @@ extension GenericTypeParameter: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
         results.append(contentsOf: DiffableResult(identifier: "constraints").trackDifference(actual: self.constraints, expected: castObject.constraints))
         return results
     }
@@ -352,6 +353,7 @@ extension Variable: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
         results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))

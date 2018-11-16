@@ -16,7 +16,6 @@ public typealias SourceryVariable = Variable
     /// Variable type name
     public let typeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     /// Variable type, if known, i.e. if the type is declared in the scanned sources.
     /// For explanation, see <https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html#what-are-em-known-em-and-em-unknown-em-types>
     public var type: Type?

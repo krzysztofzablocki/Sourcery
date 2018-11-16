@@ -238,7 +238,6 @@ public protocol Typed {
     /// Generic parameter type name
     public let typeName: TypeName
 
-    // sourcery: skipDescription
     /// Generic parameter type, if known
     public var type: Type?
 
@@ -253,19 +252,19 @@ public protocol Typed {
     }
 
     // sourcery:inline:GenericTypeParameter.AutoCoding
-    /// :nodoc:
-    required public init?(coder aDecoder: NSCoder) {
-        guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-        self.type = aDecoder.decode(forKey: "type")
-        guard let constraints: [Type] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
-    }
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+            guard let constraints: [Type] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
+        }
 
-    /// :nodoc:
-    public func encode(with aCoder: NSCoder) {
-        aCoder.encode(self.typeName, forKey: "typeName")
-        aCoder.encode(self.type, forKey: "type")
-        aCoder.encode(self.constraints, forKey: "constraints")
-    }
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.constraints, forKey: "constraints")
+        }
 
     // sourcery:end
 }
