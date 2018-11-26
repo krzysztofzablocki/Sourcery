@@ -235,20 +235,18 @@ public protocol Typed {
 /// Descibes Swift generic type parameter
 @objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
 
-    /// Generic parameter type name
-    public let typeName: TypeName
+    /// Concrete type name of this generic parameter
+    public var typeName: TypeName
 
-    /// Generic parameter type, if known
+    /// Concrete generic parameter type, if known
     public var type: Type?
 
-    /// Generic type parameter constraints
-    public var constraints: [Type]
-
     /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil, constraints: [Type] = []) {
+    public init(
+        typeName: TypeName,
+        type: Type? = nil) {
         self.typeName = typeName
         self.type = type
-        self.constraints = constraints
     }
 
     // sourcery:inline:GenericTypeParameter.AutoCoding
@@ -256,13 +254,43 @@ public protocol Typed {
         required public init?(coder aDecoder: NSCoder) {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
-            guard let constraints: [Type] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
+        }
+
+    // sourcery:end
+}
+
+// Describes Swift generic type placeholder
+@objcMembers public final class GenericTypePlaceholder: NSObject, SourceryModel {
+    /// Generic placeholder type name
+    public var placeholderName: TypeName
+
+    /// Generic type parameter constraints
+    public var constraints: [Type]
+
+    /// :nodoc:
+    public init(
+        placeholderName: TypeName,
+        constraints: [Type] = []) {
+        self.placeholderName = placeholderName
+        self.constraints = constraints
+    }
+
+    // sourcery:inline:GenericTypePlaceholder.AutoCoding
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let placeholderName: TypeName = aDecoder.decode(forKey: "placeholderName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["placeholderName"])); fatalError() }; self.placeholderName = placeholderName
+            guard let constraints: [Type] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.placeholderName, forKey: "placeholderName")
             aCoder.encode(self.constraints, forKey: "constraints")
         }
 
@@ -412,14 +440,12 @@ public protocol Typed {
     /// Dictionary value type name
     public let valueTypeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     /// Dictionary value type, if known
     public var valueType: Type?
 
     /// Dictionary key type name
     public let keyTypeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     /// Dictionary key type, if known
     public var keyType: Type?
 

@@ -398,6 +398,37 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given generic inheritance") {
+                    it("resolves inherited type for subclasses") {
+                        let result = parse("""
+                            class Generic<T> {}
+                            class Specialized : Generic<Int> {}
+                        """)
+                        let generic = Class(name: "Generic", isGeneric: true, genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
+                        let specializedGeneric = Class(name: "Generic",
+                                                       isGeneric: true,
+                                                       genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T"))],
+                                                       genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))])
+                        let specialized = Class(name: "Specialized", inheritedTypes: [specializedGeneric])
+                        expect(result).to(equal([ generic, specialized]))
+                    }
+
+                    it("resolves inherited types for generic placeholders") {
+                        let result = parse("""
+                            class Generic<T> {}
+                            class Specialized<U: Generic<Int>> {}
+                        """)
+                        let generic = Class(name: "Generic", isGeneric: true, genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
+                        let specializedGeneric = Class(name: "Generic",
+                                                       isGeneric: true,
+                                                       genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T"))],
+                                                       genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))])
+                        let placeholder = GenericTypePlaceholder(placeholderName: TypeName("U"), constraints: [specializedGeneric])
+                        let specialized = Class(name: "Specialized", isGeneric: true, genericTypePlaceholders: [placeholder])
+                        expect(result).to(equal([ generic, specialized]))
+                    }
+                }
+
                 context("given closure type") {
                     it("extracts closure return type") {
                         let types = parse("struct Foo { var closure: () -> \n Int }")

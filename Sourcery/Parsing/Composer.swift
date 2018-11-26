@@ -53,19 +53,22 @@ struct Composer {
                 $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName
             }
 
-        let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+        let resolveType = { (typeName: TypeName, presumedType: Type?, containingType: Type?) -> Type? in
+            return self.resolveType(typeName: typeName, presumedType: presumedType,
+                                    containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         }
 
         //extend all types with their extensions
         types.forEach { type in
             type.inheritedTypes = type.inheritedTypes.map {
-                resolveType(TypeName($0.name), nil) ?? $0
+                resolveType(TypeName($0.name), $0, nil) ?? $0
             }
 
             type.inheritedTypes.forEach { inherited in
                 inherited.genericTypeParameters.forEach { genericTypeParameter in
-                    genericTypeParameter.type = resolveType(genericTypeParameter.typeName, inherited) ?? genericTypeParameter.type
+                    if let resolvedType = resolveType(genericTypeParameter.typeName, genericTypeParameter.type, inherited) {
+                        genericTypeParameter.type = resolvedType
+                    }
                 }
             }
 
@@ -88,9 +91,21 @@ struct Composer {
             unique[current.name] = current
         }
 
+        // Resolve generic type placeholder constraints first, as they will get embedded in every concrete generic type
         for (_, type) in unique {
+            type.genericTypePlaceholders.forEach { placeholder in
+                placeholder.constraints = placeholder.constraints.map { resolveType(TypeName($0.name), $0, nil) ?? $0 }
+            }
+        }
+
+        for (_, type) in unique {
+            type.genericTypeParameters.forEach { parameter in
+                if let resolvedType = resolveType(parameter.typeName, parameter.type, type) {
+                    parameter.type = resolvedType
+                }
+            }
             type.typealiases.forEach { (_, alias) in
-                alias.type = resolveType(alias.typeName, type) ?? alias.type
+                alias.type = resolveType(alias.typeName, alias.type, type) ?? alias.type
             }
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
@@ -100,10 +115,6 @@ struct Composer {
             }
             type.subscripts.forEach {
                 resolveSubscriptTypes($0, of: type, resolve: resolveType)
-            }
-            type.genericTypeParameters.forEach { parameter in
-                parameter.type = resolveType(parameter.typeName, type) ?? parameter.type
-                parameter.constraints = parameter.constraints.map { resolveType(TypeName($0.name), parameter.type) ?? $0 }
             }
 
             if let enumeration = type as? Enum {
@@ -115,7 +126,12 @@ struct Composer {
         return unique.values.sorted { $0.name < $1.name }
     }
 
-    private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
+    private func resolveType(typeName: TypeName,
+                             presumedType: Type?,
+                             containingType: Type?,
+                             unique: [String: Type],
+                             modules: [String: [String: Type]],
+                             typealiases: [String: Typealias]) -> Type? {
         let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
         if let actualTypeName = actualTypeName, actualTypeName != typeName.unwrappedTypeName {
             typeName.actualTypeName = TypeName(actualTypeName)
@@ -123,21 +139,21 @@ struct Composer {
 
         let lookupName = typeName.actualTypeName ?? typeName
 
-        let resolveTypeWithName = { (typeName: TypeName) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+        let resolveTypeWithName = { (typeName: TypeName, presumedType: Type?) -> Type? in
+            return self.resolveType(typeName: typeName, presumedType: presumedType, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         }
 
         // should we also set these types on lookupName?
         if let array = parseArrayType(lookupName) {
             lookupName.array = array
-            array.elementType = resolveTypeWithName(array.elementTypeName)
+            array.elementType = resolveTypeWithName(array.elementTypeName, array.elementType)
             lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
                 GenericTypeParameter(typeName: array.elementTypeName, type: array.elementType)
                 ])
         } else if let dictionary = parseDictionaryType(lookupName) {
             lookupName.dictionary = dictionary
-            dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName)
-            dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName)
+            dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName, dictionary.valueType)
+            dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName, dictionary.keyType)
             lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
                 GenericTypeParameter(typeName: dictionary.keyTypeName, type: dictionary.keyType),
                 GenericTypeParameter(typeName: dictionary.valueTypeName, type: dictionary.valueType)
@@ -145,19 +161,19 @@ struct Composer {
         } else if let tuple = parseTupleType(lookupName) {
             lookupName.tuple = tuple
             tuple.elements.forEach { tupleElement in
-                tupleElement.type = resolveTypeWithName(tupleElement.typeName) ?? tupleElement.type
+                tupleElement.type = resolveTypeWithName(tupleElement.typeName, tupleElement.type) ?? tupleElement.type
             }
         } else if let closure = parseClosureType(lookupName) {
             lookupName.closure = closure
-            closure.returnType = resolveTypeWithName(closure.returnTypeName)
+            closure.returnType = resolveTypeWithName(closure.returnTypeName, closure.returnType)
             closure.parameters.forEach({ parameter in
-                parameter.type = resolveTypeWithName(parameter.typeName) ?? parameter.type
+                parameter.type = resolveTypeWithName(parameter.typeName, parameter.type) ?? parameter.type
             })
         } else if let generic = parseGenericType(lookupName) {
             // should also set generic data for optional types
             lookupName.generic = generic
             generic.typeParameters.forEach { typeParameter in
-                typeParameter.type = resolveTypeWithName(typeParameter.typeName) ?? typeParameter.type
+                typeParameter.type = resolveTypeWithName(typeParameter.typeName, typeParameter.type) ?? typeParameter.type
             }
         }
 
@@ -168,36 +184,44 @@ struct Composer {
         typeName.generic = lookupName.generic
 
         let resolvedTypeName = lookupName.generic?.name ?? lookupName.unwrappedTypeName
-        return unique[resolvedTypeName] ?? typeFromModule(resolvedTypeName, modules: modules)
+        let type = unique[resolvedTypeName] ?? typeFromModule(resolvedTypeName, modules: modules)
+        if let knownPresumedType = presumedType, knownPresumedType.isConcreteGenericType {
+            let resolvedGenericTypeParameters = knownPresumedType.genericTypeParameters.map {
+                GenericTypeParameter(typeName: $0.typeName, type: resolveTypeWithName($0.typeName, $0.type))
+            }
+            return specializeType(type, with: resolvedGenericTypeParameters)
+        } else {
+            return type
+        }
     }
 
-    typealias TypeResolver = (TypeName, Type?) -> Type?
+    typealias TypeResolver = (TypeName, Type?, Type?) -> Type?
 
     private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
-        variable.type = resolve(variable.typeName, type) ?? variable.type
+        variable.type = resolve(variable.typeName, variable.type, type) ?? variable.type
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
         if let definedInTypeName = variable.definedInTypeName {
-            _ = resolve(definedInTypeName, type)
+            _ = resolve(definedInTypeName, variable.definedInType, type)
         }
     }
 
     private func resolveSubscriptTypes(_ subscript: Subscript, of type: Type, resolve: TypeResolver) {
         `subscript`.parameters.forEach { (parameter) in
-            parameter.type = resolve(parameter.typeName, type) ?? parameter.type
+            parameter.type = resolve(parameter.typeName, parameter.type, type) ?? parameter.type
         }
 
-        `subscript`.returnType = resolve(`subscript`.returnTypeName, type)
+        `subscript`.returnType = resolve(`subscript`.returnTypeName, `subscript`.returnType, type)
         if let definedInTypeName = `subscript`.definedInTypeName {
-            _ = resolve(definedInTypeName, type)
+            _ = resolve(definedInTypeName, `subscript`.definedInType, type)
         }
     }
 
     private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
         method.parameters.forEach { parameter in
-            parameter.type = resolve(parameter.typeName, type) ?? parameter.type
+            parameter.type = resolve(parameter.typeName, parameter.type, type) ?? parameter.type
         }
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
@@ -205,7 +229,7 @@ struct Composer {
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
         var definedInType: Type?
         if let definedInTypeName = method.definedInTypeName {
-            definedInType = resolve(definedInTypeName, type)
+            definedInType = resolve(definedInTypeName, method.definedInType, type)
         }
 
         guard !method.returnTypeName.isVoid else { return }
@@ -220,14 +244,14 @@ struct Composer {
                 }
             }
         } else {
-            method.returnType = resolve(method.returnTypeName, type)
+            method.returnType = resolve(method.returnTypeName, method.returnType, type)
         }
     }
 
     private func resolveEnumTypes(_ enumeration: Enum, types: [String: Type], resolve: TypeResolver) {
         enumeration.cases.forEach { enumCase in
             enumCase.associatedValues.forEach { associatedValue in
-                associatedValue.type = resolve(associatedValue.typeName, enumeration) ?? associatedValue.type
+                associatedValue.type = resolve(associatedValue.typeName, associatedValue.type, enumeration) ?? associatedValue.type
             }
         }
 
@@ -367,6 +391,16 @@ struct Composer {
         let moduleName = nameComponents[0]
         let typeName = nameComponents.suffix(from: 1).joined(separator: ".")
         return modules[moduleName]?[typeName]
+    }
+
+    private func specializeType(_ type: Type?, with genericParameters: [GenericTypeParameter]) -> Type? {
+        guard let type = type else { return nil }
+        // This hack with keyed archivers serves only one goal - copy type to specialize it with generic parameters
+        // We don't want to change original type, it should stay unspecialized
+        let data = NSKeyedArchiver.archivedData(withRootObject: type)
+        let typeCopy = NSKeyedUnarchiver.unarchiveObject(with: data) as? Type
+        typeCopy?.genericTypeParameters = genericParameters
+        return typeCopy
     }
 
     private func updateTypeRelationships(types: [Type]) {

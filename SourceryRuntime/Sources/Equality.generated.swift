@@ -67,7 +67,9 @@ extension DictionaryType {
         guard let rhs = object as? DictionaryType else { return false }
         if self.name != rhs.name { return false }
         if self.valueTypeName != rhs.valueTypeName { return false }
+        if self.valueType != rhs.valueType { return false }
         if self.keyTypeName != rhs.keyTypeName { return false }
+        if self.keyType != rhs.keyType { return false }
         return true
     }
 }
@@ -128,6 +130,14 @@ extension GenericTypeParameter {
         guard let rhs = object as? GenericTypeParameter else { return false }
         if self.typeName != rhs.typeName { return false }
         if self.type != rhs.type { return false }
+        return true
+    }
+}
+extension GenericTypePlaceholder {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypePlaceholder else { return false }
+        if self.placeholderName != rhs.placeholderName { return false }
         if self.constraints != rhs.constraints { return false }
         return true
     }
@@ -149,7 +159,7 @@ extension Method {
         if self.annotations != rhs.annotations { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
-        if self.genericTypeParameters != rhs.genericTypeParameters { return false }
+        if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
         return true
     }
 }
@@ -231,6 +241,7 @@ extension Type {
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
+        if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
         if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.localName != rhs.localName { return false }
         if self.variables != rhs.variables { return false }

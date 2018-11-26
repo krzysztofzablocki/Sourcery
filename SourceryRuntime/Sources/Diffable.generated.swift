@@ -88,7 +88,9 @@ extension DictionaryType: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "valueTypeName").trackDifference(actual: self.valueTypeName, expected: castObject.valueTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "valueType").trackDifference(actual: self.valueType, expected: castObject.valueType))
         results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: castObject.keyTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "keyType").trackDifference(actual: self.keyType, expected: castObject.keyType))
         return results
     }
 }
@@ -157,6 +159,17 @@ extension GenericTypeParameter: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
+        return results
+    }
+}
+extension GenericTypePlaceholder: Diffable {
+    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericTypePlaceholder else {
+            results.append("Incorrect type <expected: GenericTypePlaceholder, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "placeholderName").trackDifference(actual: self.placeholderName, expected: castObject.placeholderName))
         results.append(contentsOf: DiffableResult(identifier: "constraints").trackDifference(actual: self.constraints, expected: castObject.constraints))
         return results
     }
@@ -181,7 +194,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypePlaceholders").trackDifference(actual: self.genericTypePlaceholders, expected: castObject.genericTypePlaceholders))
         return results
     }
 }
@@ -289,6 +302,7 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypePlaceholders").trackDifference(actual: self.genericTypePlaceholders, expected: castObject.genericTypePlaceholders))
         results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
         results.append(contentsOf: DiffableResult(identifier: "variables").trackDifference(actual: self.variables, expected: castObject.variables))

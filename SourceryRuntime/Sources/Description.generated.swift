@@ -61,7 +61,9 @@ extension DictionaryType {
         var string = "\(Swift.type(of: self)): "
         string += "name = \(String(describing: self.name)), "
         string += "valueTypeName = \(String(describing: self.valueTypeName)), "
-        string += "keyTypeName = \(String(describing: self.keyTypeName))"
+        string += "valueType = \(String(describing: self.valueType)), "
+        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
+        string += "keyType = \(String(describing: self.keyType))"
         return string
     }
 }
@@ -116,7 +118,15 @@ extension GenericTypeParameter {
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string += "typeName = \(String(describing: self.typeName)), "
-        string += "type = \(String(describing: self.type)), "
+        string += "type = \(String(describing: self.type))"
+        return string
+    }
+}
+extension GenericTypePlaceholder {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "placeholderName = \(String(describing: self.placeholderName)), "
         string += "constraints = \(String(describing: self.constraints))"
         return string
     }
@@ -138,7 +148,7 @@ extension Method {
         string += "annotations = \(String(describing: self.annotations)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
         string += "attributes = \(String(describing: self.attributes)), "
-        string += "genericTypeParameters = \(String(describing: self.genericTypeParameters))"
+        string += "genericTypePlaceholders = \(String(describing: self.genericTypePlaceholders))"
         return string
     }
 }
@@ -232,6 +242,7 @@ extension Type {
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "name = \(String(describing: self.name)), "
         string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "genericTypePlaceholders = \(String(describing: self.genericTypePlaceholders)), "
         string += "genericTypeParameters = \(String(describing: self.genericTypeParameters)), "
         string += "localName = \(String(describing: self.localName)), "
         string += "variables = \(String(describing: self.variables)), "

@@ -119,7 +119,7 @@ class FileParserVariableSpec: QuickSpec {
                     expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name",
                                                                                  typeName: TypeName("Observable"),
                                                                                  type: Type(name: "Observable", isGeneric: true, genericTypeParameters: [
-                                                                                    GenericTypeParameter(typeName: TypeName("Int"))
+                                                                                    GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))
                                                                                     ]),
                                                                                  accessLevel: (read: .internal, write: .none), isComputed: false)))
                 }

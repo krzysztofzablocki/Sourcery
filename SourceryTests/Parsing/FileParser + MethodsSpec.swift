@@ -215,7 +215,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(foo?.selectorName).to(equal("foo"))
                         expect(foo?.shortName).to(equal("foo<T: Equatable>"))
                         expect(foo?.callName).to(equal("foo"))
-                        expect(foo?.returnTypeName).to(equal(TypeName("Bar?\n where \nT: Equatable")))
+                        expect(foo?.returnTypeName).to(equal(TypeName("Bar?")))
                         expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
                         expect(foo?.returnType).to(equal(Class(name: "Bar")))
                         expect(foo?.definedInType).to(equal(types.last))

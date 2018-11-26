@@ -14,7 +14,7 @@ class GeneratorSpec: QuickSpec {
             var beforeEachGenerate: () -> Void = {
                 let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: [
                     Type(name: "NSObject"), Type(name: "Decodable"), Type(name: "AlternativeProtocol")
-                    ], isGeneric: true, genericTypeParameters: [GenericTypeParameter(typeName: TypeName("T")), GenericTypeParameter(typeName: TypeName("Element"))])
+                    ], isGeneric: true, genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T")), GenericTypePlaceholder(placeholderName: TypeName("Element"))])
                 let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: [Type(name: "Foo"), Type(name: "ProtocolBasedOnKnownProtocol")], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
                 let barType = Struct(name: "Bar", inheritedTypes: [Type(name: "KnownProtocol"), Type(name: "Decodable")], annotations: ["bar": NSNumber(value: true)])
 
@@ -164,7 +164,7 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("can access genericTypes") {
-                    expect(generate("Foo has {{ type.Foo.genericTypeParameters.count }} genericTypes, first: {{ type.Foo.genericTypeParameters.first.typeName.name }}")).to(equal("Foo has 2 genericTypes, first: T"))
+                    expect(generate("Foo has {{ type.Foo.genericTypeParameters.count }} genericTypes, first: {{ type.Foo.genericTypeParameters.first.placeholderName.name }}")).to(equal("Foo has 2 genericTypes, first: T"))
                 }
 
                 it("counts all variables including implements, inherits") {
@@ -228,11 +228,11 @@ class GeneratorSpec: QuickSpec {
 
                 context("given tuple variable") {
                     it("can access tuple elements") {
-                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements %}{{ e.typeName.name }},{% endfor %}{% endfor %}")).to(equal("Int,Bar,Int,Bar,"))
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.placeholderName.tuple.elements %}{{ e.placeholderName.name }},{% endfor %}{% endfor %}")).to(equal("Int,Bar,Int,Bar,"))
                     }
 
                     it("can access tuple element type metadata") {
-                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements|implements:\"KnownProtocol\" %}{{ e.type.name }},{% endfor %}{% endfor %}")).to(equal("Bar,Bar,"))
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.placeholderName.tuple.elements|implements:\"KnownProtocol\" %}{{ e.type.name }},{% endfor %}{% endfor %}")).to(equal("Bar,Bar,"))
                     }
                 }
 
