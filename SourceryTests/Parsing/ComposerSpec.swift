@@ -873,14 +873,13 @@ class ParserComposerSpec: QuickSpec {
                                                                            actualTypeName: expectedActualTypeName),
                                                         type: Struct(name: "Foo",
                                                                      parent: Struct(name: "Blah"),
-                                                                     isGeneric: true, genericTypeParameters: [
-                                                                        GenericTypeParameter(typeName: TypeName("T"))
+                                                                     isGeneric: true, genericTypePlaceholders: [
+                                                                        GenericTypePlaceholder(placeholderName: TypeName("T"))
                                                             ]),
                                                         accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "FooBar"), Struct(name: "Foo<T>"), Struct(name: "Bar", variables: [expectedVariable])])
-                        expectedActualTypeName.generic = GenericType(name: "Blah.Foo", typeParameters: [GenericTypeParameter(typeName: TypeName("Blah.FooBar"), type: expectedBlah.containedType["FooBar"])])
                         expectedVariable.typeName.generic = expectedActualTypeName.generic
-
+                        expectedVariable.type?.genericTypeParameters = [GenericTypeParameter(typeName: TypeName("FooBar"), type: Struct(name: "FooBar", parent: Struct(name: "Blah")))]
                         let types = parse("struct Blah { struct FooBar {}; struct Foo<T> {}; struct Bar { let foo: Foo<FooBar>? }}")
                         let bar = types.first(where: { $0.name == "Blah.Bar" })
 

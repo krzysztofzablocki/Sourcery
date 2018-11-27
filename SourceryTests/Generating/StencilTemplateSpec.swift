@@ -146,51 +146,51 @@ class StencilTemplateSpec: QuickSpec {
 
             context("given TypeName") {
                 it("generates upperFirstLetter") {
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | upperFirstLetter }}")).to(equal("MyClass"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | upperFirstLetter }}")).to(equal("MyClass"))
                 }
 
                 it("generates lowerFirstLetter") {
-                    expect(generate("{{ type.MyClass.variables.1.placeholderName | lowerFirstLetter }}")).to(equal("myClass"))
+                    expect(generate("{{ type.MyClass.variables.1.typeName | lowerFirstLetter }}")).to(equal("myClass"))
                 }
 
                 it("generates uppercase") {
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | uppercase }}")).to(equal("MYCLASS"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | uppercase }}")).to(equal("MYCLASS"))
                 }
 
                 it("generates lowercase") {
-                    expect(generate("{{ type.MyClass.variables.1.placeholderName | lowercase }}")).to(equal("myclass"))
+                    expect(generate("{{ type.MyClass.variables.1.typeName | lowercase }}")).to(equal("myclass"))
                 }
 
                 it("generates capitalise") {
-                    expect(generate("{{ type.MyClass.variables.1.placeholderName | capitalise }}")).to(equal("Myclass"))
+                    expect(generate("{{ type.MyClass.variables.1.typeName | capitalise }}")).to(equal("Myclass"))
                 }
 
                 it("checks for string in name") {
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | contains:\"my\" }}")).to(equal("true"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | contains:\"xx\" }}")).to(equal("false"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | !contains:\"my\" }}")).to(equal("false"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | !contains:\"xx\" }}")).to(equal("true"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | contains:\"my\" }}")).to(equal("true"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | contains:\"xx\" }}")).to(equal("false"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | !contains:\"my\" }}")).to(equal("false"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | !contains:\"xx\" }}")).to(equal("true"))
                 }
 
                 it("checks for string in prefix") {
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | hasPrefix:\"my\" }}")).to(equal("true"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | hasPrefix:\"My\" }}")).to(equal("false"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | !hasPrefix:\"my\" }}")).to(equal("false"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | !hasPrefix:\"My\" }}")).to(equal("true"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | hasPrefix:\"my\" }}")).to(equal("true"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | hasPrefix:\"My\" }}")).to(equal("false"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | !hasPrefix:\"my\" }}")).to(equal("false"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | !hasPrefix:\"My\" }}")).to(equal("true"))
                 }
 
                 it("checks for string in suffix") {
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | hasSuffix:\"Class\" }}")).to(equal("true"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | hasSuffix:\"class\" }}")).to(equal("false"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | !hasSuffix:\"Class\" }}")).to(equal("false"))
-                    expect(generate("{{ type.MyClass.variables.0.placeholderName | !hasSuffix:\"class\" }}")).to(equal("true"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | hasSuffix:\"Class\" }}")).to(equal("true"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | hasSuffix:\"class\" }}")).to(equal("false"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | !hasSuffix:\"Class\" }}")).to(equal("false"))
+                    expect(generate("{{ type.MyClass.variables.0.typeName | !hasSuffix:\"class\" }}")).to(equal("true"))
                 }
 
                 it("removes instances of a substring") {
-                    expect(generate("{{type.MyClass.variables.0.placeholderName | replace:\"my\",\"My\" | replace:\"Class\",\"Struct\" }}")).to(equal("MyStruct"))
-                    expect(generate("{{type.MyClass.variables.0.placeholderName | replace:\"s\",\"z\" }}")).to(equal("myClazz"))
-                    expect(generate("{{type.MyClass.variables.0.placeholderName | replace:\"my\",\"\" }}")).to(equal("Class"))
-                    expect(generate("{{type.MyClass.variables.0.placeholderName | replace:\"foo\",\"bar\" }}")).to(equal("myClass"))
+                    expect(generate("{{type.MyClass.variables.0.typeName | replace:\"my\",\"My\" | replace:\"Class\",\"Struct\" }}")).to(equal("MyStruct"))
+                    expect(generate("{{type.MyClass.variables.0.typeName | replace:\"s\",\"z\" }}")).to(equal("myClazz"))
+                    expect(generate("{{type.MyClass.variables.0.typeName | replace:\"my\",\"\" }}")).to(equal("Class"))
+                    expect(generate("{{type.MyClass.variables.0.typeName | replace:\"foo\",\"bar\" }}")).to(equal("myClass"))
                 }
 
             }

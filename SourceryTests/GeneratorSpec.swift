@@ -164,7 +164,7 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("can access genericTypes") {
-                    expect(generate("Foo has {{ type.Foo.genericTypeParameters.count }} genericTypes, first: {{ type.Foo.genericTypeParameters.first.placeholderName.name }}")).to(equal("Foo has 2 genericTypes, first: T"))
+                    expect(generate("Foo has {{ type.Foo.genericTypePlaceholders.count }} genericTypes, first: {{ type.Foo.genericTypePlaceholders.first.placeholderName.name }}")).to(equal("Foo has 2 genericTypes, first: T"))
                 }
 
                 it("counts all variables including implements, inherits") {

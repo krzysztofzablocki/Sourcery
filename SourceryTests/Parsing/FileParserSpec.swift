@@ -323,7 +323,7 @@ class FileParserSpec: QuickSpec {
                         let method = Method(name: "f<T : Codable>(_ t : T)",
                                             selectorName: "f(_:)",
                                             parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)],
-                                            returnTypeName: TypeName("T where T : Equatable"),
+                                            returnTypeName: TypeName("T"),
                                             throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false,
                                             isFailableInitializer: false, definedInTypeName: TypeName("Foo"),
                                             genericTypePlaceholders: [
@@ -335,7 +335,7 @@ class FileParserSpec: QuickSpec {
                         expected.inheritedTypes = [Type(name: "Bar",
                                                              isGeneric: true,
                                                              genericTypeParameters: [
-                                                                GenericTypeParameter(typeName: TypeName("B"))
+                                                                GenericTypeParameter(typeName: TypeName("B"), type: Type(name: "B"))
                             ])]
                         expected.methods.append(method)
 

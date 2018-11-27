@@ -140,7 +140,7 @@ struct Composer {
         let lookupName = typeName.actualTypeName ?? typeName
 
         let resolveTypeWithName = { (typeName: TypeName, presumedType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, presumedType: presumedType, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+            return self.resolveType(typeName: typeName, presumedType: presumedType, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) ?? presumedType
         }
 
         // should we also set these types on lookupName?
