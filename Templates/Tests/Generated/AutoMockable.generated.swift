@@ -23,6 +23,7 @@ import AppKit
 
 
 
+
 class AnnotatedProtocolMock: AnnotatedProtocol {
 
     //MARK: - sayHelloWith
@@ -129,6 +130,23 @@ class ExtendableProtocolMock: ExtendableProtocol {
         reportMessageCallsCount += 1
         reportMessageReceivedMessage = message
         reportMessageClosure?(message)
+    }
+
+}
+class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOptionalReturnValueProtocol {
+
+    //MARK: - implicitReturn
+
+    var implicitReturnCallsCount = 0
+    var implicitReturnCalled: Bool {
+        return implicitReturnCallsCount > 0
+    }
+    var implicitReturnReturnValue: String!
+    var implicitReturnClosure: (() -> String?)?
+
+    func implicitReturn() -> String! {
+        implicitReturnCallsCount += 1
+        return implicitReturnClosure.map({ $0() }) ?? implicitReturnReturnValue
     }
 
 }
