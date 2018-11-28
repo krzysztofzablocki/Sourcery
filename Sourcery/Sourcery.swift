@@ -5,7 +5,6 @@
 
 import Foundation
 import PathKit
-import SwiftTryCatch
 import SourceryRuntime
 import SourceryJS
 import xcproj
@@ -347,13 +346,12 @@ extension Sourcery {
 
     private func load(artifacts: String, contentSha: String) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
-        SwiftTryCatch.try({
-                              if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
-                                  unarchivedResult = unarchived
-                              }
-                          }, catch: { _ in
+
+        if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
+            unarchivedResult = unarchived
+        } else {
             Log.warning("Failed to unarchive \(artifacts) due to error, re-parsing")
-        }, finallyBlock: {})
+        }
 
         return unarchivedResult
     }
@@ -454,11 +452,17 @@ extension Sourcery {
         }
 
         var result: String = ""
-        SwiftTryCatch.try({
-                              result = (try? Generator.generate(parsingResult.types, template: template, arguments: self.arguments)) ?? ""
-                          }, catch: { error in
+        do {
+            result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+        } catch {
+            #if os(Linux)
+            let error = (error as? NSError)
+            #else
+            let error = (error as NSError?)
+            #endif
+
             result = error?.description ?? ""
-        }, finallyBlock: {})
+        }
 
         return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
     }

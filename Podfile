@@ -32,7 +32,6 @@ target 'Sourcery' do
   pod 'PathKit', '0.9.2'
   pod "xcproj", :git =>'git@github.com:tuist/xcodeproj.git', :tag => '4.3.1'
   pod 'SourceKittenFramework', '0.21.2'
-  pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
   pod 'AEXML', '4.3.3'
 
   target 'SourceryTests' do

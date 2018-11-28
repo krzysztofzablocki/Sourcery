@@ -110,15 +110,6 @@
         }
       },
       {
-        "package": "SwiftTryCatch",
-        "repositoryURL": "https://github.com/seanparsons/SwiftTryCatch.git",
-        "state": {
-          "branch": null,
-          "revision": "e7074a72e4d4dc516f391bc4d4afd8ca6a845b4b",
-          "version": null
-        }
-      },
-      {
         "package": "SWXMLHash",
         "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
         "state": {
