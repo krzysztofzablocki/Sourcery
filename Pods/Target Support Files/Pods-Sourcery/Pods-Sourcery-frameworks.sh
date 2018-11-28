@@ -155,7 +155,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/SourceKittenFramework/SourceKittenFramework.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/SwiftTryCatch/SwiftTryCatch.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework"
 fi
@@ -167,7 +166,6 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/SourceKittenFramework/SourceKittenFramework.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/SwiftTryCatch/SwiftTryCatch.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework"
 fi
