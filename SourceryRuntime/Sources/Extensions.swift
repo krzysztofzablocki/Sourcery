@@ -78,6 +78,7 @@ public extension String {
 
     /// :nodoc:
     func isValidArrayName() -> Bool {
+        if self == "Array" { return true }
         if hasPrefix("Array<") { return true }
         if hasPrefix("[") && hasSuffix("]") {
             return dropFirstAndLast().colonSeparated().count == 1
@@ -87,6 +88,7 @@ public extension String {
 
     /// :nodoc:
     func isValidDictionaryName() -> Bool {
+        if self == "Dictionary" { return true }
         if hasPrefix("Dictionary<") { return true }
         if hasPrefix("[") && contains(":") && hasSuffix("]") {
             return dropFirstAndLast().colonSeparated().count == 2

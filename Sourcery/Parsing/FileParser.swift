@@ -180,7 +180,6 @@ final class FileParser {
             types.append(type)
             return type
         }
-
         return (types, typealiases)
     }
 
@@ -406,7 +405,8 @@ extension FileParser {
             while openingAngles > 0 {
                 end = source.index(after: end)
                 guard end != source.endIndex else { return "" }
-                if source[end] == ">" {
+                // Count closing bracket, but exclude closures, e.g. ->
+                if source[end] == ">", source[source.index(before: end)] != "-" {
                     openingAngles -= 1
                 } else if source[end] == "<" {
                     openingAngles += 1
@@ -443,7 +443,8 @@ extension FileParser {
     }
 
     fileprivate func parseGenericTypeParameter(source: String) -> GenericTypeParameter {
-         if source.contains("<") {
+        let source = source.trimmingCharacters(in: .whitespacesAndNewlines)
+        if source.contains("<") {
             let declaration = extractGenericsDeclaration(source: source)
             let typeName = extractGenericTypeName(source: source)
             return GenericTypeParameter(typeName: TypeName(typeName), type: Type(name: typeName, isGeneric: true, genericTypeParameters: extractGenericTypeParameters(source: declaration)))
@@ -469,11 +470,8 @@ extension FileParser {
             return GenericTypePlaceholder(placeholderName: TypeName(name), constraints: constraints)
         } else if source.contains("<") {
             return GenericTypePlaceholder(placeholderName: TypeName(extractGenericTypeName(source: source)))
-//            return GenericTypePlaceholder(placeholderName: TypeName(String(source[..<(source.index(of: "<") ?? source.endIndex)])), type: recursivelyParseGenericDeclaration(source: source))
         } else {
             return GenericTypePlaceholder(placeholderName: TypeName(source.trimmingCharacters(in: .whitespacesAndNewlines)))
-//            return GenericTypePlaceholder(typeName: TypeName(source.trimmingCharacters(in: .whitespacesAndNewlines)),
-//                                        type: Type(name: source.trimmingCharacters(in: .whitespacesAndNewlines)))
         }
     }
 
@@ -636,14 +634,8 @@ extension FileParser {
         let typeName: TypeName
         let maybeConcreteType: Type?
         if let type = maybeType {
-            // TODO: This awful workaround needs to be refactored unto proper parsing of tuple with generic types
-            if name == "tuple" {
-                typeName = TypeName(type)
-                maybeConcreteType = nil
-            } else {
-                maybeConcreteType = parseConcreteType(source: type)
-                typeName = TypeName(maybeConcreteType?.name ?? type)
-            }
+            maybeConcreteType = parseConcreteType(source: type)
+            typeName = TypeName(maybeConcreteType?.name ?? type)
         } else {
             let declaration = extract(.key, from: source)
             // swiftlint:disable:next force_unwrapping

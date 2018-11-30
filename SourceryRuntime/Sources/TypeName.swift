@@ -403,7 +403,6 @@ public protocol Typed {
     /// Array element type name
     public let elementTypeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     /// Array element type, if known
     public var elementType: Type?
 

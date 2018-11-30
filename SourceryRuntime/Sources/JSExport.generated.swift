@@ -49,6 +49,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -118,6 +119,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -240,6 +242,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -280,6 +283,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -368,6 +372,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }

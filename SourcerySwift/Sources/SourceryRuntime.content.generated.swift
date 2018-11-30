@@ -443,7 +443,8 @@ extension ArrayType {
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string += "name = \\(String(describing: self.name)), "
-        string += "elementTypeName = \\(String(describing: self.elementTypeName))"
+        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
+        string += "elementType = \\(String(describing: self.elementType))"
         return string
     }
 }
@@ -676,6 +677,7 @@ extension Type {
         string += "accessLevel = \\(String(describing: self.accessLevel)), "
         string += "name = \\(String(describing: self.name)), "
         string += "isGeneric = \\(String(describing: self.isGeneric)), "
+        string += "isConcreteGenericType = \\(String(describing: self.isConcreteGenericType)), "
         string += "genericTypePlaceholders = \\(String(describing: self.genericTypePlaceholders)), "
         string += "genericTypeParameters = \\(String(describing: self.genericTypeParameters)), "
         string += "localName = \\(String(describing: self.localName)), "
@@ -758,6 +760,7 @@ extension ArrayType: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "elementType").trackDifference(actual: self.elementType, expected: castObject.elementType))
         return results
     }
 }
@@ -1559,6 +1562,7 @@ extension ArrayType {
         guard let rhs = object as? ArrayType else { return false }
         if self.name != rhs.name { return false }
         if self.elementTypeName != rhs.elementTypeName { return false }
+        if self.elementType != rhs.elementType { return false }
         return true
     }
 }
@@ -1940,6 +1944,7 @@ public extension String {
 
     /// :nodoc:
     func isValidArrayName() -> Bool {
+        if self == "Array" { return true }
         if hasPrefix("Array<") { return true }
         if hasPrefix("[") && hasSuffix("]") {
             return dropFirstAndLast().colonSeparated().count == 1
@@ -1949,6 +1954,7 @@ public extension String {
 
     /// :nodoc:
     func isValidDictionaryName() -> Bool {
+        if self == "Dictionary" { return true }
         if hasPrefix("Dictionary<") { return true }
         if hasPrefix("[") && contains(":") && hasSuffix("]") {
             return dropFirstAndLast().colonSeparated().count == 2
@@ -2169,6 +2175,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -2238,6 +2245,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -2360,6 +2368,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -2400,6 +2409,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -2488,6 +2498,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
     var genericTypePlaceholders: [GenericTypePlaceholder] { get }
     var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
@@ -4265,7 +4276,6 @@ public protocol Typed {
     /// Array element type name
     public let elementTypeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     /// Array element type, if known
     public var elementType: Type?
 

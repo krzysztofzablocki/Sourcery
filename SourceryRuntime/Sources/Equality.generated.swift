@@ -10,6 +10,7 @@ extension ArrayType {
         guard let rhs = object as? ArrayType else { return false }
         if self.name != rhs.name { return false }
         if self.elementTypeName != rhs.elementTypeName { return false }
+        if self.elementType != rhs.elementType { return false }
         return true
     }
 }

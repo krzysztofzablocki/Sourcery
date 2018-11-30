@@ -228,11 +228,11 @@ class GeneratorSpec: QuickSpec {
 
                 context("given tuple variable") {
                     it("can access tuple elements") {
-                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.placeholderName.tuple.elements %}{{ e.placeholderName.name }},{% endfor %}{% endfor %}")).to(equal("Int,Bar,Int,Bar,"))
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements %}{{ e.typeName.name }},{% endfor %}{% endfor %}")).to(equal("Int,Bar,Int,Bar,"))
                     }
 
                     it("can access tuple element type metadata") {
-                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.placeholderName.tuple.elements|implements:\"KnownProtocol\" %}{{ e.type.name }},{% endfor %}{% endfor %}")).to(equal("Bar,Bar,"))
+                        expect(generate("{% for var in type.Complex.allVariables|tuple %}{% for e in var.typeName.tuple.elements|implements:\"KnownProtocol\" %}{{ e.type.name }},{% endfor %}{% endfor %}")).to(equal("Bar,Bar,"))
                     }
                 }
 

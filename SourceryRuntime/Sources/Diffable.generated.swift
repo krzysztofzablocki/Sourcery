@@ -12,6 +12,7 @@ extension ArrayType: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "elementType").trackDifference(actual: self.elementType, expected: castObject.elementType))
         return results
     }
 }

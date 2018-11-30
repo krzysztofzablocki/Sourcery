@@ -16,9 +16,9 @@ class FileParserSubscriptsSpec: QuickSpec {
                 }
 
                 it("extracts subscripts properly") {
-                    let subscripts = parse("class Foo { final private subscript(\n_ index: Int, a: String\n) -> Int { get { return 0 } set { do {} } }; public private(set) subscript(b b: Int) -> String { get { return \"\"} } set { } } }").first?.subscripts
+                    let subscripts = parse("class Foo { final private subscript(\n_ index: Int, a: String\n) -> Int { get { return 0 } set { do {} } }; public private(set) subscript(b b: Int) -> String { get { return \"\"} } set { } } }")[0].subscripts
 
-                    expect(subscripts?[0]).to(equal(
+                    expect(subscripts[0]).to(equal(
                         Subscript(
                             parameters: [
                                 MethodParameter(argumentLabel: nil, name: "index", typeName: TypeName("Int")),
@@ -35,7 +35,7 @@ class FileParserSubscriptsSpec: QuickSpec {
                         )
                     ))
 
-                    expect(subscripts?[1]).to(equal(
+                    expect(subscripts[1]).to(equal(
                         Subscript(
                             parameters: [
                                 MethodParameter(argumentLabel: "b", name: "b", typeName: TypeName("Int"))

@@ -9,7 +9,8 @@ extension ArrayType {
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string += "name = \(String(describing: self.name)), "
-        string += "elementTypeName = \(String(describing: self.elementTypeName))"
+        string += "elementTypeName = \(String(describing: self.elementTypeName)), "
+        string += "elementType = \(String(describing: self.elementType))"
         return string
     }
 }
@@ -242,6 +243,7 @@ extension Type {
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "name = \(String(describing: self.name)), "
         string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "isConcreteGenericType = \(String(describing: self.isConcreteGenericType)), "
         string += "genericTypePlaceholders = \(String(describing: self.genericTypePlaceholders)), "
         string += "genericTypeParameters = \(String(describing: self.genericTypeParameters)), "
         string += "localName = \(String(describing: self.localName)), "

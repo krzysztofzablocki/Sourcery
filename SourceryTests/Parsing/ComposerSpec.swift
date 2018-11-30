@@ -323,20 +323,33 @@ class ParserComposerSpec: QuickSpec {
                         let types = parse("struct Foo { var array: Array<Int>; var arrayOfTuples: Array<(Int, Int)>; var arrayOfArrays: Array<Array<Int>>, var arrayOfClosures: Array<()->()> }")
                         let variables = types.first?.variables
                         expect(variables?[0].typeName.array).to(equal(
-                            ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int"))
+                            ArrayType(name: "Array<Int>",
+                                      elementTypeName: TypeName("Int"))
                         ))
                         expect(variables?[1].typeName.array).to(equal(
-                            ArrayType(name: "Array<(Int, Int)>", elementTypeName: TypeName("(Int, Int)", tuple:
-                                TupleType(name: "(Int, Int)", elements: [
-                                    TupleElement(name: "0", typeName: TypeName("Int")),
-                                    TupleElement(name: "1", typeName: TypeName("Int"))
-                                    ])))
+                            ArrayType(name: "Array<(Int, Int)>",
+                                      elementTypeName: TypeName("(Int, Int)",
+                                                                tuple:
+                                                TupleType(name: "(Int, Int)", elements: [
+                                                    TupleElement(name: "0", typeName: TypeName("Int")),
+                                                    TupleElement(name: "1", typeName: TypeName("Int"))
+                                                ])))
                         ))
                         expect(variables?[2].typeName.array).to(equal(
-                            ArrayType(name: "Array<Array<Int>>", elementTypeName: TypeName("Array<Int>", array: ArrayType(name: "Array<Int>", elementTypeName: TypeName("Int")), generic: GenericType(name: "Array<Int>", typeParameters: [GenericTypeParameter(typeName: TypeName("Int"))])))
+                            ArrayType(name: "Array<Array<Int>>",
+                                      elementTypeName: TypeName("Array<Int>",
+                                                                array: ArrayType(name: "Array<Int>",
+                                                                                 elementTypeName: TypeName("Int")),
+                                                                generic: GenericType(name: "Array<Int>",
+                                                                           typeParameters: [GenericTypeParameter(typeName: TypeName("Int"),
+                                                                                                                 type: Type(name: "Int"))])))
                         ))
                         expect(variables?[3].typeName.array).to(equal(
-                            ArrayType(name: "Array<()->()>", elementTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))))
+                            ArrayType(name: "Array<()->()>",
+                                      elementTypeName: TypeName("()->()",
+                                                                closure: ClosureType(name: "() -> ()",
+                                                                                     parameters: [],
+                                                                                     returnTypeName: TypeName("()"))))
                         ))
                     }
                 }
