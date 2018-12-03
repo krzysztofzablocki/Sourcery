@@ -661,7 +661,7 @@ class FileParserSpec: QuickSpec {
                                         [
                                             EnumCase(name: "optionA", associatedValues: [
                                                 AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Observable<Int, Int>", generic: GenericType(
-                                                    name: "Observable", typeParameters: [
+                                                    name: "Observable<Int, Int>", typeParameters: [
                                                         GenericTypeParameter(typeName: TypeName("Int")),
                                                         GenericTypeParameter(typeName: TypeName("Int"))
                                                     ])))

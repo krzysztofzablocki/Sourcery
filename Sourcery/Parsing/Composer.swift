@@ -145,18 +145,24 @@ struct Composer {
 
         // should we also set these types on lookupName?
         if let array = parseArrayType(lookupName, presumedType: presumedType) {
-            lookupName.array = array
+            let parsedLegacyTypeName = parseLegacyGenericTypes(for: lookupName, presumedType: presumedType)
+            lookupName.array = parsedLegacyTypeName.array ?? lookupName.array
+            lookupName.generic = parsedLegacyTypeName.generic ?? lookupName.generic
             array.elementType = resolveTypeWithName(array.elementTypeName, array.elementType)
-            lookupName.generic = composeLegacyGenericType(from: presumedType) ?? lookupName.generic
         } else if let dictionary = parseDictionaryType(lookupName, presumedType: presumedType) {
-            lookupName.dictionary = dictionary
+            let parsedLegacyTypeName = parseLegacyGenericTypes(for: lookupName, presumedType: presumedType)
+            lookupName.dictionary = parsedLegacyTypeName.dictionary ?? lookupName.dictionary
+            lookupName.generic = parsedLegacyTypeName.generic ?? lookupName.generic
             dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName, dictionary.valueType)
             dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName, dictionary.keyType)
-            lookupName.generic = composeLegacyGenericType(from: presumedType) ?? lookupName.generic
         } else if let tuple = parseTupleType(lookupName) {
             lookupName.tuple = tuple
             tuple.elements.forEach { tupleElement in
+                let elementType = parseLegacyGenericTypes(for: tupleElement.typeName, presumedType: tupleElement.type)
                 tupleElement.type = resolveTypeWithName(tupleElement.typeName, tupleElement.type)
+                tupleElement.typeName.dictionary = elementType.dictionary
+                tupleElement.typeName.array = elementType.array
+                tupleElement.typeName.generic = elementType.generic
             }
         } else if let closure = parseClosureType(lookupName) {
             lookupName.closure = closure
@@ -188,31 +194,6 @@ struct Composer {
         } else {
             return type
         }
-    }
-
-    private func composeLegacyGenericType(from presumedType: Type?) -> GenericType? {
-        guard let legacyGenericType = presumedType, legacyGenericType.name == "Array" || legacyGenericType.name == "Dictionary" else { return nil }
-        let legacyGenericTypeParameters = legacyGenericType.genericTypeParameters.map { parameter -> GenericTypeParameter in
-            let adjustedName: String
-            switch parameter.typeName.name {
-            case "Array": adjustedName = "Array<\(getLegacyGenericListFromTypeParameters(parameter.type?.genericTypeParameters ?? []))>"
-            case "Dictionary": adjustedName = "Dictionary<\(getLegacyGenericListFromTypeParameters(parameter.type?.genericTypeParameters ?? []))>"
-            default: adjustedName = parameter.typeName.name
-            }
-            return GenericTypeParameter(typeName: TypeName(adjustedName))
-        }
-        return GenericType(name: "\(legacyGenericType.name)<\(getLegacyGenericListFromTypeParameters(legacyGenericType.genericTypeParameters))>",
-            typeParameters: legacyGenericTypeParameters)
-    }
-
-    private func getLegacyGenericListFromTypeParameters(_ parameters: [GenericTypeParameter]) -> String {
-        return parameters.map { parameter -> String in
-            if let genericParameters = parameter.type?.genericTypeParameters, !genericParameters.isEmpty {
-                return parameter.typeName.name + "<\(getLegacyGenericListFromTypeParameters(genericParameters))>"
-            } else {
-                return parameter.typeName.name
-            }
-        }.joined(separator: ",")
     }
 
     typealias TypeResolver = (TypeName, Type?, Type?) -> Type?
@@ -516,11 +497,16 @@ struct Composer {
         } else if typeName.name.isValidDictionaryName() {
             let (key, value) = parseDictionaryLiteralKeyValueType(typeName)
             let parameters = [
-                GenericTypeParameter(typeName: key), GenericTypeParameter(typeName: value)
+                GenericTypeParameter(typeName: parseLegacyGenericTypes(for: key, presumedType: nil)),
+                GenericTypeParameter(typeName: parseLegacyGenericTypes(for: value, presumedType: nil))
             ]
             return TypeName(typeName.name,
                             dictionary: parseDictionaryType(typeName, presumedType: presumedType),
                             generic: GenericType(name: typeName.name, typeParameters: parameters))
+        } else if typeName.name.isValidTupleName() {
+            return TypeName(typeName.name, tuple: parseTupleType(typeName))
+        } else if typeName.name.isValidClosureName() {
+            return TypeName(typeName.name, closure: parseClosureType(typeName))
         } else {
             return typeName
         }

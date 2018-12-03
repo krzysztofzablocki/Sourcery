@@ -335,10 +335,11 @@ extension FileParser {
     fileprivate func parseConcreteType(source: String) -> Type? {
         guard !source.isEmpty else { return nil }
         let declaration = extractGenericsDeclaration(source: source)
-        let typeName = extractGenericTypeName(source: source)
         if declaration.isEmpty {
-            return Type(name: typeName)
+            // This is not generic type.
+            return Type(name: source)
         }
+        let typeName = extractGenericTypeName(source: source)
         guard declaration.contains("<") else {
             return Type(name: typeName,
                         isGeneric: !declaration.isEmpty,
