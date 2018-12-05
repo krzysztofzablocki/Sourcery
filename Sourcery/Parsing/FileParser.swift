@@ -171,7 +171,6 @@ final class FileParser {
                     parseGenericTypeWhereConstraints(type: type, whereDeclaration: extractGenericsWhereClause(source: suffix))
                 }
             }
-            type.isGeneric = !type.genericTypeParameters.isEmpty || !type.genericTypePlaceholders.isEmpty
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.bodyBytesRange = Substring.body.range(for: source).map { BytesRange(range: $0) }
@@ -342,11 +341,10 @@ extension FileParser {
         let typeName = extractGenericTypeName(source: source)
         guard declaration.contains("<") else {
             return Type(name: typeName,
-                        isGeneric: !declaration.isEmpty,
                         genericTypeParameters: extractGenericTypeParameters(source: declaration))
         }
 
-        return Type(name: typeName, isGeneric: true, genericTypeParameters: extractGenericTypeParameters(source: declaration))
+        return Type(name: typeName, genericTypeParameters: extractGenericTypeParameters(source: declaration))
     }
 
     fileprivate func parseGenericPlaceholders(source: [String: SourceKitRepresentable], definedIn: Any?) {
@@ -382,11 +380,10 @@ extension FileParser {
         let typeName = extractGenericTypeName(source: source)
         guard declaration.contains("<") else {
             return Type(name: typeName,
-                        isGeneric: !declaration.isEmpty,
                         genericTypeParameters: extractGenericTypeParameters(source: declaration))
         }
 
-        return Type(name: typeName, isGeneric: true, genericTypeParameters: extractGenericTypeParameters(source: declaration))
+        return Type(name: typeName, genericTypeParameters: extractGenericTypeParameters(source: declaration))
     }
 
     fileprivate func extractGenericsDeclaration(source: String) -> String {
@@ -448,7 +445,7 @@ extension FileParser {
         if source.contains("<") {
             let declaration = extractGenericsDeclaration(source: source)
             let typeName = extractGenericTypeName(source: source)
-            return GenericTypeParameter(typeName: TypeName(typeName), type: Type(name: typeName, isGeneric: true, genericTypeParameters: extractGenericTypeParameters(source: declaration)))
+            return GenericTypeParameter(typeName: TypeName(typeName), type: Type(name: typeName, genericTypeParameters: extractGenericTypeParameters(source: declaration)))
         } else {
             return GenericTypeParameter(typeName: TypeName(source), type: Type(name: source))
         }

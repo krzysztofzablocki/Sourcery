@@ -14,7 +14,7 @@ class GeneratorSpec: QuickSpec {
             var beforeEachGenerate: () -> Void = {
                 let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: [
                     Type(name: "NSObject"), Type(name: "Decodable"), Type(name: "AlternativeProtocol")
-                    ], isGeneric: true, genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T")), GenericTypePlaceholder(placeholderName: TypeName("Element"))])
+                    ], genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T")), GenericTypePlaceholder(placeholderName: TypeName("Element"))])
                 let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: [Type(name: "Foo"), Type(name: "ProtocolBasedOnKnownProtocol")], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
                 let barType = Struct(name: "Bar", inheritedTypes: [Type(name: "KnownProtocol"), Type(name: "Decodable")], annotations: ["bar": NSNumber(value: true)])
 

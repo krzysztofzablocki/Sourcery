@@ -44,7 +44,9 @@ import Foundation
     }
 
     /// Whether type is generic
-    public var isGeneric: Bool
+    public var isGeneric: Bool {
+        return !genericTypeParameters.isEmpty || !genericTypePlaceholders.isEmpty
+    }
 
     /// Whether type has been concretely specified
     public var isConcreteGenericType: Bool {
@@ -251,7 +253,6 @@ import Foundation
                 typealiases: [Typealias] = [],
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
-                isGeneric: Bool = false,
                 genericTypePlaceholders: [GenericTypePlaceholder] = [],
                 genericTypeParameters: [GenericTypeParameter] = []) {
 
@@ -268,7 +269,6 @@ import Foundation
         self.parentName = parent?.name
         self.attributes = attributes
         self.annotations = annotations
-        self.isGeneric = isGeneric
         self.genericTypePlaceholders = genericTypePlaceholders
         self.genericTypeParameters = genericTypeParameters
 
@@ -306,7 +306,6 @@ import Foundation
             guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
-            self.isGeneric = aDecoder.decode(forKey: "isGeneric")
             guard let genericTypePlaceholders: [GenericTypePlaceholder] = aDecoder.decode(forKey: "genericTypePlaceholders") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypePlaceholders"])); fatalError() }; self.genericTypePlaceholders = genericTypePlaceholders
             guard let genericTypeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
             guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName

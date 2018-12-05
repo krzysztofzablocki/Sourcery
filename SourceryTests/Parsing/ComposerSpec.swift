@@ -417,9 +417,8 @@ class ParserComposerSpec: QuickSpec {
                             class Generic<T> {}
                             class Specialized : Generic<Int> {}
                         """)
-                        let generic = Class(name: "Generic", isGeneric: true, genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
+                        let generic = Class(name: "Generic", genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
                         let specializedGeneric = Class(name: "Generic",
-                                                       isGeneric: true,
                                                        genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T"))],
                                                        genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))])
                         let specialized = Class(name: "Specialized", inheritedTypes: [specializedGeneric])
@@ -431,13 +430,12 @@ class ParserComposerSpec: QuickSpec {
                             class Generic<T> {}
                             class Specialized<U: Generic<Int>> {}
                         """)
-                        let generic = Class(name: "Generic", isGeneric: true, genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
+                        let generic = Class(name: "Generic", genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
                         let specializedGeneric = Class(name: "Generic",
-                                                       isGeneric: true,
                                                        genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T"))],
                                                        genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))])
                         let placeholder = GenericTypePlaceholder(placeholderName: TypeName("U"), constraints: [specializedGeneric])
-                        let specialized = Class(name: "Specialized", isGeneric: true, genericTypePlaceholders: [placeholder])
+                        let specialized = Class(name: "Specialized", genericTypePlaceholders: [placeholder])
                         expect(result).to(equal([ generic, specialized]))
                     }
                 }
@@ -886,7 +884,7 @@ class ParserComposerSpec: QuickSpec {
                                                                            actualTypeName: expectedActualTypeName),
                                                         type: Struct(name: "Foo",
                                                                      parent: Struct(name: "Blah"),
-                                                                     isGeneric: true, genericTypePlaceholders: [
+                                                                     genericTypePlaceholders: [
                                                                         GenericTypePlaceholder(placeholderName: TypeName("T"))
                                                             ]),
                                                         accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))

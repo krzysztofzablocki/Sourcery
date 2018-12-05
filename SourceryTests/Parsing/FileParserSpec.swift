@@ -93,14 +93,14 @@ class FileParserSpec: QuickSpec {
                     it("extracts generic struct properly") {
                         expect(parse("struct Foo<Something> { }"))
                                 .to(equal([
-                                    Struct(name: "Foo", isGeneric: true, genericTypePlaceholders: [
+                                    Struct(name: "Foo", genericTypePlaceholders: [
                                         GenericTypePlaceholder(placeholderName: TypeName("Something"))
                                         ])
                                           ]))
 
                         expect(parse("struct Foo<  A  , B,C> { }"))
                             .to(equal([
-                                Struct(name: "Foo", isGeneric: true, genericTypePlaceholders: [
+                                Struct(name: "Foo", genericTypePlaceholders: [
                                     GenericTypePlaceholder(placeholderName: TypeName("A")),
                                     GenericTypePlaceholder(placeholderName: TypeName("B")),
                                     GenericTypePlaceholder(placeholderName: TypeName("C"))])
@@ -108,7 +108,7 @@ class FileParserSpec: QuickSpec {
 
                         expect(parse("struct Foo<A : Equatable & Codable, B:Codable,\n\nC > { }"))
                             .to(equal([
-                                Struct(name: "Foo", isGeneric: true, genericTypePlaceholders: [
+                                Struct(name: "Foo", genericTypePlaceholders: [
                                     GenericTypePlaceholder(placeholderName: TypeName("A"), constraints: [
                                         Type(name: "Equatable"),
                                         Type(name: "Codable")
@@ -199,11 +199,11 @@ class FileParserSpec: QuickSpec {
 
                     it("Extracts protocol information for generic type arguments") {
                         let result = parse("protocol Test {}; class Foo<T:Test> : Bar<T> {}")
-                        let expected = Class(name: "Foo", isGeneric: true, genericTypePlaceholders: [
+                        let expected = Class(name: "Foo", genericTypePlaceholders: [
                             GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [ Protocol(name: "Test") ])
                             ])
                         expected.inheritedTypes = [
-                            Type(name: "Bar", isGeneric: true, genericTypeParameters: [
+                            Type(name: "Bar", genericTypeParameters: [
                                 GenericTypeParameter(typeName: TypeName("T"), type: Type(name: "T"))]
                             )]
                         expect(result).to(equal([expected, Protocol(name: "Test")]))
@@ -213,14 +213,14 @@ class FileParserSpec: QuickSpec {
                         let result = parse("class Bar<A: B<C<D>>> {}")
 
                         let dType = Type(name: "D")
-                        let cType = Type(name: "C", isGeneric: true, genericTypeParameters: [
+                        let cType = Type(name: "C", genericTypeParameters: [
                             GenericTypeParameter(typeName: TypeName("D"), type: dType)
                             ])
-                        let bType = Type(name: "B", isGeneric: true, genericTypeParameters: [
+                        let bType = Type(name: "B", genericTypeParameters: [
                             GenericTypeParameter(typeName: TypeName("C"), type: cType)
                             ])
                         expect(result).to(equal([
-                                Class(name: "Bar", isGeneric: true, genericTypePlaceholders: [
+                                Class(name: "Bar", genericTypePlaceholders: [
                                     GenericTypePlaceholder(placeholderName: TypeName("A"), constraints: [bType])
                                     ])
                             ]))
@@ -233,7 +233,7 @@ class FileParserSpec: QuickSpec {
                             Class(name: "Test", variables: [
                                 Variable(name: "foo",
                                          typeName: TypeName("Bar"),
-                                         type: Type(name: "Bar", isGeneric: true, genericTypeParameters: [
+                                         type: Type(name: "Bar", genericTypeParameters: [
                                             GenericTypeParameter(typeName: TypeName("T"), type: Type(name: "T"))
                                             ]),
                                          accessLevel: (.internal, .none), definedInTypeName: TypeName("Test"))
@@ -254,12 +254,12 @@ class FileParserSpec: QuickSpec {
 
                         let klass = Class(name: "Ancestor")
                         let protokol = Protocol(name: "Bar")
-                        let strukt = Struct(name: "Foo", isGeneric: true, genericTypePlaceholders: [
+                        let strukt = Struct(name: "Foo", genericTypePlaceholders: [
                             GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [
                                 Class(name: "Ancestor")
                                 ])
                             ])
-                        let specializedStruct = Struct(name: "Foo", isGeneric: true, genericTypePlaceholders: [
+                        let specializedStruct = Struct(name: "Foo", genericTypePlaceholders: [
                             GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [
                                 Class(name: "Ancestor")
                                 ])
@@ -289,7 +289,7 @@ class FileParserSpec: QuickSpec {
                         let parameter = MethodParameter(argumentLabel: nil, name: "argument", typeName: TypeName("T"), type: Type(name: "T"))
                         let method = SourceryRuntime.Method(name: "bar(_ argument: T)", selectorName: "bar(_:)", parameters: [parameter], definedInTypeName: TypeName("Foo"))
                         let genericPlaceholders = [GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [Type(name: "Equatable")])]
-                        let type = Class(name: "Foo", methods: [method], isGeneric: true, genericTypePlaceholders: genericPlaceholders)
+                        let type = Class(name: "Foo", methods: [method], genericTypePlaceholders: genericPlaceholders)
                         expect(result).to(equal([type]))
                     }
 
@@ -302,14 +302,13 @@ class FileParserSpec: QuickSpec {
                         }
                         """)
                         let expected = Class(name: "Foo",
-                                             isGeneric: true,
                                              genericTypePlaceholders: [
                                                 GenericTypePlaceholder(placeholderName: TypeName("A"), constraints: [
                                                     Type(name: "Equatable"),
                                                     Type(name: "Codable")
                                                     ]),
                                                 GenericTypePlaceholder(placeholderName: TypeName("B"), constraints: [
-                                                    Type(name: "Baz", isGeneric: true, genericTypeParameters: [
+                                                    Type(name: "Baz", genericTypeParameters: [
                                                         GenericTypeParameter(typeName: TypeName("A"), type: Type(name: "A"))
                                                         ]),
                                                     Type(name: "Comparable"),
@@ -333,7 +332,6 @@ class FileParserSpec: QuickSpec {
                                                     ])
                             ])
                         expected.inheritedTypes = [Type(name: "Bar",
-                                                             isGeneric: true,
                                                              genericTypeParameters: [
                                                                 GenericTypeParameter(typeName: TypeName("B"), type: Type(name: "B"))
                             ])]
@@ -344,8 +342,8 @@ class FileParserSpec: QuickSpec {
 
                     it("doesn't extract generics if they are concrete parameters to the supertype") {
                         let result = parse("class Foo : Bar<Int> {}")
-                        let expected = Class(name: "Foo", isGeneric: false)
-                        expected.inheritedTypes = [Type(name: "Bar", isGeneric: true, genericTypeParameters: [
+                        let expected = Class(name: "Foo")
+                        expected.inheritedTypes = [Type(name: "Bar", genericTypeParameters: [
                             GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))
                             ])]
                         expect(result).to(equal([expected]))
