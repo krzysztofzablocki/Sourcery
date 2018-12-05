@@ -143,22 +143,26 @@ struct Composer {
             return self.resolveType(typeName: typeName, presumedType: presumedType, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) ?? presumedType
         }
 
+        let typeResolver: TypeResolver = { typeName, presumedType, containingType in
+            return self.resolveType(typeName: typeName, presumedType: presumedType, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) ?? presumedType
+        }
+
         // should we also set these types on lookupName?
-        if let array = parseArrayType(lookupName, presumedType: presumedType) {
-            let parsedLegacyTypeName = parseLegacyGenericTypes(for: lookupName, presumedType: presumedType)
-            lookupName.array = parsedLegacyTypeName.array ?? lookupName.array
+        if let array = parseArrayType(lookupName, presumedType: presumedType, resolve: typeResolver) {
+            let parsedLegacyTypeName = parseLegacyGenericTypes(for: lookupName, presumedType: presumedType, resolve: typeResolver)
+            lookupName.array = parsedLegacyTypeName.array ?? lookupName.array ?? array
             lookupName.generic = parsedLegacyTypeName.generic ?? lookupName.generic
             array.elementType = resolveTypeWithName(array.elementTypeName, array.elementType)
-        } else if let dictionary = parseDictionaryType(lookupName, presumedType: presumedType) {
-            let parsedLegacyTypeName = parseLegacyGenericTypes(for: lookupName, presumedType: presumedType)
-            lookupName.dictionary = parsedLegacyTypeName.dictionary ?? lookupName.dictionary
+        } else if let dictionary = parseDictionaryType(lookupName, presumedType: presumedType, resolve: typeResolver) {
+            let parsedLegacyTypeName = parseLegacyGenericTypes(for: lookupName, presumedType: presumedType, resolve: typeResolver)
+            lookupName.dictionary = parsedLegacyTypeName.dictionary ?? lookupName.dictionary ?? dictionary
             lookupName.generic = parsedLegacyTypeName.generic ?? lookupName.generic
             dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName, dictionary.valueType)
             dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName, dictionary.keyType)
         } else if let tuple = parseTupleType(lookupName) {
             lookupName.tuple = tuple
             tuple.elements.forEach { tupleElement in
-                let elementType = parseLegacyGenericTypes(for: tupleElement.typeName, presumedType: tupleElement.type)
+                let elementType = parseLegacyGenericTypes(for: tupleElement.typeName, presumedType: tupleElement.type, resolve: typeResolver)
                 tupleElement.type = resolveTypeWithName(tupleElement.typeName, tupleElement.type)
                 tupleElement.typeName.dictionary = elementType.dictionary
                 tupleElement.typeName.array = elementType.array
@@ -440,29 +444,33 @@ struct Composer {
         }
     }
 
-    fileprivate func parseArrayType(_ typeName: TypeName, presumedType: Type?) -> ArrayType? {
+    fileprivate func parseArrayType(_ typeName: TypeName, presumedType: Type?, resolve: TypeResolver) -> ArrayType? {
         let name = typeName.unwrappedTypeName
         guard name.isValidArrayName() else { return nil }
         if let elementType = presumedType?.genericTypeParameters.first?.type,
             let elementTypeName = presumedType?.genericTypeParameters.first?.typeName {
-            let adjustedElementTypeName = parseLegacyGenericTypes(for: elementTypeName, presumedType: elementType)
+            let adjustedElementTypeName = parseLegacyGenericTypes(for: elementTypeName, presumedType: elementType, resolve: resolve)
             return ArrayType(name: "Array<\(adjustedElementTypeName.name)>",
                 elementTypeName: adjustedElementTypeName)
         } else {
             let arrayLiteralElementType = parseArrayLiteralElementType(typeName)
-            return ArrayType(name: name, elementTypeName: parseLegacyGenericTypes(for: arrayLiteralElementType, presumedType: nil))
+            let elementTypeName = parseLegacyGenericTypes(for: arrayLiteralElementType, presumedType: nil, resolve: resolve)
+            return ArrayType(name: typeName.name,
+                             elementTypeName: elementTypeName,
+                             elementType: resolve(elementTypeName, nil, nil))
         }
     }
 
-    fileprivate func parseLegacyGenericTypes(for typeName: TypeName, presumedType: Type?) -> TypeName {
-        switch typeName.name {
+    fileprivate func parseLegacyGenericTypes(for typeName: TypeName, presumedType: Type?, resolve: TypeResolver) -> TypeName {
+        let unwrappedName = typeName.unwrappedTypeName
+        switch unwrappedName {
         case "Array":
             guard let elementType = presumedType?.genericTypeParameters.first?.type,
                 let elementTypeName = presumedType?.genericTypeParameters.first?.typeName
                 else { return typeName }
-            let adjustedTypeName = "Array<\(parseLegacyGenericTypes(for: elementTypeName, presumedType: elementType))>"
+            let adjustedTypeName = "Array<\(parseLegacyGenericTypes(for: elementTypeName, presumedType: elementType, resolve: resolve))>"
             return TypeName(adjustedTypeName,
-                            array: parseArrayType(typeName, presumedType: presumedType),
+                            array: parseArrayType(typeName, presumedType: presumedType, resolve: resolve),
                             generic: GenericType(name: adjustedTypeName, typeParameters: presumedType?.genericTypeParameters ?? []))
         case "Dictionary":
             guard let keyType = presumedType?.genericTypeParameters.first?.type,
@@ -470,42 +478,46 @@ struct Composer {
                 let keyTypeName = presumedType?.genericTypeParameters.first?.typeName,
                 let valueTypeName = presumedType?.genericTypeParameters.last?.typeName,
                 presumedType?.genericTypeParameters.count == 2 else { return typeName }
-            let key = parseLegacyGenericTypes(for: keyTypeName, presumedType: keyType)
-            let value = parseLegacyGenericTypes(for: valueTypeName, presumedType: valueType)
+            let key = parseLegacyGenericTypes(for: keyTypeName, presumedType: keyType, resolve: resolve)
+            let value = parseLegacyGenericTypes(for: valueTypeName, presumedType: valueType, resolve: resolve)
             let adjustedTypeName = "Dictionary<\(key, value)>"
             return TypeName(adjustedTypeName,
-                            dictionary: parseDictionaryType(typeName, presumedType: presumedType),
+                            dictionary: parseDictionaryType(typeName, presumedType: presumedType, resolve: resolve),
                             generic: GenericType(name: adjustedTypeName, typeParameters: presumedType?.genericTypeParameters ?? []))
         default: ()
         }
         if !(presumedType?.genericTypeParameters ?? []).isEmpty {
             let generics = presumedType?.genericTypeParameters.compactMap { parameter -> TypeName? in
                 guard let type = parameter.type else { return nil }
-                return parseLegacyGenericTypes(for: parameter.typeName, presumedType: type)
+                return parseLegacyGenericTypes(for: parameter.typeName, presumedType: type, resolve: resolve)
             }.map { $0.name } ?? []
             let genericsList = generics.joined(separator: ", ")
             let adjustedTypeName = "\(typeName.name)<\(genericsList)>"
             return TypeName(adjustedTypeName,
                             generic: GenericType(name: adjustedTypeName,
                                                  typeParameters: presumedType?.genericTypeParameters ?? []))
-        } else if typeName.name.isValidArrayName() {
+        } else if unwrappedName.isValidArrayName() {
             // At this point, it seems like only [Element] syntax is valid, Array<Element> syntax get parsed earlier
-            let parameter = GenericTypeParameter(typeName: parseArrayLiteralElementType(typeName))
+            let elementTypeName = parseArrayLiteralElementType(typeName)
+            let parameter = GenericTypeParameter(typeName: elementTypeName,
+                                                 type: resolve(elementTypeName, nil, nil))
             return TypeName(typeName.name,
-                            array: parseArrayType(typeName, presumedType: presumedType),
+                            array: parseArrayType(typeName, presumedType: presumedType, resolve: resolve),
                             generic: GenericType(name: typeName.name, typeParameters: [parameter]))
-        } else if typeName.name.isValidDictionaryName() {
+        } else if unwrappedName.isValidDictionaryName() {
             let (key, value) = parseDictionaryLiteralKeyValueType(typeName)
             let parameters = [
-                GenericTypeParameter(typeName: parseLegacyGenericTypes(for: key, presumedType: nil)),
-                GenericTypeParameter(typeName: parseLegacyGenericTypes(for: value, presumedType: nil))
+                GenericTypeParameter(typeName: parseLegacyGenericTypes(for: key, presumedType: nil, resolve: resolve),
+                                     type: resolve(key, nil, nil)),
+                GenericTypeParameter(typeName: parseLegacyGenericTypes(for: value, presumedType: nil, resolve: resolve),
+                                     type: resolve(value, nil, nil))
             ]
             return TypeName(typeName.name,
-                            dictionary: parseDictionaryType(typeName, presumedType: presumedType),
+                            dictionary: parseDictionaryType(typeName, presumedType: presumedType, resolve: resolve),
                             generic: GenericType(name: typeName.name, typeParameters: parameters))
-        } else if typeName.name.isValidTupleName() {
+        } else if unwrappedName.isValidTupleName() {
             return TypeName(typeName.name, tuple: parseTupleType(typeName))
-        } else if typeName.name.isValidClosureName() {
+        } else if unwrappedName.isValidClosureName() {
             return TypeName(typeName.name, closure: parseClosureType(typeName))
         } else {
             return typeName
@@ -532,7 +544,7 @@ struct Composer {
         }
     }
 
-    fileprivate func parseDictionaryType(_ typeName: TypeName, presumedType: Type?) -> DictionaryType? {
+    fileprivate func parseDictionaryType(_ typeName: TypeName, presumedType: Type?, resolve: TypeResolver) -> DictionaryType? {
         let name = typeName.unwrappedTypeName
         guard name.isValidDictionaryName() else { return nil }
 
@@ -541,17 +553,19 @@ struct Composer {
             let keyTypeName = presumedType?.genericTypeParameters.first?.typeName,
             let valueTypeName = presumedType?.genericTypeParameters.last?.typeName,
             presumedType?.genericTypeParameters.count == 2 {
-            let adjustedKeyTypeName = parseLegacyGenericTypes(for: keyTypeName, presumedType: keyType)
-            let adjustedValueTypeName = parseLegacyGenericTypes(for: valueTypeName, presumedType: valueType)
+            let adjustedKeyTypeName = parseLegacyGenericTypes(for: keyTypeName, presumedType: keyType, resolve: resolve)
+            let adjustedValueTypeName = parseLegacyGenericTypes(for: valueTypeName, presumedType: valueType, resolve: resolve)
             let genericList = [adjustedKeyTypeName, adjustedValueTypeName].map { $0.name }.joined(separator: ", ")
             return DictionaryType(name: "Dictionary<\(genericList)>",
                 valueTypeName: adjustedValueTypeName,
                 keyTypeName: adjustedKeyTypeName)
         } else {
             let (key, value) = parseDictionaryLiteralKeyValueType(typeName)
-            return DictionaryType(name: name,
-                                  valueTypeName: parseLegacyGenericTypes(for: value, presumedType: nil),
-                                  keyTypeName: parseLegacyGenericTypes(for: key, presumedType: nil))
+            return DictionaryType(name: typeName.name,
+                                  valueTypeName: parseLegacyGenericTypes(for: value, presumedType: nil, resolve: resolve),
+                                  valueType: resolve(value, nil, nil),
+                                  keyTypeName: parseLegacyGenericTypes(for: key, presumedType: nil, resolve: resolve),
+                                  keyType: resolve(key, nil, nil))
         }
     }
 
