@@ -387,11 +387,6 @@ extension FileParser {
     }
 
     fileprivate func extractGenericsDeclaration(source: String) -> String {
-        var declaration = source
-        if let whereStart = declaration.index(of: "where") {
-            declaration = String(declaration[declaration.startIndex ..< whereStart])
-        }
-
         if let start = source.index(of: "<") {
             if let inheritance = source.index(of: ":") {
                 if inheritance < start {
