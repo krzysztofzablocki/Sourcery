@@ -333,7 +333,6 @@ import Foundation
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
-            aCoder.encode(self.isGeneric, forKey: "isGeneric")
             aCoder.encode(self.genericTypePlaceholders, forKey: "genericTypePlaceholders")
             aCoder.encode(self.genericTypeParameters, forKey: "genericTypeParameters")
             aCoder.encode(self.localName, forKey: "localName")

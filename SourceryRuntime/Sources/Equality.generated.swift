@@ -241,7 +241,6 @@ extension Type {
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
-        if self.isGeneric != rhs.isGeneric { return false }
         if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
         if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.localName != rhs.localName { return false }

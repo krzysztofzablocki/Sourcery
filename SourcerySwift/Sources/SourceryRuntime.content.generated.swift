@@ -1048,7 +1048,6 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
-        results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
         results.append(contentsOf: DiffableResult(identifier: "genericTypePlaceholders").trackDifference(actual: self.genericTypePlaceholders, expected: castObject.genericTypePlaceholders))
         results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
@@ -1791,7 +1790,6 @@ extension Type {
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
-        if self.isGeneric != rhs.isGeneric { return false }
         if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
         if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.localName != rhs.localName { return false }
@@ -3828,7 +3826,6 @@ import Foundation
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
-            aCoder.encode(self.isGeneric, forKey: "isGeneric")
             aCoder.encode(self.genericTypePlaceholders, forKey: "genericTypePlaceholders")
             aCoder.encode(self.genericTypeParameters, forKey: "genericTypeParameters")
             aCoder.encode(self.localName, forKey: "localName")
@@ -4108,9 +4105,7 @@ public protocol Typed {
     public var type: Type?
 
     /// :nodoc:
-    public init(
-        typeName: TypeName,
-        type: Type? = nil) {
+    public init(typeName: TypeName, type: Type? = nil) {
         self.typeName = typeName
         self.type = type
     }
@@ -4140,9 +4135,7 @@ public protocol Typed {
     public var constraints: [Type]
 
     /// :nodoc:
-    public init(
-        placeholderName: TypeName,
-        constraints: [Type] = []) {
+    public init(placeholderName: TypeName, constraints: [Type] = []) {
         self.placeholderName = placeholderName
         self.constraints = constraints
     }

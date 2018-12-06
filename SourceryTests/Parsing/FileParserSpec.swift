@@ -348,17 +348,6 @@ class FileParserSpec: QuickSpec {
                             ])]
                         expect(result).to(equal([expected]))
                     }
-
-                    // TODO: replace this test, it does not actually compile:
-//                    it("extracts generics with complex types with commas") {
-//                        let result = parse("class Foo<A : [(String, Int)]> {}")
-//                        let expected = Class(name: "Foo", isGeneric: true, genericTypeParameters: [
-//                            GenericTypeParameter(placeholderName: TypeName("A"), constraints: [
-//                                Type(name: "[(String, Int)]")
-//                                ])
-//                            ])
-//                        expect(result).to(equal([expected]))
-//                    }
                 }
 
                 context("given unknown type") {
@@ -756,19 +745,34 @@ class FileParserSpec: QuickSpec {
                         let result = parse("protocol Foo { var some: Int { get } }\nclass Bar: Foo { var some: Int { return 2 } }").first
                         expect(result)
                             .to(equal(
-                                Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: [
-
-                                        Protocol(name: "Foo", variables: [Variable(name: "some", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo"))])
+                                Class(name: "Bar",
+                                      variables: [
+                                        Variable(name: "some",
+                                                 typeName: TypeName("Int"),
+                                                 type: Type(name: "Int"),
+                                                 accessLevel: (.internal, .none),
+                                                 isComputed: true,
+                                                 definedInTypeName: TypeName("Bar"))
+                                    ],
+                                      inheritedTypes: [
+                                        Protocol(name: "Foo",
+                                                 variables: [
+                                                    Variable(name: "some",
+                                                             typeName: TypeName("Int"),
+                                                             type: Type(name: "Int"),
+                                                             accessLevel: (.internal, .none),
+                                                             definedInTypeName: TypeName("Foo"))
+                                            ])
                                     ])
                                 ))
                     }
 
                     it("extracts generics from method") {
                         let result = parse("""
-protocol Foo {
-    func doSomething<T : Bar>(_ value : T) -> Int where T : Equatable
-}
-""")
+                        protocol Foo {
+                            func doSomething<T : Bar>(_ value : T) -> Int where T : Equatable
+                        }
+                        """)
                         let expected = Protocol(name: "Foo")
                         let method = Method(name: "doSomething<T : Bar>(_ value : T)",
                                             selectorName: "doSomething(_:)",
@@ -780,10 +784,12 @@ protocol Foo {
                                             returnTypeName: TypeName("Int"),
                                             definedInTypeName: TypeName("Foo"),
                                             genericTypePlaceholders: [
-                                                GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [
-                                Type(name: "Bar"),
-                                Type(name: "Equatable")
-                            ])])
+                                                GenericTypePlaceholder(placeholderName: TypeName("T"),
+                                                                       constraints: [
+                                                                            Type(name: "Bar"),
+                                                                            Type(name: "Equatable")
+                                                                        ])
+                                            ])
                         expected.methods = [method]
                         expect(result).to(equal([expected]))
                     }

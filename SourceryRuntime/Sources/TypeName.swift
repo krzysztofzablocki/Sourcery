@@ -242,9 +242,7 @@ public protocol Typed {
     public var type: Type?
 
     /// :nodoc:
-    public init(
-        typeName: TypeName,
-        type: Type? = nil) {
+    public init(typeName: TypeName, type: Type? = nil) {
         self.typeName = typeName
         self.type = type
     }
@@ -274,9 +272,7 @@ public protocol Typed {
     public var constraints: [Type]
 
     /// :nodoc:
-    public init(
-        placeholderName: TypeName,
-        constraints: [Type] = []) {
+    public init(placeholderName: TypeName, constraints: [Type] = []) {
         self.placeholderName = placeholderName
         self.constraints = constraints
     }
