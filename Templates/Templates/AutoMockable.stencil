@@ -53,7 +53,7 @@ import AppKit
     {% if method.parameters.count == 1 %}
     var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}?{% endfor %}
     {% elif not method.parameters.count == 0 %}
-    var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})?
+    var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{{ param.unwrappedTypeName }}{% else %}{{ param.typeName }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %})?
     {% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
     var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}{{ '!' if not method.isOptionalReturnType }}
