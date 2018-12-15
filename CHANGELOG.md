@@ -3,6 +3,7 @@
 ---
 ## Master
 
+- Fixes warning in generated AutoMockable methods that have implicit optional return values
 - Support for `optional` methods in ObjC protocols
 - Support for parsing lazy vars into Variable's attributes.
 - Updated Stencil to 0.13.1 and SwiftStencilKit to 2.7.0
