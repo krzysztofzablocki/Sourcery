@@ -30,23 +30,10 @@ extension Type {
         return __path.map({ Path($0) })
     }
 
-    func bodyRange(_ contents: String) -> NSRange? {
+    public func bodyRange(_ contents: String) -> NSRange? {
         guard let bytesRange = bodyBytesRange else { return nil }
         return contents.bridge().byteRangeToNSRange(start: Int(bytesRange.offset), length: Int(bytesRange.length))
     }
-
-    func contents() throws -> String? {
-        return try path?.read(.utf8)
-    }
-
-    public func rangeToAppendBody() throws -> NSRange? {
-        guard let contents = try self.contents() else { return nil }
-        guard let bodyRange = bodyRange(contents) else { return nil }
-        let bodyEndRange = NSRange(location: NSMaxRange(bodyRange), length: 0)
-        let bodyEndLineRange = contents.bridge().lineRange(for: bodyEndRange)
-        return NSRange(location: max(bodyRange.location, bodyEndLineRange.location), length: 0)
-    }
-
 }
 
 extension Variable: Parsable {}
@@ -60,7 +47,7 @@ extension Attribute: Parsable {}
 public final class FileParser {
 
     public let path: String?
-    let module: String?
+    public let module: String?
     public let initialContents: String
 
     fileprivate var contents: String!

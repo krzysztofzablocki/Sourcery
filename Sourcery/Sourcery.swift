@@ -502,10 +502,14 @@ extension Sourcery {
 
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
                     let path = definition.path,
-                    let rangeInFile = try definition.rangeToAppendBody() else {
+                    let contents = try? path.read(.utf8),
+                    let bodyRange = definition.bodyRange(contents) else {
                         rangesToReplace.remove(range)
                         return nil
                 }
+                let bodyEndRange = NSRange(location: NSMaxRange(bodyRange), length: 0)
+                let bodyEndLineRange = contents.bridge().lineRange(for: bodyEndRange)
+                let rangeInFile = NSRange(location: max(bodyRange.location, bodyEndLineRange.location), length: 0)
                 return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
             }
             .sorted { lhs, rhs in
