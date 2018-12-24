@@ -2,9 +2,10 @@ import Foundation
 import Quick
 import Nimble
 import PathKit
-@testable import SourceryJS
 @testable import Sourcery
+@testable import SourceryFramework
 @testable import SourceryRuntime
+@testable import SourceryJS
 
 class JavaScriptTemplateTests: QuickSpec {
     override func spec() {

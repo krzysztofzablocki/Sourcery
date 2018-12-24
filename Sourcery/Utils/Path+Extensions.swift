@@ -9,7 +9,7 @@
 import Foundation
 import PathKit
 
-typealias Path = PathKit.Path
+public typealias Path = PathKit.Path
 
 extension Path {
     static func cleanTemporaryDir(name: String) -> Path {

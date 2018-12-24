@@ -5,7 +5,7 @@
 
 import Foundation
 
-internal enum TemplateAnnotationsParser {
+public enum TemplateAnnotationsParser {
 
     private static func regex(annotation: String) throws -> NSRegularExpression {
         let commentPattern = NSRegularExpression.escapedPattern(for: "//")
@@ -16,7 +16,7 @@ internal enum TemplateAnnotationsParser {
         return regex
     }
 
-    static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false) -> (contents: String, annotatedRanges: [String: [NSRange]]) {
+    public static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false) -> (contents: String, annotatedRanges: [String: [NSRange]]) {
         let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate)
 
         var bridged = contents.bridge()
@@ -28,7 +28,7 @@ internal enum TemplateAnnotationsParser {
         return (bridged as String, annotatedRanges)
     }
 
-    static func annotationRanges(_ annotation: String, contents: String, aggregate: Bool = false) -> (annotatedRanges: [String: [NSRange]], rangesToReplace: Set<NSRange>) {
+    public static func annotationRanges(_ annotation: String, contents: String, aggregate: Bool = false) -> (annotatedRanges: [String: [NSRange]], rangesToReplace: Set<NSRange>) {
         let bridged = contents.bridge()
         let regex = try? self.regex(annotation: annotation)
 
@@ -62,7 +62,7 @@ internal enum TemplateAnnotationsParser {
         return (annotatedRanges, rangesToReplace)
     }
 
-    static func removingEmptyAnnotations(from content: String) -> String {
+    public static func removingEmptyAnnotations(from content: String) -> String {
         var bridged = content.bridge()
         let regex = try? self.regex(annotation: "\\S*")
 

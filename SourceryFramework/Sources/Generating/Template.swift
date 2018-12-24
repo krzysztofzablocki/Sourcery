@@ -8,7 +8,7 @@ import PathKit
 import SourceryRuntime
 
 /// Generic template that can be used for any of the Sourcery output variants
-protocol Template {
+public protocol Template {
     /// Path to template
     var sourcePath: Path { get }
 

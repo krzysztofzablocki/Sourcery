@@ -7,9 +7,9 @@ import Foundation
 import SourceryRuntime
 
 /// Responsible for composing results of `FileParser`.
-struct Composer {
+public struct Composer {
 
-    init() {}
+    public init() {}
 
     /// Performs final processing of discovered types:
     /// - extends types with their corresponding extensions;
@@ -19,7 +19,7 @@ struct Composer {
     ///
     /// - Parameter parserResult: Result of parsing source code.
     /// - Returns: Final types and extensions of unknown types.
-    func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
+    public func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
         var unique = [String: Type]()
         var modules = [String: [String: Type]]()
         let types = parserResult.types

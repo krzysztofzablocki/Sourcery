@@ -6,10 +6,10 @@
 import Foundation
 import SourceKittenFramework
 
-internal typealias Annotations = [String: NSObject]
+public typealias Annotations = [String: NSObject]
 
 /// Parser for annotations
-internal struct AnnotationsParser {
+public struct AnnotationsParser {
 
     private enum AnnotationType {
         case begin(Annotations)
@@ -232,7 +232,7 @@ internal struct AnnotationsParser {
     ///
     /// - Parameter line: Line to parse.
     /// - Returns: Dictionary containing all annotations.
-    static func parse(line: String) -> Annotations {
+    public static func parse(line: String) -> Annotations {
         var annotationDefinitions = line.trimmingCharacters(in: .whitespaces)
             .commaSeparated()
             .map { $0.trimmingCharacters(in: .whitespaces) }

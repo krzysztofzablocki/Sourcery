@@ -6,8 +6,8 @@
 import Foundation
 import SourceryRuntime
 
-enum Generator {
-    static func generate(_ types: Types, template: Template, arguments: [String: NSObject] = [:]) throws -> String {
+public enum Generator {
+    public static func generate(_ types: Types, template: Template, arguments: [String: NSObject] = [:]) throws -> String {
         Log.verbose("Rendering template \(template.sourcePath)")
         return try template.render(TemplateContext(types: types, arguments: arguments))
     }

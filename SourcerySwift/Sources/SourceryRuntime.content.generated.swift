@@ -102,6 +102,7 @@ import Foundation
         case escaping
         case final
         case open
+        case lazy
         case `public` = "public"
         case `internal` = "internal"
         case `private` = "private"
@@ -110,6 +111,7 @@ import Foundation
         case internalSetter = "setter_access.internal"
         case privateSetter = "setter_access.private"
         case fileprivateSetter = "setter_access.fileprivate"
+        case optional
 
         public init?(identifier: String) {
             let identifier = identifier.trimmingPrefix("source.decl.attribute.")
@@ -191,22 +193,19 @@ import Foundation
         }
     }
 
-    // sourcery:inline:sourcery:.AutoCoding
+    // sourcery:inline:Attribute.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
             guard let _description: String = aDecoder.decode(forKey: "_description") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["_description"])); fatalError() }; self._description = _description
-
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
-
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.arguments, forKey: "arguments")
             aCoder.encode(self._description, forKey: "_description")
-
         }
         // sourcery:end
 
@@ -624,7 +623,7 @@ extension TemplateContext {
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string += "types = \\(String(describing: self.types)), "
-        string += "arguments = \\(String(describing: self.arguments)), "
+        string += "argument = \\(String(describing: self.argument)), "
         string += "stencilContext = \\(String(describing: self.stencilContext))"
         return string
     }
@@ -713,6 +712,7 @@ extension Variable {
         string += "annotations = \\(String(describing: self.annotations)), "
         string += "attributes = \\(String(describing: self.attributes)), "
         string += "isFinal = \\(String(describing: self.isFinal)), "
+        string += "isLazy = \\(String(describing: self.isLazy)), "
         string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
         string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName))"
         return string
@@ -969,7 +969,7 @@ extension TemplateContext: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
-        results.append(contentsOf: DiffableResult(identifier: "arguments").trackDifference(actual: self.arguments, expected: castObject.arguments))
+        results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
         return results
     }
 }
@@ -1703,7 +1703,7 @@ extension TemplateContext {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TemplateContext else { return false }
         if self.types != rhs.types { return false }
-        if self.arguments != rhs.arguments { return false }
+        if self.argument != rhs.argument { return false }
         return true
     }
 }
@@ -2379,7 +2379,7 @@ extension Subscript: SubscriptAutoJSExport {}
 
 @objc protocol TemplateContextAutoJSExport: JSExport {
     var types: Types { get }
-    var arguments: [String: NSObject] { get }
+    var argument: [String: NSObject] { get }
     var type: [String: Type] { get }
     var stencilContext: [String: Any] { get }
     var jsContext: [String: Any] { get }
@@ -2486,6 +2486,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var annotations: [String: NSObject] { get }
     var attributes: [String: Attribute] { get }
     var isFinal: Bool { get }
+    var isLazy: Bool { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -2753,6 +2754,12 @@ public typealias SourceryMethod = Method
     /// Whether method is generic
     public var isGeneric: Bool {
         return shortName.hasSuffix(">")
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is optional (in an Objective-C protocol)
+    public var isOptional: Bool {
+        return attributes[Attribute.Identifier.optional.name] != nil
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
@@ -3157,7 +3164,7 @@ import Foundation
 /// :nodoc:
 @objcMembers public final class TemplateContext: NSObject, SourceryModel {
     public let types: Types
-    public let arguments: [String: NSObject]
+    public let argument: [String: NSObject]
 
     // sourcery: skipDescription
     public var type: [String: Type] {
@@ -3166,20 +3173,20 @@ import Foundation
 
     public init(types: Types, arguments: [String: NSObject]) {
         self.types = types
-        self.arguments = arguments
+        self.argument = arguments
     }
 
     // sourcery:inline:TemplateContext.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let types: Types = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
-            guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["arguments"])); fatalError() }; self.arguments = arguments
+            guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argument"])); fatalError() }; self.argument = argument
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.types, forKey: "types")
-            aCoder.encode(self.arguments, forKey: "arguments")
+            aCoder.encode(self.argument, forKey: "argument")
         }
     // sourcery:end
 
@@ -3187,7 +3194,7 @@ import Foundation
         return [
             "types": types,
             "type": types.typesByName,
-            "argument": arguments
+            "argument": argument
         ]
     }
 
@@ -3206,7 +3213,7 @@ import Foundation
                 "implementing": types.implementing
             ],
             "type": types.typesByName,
-            "argument": arguments
+            "argument": argument
         ]
     }
 
@@ -3379,6 +3386,9 @@ extension ProcessInfo {
         }
     }
 
+    public override func responds(to aSelector: Selector!) -> Bool {
+        return true
+    }
 }
 
 """),
@@ -4480,6 +4490,11 @@ public typealias SourceryVariable = Variable
     /// Whether variable is final or not
     public var isFinal: Bool {
         return attributes[Attribute.Identifier.final.name] != nil
+    }
+
+    /// Whether variable is lazy or not
+    public var isLazy: Bool {
+        return attributes[Attribute.Identifier.lazy.name] != nil
     }
 
     /// Reference to type name where the variable is defined,

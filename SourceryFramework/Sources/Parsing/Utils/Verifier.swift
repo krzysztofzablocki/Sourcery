@@ -4,13 +4,14 @@
 //
 
 import Foundation
+import PathKit
 
-enum Verifier {
+public enum Verifier {
 
     // swiftlint:disable:next force_try
     private static let conflictRegex = try! NSRegularExpression(pattern: "^\\s+?(<<<<<|>>>>>)")
 
-    enum Result {
+    public enum Result {
         case isCodeGenerated
         case containsConflictMarkers
         case approved
@@ -18,6 +19,7 @@ enum Verifier {
 
     public static func canParse(content: String,
                                 path: Path,
+                                generationMarker: String,
                                 forceParse: [String] = []) -> Result {
         guard !content.isEmpty else { return .approved }
 
@@ -25,7 +27,7 @@ enum Verifier {
             return path.hasExtension(as: ext)
         }).isEmpty == false)
 
-        if content.hasPrefix(Sourcery.generationMarker) && hasParsableExtension == false {
+        if content.hasPrefix(generationMarker) && hasParsableExtension == false {
             return .isCodeGenerated
         }
 

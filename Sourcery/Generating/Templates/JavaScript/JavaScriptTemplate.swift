@@ -1,3 +1,4 @@
+import SourceryFramework
 import SourceryJS
 import SourceryRuntime
 import JavaScriptCore

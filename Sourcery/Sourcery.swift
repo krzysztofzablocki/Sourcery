@@ -6,6 +6,7 @@
 import Foundation
 import PathKit
 import SwiftTryCatch
+import SourceryFramework
 import SourceryRuntime
 import SourceryJS
 import xcproj
@@ -16,7 +17,7 @@ import SourcerySwift
 #endif
 
 class Sourcery {
-    public static let version: String = inUnitTests ? "Major.Minor.Patch" : Version.current.value
+    public static let version: String = Version.current.value
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"
@@ -273,6 +274,7 @@ extension Sourcery {
                 .filter {
                     let result = Verifier.canParse(content: $0.contents,
                                                    path: $0.path,
+                                                   generationMarker: Sourcery.generationMarker,
                                                    forceParse: forceParse)
                     if result == .containsConflictMarkers {
                         throw Error.containsMergeConflictMarkers
