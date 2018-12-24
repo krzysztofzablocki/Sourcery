@@ -20,7 +20,6 @@ PODS:
   - Yams (1.0.1)
 
 DEPENDENCIES:
-  - AEXML (= 4.3.3)
   - Commander (= 0.7.0)
   - Nimble
   - PathKit (= 0.9.2)
@@ -31,6 +30,7 @@ DEPENDENCIES:
   - SwiftLint
   - "SwiftTryCatch (from `git@github.com:seanparsons/SwiftTryCatch`, commit `798c512`)"
   - "xcproj (from `git@github.com:tuist/xcodeproj.git`, tag `4.3.1`)"
+  - Yams (= 1.0.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -77,6 +77,6 @@ SPEC CHECKSUMS:
   xcproj: 7a9fe0c5f00617c0fa306b37858f157c786aff42
   Yams: 572f625a8b719b73e0b57fd313c680f3e2161fe9
 
-PODFILE CHECKSUM: 85a0ace094e446f167cfa20a7ca20940d3d96453
+PODFILE CHECKSUM: d73775e8f3538b0dde7dec317024e08ed5496794
 
 COCOAPODS: 1.6.0.beta.1

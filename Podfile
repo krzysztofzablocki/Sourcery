@@ -37,7 +37,7 @@ target 'Sourcery' do
   pod "xcproj", :git =>'git@github.com:tuist/xcodeproj.git', :tag => '4.3.1'
   pod 'SourceKittenFramework', '0.21.2'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
-  pod 'AEXML', '4.3.3'
+  pod 'Yams', '1.0.1'
 
   target 'SourceryTests' do
     inherit! :search_paths
