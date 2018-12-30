@@ -223,6 +223,6 @@ class AutoHashableNSObjectInherited: AutoHashableNSObject {
 
     init(lastName: String) {
         self.lastName = lastName
-            super.init(firstName: "")
+        super.init(firstName: "")
     }
 }
