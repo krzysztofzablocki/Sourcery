@@ -134,7 +134,6 @@ class AutoHashableClass: AutoHashable {
     }
 }
 
-// Sourcery doesn't support inheritance for AutoHashable
 class AutoHashableClassInherited: AutoHashableClass {
     // Optional constants
     let middleName: String?
@@ -145,11 +144,85 @@ class AutoHashableClassInherited: AutoHashableClass {
     }
 }
 
+class AutoHashableClassInheritedInherited: AutoHashableClassInherited {
+    // Optional constants
+    let prefix: String?
+
+    init(prefix: String?) {
+        self.prefix = prefix
+        super.init(middleName: "")
+    }
+}
+
+class NonHashableClass {
+    let firstName: String
+
+    init(firstName: String) {
+        self.firstName = firstName
+    }
+}
+
+// Should not add super call
+class AutoHashableClassFromNonHashableInherited: NonHashableClass, AutoHashable {
+    let lastName: String?
+
+    init(lastName: String?) {
+        self.lastName = lastName
+        super.init(firstName: "")
+    }
+}
+
+// Should add super call
+class AutoHashableClassFromNonHashableInheritedInherited: AutoHashableClassFromNonHashableInherited {
+    let prefix: String?
+
+    init(prefix: String?) {
+        self.prefix = prefix
+        super.init(lastName: "")
+    }
+}
+
+class HashableClass: Hashable {
+    let firstName: String
+
+    init(firstName: String) {
+        self.firstName = firstName
+    }
+
+    static func == (lhs: HashableClass, rhs: HashableClass) -> Bool {
+        return lhs.firstName == rhs.firstName
+    }
+
+    func hash(into hasher: inout Hasher) {
+        self.firstName.hash(into: &hasher)
+    }
+}
+
+// Should add super
+class AutoHashableFromHashableInherited: HashableClass, AutoHashable {
+    let lastName: String?
+
+    init(lastName: String?) {
+        self.lastName = lastName
+        super.init(firstName: "")
+    }
+}
+
 /// Should not add Hashable conformance
 class AutoHashableNSObject: NSObject, AutoHashable {
     let firstName: String
 
     init(firstName: String) {
         self.firstName = firstName
+    }
+}
+
+// Should add super call
+class AutoHashableNSObjectInherited: AutoHashableNSObject {
+    let lastName: String
+
+    init(lastName: String) {
+        self.lastName = lastName
+        super.init(firstName: "")
     }
 }

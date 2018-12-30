@@ -1,138 +1,21 @@
-// swiftlint:disable file_length
-// swiftlint:disable line_length
-
-fileprivate func combineHashes(_ hashes: [Int]) -> Int {
-    return hashes.reduce(0, combineHashValues)
-}
-
-fileprivate func combineHashValues(_ initial: Int, _ other: Int) -> Int {
-    #if arch(x86_64) || arch(arm64)
-        let magic: UInt = 0x9e3779b97f4a7c15
-    #elseif arch(i386) || arch(arm)
-        let magic: UInt = 0x9e3779b9
-    #endif
-    var lhs = UInt(bitPattern: initial)
-    let rhs = UInt(bitPattern: other)
-    lhs ^= rhs &+ magic &+ (lhs << 6) &+ (lhs >> 2)
-    return Int(bitPattern: lhs)
-}
-
-fileprivate func hashArray<T: Hashable>(_ array: [T]?) -> Int {
-    guard let array = array else {
-        return 0
-    }
-    return array.reduce(5381) {
-        ($0 << 5) &+ $0 &+ $1.hashValue
-    }
-}
-
-#if swift(>=4.0)
-fileprivate func hashDictionary<T, U: Hashable>(_ dictionary: [T: U]?) -> Int {
-    guard let dictionary = dictionary else {
-        return 0
-    }
-    return dictionary.reduce(5381) {
-        combineHashValues($0, combineHashValues($1.key.hashValue, $1.value.hashValue))
-    }
-}
-#else
-fileprivate func hashDictionary<T: Hashable, U: Hashable>(_ dictionary: [T: U]?) -> Int {
-    guard let dictionary = dictionary else {
-        return 0
-    }
-    return dictionary.reduce(5381) {
-        combineHashValues($0, combineHashValues($1.key.hashValue, $1.value.hashValue))
-    }
-}
-#endif
-
-{% macro letDynamicVariableHashValue variable %}
-{% if variable.isArray %}
-        let {{ variable.name }}HashValue = hashArray({{ variable.name }})
-{% elif variable.isDictionary %}
-        let {{ variable.name }}HashValue = hashDictionary({{ variable.name }})
-{% elif not variable.isOptional %}
-        let {{ variable.name }}HashValue = {{ variable.name }}.hashValue
-{% else %}
-        let {{ variable.name }}HashValue = {{ variable.name }}?.hashValue ?? 0
-{% endif %}
-{% endmacro %}
-
-{% macro dynamicVariableHashValue variable %}
-{% if variable.isArray %}
-            {{ variable.name }}HashValue,
-{% elif variable.isDictionary %}
-            {{ variable.name }}HashValue,
-{% elif not variable.isOptional %}
-            {{ variable.name }}HashValue,
-{% else %}
-            {{ variable.name }}HashValue,
-{% endif %}
-{% endmacro %}
-
-{% macro letStaticVariableHashValue variable %}
-  {% if variable.isArray %}
-        let {{ variable.name }}HashValue = hashArray(type(of: self).{{ variable.name }})
-{% elif variable.isDictionary %}
-        let {{ variable.name }}HashValue = hashDictionary(type(of: self).{{ variable.name }})
-{% elif not variable.isOptional %}
-        let type(of: self).{{ variable.name }}HashValue = type(of: self).{{ variable.name }}.hashValue
-{% else %}
-        let type(of: self).{{ variable.name }}HashValue = type(of: self).{{ variable.name }}?.hashValue ?? 0
-{% endif %}
-{% endmacro %}
-
-{% macro staticVariableHashValue variable %}
-{% if variable.isArray %}
-            {{ variable.name }}HashValue,
-{% elif variable.isDictionary %}
-            {{ variable.name }}HashValue,
-{% elif not variable.isOptional %}
-            {{ variable.name }}HashValue,
-{% else %}
-            {{ variable.name }}HashValue,
-{% endif %}
-{% endmacro %}
-
+// swiftlint:disable all
 
 {% macro combineVariableHashes variables %}
-        return combineHashes([
-    {% for variable in variables where variable.readAccess != "private" and variable.readAccess != "fileprivate" %}
-    {% if not variable.annotations.skipHashing %}
-        {% if variable.isStatic %}
-            {% call staticVariableHashValue variable %}
-        {% else %}
-            {% call dynamicVariableHashValue variable %}
-        {% endif %}
-    {% endif %}
-    {% endfor %}
-            0])
-{% endmacro %}
-
-{% macro letCombineVariableHashes variables %}
 {% for variable in variables where variable.readAccess != "private" and variable.readAccess != "fileprivate" %}
-  {% if not variable.annotations.skipHashing %}
-    {% if variable.isStatic %}
-      {% call letStaticVariableHashValue variable %}
-    {% else %}
-      {% call letDynamicVariableHashValue variable %}
-    {% endif %}
-  {% endif %}
+{% if not variable.annotations.skipHashing %}
+        {% if variable.isStatic %}type(of: self).{% endif %}{{ variable.name }}.hash(into: &hasher)
+{% endif %}
 {% endfor %}
 {% endmacro %}
 
 // MARK: - AutoHashable for classes, protocols, structs
-{% for type in types.implementing.AutoHashable %}{% if not type.kind == "enum" %}
+{% for type in types.types|!enum where type.implements.AutoHashable or type|annotated:"AutoHashable" %}
 // MARK: - {{ type.name }} AutoHashable
 extension {{ type.name }}{% if not type.kind == "protocol" and not type.based.NSObject %}: Hashable{% endif %} {
-    {% if type.supertype.based.Hashable or type.supertype.implements.AutoHashable %}THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoHashable{% endif %}
-    {{ type.accessLevel }}{% if type.based.NSObject %} override{% endif %} var hashValue: Int {
-        {% if not type.kind == "protocol" %}
-        {% call letCombineVariableHashes type.storedVariables %}
-        {% else %}
-        {% call letCombineVariableHashes type.allVariables %}
+    {{ type.accessLevel }}{% if type.based.NSObject or type.supertype.implements.AutoHashable or type.supertype|annotated:"AutoHashable" or type.supertype.based.Hashable %} override{% endif %} func hash(into hasher: inout Hasher) {
+        {% if type.based.NSObject or type.supertype.implements.AutoHashable or type.supertype|annotated:"AutoHashable" or type.supertype.based.Hashable %}
+        super.hash(into: hasher)
         {% endif %}
-
         {% if not type.kind == "protocol" %}
         {% call combineVariableHashes type.storedVariables %}
         {% else %}
@@ -140,28 +23,30 @@ extension {{ type.name }}{% if not type.kind == "protocol" and not type.based.NS
         {% endif %}
     }
 }
-{% endif %}{% endfor %}
+{% endfor %}
 
 // MARK: - AutoHashable for Enums
-{% for type in types.implementing.AutoHashable|enum %}
+{% for type in types.enums where type.implements.AutoHashable or type|annotated:"AutoHashable" %}
 
 // MARK: - {{ type.name }} AutoHashable
 extension {{ type.name }}: Hashable {
-    {{ type.accessLevel }} var hashValue: Int {
+    {{ type.accessLevel }} func hash(into hasher: inout Hasher) {
         switch self {
         {% for case in type.cases %}
         {% if case.hasAssociatedValue %}case .{{ case.name }}(let data):{% else %}case .{{ case.name }}:{% endif %}
-            {% ifnot case.hasAssociatedValue %}
-            {% if type.computedVariables.count == 0 %}
-            return {{ forloop.counter }}.hashValue
-            {% else %}
-            return combineHashes([{{ forloop.counter }}, {% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %}])
+            {{ forloop.counter }}.hash(into: &hasher)
+            {% if type.computedVariables.count > 0 %}
+            {% for variable in type.computedVariables %}
+            {% if not variable.annotations.skipHashing %}{{ variable.name }}.hash(into: &hasher)
             {% endif %}
-            {% else %}
+            {% endfor %}
+            {% endif %}
+            {% if case.hasAssociatedValue %}
             {% if case.associatedValues.count == 1 %}
-            return combineHashes([{{ forloop.counter }}, data.hashValue])
+            data.hash(into: &hasher)
             {% else %}
-            return combineHashes([{{ forloop.counter }}, {% for associated in case.associatedValues %}data.{{ associated.externalName }}.hashValue{% if not forloop.last %}, {% endif %}{% endfor %}{% for variable in type.computedVariables %}{% if variable.annotations.includeInHashing %}, {{ variable.name }}.hashValue{% endif %}{% endfor %}])
+            {% for associated in case.associatedValues %}data.{{ associated.externalName }}.hash(into: &hasher)
+            {% endfor %}
             {% endif %}
             {% endif %}
             {% endfor %}
