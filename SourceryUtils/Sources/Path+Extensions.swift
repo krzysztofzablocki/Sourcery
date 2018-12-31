@@ -12,7 +12,7 @@ import PathKit
 public typealias Path = PathKit.Path
 
 extension Path {
-    static func cleanTemporaryDir(name: String) -> Path {
+    public static func cleanTemporaryDir(name: String) -> Path {
         guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Sourcery.\(name)") else { fatalError("Unable to get temporary path") }
         _ = try? FileManager.default.removeItem(at: tempDirURL)
         // swiftlint:disable:next force_try
@@ -21,7 +21,7 @@ extension Path {
     }
 
     /// - returns: The `.cachesDirectory` search path in the user domain, as a `Path`.
-    static var defaultBaseCachePath: Path {
+    public static var defaultBaseCachePath: Path {
         let paths = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true) as [String]
         let path = paths[0]
         return Path(path)
@@ -30,7 +30,7 @@ extension Path {
     /// - parameter _basePath: The value of the `--cachePath` command line parameter, if any.
     /// - note: This function does not consider the `--disableCache` command line parameter.
     ///         It is considered programmer error to call this function when `--disableCache` is specified.
-    static func cachesDir(sourcePath: Path, basePath _basePath: Path?, createIfMissing: Bool = true) -> Path {
+    public static func cachesDir(sourcePath: Path, basePath _basePath: Path?, createIfMissing: Bool = true) -> Path {
         let basePath = _basePath ?? defaultBaseCachePath
         let path = basePath + "Sourcery" + sourcePath.lastComponent
         if !path.exists && createIfMissing {
@@ -40,22 +40,22 @@ extension Path {
         return path
     }
 
-    var isTemplateFile: Bool {
+    public var isTemplateFile: Bool {
         return self.extension == "stencil" ||
             self.extension == "swifttemplate" ||
             self.extension == "ejs"
     }
 
-    var isSwiftSourceFile: Bool {
+    public var isSwiftSourceFile: Bool {
         return !self.isDirectory && self.extension == "swift"
     }
 
-    func hasExtension(as string: String) -> Bool {
+    public func hasExtension(as string: String) -> Bool {
         let extensionString = ".\(string)."
         return self.string.contains(extensionString)
     }
 
-    init(_ string: String, relativeTo relativePath: Path) {
+    public init(_ string: String, relativeTo relativePath: Path) {
         var path = Path(string)
         if !path.isAbsolute {
             path = (relativePath + path).absolute()
@@ -63,7 +63,7 @@ extension Path {
         self.init(path.string)
     }
 
-    var allPaths: [Path] {
+    public var allPaths: [Path] {
         if isDirectory {
             return (try? recursiveChildren()) ?? []
         } else {

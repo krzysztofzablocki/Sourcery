@@ -3,6 +3,7 @@ import Nimble
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime
+import SourceryUtils
 
 class VerifierSpec: QuickSpec {
     override func spec() {

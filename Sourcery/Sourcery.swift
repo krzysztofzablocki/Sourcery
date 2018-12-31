@@ -7,6 +7,7 @@ import Foundation
 import PathKit
 import SwiftTryCatch
 import SourceryFramework
+import SourceryUtils
 import SourceryRuntime
 import SourceryJS
 import xcproj
@@ -81,7 +82,7 @@ class Sourcery {
             case let .sources(paths):
                 result = try self.parse(from: paths.include, exclude: paths.exclude, forceParse: forceParse, modules: nil)
             case let .projects(projects):
-                var paths = [Path]()
+                var paths: [Path] = []
                 var modules = [String]()
                 projects.forEach { project in
                     project.targets.forEach { target in
@@ -165,7 +166,7 @@ class Sourcery {
     }
 
     private func topPaths(from paths: [Path]) -> [Path] {
-        var top = [(Path, [Path])]()
+        var top: [(Path, [Path])] = []
         paths.forEach { path in
             // See if its already contained by the topDirectories
             guard top.first(where: { (_, children) -> Bool in

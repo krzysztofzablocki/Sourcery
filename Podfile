@@ -50,7 +50,11 @@ target 'SourceryJS' do
 end
 
 target 'SourcerySwift' do
-  pathkit 
+  pathkit
+end
+
+target 'SourceryUtils' do
+  pathkit
 end
 
 target 'SourceryFramework' do

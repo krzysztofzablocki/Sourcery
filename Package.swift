@@ -33,9 +33,13 @@ let package = Package(
             "SwiftTryCatch",
         ]),
         .target(name: "SourceryRuntime"),
+        .target(name: "SourceryUtils", dependencies: [
+          "PathKit"
+        ]),
         .target(name: "SourceryFramework", dependencies: [
           "PathKit",
-          "SourceKittenFramework"
+          "SourceKittenFramework",
+          "SourceryUtils"
         ]),
         .target(name: "SourceryJS", dependencies: [
           "PathKit"

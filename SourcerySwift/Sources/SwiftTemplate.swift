@@ -9,6 +9,7 @@
 import Foundation
 import PathKit
 import SourceryRuntime
+import SourceryUtils
 
 private enum Delimiters {
     static let open = "<%"
@@ -52,7 +53,7 @@ open class SwiftTemplate {
 
         let commands = try SwiftTemplate.parseCommands(in: sourcePath)
 
-        var includedFiles = [Path]()
+        var includedFiles: [Path] = []
         var outputFile = [String]()
         for command in commands {
             switch command {

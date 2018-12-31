@@ -13,4 +13,4 @@ public struct Version {
     public static let current = Version(value: inUnitTests ? "Major.Minor.Patch" : "0.15.0")
 }
 
-var inUnitTests = NSClassFromString("XCTest") != nil
+public var inUnitTests = NSClassFromString("XCTest") != nil
