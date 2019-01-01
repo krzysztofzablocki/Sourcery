@@ -348,14 +348,14 @@
 </code></pre>
 <h4 id='enums-with-assoicated-values' class='heading'>Enums with assoicated values</h4>
 
-<p>In such enums all associated values should be named. Template supports two different representations of such enums in JSON format.</p>
+<p>Template supports two different representations of such enums in JSON format.</p>
 <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">SimpleEnum</span> <span class="p">{</span>
   <span class="k">case</span> <span class="nf">someCase</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span>
   <span class="k">case</span> <span class="n">anotherCase</span>
 <span class="p">}</span>
 </code></pre>
 
-<p>For such enum template will generate code that will successfully decode from/encode to JSON of following forms:</p>
+<p>If you define a coding key named <code>enumCaseKey</code> then the template will genearaet code that will encode/decode enum in/from following format:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">enum</span><span class="w"> </span><span class="err">case</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">encoded</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">special</span><span class="w"> </span><span class="err">key</span><span class="w">
   </span><span class="s2">"id"</span><span class="err">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
@@ -363,7 +363,9 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>or</p>
+<p>All enum cases associated values must be named.</p>
+
+<p>If you don&rsquo;t define <code>enumCaseKey</code> then the template will generate code that will encode/decode enum in/from following format:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
@@ -372,8 +374,17 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>To make template generate code for the first form you need to define a special coding key named <code>enumCaseKey</code>. If this key is not defined, template will generate code for the second form.
-You can use all other customisation methods described for structs as well for enums.</p>
+<p>Associated values of each enum case must be either all named or all unnamed.
+For cases with unnamed associated values JSON format will use array instead of dictionary for associated values, in the same order in which they are defined:</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Jhon"</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>You can use all other customisation methods described for structs to decode/encode enum case associated values individually. </p>
 
           </section>
         </section>
