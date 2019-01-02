@@ -415,7 +415,7 @@ extension Sourcery {
                     try groupPath.mkpath()
                 }
             } catch {
-                Log.warning("Failed to create a folter for group '\(fileGroup.name ?? "")'. \(error)")
+                Log.warning("Failed to create a folder for group '\(fileGroup.name ?? "")'. \(error)")
             }
         } else {
             fileGroup = linkTo.project.rootGroup
