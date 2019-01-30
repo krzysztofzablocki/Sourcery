@@ -2,7 +2,7 @@
 
 Sourcery supports templates written in Stencil, Swift and even JavaScript.
 
-Dicsovered types can be accessed in templates via global context with following properties:
+Discovered types can be accessed in templates via global context with following properties:
 
  - `types: Types` - access collections of types, i.e. `types.implementing.AutoCoding` (`types.implementing["AutoCoding"]` in swift templates). See [Types](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/Classes/Types.html).
  - `type: [String: Type]` - access types by their names, i.e. `type.MyType` (`type["MyType"]` in swift templates)
