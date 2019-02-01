@@ -11,6 +11,7 @@
 - Now in swift templates you can define types, extensions and use other Swift features that require file scope, without using separate files. All templates code is now placed at the top level of the template executable code, instead of being placed inside an extension of `TemplateContext` type.
 - Fixed missing generated code annotated with `inline` annotation when corresponding annotation in sources are missing. This generated code will be now present in `*.generated.swift` file.  
 - Updated AutoHashable template to use Swift 4.2's `hash(into:)` method from `Hashable`, and enable support for inheritance.
+- Record all method invocations in the `AutoMockable` template.
 
 ## 0.15.0
 
