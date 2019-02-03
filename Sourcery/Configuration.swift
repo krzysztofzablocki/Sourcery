@@ -207,7 +207,11 @@ struct Configuration {
     let forceParse: [String]
     let args: [String: NSObject]
 
-    init(path: Path, relativePath: Path, env: [String: String] = [:]) throws {
+    init(
+        path: Path,
+        relativePath: Path,
+        env: [String: String] = ProcessInfo.processInfo.environment
+    ) throws {
         guard let dict = try Yams.load(yaml: path.read(), .default, Constructor.sourceryContructor(env: env)) as? [String: Any] else {
             throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
         }
