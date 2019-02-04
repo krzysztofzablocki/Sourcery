@@ -1,0 +1,5 @@
+sources:
+- "${SOURCE_PATH}"
+templates:
+- "Templates"
+output: "Output"

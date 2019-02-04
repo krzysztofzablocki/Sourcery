@@ -9,6 +9,29 @@ class ConfigurationSpec: QuickSpec {
         let relativePath = Path("/some/path")
 
         describe("Configuration") {
+
+            context("given valid config file with env placeholders") {
+
+                it("replaces the env placeholder") {
+                    do {
+                        let config = try Configuration(
+                            path: Stubs.configs + ".valid.yml",
+                            relativePath: relativePath,
+                            env: ["SOURCE_PATH": "Sources"]
+                        )
+                        guard case let Source.sources(paths) = config.source,
+                            let path = paths.include.first else {
+                            fail("Config has no Source Paths")
+                            return
+                        }
+
+                        expect(path).to(equal("/some/path/Sources"))
+                    } catch {
+                        expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
+                    }
+                }
+            }
+
             context("given invalid config file") {
 
                 func configError(_ config: [String: Any]) -> String {
@@ -22,7 +45,11 @@ class ConfigurationSpec: QuickSpec {
 
                 it("throws error on invalid file format") {
                     do {
-                        _ = try Configuration(path: Stubs.configs + ".invalid.yml", relativePath: relativePath)
+                        _ = try Configuration(
+                            path: Stubs.configs + ".invalid.yml",
+                            relativePath: relativePath,
+                            env: [:]
+                        )
                         fail("expected to throw error")
                     } catch {
                         expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))

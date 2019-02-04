@@ -127,7 +127,12 @@ func runCLI() {
 
                 do {
                     let relativePath: Path = configPath.isDirectory ? configPath : configPath.parent()
-                    configuration = try Configuration(path: yamlPath, relativePath: relativePath)
+
+                    configuration = try Configuration(
+                        path: yamlPath,
+                        relativePath: relativePath,
+                        env: ProcessInfo.processInfo.environment
+                    )
 
                     // Check if the user is passing parameters
                     // that are ignored cause read from the yaml file

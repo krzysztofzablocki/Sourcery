@@ -210,7 +210,7 @@ struct Configuration {
     init(
         path: Path,
         relativePath: Path,
-        env: [String: String] = ProcessInfo.processInfo.environment
+        env: [String: String] = [:]
     ) throws {
         guard let dict = try Yams.load(yaml: path.read(), .default, Constructor.sourceryContructor(env: env)) as? [String: Any] else {
             throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
