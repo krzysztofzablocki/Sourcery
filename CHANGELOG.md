@@ -3,6 +3,7 @@
 ---
 ## Master
 
+- Replaces environment variables inside .yml configurations (like ${PROJECT_NAME}), if a value is set.
 - Fixes warning in generated AutoMockable methods that have implicit optional return values
 - Support for `optional` methods in ObjC protocols
 - Support for parsing lazy vars into Variable's attributes.

@@ -207,8 +207,12 @@ struct Configuration {
     let forceParse: [String]
     let args: [String: NSObject]
 
-    init(path: Path, relativePath: Path) throws {
-        guard let dict = try Yams.load(yaml: path.read()) as? [String: Any] else {
+    init(
+        path: Path,
+        relativePath: Path,
+        env: [String: String] = [:]
+    ) throws {
+        guard let dict = try Yams.load(yaml: path.read(), .default, Constructor.sourceryContructor(env: env)) as? [String: Any] else {
             throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
         }
 
@@ -266,4 +270,36 @@ struct Configuration {
         self.args = args
     }
 
+}
+
+// Copied from https://github.com/realm/SwiftLint/blob/0.29.2/Source/SwiftLintFramework/Models/YamlParser.swift
+// and https://github.com/SwiftGen/SwiftGen/blob/6.1.0/Sources/SwiftGenKit/Utils/YAML.swift
+
+private extension Constructor {
+    static func sourceryContructor(env: [String: String]) -> Constructor {
+        return Constructor(customScalarMap(env: env))
+    }
+
+    static func customScalarMap(env: [String: String]) -> ScalarMap {
+        var map = defaultScalarMap
+        map[.str] = String.constructExpandingEnvVars(env: env)
+        return map
+    }
+}
+
+private extension String {
+    static func constructExpandingEnvVars(env: [String: String]) -> (_ scalar: Node.Scalar) -> String? {
+        return { (scalar: Node.Scalar) -> String? in
+            scalar.string.expandingEnvVars(env: env)
+        }
+    }
+
+    func expandingEnvVars(env: [String: String]) -> String {
+        var result = self
+        for (key, value) in env {
+            result = result.replacingOccurrences(of: "${\(key)}", with: value)
+        }
+
+        return result
+    }
 }
