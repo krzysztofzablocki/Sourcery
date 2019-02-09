@@ -14,6 +14,10 @@ def test_pods
   pod 'Nimble'
 end
 
+def pathkit
+  pod 'PathKit', '0.9.2'
+end
+
 target 'TemplatesTests' do
   project 'Templates/Templates.xcodeproj'
   meta
@@ -29,11 +33,11 @@ target 'Sourcery' do
   pod 'Stencil', '0.13.1'
   pod 'StencilSwiftKit', '2.7.0'
   pod 'Commander', '0.7.0'
-  pod 'PathKit', '0.9.2'
+  pathkit
   pod "xcproj", :git =>'git@github.com:tuist/xcodeproj.git', :tag => '4.3.1'
   pod 'SourceKittenFramework', '0.21.2'
   pod 'SwiftTryCatch', :git => 'git@github.com:seanparsons/SwiftTryCatch', :commit => '798c512'
-  pod 'AEXML', '4.3.3'
+  pod 'Yams', '1.0.1'
 
   target 'SourceryTests' do
     inherit! :search_paths
@@ -42,9 +46,18 @@ target 'Sourcery' do
 end
 
 target 'SourceryJS' do
-  pod 'PathKit', '0.9.2'
+  pathkit
 end
 
 target 'SourcerySwift' do
-  pod 'PathKit', '0.9.2'
+  pathkit
+end
+
+target 'SourceryUtils' do
+  pathkit
+end
+
+target 'SourceryFramework' do
+  pathkit
+  pod 'SourceKittenFramework', '0.21.2'
 end

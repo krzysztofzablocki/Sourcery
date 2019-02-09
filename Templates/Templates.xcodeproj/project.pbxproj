@@ -329,8 +329,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6D6A24B61EB79E8900C1FB1A /* Build configuration list for PBXNativeTarget "TemplatesTests" */;
 			buildPhases = (
-				6D342C951EBA1881006EEBEC /* Sourcery */,
 				D775B999DCC76F43E995E441 /* [CP] Check Pods Manifest.lock */,
+				6D342C951EBA1881006EEBEC /* Sourcery */,
 				6D6A24A61EB79E8900C1FB1A /* Sources */,
 				6D6A24A71EB79E8900C1FB1A /* Frameworks */,
 				6D6A24A81EB79E8900C1FB1A /* Resources */,

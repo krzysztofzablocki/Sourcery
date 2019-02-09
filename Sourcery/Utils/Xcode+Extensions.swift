@@ -1,4 +1,5 @@
 import Foundation
+import PathKit
 import xcproj
 
 extension XcodeProj {

@@ -3,6 +3,7 @@ import Nimble
 import PathKit
 import Stencil
 @testable import Sourcery
+@testable import SourceryFramework
 @testable import SourceryRuntime
 
 class StencilTemplateSpec: QuickSpec {

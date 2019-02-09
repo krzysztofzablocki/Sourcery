@@ -8,6 +8,7 @@ import Nimble
 import PathKit
 import SourceKittenFramework
 @testable import Sourcery
+@testable import SourceryFramework
 @testable import SourceryRuntime
 
 private func build(_ source: String) -> [String: SourceKitRepresentable]? {
@@ -22,8 +23,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                     "var something: Int\n" +
                     "// sourcery:end\n"
 
-            let result =
-                    TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
+            let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
 
             it("tracks it") {
                 expect(result.annotatedRanges["Type.AutoCoding"]).to(equal([NSRange(location: 35, length: 19)]))

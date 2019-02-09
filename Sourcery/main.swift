@@ -10,6 +10,8 @@ import Foundation
 import Commander
 import PathKit
 import SourceryRuntime
+import SourceryFramework
+import SourceryUtils
 import SourceryJS
 
 extension Path: ArgumentConvertible {
@@ -182,8 +184,6 @@ func runCLI() {
         }
         }.run(Sourcery.version)
 }
-
-var inUnitTests = NSClassFromString("XCTest") != nil
 
 #if os(macOS)
 import AppKit
