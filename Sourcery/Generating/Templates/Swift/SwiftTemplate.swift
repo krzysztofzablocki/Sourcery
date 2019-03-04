@@ -6,10 +6,8 @@
 //  Copyright © 2016 Pixle. All rights reserved.
 //
 
-#if SWIFT_PACKAGE
-#else
-import SourceryFramework
 import Foundation
+import SourceryFramework
 import SourceryRuntime
 import SourcerySwift
 
@@ -20,4 +18,3 @@ extension SwiftTemplate: Template {
     }
 
 }
-#endif

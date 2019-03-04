@@ -13,6 +13,7 @@
 - Fixed missing generated code annotated with `inline` annotation when corresponding annotation in sources are missing. This generated code will be now present in `*.generated.swift` file.  
 - Updated AutoHashable template to use Swift 4.2's `hash(into:)` method from `Hashable`, and enable support for inheritance.
 - Record all method invocations in the `AutoMockable` template.
+- Swift templates can now be used when using a SPM build of Sourcery.
 
 ## 0.15.0
 

@@ -10,12 +10,8 @@ import SourceryFramework
 import SourceryUtils
 import SourceryRuntime
 import SourceryJS
-import xcproj
-
-#if SWIFT_PACKAGE
-#else
 import SourcerySwift
-#endif
+import xcproj
 
 class Sourcery {
     public static let version: String = Version.current.value
@@ -214,13 +210,8 @@ class Sourcery {
     fileprivate func templates(from: Paths) throws -> [Template] {
         return try templatePaths(from: from).compactMap {
             if $0.extension == "swifttemplate" {
-                #if SWIFT_PACKAGE
-                    Log.warning("Skipping template \($0). Swift templates are not supported when using Sourcery built with Swift Package Manager yet. Please use only Stencil or EJS templates. See https://github.com/krzysztofzablocki/Sourcery/issues/244 for details.")
-                    return nil
-                #else
-                    let cachePath = cachesDir(sourcePath: $0)
-                    return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version)
-                #endif
+                let cachePath = cachesDir(sourcePath: $0)
+                return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version)
             } else if $0.extension == "ejs" {
                 guard EJSTemplate.ejsPath != nil else {
                     Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")

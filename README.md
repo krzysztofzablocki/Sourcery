@@ -74,7 +74,6 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 - _[Mint](https://github.com/yonaskolb/Mint)_
 
     Run `mint run krzysztofzablocki/Sourcery`. 
-	> Note: Constraints of SPM (see below) apply.
     
 - _Building from source_
 
@@ -84,7 +83,7 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 
         Run `swift build -c release` in the root folder. This will create a `.build/release` folder and will put the binary there. Move the **whole `.build/release` folder** to your desired destination and run with `path_to_release_folder/sourcery`
 
-        > Note: Swift and JS templates are not supported when building with SPM yet.
+        > Note: JS templates are not supported when building with SPM yet.
 
     - _Building with Xcode_
 
