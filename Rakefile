@@ -8,6 +8,7 @@ require 'net/http'
 require 'uri'
 
 BUILD_DIR = 'build/'
+VERSION_FILE = 'SourceryUtils/Sources/Version.swift'
 
 ## [ Utils ] ##################################################################
 
@@ -140,7 +141,7 @@ namespace :release do
     `xcodebuild -showBuildSettings -project #{project}.xcodeproj | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
   end
 
-  def command_line_tool_update_version(version, file = 'Sourcery/Version.swift')
+  def command_line_tool_update_version(version, file = VERSION_FILE)
     version_content = File.read(file)
     version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
     version_match = version_regex.match(version_content)
@@ -148,7 +149,7 @@ namespace :release do
     File.open(file, "w") { |f| f.puts updated_version_content }
   end
 
-  def command_line_tool_version(file = 'Sourcery/Version.swift')
+  def command_line_tool_version(file = VERSION_FILE)
     version_content = File.read(file)
     version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
     version_match = version_regex.match(version_content)
@@ -284,7 +285,7 @@ namespace :release do
     results << log_result(version == project_version, "Project version correct", "Please update Current Project Version in Build Settings to #{version}")
 
     # Check if Command Line Tool version match podspec version
-    results << log_result(version == command_line_tool_version, "Command line tool version correct", "Please update current version in Sourcery/Version.swift to #{version}")
+    results << log_result(version == command_line_tool_version, "Command line tool version correct", "Please update current version in #{VERSION_FILE} to #{version}")
 
     exit 1 unless results.all?
 
@@ -316,7 +317,7 @@ namespace :release do
     command_line_tool_update_version(new_version)
 
     print "Now review and type [Y/n] to commit and push or cancel the changes. "
-    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj", "Sourcery/Version.swift"], "docs: update metadata for #{new_version} release")
+    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj", VERSION_FILE], "docs: update metadata for #{new_version} release")
     git_push
   end
 
