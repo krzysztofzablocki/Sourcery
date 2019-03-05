@@ -141,18 +141,18 @@ namespace :release do
     `xcodebuild -showBuildSettings -project #{project}.xcodeproj | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
   end
 
+  VERSION_REGEX = /(?<begin>public static let current\s*=\s*Version\(value:\s*.*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i.freeze
+
   def command_line_tool_update_version(version, file = VERSION_FILE)
     version_content = File.read(file)
-    version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
-    version_match = version_regex.match(version_content)
-    updated_version_content = version_content.gsub(version_regex, "#{version_match[:begin]}#{version}#{version_match[:end]}")
+    version_match = VERSION_REGEX.match(version_content)
+    updated_version_content = version_content.gsub(VERSION_REGEX, "#{version_match[:begin]}#{version}#{version_match[:end]}")
     File.open(file, "w") { |f| f.puts updated_version_content }
   end
 
   def command_line_tool_version(file = VERSION_FILE)
     version_content = File.read(file)
-    version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
-    version_match = version_regex.match(version_content)
+    version_match = VERSION_REGEX.match(version_content)
     version_match[:value]
   end
 
