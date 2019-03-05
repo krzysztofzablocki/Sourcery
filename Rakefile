@@ -255,7 +255,7 @@ namespace :release do
   task :check_docs => [:validate_docs] do
     results = []
 
-    docs_not_changed = `git diff --name-only` == ""
+    docs_not_changed = `git diff --name-only docs` == ""
     results << log_result(docs_not_changed, 'Docs are up to date', 'Please push updated docs first')
     exit 1 unless results.all?
   end
