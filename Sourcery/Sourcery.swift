@@ -233,7 +233,7 @@ class Sourcery {
 // MARK: - Parsing
 
 extension Sourcery {
-    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange])])
+    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange], indentations: [String: String])])
 
     fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
@@ -242,7 +242,7 @@ extension Sourcery {
 
         Log.info("Scanning sources...")
 
-        var inlineRanges = [(file: String, ranges: [String: NSRange])]()
+        var inlineRanges = [(file: String, ranges: [String: NSRange], indentations: [String: String])]()
         var allResults = [FileParserResult]()
 
         try from.enumerated().forEach { index, from in
@@ -299,7 +299,7 @@ extension Sourcery {
             acc.types += next.types
 
             // swiftlint:disable:next force_unwrapping
-            inlineRanges.append((next.path!, next.inlineRanges))
+            inlineRanges.append((next.path!, next.inlineRanges, next.inlineIndentations))
             return acc
         }
 
@@ -471,18 +471,18 @@ extension Sourcery {
             range: NSRange,
             filePath: Path,
             rangeInFile: NSRange,
-            toInsert: String
+            toInsert: String,
+            indentation: String
         )
 
         try annotatedRanges
-            .map { (key: $0, range: $1) }
-            .compactMap { (key, ranges) -> MappedInlineAnnotations? in
-                let range = ranges[0]
+            .map { (key: $0, range: $1[0].range) }
+            .compactMap { (key, range) -> MappedInlineAnnotations? in
                 let generatedBody = contents.bridge().substring(with: range)
 
-                if let (filePath, inlineRanges) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) {
+                if let (filePath, inlineRanges, inlineIndentations) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) {
                     // swiftlint:disable:next force_unwrapping
-                    return MappedInlineAnnotations(range, Path(filePath), inlineRanges[key]!, generatedBody)
+                    return MappedInlineAnnotations(range, Path(filePath), inlineRanges[key]!, generatedBody, inlineIndentations[key] ?? "")
                 }
 
                 guard key.hasPrefix("auto:") else {
@@ -502,13 +502,15 @@ extension Sourcery {
                 let bodyEndRange = NSRange(location: NSMaxRange(bodyRange), length: 0)
                 let bodyEndLineRange = contents.bridge().lineRange(for: bodyEndRange)
                 let rangeInFile = NSRange(location: max(bodyRange.location, bodyEndLineRange.location), length: 0)
-                return MappedInlineAnnotations(range, path, rangeInFile, toInsert)
+                return MappedInlineAnnotations(range, path, rangeInFile, toInsert, "")
             }
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location
-            }.forEach { (_, path, rangeInFile, toInsert) in
+            }.forEach { (arg) in
+
+                let (_, path, rangeInFile, toInsert, indentation) = arg
                 let content = try path.read(.utf8)
-                let updated = content.bridge().replacingCharacters(in: rangeInFile, with: toInsert)
+                let updated = content.bridge().replacingCharacters(in: rangeInFile, with: indent(toInsert: toInsert, indentation: indentation))
                 try writeIfChanged(updated, to: path)
         }
 
@@ -528,7 +530,7 @@ extension Sourcery {
             .annotatedRanges
             .map { ($0, $1) }
             .forEach({ (filePath, ranges) in
-                let generatedBody = ranges.map(contents.bridge().substring(with:)).joined(separator: "\n")
+                let generatedBody = ranges.map { contents.bridge().substring(with: $0.range) }.joined(separator: "\n")
                 let path = outputPath + (Path(filePath).extension == nil ? "\(filePath).generated.swift" : filePath)
                 var fileContents = fileAnnotatedContent[path] ?? []
                 fileContents.append(generatedBody)
@@ -546,6 +548,14 @@ extension Sourcery {
         if existing != content {
             try path.write(content)
         }
+    }
+
+    private func indent(toInsert: String, indentation: String) -> String {
+        guard indentation.isEmpty == false else {
+            return toInsert
+        }
+        let lines = toInsert.components(separatedBy: "\n")
+        return lines.enumerated().map { $0 == lines.count - 1 ? $1 : indentation + $1 }.joined(separator: "\n")
     }
 
     internal func generatedPath(`for` templatePath: Path) -> Path {

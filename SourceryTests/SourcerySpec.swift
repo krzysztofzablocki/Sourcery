@@ -233,6 +233,60 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
+
+                    it("indents generated code blocks correctly") {
+                        update(code: """
+                            class Foo {
+                                // sourcery:inline:Foo.Inlined
+
+                                // This will be replaced
+                                Last line
+                                // sourcery:end
+
+                                class Bar {
+                                    // sourcery:inline:Bar.Inlined
+
+                                    // This will be replaced
+                                    Last line
+                                    // sourcery:end
+                                }
+                            }
+                            """, in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:Bar.Inlined
+                            var property = bar
+                            // Line Three
+                            // sourcery:end
+                            // Line One
+                            // sourcery:inline:Foo.Inlined
+                            var property = foo
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let expectedResult = """
+                            class Foo {
+                                // sourcery:inline:Foo.Inlined
+                                var property = foo
+                                // Line Three
+                                // sourcery:end
+
+                                class Bar {
+                                    // sourcery:inline:Bar.Inlined
+                                    var property = bar
+                                    // Line Three
+                                    // sourcery:end
+                                }
+                            }
+                            """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
                 }
 
                 describe("using automatic inline generation") {
