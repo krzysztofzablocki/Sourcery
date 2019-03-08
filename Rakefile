@@ -267,7 +267,7 @@ namespace :release do
     results = []
 
     # Check if bundler is installed first, as we'll need it for the cocoapods task (and we prefer to fail early)
-    `which bundler`
+    `which bundle`
     results << log_result( $?.success?, 'Bundler installed', 'Please install bundler using `gem install bundler` and run `bundle install` first.')
 
     # Extract version from Sourcery.podspec
