@@ -48,7 +48,6 @@ public enum TemplateAnnotationsParser {
             let endLineRange = result.range(at: 5)
 
             let indentation = bridged.substring(with: indentationRange)
-            print("indentation raw \(indentation) \(indentation.count)")
             let name = bridged.substring(with: nameRange)
             let range = NSRange(
                 location: startLineRange.location,
