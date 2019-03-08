@@ -13,7 +13,7 @@ VERSION_FILE = 'SourceryUtils/Sources/Version.swift'
 ## [ Utils ] ##################################################################
 
 def version_select
-  latest_xcode_version = `xcode-select -p`.chomp 
+  latest_xcode_version = `xcode-select -p`.chomp
   %Q(DEVELOPER_DIR="#{latest_xcode_version}" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
 end
 
