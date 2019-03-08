@@ -53,6 +53,7 @@ public final class FileParser {
     fileprivate var contents: String!
     fileprivate var annotations: AnnotationsParser!
     fileprivate var inlineRanges: [String: NSRange]!
+    fileprivate var inlineIndentations: [String: String]!
 
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0):" } ?? ""
@@ -81,7 +82,8 @@ public final class FileParser {
 
         let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents)
         contents = inline.contents
-        inlineRanges = inline.annotatedRanges.mapValues({ $0[0] })
+        inlineRanges = inline.annotatedRanges.mapValues { $0[0].range }
+        inlineIndentations = inline.annotatedRanges.mapValues { $0[0].indentation }
         annotations = AnnotationsParser(contents: contents)
         return contents
     }
@@ -99,7 +101,7 @@ public final class FileParser {
         let source = try Structure(file: file).dictionary
 
         let (types, typealiases) = try parseTypes(source)
-        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, contentSha: initialContents.sha256() ?? "", sourceryVersion: Version.current.value)
+        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, contentSha: initialContents.sha256() ?? "", sourceryVersion: Version.current.value)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [Typealias]) {
