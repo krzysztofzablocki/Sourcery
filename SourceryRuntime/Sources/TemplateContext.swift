@@ -20,7 +20,7 @@ import Foundation
         self.argument = arguments
     }
 
-    // sourcery:inline:TemplateContext.AutoCoding
+// sourcery:inline:TemplateContext.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let types: Types = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
@@ -32,7 +32,7 @@ import Foundation
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.argument, forKey: "argument")
         }
-    // sourcery:end
+// sourcery:end
 
     public var stencilContext: [String: Any] {
         return [
@@ -82,7 +82,7 @@ extension ProcessInfo {
         self.types = types
     }
 
-    // sourcery:inline:Types.AutoCoding
+// sourcery:inline:Types.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
@@ -92,7 +92,7 @@ extension ProcessInfo {
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.types, forKey: "types")
         }
-    // sourcery:end
+// sourcery:end
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// :nodoc:

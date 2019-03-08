@@ -54,7 +54,7 @@ public typealias SourceryProtocol = Protocol
         super.extend(type)
     }
 
-    // sourcery:inline:Protocol.AutoCoding
+// sourcery:inline:Protocol.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
@@ -64,5 +64,5 @@ public typealias SourceryProtocol = Protocol
         override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
         }
-        // sourcery:end
+// sourcery:end
 }

@@ -59,7 +59,7 @@ public typealias SourceryMethod = Method
         self.`inout` = isInout
     }
 
-    // sourcery:inline:MethodParameter.AutoCoding
+// sourcery:inline:MethodParameter.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
@@ -81,7 +81,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
         }
-        // sourcery:end
+// sourcery:end
 }
 
 /// Describes method
@@ -267,7 +267,7 @@ public typealias SourceryMethod = Method
         self.definedInTypeName = definedInTypeName
     }
 
-    // sourcery:inline:Method.AutoCoding
+// sourcery:inline:Method.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -305,5 +305,5 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
         }
-     // sourcery:end
+// sourcery:end
 }

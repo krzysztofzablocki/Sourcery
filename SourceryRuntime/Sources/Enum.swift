@@ -39,7 +39,7 @@ import Foundation
         self.init(localName: name, externalName: name, typeName: typeName, type: type, annotations: annotations)
     }
 
-    // sourcery:inline:AssociatedValue.AutoCoding
+// sourcery:inline:AssociatedValue.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.localName = aDecoder.decode(forKey: "localName")
@@ -57,7 +57,7 @@ import Foundation
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.annotations, forKey: "annotations")
         }
-        // sourcery:end
+// sourcery:end
 
 }
 
@@ -94,7 +94,7 @@ import Foundation
         self.annotations = annotations
     }
 
-    // sourcery:inline:EnumCase.AutoCoding
+// sourcery:inline:EnumCase.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -110,7 +110,7 @@ import Foundation
             aCoder.encode(self.associatedValues, forKey: "associatedValues")
             aCoder.encode(self.annotations, forKey: "annotations")
         }
-        // sourcery:end
+// sourcery:end
 }
 
 /// Defines Swift enum
@@ -188,7 +188,7 @@ import Foundation
         }
     }
 
-    // sourcery:inline:Enum.AutoCoding
+// sourcery:inline:Enum.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let cases: [EnumCase] = aDecoder.decode(forKey: "cases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["cases"])); fatalError() }; self.cases = cases
@@ -206,5 +206,5 @@ import Foundation
             aCoder.encode(self.hasRawType, forKey: "hasRawType")
             aCoder.encode(self.rawType, forKey: "rawType")
         }
-     // sourcery:end
+// sourcery:end
 }

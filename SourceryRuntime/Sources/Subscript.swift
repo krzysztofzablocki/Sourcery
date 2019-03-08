@@ -95,7 +95,7 @@ import Foundation
         self.definedInTypeName = definedInTypeName
     }
 
-    // sourcery:inline:Subscript.AutoCoding
+// sourcery:inline:Subscript.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
@@ -121,6 +121,6 @@ import Foundation
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
         }
-    // sourcery:end
+// sourcery:end
 
 }

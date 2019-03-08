@@ -20,7 +20,7 @@ import Foundation
         self.init(offset: range.offset, length: range.length)
     }
 
-    // sourcery:inline:BytesRange.AutoCoding
+// sourcery:inline:BytesRange.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.offset = aDecoder.decodeInt64(forKey: "offset")
@@ -32,5 +32,5 @@ import Foundation
             aCoder.encode(self.offset, forKey: "offset")
             aCoder.encode(self.length, forKey: "length")
         }
-    // sourcery:end
+// sourcery:end
 }

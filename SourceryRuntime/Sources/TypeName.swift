@@ -184,7 +184,7 @@ public protocol Typed {
         return name
     }
 
-    // sourcery:inline:TypeName.AutoCoding
+// sourcery:inline:TypeName.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -216,7 +216,7 @@ public protocol Typed {
             aCoder.encode(self.dictionary, forKey: "dictionary")
             aCoder.encode(self.closure, forKey: "closure")
         }
-        // sourcery:end
+// sourcery:end
 
     // MARK: - LosslessStringConvertible
 
@@ -248,7 +248,7 @@ public protocol Typed {
         self.type = type
     }
 
-    // sourcery:inline:GenericTypeParameter.AutoCoding
+// sourcery:inline:GenericTypeParameter.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
@@ -261,7 +261,7 @@ public protocol Typed {
             aCoder.encode(self.type, forKey: "type")
         }
 
-    // sourcery:end
+// sourcery:end
 }
 
 /// Descibes Swift generic type
@@ -278,7 +278,7 @@ public protocol Typed {
         self.typeParameters = typeParameters
     }
 
-    // sourcery:inline:GenericType.AutoCoding
+// sourcery:inline:GenericType.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -291,7 +291,7 @@ public protocol Typed {
             aCoder.encode(self.typeParameters, forKey: "typeParameters")
         }
 
-    // sourcery:end
+// sourcery:end
 }
 
 /// Describes tuple type element
@@ -314,7 +314,7 @@ public protocol Typed {
         self.type = type
     }
 
-    // sourcery:inline:TupleElement.AutoCoding
+// sourcery:inline:TupleElement.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -328,7 +328,7 @@ public protocol Typed {
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
         }
-     // sourcery:end
+// sourcery:end
 }
 
 /// Describes tuple type
@@ -346,7 +346,7 @@ public protocol Typed {
         self.elements = elements
     }
 
-    // sourcery:inline:TupleType.AutoCoding
+// sourcery:inline:TupleType.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -358,7 +358,7 @@ public protocol Typed {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.elements, forKey: "elements")
         }
-     // sourcery:end
+// sourcery:end
 }
 
 /// Describes array type
@@ -381,7 +381,7 @@ public protocol Typed {
         self.elementType = elementType
     }
 
-    // sourcery:inline:ArrayType.AutoCoding
+// sourcery:inline:ArrayType.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -395,7 +395,7 @@ public protocol Typed {
             aCoder.encode(self.elementTypeName, forKey: "elementTypeName")
             aCoder.encode(self.elementType, forKey: "elementType")
         }
-    // sourcery:end
+// sourcery:end
 }
 
 /// Describes dictionary type
@@ -427,7 +427,7 @@ public protocol Typed {
         self.keyType = keyType
     }
 
-    // sourcery:inline:DictionaryType.AutoCoding
+// sourcery:inline:DictionaryType.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -445,7 +445,7 @@ public protocol Typed {
             aCoder.encode(self.keyTypeName, forKey: "keyTypeName")
             aCoder.encode(self.keyType, forKey: "keyType")
         }
-    // sourcery:end
+// sourcery:end
 }
 
 /// Describes closure type
@@ -499,7 +499,7 @@ public protocol Typed {
         self.`throws` = `throws`
     }
 
-    // sourcery:inline:ClosureType.AutoCoding
+// sourcery:inline:ClosureType.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -517,6 +517,6 @@ public protocol Typed {
             aCoder.encode(self.returnType, forKey: "returnType")
             aCoder.encode(self.`throws`, forKey: "`throws`")
         }
-    // sourcery:end
+// sourcery:end
 
 }

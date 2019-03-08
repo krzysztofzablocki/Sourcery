@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable vertical_whitespace trailing_newline
@@ -195,6 +195,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var isFinal: Bool { get }
     var isMutating: Bool { get }
     var isGeneric: Bool { get }
+    var isOptional: Bool { get }
     var annotations: [String: NSObject] { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }

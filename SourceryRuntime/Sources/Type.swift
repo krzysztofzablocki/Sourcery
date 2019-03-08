@@ -284,7 +284,7 @@ import Foundation
         type.implements.forEach { self.implements[$0.key] = $0.value }
     }
 
-    // sourcery:inline:Type.AutoCoding
+// sourcery:inline:Type.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.module = aDecoder.decode(forKey: "module")
@@ -336,7 +336,7 @@ import Foundation
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.__path, forKey: "__path")
         }
-    // sourcery:end
+// sourcery:end
 }
 
 extension Type {

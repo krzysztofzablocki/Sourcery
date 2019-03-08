@@ -102,7 +102,7 @@ public typealias SourceryVariable = Variable
         self.definedInTypeName = definedInTypeName
     }
 
-    // sourcery:inline:Variable.AutoCoding
+// sourcery:inline:Variable.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -134,5 +134,5 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
         }
-        // sourcery:end
+// sourcery:end
 }

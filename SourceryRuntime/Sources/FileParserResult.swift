@@ -41,7 +41,7 @@ import Foundation
         types.forEach { type in type.module = module }
     }
 
-    // sourcery:inline:FileParserResult.AutoCoding
+// sourcery:inline:FileParserResult.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.path = aDecoder.decode(forKey: "path")
@@ -65,5 +65,5 @@ import Foundation
             aCoder.encode(self.contentSha, forKey: "contentSha")
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
         }
-        // sourcery:end
+// sourcery:end
 }

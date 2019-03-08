@@ -38,7 +38,7 @@ import Foundation
         self.parentName = parent?.name
     }
 
-    // sourcery:inline:Typealias.AutoCoding
+// sourcery:inline:Typealias.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["aliasName"])); fatalError() }; self.aliasName = aliasName
@@ -56,5 +56,5 @@ import Foundation
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.parentName, forKey: "parentName")
         }
-        // sourcery:end
+// sourcery:end
 }
