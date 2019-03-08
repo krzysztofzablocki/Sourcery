@@ -81,15 +81,10 @@ end
 
 desc "Update internal boilerplate code"
 task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
-  generated_files = [
-    "SourceryRuntime/Sources/Coding.generated.swift",
-    "SourceryRuntime/Sources/Description.generated.swift",
-    "SourceryRuntime/Sources/Diffable.generated.swift",
-    "SourceryRuntime/Sources/Equality.generated.swift",
-    "SourceryRuntime/Sources/JSExport.generated.swift",
-    "SourceryRuntime/Sources/Typed.generated.swift",
-    "SourceryTests/Models/TypedSpec.generated.swift"
-  ]
+  generated_files = `git status --porcelain`
+                      .split("\n")
+                      .select { |item| item.include?('.generated.') }
+                      .map { |item| item.split.last }
   print_info "Now review and type [Y/n] to commit and push or cancel the changes."
   print "Updated files:\n#{generated_files.join("\n")}\n"
   manual_commit(generated_files, "update internal boilerplate code.")
