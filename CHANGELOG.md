@@ -1,6 +1,9 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+
 ## 0.16.0
 
 - Replaces environment variables inside .yml configurations (like ${PROJECT_NAME}), if a value is set.
