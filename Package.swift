@@ -17,7 +17,6 @@ let package = Package(
         .package(url: "https://github.com/jpsim/SourceKitten.git", .exact("0.21.2")),
         .package(url: "https://github.com/kylef/Stencil.git", .exact("0.13.1")),
         .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.7.0")),
-        .package(url: "https://github.com/seanparsons/SwiftTryCatch.git", .revision("6a177252cfa2ef649b0aa7b2d16ab221386ca51c")),
         .package(url: "https://github.com/tuist/xcodeproj", .exact("4.3.1")),
         .package(url: "https://github.com/tadija/AEXML.git", .exact("4.3.3")),
     ],
@@ -32,7 +31,7 @@ let package = Package(
             "SourceKittenFramework",
             "StencilSwiftKit",
             "xcproj",
-            "SwiftTryCatch",
+            "TryCatch",
         ]),
         .target(name: "SourceryRuntime"),
         .target(name: "SourceryUtils", dependencies: [
@@ -50,6 +49,7 @@ let package = Package(
           "PathKit",
           "SourceryRuntime",
           "SourceryUtils"
-        ])
+        ]),
+        .target(name: "TryCatch", path: "TryCatch"),
     ]
 )

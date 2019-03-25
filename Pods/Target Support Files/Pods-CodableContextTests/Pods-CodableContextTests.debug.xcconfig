@@ -2,9 +2,10 @@ ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
 CODE_SIGN_IDENTITY =
 FRAMEWORK_SEARCH_PATHS = $(inherited) "$(PLATFORM_DIR)/Developer/Library/Frameworks" "${PODS_CONFIGURATION_BUILD_DIR}/Nimble" "${PODS_CONFIGURATION_BUILD_DIR}/Quick"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Nimble/Nimble.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Quick/Quick.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/../Frameworks' '@loader_path/../Frameworks'
-OTHER_CFLAGS = $(inherited) -iquote "${PODS_CONFIGURATION_BUILD_DIR}/Nimble/Nimble.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/Quick/Quick.framework/Headers"
-OTHER_LDFLAGS = $(inherited) -framework "Nimble" -framework "Quick" -framework "XCTest"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Nimble/Nimble.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Quick/Quick.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Nimble" -iframework "$(PLATFORM_DIR)/Developer/Library/Frameworks" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Quick"
+OTHER_LDFLAGS = $(inherited) -framework "Nimble" -framework "Quick" -framework "XCTest" -weak_framework "XCTest"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
