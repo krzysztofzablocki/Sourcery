@@ -3,6 +3,7 @@
 ---
 ## Master
 
+- Moves SwiftTryCatch directly into the repo in order to avoid swift package manager errors.
 
 ## 0.16.0
 
