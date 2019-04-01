@@ -192,6 +192,9 @@ open class SwiftTemplate {
 
         let serializedContextPath = buildDir + "context.bin"
         let data = NSKeyedArchiver.archivedData(withRootObject: context)
+        if !buildDir.exists {
+            try buildDir.mkpath()
+        }
         try serializedContextPath.write(data)
 
         let result = try Process.runCommand(path: binaryPath.description,
