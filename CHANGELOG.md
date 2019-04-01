@@ -3,6 +3,9 @@
 ---
 ## Master
 
+### Bug fixes
+
+- Fix missing folder error that could happen when running a Swift template with existing cache
 
 ## 0.16.0
 
