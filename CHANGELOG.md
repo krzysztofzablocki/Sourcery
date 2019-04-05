@@ -6,6 +6,7 @@
 ### Bug fixes
 
 - Fix missing folder error that could happen when running a Swift template with existing cache
+- Don't add indentation to empty line when using inline generated code.
 
 ## 0.16.0
 

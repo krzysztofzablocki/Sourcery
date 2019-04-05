@@ -555,7 +555,15 @@ extension Sourcery {
             return toInsert
         }
         let lines = toInsert.components(separatedBy: "\n")
-        return lines.enumerated().map { $0 == lines.count - 1 ? $1 : indentation + $1 }.joined(separator: "\n")
+        return lines.enumerated()
+            .map { index, line in
+                guard !line.isEmpty else {
+                    return line
+                }
+
+                return index == lines.count - 1 ? line : indentation + line
+            }
+            .joined(separator: "\n")
     }
 
     internal func generatedPath(`for` templatePath: Path) -> Path {
