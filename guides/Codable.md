@@ -219,7 +219,7 @@ If you define a coding key named `enumCaseKey` then the template will generate c
 {
   "type": "someCase" // enum case is encoded in a special key
   "id": 1,
-  "name": "Jhon"
+  "name": "John"
 }
 ```
 All enum cases associated values must be named.
@@ -230,7 +230,7 @@ If you don't define `enumCaseKey` then the template will generate code that will
 {
   "someCase": {
     "id": 1,
-    "name": "Jhon"
+    "name": "John"
   }
 }
 ```
