@@ -173,7 +173,7 @@ Enums with numeric or string raw values are `Codable` by default. For enums with
 For such enums template will generate decoding/encoding code that will expect values in JSON to be exactly the same as cases' names.
 
 ```swift
-enum SimpleEnum {
+enum SimpleEnum: AutoDecodable {
   case someCase
   case anotherCase
 }
@@ -191,7 +191,7 @@ For such enum template will generate code that will successfully decode from/enc
 You can define coding keys to change the values:
 
 ```swift
-enum SimpleEnum {
+enum SimpleEnum: AutoDecodable {
   case someCase
   case anotherCase
   
@@ -207,7 +207,7 @@ enum SimpleEnum {
 Template supports two different representations of such enums in JSON format.
 
 ```swift
-enum SimpleEnum {
+enum SimpleEnum: AutoDecodable {
   case someCase(id: Int, name: String)
   case anotherCase
 }
