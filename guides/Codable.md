@@ -213,7 +213,7 @@ enum SimpleEnum {
 }
 ```
 
-If you define a coding key named `enumCaseKey` then the template will genearaet code that will encode/decode enum in/from following format:
+If you define a coding key named `enumCaseKey` then the template will generate code that will encode/decode enum in/from following format:
 
 ```json
 {
