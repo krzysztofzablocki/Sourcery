@@ -1918,8 +1918,13 @@ public extension String {
 
     /// :nodoc:
     /// Returns components separated with a comma respecting nested types
-    func commaSeparated() -> [String] {
-        return components(separatedBy: ",", excludingDelimiterBetween: ("<[({", "})]>"))
+    func commaSeparated(ignoringComments: Bool = false) -> [String] {
+        var (open, close) = (["<", "[", "(", "{"], ["}", ")", "]", ">"])
+        if ignoringComments {
+            open += ["/*", "//"]
+            close += ["*/", "\\n"]
+        }
+        return components(separatedBy: ",", excludingDelimiterBetween: (open, close))
     }
 
     /// :nodoc:
@@ -1936,47 +1941,46 @@ public extension String {
 
     /// :nodoc:
     func components(separatedBy delimiter: String, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
+        return self.components(separatedBy: delimiter, excludingDelimiterBetween: (between.open.map { String($0) }, between.close.map { String($0) }))
+    }
+
+    /// :nodoc:
+    func components(separatedBy delimiter: String, excludingDelimiterBetween between: (open: [String], close: [String])) -> [String] {
         var boundingCharactersCount: Int = 0
         var quotesCount: Int = 0
         var item = ""
         var items = [String]()
         var matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
 
-        for char in self {
-            if between.open.contains(char) {
-                if !(boundingCharactersCount == 0 && String(char) == delimiter) {
+        var i = self.startIndex
+        while i < self.endIndex {
+            var increaseOffset = 1
+            defer {
+                i = self.index(i, offsetBy: increaseOffset)
+            }
+            let current = self[i..<(self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) ?? self.endIndex)]
+            if let index = between.open.index(where: { String(self[i...]).starts(with: $0) }) {
+                if !(boundingCharactersCount == 0 && String(self[i]) == delimiter) {
                     boundingCharactersCount += 1
                 }
-            } else if between.close.contains(char) {
+                increaseOffset = between.open[index].count
+            } else if let index = between.close.index(where: { String(self[i...]).starts(with: $0) }) {
                 // do not count `->`
-                if !(char == ">" && item.last == "-") {
+                if !(self[i] == ">" && item.last == "-") {
                     boundingCharactersCount = max(0, boundingCharactersCount - 1)
                 }
+                increaseOffset = between.close[index].count
             }
-            if char == "\\"" {
+            if self[i] == "\\"" {
                 quotesCount += 1
             }
 
-            guard boundingCharactersCount == 0 && quotesCount % 2 == 0 else {
-                item.append(char)
-                continue
-            }
-
-            if char == matchedDelimiter.leftToMatch.first {
-                matchedDelimiter.alreadyMatched.append(char)
-                matchedDelimiter.leftToMatch = String(matchedDelimiter.leftToMatch.dropFirst())
-                if matchedDelimiter.leftToMatch.isEmpty {
-                    items.append(item)
-                    item = ""
-                    matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
-                }
+            if current == delimiter && boundingCharactersCount == 0 && quotesCount % 2 == 0 {
+                items.append(item)
+                item = ""
+                i = self.index(i, offsetBy: delimiter.count - 1)
             } else {
-                if matchedDelimiter.alreadyMatched.isEmpty {
-                    item.append(char)
-                } else {
-                    item.append(matchedDelimiter.alreadyMatched)
-                    matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
-                }
+                item += self[i..<self.index(i, offsetBy: increaseOffset)]
             }
         }
         items.append(item)

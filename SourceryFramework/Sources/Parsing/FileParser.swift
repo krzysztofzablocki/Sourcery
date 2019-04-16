@@ -655,7 +655,7 @@ extension FileParser {
     fileprivate func parseEnumAssociatedValues(_ body: String) -> [AssociatedValue] {
         guard !body.isEmpty else { return [AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("()"))] }
 
-        let items = body.commaSeparated()
+        let items = body.commaSeparated(ignoringComments: true)
         return items
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
             .enumerated()
