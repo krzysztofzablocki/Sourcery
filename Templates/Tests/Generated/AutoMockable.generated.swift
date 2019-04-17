@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable line_length
@@ -39,7 +39,7 @@ class AnnotatedProtocolMock: AnnotatedProtocol {
     func sayHelloWith(name: String) {
         sayHelloWithNameCallsCount += 1
         sayHelloWithNameReceivedName = name
-        sayHelloWithNameInvocations.append(name)
+        sayHelloWithNameReceivedInvocations.append(name)
         sayHelloWithNameClosure?(name)
     }
 
@@ -73,7 +73,7 @@ class BasicProtocolMock: BasicProtocol {
     func save(configuration: String) {
         saveConfigurationCallsCount += 1
         saveConfigurationReceivedConfiguration = configuration
-        saveConfigurationInvocations.append(configuration)
+        saveConfigurationReceivedInvocations.append(configuration)
         saveConfigurationClosure?(configuration)
     }
 
@@ -93,7 +93,7 @@ class ClosureProtocolMock: ClosureProtocol {
     func setClosure(_ closure: @escaping () -> Void) {
         setClosureCallsCount += 1
         setClosureReceivedClosure = closure
-        setClosureInvocations.append(closure)
+        setClosureReceivedInvocations.append(closure)
         setClosureClosure?(closure)
     }
 
@@ -113,7 +113,7 @@ class CurrencyPresenterMock: CurrencyPresenter {
     func showSourceCurrency(_ currency: String) {
         showSourceCurrencyCallsCount += 1
         showSourceCurrencyReceivedCurrency = currency
-        showSourceCurrencyInvocations.append(currency)
+        showSourceCurrencyReceivedInvocations.append(currency)
         showSourceCurrencyClosure?(currency)
     }
 
@@ -138,7 +138,7 @@ class ExtendableProtocolMock: ExtendableProtocol {
     func report(message: String) {
         reportMessageCallsCount += 1
         reportMessageReceivedMessage = message
-        reportMessageInvocations.append(message)
+        reportMessageReceivedInvocations.append(message)
         reportMessageClosure?(message)
     }
 
@@ -170,7 +170,7 @@ class InitializationProtocolMock: InitializationProtocol {
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
         initIntParameterStringParameterOptionalParameterReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
-        initIntParameterStringParameterOptionalParameterInvocations.append((intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter))
+        initIntParameterStringParameterOptionalParameterReceivedInvocations.append((intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter))
         initIntParameterStringParameterOptionalParameterClosure?(intParameter, stringParameter, optionalParameter)
     }
     //MARK: - start
@@ -216,7 +216,7 @@ class ReservedWordsProtocolMock: ReservedWordsProtocol {
     func `continue`(with message: String) -> String {
         continueWithCallsCount += 1
         continueWithReceivedMessage = message
-        continueWithInvocations.append(message)
+        continueWithReceivedInvocations.append(message)
         return continueWithClosure.map({ $0(message) }) ?? continueWithReturnValue
     }
 
@@ -236,7 +236,7 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
     func start(car: String, of model: String) {
         startCarOfCallsCount += 1
         startCarOfReceivedArguments = (car: car, model: model)
-        startCarOfInvocations.append((car: car, model: model))
+        startCarOfReceivedInvocations.append((car: car, model: model))
         startCarOfClosure?(car, model)
     }
 
@@ -253,8 +253,28 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
     func start(plane: String, of model: String) {
         startPlaneOfCallsCount += 1
         startPlaneOfReceivedArguments = (plane: plane, model: model)
-        startPlaneOfInvocations.append((plane: plane, model: model))
+        startPlaneOfReceivedInvocations.append((plane: plane, model: model))
         startPlaneOfClosure?(plane, model)
+    }
+
+}
+class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
+
+    //MARK: - send
+
+    var sendMessageCallsCount = 0
+    var sendMessageCalled: Bool {
+        return sendMessageCallsCount > 0
+    }
+    var sendMessageReceivedMessage: String?
+    var sendMessageReceivedInvocations: [String?] = []
+    var sendMessageClosure: ((String?) -> Void)?
+
+    func send(message: String?) {
+        sendMessageCallsCount += 1
+        sendMessageReceivedMessage = message
+        sendMessageReceivedInvocations.append(message)
+        sendMessageClosure?(message)
     }
 
 }
