@@ -155,6 +155,33 @@ class SwiftTemplateTests: QuickSpec {
                         expect("\(error)").to(contain("\(templatePath): Fatal error: Index out of range\n"))
                     }))
             }
+
+            context("with existing cache") {
+                expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
+
+                context("and missing build dir") {
+                    guard let buildDir = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate").map({ Path($0.path) }) else {
+                        fail("Could not create buildDir path")
+                        return
+                    }
+                    if buildDir.exists {
+                        do {
+                            try buildDir.delete()
+                        } catch {
+                            fail("Failed to delete \(buildDir)")
+                        }
+                    }
+
+                    it("generates the code") {
+                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                        expect(result).to(equal(expectedResult))
+                    }
+                }
+            }
         }
 
         describe("FolderSynchronizer") {

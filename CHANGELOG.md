@@ -3,7 +3,14 @@
 ---
 ## Master
 
-- Moves SwiftTryCatch directly into the repo in order to avoid swift package manager errors.
+### Bug fixes
+- Fix ReceivedInvocations's type for the method which have only one parameter in AutoMockable.stencil
+- Fix missing folder error that could happen when running a Swift template with existing cache
+- Don't add indentation to empty line when using inline generated code.
+
+### Internal Changes
+
+- Removed dependency on SwiftTryCatch pod in order to avoid Swift Package Manager errors.
 
 ## 0.16.0
 

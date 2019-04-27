@@ -23,11 +23,11 @@ import AppKit
 {% macro methodReceivedParameters method %}
     {%if method.parameters.count == 1 %}
         {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
-        {% call swiftifyMethodName method.selectorName %}Invocations.append({% for param in method.parameters %}{{ param.name }}){% endfor %}
+        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append({% for param in method.parameters %}{{ param.name }}){% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 %}
         {% call swiftifyMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
-        {% call swiftifyMethodName method.selectorName %}Invocations.append(({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %}))
+        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append(({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %}))
     {% endif %}
     {% endif %}
 {% endmacro %}
@@ -56,7 +56,7 @@ import AppKit
     {% endif %}
     {% if method.parameters.count == 1 %}
     var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}?{% endfor %}
-    var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}]{% endfor %} = []
+    var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}{%if param.typeName.isOptional%}?{%endif%}]{% endfor %} = []
     {% elif not method.parameters.count == 0 %}
     var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})?
     var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})] = []

@@ -257,6 +257,7 @@ class SourcerySpecTests: QuickSpec {
                             // Line One
                             // sourcery:inline:Bar.Inlined
                             var property = bar
+
                             // Line Three
                             // sourcery:end
                             // Line One
@@ -278,6 +279,7 @@ class SourcerySpecTests: QuickSpec {
                                 class Bar {
                                     // sourcery:inline:Bar.Inlined
                                     var property = bar
+
                                     // Line Three
                                     // sourcery:end
                                 }
