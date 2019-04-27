@@ -5,12 +5,12 @@
 
 import Foundation
 import PathKit
-import SwiftTryCatch
 import SourceryFramework
 import SourceryUtils
 import SourceryRuntime
 import SourceryJS
 import SourcerySwift
+import TryCatch
 import xcproj
 
 class Sourcery {

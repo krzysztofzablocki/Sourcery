@@ -8,6 +8,10 @@
 - Fix missing folder error that could happen when running a Swift template with existing cache
 - Don't add indentation to empty line when using inline generated code.
 
+### Internal Changes
+
+- Removed dependency on SwiftTryCatch pod in order to avoid Swift Package Manager errors.
+
 ## 0.16.0
 
 - Replaces environment variables inside .yml configurations (like ${PROJECT_NAME}), if a value is set.
