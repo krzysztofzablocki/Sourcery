@@ -75,3 +75,7 @@ protocol ClosureProtocol: AutoMockable {
 protocol AnnotatedProtocol {
     func sayHelloWith(name: String)
 }
+
+protocol SingleOptionalParameterFunction: AutoMockable {
+    func send(message: String?)
+}
