@@ -406,7 +406,7 @@ namespace :release do
   desc 'prepare for the new development iteration'
   task :prepare_next_development_iteration do
     print_info "Preparing for the next development iteration"
-    `sed -i '' -e '4 a \\
+    `sed -i '' -e '3 a \\
      ## Master\\
      \\
      \\
