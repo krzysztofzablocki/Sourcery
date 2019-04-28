@@ -207,6 +207,7 @@ namespace :release do
       system(%Q{git add #{files.join(" ")}})
       system(%Q{git commit -m '#{message}'})
     else
+      puts "Aborting commit, checkout pending changes"
       system(%Q{git checkout #{files.join(" ")}})
       exit 2
     end
