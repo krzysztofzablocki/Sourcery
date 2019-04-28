@@ -85,8 +85,6 @@ task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
                       .split("\n")
                       .select { |item| item.include?('.generated.') }
                       .map { |item| item.split.last }
-  print_info "Now review and type [Y/n] to commit and push or cancel the changes."
-  print "Updated files:\n#{generated_files.join("\n")}\n"
   manual_commit(generated_files, "update internal boilerplate code.")
 end
 
@@ -111,8 +109,15 @@ end
 ## [ Release ] ##########################################################
 
 namespace :release do
+
+  desc 'Perform pre-release tasks'
+  task :prepare => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :update_metadata, :generate_internal_boilerplate_code]
+
+  desc 'Build the current version and release it to GitHub, CocoaPods and Homebrew'
+  task :build_and_deploy => [:check_versions, :tests, :build, :tag_release, :push_to_origin, :github, :cocoapods, :homebrew]
+
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci,  :update_metadata, :generate_internal_boilerplate_code, :tests, :build, :check_versions, :tag_release, :github, :cocoapods, :homebrew]
+  task :new => [:prepare, :build_and_deploy]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The code is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
@@ -193,6 +198,9 @@ namespace :release do
   end
 
   def manual_commit(files, message)
+    print_info "Preparing commit"
+    system(%Q{git --no-pager diff #{files.join(" ")}})
+    print "Now review the above diff. Do you wish to commit the changes? [Y/n] "
     commit_changes = STDIN.gets.chomp == 'Y'
     if commit_changes then
       system(%Q{git add #{files.join(" ")}})
@@ -311,16 +319,13 @@ namespace :release do
     # Update command line tool version
     command_line_tool_update_version(new_version)
 
-    print "Now review and type [Y/n] to commit and push or cancel the changes. "
     manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj", VERSION_FILE], "docs: update metadata for #{new_version} release")
-    git_push
   end
 
   desc 'Create a tag for the project version and push to remote'
   task :tag_release do
     print_info "Tagging the release"
     git_tag(project_version)
-    git_push
   end
 
 
@@ -403,6 +408,11 @@ namespace :release do
     end
   end
 
+  desc 'Push the pending master changes to origin'
+  task :push_to_origin do
+    git_push
+  end
+
   desc 'prepare for the new development iteration'
   task :prepare_next_development_iteration do
     print_info "Preparing for the next development iteration"
@@ -412,8 +422,6 @@ namespace :release do
      \\
      ' CHANGELOG.md`
 
-     print "Now review CHANGELOG.md and type [Y/n] to commit and push or cancel the changes. "
      manual_commit(["CHANGELOG.md"], "docs: preparing for next development iteration.")
-     git_push
   end
 end
