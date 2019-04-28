@@ -81,6 +81,7 @@ end
 
 desc "Update internal boilerplate code"
 task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
+  sh "Scripts/package_content \"SourceryRuntime/Sources\"  > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
   generated_files = `git status --porcelain`
                       .split("\n")
                       .select { |item| item.include?('.generated.') }
