@@ -322,7 +322,7 @@
 <h4 id='enums-with-no-raw-values-and-no-associated-values' class='heading'>Enums with no raw values and no associated values</h4>
 
 <p>For such enums template will generate decoding/encoding code that will expect values in JSON to be exactly the same as cases&rsquo; names.</p>
-<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">SimpleEnum</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">SimpleEnum</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
   <span class="k">case</span> <span class="n">someCase</span>
   <span class="k">case</span> <span class="n">anotherCase</span>
 <span class="p">}</span>
@@ -336,7 +336,7 @@
 </span></code></pre>
 
 <p>You can define coding keys to change the values:</p>
-<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">SimpleEnum</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">SimpleEnum</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
   <span class="k">case</span> <span class="n">someCase</span>
   <span class="k">case</span> <span class="n">anotherCase</span>
 
@@ -349,7 +349,7 @@
 <h4 id='enums-with-assoicated-values' class='heading'>Enums with assoicated values</h4>
 
 <p>Template supports two different representations of such enums in JSON format.</p>
-<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">SimpleEnum</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">SimpleEnum</span><span class="p">:</span> <span class="kt">AutoDecodable</span> <span class="p">{</span>
   <span class="k">case</span> <span class="nf">someCase</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span>
   <span class="k">case</span> <span class="n">anotherCase</span>
 <span class="p">}</span>
