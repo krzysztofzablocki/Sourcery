@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 0.16.1
 
 ### Bug fixes
 - Fix ReceivedInvocations's type for the method which have only one parameter in AutoMockable.stencil
