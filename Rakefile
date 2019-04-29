@@ -111,10 +111,10 @@ end
 namespace :release do
 
   desc 'Perform pre-release tasks'
-  task :prepare => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :update_metadata, :generate_internal_boilerplate_code]
+  task :prepare => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :update_metadata, :generate_internal_boilerplate_code, :tests]
 
   desc 'Build the current version and release it to GitHub, CocoaPods and Homebrew'
-  task :build_and_deploy => [:check_versions, :tests, :build, :tag_release, :push_to_origin, :github, :cocoapods, :homebrew]
+  task :build_and_deploy => [:check_versions, :build, :tag_release, :push_to_origin, :github, :cocoapods, :homebrew]
 
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
   task :new => [:prepare, :build_and_deploy]
