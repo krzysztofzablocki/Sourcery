@@ -112,13 +112,8 @@ public extension String {
 
     /// :nodoc:
     /// Returns components separated with a comma respecting nested types
-    func commaSeparated(ignoringComments: Bool = false) -> [String] {
-        var (open, close) = (["<", "[", "(", "{"], ["}", ")", "]", ">"])
-        if ignoringComments {
-            open += ["/*", "//"]
-            close += ["*/", "\n"]
-        }
-        return components(separatedBy: ",", excludingDelimiterBetween: (open, close))
+    func commaSeparated() -> [String] {
+        return components(separatedBy: ",", excludingDelimiterBetween: ("<[({", "})]>"))
     }
 
     /// :nodoc:
@@ -148,33 +143,33 @@ public extension String {
 
         var i = self.startIndex
         while i < self.endIndex {
-            var increaseOffset = 1
+            var offset = 1
             defer {
-                i = self.index(i, offsetBy: increaseOffset)
+                i = self.index(i, offsetBy: offset)
             }
-            let current = self[i..<(self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) ?? self.endIndex)]
-            if let index = between.open.index(where: { String(self[i...]).starts(with: $0) }) {
+            let currentlyScanned = self[i..<(self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) ?? self.endIndex)]
+            if let openString = between.open.first(where: { String(self[i...]).starts(with: $0) }) {
                 if !(boundingCharactersCount == 0 && String(self[i]) == delimiter) {
                     boundingCharactersCount += 1
                 }
-                increaseOffset = between.open[index].count
-            } else if let index = between.close.index(where: { String(self[i...]).starts(with: $0) }) {
+                offset = openString.count
+            } else if let closeString = between.close.first(where: { String(self[i...]).starts(with: $0) }) {
                 // do not count `->`
                 if !(self[i] == ">" && item.last == "-") {
                     boundingCharactersCount = max(0, boundingCharactersCount - 1)
                 }
-                increaseOffset = between.close[index].count
+                offset = closeString.count
             }
             if self[i] == "\"" {
                 quotesCount += 1
             }
 
-            if current == delimiter && boundingCharactersCount == 0 && quotesCount % 2 == 0 {
+            if currentlyScanned == delimiter && boundingCharactersCount == 0 && quotesCount % 2 == 0 {
                 items.append(item)
                 item = ""
                 i = self.index(i, offsetBy: delimiter.count - 1)
             } else {
-                item += self[i..<self.index(i, offsetBy: increaseOffset)]
+                item += self[i..<self.index(i, offsetBy: offset)]
             }
         }
         items.append(item)
