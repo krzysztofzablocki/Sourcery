@@ -379,7 +379,7 @@ class FileParserSpec: QuickSpec {
                                 Enum(name: "Foo",
                                      cases: [
                                         EnumCase(name: "optionA", associatedValues: [
-																					AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: ["first": NSNumber(value: true), "second": NSNumber(value: true), "third": "value" as NSString])
+                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: ["first": NSNumber(value: true), "second": NSNumber(value: true), "third": "value" as NSString])
                                             ]),
                                         EnumCase(name: "optionB")
                                     ])
