@@ -19,6 +19,7 @@ private enum Delimiters {
 private struct ProcessResult {
     let output: String
     let error: String
+    let exitCode: Int32
 }
 
 open class SwiftTemplate {
@@ -237,7 +238,7 @@ open class SwiftTemplate {
                                                        arguments: arguments,
                                                        currentDirectoryPath: buildDir)
 
-        if !compilationResult.error.isEmpty {
+        if compilationResult.exitCode != 0 || !compilationResult.error.isEmpty {
             throw compilationResult.output
         }
 
@@ -330,7 +331,7 @@ private extension Process {
         let output = String(data: outputData, encoding: .utf8) ?? ""
         let error = String(data: errorData, encoding: .utf8) ?? ""
 
-        return ProcessResult(output: output, error: error)
+        return ProcessResult(output: output, error: error, exitCode: task.terminationStatus)
     }
 }
 

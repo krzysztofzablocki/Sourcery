@@ -10,6 +10,7 @@
 - Fix ReceivedInvocations's type for the method which have only one parameter in AutoMockable.stencil
 - Fix missing folder error that could happen when running a Swift template with existing cache
 - Don't add indentation to empty line when using inline generated code.
+- Fix issue where errors in Swift Template would not be reported correctly when using Xcode 10.2.
 
 ### Internal Changes
 
