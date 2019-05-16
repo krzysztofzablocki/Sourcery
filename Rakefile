@@ -398,6 +398,7 @@ namespace :release do
       File.open(formula_file, "w") { |f| f.puts new_formula }
 
       print_info "Checking Homebrew formula"
+      sh 'brew uninstall sourcery || true'
       sh "brew install --build-from-source #{formula_file}"
       sh "brew audit --strict --online #{formula_file}"
       sh "brew test #{formula_file}"
