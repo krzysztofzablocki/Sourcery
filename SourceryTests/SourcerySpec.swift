@@ -7,6 +7,7 @@ import xcproj
 
 private let version = "Major.Minor.Patch"
 
+// swiftlint:disable type_body_length
 class SourcerySpecTests: QuickSpec {
     // swiftlint:disable:next function_body_length
     override func spec() {
