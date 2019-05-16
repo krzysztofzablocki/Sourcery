@@ -1,9 +1,12 @@
-// swift-tools-version:4.0
+// swift-tools-version:5.0
 
 import PackageDescription
 
 let package = Package(
     name: "Sourcery",
+    platforms: [
+       .macOS(.v10_11),
+    ],
     products: [
         .executable(name: "sourcery", targets: ["Sourcery"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
