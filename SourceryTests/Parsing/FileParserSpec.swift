@@ -160,7 +160,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts extensions properly") {
                         expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { return 0 } }"))
                             .to(equal([
-                                Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
+                                Type(name: "Bar", accessLevel: .internal, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
                                 Protocol(name: "Foo")
                                 ]))
                     }
