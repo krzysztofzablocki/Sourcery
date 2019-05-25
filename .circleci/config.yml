@@ -3,7 +3,7 @@ version: 2
 jobs:
   test:
     macos:
-      xcode: "10.0.0"
+      xcode: "10.2.1"
     environment:
       - XCODE_WORKSPACE: Sourcery.xcworkspace
       - XCODE_PROJECT: Sourcery.xcodeproj
@@ -23,7 +23,7 @@ jobs:
       - run: set -o pipefail
       - run: bundle exec rake build
       - run: bundle exec rake tests
-      - run: swift build && .build/x86_64-apple-macosx10.10/debug/sourcery --sources SourceryRuntime/Sources --templates Templates/Templates --output SourceryRuntime/Sources --ejsPath SourceryJS/Sources/ejs.js
+      - run: swift build && .build/x86_64-apple-macosx/debug/sourcery --sources SourceryRuntime/Sources --templates Templates/Templates --output SourceryRuntime/Sources --ejsPath SourceryJS/Sources/ejs.js
       - run: bundle exec slather coverage --scheme "$XCODE_SCHEME" --workspace "$XCODE_WORKSPACE" --output-directory $CIRCLE_ARTIFACTS --binary-basename SourceryRuntime --binary-basename Sourcery --cobertura-xml Sourcery.xcodeproj || true
       - run: bash <(curl -s https://codecov.io/bash) -f $CIRCLE_ARTIFACTS/cobertura.xml -X coveragepy -X gcov -X xcode
 

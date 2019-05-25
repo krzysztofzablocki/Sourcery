@@ -83,7 +83,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "enum Foo { case A; func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Enum(name: "Foo", cases: [EnumCase(name: "A")], methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {
@@ -97,7 +97,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "protocol Foo { func \(method.name) }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Protocol(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {
@@ -111,7 +111,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "class Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Class(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {
@@ -125,7 +125,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "struct Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Struct(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {

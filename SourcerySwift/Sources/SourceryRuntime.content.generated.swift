@@ -2730,7 +2730,7 @@ public typealias SourceryMethod = Method
 
     // sourcery: skipEqaulitey, skipDescription, skipCoding, skipJSExport
     /// :nodoc:
-    @available(*, deprecated: 0.7, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
+    @available(*, deprecated, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
         return attributes[Attribute.Identifier.convenience.name] != nil
     }
 
