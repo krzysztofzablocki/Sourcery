@@ -29,6 +29,9 @@ public typealias SourceryMethod = Method
     /// Method parameter default value expression
     public var defaultValue: String?
 
+    /// Generic types with constraints
+    public var genericTypeParameters: [GenericTypeParameter]
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: [String: NSObject] = [:]
 
@@ -38,7 +41,7 @@ public typealias SourceryMethod = Method
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypeParameters: [GenericTypeParameter] = []) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -46,10 +49,11 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.genericTypeParameters = genericTypeParameters
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, genericTypeParameters: [GenericTypeParameter] = []) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -57,6 +61,7 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.genericTypeParameters = genericTypeParameters
     }
 
 // sourcery:inline:MethodParameter.AutoCoding
@@ -68,6 +73,7 @@ public typealias SourceryMethod = Method
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            guard let genericTypeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "genericTypeParameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypeParameters"])); fatalError() }; self.genericTypeParameters = genericTypeParameters
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
@@ -79,6 +85,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.`inout`, forKey: "`inout`")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
+            aCoder.encode(self.genericTypeParameters, forKey: "genericTypeParameters")
             aCoder.encode(self.annotations, forKey: "annotations")
         }
 // sourcery:end
@@ -232,6 +239,9 @@ public typealias SourceryMethod = Method
     /// Method attributes, i.e. `@discardableResult`
     public let attributes: [String: Attribute]
 
+    /// Generic type placeholders with constraints
+    public var genericTypePlaceholders: [GenericTypePlaceholder]
+
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     /// :nodoc:
@@ -250,7 +260,8 @@ public typealias SourceryMethod = Method
                 isFailableInitializer: Bool = false,
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
-                definedInTypeName: TypeName? = nil) {
+                definedInTypeName: TypeName? = nil,
+                genericTypePlaceholders: [GenericTypePlaceholder] = []) {
 
         self.name = name
         self.selectorName = selectorName ?? name
@@ -265,6 +276,7 @@ public typealias SourceryMethod = Method
         self.attributes = attributes
         self.annotations = annotations
         self.definedInTypeName = definedInTypeName
+        self.genericTypePlaceholders = genericTypePlaceholders
     }
 
 // sourcery:inline:Method.AutoCoding
@@ -285,6 +297,7 @@ public typealias SourceryMethod = Method
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let genericTypePlaceholders: [GenericTypePlaceholder] = aDecoder.decode(forKey: "genericTypePlaceholders") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["genericTypePlaceholders"])); fatalError() }; self.genericTypePlaceholders = genericTypePlaceholders
         }
 
         /// :nodoc:
@@ -304,6 +317,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.genericTypePlaceholders, forKey: "genericTypePlaceholders")
         }
 // sourcery:end
 }

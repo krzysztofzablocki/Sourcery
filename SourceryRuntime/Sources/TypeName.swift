@@ -264,6 +264,36 @@ public protocol Typed {
 // sourcery:end
 }
 
+// Describes Swift generic type placeholder
+@objcMembers public final class GenericTypePlaceholder: NSObject, SourceryModel {
+    /// Generic placeholder type name
+    public var placeholderName: TypeName
+
+    /// Generic type parameter constraints
+    public var constraints: [Type]
+
+    /// :nodoc:
+    public init(placeholderName: TypeName, constraints: [Type] = []) {
+        self.placeholderName = placeholderName
+        self.constraints = constraints
+    }
+
+    // sourcery:inline:GenericTypePlaceholder.AutoCoding
+            /// :nodoc:
+            required public init?(coder aDecoder: NSCoder) {
+                guard let placeholderName: TypeName = aDecoder.decode(forKey: "placeholderName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["placeholderName"])); fatalError() }; self.placeholderName = placeholderName
+                guard let constraints: [Type] = aDecoder.decode(forKey: "constraints") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["constraints"])); fatalError() }; self.constraints = constraints
+            }
+
+            /// :nodoc:
+            public func encode(with aCoder: NSCoder) {
+                aCoder.encode(self.placeholderName, forKey: "placeholderName")
+                aCoder.encode(self.constraints, forKey: "constraints")
+            }
+
+    // sourcery:end
+}
+
 /// Descibes Swift generic type
 @objcMembers public final class GenericType: NSObject, SourceryModel {
     /// The name of the base type, i.e. `Array` for `Array<Int>`

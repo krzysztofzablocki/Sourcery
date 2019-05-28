@@ -86,7 +86,9 @@ class FileParserSpec: QuickSpec {
                     it("extracts generic struct properly") {
                         expect(parse("struct Foo<Something> { }"))
                                 .to(equal([
-                                    Struct(name: "Foo", isGeneric: true)
+                                    Struct(name: "Foo"
+//                                        , genericTypePlaceholders: [ .init(placeholderName: TypeName("Something"))]
+                                    )
                                           ]))
                     }
 

@@ -187,13 +187,14 @@ import Foundation
                 typealiases: [Typealias] = [],
                 attributes: [String: Attribute] = [:],
                 annotations: [String: NSObject] = [:],
-                isGeneric: Bool = false) {
+                genericTypePlaceholders: [GenericTypePlaceholder] = [],
+                genericTypeParameters: [GenericTypeParameter] = []) {
 
         self.cases = cases
         self.rawTypeName = rawTypeName
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, annotations: annotations, isGeneric: isGeneric)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, annotations: annotations, genericTypePlaceholders: genericTypePlaceholders, genericTypeParameters: genericTypeParameters)
 
         if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)

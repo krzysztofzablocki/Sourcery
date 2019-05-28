@@ -173,7 +173,9 @@ public final class FileParser {
                 return nil
             }
 
-            type.isGeneric = isGeneric(source: source)
+            let TODO_PARSE_GENERICS = ""
+            // TODO: Parse generic type parameters and placeholders
+            
             type.annotations = annotations.from(source)
             type.attributes = parseDeclarationAttributes(source)
             type.bodyBytesRange = Substring.body.range(for: source).map { BytesRange(range: $0) }

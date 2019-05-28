@@ -75,14 +75,6 @@ class TypeSpec: QuickSpec {
             }
 
             describe("isGeneric") {
-                context("given generic type") {
-                    it("recognizes correctly for simple generic") {
-                        let sut = Type(name: "Foo", isGeneric: true)
-
-                        expect(sut.isGeneric).to(beTrue())
-                    }
-                }
-
                 context("given non-generic type") {
                     it("recognizes correctly for simple type") {
                         let sut = Type(name: "Foo")
