@@ -133,6 +133,15 @@ extension GenericTypeParameter {
         return true
     }
 }
+extension GenericTypePlaceholder {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypePlaceholder else { return false }
+        if self.placeholderName != rhs.placeholderName { return false }
+        if self.constraints != rhs.constraints { return false }
+        return true
+    }
+}
 extension Method {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -150,6 +159,7 @@ extension Method {
         if self.annotations != rhs.annotations { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
         return true
     }
 }
@@ -162,6 +172,7 @@ extension MethodParameter {
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
         if self.defaultValue != rhs.defaultValue { return false }
+        if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.annotations != rhs.annotations { return false }
         return true
     }
@@ -237,7 +248,8 @@ extension Type {
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
-        if self.isGeneric != rhs.isGeneric { return false }
+        if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
+        if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.localName != rhs.localName { return false }
         if self.variables != rhs.variables { return false }
         if self.methods != rhs.methods { return false }

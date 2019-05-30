@@ -121,6 +121,15 @@ extension GenericTypeParameter {
         return string
     }
 }
+extension GenericTypePlaceholder {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "placeholderName = \(String(describing: self.placeholderName)), "
+        string += "constraints = \(String(describing: self.constraints))"
+        return string
+    }
+}
 extension Method {
     /// :nodoc:
     override public var description: String {
@@ -137,7 +146,8 @@ extension Method {
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
-        string += "attributes = \(String(describing: self.attributes))"
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "genericTypePlaceholders = \(String(describing: self.genericTypePlaceholders))"
         return string
     }
 }
@@ -151,6 +161,7 @@ extension MethodParameter {
         string += "`inout` = \(String(describing: self.`inout`)), "
         string += "typeAttributes = \(String(describing: self.typeAttributes)), "
         string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "genericTypeParameters = \(String(describing: self.genericTypeParameters)), "
         string += "annotations = \(String(describing: self.annotations))"
         return string
     }
@@ -240,6 +251,9 @@ extension Type {
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "name = \(String(describing: self.name)), "
         string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "isConcreteGenericType = \(String(describing: self.isConcreteGenericType)), "
+        string += "genericTypePlaceholders = \(String(describing: self.genericTypePlaceholders)), "
+        string += "genericTypeParameters = \(String(describing: self.genericTypeParameters)), "
         string += "localName = \(String(describing: self.localName)), "
         string += "variables = \(String(describing: self.variables)), "
         string += "methods = \(String(describing: self.methods)), "

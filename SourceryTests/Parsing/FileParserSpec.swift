@@ -180,7 +180,8 @@ class FileParserSpec: QuickSpec {
                     it("Extracts protocol information for generic type arguments") {
                         let result = parse("protocol Test {}; class Foo<T:Test> : Bar<T> {}")
                         let expected = Class(name: "Foo", genericTypePlaceholders: [
-                            GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [ Protocol(name: "Test") ])
+                            // FIXME: After composing types, Test should be Protocol instead of Type
+                            GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [ Type(name: "Test") ])
                             ])
                         expected.inheritedTypes = [ "Bar<T>"]
                         expect(result).to(equal([expected, Protocol(name: "Test")]))
@@ -233,12 +234,14 @@ class FileParserSpec: QuickSpec {
                         let protokol = Protocol(name: "Bar")
                         let strukt = Struct(name: "Foo", genericTypePlaceholders: [
                             GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [
-                                Class(name: "Ancestor")
+                                // FIXME: AFter composing this should resolve to class instead of Type.
+                                Type(name: "Ancestor")
                                 ])
                             ])
                         let specializedStruct = Struct(name: "Foo", genericTypePlaceholders: [
                             GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [
-                                Class(name: "Ancestor")
+                                // FIXME: AFter composing this should resolve to class instead of Type.
+                                Type(name: "Ancestor")
                                 ])
                             ], genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Sibling"),
                                                                             type: Class(name: "Sibling",

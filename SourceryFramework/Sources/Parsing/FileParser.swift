@@ -376,7 +376,7 @@ extension FileParser {
         let declaration = extractGenericsDeclaration(source: source)
         let typeName = extractGenericTypeName(source: source)
         guard declaration.contains("<") else {
-            return Type(name: typeName,
+            return Type(name: typeName.trimmingCharacters(in: .whitespacesAndNewlines),
                         genericTypeParameters: extractGenericTypeParameters(source: declaration))
         }
         

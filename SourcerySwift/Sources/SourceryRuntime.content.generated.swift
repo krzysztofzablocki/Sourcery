@@ -381,6 +381,8 @@ extension GenericType: NSCoding {}
 
 extension GenericTypeParameter: NSCoding {}
 
+extension GenericTypePlaceholder: NSCoding {}
+
 extension Method: NSCoding {}
 
 extension MethodParameter: NSCoding {}
@@ -553,6 +555,15 @@ extension GenericTypeParameter {
         return string
     }
 }
+extension GenericTypePlaceholder {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "placeholderName = \\(String(describing: self.placeholderName)), "
+        string += "constraints = \\(String(describing: self.constraints))"
+        return string
+    }
+}
 extension Method {
     /// :nodoc:
     override public var description: String {
@@ -569,7 +580,8 @@ extension Method {
         string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
         string += "annotations = \\(String(describing: self.annotations)), "
         string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "attributes = \\(String(describing: self.attributes))"
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "genericTypePlaceholders = \\(String(describing: self.genericTypePlaceholders))"
         return string
     }
 }
@@ -583,6 +595,7 @@ extension MethodParameter {
         string += "`inout` = \\(String(describing: self.`inout`)), "
         string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
         string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "genericTypeParameters = \\(String(describing: self.genericTypeParameters)), "
         string += "annotations = \\(String(describing: self.annotations))"
         return string
     }
@@ -672,6 +685,9 @@ extension Type {
         string += "accessLevel = \\(String(describing: self.accessLevel)), "
         string += "name = \\(String(describing: self.name)), "
         string += "isGeneric = \\(String(describing: self.isGeneric)), "
+        string += "isConcreteGenericType = \\(String(describing: self.isConcreteGenericType)), "
+        string += "genericTypePlaceholders = \\(String(describing: self.genericTypePlaceholders)), "
+        string += "genericTypeParameters = \\(String(describing: self.genericTypeParameters)), "
         string += "localName = \\(String(describing: self.localName)), "
         string += "variables = \\(String(describing: self.variables)), "
         string += "methods = \\(String(describing: self.methods)), "
@@ -900,6 +916,18 @@ extension GenericTypeParameter: Diffable {
         return results
     }
 }
+extension GenericTypePlaceholder: Diffable {
+    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericTypePlaceholder else {
+            results.append("Incorrect type <expected: GenericTypePlaceholder, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "placeholderName").trackDifference(actual: self.placeholderName, expected: castObject.placeholderName))
+        results.append(contentsOf: DiffableResult(identifier: "constraints").trackDifference(actual: self.constraints, expected: castObject.constraints))
+        return results
+    }
+}
 extension Method: Diffable {
     @objc func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -920,6 +948,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypePlaceholders").trackDifference(actual: self.genericTypePlaceholders, expected: castObject.genericTypePlaceholders))
         return results
     }
 }
@@ -935,6 +964,7 @@ extension MethodParameter: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         return results
     }
@@ -1037,7 +1067,8 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
-        results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypePlaceholders").trackDifference(actual: self.genericTypePlaceholders, expected: castObject.genericTypePlaceholders))
+        results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
         results.append(contentsOf: DiffableResult(identifier: "variables").trackDifference(actual: self.variables, expected: castObject.variables))
         results.append(contentsOf: DiffableResult(identifier: "methods").trackDifference(actual: self.methods, expected: castObject.methods))
@@ -1682,6 +1713,15 @@ extension GenericTypeParameter {
         return true
     }
 }
+extension GenericTypePlaceholder {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypePlaceholder else { return false }
+        if self.placeholderName != rhs.placeholderName { return false }
+        if self.constraints != rhs.constraints { return false }
+        return true
+    }
+}
 extension Method {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -1699,6 +1739,7 @@ extension Method {
         if self.annotations != rhs.annotations { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
         return true
     }
 }
@@ -1711,6 +1752,7 @@ extension MethodParameter {
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
         if self.defaultValue != rhs.defaultValue { return false }
+        if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.annotations != rhs.annotations { return false }
         return true
     }
@@ -1786,7 +1828,8 @@ extension Type {
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
-        if self.isGeneric != rhs.isGeneric { return false }
+        if self.genericTypePlaceholders != rhs.genericTypePlaceholders { return false }
+        if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.localName != rhs.localName { return false }
         if self.variables != rhs.variables { return false }
         if self.methods != rhs.methods { return false }
@@ -2171,6 +2214,9 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
+    var genericTypePlaceholders: [GenericTypePlaceholder] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2238,6 +2284,9 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
+    var genericTypePlaceholders: [GenericTypePlaceholder] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2292,6 +2341,13 @@ extension GenericType: GenericTypeAutoJSExport {}
 
 extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
 
+@objc protocol GenericTypePlaceholderAutoJSExport: JSExport {
+    var placeholderName: TypeName { get }
+    var constraints: [Type] { get }
+}
+
+extension GenericTypePlaceholder: GenericTypePlaceholderAutoJSExport {}
+
 @objc protocol MethodAutoJSExport: JSExport {
     var name: String { get }
     var selectorName: String { get }
@@ -2323,6 +2379,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
     var attributes: [String: Attribute] { get }
+    var genericTypePlaceholders: [GenericTypePlaceholder] { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -2335,6 +2392,7 @@ extension Method: MethodAutoJSExport {}
     var type: Type? { get }
     var typeAttributes: [String: Attribute] { get }
     var defaultValue: String? { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var annotations: [String: NSObject] { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -2350,6 +2408,9 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
+    var genericTypePlaceholders: [GenericTypePlaceholder] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2389,6 +2450,9 @@ extension Protocol: ProtocolAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
+    var genericTypePlaceholders: [GenericTypePlaceholder] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
@@ -2475,6 +2539,9 @@ extension TupleType: TupleTypeAutoJSExport {}
     var name: String { get }
     var globalName: String { get }
     var isGeneric: Bool { get }
+    var isConcreteGenericType: Bool { get }
+    var genericTypePlaceholders: [GenericTypePlaceholder] { get }
+    var genericTypeParameters: [GenericTypeParameter] { get }
     var localName: String { get }
     var variables: [Variable] { get }
     var allVariables: [Variable] { get }
