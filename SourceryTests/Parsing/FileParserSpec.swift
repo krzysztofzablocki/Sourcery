@@ -260,7 +260,7 @@ class FileParserSpec: QuickSpec {
 
                     it("parses generic methods of generic class") {
                         let result = parse("class Foo<T:Equatable> { func bar(_ argument: T) {} }")
-                        let parameter = MethodParameter(argumentLabel: nil, name: "argument", typeName: TypeName("T"), type: nil)
+                        let parameter = MethodParameter(argumentLabel: nil, name: "argument", typeName: TypeName("T"), type: Type(name: "T"))
                         let method = SourceryRuntime.Method(name: "bar(_ argument: T)", selectorName: "bar(_:)", parameters: [parameter], definedInTypeName: TypeName("Foo"))
                         let genericPlaceholders = [GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [Type(name: "Equatable")])]
                         let type = Class(name: "Foo", methods: [method], genericTypePlaceholders: genericPlaceholders)
@@ -295,7 +295,7 @@ class FileParserSpec: QuickSpec {
                             ])
                         let method = Method(name: "f<T : Codable>(_ t : T)",
                                             selectorName: "f(_:)",
-                                            parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: nil, defaultValue: nil, annotations: [:], isInout: false)],
+                                            parameters: [MethodParameter(argumentLabel: nil, name: "t", typeName: TypeName("T"), type: Type(name: "T"), defaultValue: nil, annotations: [:], isInout: false)],
                                             returnTypeName: TypeName("T where T : Equatable"),
                                             throws: false, rethrows: false, accessLevel: .internal, isStatic: false, isClass: false,
                                             isFailableInitializer: false, definedInTypeName: TypeName("Foo"),
@@ -806,7 +806,8 @@ class FileParserSpec: QuickSpec {
                                             parameters: [
                                                 MethodParameter(argumentLabel: nil,
                                                                 name: "value",
-                                                                typeName: TypeName("T"))
+                                                                typeName: TypeName("T"),
+                                                                type: Type(name: "T"))
                             ],
                                             returnTypeName: TypeName("Int where T : Equatable"),
                                             definedInTypeName: TypeName("Foo"),

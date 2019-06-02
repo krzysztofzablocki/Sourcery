@@ -73,12 +73,14 @@ class ParserComposerSpec: QuickSpec {
                     beforeEach {
                         method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
                                         parameters: [MethodParameter(name: "bar",
-                                                                     typeName: TypeName("String"))],
+                                                                     typeName: TypeName("String"),
+                                                                     type: Type(name: "String"))],
                                         returnTypeName: TypeName("Void"),
                                         definedInTypeName: TypeName("Foo"))
                         defaultedMethod = Method(name: "fooMethod(bar: String = \"Baz\")", selectorName: "fooMethod(bar:)",
                                                  parameters: [MethodParameter(name: "bar",
                                                                               typeName: TypeName("String"),
+                                                                              type: Type(name: "String"),
                                                                               defaultValue: "\"Baz\"")],
                                                  returnTypeName: TypeName("Void"),
                                                  definedInTypeName: TypeName("Foo"))
@@ -207,7 +209,8 @@ class ParserComposerSpec: QuickSpec {
                                                                                 definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
-                                                                                                         typeName: TypeName("String"))],
+                                                                                                         typeName: TypeName("String"),
+                                                                                                         type: Type(name: "String"))],
                                                                             returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))]
@@ -231,7 +234,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isStatic: false,
                                                                                 definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"), type: Type(name: "RawValue"))],
                                                                             returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))],
@@ -255,7 +258,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isStatic: false,
                                                                                 definedInTypeName: TypeName("Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName("RawValue"), type: Type(name: "RawValue"))],
                                                                             returnTypeName: TypeName("Foo?"),
                                                                             isFailableInitializer: true,
                                                                             definedInTypeName: TypeName("Foo"))],
@@ -289,9 +292,9 @@ class ParserComposerSpec: QuickSpec {
                         ))
                         expect(tuple?.elements[6]).to(equal(
                             TupleElement(name: "closure", typeName: TypeName("(Int) -> (Int -> Int)", closure: ClosureType(name: "(Int) -> (Int -> Int)", parameters: [
-                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int"), type: Type(name: "Int"))
                                 ], returnTypeName: TypeName("(Int -> Int)", closure: ClosureType(name: "(Int) -> Int", parameters: [
-                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"), type: Type(name: "Int"))
                                     ], returnTypeName: TypeName("Int"))))))
                         ))
                         expect(tuple?.elements[7]).to(equal(TupleElement(name: "tuple", typeName: TypeName("(Int, Int)", tuple:
@@ -498,7 +501,7 @@ class ParserComposerSpec: QuickSpec {
 
                         expect(variables?[0].typeName.closure).to(equal(
                             ClosureType(name: "() -> Int throws -> Int", parameters: [], returnTypeName: TypeName("Int throws -> Int", closure: ClosureType(name: "(Int) throws -> Int", parameters: [
-                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int"), type: Type(name: "Int"))
                                 ], returnTypeName: TypeName("Int"), throws: true
                             )))
                         ))
@@ -528,10 +531,10 @@ class ParserComposerSpec: QuickSpec {
 
                         expect(variables?[0].typeName.closure).to(equal(
                             ClosureType(name: "(Int, Int -> Int) -> Int", parameters: [
-                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int")),
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("Int"), type: Type(name: "Int")),
                                 MethodParameter(argumentLabel: nil, typeName: TypeName("Int -> Int", closure: ClosureType(name: "(Int) -> Int", parameters: [
-                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
-                                    ], returnTypeName: TypeName("Int"))))
+                                    MethodParameter(argumentLabel: nil, typeName: TypeName("Int"), type: Type(name: "Int"))
+                                    ], returnTypeName: TypeName("Int"))), type: Type(name: "Int -> Int"))
                                 ], returnTypeName: TypeName("Int")
                             )
                         ))
@@ -687,7 +690,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName("Int"))
                                 ])
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("(FooAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
+                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("(FooAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple), type: Type(name: "(FooAlias, Int)"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: (FooAlias, Int)) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -704,7 +707,11 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName("Int"))
                                 ])
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName("GlobalAlias", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
+                            let expectedMethodParameter = MethodParameter(name: "foo",
+                                                                          typeName: TypeName("GlobalAlias",
+                                                                                             actualTypeName: expectedActualTypeName,
+                                                                                             tuple: expectedActualTypeName.tuple),
+                                                                          type: Type(name: "GlobalAlias"))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some(foo: GlobalAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -791,7 +798,7 @@ class ParserComposerSpec: QuickSpec {
                         it("replaces associated value alias type with actual closure type name") {
                             let expectedTypeName = TypeName("(String) -> Any")
                             expectedTypeName.closure = ClosureType(name: "(String) -> Any", parameters: [
-                                MethodParameter(argumentLabel: nil, typeName: TypeName("String"))
+                                MethodParameter(argumentLabel: nil, typeName: TypeName("String"), type: Type(name: "String"))
                                 ], returnTypeName: TypeName("Any")
                             )
 

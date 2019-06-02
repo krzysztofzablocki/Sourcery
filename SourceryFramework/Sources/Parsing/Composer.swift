@@ -548,11 +548,11 @@ public struct Composer {
                     .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
 
                 if components.count == 1 {
-                    return MethodParameter(argumentLabel: nil, typeName: TypeName(components[0]))
+                    return MethodParameter(argumentLabel: nil, typeName: TypeName(components[0]), type: Type(name: components[0]))
                 } else {
                     let name = components[0].trimmingPrefix("_").stripped()
                     let typeName = components[1]
-                    return MethodParameter(argumentLabel: nil, name: name, typeName: TypeName(typeName))
+                    return MethodParameter(argumentLabel: nil, name: name, typeName: TypeName(typeName), type: Type(name: typeName))
                 }
             })
 

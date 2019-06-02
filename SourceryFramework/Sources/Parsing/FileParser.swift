@@ -796,7 +796,7 @@ extension FileParser {
         let `inout` = type.hasPrefix("inout ")
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(argumentLabel: argumentLabel, name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), isInout: `inout`)
+        let parameter = MethodParameter(argumentLabel: argumentLabel, name: name, typeName: typeName, type: Type(name: type), defaultValue: defaultValue, annotations: annotations.from(source), isInout: `inout`)
         parameter.setSource(source)
         return parameter
     }
