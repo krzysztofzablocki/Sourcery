@@ -17,6 +17,7 @@ private func build(_ source: String) -> [String: SourceKitRepresentable]? {
 }
 
 class ParserComposerSpec: QuickSpec {
+    // swiftlint:disable file_length
     // swiftlint:disable function_body_length
     override func spec() {
         describe("ParserComposer") {
@@ -422,6 +423,32 @@ class ParserComposerSpec: QuickSpec {
                         expect(variables?[4].typeName.dictionary).to(equal(
                             DictionaryType(name: "[Int: ()->()]", valueTypeName: TypeName("()->()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))), keyTypeName: TypeName("Int"))
                         ))
+                    }
+                }
+
+                context("given generic inheritance") {
+                    it("resolves inherited type for subclasses") {
+                        let result = parse("""
+                            class Generic<T> {}
+                            class Specialized : Generic<Int> {}
+                        """)
+                        let generic = Class(name: "Generic", genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
+                        let specialized = Class(name: "Specialized", inheritedTypes: ["Generic<Int>"])
+                        expect(result).to(equal([ generic, specialized]))
+                    }
+
+                    it("resolves inherited types for generic placeholders") {
+                        let result = parse("""
+                            class Generic<T> {}
+                            class Specialized<U: Generic<Int>> {}
+                        """)
+                        let generic = Class(name: "Generic", genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
+                        let specializedGeneric = Class(name: "Generic",
+                                                       genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T"))],
+                                                       genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))])
+                        let placeholder = GenericTypePlaceholder(placeholderName: TypeName("U"), constraints: [specializedGeneric])
+                        let specialized = Class(name: "Specialized", genericTypePlaceholders: [placeholder])
+                        expect(result).to(equal([ generic, specialized]))
                     }
                 }
 

@@ -750,7 +750,7 @@ extension FileParser {
             }
         }
         
-        var genericPlaceholders: [GenericTypePlaceholder] = []
+        let genericPlaceholders: [GenericTypePlaceholder]
         if let genericSource = extract(.name, from: source),
             let parameterStartIndex = genericSource.index(of: "("),
             let whereClauseSource = nameSuffix {
