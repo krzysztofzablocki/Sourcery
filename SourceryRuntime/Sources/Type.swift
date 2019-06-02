@@ -53,7 +53,7 @@ import Foundation
         return isGeneric && !genericTypeParameters.isEmpty
     }
 
-    // Generic type placeholders
+    /// Generic type placeholders
     public var genericTypePlaceholders: [GenericTypePlaceholder]
 
     /// Generic type parameters

@@ -264,7 +264,7 @@ public protocol Typed {
 // sourcery:end
 }
 
-// Describes Swift generic type placeholder
+/// Describes Swift generic type placeholder
 @objcMembers public final class GenericTypePlaceholder: NSObject, SourceryModel {
     /// Generic placeholder type name
     public var placeholderName: TypeName
