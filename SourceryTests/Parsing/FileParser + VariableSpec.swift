@@ -34,7 +34,7 @@ class FileParserVariableSpec: QuickSpec {
                 }
 
                 it("extracts standard property correctly") {
-                    expect(parse("var name: String")).to(equal(Variable(name: "name", typeName: TypeName("String"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: String")).to(equal(Variable(name: "name", typeName: TypeName("String"), type: Type(name: "String"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
                 context("given variable with initial value") {
@@ -104,26 +104,32 @@ class FileParserVariableSpec: QuickSpec {
 
                 it("extracts standard let property correctly") {
                     let r = parse("let name: String")
-                    expect(r).to(equal(Variable(name: "name", typeName: TypeName("String"), accessLevel: (read: .internal, write: .none), isComputed: false)))
+                    expect(r).to(equal(Variable(name: "name", typeName: TypeName("String"), type: Type(name: "String"), accessLevel: (read: .internal, write: .none), isComputed: false)))
                 }
 
                 it("extracts computed property correctly") {
-                    expect(parse("var name: Int { return 2 }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)))
-                    expect(parse("let name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: false)))
-                    expect(parse("var name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
-                    expect(parse("var name: Int { get { return 0 } set {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: true)))
-                    expect(parse("var name: Int { willSet { } }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
-                    expect(parse("var name: Int { didSet {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: Int { return 2 }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)))
+                    expect(parse("let name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: false)))
+                    expect(parse("var name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: Int { get { return 0 } set {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: true)))
+                    expect(parse("var name: Int { willSet { } }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: Int { didSet {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
                 it("extracts generic property correctly") {
-                    expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", typeName: TypeName("Observable<Int>"), accessLevel: (read: .internal, write: .none), isComputed: false)))
+                    expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name",
+                                                                                 typeName: TypeName("Observable<Int>"),
+                                                                                 type: Type(name: "Observable", genericTypeParameters: [
+                                                                                    GenericTypeParameter(typeName: TypeName("Int"))
+                                                                                    ]),
+                                                                                 accessLevel: (read: .internal, write: .none), isComputed: false)))
+
                 }
 
                 context("given it has sourcery annotations") {
 
                     it("extracts single annotation") {
-                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
 
                         expect(parse("// sourcery: skipEquability\n" +
@@ -131,7 +137,7 @@ class FileParserVariableSpec: QuickSpec {
                     }
 
                     it("extracts multiple annotations on the same line") {
-                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
                         expectedVariable.annotations["jsonKey"] = "json_key" as NSString
 
@@ -140,7 +146,7 @@ class FileParserVariableSpec: QuickSpec {
                     }
 
                     it("extracts multi-line annotations, including numbers") {
-                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
                         expectedVariable.annotations["jsonKey"] = "json_key" as NSString
                         expectedVariable.annotations["thirdProperty"] = NSNumber(value: -3)
@@ -152,7 +158,7 @@ class FileParserVariableSpec: QuickSpec {
                     }
 
                     it("extracts annotations interleaved with comments") {
-                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["isSet"] = NSNumber(value: true)
                         expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
 
@@ -164,7 +170,7 @@ class FileParserVariableSpec: QuickSpec {
                     }
 
                     it("stops extracting annotations if it encounters a non-comment line") {
-                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
+                        let expectedVariable = Variable(name: "name", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
 
                         let result = parse(        "// sourcery: isSet\n" +

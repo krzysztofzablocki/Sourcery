@@ -302,6 +302,21 @@ public final class FileParser {
 
 // MARK: - Details parsing
 extension FileParser {
+    
+    fileprivate func parseConcreteType(source: String) -> Type? {
+        guard !source.isEmpty else { return nil }
+        let declaration = extractGenericsDeclaration(source: source)
+        if declaration.isEmpty {
+            // This is not generic type.
+            return Type(name: source)
+        }
+        let typeName = extractGenericTypeName(source: source)
+        guard declaration.contains("<") else {
+            return Type(name: typeName,
+                        genericTypeParameters: extractGenericTypeParameters(source: declaration))
+        }
+        return Type(name: typeName, genericTypeParameters: extractGenericTypeParameters(source: declaration))
+    }
 
     fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
         guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }),
@@ -615,12 +630,15 @@ extension FileParser {
         }
 
         let typeName: TypeName
+        let maybeConcreteType: Type?
         if let type = maybeType {
+            maybeConcreteType = parseConcreteType(source: type)
             typeName = TypeName(type)
         } else {
             let declaration = extract(.key, from: source)
             // swiftlint:disable:next force_unwrapping
             typeName = TypeName("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
+            maybeConcreteType = nil
         }
 
         let setterAccessibility = self.setterAccessibility(source: source)
@@ -635,7 +653,7 @@ extension FileParser {
         let defaultValue = extractDefaultValue(type: maybeType, from: source)
         let definedInTypeName = definedIn.map { TypeName($0.name) }
 
-        let variable = Variable(name: name, typeName: typeName, accessLevel: accessLevel, isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
+        let variable = Variable(name: name, typeName: typeName, type: maybeConcreteType, accessLevel: accessLevel, isComputed: computed, isStatic: isStatic, defaultValue: defaultValue, attributes: parseDeclarationAttributes(source), annotations: annotations.from(source), definedInTypeName: definedInTypeName)
         variable.setSource(source)
 
         return variable

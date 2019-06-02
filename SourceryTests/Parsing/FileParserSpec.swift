@@ -37,7 +37,7 @@ class FileParserSpec: QuickSpec {
                                 [:]
                         ]
                         let expectedVariables = (1...3)
-                                .map { Variable(name: "property\($0)", typeName: TypeName("Int"), annotations: annotations[$0 - 1], definedInTypeName: TypeName("Foo")) }
+                                .map { Variable(name: "property\($0)", typeName: TypeName("Int"), type: Type(name: "Int"), annotations: annotations[$0 - 1], definedInTypeName: TypeName("Foo")) }
                         let expectedType = Class(name: "Foo", variables: expectedVariables, annotations: ["skipEquality": NSNumber(value: true)])
 
                         let result = parse("// sourcery:begin: skipEquality\n\n\n\n" +
@@ -58,7 +58,7 @@ class FileParserSpec: QuickSpec {
                             ["fileAnnotation": NSNumber(value: true)]
                         ]
                         let expectedVariables = (1...3)
-                            .map { Variable(name: "property\($0)", typeName: TypeName("Int"), annotations: annotations[$0 - 1], definedInTypeName: TypeName("Foo")) }
+                            .map { Variable(name: "property\($0)", typeName: TypeName("Int"), type: Type(name: "Int"), annotations: annotations[$0 - 1], definedInTypeName: TypeName("Foo")) }
                         let expectedType = Class(name: "Foo", variables: expectedVariables, annotations: ["fileAnnotation": NSNumber(value: true), "skipEquality": NSNumber(value: true)])
 
                         let result = parse("// sourcery:file: fileAnnotation\n" +
@@ -115,7 +115,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts instance variables properly") {
                         expect(parse("struct Foo { var x: Int }"))
                                 .to(equal([
-                                    Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))])
+                                    Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))])
                                           ]))
                     }
 
@@ -123,8 +123,8 @@ class FileParserSpec: QuickSpec {
                         expect(parse("struct Foo { static var x: Int { return 2 }; class var y: Int = 0 }"))
                                 .to(equal([
                                     Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
-                                        Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true, definedInTypeName: TypeName("Foo")),
-                                        Variable(name: "y", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, isStatic: true, defaultValue: "0", definedInTypeName: TypeName("Foo"))
+                                        Variable(name: "x", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true, definedInTypeName: TypeName("Foo")),
+                                        Variable(name: "y", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, isStatic: true, defaultValue: "0", definedInTypeName: TypeName("Foo"))
                                         ])
                                     ]))
                     }
@@ -157,7 +157,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts variables properly") {
                         expect(parse("class Foo { }; extension Foo { var x: Int }"))
                                 .to(equal([
-                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))])
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))])
                                 ]))
                     }
 
@@ -323,7 +323,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts extensions properly") {
                         expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { return 0 } }"))
                             .to(equal([
-                                Type(name: "Bar", accessLevel: .internal, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
+                                Type(name: "Bar", accessLevel: .internal, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
                                 Protocol(name: "Foo")
                                 ]))
                     }
@@ -574,8 +574,8 @@ class FileParserSpec: QuickSpec {
                                             ]),
                                         EnumCase(name: "optionC")
                                         ], variables: [
-                                            Variable(name: "first", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ], definedInTypeName: TypeName("Foo")),
-                                            Variable(name: "second", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ], definedInTypeName: TypeName("Foo"))
+                                            Variable(name: "first", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ], definedInTypeName: TypeName("Foo")),
+                                            Variable(name: "second", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ], definedInTypeName: TypeName("Foo"))
                                         ])
                                     ]))
                         }
@@ -612,7 +612,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts variables properly") {
                         expect(parse("enum Foo { var x: Int { return 1 } }"))
                                 .to(equal([
-                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [], variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Foo"))])
+                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [], variables: [Variable(name: "x", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Foo"))])
                                 ]))
                     }
 
@@ -783,14 +783,14 @@ class FileParserSpec: QuickSpec {
                     it("does not consider protocol variables as computed") {
                         expect(parse("protocol Foo { var some: Int { get } }"))
                             .to(equal([
-                                Protocol(name: "Foo", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: false, definedInTypeName: TypeName("Foo"))])
+                                Protocol(name: "Foo", variables: [Variable(name: "some", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (.internal, .none), isComputed: false, definedInTypeName: TypeName("Foo"))])
                                 ]))
                     }
 
                     it("does consider type variables as computed when they are, even if they adhere to protocol") {
                         expect(parse("protocol Foo { var some: Int { get } }\nclass Bar: Foo { var some: Int { return 2 } }").first)
                             .to(equal(
-                                Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
+                                Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
                                 ))
                     }
 

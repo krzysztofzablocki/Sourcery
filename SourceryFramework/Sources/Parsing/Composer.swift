@@ -92,7 +92,7 @@ public struct Composer {
         DispatchQueue.concurrentPerform(iterations: array.count) { (counter) in
             let type = array[counter]
             type.typealiases.forEach { (_, alias) in
-                alias.type = resolveType(alias.typeName, alias.type, type)
+                alias.type = resolveType(alias.typeName, alias.type, type) ?? alias.type
             }
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
@@ -142,7 +142,7 @@ public struct Composer {
         let lookupName = typeName.actualTypeName ?? typeName
 
         let resolveTypeWithName = { (typeName: TypeName, presumedType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, presumedType: presumedType, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+            return self.resolveType(typeName: typeName, presumedType: presumedType, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) ?? presumedType
         }
 
         // should we also set these types on lookupName?
@@ -201,19 +201,19 @@ public struct Composer {
     typealias TypeResolver = (TypeName, Type?, Type?) -> Type?
 
     private static func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
-        variable.type = resolve(variable.typeName, variable.type, type)
+        variable.type = resolve(variable.typeName, variable.type, type) ?? variable.type
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
         /// need to resolve the type to correctly parse typealiases
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
         if let definedInTypeName = variable.definedInTypeName {
-            _ = resolve(definedInTypeName, variable.type, type)
+            _ = resolve(definedInTypeName, variable.definedInType, type)
         }
     }
 
     private static func resolveSubscriptTypes(_ subscript: Subscript, of type: Type, resolve: TypeResolver) {
         `subscript`.parameters.forEach { (parameter) in
-            parameter.type = resolve(parameter.typeName, parameter.type, type)
+            parameter.type = resolve(parameter.typeName, parameter.type, type) ?? parameter.type
         }
 
         `subscript`.returnType = resolve(`subscript`.returnTypeName, `subscript`.returnType, type)
@@ -224,7 +224,7 @@ public struct Composer {
 
     private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type?, resolve: TypeResolver) {
         method.parameters.forEach { parameter in
-            parameter.type = resolve(parameter.typeName, parameter.type, type)
+            parameter.type = resolve(parameter.typeName, parameter.type, type) ?? parameter.type
         }
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
@@ -254,7 +254,7 @@ public struct Composer {
     private static func resolveEnumTypes(_ enumeration: Enum, types: [String: Type], resolve: TypeResolver) {
         enumeration.cases.forEach { enumCase in
             enumCase.associatedValues.forEach { associatedValue in
-                associatedValue.type = resolve(associatedValue.typeName, associatedValue.type, enumeration)
+                associatedValue.type = resolve(associatedValue.typeName, associatedValue.type, enumeration) ?? associatedValue.type
             }
         }
 

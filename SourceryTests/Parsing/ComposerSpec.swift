@@ -199,6 +199,7 @@ class ParserComposerSpec: QuickSpec {
                                                            cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: TypeName("String"),
+                                                                                type: Type(name: "String"),
                                                                                 accessLevel: (read: .internal,
                                                                                               write: .none),
                                                                                 isComputed: true,
@@ -224,6 +225,7 @@ class ParserComposerSpec: QuickSpec {
                                                            cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: TypeName("RawValue"),
+                                                                                type: Type(name: "RawValue"),
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false,
@@ -247,6 +249,7 @@ class ParserComposerSpec: QuickSpec {
                                                            cases: [EnumCase(name: "optionA")],
                                                            variables: [Variable(name: "rawValue",
                                                                                 typeName: TypeName("RawValue"),
+                                                                                type: Type(name: "RawValue"),
                                                                                 accessLevel: (read: .internal, write: .none),
                                                                                 isComputed: true,
                                                                                 isStatic: false,
@@ -592,7 +595,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Type(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName("Int"))
                                 ])
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("(GlobalAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple), definedInTypeName: TypeName("Bar"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("(GlobalAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple), type: Type(name: "(GlobalAlias, Int)"), definedInTypeName: TypeName("Bar"))
 
                             let types = parse("typealias GlobalAlias = Foo; class Foo {}; class Bar { var foo: (GlobalAlias, Int) }")
                             let variable = types.first?.variables.first
@@ -609,7 +612,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName("Int"))
                                 ])
-                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple), definedInTypeName: TypeName("Bar"))
+                            let expectedVariable = Variable(name: "foo", typeName: TypeName("GlobalAlias", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple), type: Type(name: "GlobalAlias"), definedInTypeName: TypeName("Bar"))
 
                             let type = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { var foo: GlobalAlias }").first
                             let variable = type?.variables.first
@@ -936,7 +939,19 @@ class ParserComposerSpec: QuickSpec {
 
                     it("extracts property of nested generic type properly") {
                         let expectedActualTypeName = TypeName("Blah.Foo<Blah.FooBar>?")
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo<FooBar>?", actualTypeName: expectedActualTypeName), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedVariable = Variable(name: "foo",
+                                                        typeName: TypeName("Foo<FooBar>?",
+                                                                           actualTypeName: expectedActualTypeName),
+                                                        type: Struct(name: "Foo",
+                                                                     parent: Struct(name: "Blah"),
+                                                                     genericTypePlaceholders: [
+                                                                        .init(placeholderName: TypeName("T"))
+                                                                    ],
+                                                                     genericTypeParameters: [
+                                                                        .init(typeName: TypeName("FooBar"),
+                                                                              type: Struct(name: "Blah.FooBar"))]),
+                                                        accessLevel: (read: .internal, write: .none),
+                                                        definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "FooBar"), Struct(name: "Foo<T>"), Struct(name: "Bar", variables: [expectedVariable])])
                         expectedActualTypeName.generic = GenericType(name: "Blah.Foo", typeParameters: [GenericTypeParameter(typeName: TypeName("Blah.FooBar"), type: expectedBlah.containedType["FooBar"])])
                         expectedVariable.typeName.generic = expectedActualTypeName.generic
@@ -949,7 +964,13 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type properly") {
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("Foo?", actualTypeName: TypeName("Blah.Foo?")), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedVariable = Variable(name: "foo",
+                                                        typeName: TypeName("Foo?",
+                                                                           actualTypeName: TypeName("Blah.Foo?")),
+                                                        type: Struct(name: "Foo",
+                                                                     parent: Struct(name: "Blah")),
+                                                        accessLevel: (read: .internal, write: .none),
+                                                        definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: Foo? }}")
@@ -963,7 +984,7 @@ class ParserComposerSpec: QuickSpec {
 
                     it("extracts property of nested type array properly") {
                         let expectedActualTypeName = TypeName("[Blah.Foo]?")
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName: expectedActualTypeName), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName: expectedActualTypeName), type: Type(name: "[Foo]?"), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
                         expectedActualTypeName.array = ArrayType(name: "[Blah.Foo]?", elementTypeName: TypeName("Blah.Foo"), elementType: Struct(name: "Foo", parent: expectedBlah))
                         expectedVariable.typeName.array = expectedActualTypeName.array
@@ -981,7 +1002,7 @@ class ParserComposerSpec: QuickSpec {
 
                     it("extracts property of nested type dictionary properly") {
                         let expectedActualTypeName = TypeName("[Blah.Foo: Blah.Foo]?")
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: expectedActualTypeName), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: expectedActualTypeName), type: Type(name: "[Foo: Foo]?"), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
                         expectedActualTypeName.dictionary = DictionaryType(name: "[Blah.Foo: Blah.Foo]?", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: expectedBlah), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: expectedBlah))
                         expectedVariable.typeName.dictionary = expectedActualTypeName.dictionary
@@ -1003,7 +1024,7 @@ class ParserComposerSpec: QuickSpec {
                             TupleElement(name: "1", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
                             TupleElement(name: "2", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo"))
                             ]))
-                        let expectedVariable = Variable(name: "foo", typeName: TypeName("(a: Foo, _: Foo, Foo)?", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
+                        let expectedVariable = Variable(name: "foo", typeName: TypeName("(a: Foo, _: Foo, Foo)?", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple), type: Type(name: "(a: Foo, _: Foo, Foo)?"), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
 
                         let types = parse("struct Blah { struct Foo {}; struct Bar { let foo: (a: Foo, _: Foo, Foo)? }}")
@@ -1032,7 +1053,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extends type with extension") {
-                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("MyModule.Bar"))])
+                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), type: Type(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("MyModule.Bar"))])
                         expectedBar.module = "MyModule"
 
                         let types = parseModules(

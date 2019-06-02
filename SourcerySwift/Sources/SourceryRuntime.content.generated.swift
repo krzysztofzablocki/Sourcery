@@ -734,6 +734,7 @@ extension Variable {
         var string = "\\(Swift.type(of: self)): "
         string += "name = \\(String(describing: self.name)), "
         string += "typeName = \\(String(describing: self.typeName)), "
+        string += "type = \\(String(describing: self.type)), "
         string += "isComputed = \\(String(describing: self.isComputed)), "
         string += "isStatic = \\(String(describing: self.isStatic)), "
         string += "readAccess = \\(String(describing: self.readAccess)), "
@@ -1132,6 +1133,7 @@ extension Variable: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
         results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
@@ -1882,6 +1884,7 @@ extension Variable {
         guard let rhs = object as? Variable else { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.type != rhs.type { return false }
         if self.isComputed != rhs.isComputed { return false }
         if self.isStatic != rhs.isStatic { return false }
         if self.readAccess != rhs.readAccess { return false }
@@ -4741,7 +4744,6 @@ public typealias SourceryVariable = Variable
     /// Variable type name
     public let typeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     /// Variable type, if known, i.e. if the type is declared in the scanned sources.
     /// For explanation, see <https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html#what-are-em-known-em-and-em-unknown-em-types>
     public var type: Type?

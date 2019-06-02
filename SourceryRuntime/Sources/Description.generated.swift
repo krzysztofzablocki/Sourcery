@@ -300,6 +300,7 @@ extension Variable {
         var string = "\(Swift.type(of: self)): "
         string += "name = \(String(describing: self.name)), "
         string += "typeName = \(String(describing: self.typeName)), "
+        string += "type = \(String(describing: self.type)), "
         string += "isComputed = \(String(describing: self.isComputed)), "
         string += "isStatic = \(String(describing: self.isStatic)), "
         string += "readAccess = \(String(describing: self.readAccess)), "
