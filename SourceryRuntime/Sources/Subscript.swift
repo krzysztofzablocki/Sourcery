@@ -14,7 +14,6 @@ import Foundation
         return returnTypeName.actualTypeName ?? returnTypeName
     }
 
-    // sourcery: skipEquality, skipDescription
     /// Actual return value type, if known
     public var returnType: Type?
 

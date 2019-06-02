@@ -17,7 +17,6 @@ public typealias SourceryMethod = Method
     /// Parameter flag whether it's inout or not
     public let `inout`: Bool
 
-    // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
     public var type: Type?
 

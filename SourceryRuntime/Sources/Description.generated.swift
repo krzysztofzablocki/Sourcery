@@ -159,6 +159,7 @@ extension MethodParameter {
         string += "name = \(String(describing: self.name)), "
         string += "typeName = \(String(describing: self.typeName)), "
         string += "`inout` = \(String(describing: self.`inout`)), "
+        string += "type = \(String(describing: self.type)), "
         string += "typeAttributes = \(String(describing: self.typeAttributes)), "
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "genericTypeParameters = \(String(describing: self.genericTypeParameters)), "
@@ -201,6 +202,7 @@ extension Subscript {
         string += "parameters = \(String(describing: self.parameters)), "
         string += "returnTypeName = \(String(describing: self.returnTypeName)), "
         string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "returnType = \(String(describing: self.returnType)), "
         string += "isFinal = \(String(describing: self.isFinal)), "
         string += "readAccess = \(String(describing: self.readAccess)), "
         string += "writeAccess = \(String(describing: self.writeAccess)), "
@@ -281,6 +283,7 @@ extension Typealias {
         var string = "\(Swift.type(of: self)): "
         string += "aliasName = \(String(describing: self.aliasName)), "
         string += "typeName = \(String(describing: self.typeName)), "
+        string += "type = \(String(describing: self.type)), "
         string += "parentName = \(String(describing: self.parentName)), "
         string += "name = \(String(describing: self.name))"
         return string

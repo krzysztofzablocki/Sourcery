@@ -260,7 +260,7 @@ class FileParserSpec: QuickSpec {
 
                     it("parses generic methods of generic class") {
                         let result = parse("class Foo<T:Equatable> { func bar(_ argument: T) {} }")
-                        let parameter = MethodParameter(argumentLabel: nil, name: "argument", typeName: TypeName("T"), type: Type(name: "T"))
+                        let parameter = MethodParameter(argumentLabel: nil, name: "argument", typeName: TypeName("T"), type: nil)
                         let method = SourceryRuntime.Method(name: "bar(_ argument: T)", selectorName: "bar(_:)", parameters: [parameter], definedInTypeName: TypeName("Foo"))
                         let genericPlaceholders = [GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [Type(name: "Equatable")])]
                         let type = Class(name: "Foo", methods: [method], genericTypePlaceholders: genericPlaceholders)

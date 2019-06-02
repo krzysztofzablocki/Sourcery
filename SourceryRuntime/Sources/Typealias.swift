@@ -9,7 +9,6 @@ import Foundation
     // Target name
     public let typeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     public var type: Type?
 
     // sourcery: skipEquality, skipDescription

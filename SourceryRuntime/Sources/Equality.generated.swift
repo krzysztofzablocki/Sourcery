@@ -171,6 +171,7 @@ extension MethodParameter {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
+        if self.type != rhs.type { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.annotations != rhs.annotations { return false }
@@ -205,6 +206,7 @@ extension Subscript {
         guard let rhs = object as? Subscript else { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.returnType != rhs.returnType { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
         if self.annotations != rhs.annotations { return false }
@@ -284,6 +286,7 @@ extension Typealias {
         guard let rhs = object as? Typealias else { return false }
         if self.aliasName != rhs.aliasName { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.type != rhs.type { return false }
         if self.parentName != rhs.parentName { return false }
         return true
     }

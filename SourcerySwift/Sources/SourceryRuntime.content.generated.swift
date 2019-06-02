@@ -593,6 +593,7 @@ extension MethodParameter {
         string += "name = \\(String(describing: self.name)), "
         string += "typeName = \\(String(describing: self.typeName)), "
         string += "`inout` = \\(String(describing: self.`inout`)), "
+        string += "type = \\(String(describing: self.type)), "
         string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
         string += "defaultValue = \\(String(describing: self.defaultValue)), "
         string += "genericTypeParameters = \\(String(describing: self.genericTypeParameters)), "
@@ -635,6 +636,7 @@ extension Subscript {
         string += "parameters = \\(String(describing: self.parameters)), "
         string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
         string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
+        string += "returnType = \\(String(describing: self.returnType)), "
         string += "isFinal = \\(String(describing: self.isFinal)), "
         string += "readAccess = \\(String(describing: self.readAccess)), "
         string += "writeAccess = \\(String(describing: self.writeAccess)), "
@@ -715,6 +717,7 @@ extension Typealias {
         var string = "\\(Swift.type(of: self)): "
         string += "aliasName = \\(String(describing: self.aliasName)), "
         string += "typeName = \\(String(describing: self.typeName)), "
+        string += "type = \\(String(describing: self.type)), "
         string += "parentName = \\(String(describing: self.parentName)), "
         string += "name = \\(String(describing: self.name))"
         return string
@@ -964,6 +967,7 @@ extension MethodParameter: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
+        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "genericTypeParameters").trackDifference(actual: self.genericTypeParameters, expected: castObject.genericTypeParameters))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
@@ -1013,6 +1017,7 @@ extension Subscript: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "returnType").trackDifference(actual: self.returnType, expected: castObject.returnType))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
@@ -1109,6 +1114,7 @@ extension Typealias: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: castObject.aliasName))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "type").trackDifference(actual: self.type, expected: castObject.type))
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
         return results
     }
@@ -1753,6 +1759,7 @@ extension MethodParameter {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
+        if self.type != rhs.type { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.genericTypeParameters != rhs.genericTypeParameters { return false }
         if self.annotations != rhs.annotations { return false }
@@ -1787,6 +1794,7 @@ extension Subscript {
         guard let rhs = object as? Subscript else { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.returnType != rhs.returnType { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
         if self.annotations != rhs.annotations { return false }
@@ -1866,6 +1874,7 @@ extension Typealias {
         guard let rhs = object as? Typealias else { return false }
         if self.aliasName != rhs.aliasName { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.type != rhs.type { return false }
         if self.parentName != rhs.parentName { return false }
         return true
     }
@@ -2707,7 +2716,6 @@ public typealias SourceryMethod = Method
     /// Parameter flag whether it's inout or not
     public let `inout`: Bool
 
-    // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
     public var type: Type?
 
@@ -3270,7 +3278,6 @@ import Foundation
         return returnTypeName.actualTypeName ?? returnTypeName
     }
 
-    // sourcery: skipEquality, skipDescription
     /// Actual return value type, if known
     public var returnType: Type?
 
@@ -4573,7 +4580,6 @@ import Foundation
     // Target name
     public let typeName: TypeName
 
-    // sourcery: skipEquality, skipDescription
     public var type: Type?
 
     // sourcery: skipEquality, skipDescription
