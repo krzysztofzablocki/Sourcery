@@ -130,47 +130,46 @@ public extension String {
 
     /// :nodoc:
     func components(separatedBy delimiter: String, excludingDelimiterBetween between: (open: String, close: String)) -> [String] {
+        return self.components(separatedBy: delimiter, excludingDelimiterBetween: (between.open.map { String($0) }, between.close.map { String($0) }))
+    }
+
+    /// :nodoc:
+    func components(separatedBy delimiter: String, excludingDelimiterBetween between: (open: [String], close: [String])) -> [String] {
         var boundingCharactersCount: Int = 0
         var quotesCount: Int = 0
         var item = ""
         var items = [String]()
         var matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
 
-        for char in self {
-            if between.open.contains(char) {
-                if !(boundingCharactersCount == 0 && String(char) == delimiter) {
+        var i = self.startIndex
+        while i < self.endIndex {
+            var offset = 1
+            defer {
+                i = self.index(i, offsetBy: offset)
+            }
+            let currentlyScanned = self[i..<(self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) ?? self.endIndex)]
+            if let openString = between.open.first(where: { String(self[i...]).starts(with: $0) }) {
+                if !(boundingCharactersCount == 0 && String(self[i]) == delimiter) {
                     boundingCharactersCount += 1
                 }
-            } else if between.close.contains(char) {
+                offset = openString.count
+            } else if let closeString = between.close.first(where: { String(self[i...]).starts(with: $0) }) {
                 // do not count `->`
-                if !(char == ">" && item.last == "-") {
+                if !(self[i] == ">" && item.last == "-") {
                     boundingCharactersCount = max(0, boundingCharactersCount - 1)
                 }
+                offset = closeString.count
             }
-            if char == "\"" {
+            if self[i] == "\"" {
                 quotesCount += 1
             }
 
-            guard boundingCharactersCount == 0 && quotesCount % 2 == 0 else {
-                item.append(char)
-                continue
-            }
-
-            if char == matchedDelimiter.leftToMatch.first {
-                matchedDelimiter.alreadyMatched.append(char)
-                matchedDelimiter.leftToMatch = String(matchedDelimiter.leftToMatch.dropFirst())
-                if matchedDelimiter.leftToMatch.isEmpty {
-                    items.append(item)
-                    item = ""
-                    matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
-                }
+            if currentlyScanned == delimiter && boundingCharactersCount == 0 && quotesCount % 2 == 0 {
+                items.append(item)
+                item = ""
+                i = self.index(i, offsetBy: delimiter.count - 1)
             } else {
-                if matchedDelimiter.alreadyMatched.isEmpty {
-                    item.append(char)
-                } else {
-                    item.append(matchedDelimiter.alreadyMatched)
-                    matchedDelimiter = (alreadyMatched: "", leftToMatch: delimiter)
-                }
+                item += self[i..<self.index(i, offsetBy: offset)]
             }
         }
         items.append(item)

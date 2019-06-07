@@ -276,11 +276,14 @@ class FileParserSpec: QuickSpec {
                     context("given enum cases annotations") {
 
                         it("extracts cases with annotations properly") {
-                            expect(parse("enum Foo {\n //sourcery:begin: block\n// sourcery: first, second=\"value\"\n case optionA(/* sourcery: value */Int)\n // sourcery: third\n case optionB\n case optionC \n//sourcery:end}"))
+                            expect(parse("enum Foo {\n //sourcery:begin: block\n// sourcery: first, second=\"value\"\n case optionA(/* sourcery: first, second = \"value\" */Int)\n // sourcery: third\n case optionB\n case optionC \n//sourcery:end}"))
                                 .to(equal([
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
-                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: ["value": NSNumber(value: true)])
+                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: [
+                                                "first": NSNumber(value: true),
+                                                "second": "value" as NSString
+                                                ])
                                             ], annotations: [
                                                 "block": NSNumber(value: true),
                                                 "first": NSNumber(value: true),
@@ -300,12 +303,13 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts cases with inline annotations properly") {
-                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: associatedValue */Int); /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
+                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: first, second = \"value\" */Int); /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
                                 .to(equal([
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
                                             AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: [
-                                                "associatedValue": NSNumber(value: true)
+                                                "first": NSNumber(value: true),
+                                                "second": "value" as NSString
                                                 ])
                                             ], annotations: [
                                                 "block": NSNumber(value: true),
@@ -369,13 +373,13 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts associated value annotations properly") {
-                        let result = parse("enum Foo {\n case optionA(\n// sourcery: annotation\nInt)\n case optionB }")
+                        let result = parse("enum Foo {\n case optionA(\n// sourcery: first\n// sourcery: second, third = \"value\"\nInt)\n case optionB }")
                         expect(result)
                             .to(equal([
                                 Enum(name: "Foo",
                                      cases: [
                                         EnumCase(name: "optionA", associatedValues: [
-                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: ["annotation": NSNumber(value: true)])
+                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: ["first": NSNumber(value: true), "second": NSNumber(value: true), "third": "value" as NSString])
                                             ]),
                                         EnumCase(name: "optionB")
                                     ])

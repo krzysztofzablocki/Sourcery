@@ -706,7 +706,10 @@
 				003958827841F12BBF99EB67 /* Frameworks */,
 				BF6C9BBD135B544916C5F0CD /* Pods */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		CD754C8C1D853F000082B512 /* Products */ = {
 			isa = PBXGroup;
