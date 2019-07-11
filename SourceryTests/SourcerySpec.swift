@@ -978,7 +978,6 @@ class SourcerySpecTests: QuickSpec {
                     expect {
                         originalProject = try XcodeProj(path: projectFilePath)
                         }.toNot(throwError())
-
                 }
 
                 afterEach {
