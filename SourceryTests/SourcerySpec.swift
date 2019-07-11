@@ -7,7 +7,7 @@ import xcproj
 
 private let version = "Major.Minor.Patch"
 
-// swiftlint:disable type_body_length
+// swiftlint:disable file_length type_body_length
 class SourcerySpecTests: QuickSpec {
     // swiftlint:disable:next function_body_length
     override func spec() {
@@ -944,36 +944,83 @@ class SourcerySpecTests: QuickSpec {
             }
 
             context("given project") {
-                it("links generated files") {
+                var originalProject: XcodeProj?
+
+                let projectPath = Stubs.sourceDirectory + "TestProject"
+                let projectFilePath = Stubs.sourceDirectory + "TestProject/TestProject.xcodeproj"
+                // swiftlint:disable:next force_try
+                let sources = try! Source(dict: [
+                    "project": [
+                        "file": "TestProject.xcodeproj",
+                        "target": ["name": "TestProject"]
+                    ]], relativePath: projectPath)
+                var templatePath = Stubs.templateDirectory + "Other.stencil"
+                var templates: Paths {
+                    return Paths(include: [templatePath])
+                }
+                var output: Output {
                     // swiftlint:disable:next force_try
-                    let sources = try! Source(dict: [
-                        "project": [
-                            "file": "TestProject.xcodeproj",
-                            "target": ["name": "TestProject"]
-                        ]], relativePath: Stubs.sourceDirectory + "TestProject")
-                    let templates = Paths(include: [Stubs.templateDirectory + "Other.stencil"])
-                    // swiftlint:disable:next force_try
-                    let output = try! Output(dict: [
+                    return try! Output(dict: [
                         "path": outputDir.string,
                         "link": ["project": "TestProject.xcodeproj", "target": "TestProject"]
-                        ], relativePath: Stubs.sourceDirectory + "TestProject")
+                        ], relativePath: projectPath)
+                }
+                var sourceFilesPaths: [Path] {
+                    guard let project = try? XcodeProj(path: projectFilePath),
+                        let target = project.target(named: "TestProject") else {
+                            return []
+                    }
+
+                    return project.sourceFilesPaths(target: target, sourceRoot: projectPath)
+                }
+
+                beforeEach {
+                    expect {
+                        originalProject = try XcodeProj(path: projectFilePath)
+                        }.toNot(throwError())
+
+                }
+
+                afterEach {
+                    expect {
+                        try originalProject?.writePBXProj(path: projectFilePath)
+                        }.toNot(throwError())
+                }
+
+                it("links generated files") {
+                    expect {
+                        try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output)
+                        }.toNot(throwError())
+
+                    expect(sourceFilesPaths.contains(outputDir + "Other.generated.swift")).to(beTrue())
+                }
+
+                it("links generated files when using per file generation") {
+                    templatePath = outputDir + "PerFileGeneration.stencil"
+                    update(code: """
+                            // Line One
+                            {% for type in types.all %}
+                            // sourcery:file:Generated/{{ type.name }}.generated.swift
+                            extension {{ type.name }} {
+                            var property = 2
+                            // Line Three
+                            }
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
 
                     expect {
                         try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output)
                         }.toNot(throwError())
 
                     expect {
-                        let project = try XcodeProj(path: Stubs.sourceDirectory + "TestProject/TestProject.xcodeproj")
-                        // swiftlint:disable:next force_unwrapping
-                        let target = project.target(named: "TestProject")!
-                        let sourceFilePaths = project.sourceFilesPaths(target: target, sourceRoot: Stubs.sourceDirectory + "TestProject")
-                        expect(sourceFilePaths.contains(outputDir + "Other.generated.swift")).to(beTrue())
+                        let paths = sourceFilesPaths
+                        expect(paths.contains(outputDir + "PerFileGeneration.generated.swift")).to(beTrue())
+                        expect(paths.contains(outputDir + "Generated/Foo.generated.swift")).to(beTrue())
                         return nil
-                    }.toNot(throwError())
-
+                        }.toNot(throwError())
                 }
             }
-
         }
     }
 }
