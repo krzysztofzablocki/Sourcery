@@ -385,12 +385,16 @@ extension Sourcery {
             }
         }
 
-        if let linkTo = output.linkTo {
-            try linkTo.project.writePBXProj(path: linkTo.projectPath)
-        }
-
         try fileAnnotatedContent.forEach { (path, contents) in
             try self.output(result: contents.joined(separator: "\n"), to: path)
+
+            if let linkTo = output.linkTo {
+                link(path, to: linkTo)
+            }
+        }
+
+        if let linkTo = output.linkTo {
+            try linkTo.project.writePBXProj(path: linkTo.projectPath)
         }
 
         Log.info("Finished.")
