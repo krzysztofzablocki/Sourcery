@@ -320,7 +320,7 @@ extension String {
         if lines.isEmpty {
             return 0
         }
-        let index = lines.index(where: { NSLocationInRange(byteOffset, $0.byteRange) })
+        let index = lines.firstIndex(where: { NSLocationInRange(byteOffset, $0.byteRange) })
         // byteOffset may be out of bounds when sourcekitd points end of string.
         guard let line = (index.map { lines[$0] } ?? lines.last) else {
             fatalError()

@@ -128,7 +128,7 @@ import Foundation
         didSet {
             if let rawTypeName = rawTypeName {
                 hasRawType = true
-                if let index = inheritedTypes.index(of: rawTypeName.name) {
+                if let index = inheritedTypes.firstIndex(of: rawTypeName.name) {
                     inheritedTypes.remove(at: index)
                 }
                 if based[rawTypeName.name] != nil {
@@ -183,7 +183,7 @@ import Foundation
 
         super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, annotations: annotations, isGeneric: isGeneric)
 
-        if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.index(of: rawTypeName) {
+        if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
         }
     }

@@ -278,7 +278,7 @@ extension FileParser {
         guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }),
               var name = dict[SwiftDocKey.name.rawValue] as? String else { return nil }
 
-        if case .enumelement = kind, let colon = name.index(of: "(") {
+        if case .enumelement = kind, let colon = name.firstIndex(of: "(") {
             name = String(name[..<colon])
         }
 
@@ -737,7 +737,7 @@ extension FileParser {
         guard let attributeString = string.trimmingCharacters(in: .whitespaces)
             .components(separatedBy: " ", excludingDelimiterBetween: ("(", ")")).first else { return nil }
 
-        if let openIndex = attributeString.index(of: "(") {
+        if let openIndex = attributeString.firstIndex(of: "(") {
             let name = String(attributeString.prefix(upTo: openIndex))
             guard let identifier = identifier ?? Attribute.Identifier.from(string: name) else { return nil }
 
