@@ -12,6 +12,7 @@ let package = Package(
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
         .library(name: "SourcerySwift", targets: ["SourcerySwift"]),
+        .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
     ],
     dependencies: [
         .package(url: "https://github.com/kylef/Commander.git", .exact("0.7.1")),
