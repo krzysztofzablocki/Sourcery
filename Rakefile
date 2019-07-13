@@ -8,11 +8,12 @@ require 'net/http'
 require 'uri'
 
 BUILD_DIR = 'build/'
+VERSION_FILE = 'SourceryUtils/Sources/Version.swift'
 
 ## [ Utils ] ##################################################################
 
 def version_select
-  latest_xcode_version = `xcode-select -p`.chomp 
+  latest_xcode_version = `xcode-select -p`.chomp
   %Q(DEVELOPER_DIR="#{latest_xcode_version}" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
 end
 
@@ -80,17 +81,11 @@ end
 
 desc "Update internal boilerplate code"
 task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
-  generated_files = [
-    "SourceryRuntime/Sources/Coding.generated.swift",
-    "SourceryRuntime/Sources/Description.generated.swift",
-    "SourceryRuntime/Sources/Diffable.generated.swift",
-    "SourceryRuntime/Sources/Equality.generated.swift",
-    "SourceryRuntime/Sources/JSExport.generated.swift",
-    "SourceryRuntime/Sources/Typed.generated.swift",
-    "SourceryTests/Models/TypedSpec.generated.swift"
-  ]
-  print_info "Now review and type [Y/n] to commit and push or cancel the changes."
-  print "Updated files:\n#{generated_files.join("\n")}\n"
+  sh "Scripts/package_content \"SourceryRuntime/Sources\"  > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
+  generated_files = `git status --porcelain`
+                      .split("\n")
+                      .select { |item| item.include?('.generated.') }
+                      .map { |item| item.split.last }
   manual_commit(generated_files, "update internal boilerplate code.")
 end
 
@@ -115,8 +110,15 @@ end
 ## [ Release ] ##########################################################
 
 namespace :release do
+
+  desc 'Perform pre-release tasks'
+  task :prepare => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci, :update_metadata, :generate_internal_boilerplate_code, :tests]
+
+  desc 'Build the current version and release it to GitHub, CocoaPods and Homebrew'
+  task :build_and_deploy => [:check_versions, :build, :tag_release, :push_to_origin, :github, :cocoapods, :homebrew]
+
   desc 'Create a new release on GitHub, CocoaPods and Homebrew'
-  task :new => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :check_ci,  :update_metadata, :generate_internal_boilerplate_code, :tests, :build, :check_versions, :tag_release, :github, :cocoapods, :homebrew]
+  task :new => [:prepare, :build_and_deploy]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
     # The code is mainly taken from https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/helper/podspec_helper.rb
@@ -140,18 +142,18 @@ namespace :release do
     `xcodebuild -showBuildSettings -project #{project}.xcodeproj | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
   end
 
-  def command_line_tool_update_version(version, file = 'Sourcery/Version.swift')
+  VERSION_REGEX = /(?<begin>public static let current\s*=\s*Version\(value:\s*.*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i.freeze
+
+  def command_line_tool_update_version(version, file = VERSION_FILE)
     version_content = File.read(file)
-    version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
-    version_match = version_regex.match(version_content)
-    updated_version_content = version_content.gsub(version_regex, "#{version_match[:begin]}#{version}#{version_match[:end]}")
+    version_match = VERSION_REGEX.match(version_content)
+    updated_version_content = version_content.gsub(VERSION_REGEX, "#{version_match[:begin]}#{version}#{version_match[:end]}")
     File.open(file, "w") { |f| f.puts updated_version_content }
   end
 
-  def command_line_tool_version(file = 'Sourcery/Version.swift')
+  def command_line_tool_version(file = VERSION_FILE)
     version_content = File.read(file)
-    version_regex = /(?<begin>public static let current\s*=\s*Version\(value:\s*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i
-    version_match = version_regex.match(version_content)
+    version_match = VERSION_REGEX.match(version_content)
     version_match[:value]
   end
 
@@ -197,11 +199,15 @@ namespace :release do
   end
 
   def manual_commit(files, message)
+    print_info "Preparing commit"
+    system(%Q{git --no-pager diff #{files.join(" ")}})
+    print "Now review the above diff. Do you wish to commit the changes? [Y/n] "
     commit_changes = STDIN.gets.chomp == 'Y'
     if commit_changes then
       system(%Q{git add #{files.join(" ")}})
       system(%Q{git commit -m '#{message}'})
     else
+      puts "Aborting commit, checkout pending changes"
       system(%Q{git checkout #{files.join(" ")}})
       exit 2
     end
@@ -255,7 +261,7 @@ namespace :release do
   task :check_docs => [:validate_docs] do
     results = []
 
-    docs_not_changed = `git diff --name-only` == ""
+    docs_not_changed = `git diff --name-only docs` == ""
     results << log_result(docs_not_changed, 'Docs are up to date', 'Please push updated docs first')
     exit 1 unless results.all?
   end
@@ -266,7 +272,7 @@ namespace :release do
     results = []
 
     # Check if bundler is installed first, as we'll need it for the cocoapods task (and we prefer to fail early)
-    `which bundler`
+    `which bundle`
     results << log_result( $?.success?, 'Bundler installed', 'Please install bundler using `gem install bundler` and run `bundle install` first.')
 
     # Extract version from Sourcery.podspec
@@ -284,7 +290,7 @@ namespace :release do
     results << log_result(version == project_version, "Project version correct", "Please update Current Project Version in Build Settings to #{version}")
 
     # Check if Command Line Tool version match podspec version
-    results << log_result(version == command_line_tool_version, "Command line tool version correct", "Please update current version in Sourcery/Version.swift to #{version}")
+    results << log_result(version == command_line_tool_version, "Command line tool version correct", "Please update current version in #{VERSION_FILE} to #{version}")
 
     exit 1 unless results.all?
 
@@ -315,16 +321,13 @@ namespace :release do
     # Update command line tool version
     command_line_tool_update_version(new_version)
 
-    print "Now review and type [Y/n] to commit and push or cancel the changes. "
-    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj", "Sourcery/Version.swift"], "docs: update metadata for #{new_version} release")
-    git_push
+    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "Sourcery.xcodeproj/project.pbxproj", VERSION_FILE], "docs: update metadata for #{new_version} release")
   end
 
   desc 'Create a tag for the project version and push to remote'
   task :tag_release do
     print_info "Tagging the release"
     git_tag(project_version)
-    git_push
   end
 
 
@@ -395,6 +398,7 @@ namespace :release do
       File.open(formula_file, "w") { |f| f.puts new_formula }
 
       print_info "Checking Homebrew formula"
+      sh 'brew uninstall sourcery || true'
       sh "brew install --build-from-source #{formula_file}"
       sh "brew audit --strict --online #{formula_file}"
       sh "brew test #{formula_file}"
@@ -407,17 +411,20 @@ namespace :release do
     end
   end
 
+  desc 'Push the pending master changes to origin'
+  task :push_to_origin do
+    git_push
+  end
+
   desc 'prepare for the new development iteration'
   task :prepare_next_development_iteration do
     print_info "Preparing for the next development iteration"
-    `sed -i '' -e '4 a \\
+    `sed -i '' -e '3 a \\
      ## Master\\
      \\
      \\
      ' CHANGELOG.md`
 
-     print "Now review CHANGELOG.md and type [Y/n] to commit and push or cancel the changes. "
      manual_commit(["CHANGELOG.md"], "docs: preparing for next development iteration.")
-     git_push
   end
 end
