@@ -8,9 +8,9 @@
 
 import Foundation
 
-public struct Version {
+public struct SourceryVersion {
     public let value: String
-    public static let current = Version(value: inUnitTests ? "Major.Minor.Patch" : "0.16.1")
+    public static let current = SourceryVersion(value: inUnitTests ? "Major.Minor.Patch" : "0.16.1")
 }
 
 public var inUnitTests = NSClassFromString("XCTest") != nil

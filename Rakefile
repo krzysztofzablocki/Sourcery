@@ -142,7 +142,7 @@ namespace :release do
     `xcodebuild -showBuildSettings -project #{project}.xcodeproj | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
   end
 
-  VERSION_REGEX = /(?<begin>public static let current\s*=\s*Version\(value:\s*.*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i.freeze
+  VERSION_REGEX = /(?<begin>public static let current\s*=\s*SourceryVersion\(value:\s*.*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i.freeze
 
   def command_line_tool_update_version(version, file = VERSION_FILE)
     version_content = File.read(file)

@@ -7,6 +7,7 @@ import Foundation
 import SourceKittenFramework
 import PathKit
 import SourceryRuntime
+import SourceryUtils
 
 protocol Parsable: AnyObject {
     var __parserData: Any? { get set }
@@ -101,7 +102,7 @@ public final class FileParser {
         let source = try Structure(file: file).dictionary
 
         let (types, typealiases) = try parseTypes(source)
-        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, contentSha: initialContents.sha256() ?? "", sourceryVersion: Version.current.value)
+        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, contentSha: initialContents.sha256() ?? "", sourceryVersion: SourceryVersion.current.value)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [Typealias]) {

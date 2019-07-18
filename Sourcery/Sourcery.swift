@@ -14,7 +14,7 @@ import TryCatch
 import xcproj
 
 class Sourcery {
-    public static let version: String = Version.current.value
+    public static let version: String = SourceryVersion.current.value
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n\n"
@@ -321,8 +321,8 @@ extension Sourcery {
         let artifacts = cachesPath + "\(pathString.hash).srf"
 
         guard artifacts.exists,
-              let contentSha = parser.initialContents.sha256(),
-              let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
+            let contentSha = parser.initialContents.sha256(),
+            let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
 
             let result = try parser.parse()
 
@@ -342,10 +342,13 @@ extension Sourcery {
     private func load(artifacts: String, contentSha: String) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
         SwiftTryCatch.try({
-                              if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult, unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
-                                  unarchivedResult = unarchived
-                              }
-                          }, catch: { _ in
+
+            if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
+                if unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
+                    unarchivedResult = unarchived
+                }
+            }
+        }, catch: { _ in
             Log.warning("Failed to unarchive \(artifacts) due to error, re-parsing")
         }, finallyBlock: {})
 
