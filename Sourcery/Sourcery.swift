@@ -321,8 +321,8 @@ extension Sourcery {
         let artifacts = cachesPath + "\(pathString.hash).srf"
 
         guard artifacts.exists,
-              let contentSha = parser.initialContents.sha256(),
-              let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
+            let contentSha = parser.initialContents.sha256(),
+            let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
 
             let result = try parser.parse()
 
@@ -345,8 +345,8 @@ extension Sourcery {
 
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
                 if unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
-                                  unarchivedResult = unarchived
-                              }
+                    unarchivedResult = unarchived
+                }
             }
         }, catch: { _ in
             Log.warning("Failed to unarchive \(artifacts) due to error, re-parsing")
