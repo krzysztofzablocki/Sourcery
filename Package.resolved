@@ -93,7 +93,7 @@
       },
       {
         "package": "Stencil",
-        "repositoryURL": "https://github.com/kylef/Stencil.git",
+        "repositoryURL": "https://github.com/stencilproject/Stencil.git",
         "state": {
           "branch": null,
           "revision": "0e9a78d6584e3812cd9c09494d5c7b483e8f533c",
