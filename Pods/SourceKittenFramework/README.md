@@ -4,18 +4,12 @@ An adorable little framework and command line tool for interacting with [SourceK
 
 SourceKitten links and communicates with `sourcekitd.framework` to parse the Swift AST, extract comment docs for Swift or Objective-C projects, get syntax data for a Swift file and lots more!
 
-[![Test Status](https://circleci.com/gh/jpsim/SourceKitten.svg?style=shield)](https://circleci.com/gh/jpsim/SourceKitten)
+[![Azure Pipelines](https://dev.azure.com/jpsim/SourceKitten/_apis/build/status/jpsim.SourceKitten)](https://dev.azure.com/jpsim/SourceKitten/_build/latest?definitionId=3)
 
 ## Installation
 
-Building SourceKitten on macOS requires Xcode 8.3 or later or a Swift 3.1
+Building SourceKitten requires Xcode 10 or later or a Swift 4.2
 toolchain or later with the Swift Package Manager.
-
-Building SourceKitten on Linux requires:
-
-* A Swift 3.1 or later compiler and Swift Package Manager to be installed.
-* `libsourcekitdInProc.so` to be built and located in `/usr/lib`, or in another
-  location specified by the `LINUX_SOURCEKIT_LIB_PATH` environment variable.
 
 SourceKitten typically supports previous versions of SourceKit.
 

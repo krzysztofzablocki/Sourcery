@@ -102,7 +102,6 @@ public extension XMLAttributeDeserializable {
 // MARK: - XMLIndexer Extensions
 
 public extension XMLIndexer {
-
     // MARK: - XMLAttributeDeserializable
 
     /**
@@ -392,10 +391,89 @@ public extension XMLIndexer {
     }
 }
 
+// MARK: - XMLAttributeDeserializable String RawRepresentable
+
+/*: Provides XMLIndexer XMLAttributeDeserializable deserialization from String backed RawRepresentables
+    Added by [PeeJWeeJ](https://github.com/PeeJWeeJ) */
+public extension XMLIndexer {
+    /**
+     Attempts to deserialize the value of the specified attribute of the current XMLIndexer
+     element to `T` using a String backed RawRepresentable (E.g. `String` backed `enum` cases)
+
+     - Note:
+     Convenience for value(ofAttribute: String)
+
+     - parameter attr: The attribute to deserialize
+     - throws: an XMLDeserializationError if there is a problem with deserialization
+     - returns: The deserialized `T` value
+     */
+    func value<T: XMLAttributeDeserializable, A: RawRepresentable>(ofAttribute attr: A) throws -> T where A.RawValue == String {
+        return try value(ofAttribute: attr.rawValue)
+    }
+
+    /**
+     Attempts to deserialize the value of the specified attribute of the current XMLIndexer
+     element to `T?` using a String backed RawRepresentable (E.g. `String` backed `enum` cases)
+
+     - Note:
+     Convenience for value(ofAttribute: String)
+
+     - parameter attr: The attribute to deserialize
+     - returns: The deserialized `T?` value, or nil if the attribute does not exist
+     */
+    func value<T: XMLAttributeDeserializable, A: RawRepresentable>(ofAttribute attr: A) -> T? where A.RawValue == String {
+        return value(ofAttribute: attr.rawValue)
+    }
+
+    /**
+     Attempts to deserialize the value of the specified attribute of the current XMLIndexer
+     element to `[T]` using a String backed RawRepresentable (E.g. `String` backed `enum` cases)
+
+     - Note:
+     Convenience for value(ofAttribute: String)
+
+     - parameter attr: The attribute to deserialize
+     - throws: an XMLDeserializationError if there is a problem with deserialization
+     - returns: The deserialized `[T]` value
+     */
+    func value<T: XMLAttributeDeserializable, A: RawRepresentable>(ofAttribute attr: A) throws -> [T] where A.RawValue == String {
+        return try value(ofAttribute: attr.rawValue)
+    }
+
+    /**
+     Attempts to deserialize the value of the specified attribute of the current XMLIndexer
+     element to `[T]?` using a String backed RawRepresentable (E.g. `String` backed `enum` cases)
+
+     - Note:
+     Convenience for value(ofAttribute: String)
+
+     - parameter attr: The attribute to deserialize
+     - throws: an XMLDeserializationError if there is a problem with deserialization
+     - returns: The deserialized `[T]?` value
+     */
+    func value<T: XMLAttributeDeserializable, A: RawRepresentable>(ofAttribute attr: A) throws -> [T]? where A.RawValue == String {
+        return try value(ofAttribute: attr.rawValue)
+    }
+
+    /**
+     Attempts to deserialize the value of the specified attribute of the current XMLIndexer
+     element to `[T?]` using a String backed RawRepresentable (E.g. `String` backed `enum` cases)
+
+     - Note:
+     Convenience for value(ofAttribute: String)
+
+     - parameter attr: The attribute to deserialize
+     - throws: an XMLDeserializationError if there is a problem with deserialization
+     - returns: The deserialized `[T?]` value
+     */
+    func value<T: XMLAttributeDeserializable, A: RawRepresentable>(ofAttribute attr: A) throws -> [T?] where A.RawValue == String {
+        return try value(ofAttribute: attr.rawValue)
+    }
+}
+
 // MARK: - XMLElement Extensions
 
 extension XMLElement {
-
     /**
      Attempts to deserialize the specified attribute of the current XMLElement to `T`
 
@@ -438,6 +516,41 @@ extension XMLElement {
         }
 
         throw XMLDeserializationError.nodeHasNoValue
+    }
+}
+
+// MARK: String RawRepresentable
+
+/*: Provides XMLElement XMLAttributeDeserializable deserialization from String backed RawRepresentables
+    Added by [PeeJWeeJ](https://github.com/PeeJWeeJ) */
+public extension XMLElement {
+    /**
+     Attempts to deserialize the specified attribute of the current XMLElement to `T`
+     using a String backed RawRepresentable (E.g. `String` backed `enum` cases)
+
+     - Note:
+     Convenience for value(ofAttribute: String)
+
+     - parameter attr: The attribute to deserialize
+     - throws: an XMLDeserializationError if there is a problem with deserialization
+     - returns: The deserialized `T` value
+     */
+    func value<T: XMLAttributeDeserializable, A: RawRepresentable>(ofAttribute attr: A)  throws -> T where A.RawValue == String {
+        return try value(ofAttribute: attr.rawValue)
+    }
+
+    /**
+     Attempts to deserialize the specified attribute of the current XMLElement to `T?`
+     using a String backed RawRepresentable (E.g. `String` backed `enum` cases)
+
+     - Note:
+     Convenience for value(ofAttribute: String)
+
+     - parameter attr: The attribute to deserialize
+     - returns: The deserialized `T?` value, or nil if the attribute does not exist.
+     */
+    func value<T: XMLAttributeDeserializable, A: RawRepresentable>(ofAttribute attr: A) -> T? where A.RawValue == String {
+        return value(ofAttribute: attr.rawValue)
     }
 }
 
@@ -484,11 +597,11 @@ public enum XMLDeserializationError: Error, CustomStringConvertible {
             return "This node is invalid: \(node)"
         case .nodeHasNoValue:
             return "This node is empty"
-        case .typeConversionFailed(let type, let node):
+        case let .typeConversionFailed(type, node):
             return "Can't convert node \(node) to value of type \(type)"
-        case .attributeDoesNotExist(let element, let attribute):
+        case let .attributeDoesNotExist(element, attribute):
             return "Element \(element) does not contain attribute: \(attribute)"
-        case .attributeDeserializationFailed(let type, let attribute):
+        case let .attributeDeserializationFailed(type, attribute):
             return "Can't convert attribute \(attribute) to value of type \(type)"
         }
     }

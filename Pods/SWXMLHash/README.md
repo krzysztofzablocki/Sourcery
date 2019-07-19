@@ -51,7 +51,7 @@ platform :ios, '10.0'
 use_frameworks!
 
 target 'YOUR_TARGET_NAME' do
-  pod 'SWXMLHash', '~> 4.0.0'
+  pod 'SWXMLHash', '~> 4.7.0'
 end
 ```
 
@@ -73,7 +73,7 @@ $ brew install carthage
 Then add the following line to your `Cartfile`:
 
 ```
-github "drmohundro/SWXMLHash" ~> 4.0
+github "drmohundro/SWXMLHash" ~> 4.7
 ```
 
 ### Swift Package Manager
@@ -83,7 +83,7 @@ Swift Package Manager requires Swift version 4.0 or higher. First, create a
 
 ```swift
 dependencies: [
-    .Package(url: "https://github.com/drmohundro/SWXMLHash.git", from: "4.0.0")
+    .package(url: "https://github.com/drmohundro/SWXMLHash.git", from: "4.7.0")
 ]
 ```
 
@@ -252,7 +252,7 @@ Alternatively, you can look up an element with specific attributes. The below
 will return "John".
 
 ```swift
-xml["root"]["catalog"]["book"].withAttr("id", "123")["author"].element?.text
+xml["root"]["catalog"]["book"].withAttribute("id", "123")["author"].element?.text
 ```
 
 ### Returning All Elements At Current Level

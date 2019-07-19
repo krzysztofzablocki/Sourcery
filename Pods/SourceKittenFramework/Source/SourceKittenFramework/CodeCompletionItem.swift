@@ -6,8 +6,6 @@
 //  Copyright © 2015 SourceKitten. All rights reserved.
 //
 
-import Foundation
-
 fileprivate extension Dictionary {
     mutating func addIfNotNil(_ key: Key, _ value: Value?) {
         if let value = value {

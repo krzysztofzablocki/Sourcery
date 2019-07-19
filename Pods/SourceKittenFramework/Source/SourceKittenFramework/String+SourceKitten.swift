@@ -167,9 +167,8 @@ extension NSString {
                 return NSMaxRange(line.range)
             }
             let utf8View = line.content.utf8
-            let endUTF16index = utf8View.index(utf8View.startIndex, offsetBy: diff, limitedBy: utf8View.endIndex)!
-                .samePosition(in: line.content.utf16)!
-            let utf16Diff = line.content.utf16.distance(from: line.content.utf16.startIndex, to: endUTF16index)
+            let endUTF8Index = utf8View.index(utf8View.startIndex, offsetBy: diff, limitedBy: utf8View.endIndex)!
+            let utf16Diff = line.content.utf16.distance(from: line.content.utf16.startIndex, to: endUTF8Index)
             return line.range.location + utf16Diff
         }
 
@@ -248,8 +247,8 @@ extension NSString {
         }
     }
 
-    static private var stringCache = [NSString: CacheContainer]()
-    static private var stringCacheLock = NSLock()
+    private static var stringCache = [NSString: CacheContainer]()
+    private static var stringCacheLock = NSLock()
 
     /**
     CacheContainer instance is stored to instance of NSString as associated object.
@@ -467,7 +466,9 @@ extension NSString {
 
 extension String {
     internal var isFile: Bool {
-        return FileManager.default.fileExists(atPath: self)
+        var isDirectory: ObjCBool = false
+        let exists = FileManager.default.fileExists(atPath: self, isDirectory: &isDirectory)
+        return exists && !isDirectory.boolValue
     }
 
     internal func capitalizingFirstLetter() -> String {
@@ -655,5 +656,19 @@ extension String {
             return 0
         }
         return Int64(utf8.distance(from: utf8.startIndex, to: utf8pos))
+    }
+
+    /// A version of the string with backslash escapes removed.
+    public var unescaped: String {
+        struct UnescapingSequence: Sequence, IteratorProtocol {
+            var iterator: String.Iterator
+
+            mutating func next() -> Character? {
+                guard let char = iterator.next() else { return nil }
+                guard char == "\\" else { return char }
+                return iterator.next()
+            }
+        }
+        return String(UnescapingSequence(iterator: makeIterator()))
     }
 }

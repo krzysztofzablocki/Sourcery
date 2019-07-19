@@ -343,7 +343,7 @@ public final class File {
             var substructure = SwiftDocKey.getSubstructure(parent)!
             let docOffset = SwiftDocKey.getBestOffset(doc)!
 
-            let insertIndex = substructure.index(where: { structure in
+            let insertIndex = substructure.firstIndex(where: { structure in
                 SwiftDocKey.getBestOffset(structure)! > docOffset
             }) ?? substructure.endIndex
 
