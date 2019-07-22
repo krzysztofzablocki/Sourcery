@@ -1,0 +1,11 @@
+{% for type in types.implementing.ShouldGenerateCases %}
+
+extension {{type.name}} {
+    enum GeneratedCases {
+    {% for c in type.DefinedCases.cases %}
+    case {{c.name}}
+    {% endfor %}
+    }
+}
+
+{% endfor %}

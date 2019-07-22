@@ -220,6 +220,29 @@ class StencilTemplateSpec: QuickSpec {
                 expect(result).to(equal(expectedResult))
             }
 
+            it("generates cases") {
+                var outputDir = Path("/tmp")
+                outputDir = Stubs.cleanTemporarySourceryDir()
+
+                let templatePath = Stubs.templateDirectory + Path("CaseGenerator.stencil")
+                let expectedResult = """
+                // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                // DO NOT EDIT
+
+                extension ExampleStruct {
+                    enum GeneratedCases {
+                        case one
+                        case two
+                    }
+                }
+                """
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: Output(outputDir)) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
+
         }
     }
 }
