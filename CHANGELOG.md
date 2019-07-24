@@ -3,6 +3,9 @@
 ---
 ## Master
 
+### Internal Changes
+
+- update dependencies to fix cocoapods setup when using Swift 5.0 everywhere. Update Quick to 2.1.0, SourceKitten to 0.23.1 and Yams to 2.0.0
 
 ## 0.16.2
 

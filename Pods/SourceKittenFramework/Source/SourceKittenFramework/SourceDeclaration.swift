@@ -165,7 +165,7 @@ extension Sequence where Iterator.Element == SourceDeclaration {
     /// Reject one of an enum duplicate pair that's empty if the other isn't.
     func rejectEmptyDuplicateEnums() -> [SourceDeclaration] {
         let enums = filter { $0.type == .enum }
-        let enumUSRs = enums.map { $0.usr! }
+        let enumUSRs = enums.compactMap { $0.usr }
         let dupedEmptyUSRs = enumUSRs.filter { usr in
             let enumsForUSR = enums.filter { $0.usr == usr }
             let childCounts = Set(enumsForUSR.map({ $0.children.count }))
@@ -178,14 +178,14 @@ extension Sequence where Iterator.Element == SourceDeclaration {
 }
 
 extension SourceDeclaration: Hashable {
-    public var hashValue: Int {
-        return usr?.hashValue ?? 0
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(usr)
     }
-}
 
-public func == (lhs: SourceDeclaration, rhs: SourceDeclaration) -> Bool {
-    return lhs.usr == rhs.usr &&
-        lhs.location == rhs.location
+    public static func == (lhs: SourceDeclaration, rhs: SourceDeclaration) -> Bool {
+        return lhs.usr == rhs.usr &&
+            lhs.location == rhs.location
+    }
 }
 
 // MARK: Comparable

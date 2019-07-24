@@ -57,6 +57,8 @@ internal let sourcekitd_variant_int64_get_value: @convention(c) (sourcekitd_vari
 internal let sourcekitd_variant_bool_get_value: @convention(c) (sourcekitd_variant_t) -> (Bool) = library.load(symbol: "sourcekitd_variant_bool_get_value")
 internal let sourcekitd_variant_string_get_length: @convention(c) (sourcekitd_variant_t) -> (Int) = library.load(symbol: "sourcekitd_variant_string_get_length")
 internal let sourcekitd_variant_string_get_ptr: @convention(c) (sourcekitd_variant_t) -> (UnsafePointer<Int8>?) = library.load(symbol: "sourcekitd_variant_string_get_ptr")
+internal let sourcekitd_variant_data_get_size: @convention(c) (sourcekitd_variant_t) -> (Int) = library.load(symbol: "sourcekitd_variant_data_get_size")
+internal let sourcekitd_variant_data_get_ptr: @convention(c) (sourcekitd_variant_t) -> (UnsafeRawPointer?) = library.load(symbol: "sourcekitd_variant_data_get_ptr")
 internal let sourcekitd_variant_uid_get_value: @convention(c) (sourcekitd_variant_t) -> (sourcekitd_uid_t?) = library.load(symbol: "sourcekitd_variant_uid_get_value")
 internal let sourcekitd_response_description_dump: @convention(c) (sourcekitd_response_t) -> () = library.load(symbol: "sourcekitd_response_description_dump")
 internal let sourcekitd_response_description_dump_filedesc: @convention(c) (sourcekitd_response_t, Int32) -> () = library.load(symbol: "sourcekitd_response_description_dump_filedesc")

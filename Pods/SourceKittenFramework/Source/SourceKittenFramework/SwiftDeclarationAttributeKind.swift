@@ -6,11 +6,9 @@
 //  Copyright © 2018 SourceKitten. All rights reserved.
 //
 
-import Foundation
-
 /// Swift declaration attribute kinds.
 /// Found in `strings SourceKitService | grep source.decl.attribute.`.
-public enum SwiftDeclarationAttributeKind: String {
+public enum SwiftDeclarationAttributeKind: String, CaseIterable {
     case ibaction = "source.decl.attribute.ibaction"
     case iboutlet = "source.decl.attribute.iboutlet"
     case ibdesignable = "source.decl.attribute.ibdesignable"
@@ -48,7 +46,7 @@ public enum SwiftDeclarationAttributeKind: String {
     case nonmutating = "source.decl.attribute.nonmutating"
     case convenience = "source.decl.attribute.convenience"
     case `override` = "source.decl.attribute.override"
-    case silSorted = "source.decl.attribute.sil_stored"
+    case silStored = "source.decl.attribute.sil_stored"
     case `weak` = "source.decl.attribute.weak"
     case effects = "source.decl.attribute.effects"
     case objcBriged = "source.decl.attribute.__objc_bridged"
@@ -97,4 +95,17 @@ public enum SwiftDeclarationAttributeKind: String {
     // only available in Swift < 4.1
     case autoclosure = "source.decl.attribute.autoclosure"
     case noescape = "source.decl.attribute.noescape"
+
+    // only available in Swift >= 5.0
+    case __raw_doc_comment = "source.decl.attribute.__raw_doc_comment"
+    case __setter_access = "source.decl.attribute.__setter_access"
+    case _borrowed = "source.decl.attribute._borrowed"
+    case _dynamicReplacement = "source.decl.attribute._dynamicReplacement"
+    case _effects = "source.decl.attribute._effects"
+    case _hasInitialValue = "source.decl.attribute._hasInitialValue"
+    case _hasStorage = "source.decl.attribute._hasStorage"
+    case _nonoverride = "source.decl.attribute._nonoverride"
+    case _private = "source.decl.attribute._private"
+    case _show_in_interface = "source.decl.attribute._show_in_interface"
+    case dynamicCallable = "source.decl.attribute.dynamicCallable"
 }

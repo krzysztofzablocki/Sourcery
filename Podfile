@@ -35,8 +35,8 @@ target 'Sourcery' do
   pod 'Commander', '0.7.0'
   pathkit
   pod "xcproj", :git =>'git@github.com:tuist/xcodeproj.git', :tag => '4.3.1'
-  pod 'SourceKittenFramework', '0.21.2'
-  pod 'Yams', '1.0.1'
+  pod 'SourceKittenFramework', '0.23.1'
+  pod 'Yams', '2.0.0'
 
   target 'SourceryTests' do
     inherit! :search_paths
@@ -58,5 +58,5 @@ end
 
 target 'SourceryFramework' do
   pathkit
-  pod 'SourceKittenFramework', '0.21.2'
+  pod 'SourceKittenFramework', '0.23.1'
 end

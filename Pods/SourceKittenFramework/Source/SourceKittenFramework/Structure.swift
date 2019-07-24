@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 SourceKitten. All rights reserved.
 //
 
-import Foundation
-
 /// Represents the structural information in a Swift source file.
 public struct Structure {
     /// Structural information as an [String: SourceKitRepresentable].

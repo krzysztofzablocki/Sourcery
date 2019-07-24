@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 SourceKitten. All rights reserved.
 //
 
-import Foundation
-
 /// SourceKit response dictionary keys.
 public enum SwiftDocKey: String {
     // MARK: SourceKit Keys

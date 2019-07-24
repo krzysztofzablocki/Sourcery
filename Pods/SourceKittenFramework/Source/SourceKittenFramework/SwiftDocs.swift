@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 SourceKitten. All rights reserved.
 //
 
-import Foundation
 #if SWIFT_PACKAGE
 import SourceKit
 #endif

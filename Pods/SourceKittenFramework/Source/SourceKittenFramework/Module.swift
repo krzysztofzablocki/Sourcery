@@ -37,7 +37,7 @@ public struct Module {
     public init?(spmName: String) {
         let yamlPath = ".build/debug.yaml"
         guard let yaml = try? Yams.compose(yaml: String(contentsOfFile: yamlPath, encoding: .utf8)),
-            let commands = yaml?["commands"]?.mapping?.values else {
+            let commands = (yaml as Node?)?["commands"]?.mapping?.values else {
             fatalError("SPM build manifest does not exist at `\(yamlPath)` or does not match expected format.")
         }
         guard let moduleCommand = commands.first(where: { $0["module-name"]?.string == spmName }) else {
@@ -72,9 +72,32 @@ public struct Module {
     - parameter path:                Path to run `xcodebuild` from. Uses current path by default.
     */
     public init?(xcodeBuildArguments: [String], name: String? = nil, inPath path: String = FileManager.default.currentDirectoryPath) {
-        let xcodeBuildOutput = runXcodeBuild(arguments: xcodeBuildArguments, inPath: path) ?? ""
-        guard let arguments = parseCompilerArguments(xcodebuildOutput: xcodeBuildOutput.bridge(), language: .swift,
-                                                     moduleName: name ?? moduleName(fromArguments: xcodeBuildArguments)) else {
+        let buildSettings = XcodeBuild.showBuildSettings(arguments: xcodeBuildArguments, inPath: path)
+
+        let name = name
+            // Check for user-defined "SWIFT_MODULE_NAME", otherwise use "PRODUCT_MODULE_NAME".
+            ?? buildSettings?.firstBuildSettingValue { $0.SWIFT_MODULE_NAME ?? $0.PRODUCT_MODULE_NAME }
+            ?? moduleName(fromArguments: xcodeBuildArguments)
+
+        // Executing normal build
+        fputs("Running xcodebuild\n", stderr)
+        if let output = XcodeBuild.run(arguments: xcodeBuildArguments, inPath: path),
+            let arguments = parseCompilerArguments(xcodebuildOutput: output, language: .swift, moduleName: name),
+            let moduleName = moduleName(fromArguments: arguments) {
+            self.init(name: moduleName, compilerArguments: arguments)
+            return
+        }
+        // Check New Build System is used
+        fputs("Checking xcodebuild -showBuildSettings\n", stderr)
+        if let projectTempRoot = buildSettings?.firstBuildSettingValue(for: { $0.PROJECT_TEMP_ROOT }),
+            let arguments = checkNewBuildSystem(in: projectTempRoot, moduleName: name),
+            let moduleName = moduleName(fromArguments: arguments) {
+            self.init(name: moduleName, compilerArguments: arguments)
+            return
+        }
+        // Executing `clean build` is a fallback.
+        let xcodeBuildOutput = XcodeBuild.cleanBuild(arguments: xcodeBuildArguments, inPath: path) ?? ""
+        guard let arguments = parseCompilerArguments(xcodebuildOutput: xcodeBuildOutput, language: .swift, moduleName: name) else {
             fputs("Could not parse compiler arguments from `xcodebuild` output.\n", stderr)
             fputs("Please confirm that `xcodebuild` is building a Swift module.\n", stderr)
             let file = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("xcodebuild-\(NSUUID().uuidString).log")
@@ -112,5 +135,22 @@ extension Module: CustomStringConvertible {
     /// A textual representation of `Module`.
     public var description: String {
         return "Module(name: \(name), compilerArguments: \(compilerArguments), sourceFiles: \(sourceFiles))"
+    }
+}
+
+// MARK: XcodeBuildSetting Conveniences
+
+private extension Collection where Element == XcodeBuildSetting {
+    /// Iterates through the `XcodeBuildSetting`s and returns the first value returned by the getter closure.
+    ///
+    /// For example, if we want the value of the first `XcodeBuildSetting` with a `"PROJECT_TEMP_ROOT"` value:
+    ///
+    ///     let buildSettings: [XcodeBuildSetting] = ...
+    ///     let projectTempRoot = buildSettings.firstBuildSettingValue { $0.projectTempRoot }
+    ///
+    /// - Parameter getterClosure: A closure that returns a dynamic member.
+    /// - Returns: The first value returned by the getter closure.
+    func firstBuildSettingValue(for getterClosure: (XcodeBuildSetting) -> String?) -> String? {
+        return lazy.compactMap(getterClosure).first
     }
 }

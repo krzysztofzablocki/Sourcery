@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 SourceKitten. All rights reserved.
 //
 
-import Foundation
-
 /// Represents a Swift file's syntax information.
 public struct SyntaxMap {
     /// Array of SyntaxToken's.

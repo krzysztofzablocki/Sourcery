@@ -2,11 +2,11 @@
 //
 // This source file is part of the Swift.org open source project
 //
-// Copyright (c) 2014 - 2016 Apple Inc. and the Swift project authors
+// Copyright (c) 2014 - 2017 Apple Inc. and the Swift project authors
 // Licensed under Apache License v2.0 with Runtime Library Exception
 //
-// See http://swift.org/LICENSE.txt for license information
-// See http://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+// See https://swift.org/LICENSE.txt for license information
+// See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 //
 //===----------------------------------------------------------------------===//
 
@@ -25,7 +25,7 @@
 /// The policy about the sourcekitd API is to keep it source and ABI compatible,
 /// thus SOURCEKITD_VERSION_MAJOR is expected to remain stable.
 #define SOURCEKITD_VERSION_MAJOR 0
-#define SOURCEKITD_VERSION_MINOR 3
+#define SOURCEKITD_VERSION_MINOR 4
 
 #define SOURCEKITD_VERSION_ENCODE(major, minor) ( \
       ((major) * 10000)                           \
@@ -70,7 +70,7 @@
 # define SOURCEKITD_HAS_BLOCKS 0
 #endif
 
-#ifdef __GNUC__
+#if defined(__clang__) || defined(__GNUC__)
 # define SOURCEKITD_WARN_RESULT __attribute__((__warn_unused_result__))
 # define SOURCEKITD_NONNULL1 __attribute__((__nonnull__(1)))
 # define SOURCEKITD_NONNULL2 __attribute__((__nonnull__(2)))
@@ -309,7 +309,10 @@ typedef enum {
   SOURCEKITD_VARIANT_TYPE_INT64 = 3,
   SOURCEKITD_VARIANT_TYPE_STRING = 4,
   SOURCEKITD_VARIANT_TYPE_UID = 5,
-  SOURCEKITD_VARIANT_TYPE_BOOL = 6
+  SOURCEKITD_VARIANT_TYPE_BOOL = 6,
+  // Reserved for future addition
+  // SOURCEKITD_VARIANT_TYPE_DOUBLE = 7,
+  SOURCEKITD_VARIANT_TYPE_DATA = 8,
 } sourcekitd_variant_type_t;
 
 typedef enum {
@@ -351,7 +354,7 @@ SOURCEKITD_PUBLIC SOURCEKITD_NONNULL1 SOURCEKITD_WARN_RESULT
 sourcekitd_variant_t
 sourcekitd_response_get_value(sourcekitd_response_t resp);
 
-SOURCEKITD_PUBLIC SOURCEKITD_NONNULL_ALL SOURCEKITD_WARN_RESULT
+SOURCEKITD_PUBLIC SOURCEKITD_WARN_RESULT
 sourcekitd_variant_type_t
 sourcekitd_variant_get_type(sourcekitd_variant_t obj);
 
@@ -516,6 +519,14 @@ sourcekitd_variant_string_get_length(sourcekitd_variant_t obj);
 SOURCEKITD_PUBLIC SOURCEKITD_WARN_RESULT
 const char *
 sourcekitd_variant_string_get_ptr(sourcekitd_variant_t obj);
+
+SOURCEKITD_PUBLIC SOURCEKITD_WARN_RESULT
+size_t
+sourcekitd_variant_data_get_size(sourcekitd_variant_t obj);
+
+SOURCEKITD_PUBLIC SOURCEKITD_WARN_RESULT
+const void *
+sourcekitd_variant_data_get_ptr(sourcekitd_variant_t obj);
 
 SOURCEKITD_PUBLIC SOURCEKITD_WARN_RESULT
 sourcekitd_uid_t

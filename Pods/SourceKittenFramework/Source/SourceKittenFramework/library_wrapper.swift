@@ -42,7 +42,7 @@ let toolchainLoader = Loader(searchPaths: [
     userApplicationsDir?.xcodeDeveloperDir.toolchainDir,
     userApplicationsDir?.xcodeBetaDeveloperDir.toolchainDir
 ].compactMap { path in
-    if let fullPath = path?.usrLibDir, fullPath.isFile {
+    if let fullPath = path?.usrLibDir, FileManager.default.fileExists(atPath: fullPath) {
         return fullPath
     }
     return nil
@@ -74,12 +74,32 @@ private func env(_ name: String) -> String? {
 /// Run a process at the given (absolute) path, capture output, return outupt.
 private func runCommand(_ path: String, _ args: String...) -> String? {
     let process = Process()
-    process.launchPath = path
     process.arguments = args
 
     let pipe = Pipe()
     process.standardOutput = pipe
-    process.launch()
+    // FileHandle.nullDevice does not work here, as it consists of an invalid file descriptor,
+    // causing process.launch() to abort with an EBADF.
+    process.standardError = FileHandle(forWritingAtPath: "/dev/null")!
+    do {
+    #if canImport(Darwin)
+        if #available(macOS 10.13, *) {
+            process.executableURL = URL(fileURLWithPath: path)
+            try process.run()
+        } else {
+            process.launchPath = path
+            process.launch()
+        }
+    #elseif compiler(>=5)
+        process.executableURL = URL(fileURLWithPath: path)
+        try process.run()
+    #else
+        process.launchPath = path
+        process.launch()
+    #endif
+    } catch {
+        return nil
+    }
 
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     process.waitUntilExit()
@@ -159,12 +179,29 @@ private let xcrunFindPath: String? = {
     }
 
     let task = Process()
-    task.launchPath = pathOfXcrun
     task.arguments = ["-find", "swift"]
 
     let pipe = Pipe()
     task.standardOutput = pipe
-    task.launch() // if xcode-select does not exist, crash with `NSInvalidArgumentException`.
+    do {
+    #if canImport(Darwin)
+        if #available(macOS 10.13, *) {
+            task.executableURL = URL(fileURLWithPath: pathOfXcrun)
+            try task.run()
+        } else {
+            task.launchPath = pathOfXcrun
+            task.launch() // if xcode-select does not exist, crash with `NSInvalidArgumentException`.
+        }
+    #elseif compiler(>=5)
+        task.executableURL = URL(fileURLWithPath: pathOfXcrun)
+        try task.run()
+    #else
+        task.launchPath = pathOfXcrun
+        task.launch() // if xcode-select does not exist, crash with `NSInvalidArgumentException`.
+    #endif
+    } catch {
+        return nil
+    }
 
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     guard let output = String(data: data, encoding: .utf8) else {
