@@ -76,11 +76,15 @@ public struct Composer {
             unique[current.name] = current
         }
 
+        let resolutionStart = CACurrentMediaTime()
+
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
             return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         }
 
-        for (_, type) in unique {
+        let array = Array(unique.values)
+        DispatchQueue.concurrentPerform(iterations: array.count) { (counter) in
+            let type = array[counter]
             type.typealiases.forEach { (_, alias) in
                 alias.type = resolveType(alias.typeName, type)
             }
@@ -98,6 +102,8 @@ public struct Composer {
                 resolveEnumTypes(enumeration, types: unique, resolve: resolveType)
             }
         }
+
+        print("\tresolution took \(CACurrentMediaTime() - resolutionStart)")
 
         updateTypeRelationships(types: Array(unique.values))
         return unique.values.sorted { $0.name < $1.name }
