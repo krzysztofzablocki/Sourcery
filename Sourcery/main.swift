@@ -104,6 +104,7 @@ func runCLI() {
     ) { watcherEnabled, disableCache, verboseLogging, quiet, prune, sources, excludeSources, templates, excludeTemplates, output, configPath, forceParse, args, ejsPath in
         do {
             Log.level = verboseLogging ? .verbose : quiet ? .errors : .info
+            Log.logBenchmarks = quiet ? false : true
 
             // if ejsPath is not provided use default value or executable path
             EJSTemplate.ejsPath = ejsPath.string.isEmpty

@@ -101,7 +101,7 @@ public struct Composer {
             }
         }
 
-        print("\tresolution took \(CACurrentMediaTime() - resolutionStart)")
+        Log.benchmark("\tresolution took \(CACurrentMediaTime() - resolutionStart)")
 
         updateTypeRelationships(types: Array(unique.values))
         return unique.values.sorted { $0.name < $1.name }
