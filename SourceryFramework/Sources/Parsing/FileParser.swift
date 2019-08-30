@@ -49,6 +49,7 @@ public final class FileParser {
 
     public let path: String?
     public let module: String?
+    public let modifiedDate: Date?
     public let initialContents: String
 
     fileprivate var contents: String!
@@ -69,6 +70,7 @@ public final class FileParser {
     /// - Throws: parsing errors.
     public init(contents: String, path: Path? = nil, module: String? = nil) throws {
         self.path = path?.string
+        self.modifiedDate = path.flatMap({ (try? FileManager.default.attributesOfItem(atPath: $0.string)[.modificationDate]) as? Date })
         self.module = module
         self.initialContents = contents
     }
@@ -102,7 +104,7 @@ public final class FileParser {
         let source = try Structure(file: file).dictionary
 
         let (types, typealiases) = try parseTypes(source)
-        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, contentSha: initialContents.sha256() ?? "", sourceryVersion: SourceryVersion.current.value)
+        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, modifiedDate: modifiedDate ?? Date(), sourceryVersion: SourceryVersion.current.value)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [Typealias]) {

@@ -9,8 +9,6 @@ import SourceryRuntime
 /// Responsible for composing results of `FileParser`.
 public struct Composer {
 
-    public init() {}
-
     /// Performs final processing of discovered types:
     /// - extends types with their corresponding extensions;
     /// - replaces typealiases with actual types
@@ -19,7 +17,7 @@ public struct Composer {
     ///
     /// - Parameter parserResult: Result of parsing source code.
     /// - Returns: Final types and extensions of unknown types.
-    public func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
+    public static func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
         var unique = [String: Type]()
         var modules = [String: [String: Type]]()
         let types = parserResult.types
@@ -109,7 +107,7 @@ public struct Composer {
         return unique.values.sorted { $0.name < $1.name }
     }
 
-    private func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
+    private static func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
         let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
         if let actualTypeName = actualTypeName, actualTypeName != typeName.unwrappedTypeName {
             typeName.actualTypeName = TypeName(actualTypeName)
@@ -167,7 +165,7 @@ public struct Composer {
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
 
-    private func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
+    private static func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
@@ -178,7 +176,7 @@ public struct Composer {
         }
     }
 
-    private func resolveSubscriptTypes(_ subscript: Subscript, of type: Type, resolve: TypeResolver) {
+    private static func resolveSubscriptTypes(_ subscript: Subscript, of type: Type, resolve: TypeResolver) {
         `subscript`.parameters.forEach { (parameter) in
             parameter.type = resolve(parameter.typeName, type)
         }
@@ -189,7 +187,7 @@ public struct Composer {
         }
     }
 
-    private func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
+    private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
         method.parameters.forEach { parameter in
             parameter.type = resolve(parameter.typeName, type)
         }
@@ -218,7 +216,7 @@ public struct Composer {
         }
     }
 
-    private func resolveEnumTypes(_ enumeration: Enum, types: [String: Type], resolve: TypeResolver) {
+    private static func resolveEnumTypes(_ enumeration: Enum, types: [String: Type], resolve: TypeResolver) {
         enumeration.cases.forEach { enumCase in
             enumCase.associatedValues.forEach { associatedValue in
                 associatedValue.type = resolve(associatedValue.typeName, enumeration)
@@ -243,7 +241,7 @@ public struct Composer {
     }
 
     /// returns typealiases map to their full names
-    private func typealiasesByNames(_ parserResult: FileParserResult) -> [String: Typealias] {
+    private static func typealiasesByNames(_ parserResult: FileParserResult) -> [String: Typealias] {
         var typealiasesByNames = [String: Typealias]()
         parserResult.typealiases.forEach { typealiasesByNames[$0.name] = $0 }
         parserResult.types.forEach { type in
@@ -268,7 +266,7 @@ public struct Composer {
     }
 
     /// returns actual type name for type alias
-    private func actualTypeName(for typeName: TypeName, containingType: Type? = nil, unique: [String: Type]? = nil, typealiases: [String: Typealias]) -> String? {
+    private static func actualTypeName(for typeName: TypeName, containingType: Type? = nil, unique: [String: Type]? = nil, typealiases: [String: Typealias]) -> String? {
         let optionalPrefix = typeName.isOptional ? "?" : typeName.isImplicitlyUnwrappedOptional ? "!" : ""
         let unwrappedTypeName = typeName.unwrappedTypeName
         var actualTypeName: String?
@@ -355,7 +353,7 @@ public struct Composer {
         }
     }
 
-    private func typeFromModule(_ name: String, modules: [String: [String: Type]]) -> Type? {
+    private static func typeFromModule(_ name: String, modules: [String: [String: Type]]) -> Type? {
         guard name.contains(".") else { return nil }
         let nameComponents = name.components(separatedBy: ".")
         let moduleName = nameComponents[0]
@@ -363,7 +361,7 @@ public struct Composer {
         return modules[moduleName]?[typeName]
     }
 
-    private func updateTypeRelationships(types: [Type]) {
+    private static func updateTypeRelationships(types: [Type]) {
         var typesByName = [String: Type]()
         types.forEach { typesByName[$0.name] = $0 }
 
@@ -377,7 +375,7 @@ public struct Composer {
         }
     }
 
-    private func updateTypeRelationship(for type: Type, typesByName: [String: Type], processed: inout [String: Bool]) {
+    private static func updateTypeRelationship(for type: Type, typesByName: [String: Type], processed: inout [String: Bool]) {
         type.based.keys.forEach { name in
             guard let baseType = typesByName[name] else { return }
             if processed[name] != true {
@@ -397,13 +395,13 @@ public struct Composer {
         }
     }
 
-    fileprivate func parseArrayType(_ typeName: TypeName) -> ArrayType? {
+    fileprivate static func parseArrayType(_ typeName: TypeName) -> ArrayType? {
         let name = typeName.unwrappedTypeName
         guard name.isValidArrayName() else { return nil }
         return ArrayType(name: typeName.name, elementTypeName: parseArrayElementType(typeName))
     }
 
-    fileprivate func parseArrayElementType(_ typeName: TypeName) -> TypeName {
+    fileprivate static func parseArrayElementType(_ typeName: TypeName) -> TypeName {
         let name = typeName.unwrappedTypeName
         if name.hasPrefix("Array<") {
             return TypeName(name.drop(first: 6, last: 1))
@@ -412,14 +410,14 @@ public struct Composer {
         }
     }
 
-    fileprivate func parseDictionaryType(_ typeName: TypeName) -> DictionaryType? {
+    fileprivate static func parseDictionaryType(_ typeName: TypeName) -> DictionaryType? {
         let name = typeName.unwrappedTypeName
         guard name.isValidDictionaryName() else { return nil }
         let keyValueType: (keyType: TypeName, valueType: TypeName) = parseDictionaryKeyValueType(typeName)
         return DictionaryType(name: typeName.name, valueTypeName: keyValueType.valueType, keyTypeName: keyValueType.keyType)
     }
 
-    fileprivate func parseDictionaryKeyValueType(_ typeName: TypeName) -> (keyType: TypeName, valueType: TypeName) {
+    fileprivate static func parseDictionaryKeyValueType(_ typeName: TypeName) -> (keyType: TypeName, valueType: TypeName) {
         let name = typeName.unwrappedTypeName
         if name.hasPrefix("Dictionary<") {
             let types = name.drop(first: 11, last: 1).commaSeparated()
@@ -430,13 +428,13 @@ public struct Composer {
         }
     }
 
-    fileprivate func parseTupleType(_ typeName: TypeName) -> TupleType? {
+    fileprivate static func parseTupleType(_ typeName: TypeName) -> TupleType? {
         let name = typeName.unwrappedTypeName
         guard name.isValidTupleName() else { return nil }
         return TupleType(name: typeName.name, elements: parseTupleElements(typeName))
     }
 
-    fileprivate func parseTupleElements(_ typeName: TypeName) -> [TupleElement] {
+    fileprivate static func parseTupleElements(_ typeName: TypeName) -> [TupleElement] {
         let name = typeName.unwrappedTypeName
         let trimmedBracketsName = name.dropFirstAndLast()
         return trimmedBracketsName
@@ -459,7 +457,7 @@ public struct Composer {
         }
     }
 
-    fileprivate func parseClosureType(_ typeName: TypeName) -> ClosureType? {
+    fileprivate static func parseClosureType(_ typeName: TypeName) -> ClosureType? {
         let name = typeName.unwrappedTypeName
         guard name.isValidClosureName() else { return nil }
 
@@ -482,7 +480,7 @@ public struct Composer {
         return ClosureType(name: composedName, parameters: parameters, returnTypeName: returnTypeName, throws: `throws`)
     }
 
-    fileprivate func parseClosureParameters(_ parametersString: String) -> [MethodParameter] {
+    fileprivate static func parseClosureParameters(_ parametersString: String) -> [MethodParameter] {
         guard !parametersString.isEmpty else {
             return []
         }
@@ -510,7 +508,7 @@ public struct Composer {
         }
     }
 
-    fileprivate func parseGenericType(_ typeName: TypeName) -> GenericType? {
+    fileprivate static func parseGenericType(_ typeName: TypeName) -> GenericType? {
         let genericComponents = typeName.unwrappedTypeName
             .split(separator: "<", maxSplits: 1)
             .map({ String($0).stripped() })
@@ -524,7 +522,7 @@ public struct Composer {
         return GenericType(name: name, typeParameters: parseGenericTypeParameters(typeParametersString))
     }
 
-    fileprivate func parseGenericTypeParameters(_ typeParametersString: String) -> [GenericTypeParameter] {
+    fileprivate static func parseGenericTypeParameters(_ typeParametersString: String) -> [GenericTypeParameter] {
         return typeParametersString
             .commaSeparated()
             .map({ GenericTypeParameter(typeName: TypeName($0.stripped())) })

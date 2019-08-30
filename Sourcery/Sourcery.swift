@@ -309,7 +309,7 @@ extension Sourcery {
         let uniqueTypeStart = CACurrentMediaTime()
 
         //! All files have been scanned, time to join extensions with base class
-        let types = Composer().uniqueTypes(parserResult)
+        let types = Composer.uniqueTypes(parserResult)
 
         print("\tcombiningTypes: \(CACurrentMediaTime() - uniqueTypeStart)\n\ttotal: \(CACurrentMediaTime() - startScan)")
         Log.info("Found \(types.count) types.")
@@ -327,8 +327,8 @@ extension Sourcery {
         let artifacts = cachesPath + "\(pathString.hash).srf"
 
         guard artifacts.exists,
-            let contentSha = parser.initialContents.sha256(),
-            let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
+            let modifiedDate = parser.modifiedDate,
+            let unarchived = load(artifacts: artifacts.string, modifiedDate: modifiedDate) else {
 
             let result = try parser.parse()
 
@@ -345,12 +345,12 @@ extension Sourcery {
         return unarchived
     }
 
-    private func load(artifacts: String, contentSha: String) -> FileParserResult? {
+    private func load(artifacts: String, modifiedDate: Date) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
         SwiftTryCatch.try({
 
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
-                if unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
+                if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
                     unarchivedResult = unarchived
                 }
             }

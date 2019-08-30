@@ -109,7 +109,7 @@ extension FileParserResult {
         if self.typealiases != rhs.typealiases { return false }
         if self.inlineRanges != rhs.inlineRanges { return false }
         if self.inlineIndentations != rhs.inlineIndentations { return false }
-        if self.contentSha != rhs.contentSha { return false }
+        if self.modifiedDate != rhs.modifiedDate { return false }
         if self.sourceryVersion != rhs.sourceryVersion { return false }
         return true
     }
