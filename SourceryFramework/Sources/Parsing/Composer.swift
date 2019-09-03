@@ -74,7 +74,7 @@ public struct Composer {
             unique[current.name] = current
         }
 
-        let resolutionStart = CACurrentMediaTime()
+        let resolutionStart = currentTimestamp()
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
             return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
@@ -101,7 +101,7 @@ public struct Composer {
             }
         }
 
-        Log.benchmark("\tresolution took \(CACurrentMediaTime() - resolutionStart)")
+        Log.benchmark("\tresolution took \(currentTimestamp() - resolutionStart)")
 
         updateTypeRelationships(types: Array(unique.values))
         return unique.values.sorted { $0.name < $1.name }

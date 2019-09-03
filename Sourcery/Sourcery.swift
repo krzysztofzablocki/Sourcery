@@ -237,7 +237,7 @@ extension Sourcery {
             precondition(from.count == modules.count, "There should be module for each file to parse")
         }
 
-        let startScan = CACurrentMediaTime()
+        let startScan = currentTimestamp()
         Log.info("Scanning sources...")
 
         var inlineRanges = [(file: String, ranges: [String: NSRange], indentations: [String: String])]()
@@ -292,7 +292,7 @@ extension Sourcery {
             allResults.append(contentsOf: results)
         }
 
-        Log.benchmark("\tloadOrParse: \(CACurrentMediaTime() - startScan)")
+        Log.benchmark("\tloadOrParse: \(currentTimestamp() - startScan)")
 
         let parserResult = allResults.reduce(FileParserResult(path: nil, module: nil, types: [], typealiases: [])) { acc, next in
             acc.typealiases += next.typealiases
@@ -303,12 +303,12 @@ extension Sourcery {
             return acc
         }
 
-        let uniqueTypeStart = CACurrentMediaTime()
+        let uniqueTypeStart = currentTimestamp()
 
         //! All files have been scanned, time to join extensions with base class
         let types = Composer.uniqueTypes(parserResult)
 
-        Log.benchmark("\tcombiningTypes: \(CACurrentMediaTime() - uniqueTypeStart)\n\ttotal: \(CACurrentMediaTime() - startScan)")
+        Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
         Log.info("Found \(types.count) types.")
         return (Types(types: types), inlineRanges)
     }
@@ -363,12 +363,12 @@ extension Sourcery {
 extension Sourcery {
 
     fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: ParsingResult) throws {
-        let generationStart = CACurrentMediaTime()
+        let generationStart = currentTimestamp()
 
         Log.info("Loading templates...")
         let allTemplates = try templates(from: templatePaths)
         Log.info("Loaded \(allTemplates.count) templates.")
-        Log.benchmark("\tLoading took \(CACurrentMediaTime() - generationStart)")
+        Log.benchmark("\tLoading took \(currentTimestamp() - generationStart)")
 
         Log.info("Generating code...")
         status = ""
@@ -406,7 +406,7 @@ extension Sourcery {
             try linkTo.project.writePBXProj(path: linkTo.projectPath)
         }
 
-        Log.benchmark("\tGeneration took \(CACurrentMediaTime() - generationStart)")
+        Log.benchmark("\tGeneration took \(currentTimestamp() - generationStart)")
         Log.info("Finished.")
     }
 
@@ -457,9 +457,9 @@ extension Sourcery {
 
     private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path) throws -> String {
         guard watcherEnabled else {
-            let generationStart = CACurrentMediaTime()
+            let generationStart = currentTimestamp()
             let result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
-            Log.benchmark("\tGenerating \(template.sourcePath.lastComponent) took \(CACurrentMediaTime() - generationStart)")
+            Log.benchmark("\tGenerating \(template.sourcePath.lastComponent) took \(currentTimestamp() - generationStart)")
 
             return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
         }
@@ -475,9 +475,9 @@ extension Sourcery {
     }
 
     private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path) throws -> String {
-        let start = CACurrentMediaTime()
+        let start = currentTimestamp()
         defer {
-            Log.benchmark("\t\tProcessing Ranges took \(CACurrentMediaTime() - start)")
+            Log.benchmark("\t\tProcessing Ranges took \(currentTimestamp() - start)")
         }
         var result = result
         result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath)
