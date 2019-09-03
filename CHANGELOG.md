@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 0.17.0
 
 ### Internal Changes
 
