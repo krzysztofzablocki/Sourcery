@@ -25,17 +25,17 @@ import Foundation
     public var inlineRanges = [String: NSRange]()
     public var inlineIndentations = [String: String]()
 
-    public var contentSha: String?
+    public var modifiedDate: Date
     public var sourceryVersion: String
 
-    public init(path: String?, module: String?, types: [Type], typealiases: [Typealias] = [], inlineRanges: [String: NSRange] = [:], inlineIndentations: [String: String] = [:], contentSha: String = "", sourceryVersion: String = "") {
+    public init(path: String?, module: String?, types: [Type], typealiases: [Typealias] = [], inlineRanges: [String: NSRange] = [:], inlineIndentations: [String: String] = [:], modifiedDate: Date = Date(), sourceryVersion: String = "") {
         self.path = path
         self.module = module
         self.types = types
         self.typealiases = typealiases
         self.inlineRanges = inlineRanges
         self.inlineIndentations = inlineIndentations
-        self.contentSha = contentSha
+        self.modifiedDate = modifiedDate
         self.sourceryVersion = sourceryVersion
 
         types.forEach { type in type.module = module }
@@ -50,7 +50,7 @@ import Foundation
             guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineRanges"])); fatalError() }; self.inlineRanges = inlineRanges
             guard let inlineIndentations: [String: String] = aDecoder.decode(forKey: "inlineIndentations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineIndentations"])); fatalError() }; self.inlineIndentations = inlineIndentations
-            self.contentSha = aDecoder.decode(forKey: "contentSha")
+            guard let modifiedDate: Date = aDecoder.decode(forKey: "modifiedDate") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiedDate"])); fatalError() }; self.modifiedDate = modifiedDate
             guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["sourceryVersion"])); fatalError() }; self.sourceryVersion = sourceryVersion
         }
 
@@ -62,7 +62,7 @@ import Foundation
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.inlineRanges, forKey: "inlineRanges")
             aCoder.encode(self.inlineIndentations, forKey: "inlineIndentations")
-            aCoder.encode(self.contentSha, forKey: "contentSha")
+            aCoder.encode(self.modifiedDate, forKey: "modifiedDate")
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
         }
 // sourcery:end

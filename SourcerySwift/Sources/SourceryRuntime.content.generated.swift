@@ -527,7 +527,7 @@ extension FileParserResult {
         string += "typealiases = \\(String(describing: self.typealiases)), "
         string += "inlineRanges = \\(String(describing: self.inlineRanges)), "
         string += "inlineIndentations = \\(String(describing: self.inlineIndentations)), "
-        string += "contentSha = \\(String(describing: self.contentSha)), "
+        string += "modifiedDate = \\(String(describing: self.modifiedDate)), "
         string += "sourceryVersion = \\(String(describing: self.sourceryVersion))"
         return string
     }
@@ -857,7 +857,7 @@ extension FileParserResult: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "inlineRanges").trackDifference(actual: self.inlineRanges, expected: castObject.inlineRanges))
         results.append(contentsOf: DiffableResult(identifier: "inlineIndentations").trackDifference(actual: self.inlineIndentations, expected: castObject.inlineIndentations))
-        results.append(contentsOf: DiffableResult(identifier: "contentSha").trackDifference(actual: self.contentSha, expected: castObject.contentSha))
+        results.append(contentsOf: DiffableResult(identifier: "modifiedDate").trackDifference(actual: self.modifiedDate, expected: castObject.modifiedDate))
         results.append(contentsOf: DiffableResult(identifier: "sourceryVersion").trackDifference(actual: self.sourceryVersion, expected: castObject.sourceryVersion))
         return results
     }
@@ -1618,7 +1618,7 @@ extension FileParserResult {
         if self.typealiases != rhs.typealiases { return false }
         if self.inlineRanges != rhs.inlineRanges { return false }
         if self.inlineIndentations != rhs.inlineIndentations { return false }
-        if self.contentSha != rhs.contentSha { return false }
+        if self.modifiedDate != rhs.modifiedDate { return false }
         if self.sourceryVersion != rhs.sourceryVersion { return false }
         return true
     }
@@ -2019,17 +2019,17 @@ import Foundation
     public var inlineRanges = [String: NSRange]()
     public var inlineIndentations = [String: String]()
 
-    public var contentSha: String?
+    public var modifiedDate: Date
     public var sourceryVersion: String
 
-    public init(path: String?, module: String?, types: [Type], typealiases: [Typealias] = [], inlineRanges: [String: NSRange] = [:], inlineIndentations: [String: String] = [:], contentSha: String = "", sourceryVersion: String = "") {
+    public init(path: String?, module: String?, types: [Type], typealiases: [Typealias] = [], inlineRanges: [String: NSRange] = [:], inlineIndentations: [String: String] = [:], modifiedDate: Date = Date(), sourceryVersion: String = "") {
         self.path = path
         self.module = module
         self.types = types
         self.typealiases = typealiases
         self.inlineRanges = inlineRanges
         self.inlineIndentations = inlineIndentations
-        self.contentSha = contentSha
+        self.modifiedDate = modifiedDate
         self.sourceryVersion = sourceryVersion
 
         types.forEach { type in type.module = module }
@@ -2044,7 +2044,7 @@ import Foundation
             guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineRanges"])); fatalError() }; self.inlineRanges = inlineRanges
             guard let inlineIndentations: [String: String] = aDecoder.decode(forKey: "inlineIndentations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineIndentations"])); fatalError() }; self.inlineIndentations = inlineIndentations
-            self.contentSha = aDecoder.decode(forKey: "contentSha")
+            guard let modifiedDate: Date = aDecoder.decode(forKey: "modifiedDate") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiedDate"])); fatalError() }; self.modifiedDate = modifiedDate
             guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["sourceryVersion"])); fatalError() }; self.sourceryVersion = sourceryVersion
         }
 
@@ -2056,7 +2056,7 @@ import Foundation
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.inlineRanges, forKey: "inlineRanges")
             aCoder.encode(self.inlineIndentations, forKey: "inlineIndentations")
-            aCoder.encode(self.contentSha, forKey: "contentSha")
+            aCoder.encode(self.modifiedDate, forKey: "modifiedDate")
             aCoder.encode(self.sourceryVersion, forKey: "sourceryVersion")
         }
 // sourcery:end
@@ -2523,6 +2523,7 @@ public enum Log {
     }
 
     public static var level: Level = .warnings
+    public static var logBenchmarks: Bool = false
 
     public static func error(_ message: Any) {
         log(level: .errors, "error: \\(message)")
@@ -2542,6 +2543,11 @@ public enum Log {
 
     public static func info(_ message: Any) {
         log(level: .info, message)
+    }
+
+    public static func benchmark(_ message: Any) {
+        guard logBenchmarks else { return }
+        print(message)
     }
 
     private static func log(level logLevel: Level, _ message: Any) {

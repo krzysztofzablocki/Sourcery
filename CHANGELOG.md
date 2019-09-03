@@ -5,6 +5,9 @@
 
 ### Internal Changes
 
+- Parallelized combining phase that yields 5-10x speed improvement for New York Times codebase
+- Switched cache logic to rely on file modification date instead of content Sha256
+- Additional benchmark logs showing how long does each phase take 
 - update dependencies to fix cocoapods setup when using Swift 5.0 everywhere. Update Quick to 2.1.0, SourceKitten to 0.23.1 and Yams to 2.0.0
 
 ## 0.16.2

@@ -103,6 +103,7 @@
 		CD53EE681D897D2900F5886C /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE671D897D2900F5886C /* Templates */; };
 		CD83A1861EA4C5D7003E0E7D /* Errors in Resources */ = {isa = PBXBuildFile; fileRef = CD83A1851EA4C5D7003E0E7D /* Errors */; };
 		CD9C459D1DFAF76D00161C2C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9C459C1DFAF76D00161C2C /* main.swift */; };
+		CDAB7CFC231E412C00ED8A32 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB7CFB231E412C00ED8A32 /* Time.swift */; };
 		CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBEC15B1E242B9E0090E881 /* StencilTemplate.swift */; };
 		CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */; };
 		CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */ = {isa = PBXBuildFile; fileRef = CDE812EE1E112CC700F1FF97 /* Performance-Code */; };
@@ -322,6 +323,7 @@
 		CD754CA01D853F000082B512 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD83A1851EA4C5D7003E0E7D /* Errors */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Errors; sourceTree = "<group>"; };
 		CD9C459C1DFAF76D00161C2C /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		CDAB7CFB231E412C00ED8A32 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Description.stencil; sourceTree = "<group>"; };
 		CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Equality.stencil; sourceTree = "<group>"; };
 		CDBEC15B1E242B9E0090E881 /* StencilTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StencilTemplate.swift; sourceTree = "<group>"; };
@@ -659,6 +661,7 @@
 				B5BCFA0D21D1623D009DF652 /* Substring.swift */,
 				B5BCFA0E21D1623D009DF652 /* InlineParser.swift */,
 				B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */,
+				CDAB7CFB231E412C00ED8A32 /* Time.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1590,6 +1593,7 @@
 				B5BCFA1421D1623D009DF652 /* Verifier.swift in Sources */,
 				B5BCFA1521D1623D009DF652 /* Substring.swift in Sources */,
 				B5BCFA1621D1623D009DF652 /* InlineParser.swift in Sources */,
+				CDAB7CFC231E412C00ED8A32 /* Time.swift in Sources */,
 				B5BCFA1321D1623D009DF652 /* FileParser.swift in Sources */,
 				B5BCFA1221D1623D009DF652 /* Template.swift in Sources */,
 			);

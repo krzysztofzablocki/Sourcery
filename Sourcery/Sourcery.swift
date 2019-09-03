@@ -38,9 +38,6 @@ class Sourcery {
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
     /// Creates Sourcery processor
-    ///
-    /// - Parameter verbose: Whether to turn on verbose logs.
-    /// - Parameter arguments: Additional arguments to pass to templates.
     init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, prune: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
@@ -240,6 +237,7 @@ extension Sourcery {
             precondition(from.count == modules.count, "There should be module for each file to parse")
         }
 
+        let startScan = currentTimestamp()
         Log.info("Scanning sources...")
 
         var inlineRanges = [(file: String, ranges: [String: NSRange], indentations: [String: String])]()
@@ -294,6 +292,8 @@ extension Sourcery {
             allResults.append(contentsOf: results)
         }
 
+        Log.benchmark("\tloadOrParse: \(currentTimestamp() - startScan)")
+
         let parserResult = allResults.reduce(FileParserResult(path: nil, module: nil, types: [], typealiases: [])) { acc, next in
             acc.typealiases += next.typealiases
             acc.types += next.types
@@ -303,9 +303,12 @@ extension Sourcery {
             return acc
         }
 
-        //! All files have been scanned, time to join extensions with base class
-        let types = Composer().uniqueTypes(parserResult)
+        let uniqueTypeStart = currentTimestamp()
 
+        //! All files have been scanned, time to join extensions with base class
+        let types = Composer.uniqueTypes(parserResult)
+
+        Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
         Log.info("Found \(types.count) types.")
         return (Types(types: types), inlineRanges)
     }
@@ -321,8 +324,8 @@ extension Sourcery {
         let artifacts = cachesPath + "\(pathString.hash).srf"
 
         guard artifacts.exists,
-            let contentSha = parser.initialContents.sha256(),
-            let unarchived = load(artifacts: artifacts.string, contentSha: contentSha) else {
+            let modifiedDate = parser.modifiedDate,
+            let unarchived = load(artifacts: artifacts.string, modifiedDate: modifiedDate) else {
 
             let result = try parser.parse()
 
@@ -339,12 +342,12 @@ extension Sourcery {
         return unarchived
     }
 
-    private func load(artifacts: String, contentSha: String) -> FileParserResult? {
+    private func load(artifacts: String, modifiedDate: Date) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
         SwiftTryCatch.try({
 
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
-                if unarchived.sourceryVersion == Sourcery.version, unarchived.contentSha == contentSha {
+                if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
                     unarchivedResult = unarchived
                 }
             }
@@ -360,9 +363,12 @@ extension Sourcery {
 extension Sourcery {
 
     fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: ParsingResult) throws {
+        let generationStart = currentTimestamp()
+
         Log.info("Loading templates...")
         let allTemplates = try templates(from: templatePaths)
         Log.info("Loaded \(allTemplates.count) templates.")
+        Log.benchmark("\tLoading took \(currentTimestamp() - generationStart)")
 
         Log.info("Generating code...")
         status = ""
@@ -400,6 +406,7 @@ extension Sourcery {
             try linkTo.project.writePBXProj(path: linkTo.projectPath)
         }
 
+        Log.benchmark("\tGeneration took \(currentTimestamp() - generationStart)")
         Log.info("Finished.")
     }
 
@@ -450,7 +457,10 @@ extension Sourcery {
 
     private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path) throws -> String {
         guard watcherEnabled else {
+            let generationStart = currentTimestamp()
             let result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+            Log.benchmark("\tGenerating \(template.sourcePath.lastComponent) took \(currentTimestamp() - generationStart)")
+
             return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
         }
 
@@ -465,6 +475,10 @@ extension Sourcery {
     }
 
     private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path) throws -> String {
+        let start = currentTimestamp()
+        defer {
+            Log.benchmark("\t\tProcessing Ranges took \(currentTimestamp() - start)")
+        }
         var result = result
         result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath)
         result = try processInlineRanges(for: parsingResult, in: result)

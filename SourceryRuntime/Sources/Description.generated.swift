@@ -98,7 +98,7 @@ extension FileParserResult {
         string += "typealiases = \(String(describing: self.typealiases)), "
         string += "inlineRanges = \(String(describing: self.inlineRanges)), "
         string += "inlineIndentations = \(String(describing: self.inlineIndentations)), "
-        string += "contentSha = \(String(describing: self.contentSha)), "
+        string += "modifiedDate = \(String(describing: self.modifiedDate)), "
         string += "sourceryVersion = \(String(describing: self.sourceryVersion))"
         return string
     }

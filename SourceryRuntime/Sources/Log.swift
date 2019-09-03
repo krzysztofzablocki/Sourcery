@@ -12,6 +12,7 @@ public enum Log {
     }
 
     public static var level: Level = .warnings
+    public static var logBenchmarks: Bool = false
 
     public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
@@ -31,6 +32,11 @@ public enum Log {
 
     public static func info(_ message: Any) {
         log(level: .info, message)
+    }
+
+    public static func benchmark(_ message: Any) {
+        guard logBenchmarks else { return }
+        print(message)
     }
 
     private static func log(level logLevel: Level, _ message: Any) {
