@@ -295,11 +295,36 @@ private extension String {
     }
 
     func expandingEnvVars(env: [String: String]) -> String {
-        var result = self
-        for (key, value) in env {
-            result = result.replacingOccurrences(of: "${\(key)}", with: value)
+        let entries = self.components(separatedBy: "\n").compactMap { entry -> String? in
+            guard let match = entry.range(of: #"\$\{(.)\w+\}"#, options: .regularExpression) else {
+                return entry
+            }
+
+            // get the env variable as "${ENV_VAR}"
+            let key = String(entry[match])
+
+            // get the env variable as "ENV_VAR" - note missing $ and brackets
+            let keyString = String(key[2..<key.count-1])
+
+            guard let value = env[keyString] else { return nil }
+
+            return entry.replacingOccurrences(of: key, with: value)
         }
 
-        return result
+        return entries.joined(separator: "\n")
+    }
+}
+
+private extension StringProtocol {
+    subscript(bounds: CountableClosedRange<Int>) -> SubSequence {
+        let start = index(startIndex, offsetBy: bounds.lowerBound)
+        let end = index(start, offsetBy: bounds.count)
+        return self[start..<end]
+    }
+
+    subscript(bounds: CountableRange<Int>) -> SubSequence {
+        let start = index(startIndex, offsetBy: bounds.lowerBound)
+        let end = index(start, offsetBy: bounds.count)
+        return self[start..<end]
     }
 }
