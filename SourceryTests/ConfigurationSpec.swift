@@ -47,7 +47,7 @@ class ConfigurationSpec: QuickSpec {
 
                         let serverPort = config.args["serverPort"]
 
-                        expect(serverPort).to(equal(nil))
+                        expect(serverPort).to(beNil())
                     } catch {
                         expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
                     }
