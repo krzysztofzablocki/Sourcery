@@ -45,9 +45,9 @@ class ConfigurationSpec: QuickSpec {
                                                        env: ["SOURCE_PATH": "Sources",
                                                              "serverUrl": "www.example.com"])
 
-                        let serverPort = config.args["serverPort"]
+                        let serverPort = config.args["serverPort"] as? String
 
-                        expect(serverPort).to(beNil())
+                        expect(serverPort).to(equal(""))
                     } catch {
                         expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
                     }

@@ -294,24 +294,21 @@ private extension String {
         }
     }
 
-    func expandingEnvVars(env: [String: String]) -> String {
-        let entries = self.components(separatedBy: "\n").compactMap { entry -> String? in
-            guard let match = entry.range(of: #"\$\{(.)\w+\}"#, options: .regularExpression) else {
-                return entry
-            }
-
-            // get the env variable as "${ENV_VAR}"
-            let key = String(entry[match])
-
-            // get the env variable as "ENV_VAR" - note missing $ and brackets
-            let keyString = String(key[2..<key.count-1])
-
-            guard let value = env[keyString] else { return nil }
-
-            return entry.replacingOccurrences(of: key, with: value)
+    func expandingEnvVars(env: [String: String]) -> String? {
+        // check if entry has an env variable
+        guard let match = self.range(of: #"\$\{(.)\w+\}"#, options: .regularExpression) else {
+            return self
         }
 
-        return entries.joined(separator: "\n")
+        // get the env variable as "${ENV_VAR}"
+        let key = String(self[match])
+
+        // get the env variable as "ENV_VAR" - note missing $ and brackets
+        let keyString = String(key[2..<key.count-1])
+
+        guard let value = env[keyString] else { return "" }
+
+        return self.replacingOccurrences(of: key, with: value)
     }
 }
 
