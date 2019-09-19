@@ -1,6 +1,12 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### Bug fixes
+
+- Fixed expansion of undefined environment variables (now consistent with command line behaviour, where such args are empty strings)
+
 ## 0.17.0
 
 ### Internal Changes

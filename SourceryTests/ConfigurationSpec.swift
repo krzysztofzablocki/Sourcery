@@ -14,10 +14,14 @@ class ConfigurationSpec: QuickSpec {
 
                 it("replaces the env placeholder") {
                     do {
+                        let serverUrlArg = "serverUrl"
+                        let serverUrl: String = "www.example.com"
+
                         let config = try Configuration(
                             path: Stubs.configs + ".valid.yml",
                             relativePath: relativePath,
-                            env: ["SOURCE_PATH": "Sources"]
+                            env: ["SOURCE_PATH": "Sources",
+                                  serverUrlArg: serverUrl]
                         )
                         guard case let Source.sources(paths) = config.source,
                             let path = paths.include.first else {
@@ -25,7 +29,25 @@ class ConfigurationSpec: QuickSpec {
                             return
                         }
 
+                        let configServerUrl = config.args[serverUrlArg] as? String
+
+                        expect(configServerUrl).to(equal(serverUrl))
                         expect(path).to(equal("/some/path/Sources"))
+                    } catch {
+                        expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
+                    }
+                }
+
+                it("removes args entries with missing env variables") {
+                    do {
+                        let config = try Configuration(path: Stubs.configs + ".valid.yml",
+                                                       relativePath: relativePath,
+                                                       env: ["SOURCE_PATH": "Sources",
+                                                             "serverUrl": "www.example.com"])
+
+                        let serverPort = config.args["serverPort"] as? String
+
+                        expect(serverPort).to(equal(""))
                     } catch {
                         expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
                     }
