@@ -466,8 +466,12 @@ extension Sourcery {
 
         var result: String = ""
         SwiftTryCatch.try({
-                              result = (try? Generator.generate(parsingResult.types, template: template, arguments: self.arguments)) ?? ""
-                          }, catch: { error in
+            do {
+                result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+            } catch {
+                Log.error(error)
+            }
+        }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})
 
