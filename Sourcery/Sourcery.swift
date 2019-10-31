@@ -243,15 +243,16 @@ extension Sourcery {
         var inlineRanges = [(file: String, ranges: [String: NSRange], indentations: [String: String])]()
         var allResults = [FileParserResult]()
 
+        let excludeSet = Set(exclude
+            .map { $0.isDirectory ? try? $0.recursiveChildren() : [$0] }
+            .compactMap({ $0 }).flatMap({ $0 }))
+
         try from.enumerated().forEach { index, from in
             let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
             let sources = try fileList
                 .filter { $0.isSwiftSourceFile }
                 .filter {
-                    let exclude = exclude
-                        .map { $0.isDirectory ? try? $0.recursiveChildren() : [$0] }
-                        .compactMap({ $0 }).flatMap({ $0 })
-                    return !exclude.contains($0)
+                    return !excludeSet.contains($0)
                 }
                 .compactMap { (path: Path) -> (path: Path, contents: String)? in
                     do {
