@@ -3,6 +3,10 @@
 ---
 ## Master
 
+### New Features
+
+- Added `optional` filter for variables
+
 ### Internal Changes
 
 - Improved error logging when running with `--watch` option

@@ -34,6 +34,7 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, SourceryFrame
         ext.registerBoolFilter("computed", filter: { (v: SourceryVariable) in v.isComputed && !v.isStatic })
         ext.registerBoolFilter("stored", filter: { (v: SourceryVariable) in !v.isComputed && !v.isStatic })
         ext.registerBoolFilter("tuple", filter: { (v: SourceryVariable) in v.isTuple })
+        ext.registerBoolFilter("optional", filter: { (m: SourceryVariable) in m.isOptional })
 
         ext.registerAccessLevelFilters(.open)
         ext.registerAccessLevelFilters(.public)

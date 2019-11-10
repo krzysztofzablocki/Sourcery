@@ -26,7 +26,7 @@ class GeneratorSpec: QuickSpec {
                 complexType.variables = [
                     fooVar,
                     barVar,
-                    Variable(name: "fooBar", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("Complex")),
+                    Variable(name: "fooBar", typeName: TypeName("Int?"), isComputed: true, definedInTypeName: TypeName("Complex")),
                     Variable(name: "tuple", typeName: TypeName("(Int, Bar)"), definedInTypeName: TypeName("Complex"))
                 ]
 
@@ -179,6 +179,7 @@ class GeneratorSpec: QuickSpec {
                     expect(generate("{{ type.Complex.allVariables|instance|count }}")).to(equal("6"))
                     expect(generate("{{ type.Complex.allVariables|static|count }}")).to(equal("0"))
                     expect(generate("{{ type.Complex.allVariables|tuple|count }}")).to(equal("2"))
+                    expect(generate("{{ type.Complex.allVariables|optional|count }}")).to(equal("1"))
 
                     expect(generate("{{ type.Complex.allVariables|implements:\"KnownProtocol\"|count }}")).to(equal("2"))
                     expect(generate("{{ type.Complex.allVariables|based:\"Decodable\"|count }}")).to(equal("2"))
