@@ -123,14 +123,14 @@ public struct Composer {
         if let array = parseArrayType(lookupName) {
             lookupName.array = array
             array.elementType = resolveTypeWithName(array.elementTypeName)
-            lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
+            lookupName.generic = GenericType(name: "Array", typeParameters: [
                 GenericTypeParameter(typeName: array.elementTypeName, type: array.elementType)
                 ])
         } else if let dictionary = parseDictionaryType(lookupName) {
             lookupName.dictionary = dictionary
             dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName)
             dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName)
-            lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
+            lookupName.generic = GenericType(name: "Dictionary", typeParameters: [
                 GenericTypeParameter(typeName: dictionary.keyTypeName, type: dictionary.keyType),
                 GenericTypeParameter(typeName: dictionary.valueTypeName, type: dictionary.valueType)
                 ])
