@@ -304,6 +304,7 @@ extension FileParser {
     
     fileprivate func parseConcreteType(source: String) -> Type? {
         guard !source.isEmpty else { return nil }
+        
         let genericDeclaration = extractGenericsDeclaration(source: source)
         if genericDeclaration.isEmpty {
             return Type(name: source)

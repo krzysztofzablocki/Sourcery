@@ -455,7 +455,23 @@ class ParserComposerSpec: QuickSpec {
                                                        genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))])
                         let placeholder = GenericTypePlaceholder(placeholderName: TypeName("U"), constraints: [specializedGeneric])
                         let specialized = Class(name: "Specialized", genericTypePlaceholders: [placeholder])
-                        expect(result).to(equal([ generic, specialized]))
+                        expect(result).to(equal([generic, specialized]))
+                    }
+
+                    it("resolves inherited types for generic placeholders with generic restriction") {
+                        let result = parse("""
+                            protocol Bar {}
+                            class Generic<T: Bar> {}
+                            class Specialized<U: Generic<Int>> {}
+                        """)
+                        let protokol = Protocol(name: "Bar")
+                        let generic = Class(name: "Generic", genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [protokol]) ])
+                        let specializedGeneric = Class(name: "Generic",
+                                                       genericTypePlaceholders: [GenericTypePlaceholder(placeholderName: TypeName("T"), constraints: [protokol])],
+                                                       genericTypeParameters: [GenericTypeParameter(typeName: TypeName("Int"), type: Type(name: "Int"))])
+                        let placeholder = GenericTypePlaceholder(placeholderName: TypeName("U"), constraints: [specializedGeneric])
+                        let specialized = Class(name: "Specialized", genericTypePlaceholders: [placeholder])
+                        expect(result).to(equal([protokol, generic, specialized]))
                     }
                 }
 
