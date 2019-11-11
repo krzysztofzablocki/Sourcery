@@ -174,9 +174,8 @@ public final class FileParser {
             }
 
             if let suffix = extract(.nameSuffixUpToBody, from: source) {
-                let declaration = extractGenericsDeclaration(source: suffix)
-                if !declaration.isEmpty {
-                    // This type is generic, parse it's requirements
+                let genericDeclaration = extractGenericsDeclaration(source: suffix)
+                if !genericDeclaration.isEmpty {
                     parseGenericPlaceholders(source: source, definedIn: type)
                     parseGenericTypeWhereConstraints(type: type, whereDeclaration: extractGenericsWhereClause(source: suffix))
                 }
@@ -305,17 +304,16 @@ extension FileParser {
     
     fileprivate func parseConcreteType(source: String) -> Type? {
         guard !source.isEmpty else { return nil }
-        let declaration = extractGenericsDeclaration(source: source)
-        if declaration.isEmpty {
-            // This is not generic type.
+        let genericDeclaration = extractGenericsDeclaration(source: source)
+        if genericDeclaration.isEmpty {
             return Type(name: source)
         }
         let typeName = extractGenericTypeName(source: source)
-        guard declaration.contains("<") else {
+        guard genericDeclaration.contains("<") else {
             return Type(name: typeName,
-                        genericTypeParameters: extractGenericTypeParameters(source: declaration))
+                        genericTypeParameters: extractGenericTypeParameters(source: genericDeclaration))
         }
-        return Type(name: typeName, genericTypeParameters: extractGenericTypeParameters(source: declaration))
+        return Type(name: typeName, genericTypeParameters: extractGenericTypeParameters(source: genericDeclaration))
     }
 
     fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
@@ -362,6 +360,7 @@ extension FileParser {
     fileprivate func parseGenericPlaceholders(source: [String: SourceKitRepresentable], definedIn: Any?) {
         guard let type = definedIn as? Type else { return }
         guard let substructure = source[SwiftDocKey.substructure.rawValue] as? [[String: SourceKitRepresentable]] else { return }
+        
         substructure.forEach { dict in
             if (dict[SwiftDocKey.kind.rawValue] as? String) == SwiftDeclarationKind.genericTypeParam.rawValue {
                 let name = dict[SwiftDocKey.name.rawValue] as? String ?? ""
@@ -369,7 +368,9 @@ extension FileParser {
                 var inheritedTypesParsed: [Type] = []
                 inheritedTypes.forEach { constraintString in
                     let constraints = constraintString.components(separatedBy: "&")
-                    inheritedTypesParsed.append(contentsOf: constraints.map { recursivelyParseGenericPlaceholderDeclaration(source: $0) })
+                    inheritedTypesParsed.append(contentsOf: constraints.map {
+                        recursivelyParseGenericPlaceholderDeclaration(source: $0)
+                    })
                 }
                 type.genericTypePlaceholders.append(
                     GenericTypePlaceholder(placeholderName: TypeName(name),
@@ -399,8 +400,8 @@ extension FileParser {
     }
     
     fileprivate func extractGenericsDeclaration(source: String) -> String {
-        if let start = source.index(of: "<") {
-            if let inheritance = source.index(of: ":") {
+        if let start = source.firstIndex(of: "<") {
+            if let inheritance = source.firstIndex(of: ":") {
                 if inheritance < start {
                     return ""
                 }
@@ -431,7 +432,7 @@ extension FileParser {
     }
     
     fileprivate func extractGenericTypeName(source: String) -> String {
-        return String(source[..<(source.index(of: "<") ?? source.endIndex)])
+        return String(source[..<(source.firstIndex(of: "<") ?? source.endIndex)])
     }
     
     fileprivate func extractGenericTypeParameters(source: String) -> [GenericTypeParameter] {
@@ -458,7 +459,7 @@ extension FileParser {
     }
     
     fileprivate func parseGenericTypePlaceholder(source: String) -> GenericTypePlaceholder {
-        if let constraintStart = source.index(of: ":") {
+        if let constraintStart = source.firstIndex(of: ":") {
             let name = String(source[source.startIndex ..< constraintStart]).trimmingCharacters(in: .whitespacesAndNewlines)
             let constraints = String(source[source.index(after: constraintStart) ..< source.endIndex])
                 .components(separatedBy: "&")
@@ -474,8 +475,7 @@ extension FileParser {
     }
     
     fileprivate func findGeneric(withName name: String, in array: [GenericTypePlaceholder]) -> GenericTypePlaceholder? {
-        let filtered = array.filter { generic in generic.placeholderName.name == name }
-        if let generic = filtered.first {
+        if let generic = array.first(where: { generic in generic.placeholderName.name == name }) {
             return generic
         }
         Log.error("Undeclared generic found: \(name)")
@@ -770,7 +770,7 @@ extension FileParser {
         
         let genericPlaceholders: [GenericTypePlaceholder]
         if let genericSource = extract(.name, from: source),
-            let parameterStartIndex = genericSource.index(of: "("),
+            let parameterStartIndex = genericSource.firstIndex(of: "("),
             let whereClauseSource = nameSuffix {
             let declaration = extractGenericsDeclaration(source: String(genericSource[genericSource.startIndex ..< parameterStartIndex]))
             let whereClause = extractGenericsWhereClause(source: whereClauseSource)

@@ -440,7 +440,8 @@ class ParserComposerSpec: QuickSpec {
                         """)
                         let generic = Class(name: "Generic", genericTypePlaceholders: [ GenericTypePlaceholder(placeholderName: TypeName("T")) ])
                         let specialized = Class(name: "Specialized", inheritedTypes: ["Generic<Int>"])
-                        expect(result).to(equal([ generic, specialized]))
+
+                        expect(result).to(equal([generic, specialized]))
                     }
 
                     it("resolves inherited types for generic placeholders") {

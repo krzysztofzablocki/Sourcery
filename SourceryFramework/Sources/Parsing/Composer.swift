@@ -396,7 +396,7 @@ public struct Composer {
         }
     }
 
-    private func specializeType(_ type: Type?, with genericParameters: [GenericTypeParameter]) -> Type? {
+    private static func specializeType(_ type: Type?, with genericParameters: [GenericTypeParameter]) -> Type? {
         guard let type = type else { return nil }
         // This hack with keyed archivers serves only one goal - copy type to specialize it with generic parameters
         // We don't want to change original type, it should stay unspecialized

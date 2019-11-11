@@ -3698,7 +3698,7 @@ import Foundation
         return isGeneric && !genericTypeParameters.isEmpty
     }
 
-    // Generic type placeholders
+    /// Generic type placeholders
     public var genericTypePlaceholders: [GenericTypePlaceholder]
 
     /// Generic type parameters
@@ -4279,7 +4279,7 @@ public protocol Typed {
 // sourcery:end
 }
 
-// Describes Swift generic type placeholder
+/// Describes Swift generic type placeholder
 @objcMembers public final class GenericTypePlaceholder: NSObject, SourceryModel {
     /// Generic placeholder type name
     public var placeholderName: TypeName
