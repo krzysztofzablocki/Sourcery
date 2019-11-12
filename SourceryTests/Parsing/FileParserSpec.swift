@@ -467,7 +467,7 @@ class FileParserSpec: QuickSpec {
                                                 AssociatedValue(localName: nil, externalName: "2", typeName: TypeName("Int"))
                                                 ]),
                                             EnumCase(name: "optionC", associatedValues: [
-                                                AssociatedValue(localName: "dict", externalName: nil, typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String")), generic: GenericType(name: "[String: String]", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("String"))])))
+                                                AssociatedValue(localName: "dict", externalName: nil, typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("String"))])))
                                                 ])
                                         ])
                                 ]))
