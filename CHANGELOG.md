@@ -6,6 +6,7 @@
 ### New Features
 
 - Added `optional` filter for variables
+- Added `json` filter to output raw JSON objects 
 
 ### Internal Changes
 

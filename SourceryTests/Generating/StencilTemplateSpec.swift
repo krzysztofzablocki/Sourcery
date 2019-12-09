@@ -27,6 +27,39 @@ class StencilTemplateSpec: QuickSpec {
                     ]), template: StencilTemplate(templateString: template))) ?? ""
             }
 
+            describe("json") {
+                context("given dictionary") {
+                    let context = TemplateContext(
+                        types: Types(types: []),
+                        arguments: ["json": ["Version": 1] as NSDictionary]
+                    )
+
+                    it("renders unpretty json") {
+                        let result = try? StencilTemplate(templateString: "{{ argument.json | json }}").render(context)
+                        expect(result).to(equal("{\"Version\":1}"))
+                    }
+                    it("renders pretty json") {
+                        let result = try? StencilTemplate(templateString: "{{ argument.json | json:true }}").render(context)
+                        expect(result).to(equal("{\n  \"Version\" : 1\n}"))
+                    }
+                }
+                context("given array") {
+                    let context = TemplateContext(
+                        types: Types(types: []),
+                        arguments: ["json": ["a", "b"] as NSArray]
+                    )
+
+                    it("renders unpretty json") {
+                        let result = try? StencilTemplate(templateString: "{{ argument.json | json }}").render(context)
+                        expect(result).to(equal("[\"a\",\"b\"]"))
+                    }
+                    it("renders pretty json") {
+                        let result = try? StencilTemplate(templateString: "{{ argument.json | json:true }}").render(context)
+                        expect(result).to(equal("[\n  \"a\",\n  \"b\"\n]"))
+                    }
+                }
+            }
+
             describe("toArray") {
                 context("given array") {
                     it("doesnt modify the value") {

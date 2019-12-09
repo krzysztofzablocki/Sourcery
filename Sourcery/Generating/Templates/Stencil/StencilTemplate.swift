@@ -28,6 +28,20 @@ final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate, SourceryFrame
     private static func sourceryEnvironment(templatePath: Path? = nil) -> Stencil.Environment {
         let ext = Stencil.Extension()
 
+        ext.registerFilter("json") { (value, arguments) -> Any? in
+            guard let value = value else { return nil }
+            guard arguments.isEmpty || arguments.count == 1 && arguments.first is Bool else {
+                throw TemplateSyntaxError("'json' filter takes a single boolean argument")
+            }
+            var options: JSONSerialization.WritingOptions = []
+            let prettyPrinted = arguments.first as? Bool ?? false
+            if prettyPrinted {
+                options = [.prettyPrinted]
+            }
+            let data = try JSONSerialization.data(withJSONObject: value, options: options)
+            return String(data: data, encoding: .utf8)
+        }
+
         ext.registerStringFilters()
         ext.registerBoolFilter("definedInExtension", filter: { (t: Definition) in t.definedInType?.isExtension ?? false })
 
