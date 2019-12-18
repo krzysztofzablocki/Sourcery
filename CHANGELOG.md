@@ -16,6 +16,7 @@
 
 - Fixed expansion of undefined environment variables (now consistent with command line behaviour, where such args are empty strings)
 - Fixed a bug in inferring extensions of Dictionary and Array types
+- Fixed a bug that was including default values as part of AssociatedValues type names
 
 ## 0.17.0
 
