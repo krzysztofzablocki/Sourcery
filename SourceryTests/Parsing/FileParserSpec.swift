@@ -484,6 +484,23 @@ class FileParserSpec: QuickSpec {
                                           ]))
                     }
 
+                    it("does not include default values for asssociated types as part of its name") {
+                        expect(parse("enum Foo { case optionA(Int = 1, named: Float = 42.0, _: Bool = false); case optionB(Bool = true) }"))
+                        .to(equal([
+                            Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
+                                [
+                                    EnumCase(name: "optionA", associatedValues: [
+                                        AssociatedValue(localName: nil, externalName: "0", typeName: TypeName("Int")),
+                                        AssociatedValue(localName: "named", externalName: "named", typeName: TypeName("Float")),
+                                        AssociatedValue(localName: nil, externalName: "2", typeName: TypeName("Bool"))
+                                        ]),
+                                    EnumCase(name: "optionB", associatedValues: [
+                                    AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Bool"))
+                                    ])
+                                ])
+                        ]))
+                    }
+
                     context("given associated value with its type existing") {
 
                         it("extracts associated value's type") {

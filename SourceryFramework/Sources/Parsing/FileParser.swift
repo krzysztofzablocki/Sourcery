@@ -667,7 +667,9 @@ extension FileParser {
             .enumerated()
             .map { index, body in
                 let annotations = AnnotationsParser(contents: body).all
-                let body = body.strippingComments()
+                let body = body
+                    .strippingComments()
+                    .strippingDefaultValues()
                 let nameAndType = body.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
                 let defaultName: String? = index == 0 && items.count == 1 ? nil : "\(index)"
 
@@ -854,6 +856,14 @@ extension String {
         } while !finished
 
         return stripped
+    }
+
+    func strippingDefaultValues() -> String {
+        if let defaultValueRange = self.range(of: "=") {
+            return String(self[self.startIndex ..< defaultValueRange.lowerBound]).trimmingCharacters(in: .whitespaces)
+        } else {
+            return self
+        }
     }
 
 }
