@@ -665,26 +665,27 @@ extension FileParser {
         return items
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
             .enumerated()
-            .map { index, body in
-                let annotations = AnnotationsParser(contents: body).all
-                let body = body
-                    .strippingComments()
+            .map { index, rawBody in
+                let annotations = AnnotationsParser(contents: rawBody).all
+                let noCommentsBody = rawBody.strippingComments()
+                let defaultValue = extractAssociatedValueDefaultValue(type: noCommentsBody)
+                let body = noCommentsBody
                     .strippingDefaultValues()
                 let nameAndType = body.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
                 let defaultName: String? = index == 0 && items.count == 1 ? nil : "\(index)"
 
                 guard nameAndType.count == 2 else {
                     let typeName = TypeName(body, attributes: parseTypeAttributes(body))
-                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName, annotations: annotations)
+                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName, defaultValue: defaultValue, annotations: annotations)
                 }
                 guard nameAndType[0] != "_" else {
                     let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
-                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName, annotations: annotations)
+                    return AssociatedValue(localName: nil, externalName: defaultName, typeName: typeName, defaultValue: defaultValue, annotations: annotations)
                 }
                 let localName = nameAndType[0]
                 let externalName = items.count > 1 ? localName : defaultName
                 let typeName = TypeName(nameAndType[1], attributes: parseTypeAttributes(nameAndType[1]))
-                return AssociatedValue(localName: localName, externalName: externalName, typeName: typeName, annotations: annotations)
+                return AssociatedValue(localName: localName, externalName: externalName, typeName: typeName, defaultValue: defaultValue, annotations: annotations)
         }
     }
 
@@ -833,6 +834,14 @@ extension FileParser {
         nameSuffix = nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
         guard nameSuffix.trimPrefix("=") else { return nil }
         return nameSuffix.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    fileprivate func extractAssociatedValueDefaultValue(type: String) -> String? {
+        if let defaultValueRange = type.range(of: "=") {
+            return String(type[defaultValueRange.upperBound ..< type.endIndex]).trimmingCharacters(in: .whitespaces)
+        } else {
+            return nil
+        }
     }
 }
 
