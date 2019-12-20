@@ -20,6 +20,7 @@ extension AssociatedValue {
         string += "localName = \(String(describing: self.localName)), "
         string += "externalName = \(String(describing: self.externalName)), "
         string += "typeName = \(String(describing: self.typeName)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations))"
         return string
     }
