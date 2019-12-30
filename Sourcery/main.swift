@@ -169,7 +169,7 @@ func runCLI() {
                                     cacheBasePath: configuration.cacheBasePath,
                                     prune: prune,
                                     arguments: configuration.args)
-            if let keepAlive = try sourcery.processFiles(
+           if let keepAlive = try sourcery.processFiles(
                 configuration.source,
                 usingTemplates: configuration.templates,
                 output: configuration.output,

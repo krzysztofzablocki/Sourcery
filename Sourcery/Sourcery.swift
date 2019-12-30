@@ -274,7 +274,7 @@ extension Sourcery {
                     return result == .approved
                 }
                 .map {
-                    try FileParser(contents: $0.contents, path: $0.path, module: modules?[index])
+                    try FileParser(contents: $0.contents, path: $0.path, module: modules?[index], forceParse: forceParse)
             }
 
             var previousUpdate = 0

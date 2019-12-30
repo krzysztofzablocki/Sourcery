@@ -56,6 +56,7 @@ public final class FileParser {
     fileprivate var annotations: AnnotationsParser!
     fileprivate var inlineRanges: [String: NSRange]!
     fileprivate var inlineIndentations: [String: String]!
+    fileprivate var forceParse:[String] = ["AutoCoding"]
 
     fileprivate var logPrefix: String {
         return path.flatMap { "\($0):" } ?? ""
@@ -68,11 +69,12 @@ public final class FileParser {
     ///   - contents: Contents to parse.
     ///   - path: Path to file.
     /// - Throws: parsing errors.
-    public init(contents: String, path: Path? = nil, module: String? = nil) throws {
+    public init(contents: String, path: Path? = nil, module: String? = nil,forceParse:[String]=["AutoCoding"]) throws {
         self.path = path?.string
         self.modifiedDate = path.flatMap({ (try? FileManager.default.attributesOfItem(atPath: $0.string)[.modificationDate]) as? Date })
         self.module = module
         self.initialContents = contents
+        self.forceParse = forceParse
     }
 
     // MARK: - Processing
@@ -83,7 +85,7 @@ public final class FileParser {
             return contents
         }
 
-        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents,aggregate: false,forceParse: [])
+        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents,aggregate: false,forceParse: self.forceParse)
         contents = inline.contents
         inlineRanges = inline.annotatedRanges.mapValues { $0[0].range }
         inlineIndentations = inline.annotatedRanges.mapValues { $0[0].indentation }
