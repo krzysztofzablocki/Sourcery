@@ -125,6 +125,37 @@ class ExtendableProtocolMock: ExtendableProtocol {
     }
 
 }
+class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
+
+    //MARK: - get
+
+    var getCallsCount = 0
+    var getCalled: Bool {
+        return getCallsCount > 0
+    }
+    var getReturnValue: (() -> Void)!
+    var getClosure: (() -> () -> Void)?
+
+    func get() -> () -> Void {
+        getCallsCount += 1
+        return getClosure.map({ $0() }) ?? getReturnValue
+    }
+
+    //MARK: - getOptional
+
+    var getOptionalCallsCount = 0
+    var getOptionalCalled: Bool {
+        return getOptionalCallsCount > 0
+    }
+    var getOptionalReturnValue: (() -> Void)?
+    var getOptionalClosure: (() -> () -> Void?)?
+
+    func getOptional() -> (() -> Void)? {
+        getOptionalCallsCount += 1
+        return getOptionalClosure.map({ $0() }) ?? getOptionalReturnValue
+    }
+
+}
 class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOptionalReturnValueProtocol {
 
     //MARK: - implicitReturn

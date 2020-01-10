@@ -18,7 +18,8 @@
 - Fixed expansion of undefined environment variables (now consistent with command line behaviour, where such args are empty strings)
 - Fixed a bug in inferring extensions of Dictionary and Array types
 - Fixed a bug that was including default values as part of AssociatedValues type names
-
+- Fixed an issue with AutoMockable.stencil template when mocked function's return type was closure
+  
 ## 0.17.0
 
 ### Internal Changes

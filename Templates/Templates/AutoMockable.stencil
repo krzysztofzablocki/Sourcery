@@ -62,7 +62,7 @@ import AppKit
     var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})] = []
     {% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
-    var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ method.returnTypeName }}{{ '!' if not method.isOptionalReturnType }}
+    var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ '(' if method.returnTypeName.isClosure and not method.isOptionalReturnType }}{{ method.returnTypeName }}{{ ')' if method.returnTypeName.isClosure and not method.isOptionalReturnType }}{{ '!' if not method.isOptionalReturnType }}
     {% endif %}
     {% call methodClosureDeclaration method %}
 

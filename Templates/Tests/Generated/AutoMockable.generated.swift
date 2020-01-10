@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.16.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable line_length
@@ -140,6 +140,37 @@ class ExtendableProtocolMock: ExtendableProtocol {
         reportMessageReceivedMessage = message
         reportMessageReceivedInvocations.append(message)
         reportMessageClosure?(message)
+    }
+
+}
+class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
+
+    //MARK: - get
+
+    var getCallsCount = 0
+    var getCalled: Bool {
+        return getCallsCount > 0
+    }
+    var getReturnValue: (() -> Void)!
+    var getClosure: (() -> () -> Void)?
+
+    func get() -> () -> Void {
+        getCallsCount += 1
+        return getClosure.map({ $0() }) ?? getReturnValue
+    }
+
+    //MARK: - getOptional
+
+    var getOptionalCallsCount = 0
+    var getOptionalCalled: Bool {
+        return getOptionalCallsCount > 0
+    }
+    var getOptionalReturnValue: (() -> Void)?
+    var getOptionalClosure: (() -> () -> Void?)?
+
+    func getOptional() -> (() -> Void)? {
+        getOptionalCallsCount += 1
+        return getOptionalClosure.map({ $0() }) ?? getOptionalReturnValue
     }
 
 }

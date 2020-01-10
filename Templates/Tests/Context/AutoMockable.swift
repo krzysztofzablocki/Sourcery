@@ -79,3 +79,8 @@ protocol AnnotatedProtocol {
 protocol SingleOptionalParameterFunction: AutoMockable {
     func send(message: String?)
 }
+
+protocol FunctionWithClosureReturnType: AutoMockable {
+    func get() -> () -> Void
+    func getOptional() -> (() -> Void)?
+}
