@@ -129,7 +129,7 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath, version: "version"))
+                    try Generator.generate(Types(types: []), functions: [], template: SwiftTemplate(path: templatePath, version: "version"))
                     }
                     .to(throwError(closure: { (error) in
                         let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
@@ -140,7 +140,7 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows template runtime errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Runtime.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
+                    try Generator.generate(Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal("\(templatePath): Unknown type Some, should be used with `based`"))
@@ -150,7 +150,7 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows errors thrown in template") {
                 let templatePath = Stubs.swiftTemplates + Path("Throws.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), template: SwiftTemplate(path: templatePath))
+                    try Generator.generate(Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(contain("\(templatePath): Fatal error: Index out of range\n"))

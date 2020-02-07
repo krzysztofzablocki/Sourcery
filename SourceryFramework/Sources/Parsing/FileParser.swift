@@ -103,12 +103,13 @@ public final class FileParser {
         let file = File(contents: contents)
         let source = try Structure(file: file).dictionary
 
-        let (types, typealiases) = try parseTypes(source)
-        return FileParserResult(path: path, module: module, types: types, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, modifiedDate: modifiedDate ?? Date(), sourceryVersion: SourceryVersion.current.value)
+        let (types, functions, typealiases) = try parseTypes(source)
+        return FileParserResult(path: path, module: module, types: types, functions: functions, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, modifiedDate: modifiedDate ?? Date(), sourceryVersion: SourceryVersion.current.value)
     }
 
-    internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [Typealias]) {
+    internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [SourceryMethod], [Typealias]) {
         var types = [Type]()
+        var functions = [SourceryMethod]()
         var typealiases = [Typealias]()
         try walkDeclarations(source: source) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
@@ -140,6 +141,13 @@ public final class FileParser {
                  .functionMethodInstance,
                  .functionMethodStatic:
                 return parseMethod(source, definedIn: definedIn as? Type, nextStructure: next)
+            case .functionFree:
+                guard let function = parseMethod(source, definedIn: definedIn as? Type, nextStructure: next) else {
+                    return nil
+                }
+
+                functions.append(function)
+                return function
             case .functionSubscript:
                 return parseSubscript(source, definedIn: definedIn as? Type, nextStructure: next)
             case .varParameter:
@@ -165,7 +173,7 @@ public final class FileParser {
             return type
         }
 
-        return (types, typealiases)
+        return (types, functions, typealiases)
     }
 
     typealias FoundEntry = (

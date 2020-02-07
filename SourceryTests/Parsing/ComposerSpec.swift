@@ -945,7 +945,7 @@ class ParserComposerSpec: QuickSpec {
                             try? FileParser(contents: $0.contents, module: $0.name).parse()
                         }
 
-                        let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], typealiases: [])) { acc, next in
+                        let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: [])) { acc, next in
                             acc.typealiases += next.typealiases
                             acc.types += next.types
                             return acc
