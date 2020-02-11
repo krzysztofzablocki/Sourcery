@@ -308,11 +308,11 @@ extension Sourcery {
         let uniqueTypeStart = currentTimestamp()
 
         //! All files have been scanned, time to join extensions with base class
-        let types = Composer.uniqueTypes(parserResult)
+        let (types, functions) = Composer.uniqueTypesAndFunctions(parserResult)
 
         Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
         Log.info("Found \(types.count) types.")
-        return (Types(types: types), parserResult.functions, inlineRanges)
+        return (Types(types: types), functions, inlineRanges)
     }
 
     private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult {

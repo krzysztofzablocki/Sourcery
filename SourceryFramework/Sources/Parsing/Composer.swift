@@ -17,10 +17,11 @@ public struct Composer {
     ///
     /// - Parameter parserResult: Result of parsing source code.
     /// - Returns: Final types and extensions of unknown types.
-    public static func uniqueTypes(_ parserResult: FileParserResult) -> [Type] {
+    public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult) -> (types: [Type], functions: [SourceryMethod]) {
         var unique = [String: Type]()
         var modules = [String: [String: Type]]()
         let types = parserResult.types
+        let functions = parserResult.functions
         let typealiases = self.typealiasesByNames(parserResult)
 
         //set definedInType for all methods and variables
@@ -101,10 +102,18 @@ public struct Composer {
             }
         }
 
+        DispatchQueue.concurrentPerform(iterations: functions.count) { (counter) in
+            let function = functions[counter]
+            resolveMethodTypes(function, of: nil, resolve: resolveType)
+        }
+
         Log.benchmark("\tresolution took \(currentTimestamp() - resolutionStart)")
 
         updateTypeRelationships(types: Array(unique.values))
-        return unique.values.sorted { $0.name < $1.name }
+        return (
+            types: unique.values.sorted { $0.name < $1.name },
+            functions: functions.sorted { $0.name < $1.name }
+        )
     }
 
     private static func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
@@ -187,7 +196,7 @@ public struct Composer {
         }
     }
 
-    private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type, resolve: TypeResolver) {
+    private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type?, resolve: TypeResolver) {
         method.parameters.forEach { parameter in
             parameter.type = resolve(parameter.typeName, type)
         }

@@ -17,7 +17,7 @@ class FileParserSpec: QuickSpec {
             describe("parse") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypes(parserResult)
+                    return Composer.uniqueTypesAndFunctions(parserResult).types
                 }
 
                 describe("regression files") {

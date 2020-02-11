@@ -23,7 +23,7 @@ class ParserComposerSpec: QuickSpec {
             describe("uniqueType") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypes(parserResult)
+                    return Composer.uniqueTypesAndFunctions(parserResult).types
                 }
 
                 context("given class hierarchy") {
@@ -951,7 +951,7 @@ class ParserComposerSpec: QuickSpec {
                             return acc
                         }
 
-                        return Composer.uniqueTypes(parserResult)
+                        return Composer.uniqueTypesAndFunctions(parserResult).types
                     }
 
                     it("extends type with extension") {
