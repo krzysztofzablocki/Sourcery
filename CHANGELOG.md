@@ -8,6 +8,7 @@
 - Added `optional` filter for variables
 - Added `json` filter to output raw JSON objects 
 - Added `.defaultValue` to `AssociatedValue`
+- Added support for parsing free functions
 
 ### Internal Changes
 
