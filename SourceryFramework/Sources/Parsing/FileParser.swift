@@ -145,11 +145,21 @@ public final class FileParser {
             case .varParameter:
                 return parseParameter(source)
             case .typealias:
-                guard let `typealias` = parseTypealias(source, containingType: definedIn as? Type) else { return nil }
-                if definedIn == nil {
-                    typealiases.append(`typealias`)
+                switch parseTypealias(source, containingType: definedIn as? Type) {
+                case nil:
+                    return nil
+                case .typealias(let alias)?:
+                    if definedIn == nil {
+                        typealiases.append(alias)
+                    }
+                    return alias
+                case .protocolComposition(let protocolComposition)?:
+                    if definedIn == nil {
+                        type = protocolComposition
+                    } else {
+                        return protocolComposition
+                    }
                 }
-                return `typealias`
             default:
                 Log.verbose("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
@@ -694,13 +704,28 @@ extension FileParser {
 // MARK: - Typealiases
 extension FileParser {
 
-    fileprivate func parseTypealias(_ source: [String: SourceKitRepresentable], containingType: Type?) -> Typealias? {
+    private enum TypealiasParseOutcome {
+        case `typealias`(Typealias)
+        case protocolComposition(ProtocolComposition)
+    }
+
+    private func parseTypealias(_ source: [String: SourceKitRepresentable], containingType: Type?) -> TypealiasParseOutcome? {
         guard let (name, _, _) = parseTypeRequirements(source),
             let nameSuffix = extract(.nameSuffix, from: source)?
                 .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
             else { return nil }
 
-        return Typealias(aliasName: name, typeName: TypeName(nameSuffix), parent: containingType)
+        if case let components = nameSuffix.components(separatedBy: CharacterSet.init(charactersIn: "&")),
+        components.count > 1 {
+            let suffixes = components.map { source in
+                source.trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
+            }
+            let composedTypeNames = suffixes.map(TypeName.init(_:))
+            let inheritedTypes = composedTypeNames.map { $0.name }
+            return .protocolComposition(ProtocolComposition(name: name, parent: containingType, inheritedTypes: inheritedTypes, composedTypeNames: composedTypeNames))
+        }
+
+        return .typealias(Typealias(aliasName: name, typeName: TypeName(nameSuffix), parent: containingType))
     }
 
 }

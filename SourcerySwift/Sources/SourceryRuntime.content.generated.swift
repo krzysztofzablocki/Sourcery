@@ -385,6 +385,7 @@ extension MethodParameter: NSCoding {}
 
 
 
+
 extension Subscript: NSCoding {}
 
 extension TemplateContext: NSCoding {}
@@ -590,6 +591,16 @@ extension Protocol {
         var string = super.description
         string += ", "
         string += "kind = \\(String(describing: self.kind))"
+        return string
+    }
+}
+extension ProtocolComposition {
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \\(String(describing: self.kind)), "
+        string += "composedTypeNames = \\(String(describing: self.composedTypeNames))"
         return string
     }
 }
@@ -933,6 +944,18 @@ extension Protocol {
             results.append("Incorrect type <expected: Protocol, received: \\(Swift.type(of: object))>")
             return results
         }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+}
+extension ProtocolComposition {
+    override func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? ProtocolComposition else {
+            results.append("Incorrect type <expected: ProtocolComposition, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "composedTypeNames").trackDifference(actual: self.composedTypeNames, expected: castObject.composedTypeNames))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
     }
@@ -1689,6 +1712,14 @@ extension Protocol {
         return super.isEqual(rhs)
     }
 }
+extension ProtocolComposition {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ProtocolComposition else { return false }
+        if self.composedTypeNames != rhs.composedTypeNames { return false }
+        return super.isEqual(rhs)
+    }
+}
 extension Struct {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -2094,6 +2125,7 @@ extension ArrayType: ArrayTypeAutoJSExport {}
     var externalName: String? { get }
     var typeName: TypeName { get }
     var type: Type? { get }
+    var defaultValue: String? { get }
     var annotations: [String: NSObject] { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -2333,6 +2365,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 }
 
 extension Protocol: ProtocolAutoJSExport {}
+
 
 
 @objc protocol StructAutoJSExport: JSExport {
@@ -2981,6 +3014,79 @@ public typealias SourceryProtocol = Protocol
 }
 
 """),
+    .init(name: "ProtocolComposition.swift", content:
+"""
+// Created by eric_horacek on 2/12/20.
+// Copyright © 2020 Airbnb Inc. All rights reserved.
+
+import Foundation
+
+// sourcery: skipJSExport
+/// :nodoc:
+@objcMembers public final class ProtocolComposition: Type {
+
+    /// Returns "protocolComposition"
+    public override var kind: String { return "protocolComposition" }
+
+    /// The names of the types composed to form this composition
+    public let composedTypeNames: [TypeName]
+
+    // sourcery: skipEquality, skipDescription
+    public var composedTypes: [Type]?
+
+    /// :nodoc:
+    public init(name: String = "",
+                parent: Type? = nil,
+                accessLevel: AccessLevel = .internal,
+                isExtension: Bool = false,
+                variables: [Variable] = [],
+                methods: [Method] = [],
+                subscripts: [Subscript] = [],
+                inheritedTypes: [String] = [],
+                containedTypes: [Type] = [],
+                typealiases: [Typealias] = [],
+                attributes: [String: Attribute] = [:],
+                annotations: [String: NSObject] = [:],
+                isGeneric: Bool = false,
+                composedTypeNames: [TypeName] = [],
+                composedTypes: [Type]? = nil) {
+        self.composedTypeNames = composedTypeNames
+        self.composedTypes = composedTypes
+        super.init(
+            name: name,
+            parent: parent,
+            accessLevel: accessLevel,
+            isExtension: isExtension,
+            variables: variables,
+            methods: methods,
+            subscripts: subscripts,
+            inheritedTypes: inheritedTypes,
+            containedTypes: containedTypes,
+            typealiases: typealiases,
+            annotations: annotations,
+            isGeneric: isGeneric
+        )
+    }
+
+// sourcery:inline:ProtocolComposition.AutoCoding
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let composedTypeNames: [TypeName] = aDecoder.decode(forKey: "composedTypeNames") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["composedTypeNames"])); fatalError() }; self.composedTypeNames = composedTypeNames
+            self.composedTypes = aDecoder.decode(forKey: "composedTypes")
+            super.init(coder: aDecoder)
+        }
+
+        /// :nodoc:
+        override public func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
+            aCoder.encode(self.composedTypeNames, forKey: "composedTypeNames")
+            aCoder.encode(self.composedTypes, forKey: "composedTypes")
+        }
+// sourcery:end
+
+}
+
+"""),
     .init(name: "Struct.swift", content:
 """
 //
@@ -3281,15 +3387,21 @@ extension ProcessInfo {
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known types, excluding protocols
+    /// All known types, excluding protocols or protocol compositions.
     public lazy internal(set) var all: [Type] = {
-        return self.types.filter { !($0 is Protocol) }
+        return self.types.filter { !($0 is Protocol || $0 is ProtocolComposition) }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// All known protocols
     public lazy internal(set) var protocols: [Protocol] = {
         return self.types.compactMap { $0 as? Protocol }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known protocol compositions
+    public lazy internal(set) var protocolCompositions: [ProtocolComposition] = {
+        return self.types.compactMap { $0 as? ProtocolComposition }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding

@@ -810,6 +810,51 @@ class ParserComposerSpec: QuickSpec {
                                 .to(contain([Class(name: "Bar", inheritedTypes: ["Foo"])]))
                     }
 
+                    context("given global protocol composition") {
+                        it("replaces variable alias type with protocol composition types") {
+                            let expectedProtocol1 = Protocol(name: "Foo")
+                            let expectedProtocol2 = Protocol(name: "Bar")
+                            let expectedProtocolComposition = ProtocolComposition(name: "GlobalComposition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName("Foo"), TypeName("Bar")])
+
+                            let type = parse("typealias GlobalComposition = Foo & Bar; protocol Foo {}; protocol Bar {}").last as? ProtocolComposition
+
+                            expect(type).to(equal(expectedProtocolComposition))
+                            expect(type?.composedTypes?.first).to(equal(expectedProtocol1))
+                            expect(type?.composedTypes?.last).to(equal(expectedProtocol2))
+                        }
+
+                        it("should deconstruct compositions of protocols for implements") {
+                            let expectedProtocol1 = Protocol(name: "Foo")
+                            let expectedProtocol2 = Protocol(name: "Bar")
+                            let expectedProtocolComposition = ProtocolComposition(name: "GlobalComposition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName("Foo"), TypeName("Bar")])
+
+                            let type = parse("typealias GlobalComposition = Foo & Bar; protocol Foo {}; protocol Bar {}; class Implements: GlobalComposition {}").last as? Class
+
+                            expect(type?.implements).to(equal([
+                                expectedProtocol1.name: expectedProtocol1,
+                                expectedProtocol2.name: expectedProtocol2,
+                                expectedProtocolComposition.name: expectedProtocolComposition
+                            ]))
+                        }
+
+                        it("should deconstruct compositions of protocols and classes for implements and inherits") {
+                            let expectedProtocol = Protocol(name: "Foo")
+                            let expectedClass = Class(name: "Bar")
+                            let expectedProtocolComposition = ProtocolComposition(name: "GlobalComposition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName("Foo"), TypeName("Bar")])
+
+                            let type = parse("typealias GlobalComposition = Foo & Bar; protocol Foo {}; class Bar {}; class Implements: GlobalComposition {}").last as? Class
+
+                            expect(type?.implements).to(equal([
+                                expectedProtocol.name: expectedProtocol,
+                                expectedProtocolComposition.name: expectedProtocolComposition
+                            ]))
+
+                            expect(type?.inherits).to(equal([
+                                expectedClass.name: expectedClass
+                            ]))
+                        }
+                    }
+
                     context("given local typealias") {
                         it("replaces variable alias type with actual type") {
                             let expectedVariable = Variable(name: "foo", typeName: TypeName("FooAlias", actualTypeName: TypeName("Foo")), type: Class(name: "Foo"), definedInTypeName: TypeName("Bar"))

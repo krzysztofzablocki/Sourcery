@@ -76,6 +76,7 @@
 		63E1AD0E1F4093EB00D01FED /* Configs in Resources */ = {isa = PBXBuildFile; fileRef = 63E1AD0D1F4093EB00D01FED /* Configs */; };
 		6D31FC5F1F0C2DE4000E77E3 /* Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D31FC5E1F0C2DE4000E77E3 /* Definition.swift */; };
 		990B63465A767D7147E0B29B /* Pods_SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C82AE0D8342A0606F1E8CE /* Pods_SourceryJS.framework */; };
+		A65B189D23F3F05D0023F4A9 /* ProtocolComposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = A65B189C23F3F05D0023F4A9 /* ProtocolComposition.swift */; };
 		B5089B5221D1817F007A001C /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
 		B5089B5321D1817F007A001C /* SourceryRuntime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5089B5421D1817F007A001C /* SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6393BC692019F58D0044E8CC /* SourceryJS.framework */; };
@@ -292,6 +293,7 @@
 		6A1278DE322EEEC30934B058 /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D31FC5E1F0C2DE4000E77E3 /* Definition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Definition.swift; path = SourceryRuntime/Sources/Definition.swift; sourceTree = SOURCE_ROOT; };
 		79EDC093C51A602ADB2AAE88 /* Pods-SourceryFramework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.debug.xcconfig"; path = "Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.debug.xcconfig"; sourceTree = "<group>"; };
+		A65B189C23F3F05D0023F4A9 /* ProtocolComposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProtocolComposition.swift; path = SourceryRuntime/Sources/ProtocolComposition.swift; sourceTree = SOURCE_ROOT; };
 		AC5C7A379558EBA48F09B22E /* Pods-SourcerySwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourcerySwift.debug.xcconfig"; path = "Target Support Files/Pods-SourcerySwift/Pods-SourcerySwift.debug.xcconfig"; sourceTree = "<group>"; };
 		B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5BCF9F521D161B5009DF652 /* SourceryFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SourceryFramework.h; sourceTree = "<group>"; };
@@ -511,6 +513,7 @@
 				09334E6F1EB916040092806F /* Typealias.swift */,
 				09334E701EB916040092806F /* TypeName.swift */,
 				09334E711EB916040092806F /* Variable.swift */,
+				A65B189C23F3F05D0023F4A9 /* ProtocolComposition.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1571,6 +1574,7 @@
 				09334E5E1EB915E00092806F /* Equality.generated.swift in Sources */,
 				09334E7B1EB916040092806F /* Protocol.swift in Sources */,
 				09334E5D1EB915E00092806F /* Diffable.generated.swift in Sources */,
+				A65B189D23F3F05D0023F4A9 /* ProtocolComposition.swift in Sources */,
 				09334E5F1EB915E00092806F /* JSExport.generated.swift in Sources */,
 				09334E601EB915E00092806F /* Typed.generated.swift in Sources */,
 				09334E7E1EB916040092806F /* Type.swift in Sources */,
