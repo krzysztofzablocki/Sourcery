@@ -183,6 +183,16 @@ class SwiftTemplateTests: QuickSpec {
                     }
                 }
             }
+
+            it("handles free functions") {
+                let templatePath = Stubs.swiftTemplates + Path("Function.swifttemplate")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Function.swift")).read(.utf8)
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
         }
 
         describe("FolderSynchronizer") {

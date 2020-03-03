@@ -1,0 +1,11 @@
+<%_
+for function in functions {
+    let functionName = String(function.name.split(separator: "(")[0])
+    let capitalizedName = functionName.prefix(1).uppercased() + functionName.dropFirst()
+-%>
+func wrapped<%= capitalizedName %>(<%= function.parameters.map { "\($0.name): \($0.typeName.name)" }.joined(separator: ", ") %>) {
+    <%= functionName %>(<%= function.parameters.map { "\($0.name): \($0.name)" }.joined(separator: ", ") %>)
+}
+<%_
+}
+-%>

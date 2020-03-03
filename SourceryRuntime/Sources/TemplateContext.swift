@@ -61,6 +61,7 @@ import Foundation
                 "inheriting": types.inheriting,
                 "implementing": types.implementing
             ],
+            "functions": functions,
             "type": types.typesByName,
             "argument": argument
         ]

@@ -71,6 +71,16 @@ class JavaScriptTemplateTests: QuickSpec {
                         expect("\(error)").to(equal(": TypeError: ejs:1\n >> 1| <%_ for (type of types.implements.Some) { -%><% } %>\n\nUnknown property `implements`"))
                     }))
             }
+
+            it("handles free functions") {
+                let templatePath = Stubs.jsTemplates + Path("Function.ejs")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Function.swift")).read(.utf8)
+
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                expect(result).to(equal(expectedResult))
+            }
         }
     }
 }

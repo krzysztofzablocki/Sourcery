@@ -10,3 +10,7 @@ protocol AutoEquatable {}
 class FooSubclass: Foo, AutoEquatable {
     var other: String = ""
 }
+
+func performFoo(value: Foo) {
+
+}
