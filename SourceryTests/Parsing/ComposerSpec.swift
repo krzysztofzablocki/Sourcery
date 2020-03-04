@@ -23,7 +23,12 @@ class ParserComposerSpec: QuickSpec {
             describe("uniqueType") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypes(parserResult)
+                    return Composer.uniqueTypesAndFunctions(parserResult).types
+                }
+
+                func parseFunctions(_ code: String) -> [SourceryMethod] {
+                    guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
+                    return Composer.uniqueTypesAndFunctions(parserResult).functions
                 }
 
                 context("given class hierarchy") {
@@ -990,13 +995,13 @@ class ParserComposerSpec: QuickSpec {
                             try? FileParser(contents: $0.contents, module: $0.name).parse()
                         }
 
-                        let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], typealiases: [])) { acc, next in
+                        let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: [])) { acc, next in
                             acc.typealiases += next.typealiases
                             acc.types += next.types
                             return acc
                         }
 
-                        return Composer.uniqueTypes(parserResult)
+                        return Composer.uniqueTypesAndFunctions(parserResult).types
                     }
 
                     it("extends type with extension") {
@@ -1038,6 +1043,46 @@ class ParserComposerSpec: QuickSpec {
                         expect(types).to(equal([expectedBar, expectedFoo]))
                         expect(types.last?.variables.first?.type).to(equal(expectedBar))
                         expect(types.last?.variables.first?.definedInType).to(equal(expectedFoo))
+                    }
+                }
+
+                context("given free function") {
+                    it("resolves generic return types properly") {
+                        let functions = parseFunctions("func foo() -> Bar<String> { }")
+                        expect(functions[0]).to(equal(SourceryMethod(
+                            name: "foo()",
+                            selectorName: "foo",
+                            parameters: [],
+                            returnTypeName: TypeName(
+                                "Bar<String>",
+                                generic: GenericType(
+                                    name: "Bar",
+                                    typeParameters: [
+                                        GenericTypeParameter(
+                                            typeName: TypeName("String"),
+                                            type: nil
+                                        )
+                                ])
+                            ),
+                            definedInTypeName: nil)))
+                    }
+
+                    it("resolves tuple return types properly") {
+                        let functions = parseFunctions("func foo() -> (bar: String, biz: Int) { }")
+                        expect(functions[0]).to(equal(SourceryMethod(
+                            name: "foo()",
+                            selectorName: "foo",
+                            parameters: [],
+                            returnTypeName: TypeName(
+                                "(bar: String, biz: Int)",
+                                tuple: TupleType(
+                                    name: "(bar: String, biz: Int)",
+                                    elements: [
+                                        TupleElement(name: "bar", typeName: TypeName("String")),
+                                        TupleElement(name: "biz", typeName: TypeName("Int"))
+                                    ])
+                            ),
+                            definedInTypeName: nil)))
                     }
                 }
             }

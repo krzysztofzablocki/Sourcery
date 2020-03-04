@@ -78,6 +78,7 @@ open class SwiftTemplate {
 
         let context = ProcessInfo().context!
         let types = context.types
+        let functions = context.functions
         let type = context.types.typesByName
         let argument = context.argument
 

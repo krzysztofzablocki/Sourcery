@@ -81,9 +81,9 @@ class GeneratorSpec: QuickSpec {
 
             func generate(_ template: String) -> String {
                 beforeEachGenerate()
-                let uniqueTypes = Composer.uniqueTypes(FileParserResult(path: nil, module: nil, types: types, typealiases: []))
+                let (uniqueTypes, _) = Composer.uniqueTypesAndFunctions(FileParserResult(path: nil, module: nil, types: types, functions: [], typealiases: []))
 
-                return (try? Generator.generate(Types(types: uniqueTypes),
+                return (try? Generator.generate(Types(types: uniqueTypes), functions: [],
                         template: StencilTemplate(templateString: template),
                         arguments: arguments)) ?? ""
             }

@@ -230,7 +230,7 @@ class Sourcery {
 // MARK: - Parsing
 
 extension Sourcery {
-    typealias ParsingResult = (types: Types, inlineRanges: [(file: String, ranges: [String: NSRange], indentations: [String: String])])
+    typealias ParsingResult = (types: Types, functions: [SourceryMethod], inlineRanges: [(file: String, ranges: [String: NSRange], indentations: [String: String])])
 
     fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
@@ -295,9 +295,10 @@ extension Sourcery {
 
         Log.benchmark("\tloadOrParse: \(currentTimestamp() - startScan)")
 
-        let parserResult = allResults.reduce(FileParserResult(path: nil, module: nil, types: [], typealiases: [])) { acc, next in
+        let parserResult = allResults.reduce(FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: [])) { acc, next in
             acc.typealiases += next.typealiases
             acc.types += next.types
+            acc.functions += next.functions
 
             // swiftlint:disable:next force_unwrapping
             inlineRanges.append((next.path!, next.inlineRanges, next.inlineIndentations))
@@ -307,11 +308,11 @@ extension Sourcery {
         let uniqueTypeStart = currentTimestamp()
 
         //! All files have been scanned, time to join extensions with base class
-        let types = Composer.uniqueTypes(parserResult)
+        let (types, functions) = Composer.uniqueTypesAndFunctions(parserResult)
 
         Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
         Log.info("Found \(types.count) types.")
-        return (Types(types: types), inlineRanges)
+        return (Types(types: types), functions, inlineRanges)
     }
 
     private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult {
@@ -459,7 +460,7 @@ extension Sourcery {
     private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path) throws -> String {
         guard watcherEnabled else {
             let generationStart = currentTimestamp()
-            let result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+            let result = try Generator.generate(parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
             Log.benchmark("\tGenerating \(template.sourcePath.lastComponent) took \(currentTimestamp() - generationStart)")
 
             return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
@@ -468,7 +469,7 @@ extension Sourcery {
         var result: String = ""
         SwiftTryCatch.try({
             do {
-                result = try Generator.generate(parsingResult.types, template: template, arguments: self.arguments)
+                result = try Generator.generate(parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
             } catch {
                 Log.error(error)
             }

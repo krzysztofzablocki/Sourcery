@@ -9,6 +9,7 @@
 - Added `json` filter to output raw JSON objects
 - Added `.defaultValue` to `AssociatedValue`
 - Added support for parsing [Protocol Compositions](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454)
+- Added support for parsing free functions
 
 ### Internal Changes
 
