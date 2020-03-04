@@ -238,6 +238,52 @@ class FileParserSpec: QuickSpec {
 
                 }
 
+                context("given a protocol composition") {
+                    context("of two protocols") {
+                        it("extracts protocol composition for typealias with ampersand") {
+                            expect(parse("typealias Composition = Foo & Bar; protocol Foo {}; protocol Bar {}"))
+                                .to(contain([
+                                    ProtocolComposition(name: "Composition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName("Foo"), TypeName("Bar")])
+                                    ]))
+                        }
+                    }
+
+                    context("of three protocols") {
+                        it("extracts protocol composition for typealias with ampersand") {
+                            expect(parse("typealias Composition = Foo & Bar & Baz; protocol Foo {}; protocol Bar {}; protocol Baz {}"))
+                                .to(contain([
+                                    ProtocolComposition(name: "Composition", inheritedTypes: ["Foo", "Bar", "Baz"], composedTypeNames: [TypeName("Foo"), TypeName("Bar"), TypeName("Baz")])
+                                    ]))
+                        }
+                    }
+
+                    context("of a protocol and a class") {
+                        it("extracts protocol composition for typealias with ampersand") {
+                            expect(parse("typealias Composition = Foo & Bar; protocol Foo {}; class Bar {}"))
+                                .to(contain([
+                                    ProtocolComposition(name: "Composition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName("Foo"), TypeName("Bar")])
+                                    ]))
+                        }
+                    }
+
+                    context("given local protocol composition") {
+                        it ("extracts local protocol compositions properly") {
+                            let foo = Type(name: "Foo")
+                            let bar = Type(name: "Bar", parent: foo)
+
+                            let types = parse("protocol P {}; class Foo { typealias FooComposition = Bar & P; class Bar { typealias BarComposition = FooBar & P; class FooBar {} } }")
+
+                            let fooComposition = types.first?.containedTypes.first
+                            let barComposition = types.first?.containedTypes.last?.containedTypes.first
+
+                            expect(fooComposition).to(equal(
+                                ProtocolComposition(name: "FooComposition", parent: foo, inheritedTypes: ["Bar", "P"], composedTypeNames: [TypeName("Bar"), TypeName("P")])))
+                            expect(barComposition).to(equal(
+                                ProtocolComposition(name: "BarComposition", parent: bar, inheritedTypes: ["FooBar", "P"], composedTypeNames: [TypeName("FooBar"), TypeName("P")])))
+                        }
+                    }
+                }
+
                 context("given enum") {
 
                     it("extracts empty enum properly") {

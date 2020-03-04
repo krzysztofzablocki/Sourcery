@@ -109,15 +109,21 @@ extension ProcessInfo {
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known types, excluding protocols
+    /// All known types, excluding protocols or protocol compositions.
     public lazy internal(set) var all: [Type] = {
-        return self.types.filter { !($0 is Protocol) }
+        return self.types.filter { !($0 is Protocol || $0 is ProtocolComposition) }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
     /// All known protocols
     public lazy internal(set) var protocols: [Protocol] = {
         return self.types.compactMap { $0 as? Protocol }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known protocol compositions
+    public lazy internal(set) var protocolCompositions: [ProtocolComposition] = {
+        return self.types.compactMap { $0 as? ProtocolComposition }
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding

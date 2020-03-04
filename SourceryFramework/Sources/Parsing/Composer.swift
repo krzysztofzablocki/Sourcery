@@ -100,6 +100,10 @@ public struct Composer {
             if let enumeration = type as? Enum {
                 resolveEnumTypes(enumeration, types: unique, resolve: resolveType)
             }
+
+            if let composition = type as? ProtocolComposition {
+                resolveProtocolCompositionTypes(composition, resolve: resolveType)
+            }
         }
 
         DispatchQueue.concurrentPerform(iterations: functions.count) { (counter) in
@@ -247,6 +251,14 @@ public struct Composer {
                 enumeration.rawTypeName = TypeName(rawTypeName)
             }
         }
+    }
+
+    private static func resolveProtocolCompositionTypes(_ protocolComposition: ProtocolComposition, resolve: TypeResolver) {
+        let composedTypes = protocolComposition.composedTypeNames.compactMap { typeName in
+            resolve(typeName, protocolComposition)
+        }
+
+        protocolComposition.composedTypes = composedTypes
     }
 
     /// returns typealiases map to their full names
@@ -399,6 +411,8 @@ public struct Composer {
             if baseType is Class {
                 type.inherits[name] = baseType
             } else if baseType is SourceryProtocol {
+                type.implements[name] = baseType
+            } else if baseType is ProtocolComposition {
                 type.implements[name] = baseType
             }
         }

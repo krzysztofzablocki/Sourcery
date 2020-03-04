@@ -164,6 +164,16 @@ extension Protocol {
         return string
     }
 }
+extension ProtocolComposition {
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "composedTypeNames = \(String(describing: self.composedTypeNames))"
+        return string
+    }
+}
 extension Struct {
     /// :nodoc:
     override public var description: String {

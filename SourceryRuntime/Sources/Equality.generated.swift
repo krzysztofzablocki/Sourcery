@@ -172,6 +172,14 @@ extension Protocol {
         return super.isEqual(rhs)
     }
 }
+extension ProtocolComposition {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ProtocolComposition else { return false }
+        if self.composedTypeNames != rhs.composedTypeNames { return false }
+        return super.isEqual(rhs)
+    }
+}
 extension Struct {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
