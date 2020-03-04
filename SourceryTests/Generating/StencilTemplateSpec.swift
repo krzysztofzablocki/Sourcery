@@ -24,13 +24,14 @@ class StencilTemplateSpec: QuickSpec {
                         arrayAnnotations,
                         singleAnnotation
                         ])
-                    ]), template: StencilTemplate(templateString: template))) ?? ""
+                ]), functions: [], template: StencilTemplate(templateString: template))) ?? ""
             }
 
             describe("json") {
                 context("given dictionary") {
                     let context = TemplateContext(
                         types: Types(types: []),
+                        functions: [],
                         arguments: ["json": ["Version": 1] as NSDictionary]
                     )
 
@@ -46,6 +47,7 @@ class StencilTemplateSpec: QuickSpec {
                 context("given array") {
                     let context = TemplateContext(
                         types: Types(types: []),
+                        functions: [],
                         arguments: ["json": ["a", "b"] as NSArray]
                     )
 
@@ -231,7 +233,7 @@ class StencilTemplateSpec: QuickSpec {
 
             it("rethrows template parsing errors") {
                 expect {
-                    try Generator.generate(Types(types: []), template: StencilTemplate(templateString: "{% tag %}"))
+                    try Generator.generate(Types(types: []), functions: [], template: StencilTemplate(templateString: "{% tag %}"))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal(": Unknown template tag 'tag'"))
