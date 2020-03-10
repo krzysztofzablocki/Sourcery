@@ -647,6 +647,11 @@ extension FileParser {
             return nil
         }
 
+        var isIndirect: Bool = false
+        if let attributes = source["key.attributes"] as? [[String: SourceKitRepresentable]], let attribute = attributes.first?["key.attribute"] as? String, SwiftDeclarationAttributeKind(rawValue: attribute) == .indirect {
+            isIndirect = true
+        }
+
         let wrappedBody = keyString[nameRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
 
         switch (wrappedBody.first, wrappedBody.last) {
@@ -662,7 +667,7 @@ extension FileParser {
              Log.warning("\(logPrefix)parseEnumCase: Unknown enum case body format \(wrappedBody)")
         }
 
-        let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source))
+        let enumCase = EnumCase(name: name, rawValue: rawValue, associatedValues: associatedValues, annotations: annotations.from(source), indirect: isIndirect)
         enumCase.setSource(source)
         return enumCase
     }

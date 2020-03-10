@@ -10,6 +10,7 @@
 - Added `.defaultValue` to `AssociatedValue`
 - Added support for parsing [Protocol Compositions](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454)
 - Added support for parsing free functions
+- Added support for indirect enum cases
 
 ### Internal Changes
 
