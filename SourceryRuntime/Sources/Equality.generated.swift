@@ -97,6 +97,7 @@ extension EnumCase {
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.indirect != rhs.indirect { return false }
         return true
     }
 }

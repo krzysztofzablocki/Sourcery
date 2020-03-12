@@ -519,6 +519,18 @@ class FileParserSpec: QuickSpec {
                                 ]))
                     }
 
+                    it("extracts enums with indirect cases") {
+                        expect(parse("enum Foo { case optionA; case optionB; indirect case optionC }"))
+                                .to(equal([
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
+                                        [
+                                            EnumCase(name: "optionA", indirect: false),
+                                            EnumCase(name: "optionB"),
+                                            EnumCase(name: "optionC", indirect: true)
+                                        ])
+                                ]))
+                    }
+
                     it("extracts enums with empty parenthesis as ones with () associated type") {
                         expect(parse("enum Foo { case optionA(); case optionB() }"))
                                 .to(equal([
