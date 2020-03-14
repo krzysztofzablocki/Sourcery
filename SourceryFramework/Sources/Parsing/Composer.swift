@@ -17,15 +17,15 @@ public struct Composer {
     ///
     /// - Parameter parserResult: Result of parsing source code.
     /// - Returns: Final types and extensions of unknown types.
-    public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult) -> (types: [Type], functions: [SourceryMethod]) {
+    public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
         var unique = [String: Type]()
         var modules = [String: [String: Type]]()
-        let types = parserResult.types
+        let parsedTypes = parserResult.types
         let functions = parserResult.functions
-        let typealiases = self.typealiasesByNames(parserResult)
+        let (resolvedTypealiases, unresolvedTypealiases) = self.typealiases(parserResult)
 
         //set definedInType for all methods and variables
-        types
+        parsedTypes
             .forEach { type in
                 type.variables.forEach { $0.definedInType = type }
                 type.methods.forEach { $0.definedInType = type }
@@ -33,7 +33,7 @@ public struct Composer {
         }
 
         //map all known types to their names
-        types
+        parsedTypes
             .filter { $0.isExtension == false}
             .forEach {
                 unique[$0.name] = $0
@@ -46,15 +46,15 @@ public struct Composer {
 
         //replace extensions for type aliases with original types
         //extract all methods and variables from extensions
-        types
+        parsedTypes
             .filter { $0.isExtension == true }
             .forEach {
-                $0.localName = actualTypeName(for: TypeName($0.name), typealiases: typealiases) ?? $0.localName
+                $0.localName = actualTypeName(for: TypeName($0.name), typealiases: resolvedTypealiases) ?? $0.localName
             }
 
         //extend all types with their extensions
-        types.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), typealiases: typealiases) ?? $0 }
+        parsedTypes.forEach { type in
+            type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), typealiases: resolvedTypealiases) ?? $0 }
 
             let uniqueType = unique[type.name] ?? typeFromModule(type.name, modules: modules)
 
@@ -78,15 +78,12 @@ public struct Composer {
         let resolutionStart = currentTimestamp()
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: resolvedTypealiases)
         }
 
-        let array = Array(unique.values)
-        DispatchQueue.concurrentPerform(iterations: array.count) { (counter) in
-            let type = array[counter]
-            type.typealiases.forEach { (_, alias) in
-                alias.type = resolveType(alias.typeName, type)
-            }
+        let types = Array(unique.values)
+        DispatchQueue.concurrentPerform(iterations: types.count) { (counter) in
+            let type = types[counter]
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
             }
@@ -111,12 +108,19 @@ public struct Composer {
             resolveMethodTypes(function, of: nil, resolve: resolveType)
         }
 
+        let typealiases = Array(unresolvedTypealiases.values)
+        DispatchQueue.concurrentPerform(iterations: typealiases.count) { counter in
+            let alias = typealiases[counter]
+            alias.type = resolveType(alias.typeName, nil)
+        }
+
         Log.benchmark("\tresolution took \(currentTimestamp() - resolutionStart)")
 
-        updateTypeRelationships(types: Array(unique.values))
+        updateTypeRelationships(types: types)
         return (
-            types: unique.values.sorted { $0.name < $1.name },
-            functions: functions.sorted { $0.name < $1.name }
+            types: types.sorted { $0.name < $1.name },
+            functions: functions.sorted { $0.name < $1.name },
+            typealiases: typealiases.sorted(by: { $0.name < $1.name })
         )
     }
 
@@ -261,8 +265,9 @@ public struct Composer {
         protocolComposition.composedTypes = composedTypes
     }
 
-    /// returns typealiases map to their full names
-    private static func typealiasesByNames(_ parserResult: FileParserResult) -> [String: Typealias] {
+    /// returns typealiases map to their full names, with `resolved` removing intermediate
+    /// typealises and `unresolved` including typealiases that reference other typealiases.
+    private static func typealiases(_ parserResult: FileParserResult) -> (resolved: [String: Typealias], unresolved: [String: Typealias]) {
         var typealiasesByNames = [String: Typealias]()
         parserResult.typealiases.forEach { typealiasesByNames[$0.name] = $0 }
         parserResult.types.forEach { type in
@@ -270,6 +275,8 @@ public struct Composer {
                 typealiasesByNames[alias.name] = alias
             })
         }
+
+        let unresolved = typealiasesByNames
 
         //! if a typealias leads to another typealias, follow through and replace with final type
         typealiasesByNames.forEach { _, alias in
@@ -283,7 +290,8 @@ public struct Composer {
             //! replace all keys
             aliasNamesToReplace.forEach { typealiasesByNames[$0] = finalAlias }
         }
-        return typealiasesByNames
+
+        return (resolved: typealiasesByNames, unresolved: unresolved)
     }
 
     /// returns actual type name for type alias

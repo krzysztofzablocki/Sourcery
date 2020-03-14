@@ -215,7 +215,6 @@ class FileParserSpec: QuickSpec {
                                     Typealias(aliasName: "GlobalAlias", typeName: TypeName("() -> ()"))
                                     ]))
                         }
-
                     }
 
                     context("given local typealias") {

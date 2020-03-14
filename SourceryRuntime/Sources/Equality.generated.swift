@@ -281,6 +281,7 @@ extension Types {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Types else { return false }
         if self.types != rhs.types { return false }
+        if self.typealiases != rhs.typealiases { return false }
         return true
     }
 }

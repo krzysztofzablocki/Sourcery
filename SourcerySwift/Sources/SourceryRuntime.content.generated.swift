@@ -1087,6 +1087,7 @@ extension Types: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         return results
     }
 }
@@ -1431,7 +1432,7 @@ import Foundation
             self.rawValue = aDecoder.decode(forKey: "rawValue")
             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-            guard let indirect: Bool = aDecoder.decode(forKey: "indirect") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["indirect"])); fatalError() }; self.indirect = indirect
+            self.indirect = aDecoder.decode(forKey: "indirect")
         }
 
         /// :nodoc:
@@ -1827,6 +1828,7 @@ extension Types {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Types else { return false }
         if self.types != rhs.types { return false }
+        if self.typealiases != rhs.typealiases { return false }
         return true
     }
 }
@@ -3320,15 +3322,15 @@ import Foundation
 // sourcery:inline:TemplateContext.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let types: Types = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let functions: [SourceryMethod] = aDecoder.decode(forKey: "functions") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["functions"])); fatalError() }; self.functions = functions
+            guard let types: Types = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
             guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argument"])); fatalError() }; self.argument = argument
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.functions, forKey: "functions")
+            aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.argument, forKey: "argument")
         }
 // sourcery:end
@@ -3379,19 +3381,25 @@ extension ProcessInfo {
     public let types: [Type]
 
     /// :nodoc:
-    public init(types: [Type]) {
+    public let typealiases: [Typealias]
+
+    /// :nodoc:
+    public init(types: [Type], typealiases: [Typealias] = []) {
         self.types = types
+        self.typealiases = typealiases
     }
 
 // sourcery:inline:Types.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
+            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.types, forKey: "types")
+            aCoder.encode(self.typealiases, forKey: "typealiases")
         }
 // sourcery:end
 
@@ -3401,6 +3409,14 @@ extension ProcessInfo {
         var typesByName = [String: Type]()
         self.types.forEach { typesByName[$0.name] = $0 }
         return typesByName
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// :nodoc:
+    public lazy internal(set) var typesaliasesByName: [String: Typealias] = {
+        var typesaliasesByName = [String: Typealias]()
+        self.typealiases.forEach { typesaliasesByName[$0.name] = $0 }
+        return typesaliasesByName
     }()
 
     // sourcery: skipDescription, skipEquality, skipCoding
