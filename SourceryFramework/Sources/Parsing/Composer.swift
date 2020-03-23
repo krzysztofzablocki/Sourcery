@@ -88,6 +88,7 @@ public struct Composer {
             }
         }
 
+        updateTypeRelationships(types: Array(unique.values))
         let array = Array(unique.values)
         DispatchQueue.concurrentPerform(iterations: array.count) { (counter) in
             let type = array[counter]
@@ -120,7 +121,7 @@ public struct Composer {
 
         Log.benchmark("\tresolution took \(currentTimestamp() - resolutionStart)")
 
-        updateTypeRelationships(types: Array(unique.values))
+        
         return (
             types: unique.values.sorted { $0.name < $1.name },
             functions: functions.sorted { $0.name < $1.name }
@@ -149,14 +150,14 @@ public struct Composer {
         if let array = parseArrayType(lookupName) {
             lookupName.array = array
             array.elementType = resolveTypeWithName(array.elementTypeName, array.elementType)
-            lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
+            lookupName.generic = GenericType(name: "Array", typeParameters: [
                 GenericTypeParameter(typeName: array.elementTypeName, type: array.elementType)
                 ])
         } else if let dictionary = parseDictionaryType(lookupName) {
             lookupName.dictionary = dictionary
             dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName, dictionary.valueType)
             dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName, dictionary.keyType)
-            lookupName.generic = GenericType(name: lookupName.name, typeParameters: [
+            lookupName.generic = GenericType(name: "Dictionary", typeParameters: [
                 GenericTypeParameter(typeName: dictionary.keyTypeName, type: dictionary.keyType),
                 GenericTypeParameter(typeName: dictionary.valueTypeName, type: dictionary.valueType)
                 ])

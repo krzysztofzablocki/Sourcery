@@ -162,7 +162,7 @@ class FileParserMethodsSpec: QuickSpec {
                                                                            dictionary: DictionaryType(name: "[String: String]",
                                                                                                       valueTypeName: TypeName("String"),
                                                                                                       keyTypeName: TypeName("String")),
-                                                                           generic: GenericType(name: "[String: String]",
+                                                                           generic: GenericType(name: "Dictionary",
                                                                                                 typeParameters: [
                                                                                                     GenericTypeParameter(typeName: TypeName("String")),
                                                                                                     GenericTypeParameter(typeName: TypeName("String"))])),
