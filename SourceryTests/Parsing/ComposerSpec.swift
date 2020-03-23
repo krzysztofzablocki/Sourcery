@@ -408,6 +408,7 @@ class ParserComposerSpec: QuickSpec {
                             """)
                         let bar = SourceryProtocol.init(name: "Bar")
                         let variables = types[3].variables
+                        // FIXME: The reason why this test is failing, is currently GenericType.name for Array<Int> is "Array<Int>" instead of Array, as outlined in documentation for this property
                         expect(variables[0].type?.implements["Bar"]).to(equal(bar))
                         expect(variables[1].type?.implements["Bar"]).to(equal(bar))
                         expect(variables[2].type?.implements["Bar"]).to(equal(bar))

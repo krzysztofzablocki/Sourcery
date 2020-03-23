@@ -398,8 +398,10 @@ public struct Composer {
 
     private static func specializeType(_ type: Type?, with genericParameters: [GenericTypeParameter]) -> Type? {
         guard let type = type else { return nil }
+
         // This hack with keyed archivers serves only one goal - copy type to specialize it with generic parameters
         // We don't want to change original type, it should stay unspecialized
+        // TODO: Introduce our custom Copyable protocol and generate code for all subclasses of Type that would use plain init
         let data = NSKeyedArchiver.archivedData(withRootObject: type)
         let typeCopy = NSKeyedUnarchiver.unarchiveObject(with: data) as? Type
         typeCopy?.genericTypeParameters = genericParameters
