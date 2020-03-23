@@ -277,7 +277,7 @@ public struct Composer {
 
     private static func resolveProtocolCompositionTypes(_ protocolComposition: ProtocolComposition, resolve: TypeResolver) {
         let composedTypes = protocolComposition.composedTypeNames.compactMap { typeName in
-            resolve(typeName, protocolComposition)
+            resolve(typeName, protocolComposition, nil)
         }
 
         protocolComposition.composedTypes = composedTypes

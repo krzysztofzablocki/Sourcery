@@ -46,7 +46,8 @@ import Foundation
             containedTypes: containedTypes,
             typealiases: typealiases,
             annotations: annotations,
-            isGeneric: isGeneric
+            genericTypePlaceholders: [],
+            genericTypeParameters: []
         )
     }
 

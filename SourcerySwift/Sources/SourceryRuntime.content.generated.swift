@@ -3172,8 +3172,8 @@ import Foundation
             containedTypes: containedTypes,
             typealiases: typealiases,
             annotations: annotations,
-            genericTypePlaceholders: genericTypePlaceholders,
-            genericTypeParameters: genericTypeParameters
+            genericTypePlaceholders: [],
+            genericTypeParameters: []
         )
     }
 
@@ -3242,7 +3242,8 @@ import Foundation
             containedTypes: containedTypes,
             typealiases: typealiases,
             annotations: annotations,
-            isGeneric: isGeneric
+            genericTypePlaceholders: genericTypePlaceholders,
+            genericTypeParameters: genericTypeParameters
         )
     }
 
