@@ -22,6 +22,7 @@
 - Fixed a bug in inferring extensions of Dictionary and Array types
 - Fixed a bug that was including default values as part of AssociatedValues type names
 - Fixed an issue with AutoMockable.stencil template when mocked function's return type was closure
+- Fixed missing SourceryRuntime dependency of SourceryFramework (SPM)
 
 ## 0.17.0
 
