@@ -151,6 +151,7 @@ extension Enum: EnumAutoJSExport {}
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
     var annotations: [String: NSObject] { get }
+    var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
 }
 
@@ -320,6 +321,7 @@ extension Struct: StructAutoJSExport {}
 extension Subscript: SubscriptAutoJSExport {}
 
 @objc protocol TemplateContextAutoJSExport: JSExport {
+    var functions: [SourceryMethod] { get }
     var types: Types { get }
     var argument: [String: NSObject] { get }
     var type: [String: Type] { get }

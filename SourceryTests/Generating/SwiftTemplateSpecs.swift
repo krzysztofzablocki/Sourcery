@@ -153,7 +153,7 @@ class SwiftTemplateTests: QuickSpec {
                     try Generator.generate(Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
-                        expect("\(error)").to(contain("\(templatePath): Fatal error: Index out of range\n"))
+                        expect("\(error)").to(contain("\(templatePath): Fatal error: Index out of range"))
                     }))
             }
 

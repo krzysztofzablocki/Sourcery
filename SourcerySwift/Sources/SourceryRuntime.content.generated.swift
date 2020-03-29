@@ -515,6 +515,7 @@ extension EnumCase {
         string += "rawValue = \\(String(describing: self.rawValue)), "
         string += "associatedValues = \\(String(describing: self.associatedValues)), "
         string += "annotations = \\(String(describing: self.annotations)), "
+        string += "indirect = \\(String(describing: self.indirect)), "
         string += "hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))"
         return string
     }
@@ -526,6 +527,7 @@ extension FileParserResult {
         string += "path = \\(String(describing: self.path)), "
         string += "module = \\(String(describing: self.module)), "
         string += "types = \\(String(describing: self.types)), "
+        string += "functions = \\(String(describing: self.functions)), "
         string += "typealiases = \\(String(describing: self.typealiases)), "
         string += "inlineRanges = \\(String(describing: self.inlineRanges)), "
         string += "inlineIndentations = \\(String(describing: self.inlineIndentations)), "
@@ -635,6 +637,7 @@ extension TemplateContext {
     /// :nodoc:
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
+        string += "functions = \\(String(describing: self.functions)), "
         string += "types = \\(String(describing: self.types)), "
         string += "argument = \\(String(describing: self.argument)), "
         string += "stencilContext = \\(String(describing: self.stencilContext))"
@@ -706,7 +709,8 @@ extension Types {
     /// :nodoc:
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "types = \\(String(describing: self.types))"
+        string += "types = \\(String(describing: self.types)), "
+        string += "typealiases = \\(String(describing: self.typealiases))"
         return string
     }
 }
@@ -854,6 +858,7 @@ extension EnumCase: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: castObject.rawValue))
         results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: castObject.associatedValues))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
         return results
     }
 }
@@ -867,6 +872,7 @@ extension FileParserResult: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: castObject.path))
         results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "inlineRanges").trackDifference(actual: self.inlineRanges, expected: castObject.inlineRanges))
         results.append(contentsOf: DiffableResult(identifier: "inlineIndentations").trackDifference(actual: self.inlineIndentations, expected: castObject.inlineIndentations))
@@ -995,6 +1001,7 @@ extension TemplateContext: Diffable {
             results.append("Incorrect type <expected: TemplateContext, received: \\(Swift.type(of: object))>")
             return results
         }
+        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
         results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
         return results
@@ -1655,6 +1662,7 @@ extension FileParserResult {
         if self.path != rhs.path { return false }
         if self.module != rhs.module { return false }
         if self.types != rhs.types { return false }
+        if self.functions != rhs.functions { return false }
         if self.typealiases != rhs.typealiases { return false }
         if self.inlineRanges != rhs.inlineRanges { return false }
         if self.inlineIndentations != rhs.inlineIndentations { return false }
@@ -1753,6 +1761,7 @@ extension TemplateContext {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TemplateContext else { return false }
+        if self.functions != rhs.functions { return false }
         if self.types != rhs.types { return false }
         if self.argument != rhs.argument { return false }
         return true
@@ -2271,6 +2280,7 @@ extension Enum: EnumAutoJSExport {}
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
     var annotations: [String: NSObject] { get }
+    var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
 }
 
@@ -2440,6 +2450,7 @@ extension Struct: StructAutoJSExport {}
 extension Subscript: SubscriptAutoJSExport {}
 
 @objc protocol TemplateContextAutoJSExport: JSExport {
+    var functions: [SourceryMethod] { get }
     var types: Types { get }
     var argument: [String: NSObject] { get }
     var type: [String: Type] { get }
