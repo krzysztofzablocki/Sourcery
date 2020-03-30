@@ -20,7 +20,7 @@ class ParserComposerSpec: QuickSpec {
     // swiftlint:disable function_body_length
     override func spec() {
         describe("ParserComposer") {
-            describe("uniqueType") {
+            describe("uniqueTypesAndFunctions") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
                     return Composer.uniqueTypesAndFunctions(parserResult).types
@@ -509,6 +509,10 @@ class ParserComposerSpec: QuickSpec {
                 }
 
                 context("given typealiases") {
+                    func parseTypealiases(_ code: String) -> [Typealias] {
+                        guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
+                        return Composer.uniqueTypesAndFunctions(parserResult).typealiases
+                    }
 
                     it("resolves definedInType for methods") {
                         let input = "class Foo { func bar() {} }; typealias FooAlias = Foo; extension FooAlias { func baz() {} }"
@@ -892,6 +896,55 @@ class ParserComposerSpec: QuickSpec {
                             expect(variable).to(equal(expectedVariable))
                             expect(variable?.actualTypeName).to(equal(expectedVariable.actualTypeName))
                             expect(variable?.type).to(equal(expectedVariable.type))
+                        }
+
+                        it("populates the local collection of typealiases") {
+                            let expectedType = Class(name: "Foo")
+                            let expectedParent = Class(name: "Bar")
+                            let type = parse("class Bar { typealias FooAlias = Foo }; class Foo {}").first
+                            let aliases = type?.typealiases
+
+                            expect(aliases).to(haveCount(1))
+                            expect(aliases?["FooAlias"]).to(equal(Typealias(aliasName: "FooAlias", typeName: TypeName("Foo"), parent: expectedParent)))
+                            expect(aliases?["FooAlias"]?.type).to(equal(expectedType))
+                        }
+
+                        it("populates the global collection of typealiases") {
+                            let expectedType = Class(name: "Foo")
+                            let expectedParent = Class(name: "Bar")
+                            let aliases = parseTypealiases("class Bar { typealias FooAlias = Foo }; class Foo {}")
+
+                            expect(aliases).to(haveCount(1))
+                            expect(aliases.first).to(equal(Typealias(aliasName: "FooAlias", typeName: TypeName("Foo"), parent: expectedParent)))
+                            expect(aliases.first?.type).to(equal(expectedType))
+                        }
+                    }
+
+                    context("given global typealias") {
+                        it("extracts typealiases of other typealiases") {
+                            expect(parseTypealiases("typealias Foo = Int; typealias Bar = Foo"))
+                                .to(contain([
+                                    Typealias(aliasName: "Foo", typeName: TypeName("Int")),
+                                    Typealias(aliasName: "Bar", typeName: TypeName("Foo"))
+                                ]))
+                        }
+
+                        it("extracts typealiases of other typealiases of a type") {
+                            expect(parseTypealiases("typealias Foo = Baz; typealias Bar = Foo; class Baz {}"))
+                                .to(contain([
+                                    Typealias(aliasName: "Foo", typeName: TypeName("Baz")),
+                                    Typealias(aliasName: "Bar", typeName: TypeName("Foo"))
+                                ]))
+                        }
+
+                        it("resolves types transitively") {
+                            let expectedType = Class(name: "Baz")
+
+                            let typealiases = parseTypealiases("typealias Foo = Bar; typealias Bar = Baz; class Baz {}")
+
+                            expect(typealiases).to(haveCount(2))
+                            expect(typealiases.first?.type).to(equal(expectedType))
+                            expect(typealiases.last?.type).to(equal(expectedType))
                         }
                     }
                 }

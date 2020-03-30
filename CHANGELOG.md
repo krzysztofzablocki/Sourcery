@@ -11,6 +11,8 @@
 - Added support for parsing [Protocol Compositions](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454)
 - Added support for parsing free functions
 - Added support for indirect enum cases
+- Added support for accessing all typealiases via `typealiases` and `typesaliasesByName`
+- Added support for parsing global typealiases
 
 ### Internal Changes
 
