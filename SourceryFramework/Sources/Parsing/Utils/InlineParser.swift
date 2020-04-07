@@ -72,7 +72,6 @@ public enum TemplateAnnotationsParser {
             }
             
             if rangeToBeRemoved || name.hasSuffix("." + "AutoCoding") {
-             //   print("removed named range \(name) and \(forceParse)")
                 rangesToReplace.insert(range)
                 
             }
