@@ -50,6 +50,7 @@
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		185DAA6CDB46FC4502766F3A /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1278DE322EEEC30934B058 /* Pods_SourceryTests.framework */; };
 		369A5F6281FBAB7834582E3F /* Pods_SourcerySwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F81A4FAFF66C386F53742B5F /* Pods_SourcerySwift.framework */; };
+		4505CAE2243C681A004D7288 /* TemplatesAnnotationParser+ForceParseInlineCodeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505CAE1243C681A004D7288 /* TemplatesAnnotationParser+ForceParseInlineCodeSpec.swift */; };
 		47379D2B215962BF002C1DAA /* SourceryRuntime.content.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */; };
 		47635C9C21DA32E900B2D5A1 /* SourceryUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 47635C9A21DA32E800B2D5A1 /* SourceryUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47635C9F21DA32E900B2D5A1 /* SourceryUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47635C9821DA32E800B2D5A1 /* SourceryUtils.framework */; };
@@ -267,6 +268,7 @@
 		09C6B0D31E11C1C500246CDF /* ClassSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassSpec.swift; sourceTree = "<group>"; };
 		1212A564CA8698529C0ACC6B /* Pods-SourceryUtils.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryUtils.release.xcconfig"; path = "Target Support Files/Pods-SourceryUtils/Pods-SourceryUtils.release.xcconfig"; sourceTree = "<group>"; };
 		39E4BBC6C7A5FE28E65D2364 /* Pods_Sourcery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sourcery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4505CAE1243C681A004D7288 /* TemplatesAnnotationParser+ForceParseInlineCodeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemplatesAnnotationParser+ForceParseInlineCodeSpec.swift"; sourceTree = "<group>"; };
 		4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceryRuntime.content.generated.swift; sourceTree = "<group>"; };
 		47635C9821DA32E800B2D5A1 /* SourceryUtils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryUtils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		47635C9A21DA32E800B2D5A1 /* SourceryUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SourceryUtils.h; sourceTree = "<group>"; };
@@ -795,6 +797,7 @@
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
 				6359E6641FE409250015AF8F /* FileParser+SubscriptsSpec.swift */,
 				E291DA3CE0BD58D0BF35138C /* VerifierSpec.swift */,
+				4505CAE1243C681A004D7288 /* TemplatesAnnotationParser+ForceParseInlineCodeSpec.swift */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -1629,6 +1632,7 @@
 				09346DC81E02195300D6358C /* StructSpec.swift in Sources */,
 				E291D4E250805568DBC33F7E /* TypeSpec.swift in Sources */,
 				E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */,
+				4505CAE2243C681A004D7288 /* TemplatesAnnotationParser+ForceParseInlineCodeSpec.swift in Sources */,
 				097E11F71E0EF63100FEB751 /* MethodSpec.swift in Sources */,
 				0906124D1E2BC43500BA0937 /* FileParser + MethodsSpec.swift in Sources */,
 				09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */,
