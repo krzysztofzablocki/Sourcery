@@ -37,10 +37,11 @@ class TemplatesAnnotationParserPassInlineCodeSpec: QuickSpec {
                 }
 
                 it("does not remove content between the markup when force parse parameter is set to template name") {
-                    expect(result.contents).to(equal(
-                        "// sourcery:inline:Type.AutoCoding\n" +
-                            "var something: Int\n" +
-                        "// sourcery:end\n"
+                    expect(result.contents).to(equal("""
+                        // sourcery:inline:Type.AutoCoding
+                            var something: Int
+                        // sourcery:end
+                        """
                     ))
                 }
             }
