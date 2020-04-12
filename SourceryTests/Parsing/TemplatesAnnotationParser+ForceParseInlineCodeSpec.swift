@@ -22,10 +22,11 @@ class TemplatesAnnotationParserPassInlineCodeSpec: QuickSpec {
     override func spec() {
         describe("InlineParser") {
             context("without indentation") {
-                let source =
-                    "// sourcery:inline:Type.AutoCoding\n" +
-                        "var something: Int\n" +
-                "// sourcery:end\n"
+                let source = """
+                    // sourcery:inline:Type.AutoCoding
+                        var something: Int
+                    // sourcery:end
+                    """
 
                 let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source, aggregate: false, forceParse: ["AutoCoding"])
 
