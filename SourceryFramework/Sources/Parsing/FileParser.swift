@@ -85,7 +85,7 @@ public final class FileParser {
             return contents
         }
 
-        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents,aggregate: false,forceParse: self.forceParse)
+        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents, aggregate: false, forceParse: self.forceParse)
         contents = inline.contents
         inlineRanges = inline.annotatedRanges.mapValues { $0[0].range }
         inlineIndentations = inline.annotatedRanges.mapValues { $0[0].indentation }
