@@ -69,7 +69,7 @@ public final class FileParser {
     ///   - contents: Contents to parse.
     ///   - path: Path to file.
     /// - Throws: parsing errors.
-    public init(contents: String, path: Path? = nil, module: String? = nil,forceParse:[String]=[]) throws {
+    public init(contents: String, path: Path? = nil, module: String? = nil, forceParse: [String] = []) throws {
         self.path = path?.string
         self.modifiedDate = path.flatMap({ (try? FileManager.default.attributesOfItem(atPath: $0.string)[.modificationDate]) as? Date })
         self.module = module
