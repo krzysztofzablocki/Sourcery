@@ -119,7 +119,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts properly from extension") {
-                            let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
+                            let innerType = Struct(name: "Bar", accessLevel: .none, isExtension: false, variables: [])
 
                             expect(parse("struct Foo {}  extension Foo { struct Bar { } }"))
                                 .to(equal([
@@ -133,9 +133,9 @@ class FileParserSpec: QuickSpec {
                 context("given class") {
 
                     it("extracts variables properly") {
-                        expect(parse("class Foo { }; extension Foo { var x: Int }"))
+                        expect(parse("class Foo { }; extension Foo { var x: Int { 1 }"))
                                 .to(equal([
-                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))])
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .none, write: .none), isComputed: true, definedInTypeName: TypeName("Foo"))])
                                 ]))
                     }
 
@@ -160,7 +160,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts extensions properly") {
                         expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { return 0 } }"))
                             .to(equal([
-                                Type(name: "Bar", accessLevel: .internal, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
+                                Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .none, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
                                 Protocol(name: "Foo")
                                 ]))
                     }

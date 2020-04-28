@@ -17,6 +17,7 @@
 ### Internal Changes
 
 - Improved error logging when running with `--watch` option
+- Updated CI to Xcode 11.4.1
 
 ### Bug fixes
 
