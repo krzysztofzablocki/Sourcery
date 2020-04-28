@@ -80,6 +80,7 @@ class ParserComposerSpec: QuickSpec {
                                                                               typeName: TypeName("String"),
                                                                               defaultValue: "\"Baz\"")],
                                                  returnTypeName: TypeName("Void"),
+                                                 accessLevel: .none,
                                                  definedInTypeName: TypeName("Foo"))
                     }
 
@@ -88,7 +89,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "enum Foo { case A; func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Enum(name: "Foo", cases: [EnumCase(name: "A")], methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {
@@ -102,7 +103,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "protocol Foo { func \(method.name) }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Protocol(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {
@@ -116,7 +117,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "class Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Class(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {
@@ -130,7 +131,7 @@ class ParserComposerSpec: QuickSpec {
                             input = "struct Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
                             parsedResult = parse(input).first
                             originalType = Struct(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            typeExtension = Type(name: "Foo", accessLevel: .none, isExtension: true, methods: [defaultedMethod])
                         }
 
                         it("resolves methods definedInType") {
@@ -1058,7 +1059,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extends type with extension") {
-                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("MyModule.Bar"))])
+                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .none, write: .none), isComputed: true, definedInTypeName: TypeName("MyModule.Bar"))])
                         expectedBar.module = "MyModule"
 
                         let types = parseModules(

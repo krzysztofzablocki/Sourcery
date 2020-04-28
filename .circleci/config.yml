@@ -3,7 +3,7 @@ version: 2
 jobs:
   test:
     macos:
-      xcode: "10.2.1"
+      xcode: "11.4.1"
     environment:
       - XCODE_WORKSPACE: Sourcery.xcworkspace
       - XCODE_PROJECT: Sourcery.xcodeproj
@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run: brew update 1> /dev/null 2> /dev/null
       - run: brew install sourcekitten
-      - run: echo "ruby-2.4" > ~/.ruby-version
+      - run: echo "ruby-2.6" > ~/.ruby-version
       - run: bundle install
       - run: bundle exec rake validate_docs
       - run: bundle exec danger || true

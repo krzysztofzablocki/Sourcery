@@ -103,7 +103,7 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts extension method properly") {
                     expect(parse("class Baz {}; extension Baz { func foo() {} }")).to(equal([
                         Class(name: "Baz", methods: [
-                            Method(name: "foo()", selectorName: "foo", definedInTypeName: TypeName("Baz"))
+                            Method(name: "foo()", selectorName: "foo", accessLevel: .none, definedInTypeName: TypeName("Baz"))
                             ])
                         ]))
                 }
