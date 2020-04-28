@@ -178,6 +178,7 @@ public extension String {
 }
 
 public extension NSString {
+    /// :nodoc:
     var entireRange: NSRange {
         return NSRange(location: 0, length: self.length)
     }

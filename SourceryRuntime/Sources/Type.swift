@@ -342,6 +342,7 @@ import Foundation
 extension Type {
 
     // sourcery: skipDescription, skipJSExport
+    /// :nodoc:
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol
         return !isNotClass && !isExtension
