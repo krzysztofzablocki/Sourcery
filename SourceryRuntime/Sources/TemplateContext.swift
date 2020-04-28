@@ -83,7 +83,7 @@ extension ProcessInfo {
     /// :nodoc:
     public let types: [Type]
 
-    /// :nodoc:
+    /// All known typealiases
     public let typealiases: [Typealias]
 
     /// :nodoc:

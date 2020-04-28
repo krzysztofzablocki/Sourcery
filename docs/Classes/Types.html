@@ -177,6 +177,33 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)typealiases"></a>
+                    <a name="//apple_ref/swift/Property/typealiases" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)typealiases">typealiases</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All known typealiases</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">typealiases</span><span class="p">:</span> <span class="p">[</span><span class="kt">Typealias</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)all"></a>
                     <a name="//apple_ref/swift/Property/all" class="dashAnchor"></a>
                     <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)all">all</a>
@@ -187,14 +214,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>All known types, excluding protocols</p>
+                        <p>All known types, excluding protocols or protocol compositions.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">all</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">all</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="o">!</span><span class="p">(</span><span class="nv">$0</span> <span class="k">is</span> <span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span> <span class="o">||</span> <span class="nv">$0</span> <span class="k">is</span> <span class="kt">ProtocolComposition</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -221,7 +250,38 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocols</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocols</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">as?</span> <span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span> <span class="p">}</span>
+<span class="p">}()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)protocolCompositions"></a>
+                    <a name="//apple_ref/swift/Property/protocolCompositions" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)protocolCompositions">protocolCompositions</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All known protocol compositions</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocolCompositions</span><span class="p">:</span> <span class="p">[</span><span class="kt">ProtocolComposition</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">as?</span> <span class="kt">ProtocolComposition</span> <span class="p">}</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -248,7 +308,9 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">classes</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Class.html">Class</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">classes</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Class.html">Class</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n"><a href="../Classes/Types.html#/c:@M@SourceryRuntime@objc(cs)Types(py)all">all</a></span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">as?</span> <span class="kt"><a href="../Classes/Class.html">Class</a></span> <span class="p">}</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -275,7 +337,9 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">structs</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Struct.html">Struct</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">structs</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Struct.html">Struct</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n"><a href="../Classes/Types.html#/c:@M@SourceryRuntime@objc(cs)Types(py)all">all</a></span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">as?</span> <span class="kt"><a href="../Classes/Struct.html">Struct</a></span> <span class="p">}</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -302,7 +366,9 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">enums</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Enum.html">Enum</a></span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">enums</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Enum.html">Enum</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n"><a href="../Classes/Types.html#/c:@M@SourceryRuntime@objc(cs)Types(py)all">all</a></span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">as?</span> <span class="kt"><a href="../Classes/Enum.html">Enum</a></span> <span class="p">}</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -329,7 +395,9 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">extensions</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">extensions</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n"><a href="../Classes/Types.html#/c:@M@SourceryRuntime@objc(cs)Types(py)all">all</a></span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">isExtension</span> <span class="p">?</span> <span class="nv">$0</span> <span class="p">:</span> <span class="kc">nil</span> <span class="p">}</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -357,7 +425,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">based</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">based</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="kt">TypesCollection</span><span class="p">(</span>
+        <span class="nv">types</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="p">,</span>
+        <span class="nv">collection</span><span class="p">:</span> <span class="p">{</span> <span class="kt">Array</span><span class="p">(</span><span class="nv">$0</span><span class="o">.</span><span class="n">based</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">)</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -385,7 +458,16 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">inheriting</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">inheriting</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="kt">TypesCollection</span><span class="p">(</span>
+        <span class="nv">types</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="p">,</span>
+        <span class="nv">collection</span><span class="p">:</span> <span class="p">{</span> <span class="kt">Array</span><span class="p">(</span><span class="nv">$0</span><span class="o">.</span><span class="n">inherits</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="p">},</span>
+        <span class="nv">validate</span><span class="p">:</span> <span class="p">{</span> <span class="n">type</span> <span class="k">in</span>
+            <span class="k">guard</span> <span class="n">type</span> <span class="k">is</span> <span class="kt"><a href="../Classes/Class.html">Class</a></span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">throw</span> <span class="s">"</span><span class="se">\(</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="se">)</span><span class="s"> is a not a class and should be used with `implementing` or `based`"</span>
+            <span class="p">}</span>
+        <span class="p">})</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>
@@ -413,7 +495,16 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">implementing</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="o">=</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">implementing</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="kt">TypesCollection</span><span class="p">(</span>
+        <span class="nv">types</span><span class="p">:</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="p">,</span>
+        <span class="nv">collection</span><span class="p">:</span> <span class="p">{</span> <span class="kt">Array</span><span class="p">(</span><span class="nv">$0</span><span class="o">.</span><span class="n">implements</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="p">},</span>
+        <span class="nv">validate</span><span class="p">:</span> <span class="p">{</span> <span class="n">type</span> <span class="k">in</span>
+            <span class="k">guard</span> <span class="n">type</span> <span class="k">is</span> <span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">throw</span> <span class="s">"</span><span class="se">\(</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="se">)</span><span class="s"> is a class and should be used with `inheriting` or `based`"</span>
+            <span class="p">}</span>
+    <span class="p">})</span>
+<span class="p">}()</span></code></pre>
 
                         </div>
                       </div>

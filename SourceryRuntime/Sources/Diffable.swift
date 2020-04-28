@@ -68,6 +68,7 @@ extension DiffableResult {
 
 #if swift(>=4.1)
 #else
+    /// :nodoc:
     @discardableResult func trackDifference<T: Equatable>(actual: T, expected: T) -> DiffableResult {
         if actual != expected {
             let result = DiffableResult(results: ["<expected: \(expected), received: \(actual)>"])
@@ -77,6 +78,7 @@ extension DiffableResult {
     }
 #endif
 
+    /// :nodoc:
     @discardableResult func trackDifference<T: Equatable>(actual: T?, expected: T?) -> DiffableResult {
         if actual != expected {
             let result = DiffableResult(results: ["<expected: \(expected.map({ "\($0)" }) ?? "nil"), received: \(actual.map({ "\($0)" }) ?? "nil")>"])
@@ -85,12 +87,14 @@ extension DiffableResult {
         return self
     }
 
+    /// :nodoc:
     @discardableResult func trackDifference<T: Equatable>(actual: T, expected: T) -> DiffableResult where T: Diffable {
         let diffResult = actual.diffAgainst(expected)
         append(contentsOf: diffResult)
         return self
     }
 
+    /// :nodoc:
     @discardableResult func trackDifference<T: Equatable>(actual: [T], expected: [T]) -> DiffableResult where T: Diffable {
         let diffResult = DiffableResult()
         defer { append(contentsOf: diffResult) }
@@ -112,6 +116,7 @@ extension DiffableResult {
         return self
     }
 
+    /// :nodoc:
     @discardableResult func trackDifference<T: Equatable>(actual: [T], expected: [T]) -> DiffableResult {
         let diffResult = DiffableResult()
         defer { append(contentsOf: diffResult) }
@@ -129,6 +134,7 @@ extension DiffableResult {
         return self
     }
 
+    /// :nodoc:
     @discardableResult func trackDifference<K, T: Equatable>(actual: [K: T], expected: [K: T]) -> DiffableResult where T: Diffable {
         let diffResult = DiffableResult()
         defer { append(contentsOf: diffResult) }
@@ -166,6 +172,7 @@ extension DiffableResult {
 
 // MARK: - NSObject diffing
 
+    /// :nodoc:
     @discardableResult func trackDifference<K, T: NSObjectProtocol>(actual: [K: T], expected: [K: T]) -> DiffableResult {
         let diffResult = DiffableResult()
         defer { append(contentsOf: diffResult) }
