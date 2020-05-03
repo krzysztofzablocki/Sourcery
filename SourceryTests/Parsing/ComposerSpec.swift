@@ -263,7 +263,7 @@ class ParserComposerSpec: QuickSpec {
                 }
 
                 context("given enum inheriting protocol composition") {
-                    it("does not extract protocol composition as an inherited type") {
+                    it("extracts the protocol composition as the inherited type") {
                         expect(parse("enum Enum: Composition { }; typealias Composition = Foo & Bar; protocol Foo {}; protocol Bar {}"))
                             .to(contain([
                                 Enum(name: "Enum", inheritedTypes: ["Composition"])
