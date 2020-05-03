@@ -262,6 +262,15 @@ class ParserComposerSpec: QuickSpec {
 
                 }
 
+                context("given enum inheriting protocol composition") {
+                    it("does not extract protocol composition as an inherited type") {
+                        expect(parse("enum Enum: Composition { }; typealias Composition = Foo & Bar; protocol Foo {}; protocol Bar {}"))
+                            .to(contain([
+                                Enum(name: "Enum", inheritedTypes: ["Composition"])
+                            ]))
+                    }
+                }
+
                 context("given tuple type") {
                     it("extracts elements properly") {
                         let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int -> Int), tuple: (Int, Int))}")
