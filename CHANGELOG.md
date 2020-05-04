@@ -3,6 +3,9 @@
 ---
 ## Master
 
+### Bug fixes
+
+- Add missing documentation for the `ProtocolComposition` type.
 
 ## 0.18.0
 
