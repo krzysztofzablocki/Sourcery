@@ -247,7 +247,7 @@ public struct Composer {
             enumeration.rawType = rawValueVariable.type
         } else if let rawTypeName = enumeration.inheritedTypes.first {
             if let rawTypeCandidate = types[rawTypeName] {
-                if !(rawTypeCandidate is SourceryProtocol) {
+                if !((rawTypeCandidate is SourceryProtocol) || (rawTypeCandidate is ProtocolComposition)) {
                     enumeration.rawTypeName = TypeName(rawTypeName)
                     enumeration.rawType = rawTypeCandidate
                 }
