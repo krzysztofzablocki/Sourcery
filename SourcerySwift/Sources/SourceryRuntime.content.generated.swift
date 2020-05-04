@@ -3054,7 +3054,7 @@ public typealias SourceryProtocol = Protocol
 import Foundation
 
 // sourcery: skipJSExport
-/// :nodoc:
+/// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
 @objcMembers public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
@@ -3064,6 +3064,7 @@ import Foundation
     public let composedTypeNames: [TypeName]
 
     // sourcery: skipEquality, skipDescription
+    /// The types composed to form this composition, if known
     public var composedTypes: [Type]?
 
     /// :nodoc:

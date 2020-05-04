@@ -143,6 +143,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a href="../Other Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/ProtocolComposition.html">ProtocolComposition</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a href="../Other Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -222,7 +230,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">all</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="o">!</span><span class="p">(</span><span class="nv">$0</span> <span class="k">is</span> <span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span> <span class="o">||</span> <span class="nv">$0</span> <span class="k">is</span> <span class="kt">ProtocolComposition</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="o">!</span><span class="p">(</span><span class="nv">$0</span> <span class="k">is</span> <span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span> <span class="o">||</span> <span class="nv">$0</span> <span class="k">is</span> <span class="kt"><a href="../Classes/ProtocolComposition.html">ProtocolComposition</a></span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}()</span></code></pre>
 
                         </div>
@@ -279,8 +287,8 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocolCompositions</span><span class="p">:</span> <span class="p">[</span><span class="kt">ProtocolComposition</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">as?</span> <span class="kt">ProtocolComposition</span> <span class="p">}</span>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocolCompositions</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/ProtocolComposition.html">ProtocolComposition</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">self</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="k">as?</span> <span class="kt"><a href="../Classes/ProtocolComposition.html">ProtocolComposition</a></span> <span class="p">}</span>
 <span class="p">}()</span></code></pre>
 
                         </div>
