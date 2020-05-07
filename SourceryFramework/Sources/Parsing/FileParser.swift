@@ -111,7 +111,7 @@ public final class FileParser {
 
     internal func parseImports(_ code: String) throws -> [String] {
         var unique: Set<String> = []
-        let regExp = try NSRegularExpression(pattern: "^(?:@testable\\s+)?import\\s+([a-zA-Z0-9]+)", options: [.anchorsMatchLines])
+        let regExp = try NSRegularExpression(pattern: "^(?:@testable\\s+)?import\\s+([a-zA-Z0-9_]+)", options: [.anchorsMatchLines])
         for match in regExp.matches(in: code, options: [], range: NSRange(code.startIndex..., in: code)) {
             guard let range = Range(match.range(at: 1), in: code) else { continue }
             unique.insert(String(code[range]))
