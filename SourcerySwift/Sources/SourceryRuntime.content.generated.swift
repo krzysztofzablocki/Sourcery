@@ -3427,7 +3427,7 @@ extension ProcessInfo {
     /// :nodoc:
     public lazy internal(set) var typesByName: [String: Type] = {
         var typesByName = [String: Type]()
-        self.types.forEach { typesByName[$0.name] = $0 }
+        self.types.forEach { typesByName[$0.globalName] = $0 }
         return typesByName
     }()
 
@@ -3594,6 +3594,9 @@ import Foundation
     /// :nodoc:
     public var module: String?
 
+    /// :nodoc:
+    public var imports: [String] = []
+
     // All local typealiases
     // sourcery: skipJSExport
     /// :nodoc:
@@ -3621,7 +3624,7 @@ import Foundation
     }
 
     // sourcery: skipDescription
-    var globalName: String {
+    public var globalName: String {
         guard let module = module else { return name }
         return "\\(module).\\(name)"
     }

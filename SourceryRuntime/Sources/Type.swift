@@ -11,6 +11,9 @@ import Foundation
     /// :nodoc:
     public var module: String?
 
+    /// :nodoc:
+    public var imports: [String] = []
+
     // All local typealiases
     // sourcery: skipJSExport
     /// :nodoc:
@@ -38,7 +41,7 @@ import Foundation
     }
 
     // sourcery: skipDescription
-    var globalName: String {
+    public var globalName: String {
         guard let module = module else { return name }
         return "\(module).\(name)"
     }

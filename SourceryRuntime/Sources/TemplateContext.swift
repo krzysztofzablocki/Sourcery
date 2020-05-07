@@ -110,7 +110,7 @@ extension ProcessInfo {
     /// :nodoc:
     public lazy internal(set) var typesByName: [String: Type] = {
         var typesByName = [String: Type]()
-        self.types.forEach { typesByName[$0.name] = $0 }
+        self.types.forEach { typesByName[$0.globalName] = $0 }
         return typesByName
     }()
 
