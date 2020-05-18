@@ -50,3 +50,4 @@ custom_categories:
       - GenericType
       - GenericTypeParameter
       - Attribute
+      - ProtocolComposition
