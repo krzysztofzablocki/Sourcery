@@ -113,6 +113,20 @@ class TypeNameSpec: QuickSpec {
                     expect(TypeName("((Int) -> (Int)) -> ()").isClosure).to(beTrue())
                     expect(TypeName("((Int, Int) -> (), Int)").isClosure).to(beFalse())
                 }
+
+                it("reports optional status correctly") {
+                    expect(TypeName("() -> ()").isOptional).to(beFalse())
+                    expect(TypeName("() -> ()?").isOptional).to(beFalse())
+                    expect(TypeName("() -> ()!").isImplicitlyUnwrappedOptional).to(beFalse())
+                    expect(TypeName("(() -> ()!)").isImplicitlyUnwrappedOptional).to(beFalse())
+                    expect(TypeName("() -> ImplicitlyUnwrappedOptional<Void>").isImplicitlyUnwrappedOptional).to(beFalse())
+                    expect(TypeName("Optional<()> -> ()").isOptional).to(beFalse())
+
+                    expect(TypeName("(() -> ())?").isOptional).to(beTrue())
+                    expect(TypeName("(() -> ())!").isImplicitlyUnwrappedOptional).to(beTrue())
+                    expect(TypeName("Optional<() -> ()>").isOptional).to(beTrue())
+                    expect(TypeName("ImplicitlyUnwrappedOptional<() -> ()>").isImplicitlyUnwrappedOptional).to(beTrue())
+                }
             }
 
             it("removes attributes in unwrappedTypeName") {
