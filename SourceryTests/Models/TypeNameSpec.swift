@@ -121,6 +121,7 @@ class TypeNameSpec: QuickSpec {
                     expect(TypeName("(() -> ()!)").isImplicitlyUnwrappedOptional).to(beFalse())
                     expect(TypeName("() -> ImplicitlyUnwrappedOptional<Void>").isImplicitlyUnwrappedOptional).to(beFalse())
                     expect(TypeName("Optional<()> -> ()").isOptional).to(beFalse())
+                    expect(TypeName("(() -> ()?)").isOptional).to(beFalse())
 
                     expect(TypeName("(() -> ())?").isOptional).to(beTrue())
                     expect(TypeName("(() -> ())!").isImplicitlyUnwrappedOptional).to(beTrue())
