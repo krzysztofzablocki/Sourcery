@@ -111,6 +111,9 @@ class TypeNameSpec: QuickSpec {
                     expect(TypeName("() -> (Int, Int)").isClosure).to(beTrue())
                     expect(TypeName("() -> (Int) -> (Int)").isClosure).to(beTrue())
                     expect(TypeName("((Int) -> (Int)) -> ()").isClosure).to(beTrue())
+                    expect(TypeName("(Foo<String>) -> Bool)").isClosure).to(beTrue())
+                    expect(TypeName("(Int) -> Foo<Bool>").isClosure).to(beTrue())
+                    expect(TypeName("(Foo<String>) -> Foo<Bool>)").isClosure).to(beTrue())
                     expect(TypeName("((Int, Int) -> (), Int)").isClosure).to(beFalse())
                 }
 
@@ -127,6 +130,16 @@ class TypeNameSpec: QuickSpec {
                     expect(TypeName("(() -> ())!").isImplicitlyUnwrappedOptional).to(beTrue())
                     expect(TypeName("Optional<() -> ()>").isOptional).to(beTrue())
                     expect(TypeName("ImplicitlyUnwrappedOptional<() -> ()>").isImplicitlyUnwrappedOptional).to(beTrue())
+                }
+            }
+
+            context("given closure type inside generic type") {
+                it("reports closure correctly") {
+                    expect(TypeName("Foo<() -> ()>").isClosure).to(beFalse())
+                    expect(TypeName("Foo<(String) -> Bool>").isClosure).to(beFalse())
+                    expect(TypeName("Foo<(String) -> Bool?>").isClosure).to(beFalse())
+                    expect(TypeName("Foo<(Bar<String>) -> Bool)>").isClosure).to(beFalse())
+                    expect(TypeName("Foo<(Bar<String>) -> Bar<Bool>)>").isClosure).to(beFalse())
                 }
             }
 

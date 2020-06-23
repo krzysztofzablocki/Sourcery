@@ -96,7 +96,7 @@ public extension String {
 
     /// :nodoc:
     func isValidClosureName() -> Bool {
-        return components(separatedBy: "->", excludingDelimiterBetween: ("(", ")")).count > 1
+        return components(separatedBy: "->", excludingDelimiterBetween: (["(", "<"], [")", ">"])).count > 1
     }
 
     /// :nodoc:
