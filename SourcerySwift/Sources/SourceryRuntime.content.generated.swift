@@ -3624,6 +3624,7 @@ import Foundation
     }
 
     // sourcery: skipDescription
+    /// Global type name including module name
     public var globalName: String {
         guard let module = module else { return name }
         return "\\(module).\\(name)"
