@@ -104,7 +104,19 @@ public final class FileParser {
         let source = try Structure(file: file).dictionary
 
         let (types, functions, typealiases) = try parseTypes(source)
+        let imports = try parseImports(contents)
+        types.forEach { $0.imports = imports }
         return FileParserResult(path: path, module: module, types: types, functions: functions, typealiases: typealiases, inlineRanges: inlineRanges, inlineIndentations: inlineIndentations, modifiedDate: modifiedDate ?? Date(), sourceryVersion: SourceryVersion.current.value)
+    }
+
+    internal func parseImports(_ code: String) throws -> [String] {
+        var unique: Set<String> = []
+        let regExp = try NSRegularExpression(pattern: "(?:(?:^|;)\\s*)(?:@testable\\s+)?import\\s+([a-zA-Z0-9_]+)", options: [.anchorsMatchLines])
+        for match in regExp.matches(in: code, options: [], range: NSRange(code.startIndex..., in: code)) {
+            guard let range = Range(match.range(at: 1), in: code) else { continue }
+            unique.insert(String(code[range]))
+        }
+        return Array(unique)
     }
 
     internal func parseTypes(_ source: [String: SourceKitRepresentable]) throws -> ([Type], [SourceryMethod], [Typealias]) {

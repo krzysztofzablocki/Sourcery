@@ -16,6 +16,7 @@ private func build(_ source: String) -> [String: SourceKitRepresentable]? {
     return try? Structure(file: File(contents: source)).dictionary
 }
 
+// swiftlint:disable type_body_length file_length
 class ParserComposerSpec: QuickSpec {
     // swiftlint:disable function_body_length
     override func spec() {
@@ -1146,6 +1147,54 @@ class ParserComposerSpec: QuickSpec {
                                     ])
                             ),
                             definedInTypeName: nil)))
+                    }
+                }
+                context("given protocols of the same name in different modules") {
+                    func parseModules(_ modules: (name: String?, contents: String)...) -> [Type] {
+                        let moduleResults = modules.compactMap {
+                            try? FileParser(contents: $0.contents, module: $0.name).parse()
+                        }
+
+                        let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: [])) { acc, next in
+                            acc.typealiases += next.typealiases
+                            acc.types += next.types
+                            return acc
+                        }
+
+                        return Composer.uniqueTypesAndFunctions(parserResult).types.sorted {
+                            $0.globalName < $1.globalName
+                        }
+                    }
+
+                    it("resolves types properly") {
+                        let types = parseModules(
+                            ("Mod1", "protocol Foo { func foo1() }"),
+                            ("Mod2", "protocol Foo { func foo2() }"))
+
+                        expect(types.first?.globalName).to(equal("Mod1.Foo"))
+                        expect(types.first?.allMethods.map { $0.name }).to(equal(["foo1()"]))
+                        expect(types.last?.globalName).to(equal("Mod2.Foo"))
+                        expect(types.last?.allMethods.map { $0.name }).to(equal(["foo2()"]))
+                    }
+
+                    it("resolves inheritance properly with global type name") {
+                        let types = parseModules(
+                            ("Mod1", "protocol Foo { func foo1() }"),
+                            ("Mod2", "protocol Foo { func foo2() }"),
+                            ("Mod3", "import Mod1; import Mod2; protocol Bar: Mod1.Foo { func bar() }"))
+                        let bar = types.first { $0.name == "Bar" }
+
+                        expect(bar?.allMethods.map { $0.name }.sorted()).to(equal(["bar()", "foo1()"]))
+                    }
+
+                    it("resolves inheritance properly with local type name") {
+                        let types = parseModules(
+                            ("Mod1", "protocol Foo { func foo1() }"),
+                            ("Mod2", "protocol Foo { func foo2() }"),
+                            ("Mod3", "import Mod1; protocol Bar: Foo { func bar() }"))
+                        let bar = types.first { $0.name == "Bar"}
+
+                        expect(bar?.allMethods.map { $0.name }.sorted()).to(equal(["bar()", "foo1()"]))
                     }
                 }
             }
