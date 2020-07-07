@@ -70,10 +70,16 @@ public protocol Typed {
         } else {
             name = name.bracketsBalancing()
             name = name.trimmingPrefix("inout ").trimmingCharacters(in: .whitespacesAndNewlines)
-            let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
-            let isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
-            self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
-            self.isOptional = isOptional
+
+            if name.isValidClosureName() {
+                let isImplicitlyUnwrappedOptional = name.hasPrefix("ImplicitlyUnwrappedOptional<") && name.hasSuffix(">")
+                self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
+                self.isOptional = (name.hasPrefix("Optional<")  && name.hasSuffix(">")) || isImplicitlyUnwrappedOptional
+            } else {
+                let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
+                self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
+                self.isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
+            }
 
             var unwrappedTypeName: String
 
