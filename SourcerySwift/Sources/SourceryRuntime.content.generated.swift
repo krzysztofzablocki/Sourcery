@@ -47,6 +47,46 @@ public protocol Annotated {
 }
 
 """),
+    .init(name: "AssociatedType.swift", content:
+"""
+import Foundation
+
+/// Describes Swift AssociatedType
+@objcMembers public final class AssociatedType: NSObject, SourceryModel {
+    /// associatedType name
+    public let name: String
+
+    /// associatedType type constraint name, if specified
+    public let typeName: TypeName?
+
+    // sourcery: skipEquality, skipDescription
+    /// associatedType constrained type, if known, i.e. if the type is declared in the scanned sources.
+    public var type: Type?
+
+    public init(name: String, typeName: TypeName? = nil, type: Type? = nil) {
+        self.name = name
+        self.typeName = typeName
+        self.type = type
+    }
+
+// sourcery:inline:AssociatedType.AutoCoding
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            self.typeName = aDecoder.decode(forKey: "typeName")
+            self.type = aDecoder.decode(forKey: "type")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+        }
+// sourcery:end
+}
+
+"""),
     .init(name: "Attribute.swift", content:
 """
 import Foundation
@@ -359,6 +399,8 @@ extension NSCoder {
 
 extension ArrayType: NSCoding {}
 
+extension AssociatedType: NSCoding {}
+
 extension AssociatedValue: NSCoding {}
 
 extension Attribute: NSCoding {}
@@ -440,6 +482,15 @@ extension ArrayType {
         var string = "\\(Swift.type(of: self)): "
         string += "name = \\(String(describing: self.name)), "
         string += "elementTypeName = \\(String(describing: self.elementTypeName))"
+        return string
+    }
+}
+extension AssociatedType {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName))"
         return string
     }
 }
@@ -592,7 +643,8 @@ extension Protocol {
     override public var description: String {
         var string = super.description
         string += ", "
-        string += "kind = \\(String(describing: self.kind))"
+        string += "kind = \\(String(describing: self.kind)), "
+        string += "associatedTypes = \\(String(describing: self.associatedTypes))"
         return string
     }
 }
@@ -667,6 +719,7 @@ extension Type {
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string += "module = \\(String(describing: self.module)), "
+        string += "imports = \\(String(describing: self.imports)), "
         string += "typealiases = \\(String(describing: self.typealiases)), "
         string += "isExtension = \\(String(describing: self.isExtension)), "
         string += "kind = \\(String(describing: self.kind)), "
@@ -753,6 +806,18 @@ extension ArrayType: Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
+        return results
+    }
+}
+extension AssociatedType: Diffable {
+    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedType else {
+            results.append("Incorrect type <expected: AssociatedType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         return results
     }
 }
@@ -950,6 +1015,7 @@ extension Protocol {
             results.append("Incorrect type <expected: Protocol, received: \\(Swift.type(of: object))>")
             return results
         }
+        results.append(contentsOf: DiffableResult(identifier: "associatedTypes").trackDifference(actual: self.associatedTypes, expected: castObject.associatedTypes))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
     }
@@ -1039,6 +1105,7 @@ extension Type: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "imports").trackDifference(actual: self.imports, expected: castObject.imports))
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
@@ -1574,6 +1641,15 @@ extension ArrayType {
         return true
     }
 }
+extension AssociatedType {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+}
 extension AssociatedValue {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -1732,6 +1808,7 @@ extension Protocol {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Protocol else { return false }
+        if self.associatedTypes != rhs.associatedTypes { return false }
         return super.isEqual(rhs)
     }
 }
@@ -1797,6 +1874,7 @@ extension Type {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
         if self.module != rhs.module { return false }
+        if self.imports != rhs.imports { return false }
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
@@ -2149,6 +2227,14 @@ import JavaScriptCore
 
 extension ArrayType: ArrayTypeAutoJSExport {}
 
+@objc protocol AssociatedTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var typeName: TypeName? { get }
+    var type: Type? { get }
+}
+
+extension AssociatedType: AssociatedTypeAutoJSExport {}
+
 @objc protocol AssociatedValueAutoJSExport: JSExport {
     var localName: String? { get }
     var externalName: String? { get }
@@ -2182,6 +2268,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var kind: String { get }
     var isFinal: Bool { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -2249,6 +2336,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var based: [String: String] { get }
     var hasAssociatedValues: Bool { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -2361,7 +2449,9 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 
 @objc protocol ProtocolAutoJSExport: JSExport {
     var kind: String { get }
+    var associatedTypes: [String: AssociatedType] { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -2401,6 +2491,7 @@ extension Protocol: ProtocolAutoJSExport {}
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -2487,6 +2578,7 @@ extension TupleType: TupleTypeAutoJSExport {}
 
 @objc protocol TypeAutoJSExport: JSExport {
     var module: String? { get }
+    var imports: [String] { get }
     var kind: String { get }
     var accessLevel: String { get }
     var name: String { get }
@@ -2994,6 +3086,9 @@ public typealias SourceryProtocol = Protocol
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
 
+    /// list of all declared associated types with their names as keys
+    public var associatedTypes: [String: AssociatedType]
+
     /// :nodoc:
     public override init(name: String = "",
                          parent: Type? = nil,
@@ -3008,6 +3103,7 @@ public typealias SourceryProtocol = Protocol
                          attributes: [String: Attribute] = [:],
                          annotations: [String: NSObject] = [:],
                          isGeneric: Bool = false) {
+        self.associatedTypes = [:]
         super.init(
             name: name,
             parent: parent,
@@ -3034,12 +3130,14 @@ public typealias SourceryProtocol = Protocol
 // sourcery:inline:Protocol.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
+            guard let associatedTypes: [String: AssociatedType] = aDecoder.decode(forKey: "associatedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedTypes"])); fatalError() }; self.associatedTypes = associatedTypes
             super.init(coder: aDecoder)
         }
 
         /// :nodoc:
         override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
+            aCoder.encode(self.associatedTypes, forKey: "associatedTypes")
         }
 // sourcery:end
 }
@@ -3874,6 +3972,7 @@ import Foundation
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.module = aDecoder.decode(forKey: "module")
+            guard let imports: [String] = aDecoder.decode(forKey: "imports") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["imports"])); fatalError() }; self.imports = imports
             guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
@@ -3900,6 +3999,7 @@ import Foundation
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.module, forKey: "module")
+            aCoder.encode(self.imports, forKey: "imports")
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")

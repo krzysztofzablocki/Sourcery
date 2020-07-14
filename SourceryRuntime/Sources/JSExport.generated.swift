@@ -13,6 +13,14 @@ import JavaScriptCore
 
 extension ArrayType: ArrayTypeAutoJSExport {}
 
+@objc protocol AssociatedTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var typeName: TypeName? { get }
+    var type: Type? { get }
+}
+
+extension AssociatedType: AssociatedTypeAutoJSExport {}
+
 @objc protocol AssociatedValueAutoJSExport: JSExport {
     var localName: String? { get }
     var externalName: String? { get }
@@ -46,6 +54,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var kind: String { get }
     var isFinal: Bool { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -113,6 +122,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var based: [String: String] { get }
     var hasAssociatedValues: Bool { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -225,7 +235,9 @@ extension MethodParameter: MethodParameterAutoJSExport {}
 
 @objc protocol ProtocolAutoJSExport: JSExport {
     var kind: String { get }
+    var associatedTypes: [String: AssociatedType] { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -265,6 +277,7 @@ extension Protocol: ProtocolAutoJSExport {}
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
     var module: String? { get }
+    var imports: [String] { get }
     var accessLevel: String { get }
     var name: String { get }
     var globalName: String { get }
@@ -351,6 +364,7 @@ extension TupleType: TupleTypeAutoJSExport {}
 
 @objc protocol TypeAutoJSExport: JSExport {
     var module: String? { get }
+    var imports: [String] { get }
     var kind: String { get }
     var accessLevel: String { get }
     var name: String { get }

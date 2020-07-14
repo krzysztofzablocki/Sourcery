@@ -180,6 +180,8 @@ public final class FileParser {
                         return protocolComposition
                     }
                 }
+            case .associatedtype:
+                return parseAssociatedType(source, definedIn: definedIn as? Type)
             default:
                 Log.verbose("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
                 return nil
@@ -275,6 +277,8 @@ public final class FileParser {
             enumeration.cases += [enumCase]
         case let (_, `typealias` as Typealias):
             type.typealiases[`typealias`.aliasName] = `typealias`
+        case let (sourceryProtocol as SourceryProtocol, associatedType as AssociatedType):
+            sourceryProtocol.associatedTypes[associatedType.name] = associatedType
         default:
             break
         }
@@ -740,12 +744,7 @@ extension FileParser {
                 .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
             else { return nil }
 
-        if case let components = nameSuffix.components(separatedBy: CharacterSet.init(charactersIn: "&")),
-        components.count > 1 {
-            let suffixes = components.map { source in
-                source.trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
-            }
-            let composedTypeNames = suffixes.map(TypeName.init(_:))
+        if let composedTypeNames = extractComposedTypeNames(from: nameSuffix), composedTypeNames.count > 1 {
             let inheritedTypes = composedTypeNames.map { $0.name }
             return .protocolComposition(ProtocolComposition(name: name, parent: containingType, inheritedTypes: inheritedTypes, composedTypeNames: composedTypeNames))
         }
@@ -753,6 +752,27 @@ extension FileParser {
         return .typealias(Typealias(aliasName: name, typeName: TypeName(nameSuffix), parent: containingType))
     }
 
+}
+
+// MARK: - AssociatedTypes
+extension FileParser {
+    private func parseAssociatedType(_ source: [String: SourceKitRepresentable], definedIn: Type?) -> AssociatedType? {
+        guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
+
+        guard let nameSuffix = extract(.nameSuffix, from: source)?
+            .trimmingCharacters(in: CharacterSet.init(charactersIn: ":").union(.whitespacesAndNewlines))
+            else { return AssociatedType(name: name) }
+
+        let type: Type?
+        if let composedTypeNames = extractComposedTypeNames(from: nameSuffix), composedTypeNames.count > 1 {
+            let inheritedTypes = composedTypeNames.map { $0.name }
+            type = ProtocolComposition(parent: definedIn, inheritedTypes: inheritedTypes, composedTypeNames: composedTypeNames)
+        } else {
+            type = nil
+        }
+
+        return AssociatedType(name: name, typeName: TypeName(nameSuffix), type: type)
+    }
 }
 
 // MARK: - Attributes
@@ -892,6 +912,16 @@ extension FileParser {
         } else {
             return nil
         }
+    }
+
+    private func extractComposedTypeNames(from value: String) -> [TypeName]? {
+        guard case let components = value.components(separatedBy: CharacterSet(charactersIn: "&")),
+            components.count > 1 else { return nil }
+
+        let suffixes = components.map { source in
+            source.trimmingCharacters(in: CharacterSet(charactersIn: "=").union(.whitespacesAndNewlines))
+        }
+        return suffixes.map(TypeName.init(_:))
     }
 }
 

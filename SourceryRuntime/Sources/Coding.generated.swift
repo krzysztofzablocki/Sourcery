@@ -44,6 +44,8 @@ extension NSCoder {
 
 extension ArrayType: NSCoding {}
 
+extension AssociatedType: NSCoding {}
+
 extension AssociatedValue: NSCoding {}
 
 extension Attribute: NSCoding {}

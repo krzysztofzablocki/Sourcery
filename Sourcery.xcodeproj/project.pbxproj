@@ -128,6 +128,8 @@
 		E291DE1CB3B72BAA22DEDEDA /* StencilTemplateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D0D4A5AF091CD15550FD /* StencilTemplateSpec.swift */; };
 		E291DF22F03C87C646576942 /* AnnotationsParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DCF0A8E779EC67C9A37E /* AnnotationsParserSpec.swift */; };
 		E43A7434D25A759BA0658051 /* Pods_SourceryUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC54F603FD22AD275A3E7B3F /* Pods_SourceryUtils.framework */; };
+		F63E56CE24BCB13700715CD1 /* AssociatedType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63E56CD24BCB13700715CD1 /* AssociatedType.swift */; };
+		F63E602824BCF57E00715CD1 /* FileParser + AssociatedTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63E602724BCF57E00715CD1 /* FileParser + AssociatedTypeSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -356,6 +358,8 @@
 		E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposerSpec.swift; sourceTree = "<group>"; };
 		F1A3DAD7FDF3830E52EF0509 /* Pods-SourceryFramework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.release.xcconfig"; path = "Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.release.xcconfig"; sourceTree = "<group>"; };
 		F3C3A7B6CE0BCA036E0835CE /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
+		F63E56CD24BCB13700715CD1 /* AssociatedType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AssociatedType.swift; path = SourceryRuntime/Sources/AssociatedType.swift; sourceTree = SOURCE_ROOT; };
+		F63E602724BCF57E00715CD1 /* FileParser + AssociatedTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileParser + AssociatedTypeSpec.swift"; sourceTree = "<group>"; };
 		F81A4FAFF66C386F53742B5F /* Pods_SourcerySwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourcerySwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF69E64877680ED87A0520E5 /* Pods-SourceryJS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryJS.release.xcconfig"; path = "Target Support Files/Pods-SourceryJS/Pods-SourceryJS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -496,6 +500,7 @@
 			children = (
 				09334E621EB916040092806F /* AccessLevel.swift */,
 				09334E631EB916040092806F /* Annotations.swift */,
+				F63E56CD24BCB13700715CD1 /* AssociatedType.swift */,
 				524A2EA61FFD3C40001CD8F9 /* BytesRange.swift */,
 				6D31FC5E1F0C2DE4000E77E3 /* Definition.swift */,
 				09334E641EB916040092806F /* Attribute.swift */,
@@ -793,6 +798,7 @@
 				E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */,
 				E291DCF0A8E779EC67C9A37E /* AnnotationsParserSpec.swift */,
 				E291D37EF6AA39833209828F /* FileParser + VariableSpec.swift */,
+				F63E602724BCF57E00715CD1 /* FileParser + AssociatedTypeSpec.swift */,
 				098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */,
 				E291DC650271984B35942FE4 /* TemplateAnnotationsParserSpec.swift */,
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
@@ -1575,6 +1581,7 @@
 				09334E7B1EB916040092806F /* Protocol.swift in Sources */,
 				09334E5D1EB915E00092806F /* Diffable.generated.swift in Sources */,
 				A65B189D23F3F05D0023F4A9 /* ProtocolComposition.swift in Sources */,
+				F63E56CE24BCB13700715CD1 /* AssociatedType.swift in Sources */,
 				09334E5F1EB915E00092806F /* JSExport.generated.swift in Sources */,
 				09334E601EB915E00092806F /* Typed.generated.swift in Sources */,
 				09334E7E1EB916040092806F /* Type.swift in Sources */,
@@ -1625,6 +1632,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */,
+				F63E602824BCF57E00715CD1 /* FileParser + AssociatedTypeSpec.swift in Sources */,
 				0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */,
 				CDF5E71D1E671B8500664763 /* TypedSpec.generated.swift in Sources */,
 				CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */,
