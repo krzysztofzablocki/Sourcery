@@ -12,6 +12,7 @@ import Foundation
     /// associatedType constrained type, if known, i.e. if the type is declared in the scanned sources.
     public var type: Type?
 
+    /// :nodoc:
     public init(name: String, typeName: TypeName? = nil, type: Type? = nil) {
         self.name = name
         self.typeName = typeName
