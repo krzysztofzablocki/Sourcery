@@ -2,14 +2,14 @@ import Foundation
 
 /// Describes Swift AssociatedType
 @objcMembers public final class AssociatedType: NSObject, SourceryModel {
-    /// associatedType name
+    /// Associated type name
     public let name: String
 
-    /// associatedType type constraint name, if specified
+    /// Associated type type constraint name, if specified
     public let typeName: TypeName?
 
     // sourcery: skipEquality, skipDescription
-    /// associatedType constrained type, if known, i.e. if the type is declared in the scanned sources.
+    /// Associated type constrained type, if known, i.e. if the type is declared in the scanned sources.
     public var type: Type?
 
     /// :nodoc:

@@ -13,15 +13,15 @@ private func build(_ source: String) -> [String: SourceKitRepresentable]? {
 final class FileParserAssociatedTypeSpec: QuickSpec {
     override func spec() {
         describe("Parser") {
-            describe("parseAssociatedType") {
+            describe("parse associated type") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
                     return Composer.uniqueTypesAndFunctions(parserResult).types
                 }
 
                 context("given protocol") {
-                    context("with an associatedType") {
-                        it("extracts associatedType properly") {
+                    context("with an associated type") {
+                        it("extracts associated type properly") {
                             let code = """
                                 protocol Foo {
                                     associatedtype Bar
@@ -33,8 +33,8 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                         }
                     }
 
-                    context("with multiple associatedTypes") {
-                        it("extracts associatedTypes properly") {
+                    context("with multiple associated types") {
+                        it("extracts associated types properly") {
                             let code = """
                                 protocol Foo {
                                     associatedtype Bar
@@ -48,8 +48,8 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                         }
                     }
 
-                    context("with associatedType constrained to an unknown type") {
-                        it("extracts associatedType properly") {
+                    context("with associated type constrained to an unknown type") {
+                        it("extracts associated type properly") {
                             let code = """
                                 protocol Foo {
                                     associatedtype Bar: Codable
@@ -64,8 +64,8 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                         }
                     }
 
-                    context("with associatedType constrained to a known type") {
-                        it("extracts associatedType properly") {
+                    context("with associated type constrained to a known type") {
+                        it("extracts associated type properly") {
                             let code = """
                                 protocol A {}
                                 protocol Foo {
@@ -83,8 +83,8 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                         }
                     }
 
-                    context("with associatedType constrained to a composite type") {
-                        it("extracts associatedType properly") {
+                    context("with associated type constrained to a composite type") {
+                        it("extracts associated type properly") {
                             let code = """
                                 protocol Foo {
                                     associatedtype Bar: Encodable & Decodable
