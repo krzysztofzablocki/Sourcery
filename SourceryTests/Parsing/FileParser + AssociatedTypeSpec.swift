@@ -107,6 +107,31 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                             expect(actualType).to(equal(expectedType))
                         }
                     }
+
+                    context("with associated type constrained to a typealias") {
+                        it("extracts associated type properly") {
+                            let code = """
+                                protocol Foo {
+                                    typealias AEncodable = Encodable
+                                    associatedtype Bar: AEncodable
+                                }
+                            """
+                            let givenTypealias = Typealias(aliasName: "AEncodable", typeName: TypeName("Encodable"))
+                            let expectedProtocol = Protocol(name: "Foo", typealiases: [givenTypealias])
+                            givenTypealias.parent = expectedProtocol
+                            expectedProtocol.associatedTypes["Bar"] = AssociatedType(
+                                name: "Bar",
+                                typeName: TypeName(
+                                    givenTypealias.aliasName,
+                                    actualTypeName: givenTypealias.typeName
+                                )
+                            )
+                            let actualProtocol = parse(code).first
+                            expect(actualProtocol).to(equal(expectedProtocol))
+                            let actualTypeName = (actualProtocol as? SourceryProtocol)?.associatedTypes.first?.value.typeName?.actualTypeName
+                            expect(actualTypeName).to(equal(givenTypealias.actualTypeName))
+                        }
+                    }
                 }
             }
         }

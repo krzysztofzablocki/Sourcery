@@ -744,7 +744,8 @@ extension FileParser {
                 .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
             else { return nil }
 
-        if let composedTypeNames = extractComposedTypeNames(from: nameSuffix), composedTypeNames.count > 1 {
+        let trimmingCharacterSet = CharacterSet(charactersIn: "=")
+        if let composedTypeNames = extractComposedTypeNames(from: nameSuffix, trimmingCharacterSet: trimmingCharacterSet), composedTypeNames.count > 1 {
             let inheritedTypes = composedTypeNames.map { $0.name }
             return .protocolComposition(ProtocolComposition(name: name, parent: containingType, inheritedTypes: inheritedTypes, composedTypeNames: composedTypeNames))
         }
@@ -914,12 +915,17 @@ extension FileParser {
         }
     }
 
-    private func extractComposedTypeNames(from value: String) -> [TypeName]? {
+    private func extractComposedTypeNames(from value: String, trimmingCharacterSet: CharacterSet? = nil) -> [TypeName]? {
         guard case let components = value.components(separatedBy: CharacterSet(charactersIn: "&")),
             components.count > 1 else { return nil }
 
+        var characterSet: CharacterSet = .whitespacesAndNewlines
+        if let trimmingCharacterSet = trimmingCharacterSet {
+            characterSet = characterSet.union(trimmingCharacterSet)
+        }
+
         let suffixes = components.map { source in
-            source.trimmingCharacters(in: CharacterSet(charactersIn: "=").union(.whitespacesAndNewlines))
+            source.trimmingCharacters(in: characterSet)
         }
         return suffixes.map(TypeName.init(_:))
     }
