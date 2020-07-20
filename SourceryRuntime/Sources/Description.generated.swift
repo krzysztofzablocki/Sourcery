@@ -13,6 +13,15 @@ extension ArrayType {
         return string
     }
 }
+extension AssociatedType {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName))"
+        return string
+    }
+}
 extension AssociatedValue {
     /// :nodoc:
     override public var description: String {
@@ -162,7 +171,8 @@ extension Protocol {
     override public var description: String {
         var string = super.description
         string += ", "
-        string += "kind = \(String(describing: self.kind))"
+        string += "kind = \(String(describing: self.kind)), "
+        string += "associatedTypes = \(String(describing: self.associatedTypes))"
         return string
     }
 }
@@ -237,6 +247,7 @@ extension Type {
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string += "module = \(String(describing: self.module)), "
+        string += "imports = \(String(describing: self.imports)), "
         string += "typealiases = \(String(describing: self.typealiases)), "
         string += "isExtension = \(String(describing: self.isExtension)), "
         string += "kind = \(String(describing: self.kind)), "

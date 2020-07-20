@@ -3,6 +3,10 @@
 ---
 ## Master
 
+### New Features
+
+- Added support for associated types (#539)
+
 ### Bug fixes
 
 - Disallow protocol compositions from being considered as the `rawType` of an `enum` (#830)

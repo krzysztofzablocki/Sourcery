@@ -17,6 +17,9 @@ public typealias SourceryProtocol = Protocol
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
 
+    /// list of all declared associated types with their names as keys
+    public var associatedTypes: [String: AssociatedType]
+
     /// :nodoc:
     public override init(name: String = "",
                          parent: Type? = nil,
@@ -31,6 +34,7 @@ public typealias SourceryProtocol = Protocol
                          attributes: [String: Attribute] = [:],
                          annotations: [String: NSObject] = [:],
                          isGeneric: Bool = false) {
+        self.associatedTypes = [:]
         super.init(
             name: name,
             parent: parent,
@@ -57,12 +61,14 @@ public typealias SourceryProtocol = Protocol
 // sourcery:inline:Protocol.AutoCoding
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
+            guard let associatedTypes: [String: AssociatedType] = aDecoder.decode(forKey: "associatedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedTypes"])); fatalError() }; self.associatedTypes = associatedTypes
             super.init(coder: aDecoder)
         }
 
         /// :nodoc:
         override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
+            aCoder.encode(self.associatedTypes, forKey: "associatedTypes")
         }
 // sourcery:end
 }

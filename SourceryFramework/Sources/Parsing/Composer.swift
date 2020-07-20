@@ -101,6 +101,10 @@ public struct Composer {
             if let composition = type as? ProtocolComposition {
                 resolveProtocolCompositionTypes(composition, resolve: resolveType)
             }
+
+            if let sourceryProtocol = type as? SourceryProtocol {
+                resolveAssociatedTypes(sourceryProtocol, resolve: resolveType)
+            }
         }
 
         DispatchQueue.concurrentPerform(iterations: functions.count) { (counter) in
@@ -263,6 +267,15 @@ public struct Composer {
         }
 
         protocolComposition.composedTypes = composedTypes
+    }
+
+    private static func resolveAssociatedTypes(_ sourceryProtocol: SourceryProtocol, resolve: TypeResolver) {
+        sourceryProtocol.associatedTypes.forEach { (_, value) in
+            guard let typeName = value.typeName,
+                let type = resolve(typeName, sourceryProtocol)
+                else { return }
+            value.type = type
+        }
     }
 
     /// returns typealiases map to their full names, with `resolved` removing intermediate

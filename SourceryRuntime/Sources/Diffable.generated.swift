@@ -15,6 +15,18 @@ extension ArrayType: Diffable {
         return results
     }
 }
+extension AssociatedType: Diffable {
+    @objc func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedType else {
+            results.append("Incorrect type <expected: AssociatedType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+}
 extension AssociatedValue: Diffable {
     @objc func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -209,6 +221,7 @@ extension Protocol {
             results.append("Incorrect type <expected: Protocol, received: \(Swift.type(of: object))>")
             return results
         }
+        results.append(contentsOf: DiffableResult(identifier: "associatedTypes").trackDifference(actual: self.associatedTypes, expected: castObject.associatedTypes))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
     }
@@ -298,6 +311,7 @@ extension Type: Diffable {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "imports").trackDifference(actual: self.imports, expected: castObject.imports))
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         results.append(contentsOf: DiffableResult(identifier: "isExtension").trackDifference(actual: self.isExtension, expected: castObject.isExtension))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))

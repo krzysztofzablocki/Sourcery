@@ -13,6 +13,15 @@ extension ArrayType {
         return true
     }
 }
+extension AssociatedType {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+}
 extension AssociatedValue {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -171,6 +180,7 @@ extension Protocol {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Protocol else { return false }
+        if self.associatedTypes != rhs.associatedTypes { return false }
         return super.isEqual(rhs)
     }
 }
@@ -236,6 +246,7 @@ extension Type {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Type else { return false }
         if self.module != rhs.module { return false }
+        if self.imports != rhs.imports { return false }
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
