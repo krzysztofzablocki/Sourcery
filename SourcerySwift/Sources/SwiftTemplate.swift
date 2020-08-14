@@ -241,7 +241,9 @@ open class SwiftTemplate {
                                                        currentDirectoryPath: buildDir)
 
         if compilationResult.exitCode != 0 || !compilationResult.error.isEmpty {
-            throw compilationResult.error
+            throw [compilationResult.output, compilationResult.error]
+                .filter { !$0.isEmpty }
+                .joined(separator: "\n")
         }
 
         return binaryFile
