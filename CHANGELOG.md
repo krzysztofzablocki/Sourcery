@@ -13,6 +13,7 @@
 - Add missing documentation for the `ProtocolComposition` type.
 - Fix incorrectly taking closure optional return value as sign that whole variable is optional (#823) 
 - Fix incorrectly taking return values with closure as generic type as sign that whole variable is a closure (#845)
+- Fix empty error at build time when using SwiftTemplate on Xcode 11.4 and higher (#817)
 
 ## 0.18.0
 
