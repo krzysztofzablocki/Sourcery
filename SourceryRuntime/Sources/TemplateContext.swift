@@ -227,13 +227,32 @@ extension ProcessInfo {
     }
 
     public func types(forKey key: String) throws -> [Type] {
+        // In some configurations, the types are keyed by "ModuleName.TypeName"
+        var longKey: String?
+
         if let validate = validate {
             guard let type = all.first(where: { $0.name == key }) else {
                 throw "Unknown type \(key), should be used with `based`"
             }
+            
             try validate(type)
+            
+            if let module = type.module {
+                longKey = [module, type.name].joined(separator: ".")
+            }
         }
-        return types[key] ?? []
+        
+        // If we find the types directly, return them
+        if let types = types[key] {
+            return types
+        }
+
+        // if we find a types for the longKey, return them
+        if let longKey = longKey, let types = types[longKey] {
+            return types
+        }
+
+        return []
     }
 
     /// :nodoc:
