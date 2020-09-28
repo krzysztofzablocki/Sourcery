@@ -32,7 +32,7 @@ Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/S
 
 - `{{ name|upperFirstLetter }}` - makes first letter in `name` uppercase
 - `{{ name|lowerFirstLetter }}` - makes first letter in `name` lowercase
-- `{{ name|replace:"substring","replacement" }}` - replaces occurances of `substring` with `replacement` in `name` (case sensitive)
+- `{{ name|replace:"substring","replacement" }}` - replaces occurrences of `substring` with `replacement` in `name` (case sensitive)
 - `{% if name|contains:"Foo" %}` - check if `name` contains arbitrary substring, can be negated with `!` prefix.
 - `{% if name|hasPrefix:"Foo" %}`- check if `name` starts with arbitrary substring, can be negated with `!` prefix.
 - `{% if name|hasSuffix:"Foo" %}`- check if `name` ends with arbitrary substring, can be negated with `!` prefix.
@@ -43,13 +43,13 @@ Sourcery also uses its extension [StencilSwiftKit](https://github.com/SwiftGen/S
 - `count` - can be used to get count of filtered array
 - `annotated` - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. `{% for var in variable|annotated:"skipDescription" %}`, can be negated with `!` prefix.
 - `public`, `open`, `internal`, `private`, `fileprivate` - can be used on Type[s] and Method[s] to filter by access level, can be negated with `!` prefix.
-- `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with `!` prefix
+- `publicGet`, `publicSet`, .etc - can be used on Variable[s] to filter by getter or setter access level, can be negated with `!` prefix
 
-You can also use partial templates using `include` tag. Partial template is loaded from the path of a template that inculdes it. `include` tags also supports loading templates from relative path, i.e. `{% include "partials/MyPartial.stencil"%}` used in the template located in `templates` directory will load template from `templates/partials` directory.
+You can also use partial templates using `include` tag. Partial template is loaded from the path of a template that includes it. `include` tags also supports loading templates from relative path, i.e. `{% include "partials/MyPartial.stencil"%}` used in the template located in `templates` directory will load template from `templates/partials` directory.
 
 > Note: You can only load partial templates from child directories of the including template directory, so `{% include "../MyPartial.stencil"%}` is not supported.
 
-Sourcery treat all the templates as independent and so will generate files based on partial templates too. To avoid that use `exclude` in [configuration file](usage.html#configuration-file).
+Sourcery treats all the templates as independent and so will generate files based on partial templates too. To avoid that use `exclude` in [configuration file](usage.html#configuration-file).
 
 ## Swift templates
 
@@ -87,7 +87,7 @@ JavaScript templates are powered by [EJS](http://ejs.co) and support all the fea
 
 > Note: when using JavaScript templates with Sourcery built using Swift Package Manager you must provide path to EJS source code using `--ejsPath` command line argument. Download EJS source code [here](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryJS/Sources/ejs.js), put it in some path and pass it when running Sourcery. Otherwise JavaScript templates will be ignored (you will see a warning in the console output).
 
-You can also use `SourceryJS` framework independently of Sourcery. You can add it as a Carthge or SPM dependency.
+You can also use `SourceryJS` framework independently of Sourcery. You can add it as a Carthage or SPM dependency.
 
 ## Using Source Annotations
 
@@ -116,7 +116,7 @@ To attribute any declaration in the file use `sourcery:file` at the top of the f
   var firstVariable: Int
   var secondVariable: Int
 ```
-To group annotations of the same domain you can use annotation namespcases:
+To group annotations of the same domain you can use annotation namespaces:
 
 ```swift
 // sourcery:decoding: key="first", default=0
@@ -131,7 +131,7 @@ This will effectively annotate with `decoding.key` and `decoding.default` annota
 - Multiple annotations values with the same key are merged into array
 - You can interleave annotations with documentation
 - Sourcery scans all `sourcery:` annotations in the given comment block above the source until first non-comment/doc line
-- Using `/*` and `*/` for annotation comment you can put it on the same line with your code. This is usefull for annotating methods parameters and enum case associated values. All such annotations should be placed in one comment block. Do not mix inline and regular annotations for the same declaration (usin inline and block annotations is fine)!
+- Using `/*` and `*/` for annotation comment you can put it on the same line with your code. This is useful for annotating methods parameters and enum case associated values. All such annotations should be placed in one comment block. Do not mix inline and regular annotations for the same declaration (using inline and block annotations is fine)!
 
 #### Format:
 
@@ -147,7 +147,7 @@ This will effectively annotate with `decoding.key` and `decoding.default` annota
 {% endif %}
 ```
 
-#### Checking for existance of at least one annotation:
+#### Checking for existence of at least one annotation:
 
 Sometimes it is desirable to only generate code if there's at least one field annotated.
 
