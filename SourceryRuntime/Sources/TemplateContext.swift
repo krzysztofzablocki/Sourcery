@@ -183,7 +183,7 @@ extension ProcessInfo {
             collection: { Array($0.inherits.keys) },
             validate: { type in
                 guard type is Class else {
-                    throw "\(type.name) is a not a class and should be used with `implementing` or `based`"
+                    throw "\(type.name) is not a class and should be used with `implementing` or `based`"
                 }
             })
     }()
