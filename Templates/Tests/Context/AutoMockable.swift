@@ -84,3 +84,8 @@ protocol FunctionWithClosureReturnType: AutoMockable {
     func get() -> () -> Void
     func getOptional() -> (() -> Void)?
 }
+
+protocol FunctionWithMultilineDeclaration: AutoMockable {
+    func start(car: String,
+               of model: String)
+}

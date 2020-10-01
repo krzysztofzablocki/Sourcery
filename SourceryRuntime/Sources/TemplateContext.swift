@@ -234,14 +234,14 @@ extension ProcessInfo {
             guard let type = all.first(where: { $0.name == key }) else {
                 throw "Unknown type \(key), should be used with `based`"
             }
-            
+
             try validate(type)
-            
+
             if let module = type.module {
                 longKey = [module, type.name].joined(separator: ".")
             }
         }
-        
+
         // If we find the types directly, return them
         if let types = types[key] {
             return types

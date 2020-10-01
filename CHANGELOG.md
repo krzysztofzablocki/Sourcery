@@ -5,6 +5,7 @@
 
 ### Bug fixes
 
+- Fix multiline method declarations parsing
 - Fix an issue, where "types.implementing.<protocolName>" did not work due to an additional module name.
 
 ## 1.0.0
