@@ -125,7 +125,6 @@ public final class FileParser {
         var typealiases = [Typealias]()
         try walkDeclarations(source: source) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
-
             switch kind {
             case .protocol:
                 type = Protocol(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
@@ -940,8 +939,10 @@ extension String {
             finished = true
             let lines = stripped.lines()
             if lines.count > 1 {
-                stripped = lines.filter({ line in !line.content.hasPrefix("//") }).map({ $0.content }).joined(separator: "")
-                finished = false
+                stripped = lines.lazy
+                    .filter({ line in !line.content.hasPrefix("//") })
+                    .map(\.content)
+                    .joined(separator: "\n")
             }
             if let annotationStart = stripped.range(of: "/*")?.lowerBound, let annotationEnd = stripped.range(of: "*/")?.upperBound {
                 stripped = stripped.replacingCharacters(in: annotationStart ..< annotationEnd, with: "")

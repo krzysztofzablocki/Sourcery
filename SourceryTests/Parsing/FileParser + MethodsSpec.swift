@@ -209,8 +209,39 @@ class FileParserMethodsSpec: QuickSpec {
                         it("extracts complex default value") {
                             expect(parse("class Foo { func foo(a: Int? = \n\t{ return nil } \n\t ) {} }")).to(equal([
                                 Class(name: "Foo", methods: [
-                                    Method(name: "foo(a: Int? = \t{ return nil } \t )", selectorName: "foo(a:)", parameters: [
+                                    Method(name: "foo(a: Int? = \n\t{ return nil } \n\t )", selectorName: "foo(a:)", parameters: [
                                         MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("Int?"), defaultValue: "{ return nil }")
+                                        ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
+                                    ])
+                                ]))
+                        }
+                    }
+
+                    context("given parameters are split between lines") {
+                        it("extracts method name with parametes separated by line break") {
+                            let result = parse("""
+                            class Foo {
+                                func foo(bar: [String: String],
+                                         foo: ((String, String) -> Void),
+                                         other: Optional<String>) {}
+                            }
+                            """)
+
+                            expect(result)
+                            .to(equal([
+                                Class(name: "Foo", methods: [
+                                    Method(name: """
+                                    foo(bar: [String: String],
+                                                 foo: ((String, String) -> Void),
+                                                 other: Optional<String>)
+                                    """,
+                                           selectorName: "foo(bar:foo:other:)", parameters: [
+                                        MethodParameter(name: "bar", typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("String"))]))),
+                                        MethodParameter(name: "foo", typeName: TypeName("((String, String) -> Void)", closure: ClosureType(name: "(String, String) -> Void", parameters: [
+                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String")),
+                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String"))
+                                            ], returnTypeName: TypeName("Void")))),
+                                        MethodParameter(name: "other", typeName: TypeName("Optional<String>"))
                                         ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
                                     ])
                                 ]))
@@ -359,11 +390,11 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts parameter annotations") {
                     expect(parse("class Foo {\n //sourcery: foo\nfunc foo(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) {}\n//sourcery: bar\nfunc bar(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) {} }")).to(equal([
                         Class(name: "Foo", methods: [
-                            Method(name: "foo(a: Int,b: Int)", selectorName: "foo(a:b:)", parameters: [
+                            Method(name: "foo(\na: Int,\nb: Int)", selectorName: "foo(a:b:)", parameters: [
                                 MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
                                 MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
                                 ], annotations: ["foo": NSNumber(value: true)], definedInTypeName: TypeName("Foo")),
-                            Method(name: "bar(a: Int,b: Int)", selectorName: "bar(a:b:)", parameters: [
+                            Method(name: "bar(\na: Int,\nb: Int)", selectorName: "bar(a:b:)", parameters: [
                                 MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
                                 MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
                                 ], annotations: ["bar": NSNumber(value: true)], definedInTypeName: TypeName("Foo"))

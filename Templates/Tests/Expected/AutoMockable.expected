@@ -156,6 +156,27 @@ class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
     }
 
 }
+class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
+
+    //MARK: - start
+
+    var startCarOfCallsCount = 0
+    var startCarOfCalled: Bool {
+        return startCarOfCallsCount > 0
+    }
+    var startCarOfReceivedArguments: (car: String, model: String)?
+    var startCarOfReceivedInvocations: [(car: String, model: String)] = []
+    var startCarOfClosure: ((String, String) -> Void)?
+
+    func start(car: String,
+               of model: String) {
+        startCarOfCallsCount += 1
+        startCarOfReceivedArguments = (car: car, model: model)
+        startCarOfReceivedInvocations.append((car: car, model: model))
+        startCarOfClosure?(car, model)
+    }
+
+}
 class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOptionalReturnValueProtocol {
 
     //MARK: - implicitReturn
