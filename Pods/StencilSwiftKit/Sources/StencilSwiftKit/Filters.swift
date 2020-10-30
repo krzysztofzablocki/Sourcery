@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright (c) 2017 SwiftGen
+// Copyright © 2020 SwiftGen
 // MIT Licence
 //
 
@@ -23,10 +23,10 @@ enum Filters {
   /// - Throws: Filters.Error.invalidInputType
   static func parseString(from value: Any?) throws -> String {
     if let losslessString = value as? LosslessStringConvertible {
-        return String(describing: losslessString)
+      return String(describing: losslessString)
     }
     if let string = value as? String {
-        return string
+      return string
     }
     #if os(Linux)
     if let string = value as? NSString {
@@ -46,13 +46,13 @@ enum Filters {
   /// - Throws: Filters.Error.invalidInputType
   static func parseStringArgument(from arguments: [Any?], at index: Int = 0) throws -> String {
     guard index < arguments.count else {
-        throw Error.invalidInputType
+      throw Error.invalidInputType
     }
     if let losslessString = arguments[index] as? LosslessStringConvertible {
-        return String(describing: losslessString)
+      return String(describing: losslessString)
     }
     if let string = arguments[index] as? String {
-        return string
+      return string
     }
     throw Error.invalidInputType
   }
@@ -95,9 +95,11 @@ enum Filters {
   ///   - index: the index in the arguments array
   ///   - default: The default value should no argument be provided
   /// - Throws: Filters.Error.invalidInputType
-  static func parseEnum<T>(from arguments: [Any?], at index: Int = 0, default: T) throws -> T
-    where T: RawRepresentable, T.RawValue == String {
-
+  static func parseEnum<T>(
+    from arguments: [Any?],
+    at index: Int = 0,
+    default: T
+  ) throws -> T where T: RawRepresentable, T.RawValue == String {
     guard index < arguments.count else { return `default` }
     let arg = arguments[index].map(String.init(describing:)) ?? `default`.rawValue
 

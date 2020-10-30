@@ -1,10 +1,10 @@
-class FilterNode : NodeType {
+class FilterNode: NodeType {
   let resolvable: Resolvable
   let nodes: [NodeType]
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    let bits = token.components()
+    let bits = token.components
 
     guard bits.count == 2 else {
       throw TemplateSyntaxError("'filter' tag takes one argument, the filter expression")
@@ -30,8 +30,7 @@ class FilterNode : NodeType {
     let value = try renderNodes(nodes, context)
 
     return try context.push(dictionary: ["filter_value": value]) {
-      return try VariableNode(variable: resolvable, token: token).render(context)
+      try VariableNode(variable: resolvable, token: token).render(context)
     }
   }
 }
-

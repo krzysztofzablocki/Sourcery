@@ -1,0 +1,6 @@
+framework module Shell {
+  umbrella header "Shell-umbrella.h"
+
+  export *
+  module * { export * }
+}

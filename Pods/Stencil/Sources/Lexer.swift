@@ -24,8 +24,9 @@ struct Lexer {
     self.templateString = templateString
 
     self.lines = templateString.components(separatedBy: .newlines).enumerated().compactMap {
-      guard !$0.element.isEmpty else { return nil }
-      return (content: $0.element, number: UInt($0.offset + 1), templateString.range(of: $0.element)!)
+      guard !$0.element.isEmpty,
+        let range = templateString.range(of: $0.element) else { return nil }
+      return (content: $0.element, number: UInt($0.offset + 1), range)
     }
   }
 
@@ -43,8 +44,8 @@ struct Lexer {
       guard string.count > 4 else { return "" }
       let trimmed = String(string.dropFirst(2).dropLast(2))
         .components(separatedBy: "\n")
-        .filter({ !$0.isEmpty })
-        .map({ $0.trim(character: " ") })
+        .filter { !$0.isEmpty }
+        .map { $0.trim(character: " ") }
         .joined(separator: " ")
       return trimmed
     }
@@ -107,13 +108,12 @@ struct Lexer {
     let offset = templateString.distance(from: line.range.lowerBound, to: range.lowerBound)
     return (line.content, line.number, offset)
   }
-
 }
 
 class Scanner {
   let originalContent: String
   var content: String
-  var range: Range<String.Index>
+  var range: Range<String.UnicodeScalarView.Index>
 
   /// The start delimiter for a token.
   private static let tokenStartDelimiter: Unicode.Scalar = "{"
@@ -123,7 +123,7 @@ class Scanner {
   init(_ content: String) {
     self.originalContent = content
     self.content = content
-    range = content.startIndex..<content.startIndex
+    range = content.unicodeScalars.startIndex..<content.unicodeScalars.startIndex
   }
 
   var isEmpty: Bool {
@@ -146,9 +146,9 @@ class Scanner {
 
     for (index, char) in content.unicodeScalars.enumerated() {
       if foundChar && char == Scanner.tokenEndDelimiter {
-        let result = String(content.prefix(index + 1))
-        content = String(content.dropFirst(index + 1))
-        range = range.upperBound..<originalContent.index(range.upperBound, offsetBy: index + 1)
+        let result = String(content.unicodeScalars.prefix(index + 1))
+        content = String(content.unicodeScalars.dropFirst(index + 1))
+        range = range.upperBound..<originalContent.unicodeScalars.index(range.upperBound, offsetBy: index + 1)
         return result
       } else {
         foundChar = (char == tokenChar)
@@ -180,9 +180,9 @@ class Scanner {
     range = range.upperBound..<range.upperBound
     for (index, char) in content.unicodeScalars.enumerated() {
       if foundBrace && tokenChars.contains(char) {
-        let result = String(content.prefix(index - 1))
-        content = String(content.dropFirst(index - 1))
-        range = range.upperBound..<originalContent.index(range.upperBound, offsetBy: index - 1)
+        let result = String(content.unicodeScalars.prefix(index - 1))
+        content = String(content.unicodeScalars.dropFirst(index - 1))
+        range = range.upperBound..<originalContent.unicodeScalars.index(range.upperBound, offsetBy: index - 1)
         return (char, result)
       } else {
         foundBrace = (char == Scanner.tokenStartDelimiter)

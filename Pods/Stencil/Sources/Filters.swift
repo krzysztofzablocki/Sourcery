@@ -39,7 +39,7 @@ func defaultFilter(value: Any?, arguments: [Any?]) -> Any? {
 
 func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
   guard arguments.count < 2 else {
-    throw TemplateSyntaxError("'join' filter takes a single argument")
+    throw TemplateSyntaxError("'join' filter takes at most one argument")
   }
 
   let separator = stringify(arguments.first ?? "")
@@ -55,7 +55,7 @@ func joinFilter(value: Any?, arguments: [Any?]) throws -> Any? {
 
 func splitFilter(value: Any?, arguments: [Any?]) throws -> Any? {
   guard arguments.count < 2 else {
-    throw TemplateSyntaxError("'split' filter takes a single argument")
+    throw TemplateSyntaxError("'split' filter takes at most one argument")
   }
 
   let separator = stringify(arguments.first ?? " ")
@@ -72,7 +72,7 @@ func indentFilter(value: Any?, arguments: [Any?]) throws -> Any? {
   }
 
   var indentWidth = 4
-  if arguments.count > 0 {
+  if !arguments.isEmpty {
     guard let value = arguments[0] as? Int else {
       throw TemplateSyntaxError("""
         'indent' filter width argument must be an Integer (\(String(describing: arguments[0])))
@@ -99,19 +99,31 @@ func indentFilter(value: Any?, arguments: [Any?]) throws -> Any? {
     indentFirst = value
   }
 
-  let indentation = [String](repeating: indentationChar, count: indentWidth).joined(separator: "")
+  let indentation = [String](repeating: indentationChar, count: indentWidth).joined()
   return indent(stringify(value), indentation: indentation, indentFirst: indentFirst)
 }
-
 
 func indent(_ content: String, indentation: String, indentFirst: Bool) -> String {
   guard !indentation.isEmpty else { return content }
 
   var lines = content.components(separatedBy: .newlines)
   let firstLine = (indentFirst ? indentation : "") + lines.removeFirst()
-  let result = lines.reduce([firstLine]) { (result, line) in
-    return result + [(line.isEmpty ? "" : "\(indentation)\(line)")]
+  let result = lines.reduce(into: [firstLine]) { result, line in
+    result.append(line.isEmpty ? "" : "\(indentation)\(line)")
   }
   return result.joined(separator: "\n")
 }
 
+func filterFilter(value: Any?, arguments: [Any?], context: Context) throws -> Any? {
+  guard let value = value else { return nil }
+  guard arguments.count == 1 else {
+    throw TemplateSyntaxError("'filter' filter takes one argument")
+  }
+
+  let attribute = stringify(arguments[0])
+
+  let expr = try context.environment.compileFilter("$0|\(attribute)")
+  return try context.push(dictionary: ["$0": value]) {
+    try expr.resolve(context)
+  }
+}

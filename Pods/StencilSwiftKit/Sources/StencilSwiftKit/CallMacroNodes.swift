@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright (c) 2017 SwiftGen
+// Copyright © 2020 SwiftGen
 // MIT Licence
 //
 
@@ -17,10 +17,12 @@ struct CallableBlock {
 
   func context(_ context: Context, arguments: [Resolvable], variable: Variable) throws -> [String: Any] {
     guard parameters.count == arguments.count else {
-      throw TemplateSyntaxError("""
+      throw TemplateSyntaxError(
+        """
         Block '\(variable.variable)' accepts \(parameters.count) parameters, \
         \(arguments.count) given.
-        """)
+        """
+      )
     }
 
     var result = [String: Any]()
@@ -39,7 +41,7 @@ class MacroNode: NodeType {
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    let components = token.components()
+    let components = token.components
     guard components.count >= 2 else {
       throw TemplateSyntaxError("'macro' tag takes at least one argument, the name of the variable to set.")
     }
@@ -74,7 +76,7 @@ class CallNode: NodeType {
   let token: Token?
 
   class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
-    let components = token.components()
+    let components = token.components
     guard components.count >= 2 else {
       throw TemplateSyntaxError("'call' tag takes at least one argument, the name of the block to call.")
     }

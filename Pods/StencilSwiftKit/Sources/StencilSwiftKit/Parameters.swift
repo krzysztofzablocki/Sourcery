@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright (c) 2017 SwiftGen
+// Copyright © 2020 SwiftGen
 // MIT Licence
 //
 
@@ -147,7 +147,7 @@ public enum Parameters {
     switch object {
     case is String, is Int, is Double:
       values.append("\(keyPrefix)=\(object)")
-    case is Bool:
+    case let bool as Bool where bool:
       values.append(keyPrefix)
     case let dict as [String: Any]:
       for (key, value) in dict {
@@ -156,7 +156,8 @@ public enum Parameters {
       }
     case let array as [Any]:
       values += array.flatMap { flatten(object: $0, keyPrefix: keyPrefix) }
-    default: break
+    default:
+      break
     }
     return values
   }

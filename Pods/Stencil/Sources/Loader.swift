@@ -1,12 +1,10 @@
 import Foundation
 import PathKit
 
-
 public protocol Loader {
   func loadTemplate(name: String, environment: Environment) throws -> Template
   func loadTemplate(names: [String], environment: Environment) throws -> Template
 }
-
 
 extension Loader {
   public func loadTemplate(names: [String], environment: Environment) throws -> Template {
@@ -24,7 +22,6 @@ extension Loader {
   }
 }
 
-
 // A class for loading a template from disk
 public class FileSystemLoader: Loader, CustomStringConvertible {
   public let paths: [Path]
@@ -35,7 +32,7 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
 
   public init(bundle: [Bundle]) {
     self.paths = bundle.map {
-      return Path($0.bundlePath)
+      Path($0.bundlePath)
     }
   }
 
@@ -74,7 +71,6 @@ public class FileSystemLoader: Loader, CustomStringConvertible {
   }
 }
 
-
 public class DictionaryLoader: Loader {
   public let templates: [String: String]
 
@@ -101,7 +97,6 @@ public class DictionaryLoader: Loader {
   }
 }
 
-
 extension Path {
   func safeJoin(path: Path) throws -> Path {
     let newPath = self + path
@@ -113,7 +108,6 @@ extension Path {
     return newPath
   }
 }
-
 
 class SuspiciousFileOperation: Error {
   let basePath: Path

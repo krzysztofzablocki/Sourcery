@@ -1,0 +1,31 @@
+{
+  "name": "xcodeproj",
+  "version": "7.0.0",
+  "summary": "Read/Modify/Write your Xcode projects",
+  "homepage": "https://github.com/tuist/xcodeproj",
+  "social_media_url": "https://twitter.com/tuistapp",
+  "license": "MIT",
+  "source": {
+    "git": "https://github.com/tuist/xcodeproj.git",
+    "tag": "7.0.0"
+  },
+  "requires_arc": true,
+  "authors": "Tuist",
+  "swift_versions": "5.0",
+  "platforms": {
+    "osx": "10.10"
+  },
+  "source_files": "Sources/**/*.{swift}",
+  "dependencies": {
+    "PathKit": [
+      "~> 1.0.0"
+    ],
+    "AEXML": [
+      "~> 4.4.0"
+    ],
+    "Shell": [
+      "~> 2.0.0"
+    ]
+  },
+  "swift_version": "5.0"
+}
