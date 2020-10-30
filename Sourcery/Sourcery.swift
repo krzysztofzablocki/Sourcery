@@ -11,7 +11,7 @@ import SourceryRuntime
 import SourceryJS
 import SourcerySwift
 import TryCatch
-import xcproj
+import xcodeproj
 
 class Sourcery {
     public static let version: String = SourceryVersion.current.value
@@ -405,7 +405,7 @@ extension Sourcery {
         }
 
         if let linkTo = output.linkTo {
-            try linkTo.project.writePBXProj(path: linkTo.projectPath)
+            try linkTo.project.writePBXProj(path: linkTo.projectPath, outputSettings: PBXOutputSettings())
         }
 
         Log.benchmark("\tGeneration took \(currentTimestamp() - generationStart)")
@@ -417,10 +417,10 @@ extension Sourcery {
 
         let sourceRoot = linkTo.projectPath.parent()
         let fileGroup: PBXGroup
-        if let group = linkTo.group {
+        if let group = linkTo.group, let rootGroup = linkTo.project.rootGroup {
             do {
-                let addedGroup = linkTo.project.addGroup(named: group, to: linkTo.project.rootGroup, options: [])
-                fileGroup = addedGroup.object
+                let addedGroup = linkTo.project.addGroup(named: group, to: rootGroup, options: [])
+                fileGroup = addedGroup
                 if let groupPath = linkTo.project.fullPath(fileElement: addedGroup, sourceRoot: sourceRoot) {
                     try groupPath.mkpath()
                 }
@@ -428,7 +428,7 @@ extension Sourcery {
                 Log.warning("Failed to create a folder for group '\(fileGroup.name ?? "")'. \(error)")
             }
         } else {
-            fileGroup = linkTo.project.rootGroup
+            fileGroup = linkTo.project.rootGroup!
         }
         do {
             try linkTo.project.addSourceFile(at: output, toGroup: fileGroup, target: target, sourceRoot: sourceRoot)

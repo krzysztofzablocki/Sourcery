@@ -1,34 +1,38 @@
 import Foundation
 import PathKit
-import xcproj
+import xcodeproj
 
 extension XcodeProj {
 
     func target(named targetName: String) -> PBXTarget? {
-        return pbxproj.objects.targets(named: targetName).first?.object
+        return pbxproj.targets(named: targetName).first
     }
 
-    func fullPath<E: PBXFileElement>(fileElement: ObjectReference<E>, sourceRoot: Path) -> Path? {
-        return pbxproj.objects.fullPath(fileElement: fileElement.object, reference: fileElement.reference, sourceRoot: sourceRoot)
+    func fullPath<E: PBXFileElement>(fileElement: E, sourceRoot: Path) -> Path? {
+        return try? fileElement.fullPath(sourceRoot: sourceRoot)
     }
 
     func sourceFilesPaths(target: PBXTarget, sourceRoot: Path) -> [Path] {
-        return pbxproj.objects.sourceFiles(target: target)
+        let sourceFiles = (try? target.sourceFiles()) ?? []
+        return sourceFiles
             .compactMap({ fullPath(fileElement: $0, sourceRoot: sourceRoot) })
     }
 
-    var rootGroup: PBXGroup {
-        return pbxproj.rootGroup
+    var rootGroup: PBXGroup? {
+        return try? pbxproj.rootGroup()
     }
 
-    func addGroup(named groupName: String, to toGroup: PBXGroup, options: GroupAddingOptions = []) -> ObjectReference<PBXGroup> {
+    func addGroup(named groupName: String, to toGroup: PBXGroup, options: GroupAddingOptions = []) -> PBXGroup {
         // swiftlint:disable:next force_unwrapping
-        return pbxproj.objects.addGroup(named: groupName, to: toGroup, options: options).last!
+        let group = try? toGroup.addGroup(named: groupName, options: options).last
+        return group!
     }
 
     func addSourceFile(at filePath: Path, toGroup: PBXGroup, target: PBXTarget, sourceRoot: Path) throws {
-        let file = try pbxproj.objects.addFile(at: filePath, toGroup: toGroup, sourceRoot: sourceRoot)
-        _ = pbxproj.objects.addBuildFile(toTarget: target, reference: file.reference)
+        let fileReference = try toGroup.addFile(at: filePath, sourceRoot: sourceRoot)
+
+        let file = PBXBuildFile(file: fileReference, product: nil, settings: nil)
+        pbxproj.add(object: file)
     }
 
 }
