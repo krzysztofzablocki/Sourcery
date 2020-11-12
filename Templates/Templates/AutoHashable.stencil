@@ -33,7 +33,16 @@ extension {{ type.name }}: Hashable {
     {{ type.accessLevel }} func hash(into hasher: inout Hasher) {
         switch self {
         {% for case in type.cases %}
-        {% if case.hasAssociatedValue %}case .{{ case.name }}(let data):{% else %}case .{{ case.name }}:{% endif %}
+        {% if case.hasAssociatedValue %}
+        {% if case.associatedValues.count == 1 %}
+        case let .{{ case.name }}(data):
+        {% else %}
+        {% map case.associatedValues into associatedValues using associated %}{{ associated.externalName }}{% endmap %}
+        case let .{{ case.name }}({{ associatedValues|join: ", " }}):
+        {% endif %}
+        {% else %}
+        case .{{ case.name }}:
+        {% endif %}
             {{ forloop.counter }}.hash(into: &hasher)
             {% if type.computedVariables.count > 0 %}
             {% for variable in type.computedVariables %}
@@ -45,7 +54,7 @@ extension {{ type.name }}: Hashable {
             {% if case.associatedValues.count == 1 %}
             data.hash(into: &hasher)
             {% else %}
-            {% for associated in case.associatedValues %}data.{{ associated.externalName }}.hash(into: &hasher)
+            {% for associated in case.associatedValues %}{{ associated.externalName }}.hash(into: &hasher)
             {% endfor %}
             {% endif %}
             {% endif %}

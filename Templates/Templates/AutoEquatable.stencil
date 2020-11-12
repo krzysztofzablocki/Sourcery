@@ -46,12 +46,22 @@ extension {{ type.name }}: Equatable {}
 public func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
     switch (lhs, rhs) {
     {% for case in type.cases %}
-    {% if case.hasAssociatedValue %}case (.{{ case.name }}(let lhs), .{{ case.name }}(let rhs)):{% else %}case (.{{ case.name }}, .{{ case.name }}):{% endif %}
+    {% if case.hasAssociatedValue %}
+    {% if case.associatedValues.count == 1 %}
+    case let (.{{ case.name }}(lhs), .{{ case.name }}(rhs)):
+    {% else %}
+    {% map case.associatedValues into lhsValues using associated %}lhs{{ associated.externalName|upperFirstLetter }}{% endmap %}
+    {% map case.associatedValues into rhsValues using associated %}rhs{{ associated.externalName|upperFirstLetter }}{% endmap %}
+    case let (.{{ case.name }}({{ lhsValues|join: ", " }}), .{{ case.name }}({{ rhsValues|join: ", " }})):
+    {% endif %}
+    {% else %}
+    case (.{{ case.name }}, .{{ case.name }}):
+    {% endif %}
         {% if not case.hasAssociatedValue %}return true{% else %}
         {% if case.associatedValues.count == 1 %}
         return lhs == rhs
         {% else %}
-        {% for associated in case.associatedValues %}if lhs.{{ associated.externalName }} != rhs.{{ associated.externalName }} { return false }
+        {% for associated in case.associatedValues %}if lhs{{ associated.externalName|upperFirstLetter }} != rhs{{ associated.externalName|upperFirstLetter }} { return false }
         {% endfor %}return true
         {% endif %}
         {% endif %}
