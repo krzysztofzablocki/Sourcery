@@ -91,11 +91,11 @@ extension AutoHashableEnum: Hashable {
         switch self {
         case .one:
             1.hash(into: &hasher)
-        case .two(let data):
+        case let .two(first, second):
             2.hash(into: &hasher)
-            data.first.hash(into: &hasher)
-            data.second.hash(into: &hasher)
-        case .three(let data):
+            first.hash(into: &hasher)
+            second.hash(into: &hasher)
+        case let .three(data):
             3.hash(into: &hasher)
             data.hash(into: &hasher)
         }

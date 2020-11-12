@@ -86,11 +86,11 @@ public func == (lhs: AutoEquatableEnum, rhs: AutoEquatableEnum) -> Bool {
     switch (lhs, rhs) {
     case (.one, .one):
         return true
-    case (.two(let lhs), .two(let rhs)):
-        if lhs.first != rhs.first { return false }
-        if lhs.second != rhs.second { return false }
+    case let (.two(lhsFirst, lhsSecond), .two(rhsFirst, rhsSecond)):
+        if lhsFirst != rhsFirst { return false }
+        if lhsSecond != rhsSecond { return false }
         return true
-    case (.three(let lhs), .three(let rhs)):
+    case let (.three(lhs), .three(rhs)):
         return lhs == rhs
     default: return false
     }

@@ -7,6 +7,7 @@
 
 - Fix multiline method declarations parsing
 - Fix an issue, where "types.implementing.<protocolName>" did not work due to an additional module name.
+- Using tuple for associated values in enum case is deprecated since Swift 5.2. Fix AutoEquatable and AutoHashable templates to avoid the warning (#842)
 
 ## 1.0.0
 
