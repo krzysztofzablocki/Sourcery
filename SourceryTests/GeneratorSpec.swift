@@ -12,7 +12,7 @@ class GeneratorSpec: QuickSpec {
         describe("Generator") {
             var types: [Type] = []
             var arguments: [String: NSObject] = [:]
-            var beforeEachGenerate: () -> Void = {
+            let beforeEachGenerate: () -> Void = {
                 let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
                 let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
                 let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
