@@ -1,9 +1,9 @@
 PODS:
   - AEXML (4.3.3)
   - Commander (0.7.0)
-  - Nimble (8.0.1)
+  - Nimble (9.0.0)
   - PathKit (0.9.2)
-  - Quick (2.1.0)
+  - Quick (3.0.0)
   - SourceKittenFramework (0.23.1):
     - SWXMLHash (~> 4.7)
     - Yams (~> 2.0)
@@ -57,9 +57,9 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AEXML: 601f41fcaa7bda7605cad153b0f43db9ec006c0f
   Commander: a12712a84e9641e712aa5b6c196fddb8d6556189
-  Nimble: 45f786ae66faa9a709624227fae502db55a8bdd0
+  Nimble: 3b4ec3fd40f1dc178058e0981107721c615643d8
   PathKit: 273f59a38e3218eb95abd9f6a61730a8bcfd2f06
-  Quick: 4be43f6634acfa727dd106bdf3929ce125ffa79d
+  Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
   SourceKittenFramework: de6f994601a66e57306e89c3f5f0272112b46d81
   Stencil: b5128a0a43ece9225db5cbd94d6569fe6fba609b
   StencilSwiftKit: ccc2fb75e4fc74759e02ed516ca6e27adc921f83

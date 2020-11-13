@@ -3,7 +3,7 @@ version: 2
 jobs:
   test:
     macos:
-      xcode: "11.4.1"
+      xcode: "12.1"
     environment:
       - XCODE_WORKSPACE: Sourcery.xcworkspace
       - XCODE_PROJECT: Sourcery.xcodeproj

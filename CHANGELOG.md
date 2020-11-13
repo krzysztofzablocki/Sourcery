@@ -3,6 +3,10 @@
 ---
 ## 1.0.1
 
+### Internal Changes
+
+- Updated project and CI to Xcode 12.1
+
 ### Bug fixes
 
 - Fix multiline method declarations parsing

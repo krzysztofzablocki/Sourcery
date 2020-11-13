@@ -746,7 +746,7 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces associated value alias type with actual dictionary type name") {
-                            var expectedTypeName = TypeName("[String: Any]")
+                            let expectedTypeName = TypeName("[String: Any]")
                             expectedTypeName.dictionary = DictionaryType(name: "[String: Any]", valueTypeName: TypeName("Any"), valueType: nil, keyTypeName: TypeName("String"), keyType: nil)
                             expectedTypeName.generic = GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName("String"), type: nil), GenericTypeParameter(typeName: TypeName("Any"), type: nil)])
 

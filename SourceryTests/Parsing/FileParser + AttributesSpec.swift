@@ -124,7 +124,7 @@ class FileParserAttributesSpec: QuickSpec {
                     ]))
 
                 func assertSetterAccess(_ access: String, line: UInt = #line) {
-                    expect(parse("public class Foo { \(access)(set) var some: Int }").first?.variables.first?.attributes, line: line).to(equal([
+                    expect(line: line, parse("public class Foo { \(access)(set) var some: Int }").first?.variables.first?.attributes).to(equal([
                         access: Attribute(name: access, arguments: ["set": NSNumber(value: true)], description: "\(access)(set)")
                         ]))
                 }
@@ -135,7 +135,7 @@ class FileParserAttributesSpec: QuickSpec {
                 assertSetterAccess("public")
 
                 func assertGetterAccess(_ access: String, line: UInt = #line) {
-                    expect(parse("public class Foo { \(access) var some: Int }").first?.variables.first?.attributes, line: line).to(equal([
+                    expect(line: line, parse("public class Foo { \(access) var some: Int }").first?.variables.first?.attributes).to(equal([
                         access: Attribute(name: access, arguments: [:], description: "\(access)")
                         ]))
                 }
