@@ -125,45 +125,46 @@ public final class FileParser {
         var typealiases = [Typealias]()
         try walkDeclarations(source: source) { kind, name, access, inheritedTypes, source, definedIn, next in
             let type: Type
-            switch kind {
-            case .protocol:
+            switch (kind, name) {
+            case let (.protocol, name?):
                 type = Protocol(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
-            case .class:
+            case let (.class, name?):
                 type = Class(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
-            case .struct:
+            case let (.struct, name?):
                 type = Struct(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
-            case .enum:
+            case let (.enum, name?):
                 type = Enum(name: name, accessLevel: access, isExtension: false, inheritedTypes: inheritedTypes)
-            case .extension,
-                 .extensionClass,
-                 .extensionStruct,
-                 .extensionEnum:
+            case let (.extension, name?),
+                 let (.extensionClass, name?),
+                 let (.extensionStruct, name?),
+                 let (.extensionEnum, name?):
                 type = Type(name: name, accessLevel: access, isExtension: true, inheritedTypes: inheritedTypes)
-            case .enumelement:
+            case (.enumelement, _):
                 return parseEnumCase(source)
-            case .varInstance:
+            case (.varInstance, _):
                 return parseVariable(source, definedIn: definedIn as? Type)
-            case .varStatic, .varClass:
+            case (.varStatic, _),
+                 (.varClass, _):
                 return parseVariable(source, definedIn: definedIn as? Type, isStatic: true)
-            case .varLocal:
+            case (.varLocal, _):
                 //! Don't log local / param vars
                 return nil
-            case .functionMethodClass,
-                 .functionMethodInstance,
-                 .functionMethodStatic:
+            case (.functionMethodClass, _),
+                 (.functionMethodInstance, _),
+                 (.functionMethodStatic, _):
                 return parseMethod(source, definedIn: definedIn as? Type, nextStructure: next)
-            case .functionFree:
+            case (.functionFree, _):
                 guard let function = parseMethod(source, definedIn: definedIn as? Type, nextStructure: next) else {
                     return nil
                 }
 
                 functions.append(function)
                 return function
-            case .functionSubscript:
+            case (.functionSubscript, _):
                 return parseSubscript(source, definedIn: definedIn as? Type, nextStructure: next)
-            case .varParameter:
+            case (.varParameter, _):
                 return parseParameter(source)
-            case .typealias:
+            case (.typealias, _):
                 switch parseTypealias(source, containingType: definedIn as? Type) {
                 case nil:
                     return nil
@@ -179,10 +180,11 @@ public final class FileParser {
                         return protocolComposition
                     }
                 }
-            case .associatedtype:
+            case (.associatedtype, _):
                 return parseAssociatedType(source, definedIn: definedIn as? Type)
             default:
-                Log.verbose("\(logPrefix) Unsupported entry \"\(access) \(kind) \(name)\"")
+                let nameSuffix = name.map { " \($0)" } ?? ""
+                Log.verbose("\(logPrefix) Unsupported entry \"\(access) \(kind)\(nameSuffix)\"")
                 return nil
             }
 
@@ -201,7 +203,7 @@ public final class FileParser {
 
     typealias FoundEntry = (
         /*kind:*/ SwiftDeclarationKind,
-        /*name:*/ String,
+        /*name:*/ String?,
         /*accessLevel:*/ AccessLevel,
         /*inheritedTypes:*/ [String],
         /*source:*/ [String: SourceKitRepresentable],
@@ -310,19 +312,46 @@ public final class FileParser {
 // MARK: - Details parsing
 extension FileParser {
 
-    fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
-        guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }),
-              var name = dict[SwiftDocKey.name.rawValue] as? String else { return nil }
-
-        if case .enumelement = kind, let colon = name.firstIndex(of: "(") {
-            name = String(name[..<colon])
-        }
-
-        if extract(.name, from: dict)?.hasPrefix("`") == true {
-            name = "`\(name)`"
-        }
+    fileprivate func parseTypeRequirements(_ dict: [String: SourceKitRepresentable]) -> (name: String?, kind: SwiftDeclarationKind, accessibility: AccessLevel)? {
+        guard let kind = (dict[SwiftDocKey.kind.rawValue] as? String).flatMap({ SwiftDeclarationKind(rawValue: $0) }) else { return nil }
 
         let accessibility = (dict["key.accessibility"] as? String).flatMap({ AccessLevel(rawValue: $0.replacingOccurrences(of: "source.lang.swift.accessibility.", with: "") ) }) ?? .none
+        
+        let name: String? = (dict[SwiftDocKey.name.rawValue] as? String).map {
+            var name: String = $0
+            
+            if case .enumelement = kind, let openingBrace = name.firstIndex(of: "(") {
+                name = String(name[..<openingBrace])
+            }
+
+            if extract(.name, from: dict)?.hasPrefix("`") == true {
+                name = "`\(name)`"
+            }
+            
+            return name
+        }
+
+        // Some declarations are expected to have name, while others don't.
+        //
+        // Example:
+        // ```
+        // func method(_: Int)
+        // ```
+        //
+        // Method is expected to have a name, while argument is not.
+        
+        switch (kind, name) {
+        case (.varParameter, _):
+            // Parameters can have no name
+            break
+        case (_, .some):
+            // Other declarations must have some name
+            break
+        default:
+            // Fail to parse if those requirements aren't met
+            return nil
+        }
+        
         return (name, kind, accessibility)
     }
 
@@ -470,8 +499,9 @@ extension FileParser {
     }
 
     internal func parseVariable(_ source: [String: SourceKitRepresentable], definedIn: Type?, isStatic: Bool = false) -> Variable? {
-        guard let (name, _, accessibility) = parseTypeRequirements(source) else { return nil }
-
+        guard let (nameOrNil, _, accessibility) = parseTypeRequirements(source),
+            let name = nameOrNil else { return nil }
+        
         let definedInProtocol = (definedIn != nil) ? definedIn is SourceryProtocol : false
         var maybeType: String? = source[SwiftDocKey.typeName.rawValue] as? String
 
@@ -641,7 +671,7 @@ extension FileParser {
         let `inout` = type.hasPrefix("inout ")
         let typeName = TypeName(type, attributes: parseTypeAttributes(type))
         let defaultValue = extractDefaultValue(type: type, from: source)
-        let parameter = MethodParameter(argumentLabel: argumentLabel, name: name, typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), isInout: `inout`)
+        let parameter = MethodParameter(argumentLabel: argumentLabel, name: name ?? "", typeName: typeName, defaultValue: defaultValue, annotations: annotations.from(source), isInout: `inout`)
         parameter.setSource(source)
         return parameter
     }
@@ -652,8 +682,9 @@ extension FileParser {
 extension FileParser {
 
     fileprivate func parseEnumCase(_ source: [String: SourceKitRepresentable]) -> EnumCase? {
-        guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
-
+        guard let (nameOrNil, _, _) = parseTypeRequirements(source),
+            let name = nameOrNil else { return nil }
+        
         var associatedValues: [AssociatedValue] = []
         var rawValue: String?
 
@@ -738,7 +769,8 @@ extension FileParser {
     }
 
     private func parseTypealias(_ source: [String: SourceKitRepresentable], containingType: Type?) -> TypealiasParseOutcome? {
-        guard let (name, _, _) = parseTypeRequirements(source),
+        guard let (nameOrNil, _, _) = parseTypeRequirements(source),
+            let name = nameOrNil,
             let nameSuffix = extract(.nameSuffix, from: source)?
                 .trimmingCharacters(in: CharacterSet.init(charactersIn: "=").union(.whitespacesAndNewlines))
             else { return nil }
@@ -757,7 +789,8 @@ extension FileParser {
 // MARK: - AssociatedTypes
 extension FileParser {
     private func parseAssociatedType(_ source: [String: SourceKitRepresentable], definedIn: Type?) -> AssociatedType? {
-        guard let (name, _, _) = parseTypeRequirements(source) else { return nil }
+        guard let (nameOrNil, _, _) = parseTypeRequirements(source),
+            let name = nameOrNil else { return nil }
 
         guard let nameSuffix = extract(.nameSuffix, from: source)?
             .trimmingCharacters(in: CharacterSet.init(charactersIn: ":").union(.whitespacesAndNewlines))
