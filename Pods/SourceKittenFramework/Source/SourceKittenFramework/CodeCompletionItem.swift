@@ -15,7 +15,7 @@ fileprivate extension Dictionary {
 }
 
 public struct CodeCompletionItem: CustomStringConvertible {
-    #if os(Linux)
+    #if os(Linux) && swift(<5.2)
     public typealias NumBytesInt = Int
     #else
     public typealias NumBytesInt = Int64

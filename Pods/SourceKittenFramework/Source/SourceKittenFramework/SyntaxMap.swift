@@ -28,7 +28,8 @@ public struct SyntaxMap {
     public init(data: [SourceKitRepresentable]) {
         tokens = data.map { item in
             let dict = item as! [String: SourceKitRepresentable]
-            return SyntaxToken(type: dict["key.kind"] as! String, offset: Int(dict["key.offset"] as! Int64), length: Int(dict["key.length"] as! Int64))
+            return SyntaxToken(type: dict["key.kind"] as! String, offset: ByteCount(dict["key.offset"] as! Int64),
+                               length: ByteCount(dict["key.length"] as! Int64))
         }
     }
 
@@ -64,12 +65,12 @@ extension SyntaxToken {
 extension SyntaxMap {
     /// The ranges of documentation comments described by the map, in the order
     /// that they occur in the file.
-    internal var docCommentRanges: [Range<Int>] {
+    internal var docCommentRanges: [ByteRange] {
         let docCommentBlocks = tokens.split { !$0.isDocComment }
         return docCommentBlocks.compactMap { ranges in
             ranges.first.flatMap { first in
-                ranges.last.flatMap { last -> Range<Int>? in
-                    first.offset..<last.offset + last.length
+                ranges.last.flatMap { last -> ByteRange? in
+                    ByteRange(location: first.offset, length: last.offset + last.length - first.offset)
                 }
             }
         }
@@ -83,19 +84,21 @@ extension SyntaxMap {
     */
     internal final class DocCommentFinder {
         /// Remaining doc comments that have not been assigned or skipped
-        private var ranges: [Range<Int>]
+        private var ranges: [ByteRange]
         /// The most recent file offset requested
-        private var previousOffset: Int
+        private var previousOffset: ByteCount?
 
         /// Create a new doc comment finder from a `SyntaxMap`.
         internal init(syntaxMap: SyntaxMap) {
             self.ranges = syntaxMap.docCommentRanges
-            self.previousOffset = -1
+            self.previousOffset = nil
         }
 
         /// Get the byte range of the declaration's doc comment, or nil if none.
-        internal func getRangeForDeclaration(atOffset offset: Int) -> Range<Int>? {
-            guard offset > previousOffset else { return nil }
+        internal func getRangeForDeclaration(atOffset offset: ByteCount) -> ByteRange? {
+            if let previousOffset = previousOffset {
+                guard offset > previousOffset else { return nil }
+            }
 
             let commentsBeforeDecl = ranges.prefix { $0.upperBound < offset }
             ranges.replaceSubrange(0..<commentsBeforeDecl.count, with: [])

@@ -33,7 +33,7 @@ extension Type {
 
     public func bodyRange(_ contents: String) -> NSRange? {
         guard let bytesRange = bodyBytesRange else { return nil }
-        return contents.bridge().byteRangeToNSRange(start: Int(bytesRange.offset), length: Int(bytesRange.length))
+        return StringView(contents).byteRangeToNSRange(ByteRange(location: ByteCount(bytesRange.offset), length: ByteCount(bytesRange.length)))
     }
 }
 
@@ -591,8 +591,7 @@ extension FileParser {
             if let upperBound = upperBound {
                 let start = Int(nameSuffixRange.offset)
                 let length = upperBound - Int(nameSuffixRange.offset)
-                let nameSuffixUpToNextStruct = contents.bridge()
-                    .substringWithByteRange(start: start, length: length)?
+                let nameSuffixUpToNextStruct = StringView(contents)                            .substringWithByteRange(ByteRange(location: ByteCount(start), length: ByteCount(length)))?
                     .trimmingCharacters(in: CharacterSet(charactersIn: ";").union(.whitespacesAndNewlines))
 
                 if let nameSuffixUpToNextStruct = nameSuffixUpToNextStruct {
@@ -602,8 +601,8 @@ extension FileParser {
                             || $0.type.hasPrefix("source.lang.swift.syntaxtype.doccomment")
                     })
                     if let firstDocToken = firstDocToken {
-                        nameSuffix = nameSuffixUpToNextStruct.bridge()
-                            .substringWithByteRange(start: 0, length: firstDocToken.offset)?
+                        nameSuffix = StringView(nameSuffixUpToNextStruct)
+                            .substringWithByteRange(ByteRange(location: ByteCount(0), length: firstDocToken.offset))?
                             .trimmingCharacters(in: CharacterSet(charactersIn: ";").union(.whitespacesAndNewlines))
                     } else {
                         nameSuffix = nameSuffixUpToNextStruct
@@ -884,15 +883,15 @@ extension FileParser {
     }
 
     fileprivate func extract(_ token: SyntaxToken, contents: String) -> String? {
-        return contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
+        return StringView(contents).substringWithByteRange(ByteRange(location: token.offset, length: token.length))
     }
 
     fileprivate func extract(from: SyntaxToken, to: SyntaxToken, contents: String) -> String? {
-        return contents.bridge().substringWithByteRange(start: from.offset, length: to.offset + to.length - from.offset)
+        return StringView(contents).substringWithByteRange(ByteRange(location: from.offset, length: to.offset + to.length - from.offset))
     }
 
     fileprivate func extract(after: SyntaxToken, contents: String) -> String? {
-        return contents.bridge().substringWithByteRange(start: after.offset + after.length, length: contents.count - (after.offset + after.length))
+        return StringView(contents).substringWithByteRange(ByteRange(location: after.offset + after.length, length: ByteCount(contents.count) - (after.offset + after.length)))
     }
 
     fileprivate func extractDefaultValue(type: String?, from source: [String: SourceKitRepresentable]) -> String? {
@@ -937,7 +936,7 @@ extension String {
         var stripped = self
         repeat {
             finished = true
-            let lines = stripped.lines()
+            let lines = StringView(stripped).lines
             if lines.count > 1 {
                 stripped = lines.lazy
                     .filter({ line in !line.content.hasPrefix("//") })

@@ -62,10 +62,15 @@ public struct AnnotationsParser {
     /// - Parameter source: Source to extract annotations for.
     /// - Returns: All annotations associated with given source.
     func from(_ source: [String: SourceKitRepresentable]) -> Annotations {
-        guard let range = Substring.key.range(for: source),
-            let location = contents.location(fromByteOffset: Int(range.offset)),
-            let lineInfo = contents.lineAndCharacter(forCharacterOffset: location)
-            else { return [:] }
+        guard let range = Substring.key.range(for: source) else {
+            return [:]
+        }
+        
+        let location = StringView(contents).location(fromByteOffset: ByteCount(range.offset))
+        
+        guard let lineInfo = StringView(contents).lineAndCharacter(forCharacterOffset: location) else {
+            return [:]
+        }
 
         var stop = false
         var annotations = inlineFrom(line: lineInfo, stop: &stop)
@@ -135,7 +140,7 @@ public struct AnnotationsParser {
     private static func parse(contents: String) -> [Line] {
         var annotationsBlock: Annotations?
         var fileAnnotationsBlock = Annotations()
-        return contents.lines()
+        return StringView(contents).lines
                 .map { line in
                     let content = line.content.trimmingCharacters(in: .whitespaces)
                     var annotations = Annotations()
@@ -308,33 +313,6 @@ public struct AnnotationsParser {
         } else {
             annotations[key] = value
         }
-    }
-
-}
-
-extension String {
-
-    //! this isn't exposed in SourceKitten so we create our own variant
-    func location(fromByteOffset byteOffset: Int) -> Int? {
-        let lines = self.lines()
-        if lines.isEmpty {
-            return 0
-        }
-        let index = lines.firstIndex(where: { NSLocationInRange(byteOffset, $0.byteRange) })
-        // byteOffset may be out of bounds when sourcekitd points end of string.
-        guard let line = (index.map { lines[$0] } ?? lines.last) else {
-            fatalError()
-        }
-        let diff = byteOffset - line.byteRange.location
-        if diff == 0 {
-            return line.range.location
-        } else if line.byteRange.length == diff {
-            return NSMaxRange(line.range)
-        }
-        let utf8View = line.content.utf8
-        guard let endUTF16index = utf8View.index(utf8View.startIndex, offsetBy: diff, limitedBy: utf8View.endIndex)?.samePosition(in: line.content.utf16) else { return nil }
-        let utf16Diff = line.content.utf16.distance(from: line.content.utf16.startIndex, to: endUTF16index)
-        return line.range.location + utf16Diff
     }
 
 }

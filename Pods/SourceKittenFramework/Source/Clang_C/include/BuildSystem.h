@@ -1,9 +1,9 @@
 /*==-- clang-c/BuildSystem.h - Utilities for use by build systems -*- C -*-===*\
 |*                                                                            *|
-|*                     The LLVM Compiler Infrastructure                       *|
-|*                                                                            *|
-|* This file is distributed under the University of Illinois Open Source      *|
-|* License. See LICENSE.TXT for details.                                      *|
+|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
+|* Exceptions.                                                                *|
+|* See https://llvm.org/LICENSE.txt for license information.                  *|
+|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -66,7 +66,7 @@ clang_VirtualFileOverlay_addFileMapping(CXVirtualFileOverlay,
  */
 CINDEX_LINKAGE enum CXErrorCode
 clang_VirtualFileOverlay_setCaseSensitivity(CXVirtualFileOverlay,
-											int caseSensitive);
+                                            int caseSensitive);
 
 /**
  * Write out the \c CXVirtualFileOverlay object to a char buffer.

@@ -30,6 +30,9 @@
 // swiftlint:disable file_length
 
 import Foundation
+#if canImport(FoundationXML)
+import FoundationXML
+#endif
 
 let rootElementName = "SWXMLHash_Root_Element"
 
@@ -183,81 +186,81 @@ protocol SimpleXmlParser {
 #if os(Linux)
 
 extension XMLParserDelegate {
-    func parserDidStartDocument(_ parser: Foundation.XMLParser) { }
-    func parserDidEndDocument(_ parser: Foundation.XMLParser) { }
+    func parserDidStartDocument(_ parser: XMLParser) { }
+    func parserDidEndDocument(_ parser: XMLParser) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundNotationDeclarationWithName name: String,
                 publicID: String?,
                 systemID: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundUnparsedEntityDeclarationWithName name: String,
                 publicID: String?,
                 systemID: String?,
                 notationName: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundAttributeDeclarationWithName attributeName: String,
                 forElement elementName: String,
                 type: String?,
                 defaultValue: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundElementDeclarationWithName elementName: String,
                 model: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundInternalEntityDeclarationWithName name: String,
                 value: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundExternalEntityDeclarationWithName name: String,
                 publicID: String?,
                 systemID: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didStartElement elementName: String,
                 namespaceURI: String?,
                 qualifiedName qName: String?,
                 attributes attributeDict: [String: String]) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didEndElement elementName: String,
                 namespaceURI: String?,
                 qualifiedName qName: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didStartMappingPrefix prefix: String,
                 toURI namespaceURI: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didEndMappingPrefix prefix: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundCharacters string: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundIgnorableWhitespace whitespaceString: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundProcessingInstructionWithTarget target: String,
                 data: String?) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundComment comment: String) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 foundCDATA CDATABlock: Data) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 resolveExternalEntityName name: String,
                 systemID: String?) -> Data? { return nil }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 parseErrorOccurred parseError: Error) { }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 validationErrorOccurred validationError: Error) { }
 }
 
@@ -291,13 +294,13 @@ class LazyXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         parentStack.push(root)
 
         self.ops = ops
-        let parser = Foundation.XMLParser(data: data!)
+        let parser = XMLParser(data: data!)
         parser.shouldProcessNamespaces = options.shouldProcessNamespaces
         parser.delegate = self
         _ = parser.parse()
     }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didStartElement elementName: String,
                 namespaceURI: String?,
                 qualifiedName qName: String?,
@@ -314,7 +317,7 @@ class LazyXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         parentStack.push(currentNode)
     }
 
-    func parser(_ parser: Foundation.XMLParser, foundCharacters string: String) {
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
         if !onMatch() {
             return
         }
@@ -336,7 +339,7 @@ class LazyXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         }
     }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didEndElement elementName: String,
                 namespaceURI: String?,
                 qualifiedName qName: String?) {
@@ -380,7 +383,7 @@ class FullXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
 
         parentStack.push(root)
 
-        let parser = Foundation.XMLParser(data: data)
+        let parser = XMLParser(data: data)
         parser.shouldProcessNamespaces = options.shouldProcessNamespaces
         parser.delegate = self
         _ = parser.parse()
@@ -392,7 +395,7 @@ class FullXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         }
     }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didStartElement elementName: String,
                 namespaceURI: String?,
                 qualifiedName qName: String?,
@@ -404,13 +407,13 @@ class FullXMLParser: NSObject, SimpleXmlParser, XMLParserDelegate {
         parentStack.push(currentNode)
     }
 
-    func parser(_ parser: Foundation.XMLParser, foundCharacters string: String) {
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
         let current = parentStack.top()
 
         current.addText(string)
     }
 
-    func parser(_ parser: Foundation.XMLParser,
+    func parser(_ parser: XMLParser,
                 didEndElement elementName: String,
                 namespaceURI: String?,
                 qualifiedName qName: String?) {

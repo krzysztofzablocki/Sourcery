@@ -6,14 +6,10 @@
 //  Copyright (c) 2016 Yams. All rights reserved.
 //
 
-#if SWIFT_PACKAGE
-import CYaml
-#endif
-
 /// Tags describe the the _type_ of a Node.
 public final class Tag {
     /// Tag name.
-    public struct Name: RawRepresentable {
+    public struct Name: RawRepresentable, Hashable {
         /// This `Tag.Name`'s raw string value.
         public let rawValue: String
         /// Create a `Tag.Name` with a raw string value.
@@ -57,7 +53,7 @@ public final class Tag {
     let constructor: Constructor
     var name: Name
 
-    func resolved<T>(with value: T) -> Tag where T: TagResolvable {
+    fileprivate func resolved<T>(with value: T) -> Tag where T: TagResolvable {
         if name == .implicit {
             name = resolver.resolveTag(of: value)
         } else if name == .nonSpecific {
@@ -78,17 +74,10 @@ extension Tag: CustomStringConvertible {
 }
 
 extension Tag: Hashable {
-#if swift(>=4.1.50)
     /// :nodoc:
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)
     }
-#else
-    /// :nodoc:
-    public var hashValue: Int {
-        return name.hashValue
-    }
-#endif
 
     /// :nodoc:
     public static func == (lhs: Tag, rhs: Tag) -> Bool {
@@ -101,20 +90,6 @@ extension Tag.Name: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
         self.rawValue = value
     }
-}
-
-extension Tag.Name: Hashable {
-#if !swift(>=4.1.50)
-    /// :nodoc:
-    public var hashValue: Int {
-        return rawValue.hashValue
-    }
-
-    /// :nodoc:
-    public static func == (lhs: Tag.Name, rhs: Tag.Name) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-#endif
 }
 
 // http://www.yaml.org/spec/1.2/spec.html#Schema
