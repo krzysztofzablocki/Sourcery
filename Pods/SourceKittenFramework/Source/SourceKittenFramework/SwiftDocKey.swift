@@ -104,6 +104,10 @@ public enum SwiftDocKey: String {
         return dictionary[key.rawValue] as! T?
     }
 
+    private static func getByteCount(_ key: SwiftDocKey, _ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
+        return (dictionary[key.rawValue] as! Int64?).map(ByteCount.init)
+    }
+
     /**
     Get kind string from dictionary.
 
@@ -133,8 +137,8 @@ public enum SwiftDocKey: String {
 
     - returns: Offset int if successful.
     */
-    internal static func getOffset(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
-        return get(.offset, dictionary)
+    internal static func getOffset(_ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
+        return getByteCount(.offset, dictionary)
     }
 
     /**
@@ -144,8 +148,8 @@ public enum SwiftDocKey: String {
 
     - returns: Length int if successful.
     */
-    internal static func getLength(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
-        return get(.length, dictionary)
+    internal static func getLength(_ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
+        return getByteCount(.length, dictionary)
     }
 
     /**
@@ -199,8 +203,8 @@ public enum SwiftDocKey: String {
 
     - returns: Name offset int if successful.
     */
-    internal static func getNameOffset(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
-        return get(.nameOffset, dictionary)
+    internal static func getNameOffset(_ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
+        return getByteCount(.nameOffset, dictionary)
     }
 
     /**
@@ -210,8 +214,8 @@ public enum SwiftDocKey: String {
 
     - returns: Length int if successful.
     */
-    internal static func getNameLength(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
-        return get(.nameLength, dictionary)
+    internal static func getNameLength(_ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
+        return getByteCount(.nameLength, dictionary)
     }
 
     /**
@@ -221,8 +225,8 @@ public enum SwiftDocKey: String {
 
     - returns: Body offset int if successful.
     */
-    internal static func getBodyOffset(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
-        return get(.bodyOffset, dictionary)
+    internal static func getBodyOffset(_ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
+        return getByteCount(.bodyOffset, dictionary)
     }
 
     /**
@@ -232,19 +236,8 @@ public enum SwiftDocKey: String {
 
     - returns: Body length int if successful.
     */
-    internal static func getBodyLength(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
-        return get(.bodyLength, dictionary)
-    }
-
-    /**
-    Get file path string from dictionary.
-
-    - parameter dictionary: Dictionary to get value from.
-
-    - returns: File path string if successful.
-    */
-    internal static func getFilePath(_ dictionary: [String: SourceKitRepresentable]) -> String? {
-        return get(.filePath, dictionary)
+    internal static func getBodyLength(_ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
+        return getByteCount(.bodyLength, dictionary)
     }
 
     /**
@@ -269,7 +262,7 @@ extension SwiftDocKey {
      - returns: Best 'offset' for the declaration.  Name offset normally preferable,
        but some eg. enumcase have invalid 0 here.
      */
-    internal static func getBestOffset(_ dictionary: [String: SourceKitRepresentable]) -> Int64? {
+    internal static func getBestOffset(_ dictionary: [String: SourceKitRepresentable]) -> ByteCount? {
         if let nameOffset = getNameOffset(dictionary), nameOffset > 0 {
             return nameOffset
         }

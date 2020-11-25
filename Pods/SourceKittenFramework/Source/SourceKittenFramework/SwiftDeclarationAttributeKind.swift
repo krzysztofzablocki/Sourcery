@@ -90,7 +90,7 @@ public enum SwiftDeclarationAttributeKind: String, CaseIterable {
     case weakLinked = "source.decl.attribute._weakLinked"
     case inlinable = "source.decl.attribute.inlinable"
     case dynamicMemberLookup = "source.decl.attribute.dynamicMemberLookup"
-    case frozen = "source.decl.attribute._frozen"
+    case _frozen = "source.decl.attribute._frozen"
 
     // only available in Swift < 4.1
     case autoclosure = "source.decl.attribute.autoclosure"
@@ -108,4 +108,31 @@ public enum SwiftDeclarationAttributeKind: String, CaseIterable {
     case _private = "source.decl.attribute._private"
     case _show_in_interface = "source.decl.attribute._show_in_interface"
     case dynamicCallable = "source.decl.attribute.dynamicCallable"
+
+    // only available in Swift >= 5.1
+    case frozen = "source.decl.attribute.frozen"
+    case _projectedValueProperty = "source.decl.attribute._projectedValueProperty"
+    case _alwaysEmitIntoClient = "source.decl.attribute._alwaysEmitIntoClient"
+    case _implementationOnly = "source.decl.attribute._implementationOnly"
+    case ibsegueaction = "source.decl.attribute.ibsegueaction"
+    case _custom = "source.decl.attribute._custom"
+    case _disfavoredOverload = "source.decl.attribute._disfavoredOverload"
+    case propertyWrapper = "source.decl.attribute.propertyWrapper"
+    case IBSegueAction = "source.decl.attribute.IBSegueAction"
+    case _functionBuilder = "source.decl.attribute._functionBuilder"
+
+    // Only available in Swift >= 5.2
+    case differentiable = "source.decl.attribute.differentiable"
+    case _nonEphemeral = "source.decl.attribute._nonEphemeral"
+    case _originallyDefinedIn = "source.decl.attribute._originallyDefinedIn"
+    case _inheritsConvenienceInitializers = "source.decl.attribute._inheritsConvenienceInitializers"
+    case _hasMissingDesignatedInitializers = "source.decl.attribute._hasMissingDesignatedInitializers"
+
+    // Only available in Swift >= 5.3
+    case _spi = "source.decl.attribute._spi"
+    case _typeEraser = "source.decl.attribute._typeEraser"
+    case derivative = "source.decl.attribute.derivative"
+    case main = "source.decl.attribute.main"
+    case noDerivative = "source.decl.attribute.noDerivative"
+    case transpose = "source.decl.attribute.transpose"
 }

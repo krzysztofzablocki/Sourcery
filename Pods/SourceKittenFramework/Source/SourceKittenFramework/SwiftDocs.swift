@@ -53,7 +53,7 @@ public struct SwiftDocs {
         let syntaxMap = SyntaxMap(data: syntaxMapData)
         dictionary = file.process(dictionary: dictionary, cursorInfoRequest: cursorInfoRequest, syntaxMap: syntaxMap)
         if let cursorInfoRequest = cursorInfoRequest {
-            let documentedTokenOffsets = file.contents.documentedTokenOffsets(syntaxMap: syntaxMap)
+            let documentedTokenOffsets = file.stringView.documentedTokenOffsets(syntaxMap: syntaxMap)
             dictionary = file.furtherProcess(
                 dictionary: dictionary,
                 documentedTokenOffsets: documentedTokenOffsets,

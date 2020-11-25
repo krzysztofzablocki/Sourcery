@@ -16,14 +16,14 @@ import Foundation
 public func insertMarks(declarations: [SourceDeclaration], limit: NSRange? = nil) -> [SourceDeclaration] {
     guard !declarations.isEmpty else { return [] }
     guard let path = declarations.first?.location.file, let file = File(path: path) else {
-        fatalError("can't extract marks without a file.")
+        return []
     }
-    let currentMarks = file.contents.pragmaMarks(filename: path, excludeRanges: declarations.map({
-        file.contents.byteRangeToNSRange(start: $0.range.location, length: $0.range.length) ?? NSRange()
+    let currentMarks = file.stringView.pragmaMarks(filename: path, excludeRanges: declarations.map({
+        file.stringView.byteRangeToNSRange($0.range) ?? NSRange()
     }), limit: limit)
     let newDeclarations: [SourceDeclaration] = declarations.map { declaration in
         var varDeclaration = declaration
-        let range = file.contents.byteRangeToNSRange(start: declaration.range.location, length: declaration.range.length)
+        let range = file.stringView.byteRangeToNSRange(declaration.range)
         varDeclaration.children = insertMarks(declarations: declaration.children, limit: range)
         return varDeclaration
     }
@@ -47,21 +47,21 @@ public struct SourceDeclaration {
     public let availability: ClangAvailability?
 
     /// Range
-    public var range: NSRange {
+    public var range: ByteRange {
         return extent.start.range(toEnd: extent.end)
     }
 
     /// Returns the USR for the auto-generated getter for this property.
     ///
     /// - warning: can only be invoked if `type == .Property`.
-    public var getterUSR: String {
+    public var getterUSR: String? {
         return accessorUSR(getter: true)
     }
 
     /// Returns the USR for the auto-generated setter for this property.
     ///
     /// - warning: can only be invoked if `type == .Property`.
-    public var setterUSR: String {
+    public var setterUSR: String? {
         return accessorUSR(getter: false)
     }
 
@@ -83,17 +83,17 @@ public struct SourceDeclaration {
         }
     }
 
-    private func propertyTypeStringStartAndAcessorType(usr: String) -> (String.Index, AccessorType) {
+    private func propertyTypeStringStartAndAcessorType(usr: String) -> (String.Index, AccessorType)? {
         if let accessorTypeStringStartIndex = usr.range(of: AccessorType.class.propertyTypeString)?.lowerBound {
             return (accessorTypeStringStartIndex, .class)
         } else if let accessorTypeStringStartIndex = usr.range(of: AccessorType.instance.propertyTypeString)?.lowerBound {
             return (accessorTypeStringStartIndex, .instance)
         } else {
-            fatalError("expected an instance or class property by got \(usr)")
+            return nil
         }
     }
 
-    private func accessorUSR(getter: Bool) -> String {
+    private func accessorUSR(getter: Bool) -> String? {
         assert(type == .property)
         guard let usr = usr else {
             fatalError("Couldn't extract USR")
@@ -102,7 +102,9 @@ public struct SourceDeclaration {
             fatalError("Couldn't extract declaration")
         }
 
-        let (propertyTypeStringStart, accessorType) = propertyTypeStringStartAndAcessorType(usr: usr)
+        guard let (propertyTypeStringStart, accessorType) = propertyTypeStringStartAndAcessorType(usr: usr) else {
+            return nil
+        }
         let nsDeclaration = declaration as NSString
         let usrPrefix = usr[..<propertyTypeStringStart]
         let pattern = getter ? "getter\\s*=\\s*(\\w+)" : "setter\\s*=\\s*(\\w+:)"
@@ -116,6 +118,9 @@ public struct SourceDeclaration {
         }
         // Setter
         let setterOffset = accessorType.propertyTypeString.count
+        if propertyTypeStringStart >= usr.endIndex {
+          return nil
+        }
         let from = usr.index(propertyTypeStringStart, offsetBy: setterOffset)
         let capitalizedSetterName = String(usr[from...]).capitalizingFirstLetter()
         return "\(usrPrefix)\(accessorType.methodTypeString)set\(capitalizedSetterName):"

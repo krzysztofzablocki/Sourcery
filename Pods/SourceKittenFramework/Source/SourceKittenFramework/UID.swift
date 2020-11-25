@@ -12,9 +12,9 @@ import SourceKit
 
 /// Swift representation of sourcekitd_uid_t
 public struct UID: Hashable {
-    let uid: sourcekitd_uid_t
+    let sourcekitdUID: sourcekitd_uid_t
     init(_ uid: sourcekitd_uid_t) {
-        self.uid = uid
+        self.sourcekitdUID = uid
     }
 
     public init(_ string: String) {
@@ -26,7 +26,7 @@ public struct UID: Hashable {
     }
 
     var string: String {
-        return String(cString: sourcekitd_uid_get_string_ptr(uid)!)
+        return String(cString: sourcekitd_uid_get_string_ptr(sourcekitdUID)!)
     }
 }
 
@@ -39,11 +39,5 @@ extension UID: CustomStringConvertible {
 extension UID: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
         self.init(value)
-    }
-}
-
-extension UID: SourceKitObjectConvertible {
-    public var sourcekitdObject: sourcekitd_object_t? {
-        return sourcekitd_request_uid_create(uid)
     }
 }

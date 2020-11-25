@@ -34,33 +34,81 @@ public struct Module {
         }
     }
 
-    public init?(spmName: String) {
-        let yamlPath = ".build/debug.yaml"
+    /**
+     Failable initializer to create a Module from a Swift Package Manager build record.
+
+     Use this initializer when the package has already been built and the `.build` directory exists.
+
+     - parameter spmName: Module name.  Will use some non-Test module that is part of the
+                          package if `nil`.
+     - parameter path:    Path of the directory containing the SPM `.build` directory.
+                          Uses the current directory by default.
+     */
+    public init?(spmName: String? = nil, inPath path: String = FileManager.default.currentDirectoryPath) {
+        let yamlPath = URL(fileURLWithPath: path).appendingPathComponent(".build/debug.yaml").path
         guard let yaml = try? Yams.compose(yaml: String(contentsOfFile: yamlPath, encoding: .utf8)),
             let commands = (yaml as Node?)?["commands"]?.mapping?.values else {
-            fatalError("SPM build manifest does not exist at `\(yamlPath)` or does not match expected format.")
+            fputs("SPM build manifest does not exist at `\(yamlPath)` or does not match expected format.\n", stderr)
+            return nil
         }
-        guard let moduleCommand = commands.first(where: { $0["module-name"]?.string == spmName }) else {
-            fputs("Could not find SPM module '\(spmName)'. Here are the modules available:\n", stderr)
+
+        func matchModuleName(node: Node) -> Bool {
+            guard let nodeModuleName = node["module-name"]?.string else { return false }
+            if let spmName = spmName {
+                return nodeModuleName == spmName
+            }
+            let inputs = node["inputs"]?.array(of: String.self) ?? []
+            return inputs.allSatisfy({ !$0.contains(".build/checkouts/") }) && !nodeModuleName.hasSuffix("Tests")
+        }
+
+        guard let moduleCommand = commands.first(where: matchModuleName) else {
+            fputs("Could not find SPM module '\(spmName ?? "(any)")'. Here are the modules available:\n", stderr)
             let availableModules = commands.compactMap({ $0["module-name"]?.string })
             fputs("\(availableModules.map({ "  - " + $0 }).joined(separator: "\n"))\n", stderr)
             return nil
         }
+
         guard let imports = moduleCommand["import-paths"]?.array(of: String.self),
               let otherArguments = moduleCommand["other-args"]?.array(of: String.self),
-              let sources = moduleCommand["sources"]?.array(of: String.self) else {
-                fatalError("SPM build manifest does not match expected format.")
+              let sources = moduleCommand["sources"]?.array(of: String.self),
+              let moduleName = moduleCommand["module-name"]!.string else {
+                fputs("SPM build manifest '\(yamlPath)` does not match expected format.\n", stderr)
+                return nil
         }
-        name = spmName
+        name = moduleName
         compilerArguments = {
             var arguments = sources
-            arguments.append(contentsOf: ["-module-name", spmName])
+            arguments.append(contentsOf: ["-module-name", moduleName])
             arguments.append(contentsOf: otherArguments)
             arguments.append(contentsOf: ["-I"])
             arguments.append(contentsOf: imports)
             return arguments
         }()
         sourceFiles = sources
+    }
+
+    /**
+     Failable initializer to create a Module by building a Swift Package Manager project.
+
+     Use this initializer if the package has not been built or may have changed since last built.
+
+     - parameter spmArguments: Additional arguments to pass to `swift build`
+     - parameter spmName: Module name.  Will use some non-Test module that is part of the
+                          package if `nil`.
+     - parameter path:    Path of the directory containing the `Package.swift` file.
+                          Uses the current directory by default.
+     */
+    public init?(spmArguments: [String], spmName: String? = nil, inPath path: String = FileManager.default.currentDirectoryPath) {
+        fputs("Running swift build\n", stderr)
+        let buildResults = Exec.run("/usr/bin/env", ["swift", "build"] + spmArguments, currentDirectory: path, stderr: .merge)
+        guard buildResults.terminationStatus == 0 else {
+            let file = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("swift-build-\(UUID().uuidString).log")
+            _ = try? buildResults.data.write(to: file)
+            fputs("Build failed, saved `swift build` log file: \(file.path)\n", stderr)
+            return nil
+        }
+
+        self.init(spmName: spmName, inPath: path)
     }
 
     /**
@@ -81,7 +129,16 @@ public struct Module {
 
         // Executing normal build
         fputs("Running xcodebuild\n", stderr)
-        if let output = XcodeBuild.run(arguments: xcodeBuildArguments, inPath: path),
+        let results = XcodeBuild.launch(arguments: xcodeBuildArguments, inPath: path)
+        if results.terminationStatus != 0 {
+            fputs("Could not successfully run `xcodebuild`.\n", stderr)
+            fputs("Please check the build arguments.\n", stderr)
+            let file = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("xcodebuild-\(NSUUID().uuidString).log")
+            _ = try? results.data.write(to: file)
+            fputs("Saved `xcodebuild` log file: \(file.path)\n", stderr)
+            return nil
+        }
+        if let output = results.string,
             let arguments = parseCompilerArguments(xcodebuildOutput: output, language: .swift, moduleName: name),
             let moduleName = moduleName(fromArguments: arguments) {
             self.init(name: moduleName, compilerArguments: arguments)
@@ -101,7 +158,7 @@ public struct Module {
             fputs("Could not parse compiler arguments from `xcodebuild` output.\n", stderr)
             fputs("Please confirm that `xcodebuild` is building a Swift module.\n", stderr)
             let file = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("xcodebuild-\(NSUUID().uuidString).log")
-            try! xcodeBuildOutput.data(using: .utf8)?.write(to: file)
+            _ = try? xcodeBuildOutput.data(using: .utf8)?.write(to: file)
             fputs("Saved `xcodebuild` log file: \(file.path)\n", stderr)
             return nil
         }
@@ -120,8 +177,8 @@ public struct Module {
     */
     public init(name: String, compilerArguments: [String]) {
         self.name = name
-        self.compilerArguments = compilerArguments
-        sourceFiles = compilerArguments.filter({
+        self.compilerArguments = compilerArguments.expandingResponseFiles
+        sourceFiles = self.compilerArguments.filter({
             $0.bridge().isSwiftFile() && $0.isFile
         }).map {
             return URL(fileURLWithPath: $0).resolvingSymlinksInPath().path

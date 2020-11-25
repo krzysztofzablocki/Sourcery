@@ -74,6 +74,8 @@ public enum SwiftDeclarationKind: String, CaseIterable {
     case genericTypeParam = "source.lang.swift.decl.generic_type_param"
     /// `module`.
     case module = "source.lang.swift.decl.module"
+    /// `opaquetype`.
+    case opaqueType = "source.lang.swift.decl.opaquetype"
     /// `precedencegroup`.
     case precedenceGroup = "source.lang.swift.decl.precedencegroup"
     /// `protocol`.

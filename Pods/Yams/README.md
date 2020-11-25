@@ -5,19 +5,40 @@
 A sweet and swifty [YAML](http://yaml.org/) parser built on
 [LibYAML](https://github.com/yaml/libyaml).
 
-[![Azure Pipelines](https://dev.azure.com/jpsim/Yams/_apis/build/status/jpsim.Yams)](https://dev.azure.com/jpsim/Yams/_build/latest?definitionId=1)
+[![SwiftPM](https://github.com/jpsim/Yams/workflows/SwiftPM/badge.svg)](https://github.com/jpsim/Yams/actions?query=workflow%3ASwiftPM)
+[![xcodebuild](https://github.com/jpsim/Yams/workflows/xcodebuild/badge.svg)](https://github.com/jpsim/Yams/actions?query=workflow%3Axcodebuild)
+[![pod lib lint](https://github.com/jpsim/Yams/workflows/pod%20lib%20lint/badge.svg)](https://github.com/jpsim/Yams/actions?query=workflow%3A%22pod+lib+lint%22)
+[![Nightly](https://github.com/jpsim/Yams/workflows/Nightly/badge.svg)](https://github.com/jpsim/Yams/actions?query=workflow%3ANightly)
+[![codecov](https://codecov.io/gh/jpsim/Yams/branch/master/graph/badge.svg)](https://codecov.io/gh/jpsim/Yams)
 
 ## Installation
 
-Building Yams on macOS requires Xcode 9.x/10.x or a Swift 3.2/4.x/5.x toolchain
-with the Swift Package Manager.
+Building Yams requires Xcode 11.x or a Swift 5.1+ toolchain with the
+Swift Package Manager or CMake and Ninja.
 
-Building Yams on Linux requires a Swift 4.x/5.x compiler and Swift Package
-Manager to be installed.
+### CMake
+
+CMake 3.17.2 or newer is required, along with Ninja 1.9.0 or newer.
+
+When building for non-Apple platforms:
+
+```
+cmake -B /path/to/build -G Ninja -S /path/to/yams -DCMAKE_BUILD_TYPE=Release -DFoundation_DIR=/path/to/foundation/build/cmake/modules
+cmake --build /path/to/build
+```
+
+To build for Apple platforms (macOS, iOS, tvOS, watchOS), there is no
+need to spearately build Foundation because it is included as part of
+the SDK:
+
+```
+cmake -B /path/to/build -G Ninja -S /path/to/yams -DCMAKE_BUILD_TYPE=Release
+cmake --build /path/to/build
+```
 
 ### Swift Package Manager
 
-Add `.package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0")` to your
+Add `.package(url: "https://github.com/jpsim/Yams.git", from: "4.0.0")` to your
 `Package.swift` file's `dependencies`.
 
 ### CocoaPods
@@ -44,7 +65,8 @@ and a third one for a [Yams-native](#yamsnode) representation.
 - **Encoding: `YAMLEncoder.encode(_:)`**
   Produces a YAML `String` from an instance of type conforming to `Encodable`.
 - **Decoding: `YAMLDecoder.decode(_:from:)`**
-  Decodes an instance of type conforming to `Decodable` from YAML `String`.
+  Decodes an instance of type conforming to `Decodable` from YAML `String` or
+  `Data`.
 
 ```swift
 import Foundation
@@ -137,6 +159,25 @@ yaml == """
 """
 let node = try Yams.compose(yaml: yaml)
 map == node
+```
+
+#### Integrating with [Combine](https://developer.apple.com/documentation/combine)
+
+When Apple's Combine framework is available, `YAMLDecoder` conforms to the
+`TopLevelDecoder` protocol, which allows it to be used with the
+`decode(type:decoder:)` operator:
+
+```swift
+import Combine
+import Foundation
+import Yams
+
+func fetchBook(from url: URL) -> AnyPublisher<Book, Error> {
+    URLSession.shared.dataTaskPublisher(for: url)
+        .map(\.data)
+        .decode(type: Book.self, decoder: YAMLDecoder())
+        .eraseToAnyPublisher()
+}
 ```
 
 ## License

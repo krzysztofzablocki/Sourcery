@@ -11,13 +11,13 @@ public struct SyntaxToken {
     /// Token type. See SyntaxKind.
     public let type: String
     /// Token offset.
-    public let offset: Int
+    public let offset: ByteCount
     /// Token length.
-    public let length: Int
+    public let length: ByteCount
 
     /// Dictionary representation of SyntaxToken. Useful for NSJSONSerialization.
     public var dictionaryValue: [String: Any] {
-        return ["type": type, "offset": offset, "length": length]
+        return ["type": type, "offset": offset.value, "length": length.value]
     }
 
     /**
@@ -27,10 +27,15 @@ public struct SyntaxToken {
     - parameter offset: Token offset.
     - parameter length: Token length.
     */
-    public init(type: String, offset: Int, length: Int) {
+    public init(type: String, offset: ByteCount, length: ByteCount) {
         self.type = SyntaxKind(rawValue: type)?.rawValue ?? type
         self.offset = offset
         self.length = length
+    }
+
+    /// Byte range of this token
+    public var range: ByteRange {
+        return ByteRange(location: offset, length: length)
     }
 }
 

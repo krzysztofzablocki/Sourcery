@@ -8,7 +8,7 @@ SourceKitten links and communicates with `sourcekitd.framework` to parse the Swi
 
 ## Installation
 
-Building SourceKitten requires Xcode 10 or later or a Swift 4.2
+Building SourceKitten requires Xcode 11 or later or a Swift 5.1
 toolchain or later with the Swift Package Manager.
 
 SourceKitten typically supports previous versions of SourceKit.
@@ -73,7 +73,7 @@ environment variable.
 * [Sourcery](https://github.com/krzysztofzablocki/Sourcery):
   Meta-programming for Swift, stop writing boilerplate code.
 * [SwiftyMocky](https://github.com/MakeAWishFoundation/SwiftyMocky):
-  Framework for mock genertion.
+  Framework for mock generation.
 * [SourceKittenDaemon](https://github.com/terhechte/SourceKittenDaemon):
   Swift Auto Completions for any Text Editor.
 * [SourceDocs](https://github.com/eneko/SourceDocs):

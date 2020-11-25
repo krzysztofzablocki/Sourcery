@@ -15,20 +15,20 @@ The API takes a lot of inspiration from
 
 ## Contents
 
-* [Requirements](#requirements)
-* [Installation](#installation)
-* [Getting Started](#getting-started)
-* [Configuration](#configuration)
-* [Examples](#examples)
-* [FAQ](#faq)
-* [Changelog](#changelog)
-* [Contributing](#contributing)
-* [License](#license)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Configuration](#configuration)
+- [Examples](#examples)
+- [FAQ](#faq)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Requirements
 
-* iOS 8.0+ / Mac OS X 10.9+ / tvOS 9.0+ / watchOS 2.0+
-* Xcode 8.0+
+- iOS 8.0+ / Mac OS X 10.9+ / tvOS 9.0+ / watchOS 2.0+
+- Xcode 8.0+
 
 ## Installation
 
@@ -51,7 +51,7 @@ platform :ios, '10.0'
 use_frameworks!
 
 target 'YOUR_TARGET_NAME' do
-  pod 'SWXMLHash', '~> 4.7.0'
+  pod 'SWXMLHash', '~> 5.0.0'
 end
 ```
 
@@ -73,7 +73,7 @@ $ brew install carthage
 Then add the following line to your `Cartfile`:
 
 ```
-github "drmohundro/SWXMLHash" ~> 4.7
+github "drmohundro/SWXMLHash" ~> 5.0
 ```
 
 ### Swift Package Manager
@@ -83,7 +83,7 @@ Swift Package Manager requires Swift version 4.0 or higher. First, create a
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/drmohundro/SWXMLHash.git", from: "4.7.0")
+    .package(url: "https://github.com/drmohundro/SWXMLHash.git", from: "5.0.0")
 ]
 ```
 
@@ -124,34 +124,34 @@ let xml = SWXMLHash.config {
 
 The available options at this time are:
 
-* `shouldProcessLazily`
-  * This determines whether not to use lazy loading of the XML. It can
+- `shouldProcessLazily`
+  - This determines whether not to use lazy loading of the XML. It can
     significantly increase the performance of parsing if your XML is large.
-  * Defaults to `false`
-* `shouldProcessNamespaces`
-  * This setting is forwarded on to the internal `NSXMLParser` instance. It will
+  - Defaults to `false`
+- `shouldProcessNamespaces`
+  - This setting is forwarded on to the internal `NSXMLParser` instance. It will
     return any XML elements without their namespace parts (i.e. "\<h:table\>"
     will be returned as "\<table\>")
-  * Defaults to `false`
-* `caseInsensitive`
-  * This setting allows for key lookups to be case insensitive. Typically XML is
+  - Defaults to `false`
+- `caseInsensitive`
+  - This setting allows for key lookups to be case insensitive. Typically XML is
     a case sensitive language, but this option lets you bypass this if
     necessary.
-  * Defaults to `false`
-* `encoding`
-  * This setting allows for explicitly specifying the character encoding when an
+  - Defaults to `false`
+- `encoding`
+  - This setting allows for explicitly specifying the character encoding when an
     XML string is passed to `parse`.
-  * Defaults to `String.encoding.utf8`
-* `userInfo`
-  * This setting mimics `Codable`'s `userInfo` property to allow the user to add
+  - Defaults to `String.encoding.utf8`
+- `userInfo`
+  - This setting mimics `Codable`'s `userInfo` property to allow the user to add
     contextual information that will be used for deserialization.
-  * See
+  - See
     [Codable's userInfo docs](https://developer.apple.com/documentation/swift/encoder/2894907-userinfo)
-  * The default is [:]
-* `detectParsingErrors`
-  * This setting attempts to detect XML parsing errors. `parse` will return an
+  - The default is [:]
+- `detectParsingErrors`
+  - This setting attempts to detect XML parsing errors. `parse` will return an
     `XMLIndexer.parsingError` if any parsing issues are found.
-  * Defaults to `false` (because of backwards compatibility and because many
+  - Defaults to `false` (because of backwards compatibility and because many
     users attempt to parse HTML with this library)
 
 ## Examples

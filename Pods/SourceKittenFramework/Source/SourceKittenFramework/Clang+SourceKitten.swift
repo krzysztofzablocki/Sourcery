@@ -108,23 +108,29 @@ extension CXCursor {
 
     func str() -> String? {
         let cursorExtent = extent()
-        let contents = try! String(contentsOfFile: cursorExtent.start.file, encoding: .utf8)
+        guard FileManager.default.fileExists(atPath: cursorExtent.start.file) else {
+            return nil
+        }
+        guard let content = try? String(contentsOfFile: cursorExtent.start.file, encoding: .utf8) else {
+            return nil
+        }
+        let contents = StringView(content)
         return contents.substringWithSourceRange(start: cursorExtent.start, end: cursorExtent.end)
     }
 
-    func name() -> String {
+    func name() -> String? {
         let type = objCKind()
         if type == .category, let usrNSString = usr() as NSString? {
             let ext = (usrNSString.range(of: "c:objc(ext)").location == 0)
             let regex = try! NSRegularExpression(pattern: "(\\w+)@(\\w+)", options: [])
             let range = NSRange(location: 0, length: usrNSString.length)
             let matches = regex.matches(in: usrNSString as String, options: [], range: range)
-            if !matches.isEmpty {
+            if matches.isEmpty {
+                return nil
+            } else {
                 let categoryOn = usrNSString.substring(with: matches[0].range(at: 1))
                 let categoryName = ext ? "" : usrNSString.substring(with: matches[0].range(at: 2))
                 return "\(categoryOn)(\(categoryName))"
-            } else {
-                fatalError("Couldn't get category name")
             }
         }
         let spelling = clang_getCursorSpelling(self).str()!
@@ -185,12 +191,19 @@ extension CXCursor {
             "@return ": "- returns: ",
             "@warning ": "- warning: ",
             "@see ": "- see: ",
-            "@note ": "- note: "
+            "@note ": "- note: ",
+            "@code": "```",
+            "@endcode": "```"
         ]
+
         var commentBody = rawComment?.commentBody()
         for (original, replacement) in replacements {
             commentBody = commentBody?.replacingOccurrences(of: original, with: replacement)
         }
+
+        // Replace "@c word" with "`word`"
+        commentBody = commentBody?.replacingOccurrences(of: "@c\\s+(\\S+)", with: "`$1`", options: .regularExpression)
+
         return commentBody
     }
 
@@ -213,7 +226,7 @@ extension CXCursor {
 
         guard let usr = usr(),
             let findUSR = try? Request.findUSR(file: swiftUUID, usr: usr).send(),
-            let usrOffset = findUSR[SwiftDocKey.offset.rawValue] as? Int64 else {
+            let usrOffset = SwiftDocKey.getOffset(findUSR) else {
                 return (nil, nil)
         }
 
@@ -263,7 +276,8 @@ extension CXComment {
                 let inlineCommand = child.commandName().map { "@" + $0 }
                 return paragraphString + (inlineCommand ?? "")
             }
-            fatalError("not text: \(child.kind())")
+            // Inline child content like `CXComment_HTMLStartTag` can be ignored b/c subsequent children will contain the html.
+            return paragraphString
         }
         return [.para(paragraphString.removingCommonLeadingWhitespaceFromLines(), kindString)]
     }
