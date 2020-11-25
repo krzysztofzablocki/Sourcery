@@ -6,7 +6,7 @@
 ### Internal Changes
 
 - Updated project and CI to Xcode 12.1
-- Updated SourceKitten.
+- Updated SourceKitten, Commander.
 
 ### Bug fixes
 
