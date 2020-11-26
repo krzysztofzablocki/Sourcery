@@ -357,8 +357,11 @@ extension FileParser {
 // MARK: - Variables
 extension FileParser {
 
-    private func inferType(from string: String) -> String? {
-        let string = string.trimmingCharacters(in: .whitespaces)
+    private func inferType(from input: String) -> String? {
+        let string = input
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .strippingComments()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         // probably lazy property or default value with closure,
         // we expect explicit type, as we don't know return type
         guard !(string.hasPrefix("{") && string.hasSuffix(")")) else { return nil }
@@ -400,7 +403,9 @@ extension FileParser {
         } else if string.first == "[", string.last == "]" {
             //collection
             let string = string.dropFirstAndLast()
-            let items = string.commaSeparated()
+            let items = string.commaSeparated().map {
+                $0.trimmingCharacters(in: .whitespacesAndNewlines).strippingComments().trimmingCharacters(in: .whitespacesAndNewlines)
+            }
 
             func genericType(from itemsTypes: [String]) -> String {
                 let genericType: String
@@ -420,7 +425,9 @@ extension FileParser {
             if items[0].colonSeparated().count == 1 {
                 var itemsTypes = [String]()
                 for item in items {
-                    guard let type = inferType(from: item) else { return nil }
+                    guard let type = inferType(from: item) else {
+                        return nil
+                    }
                     itemsTypes.append(type)
                 }
                 return "[\(genericType(from: itemsTypes))]"
@@ -432,7 +439,9 @@ extension FileParser {
                     guard keyAndValue.count == 2,
                         let keyType = inferType(from: keyAndValue[0]),
                         let valueType = inferType(from: keyAndValue[1])
-                        else { return nil }
+                        else {
+                            return nil
+                        }
 
                     keysTypes.append(keyType)
                     valuesTypes.append(valueType)
@@ -479,7 +488,6 @@ extension FileParser {
             guard substring.hasPrefix("=") else { return nil }
 
             var substring = substring.dropFirst().trimmingCharacters(in: .whitespaces)
-            substring = substring.components(separatedBy: .newlines)[0]
 
             if substring.hasSuffix("{") {
                 substring = String(substring.dropLast()).trimmingCharacters(in: .whitespaces)
@@ -494,7 +502,8 @@ extension FileParser {
         } else {
             let declaration = extract(.key, from: source)
             // swiftlint:disable:next force_unwrapping
-            typeName = TypeName("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
+            Log.warning("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
+            typeName = TypeName("UnknownTypeSoAddTypeAttributionToVariable")
         }
 
         let setterAccessibility = self.setterAccessibility(source: source)
