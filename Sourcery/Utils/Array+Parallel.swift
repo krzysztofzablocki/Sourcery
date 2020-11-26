@@ -5,6 +5,8 @@
 
 import Foundation
 
+private let disableParallelMapForEasierDebugging = false
+
 extension Array {
     func parallelFlatMap<T>(transform: (Element) throws -> [T]) throws -> [T] {
         return try parallelMap(transform).flatMap { $0 }
@@ -15,7 +17,7 @@ extension Array {
         let count = self.count
         let maxConcurrentJobs = ProcessInfo.processInfo.activeProcessorCount
 
-        guard count > 1 && maxConcurrentJobs > 1 else {
+        guard !disableParallelMapForEasierDebugging && count > 1 && maxConcurrentJobs > 1 else {
             // skip GCD overhead if we'd only run one at a time anyway
             return try map(transform)
         }
