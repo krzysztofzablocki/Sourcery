@@ -97,6 +97,76 @@ class FileParserSpec: QuickSpec {
                                           ]))
                     }
 
+                    it("extracts multi-line instance variables definitions properly") {
+                        let defaultValue =
+                            """
+                            [
+                                "This isn't the simplest to parse",
+                                // Especially with interleaved comments
+                                "but we can deal with it",
+                                // pretty well
+                                "or so we hope"
+                            ]
+                            """
+
+                        expect(parse(
+                            """
+                                struct Foo {
+                                    var complicatedArray = \(defaultValue)
+                                }
+                                """
+                        ))
+                        .to(equal([
+                            Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
+                                    Variable(
+                                        name: "complicatedArray",
+                                        typeName: TypeName(
+                                            "[String]",
+                                            array: ArrayType(name: "[String]",
+                                                             elementTypeName: TypeName("String")
+                                            ),
+                                            generic: GenericType(name: "Array", typeParameters: [.init(typeName: TypeName("String"))])
+                                        ),
+                                        accessLevel: (read: .internal, write: .internal),
+                                        isComputed: false,
+                                        defaultValue: defaultValue,
+                                        definedInTypeName: TypeName("Foo")
+                                    )])
+                        ]))
+                    }
+
+                    it("extracts instance variables with property setters properly") {
+                        expect(parse(
+                                """
+                                struct Foo {
+                                var array = [Int]() {
+                                    willSet {
+                                        print("new value \\(newValue)")
+                                    }
+                                }
+
+                                }
+                                """
+                        ))
+                        .to(equal([
+                            Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
+                                    Variable(
+                                        name: "array",
+                                        typeName: TypeName(
+                                            "[Int]",
+                                            array: ArrayType(name: "[Int]",
+                                                             elementTypeName: TypeName("Int")
+                                            ),
+                                            generic: GenericType(name: "Array", typeParameters: [.init(typeName: TypeName("Int"))])
+                                        ),
+                                        accessLevel: (read: .internal, write: .internal),
+                                        isComputed: false,
+                                        defaultValue: "[Int]()",
+                                        definedInTypeName: TypeName("Foo")
+                                    )])
+                        ]))
+                    }
+
                     it("extracts class variables properly") {
                         expect(parse("struct Foo { static var x: Int { return 2 }; class var y: Int = 0 }"))
                                 .to(equal([

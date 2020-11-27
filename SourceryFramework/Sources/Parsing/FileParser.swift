@@ -497,7 +497,9 @@ extension FileParser {
 
             // get everything before `(`
             let components = string.components(separatedBy: "(", excludingDelimiterBetween: ("<[(", ")]>"))
-            if components.count > 1 && string.last == ")" {
+
+            // scenario for '}' is for property settter / getter logic
+            if components.count > 1 && (string.last == ")" || string.last == "}") {
                 //initializer without `init`
                 inferredType = components[0]
                 return possibleEnumType(inferredType) ?? inferredType
