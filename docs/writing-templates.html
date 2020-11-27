@@ -13,7 +13,7 @@
     <a title="Writing templates  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery Docs</a> (100% documented)</p>
+        <p><a href="index.html">Sourcery Docs</a> (99% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -145,6 +145,14 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a href="Other Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/AssociatedType.html">AssociatedType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a href="Other Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -200,7 +208,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <ul>
 <li><code>{{ name|upperFirstLetter }}</code> - makes first letter in <code>name</code> uppercase</li>
 <li><code>{{ name|lowerFirstLetter }}</code> - makes first letter in <code>name</code> lowercase</li>
-<li><code>{{ name|replace:&quot;substring&quot;,&quot;replacement&quot; }}</code> - replaces occurances of <code>substring</code> with <code>replacement</code> in <code>name</code> (case sensitive)</li>
+<li><code>{{ name|replace:&quot;substring&quot;,&quot;replacement&quot; }}</code> - replaces occurrences of <code>substring</code> with <code>replacement</code> in <code>name</code> (case sensitive)</li>
 <li><code>{% if name|contains:&quot;Foo&quot; %}</code> - check if <code>name</code> contains arbitrary substring, can be negated with <code>!</code> prefix.</li>
 <li><code>{% if name|hasPrefix:&quot;Foo&quot; %}</code>- check if <code>name</code> starts with arbitrary substring, can be negated with <code>!</code> prefix.</li>
 <li><code>{% if name|hasSuffix:&quot;Foo&quot; %}</code>- check if <code>name</code> ends with arbitrary substring, can be negated with <code>!</code> prefix.</li>
@@ -211,16 +219,16 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li><code>count</code> - can be used to get count of filtered array</li>
 <li><code>annotated</code> - can be used on Type[s], Variable[s], Method[s] and Enum Case[s] to filter by annotation, e.g. <code>{% for var in variable|annotated:&quot;skipDescription&quot; %}</code>, can be negated with <code>!</code> prefix.</li>
 <li><code>public</code>, <code>open</code>, <code>internal</code>, <code>private</code>, <code>fileprivate</code> - can be used on Type[s] and Method[s] to filter by access level, can be negated with <code>!</code> prefix.</li>
-<li><code>publicGet</code>, <code>publicSet</code>, .etc - can be used on Variable[s] to filter by getter or setter access level, can be nagated with <code>!</code> prefix</li>
+<li><code>publicGet</code>, <code>publicSet</code>, .etc - can be used on Variable[s] to filter by getter or setter access level, can be negated with <code>!</code> prefix</li>
 </ul>
 
-<p>You can also use partial templates using <code>include</code> tag. Partial template is loaded from the path of a template that inculdes it. <code>include</code> tags also supports loading templates from relative path, i.e. <code>{% include &quot;partials/MyPartial.stencil&quot;%}</code> used in the template located in <code>templates</code> directory will load template from <code>templates/partials</code> directory.</p>
+<p>You can also use partial templates using <code>include</code> tag. Partial template is loaded from the path of a template that includes it. <code>include</code> tags also supports loading templates from relative path, i.e. <code>{% include &quot;partials/MyPartial.stencil&quot;%}</code> used in the template located in <code>templates</code> directory will load template from <code>templates/partials</code> directory.</p>
 
 <blockquote>
 <p>Note: You can only load partial templates from child directories of the including template directory, so <code>{% include &quot;../MyPartial.stencil&quot;%}</code> is not supported.</p>
 </blockquote>
 
-<p>Sourcery treat all the templates as independent and so will generate files based on partial templates too. To avoid that use <code>exclude</code> in <a href="usage.html#configuration-file">configuration file</a>.</p>
+<p>Sourcery treats all the templates as independent and so will generate files based on partial templates too. To avoid that use <code>exclude</code> in <a href="usage.html#configuration-file">configuration file</a>.</p>
 <h2 id='swift-templates' class='heading'>Swift templates</h2>
 
 <p>Swift templates syntax is very similar to EJS:</p>
@@ -256,7 +264,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <p>Note: when using JavaScript templates with Sourcery built using Swift Package Manager you must provide path to EJS source code using <code>--ejsPath</code> command line argument. Download EJS source code <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryJS/Sources/ejs.js">here</a>, put it in some path and pass it when running Sourcery. Otherwise JavaScript templates will be ignored (you will see a warning in the console output).</p>
 </blockquote>
 
-<p>You can also use <code>SourceryJS</code> framework independently of Sourcery. You can add it as a Carthge or SPM dependency.</p>
+<p>You can also use <code>SourceryJS</code> framework independently of Sourcery. You can add it as a Carthage or SPM dependency.</p>
 <h2 id='using-source-annotations' class='heading'>Using Source Annotations</h2>
 
 <p>Sourcery supports annotating your classes and variables with special annotations, similar to how attributes work in Rust / Java</p>
@@ -279,7 +287,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
   <span class="k">var</span> <span class="nv">secondVariable</span><span class="p">:</span> <span class="kt">Int</span>
 </code></pre>
 
-<p>To group annotations of the same domain you can use annotation namespcases:</p>
+<p>To group annotations of the same domain you can use annotation namespaces:</p>
 <pre class="highlight swift"><code><span class="c1">// sourcery:decoding: key="first", default=0</span>
   <span class="k">var</span> <span class="nv">firstVariable</span><span class="p">:</span> <span class="kt">Int</span>
 </code></pre>
@@ -293,7 +301,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li>Multiple annotations values with the same key are merged into array</li>
 <li>You can interleave annotations with documentation</li>
 <li>Sourcery scans all <code>sourcery:</code> annotations in the given comment block above the source until first non-comment/doc line</li>
-<li>Using <code>/*</code> and <code>*/</code> for annotation comment you can put it on the same line with your code. This is usefull for annotating methods parameters and enum case associated values. All such annotations should be placed in one comment block. Do not mix inline and regular annotations for the same declaration (usin inline and block annotations is fine)!</li>
+<li>Using <code>/*</code> and <code>*/</code> for annotation comment you can put it on the same line with your code. This is useful for annotating methods parameters and enum case associated values. All such annotations should be placed in one comment block. Do not mix inline and regular annotations for the same declaration (using inline and block annotations is fine)!</li>
 </ul>
 <h4 id='format' class='heading'>Format:</h4>
 
@@ -307,7 +315,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
   <span class="k">var</span> <span class="nv">local</span><span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="o">|</span><span class="n">capitalize</span> <span class="p">}}</span> <span class="o">=</span> <span class="n">json</span><span class="p">[</span><span class="s">"{{ variable.annotations.jsonKey }}"</span><span class="p">]</span> <span class="k">as?</span> <span class="p">{{</span> <span class="n">variable</span><span class="o">.</span><span class="n">typeName</span> <span class="p">}}</span>
 <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
 </code></pre>
-<h4 id='checking-for-existance-of-at-least-one-annotation' class='heading'>Checking for existance of at least one annotation:</h4>
+<h4 id='checking-for-existence-of-at-least-one-annotation' class='heading'>Checking for existence of at least one annotation:</h4>
 
 <p>Sometimes it is desirable to only generate code if there&rsquo;s at least one field annotated.</p>
 <pre class="highlight swift"><code><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">type</span><span class="o">.</span><span class="n">variables</span><span class="o">|</span><span class="nv">annotated</span><span class="p">:</span><span class="s">"jsonKey"</span> <span class="o">%</span><span class="p">}{</span><span class="o">%</span> <span class="k">for</span> <span class="k">var</span> <span class="nv">in</span> <span class="n">type</span><span class="o">.</span><span class="n">variables</span><span class="o">|</span><span class="n">instance</span><span class="o">|</span><span class="nv">annotated</span><span class="p">:</span><span class="s">"jsonKey"</span> <span class="o">%</span><span class="p">}</span>

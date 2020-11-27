@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>GenericTypeParameter Class Reference</title>
+    <title>AssociatedType Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/GenericTypeParameter" class="dashAnchor"></a>
-    <a title="GenericTypeParameter Class Reference"></a>
+    <a name="//apple_ref/swift/Class/AssociatedType" class="dashAnchor"></a>
+    <a title="AssociatedType Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery Docs</a> (99% documented)</p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        GenericTypeParameter Class Reference
+        AssociatedType Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -172,14 +172,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>GenericTypeParameter</h1>
+            <h1>AssociatedType</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">@objcMembers</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericTypeParameter</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">@objcMembers</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedType</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
 
                 </div>
               </div>
-            <p>Descibes Swift generic type parameter</p>
+            <p>Describes Swift AssociatedType</p>
 
           </section>
           <section class="section task-group-section">
@@ -188,9 +188,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericTypeParameter(py)typeName"></a>
-                    <a name="//apple_ref/swift/Property/typeName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericTypeParameter(py)typeName">typeName</a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)AssociatedType(py)name"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)AssociatedType(py)name">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -198,14 +198,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Generic parameter type name</p>
+                        <p>Associated type name</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">typeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -215,9 +215,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericTypeParameter(py)type"></a>
-                    <a name="//apple_ref/swift/Property/type" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericTypeParameter(py)type">type</a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)AssociatedType(py)typeName"></a>
+                    <a name="//apple_ref/swift/Property/typeName" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)AssociatedType(py)typeName">typeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -225,7 +225,34 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Generic parameter type, if known</p>
+                        <p>Associated type type constraint name, if specified</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">typeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)AssociatedType(py)type"></a>
+                    <a name="//apple_ref/swift/Property/type" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)AssociatedType(py)type">type</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Associated type constrained type, if known, i.e. if the type is declared in the scanned sources.</p>
 
                       </div>
                       <div class="declaration">
