@@ -35,6 +35,7 @@ class FileParserMethodsSpec: QuickSpec {
                         func fooVoid(){}
                         func fooInOut(some: Int, anotherSome: inout String)
                         {} deinit {}
+                        func fooWithUnnamedArgument(_: Int)
                     }
                     """)[0].methods
 
@@ -48,6 +49,9 @@ class FileParserMethodsSpec: QuickSpec {
                     MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), isInout: true)
                     ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
                     expect(methods[6]).to(equal(Method(name: "deinit", selectorName: "deinit", definedInTypeName: TypeName("Foo"))))
+                    expect(methods[7]).to(equal(Method(name: "fooWithUnnamedArgument(_: Int)", selectorName: "fooWithUnnamedArgument(_:)", parameters: [
+                    MethodParameter(argumentLabel: nil, name: "", typeName: TypeName("Int"))
+                    ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
                 }
 
                 it("extracts protocol methods properly") {
