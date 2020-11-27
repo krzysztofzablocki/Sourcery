@@ -313,7 +313,10 @@ namespace :release do
     system(%Q{sed -i '' -e 's/## Master/## #{new_version}/' CHANGELOG.md})
 
     # Update podspec version
-    podspec_update_version(new_version)
+    podspec_update_version(new_version, 'Sourcery.podspec')
+    podspec_update_version(new_version, 'SourceryFramework.podspec')
+    podspec_update_version(new_version, 'SourceryRuntime.podspec')
+    podspec_update_version(new_version, 'SourceryUtils.podspec')
 
     # Update project version
     project_update_version(new_version)
