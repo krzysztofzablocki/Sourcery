@@ -477,13 +477,11 @@ extension FileParser {
                 }
                 return "[\(genericType(from: keysTypes)): \(genericType(from: valuesTypes))]"
             }
-        } else if let initializer = string.range(of: ".init(") {
-            //initializer with `init`
-            inferredType = String(string[string.startIndex..<initializer.lowerBound])
-            return inferredType
-        } else {
+        }
+        else {
             // Enums, i.e. `Optional.some(...)` or `Optional.none` should be inferred to `Optional`
             // Contained types, i.e. `Foo.Bar()` should be inferred to `Foo.Bar`
+            // This also supports initializers i.e. `MyType.SubType.init()`
             // But rarely enum cases can also start with capital letters, so we still may wrongly infer them as a type
             func possibleEnumType(_ string: String) -> String? {
                 let components = string.components(separatedBy: ".", excludingDelimiterBetween: ("<[(", ")]>"))

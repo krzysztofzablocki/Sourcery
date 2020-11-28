@@ -5,6 +5,7 @@
 
 import Foundation
 import SourceryRuntime
+import SourceryUtils
 
 /// Responsible for composing results of `FileParser`.
 public struct Composer {
@@ -82,8 +83,7 @@ public struct Composer {
         }
 
         let types = Array(unique.values)
-        DispatchQueue.concurrentPerform(iterations: types.count) { (counter) in
-            let type = types[counter]
+        types.parallelPerform { type in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
             }
@@ -107,14 +107,12 @@ public struct Composer {
             }
         }
 
-        DispatchQueue.concurrentPerform(iterations: functions.count) { (counter) in
-            let function = functions[counter]
+        functions.parallelPerform { function in
             resolveMethodTypes(function, of: nil, resolve: resolveType)
         }
 
         let typealiases = Array(unresolvedTypealiases.values)
-        DispatchQueue.concurrentPerform(iterations: typealiases.count) { counter in
-            let alias = typealiases[counter]
+        typealiases.parallelPerform { alias in
             alias.type = resolveType(alias.typeName, nil)
         }
 

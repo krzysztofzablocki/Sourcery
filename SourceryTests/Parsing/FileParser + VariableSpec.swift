@@ -55,6 +55,15 @@ class FileParserVariableSpec: QuickSpec {
                         expect(parse("var name = Parent.Children.init()")?.typeName).to(equal(TypeName("Parent.Children")))
                         expect(parse("var name: String? = String()")?.typeName).to(equal(TypeName("String?")))
                         expect(parse("var name = { return 0 }() ")?.typeName).toNot(equal(TypeName("{ return 0 }")))
+
+                        expect(parse(
+                        """
+                        var reducer = Reducer<WorkoutTemplate.State, WorkoutTemplate.Action, GlobalEnvironment<Programs.Environment>>.combine(
+                            periodizationConfiguratorReducer.optional().pullback(state: \\.periodizationConfigurator, action: /WorkoutTemplate.Action.periodizationConfigurator, environment: { $0.map { _ in Programs.Environment() } })) {
+                            somethingUnrealted.init()
+                        }
+                        """
+                        )?.typeName).to(equal(TypeName("Reducer<WorkoutTemplate.State, WorkoutTemplate.Action, GlobalEnvironment<Programs.Environment>>")))
                     }
 
                     it("extracts property with literal value correctrly") {
@@ -111,9 +120,9 @@ class FileParserVariableSpec: QuickSpec {
                     expect(parse("var name: Int { return 2 }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true)))
                     expect(parse("let name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: false)))
                     expect(parse("var name: Int")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
-                    expect(parse("var name: Int { get { return 0 } set {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: true)))
-                    expect(parse("var name: Int { willSet { } }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
-                    expect(parse("var name: Int { didSet {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: Int { \nget { return 0 } \nset {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: true)))
+                    expect(parse("var name: Int \n{ willSet { } }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                    expect(parse("var name: Int { \ndidSet {} }")).to(equal(Variable(name: "name", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }
 
                 it("extracts generic property correctly") {

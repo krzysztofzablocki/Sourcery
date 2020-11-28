@@ -5,9 +5,22 @@
 
 import Foundation
 
-private let disableParallelMapForEasierDebugging = false
+private let disableParallelProcessingForEasierDebugging = false
 
-extension Array {
+public extension Array {
+    @inline(__always)
+    func parallelPerform(transform: (Element) -> Void) {
+        guard !disableParallelProcessingForEasierDebugging else {
+            return forEach(transform)
+        }
+
+        DispatchQueue.concurrentPerform(iterations: count) { idx in
+            let item = self[idx]
+            transform(item)
+        }
+    }
+
+    @inline(__always)
     func parallelFlatMap<T>(transform: (Element) throws -> [T]) throws -> [T] {
         return try parallelMap(transform).flatMap { $0 }
     }
@@ -17,7 +30,7 @@ extension Array {
         let count = self.count
         let maxConcurrentJobs = ProcessInfo.processInfo.activeProcessorCount
 
-        guard !disableParallelMapForEasierDebugging && count > 1 && maxConcurrentJobs > 1 else {
+        guard !disableParallelProcessingForEasierDebugging && count > 1 && maxConcurrentJobs > 1 else {
             // skip GCD overhead if we'd only run one at a time anyway
             return try map(transform)
         }
