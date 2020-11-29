@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.0.2
 
 ### Bug fixes
 - Fixes an issue when a very complicated variable initialization that contained `.init` call to unrelated case would cause the parser to assume the whole codeblock was a type and that could lead to mistakes in processing and even stack overflows
