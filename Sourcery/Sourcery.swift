@@ -17,7 +17,7 @@ class Sourcery {
     public static let version: String = SourceryVersion.current.value
     public static let generationMarker: String = "// Generated using Sourcery"
     public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
-        + "// DO NOT EDIT\n\n"
+        + "// DO NOT EDIT\n"
 
     enum Error: Swift.Error {
         case containsMergeConflictMarkers
