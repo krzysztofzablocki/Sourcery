@@ -3778,7 +3778,11 @@ import Foundation
     /// All methods defined for this type, including methods defined in extensions,
     /// in superclasses (for classes only) and protocols
     public var allMethods: [Method] {
-        return flattenAll({ $0.methods })
+        return flattenAll({
+            $0.methods
+        }, filter: { all, extracted in
+            !all.contains(where: { $0.name == extracted.name && $0.isStatic == extracted.isStatic && $0.isClass == extracted.isClass})
+        })
     }
 
     /// Subscripts defined in this type only, inluding subscripts defined in its extensions,

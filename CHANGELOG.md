@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### Bug fixes
+- Matches the behaviour of `allMethods` to `allVariables` by only listing the same method once, even if defined in both base protocol and extended class. You could still walk the inheritance tree if you need to (to get all original methods), but for purpose of majority of codegen this is unneccessary.
+
 ## 1.0.2
 
 ### Bug fixes

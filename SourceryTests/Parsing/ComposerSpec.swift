@@ -38,7 +38,20 @@ class ParserComposerSpec: QuickSpec {
                     var bazType: Type!
 
                     beforeEach {
-                        let input = "class Foo { var foo: Int; func fooMethod() {} }; class Bar: Foo { var bar: Int }; class Baz: Bar { var baz: Int; func bazMethod() {} }"
+                        let input =
+                            """
+                            class Foo {
+                                var foo: Int;
+                                func fooMethod() {}
+                            }
+                            class Bar: Foo {
+                                var bar: Int
+                            }
+                            class Baz: Bar {
+                                var baz: Int;
+                                func bazMethod() {}
+                            }
+                            """
                         let parsedResult = parse(input)
                         fooType = parsedResult[2]
                         barType = parsedResult[0]
@@ -60,6 +73,58 @@ class ParserComposerSpec: QuickSpec {
                         expect(bazType.allVariables[1].definedInType).to(equal(barType))
                         expect(bazType.allVariables[2].definedInType).to(equal(fooType))
                     }
+                }
+
+                context("given overlapping protocol inheritance") {
+                    var baseProtocol: Type!
+                    var baseClass: Type!
+                    var extendedProtocol: Type!
+                    var extendedClass: Type!
+
+                    beforeEach {
+                        let input =
+                            """
+                            protocol BaseProtocol {
+                                var variable: Int { get }
+                                func baseFunction()
+                            }
+
+                            class BaseClass: BaseProtocol {
+                                var variable: Int = 0
+                                func baseFunction() {}
+                            }
+
+                            protocol ExtendedProtocol: BaseClass {
+                                var extendedVariable: Int { get }
+                                func extendedFunction()
+                            }
+
+                            class ExtendedClass: BaseClass, ExtendedProtocol {
+                                var extendedVariable: Int = 0
+                                func extendedFunction() { }
+                            }
+                            """
+                        let parsedResult = parse(input)
+                        baseProtocol = parsedResult[1]
+                        baseClass = parsedResult[0]
+                        extendedProtocol = parsedResult[3]
+                        extendedClass = parsedResult[2]
+                    }
+
+                    it("finds right types") {
+                        expect(baseProtocol.name).to(equal("BaseProtocol"))
+                        expect(baseClass.name).to(equal("BaseClass"))
+                        expect(extendedProtocol.name).to(equal("ExtendedProtocol"))
+                        expect(extendedClass.name).to(equal("ExtendedClass"))
+                    }
+
+                    it("has matching number of methods and variables") {
+                        expect(baseProtocol.allMethods.count).to(equal(baseProtocol.allVariables.count))
+                        expect(baseClass.allMethods.count).to(equal(baseClass.allVariables.count))
+                        expect(extendedProtocol.allMethods.count).to(equal(extendedProtocol.allVariables.count))
+                        expect(extendedClass.allMethods.count).to(equal(extendedClass.allVariables.count))
+                    }
+
                 }
 
                 context("given extension") {
