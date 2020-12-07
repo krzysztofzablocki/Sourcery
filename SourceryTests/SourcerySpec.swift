@@ -689,7 +689,6 @@ class SourcerySpecTests: QuickSpec {
                         let expectedResult = """
                             // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
                             // DO NOT EDIT
-
                             extension Foo {
                             var property = 2
                             // Line Three
@@ -752,7 +751,6 @@ class SourcerySpecTests: QuickSpec {
                         let expectedResult = """
                             // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
                             // DO NOT EDIT
-
                             extension Foo {
                             var property1 = 1
                             }
