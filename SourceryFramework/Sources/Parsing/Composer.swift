@@ -318,23 +318,30 @@ public struct Composer {
 
         if let containingType = containingType {
             //check if typealias is for one of contained types
-            if let possibleTypeName = typealiases["\(containingType.name).\(unwrappedTypeName)"]?.typeName.name {
+            if let possibleTypeName = typealiases["\(containingType.globalName).\(unwrappedTypeName)"]?.typeName.name {
                 let containedType = containingType.containedTypes.first(where: {
                     $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
                 })
 
                 actualTypeName = containedType?.name ?? possibleTypeName
             } else {
-                if let name = unique?["\(containingType.name).\(unwrappedTypeName)"]?.name {
+                if let name = unique?["\(containingType.globalName).\(unwrappedTypeName)"]?.globalName {
                     //check contained types first
                     actualTypeName = name
                 } else {
                     //otherwise go up contained types chain to find a type
                     let parentTypes = containingType.parentTypes
                     while let parent = parentTypes.next() {
-                        if let name = unique?["\(parent.name).\(unwrappedTypeName)"]?.name {
+                        if let name = unique?["\(parent.globalName).\(unwrappedTypeName)"]?.globalName {
                             actualTypeName = name
                             break
+                        }
+                    }
+
+                    if actualTypeName == nil {
+                        //check with module name
+                        if let module = containingType.module, let name = unique?["\(module).\(unwrappedTypeName)"]?.globalName {
+                            actualTypeName = name
                         }
                     }
                     actualTypeName = actualTypeName ?? unwrappedTypeName
