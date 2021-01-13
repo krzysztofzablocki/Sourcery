@@ -61,7 +61,7 @@ Swift templates syntax is very similar to EJS:
 - Trim _all_ whitespaces before/after control flow tag with `<%_` and `_%>`
 - Use `<%# %>` for comments
 - Use `<%- include("relative_path_to_template.swifttemplate") %>` to include another template. The `swifttemplate` extension can be omitted. The path is relative to the including template.
-- Use `<%- includeFile("relative_path_to_file.swift") %>` to include common Swift files.  The path is relative to the including template.  Included Swift files _may_ depend upon `SourceryRuntime` module, as this will be injected during processing.
+- Use `<%- includeFile("relative_path_to_file.swift") %>` to include another Swift file.  The path is relative to the including template.  Included Swift files _may_ depend upon `SourceryRuntime` module, as this will be injected during processing.
 
 **Example**: [Equality.swifttemplate](https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate)
 
