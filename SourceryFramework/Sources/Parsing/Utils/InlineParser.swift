@@ -30,7 +30,7 @@ public enum TemplateAnnotationsParser {
         return (bridged as String, annotatedRanges)
     }
 
-    public static func annotationRanges(_ annotation: String, contents: String, aggregate: Bool = false,forceParse:[String]) -> (annotatedRanges: AnnotatedRanges, rangesToReplace: Set<NSRange>) {
+    public static func annotationRanges(_ annotation: String, contents: String, aggregate: Bool = false, forceParse: [String]) -> (annotatedRanges: AnnotatedRanges, rangesToReplace: Set<NSRange>) {
         let bridged = contents.bridge()
         let regex = try? self.regex(annotation: annotation)
 
