@@ -19,7 +19,7 @@ public enum TemplateAnnotationsParser {
     }
 
     public static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false, forceParse: [String]) -> (contents: String, annotatedRanges: AnnotatedRanges) {
-        let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate,forceParse: forceParse)
+        let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate, forceParse: forceParse)
 
         var bridged = contents.bridge()
         rangesToReplace
