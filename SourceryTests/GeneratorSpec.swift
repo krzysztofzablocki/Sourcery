@@ -53,7 +53,7 @@ class GeneratorSpec: QuickSpec {
                     ])
 
                 let innerOptionsType = Type(name: "InnerOptions", accessLevel: .public, variables: [
-                    Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
+                    Variable(name: "fooInnerOptions", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
                     ])
                 innerOptionsType.variables.forEach { $0.definedInType = innerOptionsType }
                 let optionsType = Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], variables: [
@@ -237,7 +237,7 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("generates contained types properly, type.ParentType.ContainedType properly") {
-                    expect(generate("{{ type.Options.InnerOptions.variables.count }} variable")).to(equal("1 variable"))
+                    expect(generate("{{ type.Options.containedType.InnerOptions.variables.count }} variables, first {{ type.Options.containedType.InnerOptions.variables.first.name }}")).to(equal("1 variables, first fooInnerOptions"))
                 }
 
                 it("generates enum properly") {
