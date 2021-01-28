@@ -15,7 +15,7 @@ def test_pods
 end
 
 def pathkit
-  pod 'PathKit', '0.9.2'
+  pod 'PathKit', '1.0.0'
 end
 
 target 'TemplatesTests' do
@@ -30,11 +30,11 @@ target 'CodableContextTests' do
 end
 
 target 'Sourcery' do
-  pod 'Stencil', '0.13.1'
-  pod 'StencilSwiftKit', '2.7.0'
+  pod 'Stencil', '0.14.0'
+  pod 'StencilSwiftKit', :git =>'git@github.com:SwiftGen/StencilSwiftKit.git', :branch => 'stable'
   pod 'Commander', '0.9.1'
   pathkit
-  pod "xcproj", :git =>'git@github.com:tuist/xcodeproj.git', :tag => '4.3.1'
+  pod "xcodeproj", :git =>'git@github.com:tuist/XcodeProj.git', :tag => '7.0.0'
   pod 'SourceKittenFramework', '0.30.1'
   pod 'Yams', '4.0.0'
 

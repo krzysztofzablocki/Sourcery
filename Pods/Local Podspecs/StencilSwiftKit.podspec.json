@@ -1,0 +1,31 @@
+{
+  "name": "StencilSwiftKit",
+  "version": "2.7.2",
+  "summary": "Stencil additions dedicated for Swift code generation",
+  "description": "This pod contains some additional nodes and filters for\n[Stencil](https://github.com/stencilproject/Stencil).\nThese additional nodes & filters are mainly dedicated\nfor writing Stencil templates generating *Swift* code.",
+  "homepage": "https://github.com/SwiftGen/StencilSwiftKit",
+  "license": "MIT",
+  "authors": {
+    "Olivier Halligon": "olivier@halligon.net"
+  },
+  "social_media_url": "https://twitter.com/aligatr",
+  "platforms": {
+    "osx": "10.9"
+  },
+  "swift_versions": [
+    "5.0"
+  ],
+  "cocoapods_version": ">= 1.9.0",
+  "source": {
+    "git": "https://github.com/SwiftGen/StencilSwiftKit.git",
+    "tag": "2.7.2"
+  },
+  "source_files": "Sources/**/*.swift",
+  "dependencies": {
+    "Stencil": [
+      "~> 0.14.0"
+    ]
+  },
+  "frameworks": "Foundation",
+  "swift_version": "5.0"
+}

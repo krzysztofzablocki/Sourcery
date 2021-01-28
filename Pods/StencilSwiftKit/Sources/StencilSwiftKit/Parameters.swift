@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright (c) 2017 SwiftGen
+// Copyright © 2020 SwiftGen
 // MIT Licence
 //
 
@@ -51,7 +51,7 @@ public enum Parameters {
   ///       flatten(["a":["b":1,"c":[2,3]]])
   ///       // ["a.b=1","a.c=2","a.c=3"]
   public static func flatten(dictionary: StringDict) -> [String] {
-    return flatten(object: dictionary, keyPrefix: "")
+    flatten(object: dictionary, keyPrefix: "")
   }
 
   // MARK: - Private methods
@@ -112,8 +112,7 @@ public enum Parameters {
 
   // a valid key is not empty and only alphanumerical or dot
   private static func validate(key: String) -> Bool {
-    return !key.isEmpty &&
-      key.rangeOfCharacter(from: notAlphanumericsAndDot) == nil
+    !key.isEmpty && key.rangeOfCharacter(from: notAlphanumericsAndDot) == nil
   }
 
   private static let notAlphanumericsAndDot: CharacterSet = {
@@ -147,7 +146,7 @@ public enum Parameters {
     switch object {
     case is String, is Int, is Double:
       values.append("\(keyPrefix)=\(object)")
-    case is Bool:
+    case let bool as Bool where bool:
       values.append(keyPrefix)
     case let dict as [String: Any]:
       for (key, value) in dict {
@@ -156,7 +155,8 @@ public enum Parameters {
       }
     case let array as [Any]:
       values += array.flatMap { flatten(object: $0, keyPrefix: keyPrefix) }
-    default: break
+    default:
+      break
     }
     return values
   }

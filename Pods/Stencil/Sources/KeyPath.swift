@@ -24,8 +24,8 @@ final class KeyPath {
       subscriptLevel = 0
     }
 
-    for c in variable {
-      switch c {
+    for character in variable {
+      switch character {
       case "." where subscriptLevel == 0:
         try foundSeparator()
       case "[":
@@ -33,7 +33,7 @@ final class KeyPath {
       case "]":
         try closeBracket()
       default:
-        try addCharacter(c)
+        try addCharacter(character)
       }
     }
     try finish()
@@ -90,12 +90,12 @@ final class KeyPath {
     subscriptLevel -= 1
   }
 
-  private func addCharacter(_ c: Character) throws {
+  private func addCharacter(_ character: Character) throws {
     guard partialComponents.isEmpty || subscriptLevel > 0 else {
-      throw TemplateSyntaxError("Unexpected character '\(c)' in variable '\(variable)'")
+      throw TemplateSyntaxError("Unexpected character '\(character)' in variable '\(variable)'")
     }
 
-    current.append(c)
+    current.append(character)
   }
 
   private func finish() throws {

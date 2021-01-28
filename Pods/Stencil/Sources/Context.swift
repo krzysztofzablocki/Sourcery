@@ -3,9 +3,9 @@ public class Context {
   var dictionaries: [[String: Any?]]
 
   public let environment: Environment
-  
-  init(dictionary: [String: Any]? = nil, environment: Environment? = nil) {
-    if let dictionary = dictionary {
+
+  public init(dictionary: [String: Any] = [:], environment: Environment? = nil) {
+    if !dictionary.isEmpty {
       dictionaries = [dictionary]
     } else {
       dictionaries = []
@@ -28,17 +28,16 @@ public class Context {
 
     /// Set a variable in the current context, deleting the variable if it's nil
     set(value) {
-      if let dictionary = dictionaries.popLast() {
-        var mutable_dictionary = dictionary
-        mutable_dictionary[key] = value
-        dictionaries.append(mutable_dictionary)
+      if var dictionary = dictionaries.popLast() {
+        dictionary[key] = value
+        dictionaries.append(dictionary)
       }
     }
   }
 
   /// Push a new level into the Context
-  fileprivate func push(_ dictionary: [String: Any]? = nil) {
-    dictionaries.append(dictionary ?? [:])
+  fileprivate func push(_ dictionary: [String: Any] = [:]) {
+    dictionaries.append(dictionary)
   }
 
   /// Pop the last level off of the Context
@@ -47,7 +46,7 @@ public class Context {
   }
 
   /// Push a new level onto the context for the duration of the execution of the given closure
-  public func push<Result>(dictionary: [String: Any]? = nil, closure: (() throws -> Result)) rethrows -> Result {
+  public func push<Result>(dictionary: [String: Any] = [:], closure: (() throws -> Result)) rethrows -> Result {
     push(dictionary)
     defer { _ = pop() }
     return try closure()
