@@ -11,7 +11,7 @@ import SourceryRuntime
 import SourceryJS
 import SourcerySwift
 import TryCatch
-import xcproj
+import xcodeproj
 
 class Sourcery {
     public static let version: String = SourceryVersion.current.value
@@ -405,7 +405,7 @@ extension Sourcery {
         }
 
         if let linkTo = output.linkTo {
-            try linkTo.project.writePBXProj(path: linkTo.projectPath)
+            try linkTo.project.writePBXProj(path: linkTo.projectPath, outputSettings: .init())
         }
 
         Log.benchmark("\tGeneration took \(currentTimestamp() - generationStart)")
@@ -413,23 +413,30 @@ extension Sourcery {
     }
 
     private func link(_ output: Path, to linkTo: Output.LinkTo) {
-        guard let target = linkTo.project.target(named: linkTo.target) else { return }
+        guard let target = linkTo.project.target(named: linkTo.target) else {
+            Log.warning("Unable to find target \(linkTo.target)")
+            return
+        }
+
+        guard let rootGroup = linkTo.project.rootGroup else {
+            Log.warning("Unable to find rootGroup for the project")
+            return
+        }
 
         let sourceRoot = linkTo.projectPath.parent()
-        let fileGroup: PBXGroup
+        var fileGroup: PBXGroup = rootGroup
         if let group = linkTo.group {
             do {
-                let addedGroup = linkTo.project.addGroup(named: group, to: linkTo.project.rootGroup, options: [])
-                fileGroup = addedGroup.object
-                if let groupPath = linkTo.project.fullPath(fileElement: addedGroup, sourceRoot: sourceRoot) {
+                if let addedGroup = linkTo.project.addGroup(named: group, to: rootGroup, options: []),
+                   let groupPath = linkTo.project.fullPath(fileElement: addedGroup, sourceRoot: sourceRoot) {
+                    fileGroup = addedGroup
                     try groupPath.mkpath()
                 }
             } catch {
                 Log.warning("Failed to create a folder for group '\(fileGroup.name ?? "")'. \(error)")
             }
-        } else {
-            fileGroup = linkTo.project.rootGroup
         }
+
         do {
             try linkTo.project.addSourceFile(at: output, toGroup: fileGroup, target: target, sourceRoot: sourceRoot)
         } catch {

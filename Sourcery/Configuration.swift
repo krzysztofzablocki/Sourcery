@@ -1,5 +1,5 @@
 import Foundation
-import xcproj
+import xcodeproj
 import PathKit
 import Yams
 import SourceryRuntime

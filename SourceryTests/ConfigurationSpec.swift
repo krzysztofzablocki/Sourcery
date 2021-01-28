@@ -4,7 +4,7 @@ import PathKit
 @testable import Sourcery
 
 class ConfigurationSpec: QuickSpec {
-
+    // swiftlint:disable:next function_body_length
     override func spec() {
         let relativePath = Path("/some/path")
 

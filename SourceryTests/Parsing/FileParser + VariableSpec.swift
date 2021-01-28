@@ -11,6 +11,7 @@ private func build(_ source: String) -> [String: SourceKitRepresentable]? {
 }
 
 class FileParserVariableSpec: QuickSpec {
+    // swiftlint:disable:next function_body_length
     override func spec() {
         describe("Parser") {
             describe("parseVariable") {
