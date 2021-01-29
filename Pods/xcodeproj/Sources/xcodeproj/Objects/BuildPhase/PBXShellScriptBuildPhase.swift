@@ -22,8 +22,14 @@ public final class PBXShellScriptBuildPhase: PBXBuildPhase {
     /// Show environment variables in the logs.
     public var showEnvVarsInLog: Bool
 
-    public override var buildPhase: BuildPhase {
-        return .runScript
+    /// Force script to run in all incremental builds.
+    public var alwaysOutOfDate: Bool
+
+    /// Path to the discovery .d dependency file
+    public var dependencyFile: String?
+
+    override public var buildPhase: BuildPhase {
+        .runScript
     }
 
     // MARK: - Init
@@ -39,6 +45,8 @@ public final class PBXShellScriptBuildPhase: PBXBuildPhase {
     ///   - shellPath: shell path.
     ///   - shellScript: shell script.
     ///   - buildActionMask: build action mask.
+    ///   - alwaysOutOfDate: always out of date.
+    ///   - dependencyFile: discovery dependency file path.
     public init(files: [PBXBuildFile] = [],
                 name: String? = nil,
                 inputPaths: [String] = [],
@@ -49,13 +57,17 @@ public final class PBXShellScriptBuildPhase: PBXBuildPhase {
                 shellScript: String? = nil,
                 buildActionMask: UInt = defaultBuildActionMask,
                 runOnlyForDeploymentPostprocessing: Bool = false,
-                showEnvVarsInLog: Bool = true) {
+                showEnvVarsInLog: Bool = true,
+                alwaysOutOfDate: Bool = false,
+                dependencyFile: String? = nil) {
         self.name = name
         self.inputPaths = inputPaths
         self.outputPaths = outputPaths
         self.shellPath = shellPath
         self.shellScript = shellScript
         self.showEnvVarsInLog = showEnvVarsInLog
+        self.alwaysOutOfDate = alwaysOutOfDate
+        self.dependencyFile = dependencyFile
         super.init(files: files,
                    inputFileListPaths: inputFileListPaths,
                    outputFileListPaths: outputFileListPaths,
@@ -72,6 +84,8 @@ public final class PBXShellScriptBuildPhase: PBXBuildPhase {
         case shellPath
         case shellScript
         case showEnvVarsInLog
+        case alwaysOutOfDate
+        case dependencyFile
     }
 
     public required init(from decoder: Decoder) throws {
@@ -82,7 +96,14 @@ public final class PBXShellScriptBuildPhase: PBXBuildPhase {
         shellPath = try container.decodeIfPresent(.shellPath)
         shellScript = try container.decodeIfPresent(.shellScript)
         showEnvVarsInLog = try container.decodeIntBoolIfPresent(.showEnvVarsInLog) ?? true
+        alwaysOutOfDate = try container.decodeIntBoolIfPresent(.alwaysOutOfDate) ?? false
+        dependencyFile = try container.decodeIfPresent(.dependencyFile)
         try super.init(from: decoder)
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXShellScriptBuildPhase else { return false }
+        return isEqual(to: rhs)
     }
 }
 
@@ -103,9 +124,16 @@ extension PBXShellScriptBuildPhase: PlistSerializable {
         if let shellScript = shellScript {
             dictionary["shellScript"] = .string(CommentedString(shellScript))
         }
+        if let dependencyFile = dependencyFile {
+            dictionary["dependencyFile"] = .string(CommentedString(dependencyFile))
+        }
         if !showEnvVarsInLog {
             // Xcode only writes this key if it's set to false; default is true and is omitted
             dictionary["showEnvVarsInLog"] = .string(CommentedString("\(showEnvVarsInLog.int)"))
+        }
+        if alwaysOutOfDate {
+            // Xcode only write this key if it's set to true; default is false and is omitted
+            dictionary["alwaysOutOfDate"] = .string(CommentedString("\(alwaysOutOfDate.int)"))
         }
         return (key: CommentedString(reference, comment: name ?? "ShellScript"), value: .dictionary(dictionary))
     }

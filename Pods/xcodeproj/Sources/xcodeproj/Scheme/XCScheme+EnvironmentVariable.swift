@@ -20,13 +20,13 @@ extension XCScheme {
         // MARK: - XML
 
         func xmlElement() -> AEXMLElement {
-            return AEXMLElement(name: "EnvironmentVariable",
-                                value: nil,
-                                attributes: ["key": variable, "value": value, "isEnabled": enabled ? "YES" : "NO"])
+            AEXMLElement(name: "EnvironmentVariable",
+                         value: nil,
+                         attributes: ["key": variable, "value": value, "isEnabled": enabled ? "YES" : "NO"])
         }
 
         static func parseVariables(from element: AEXMLElement) throws -> [EnvironmentVariable] {
-            return try element.children.map { elt in
+            try element.children.map { elt in
                 guard let variableKey = elt.attributes["key"] else {
                     throw XCSchemeError.missing(property: "key")
                 }
@@ -54,7 +54,7 @@ extension XCScheme {
         // MARK: - Equatable
 
         public static func == (lhs: EnvironmentVariable, rhs: EnvironmentVariable) -> Bool {
-            return lhs.variable == rhs.variable &&
+            lhs.variable == rhs.variable &&
                 lhs.value == rhs.value &&
                 lhs.enabled == rhs.enabled
         }

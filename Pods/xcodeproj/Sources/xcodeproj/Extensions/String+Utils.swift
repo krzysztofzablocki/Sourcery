@@ -4,17 +4,17 @@ import Foundation
     import SwiftGlibc
 
     public func arc4random_uniform(_ max: UInt32) -> Int32 {
-        return (SwiftGlibc.rand() % Int32(max - 1))
+        (SwiftGlibc.rand() % Int32(max - 1))
     }
 #endif
 
 extension String {
     public var quoted: String {
-        return "\"\(self)\""
+        "\"\(self)\""
     }
 
     public var isQuoted: Bool {
-        return hasPrefix("\"") && hasSuffix("\"")
+        hasPrefix("\"") && hasSuffix("\"")
     }
 
     public static func random(length: Int = 20) -> String {

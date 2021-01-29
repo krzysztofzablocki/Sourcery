@@ -23,18 +23,18 @@ extension XCScheme {
         // MARK: - XML
 
         func xmlElement() -> AEXMLElement {
-            return AEXMLElement(name: "LocationScenarioReference",
-                                value: nil,
-                                attributes: [
-                                    "identifier": identifier,
-                                    "referenceType": referenceType,
-                                ])
+            AEXMLElement(name: "LocationScenarioReference",
+                         value: nil,
+                         attributes: [
+                             "identifier": identifier,
+                             "referenceType": referenceType,
+                         ])
         }
 
         // MARK: - Equatable
 
         public static func == (lhs: LocationScenarioReference, rhs: LocationScenarioReference) -> Bool {
-            return lhs.identifier == rhs.identifier &&
+            lhs.identifier == rhs.identifier &&
                 lhs.referenceType == rhs.referenceType
         }
     }

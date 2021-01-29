@@ -59,6 +59,11 @@ public final class PBXNativeTarget: PBXTarget {
         }
         return (key: key, value: .dictionary(dict))
     }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXNativeTarget else { return false }
+        return isEqual(to: rhs)
+    }
 }
 
 // MARK: - PBXNativeTarget Extension (PlistSerializable)

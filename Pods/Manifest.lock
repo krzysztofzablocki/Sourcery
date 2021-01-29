@@ -1,11 +1,9 @@
 PODS:
-  - AEXML (4.4.0)
+  - AEXML (4.6.0)
   - Commander (0.9.1)
   - Nimble (9.0.0)
   - PathKit (1.0.0)
   - Quick (3.0.0)
-  - Shell (2.0.3):
-    - PathKit (= 1.0.0)
   - SourceKittenFramework (0.30.1):
     - SWXMLHash (~> 5.0.1)
     - Yams (~> 4.0)
@@ -15,10 +13,9 @@ PODS:
     - Stencil (~> 0.14.0)
   - SwiftLint (0.27.0)
   - SWXMLHash (5.0.1)
-  - xcodeproj (7.0.0):
-    - AEXML (~> 4.4.0)
+  - xcodeproj (7.18.0):
+    - AEXML (~> 4.6.0)
     - PathKit (~> 1.0.0)
-    - Shell (~> 2.0.0)
   - Yams (4.0.0)
 
 DEPENDENCIES:
@@ -30,7 +27,7 @@ DEPENDENCIES:
   - Stencil (= 0.14.0)
   - "StencilSwiftKit (from `git@github.com:SwiftGen/StencilSwiftKit.git`, branch `stable`)"
   - SwiftLint
-  - "xcodeproj (from `git@github.com:tuist/XcodeProj.git`, tag `7.0.0`)"
+  - "xcodeproj (from `git@github.com:tuist/XcodeProj.git`, tag `7.18.0`)"
   - Yams (= 4.0.0)
 
 SPEC REPOS:
@@ -42,7 +39,6 @@ SPEC REPOS:
     - AEXML
     - Commander
     - PathKit
-    - Shell
     - SourceKittenFramework
     - Stencil
     - SWXMLHash
@@ -54,7 +50,7 @@ EXTERNAL SOURCES:
     :git: "git@github.com:SwiftGen/StencilSwiftKit.git"
   xcodeproj:
     :git: "git@github.com:tuist/XcodeProj.git"
-    :tag: 7.0.0
+    :tag: 7.18.0
 
 CHECKOUT OPTIONS:
   StencilSwiftKit:
@@ -62,23 +58,22 @@ CHECKOUT OPTIONS:
     :git: "git@github.com:SwiftGen/StencilSwiftKit.git"
   xcodeproj:
     :git: "git@github.com:tuist/XcodeProj.git"
-    :tag: 7.0.0
+    :tag: 7.18.0
 
 SPEC CHECKSUMS:
-  AEXML: 16fb739dfb3809e91ebf9e9dc391482c3a6aaebf
+  AEXML: 2fbb73d8724797ed2cde888731e176fa4d44dd83
   Commander: 723330cf3697b604c00afb9db9576be81a03c501
   Nimble: 3b4ec3fd40f1dc178058e0981107721c615643d8
   PathKit: 364e0de7fb5adb142aecab4e112187e5548fc4b6
   Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
-  Shell: 4b0198a9ecf3cc0d8d39d4c2ee2cc8a5f0aae818
   SourceKittenFramework: 540d9d048c0bab3c0faa4668425364fabff12cb0
   Stencil: 19487b54873a6ed8d8e4cccc4b45c1a601941f06
   StencilSwiftKit: a6c185149c2ed5f82b2a87c93cadec325e445623
   SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
   SWXMLHash: 9cc0c2e4807926c74377724aa8722ee5707a0485
-  xcodeproj: 7e38a84f92ec93234690fbaeb7bfdee4ba8c1403
+  xcodeproj: 760cfd754df4cfac71ec86b1cbdd6075f9fd3102
   Yams: 9d49b85824751ee13d31e9ec6617c4dfb9a8c3cd
 
-PODFILE CHECKSUM: 570583ff234a3948d1cf05d8a369799c483b218b
+PODFILE CHECKSUM: 4c5de3219d6f68a0bee81648c8ad6c8a18a31837
 
 COCOAPODS: 1.9.3

@@ -11,8 +11,8 @@ public final class XCWorkspaceData {
 }
 
 extension XCWorkspaceData: Equatable {
-    public static func == (_: XCWorkspaceData, rhs: XCWorkspaceData) -> Bool {
-        return rhs.children == rhs.children
+    public static func == (lhs: XCWorkspaceData, rhs: XCWorkspaceData) -> Bool {
+        lhs.children == rhs.children
     }
 }
 
@@ -130,8 +130,8 @@ private extension XCWorkspaceDataFileRef {
     }
 
     func xmlElement() -> AEXMLElement {
-        return AEXMLElement(name: "FileRef",
-                            value: nil,
-                            attributes: ["location": location.description])
+        AEXMLElement(name: "FileRef",
+                     value: nil,
+                     attributes: ["location": location.description])
     }
 }

@@ -35,7 +35,7 @@ extension XCScheme {
         // MARK: - Equatable
 
         public static func == (lhs: AnalyzeAction, rhs: AnalyzeAction) -> Bool {
-            return lhs.buildConfiguration == rhs.buildConfiguration
+            lhs.buildConfiguration == rhs.buildConfiguration
         }
     }
 }

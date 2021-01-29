@@ -2,8 +2,13 @@ import Foundation
 
 /// This is the element for the framework link build phase.
 public final class PBXFrameworksBuildPhase: PBXBuildPhase {
-    public override var buildPhase: BuildPhase {
-        return .frameworks
+    override public var buildPhase: BuildPhase {
+        .frameworks
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXFrameworksBuildPhase else { return false }
+        return isEqual(to: rhs)
     }
 }
 

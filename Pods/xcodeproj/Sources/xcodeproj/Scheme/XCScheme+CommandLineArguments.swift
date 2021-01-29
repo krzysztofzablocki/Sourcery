@@ -39,7 +39,7 @@ extension XCScheme {
         // MARK: - Equatable
 
         public static func == (lhs: CommandLineArguments, rhs: CommandLineArguments) -> Bool {
-            return lhs.arguments == rhs.arguments
+            lhs.arguments == rhs.arguments
         }
     }
 }
@@ -61,15 +61,15 @@ extension XCScheme.CommandLineArguments {
         // MARK: - XML
 
         func xmlElement() -> AEXMLElement {
-            return AEXMLElement(name: "CommandLineArgument",
-                                value: nil,
-                                attributes: ["argument": name, "isEnabled": enabled ? "YES" : "NO"])
+            AEXMLElement(name: "CommandLineArgument",
+                         value: nil,
+                         attributes: ["argument": name, "isEnabled": enabled ? "YES" : "NO"])
         }
 
         // MARK: - Equatable
 
         public static func == (lhs: CommandLineArgument, rhs: CommandLineArgument) -> Bool {
-            return lhs.name == rhs.name &&
+            lhs.name == rhs.name &&
                 lhs.enabled == rhs.enabled
         }
     }

@@ -2,7 +2,7 @@ import AEXML
 import Foundation
 
 extension XCScheme {
-    public final class SkippedTest: Equatable {
+    public final class TestItem: Equatable {
         // MARK: - Attributes
 
         public var identifier: String
@@ -20,15 +20,15 @@ extension XCScheme {
         // MARK: - XML
 
         func xmlElement() -> AEXMLElement {
-            return AEXMLElement(name: "Test",
-                                value: nil,
-                                attributes: ["Identifier": identifier])
+            AEXMLElement(name: "Test",
+                         value: nil,
+                         attributes: ["Identifier": identifier])
         }
 
         // MARK: - Equatable
 
-        public static func == (lhs: SkippedTest, rhs: SkippedTest) -> Bool {
-            return lhs.identifier == rhs.identifier
+        public static func == (lhs: TestItem, rhs: TestItem) -> Bool {
+            lhs.identifier == rhs.identifier
         }
     }
 }

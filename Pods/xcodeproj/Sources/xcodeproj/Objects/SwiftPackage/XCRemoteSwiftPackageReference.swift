@@ -125,7 +125,7 @@ public class XCRemoteSwiftPackageReference: PBXContainerItem, PlistSerializable 
 
     /// It returns the name of the package reference.
     public var name: String? {
-        return repositoryURL?.split(separator: "/").last?.replacingOccurrences(of: ".git", with: "")
+        repositoryURL?.split(separator: "/").last?.replacingOccurrences(of: ".git", with: "")
     }
 
     func plistKeyAndValue(proj: PBXProj, reference: String) throws -> (key: CommentedString, value: PlistValue) {
@@ -141,12 +141,8 @@ public class XCRemoteSwiftPackageReference: PBXContainerItem, PlistSerializable 
                 value: .dictionary(dictionary))
     }
 
-    // MARK: - Equatable
-
-    @objc public override func isEqual(to object: Any?) -> Bool {
+    override func isEqual(to object: Any?) -> Bool {
         guard let rhs = object as? XCRemoteSwiftPackageReference else { return false }
-        if repositoryURL != rhs.repositoryURL { return false }
-        if versionRequirement != rhs.versionRequirement { return false }
-        return super.isEqual(to: rhs)
+        return isEqual(to: rhs)
     }
 }

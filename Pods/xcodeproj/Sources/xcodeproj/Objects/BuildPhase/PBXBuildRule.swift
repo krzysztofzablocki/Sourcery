@@ -31,6 +31,9 @@ public final class PBXBuildRule: PBXObject {
     /// Element script.
     public var script: String?
 
+    /// Element run once per architecture.
+    public var runOncePerArchitecture: Bool?
+
     // MARK: - Init
 
     public init(compilerSpec: String,
@@ -41,7 +44,8 @@ public final class PBXBuildRule: PBXObject {
                 outputFiles: [String] = [],
                 inputFiles: [String]? = nil,
                 outputFilesCompilerFlags: [String]? = nil,
-                script: String? = nil) {
+                script: String? = nil,
+                runOncePerArchitecture: Bool? = nil) {
         self.compilerSpec = compilerSpec
         self.filePatterns = filePatterns
         self.fileType = fileType
@@ -51,6 +55,7 @@ public final class PBXBuildRule: PBXObject {
         self.inputFiles = inputFiles
         self.outputFilesCompilerFlags = outputFilesCompilerFlags
         self.script = script
+        self.runOncePerArchitecture = runOncePerArchitecture
         super.init()
     }
 
@@ -66,6 +71,7 @@ public final class PBXBuildRule: PBXObject {
         case inputFiles
         case outputFilesCompilerFlags
         case script
+        case runOncePerArchitecture
     }
 
     public required init(from decoder: Decoder) throws {
@@ -79,14 +85,20 @@ public final class PBXBuildRule: PBXObject {
         inputFiles = try container.decodeIfPresent(.inputFiles)
         outputFilesCompilerFlags = try container.decodeIfPresent(.outputFilesCompilerFlags)
         script = try container.decodeIfPresent(.script)
+        runOncePerArchitecture = try container.decodeIntBoolIfPresent(.runOncePerArchitecture)
         try super.init(from: decoder)
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXBuildRule else { return false }
+        return isEqual(to: rhs)
     }
 }
 
 // MARK: - PBXBuildRule Extension (PlistSerializable)
 
 extension PBXBuildRule: PlistSerializable {
-    var multiline: Bool { return true }
+    var multiline: Bool { true }
 
     func plistKeyAndValue(proj _: PBXProj, reference: String) -> (key: CommentedString, value: PlistValue) {
         var dictionary: [CommentedString: PlistValue] = [:]
@@ -109,6 +121,9 @@ extension PBXBuildRule: PlistSerializable {
         }
         if let script = script {
             dictionary["script"] = .string(CommentedString(script))
+        }
+        if let runOncePerArchitecture = runOncePerArchitecture {
+            dictionary["runOncePerArchitecture"] = .string(CommentedString("\(runOncePerArchitecture.int)"))
         }
         return (key: CommentedString(reference, comment: PBXBuildRule.isa),
                 value: .dictionary(dictionary))

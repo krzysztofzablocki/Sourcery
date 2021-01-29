@@ -14,7 +14,7 @@ public final class XCWorkspaceDataGroup {
 
 extension XCWorkspaceDataGroup: Equatable {
     public static func == (lhs: XCWorkspaceDataGroup, rhs: XCWorkspaceDataGroup) -> Bool {
-        return lhs.location == rhs.location &&
+        lhs.location == rhs.location &&
             lhs.name == rhs.name &&
             lhs.children == rhs.children
     }

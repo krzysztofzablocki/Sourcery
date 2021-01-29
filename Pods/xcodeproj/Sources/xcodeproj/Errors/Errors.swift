@@ -158,15 +158,33 @@ enum PBXProjEncoderError: Error, CustomStringConvertible {
 /// PBXProj error.
 ///
 /// - notFound: the .pbxproj cannot be found at the given path.
-enum PBXProjError: Error, CustomStringConvertible {
+enum PBXProjError: Error, CustomStringConvertible, Equatable {
     case notFound(path: Path)
     case invalidGroupPath(sourceRoot: Path, elementPath: String?)
+    case targetNotFound(targetName: String)
+    case frameworksBuildPhaseNotFound(targetName: String)
+    case sourcesBuildPhaseNotFound(targetName: String)
+    case pathIsAbsolute(Path)
+    case multipleLocalPackages(productName: String)
+    case multipleRemotePackages(productName: String)
     var description: String {
         switch self {
         case let .notFound(path):
             return ".pbxproj not found at path \(path.string)"
         case let .invalidGroupPath(sourceRoot, elementPath):
             return "Cannot calculate full path for file element \"\(elementPath ?? "")\" in source root: \"\(sourceRoot)\""
+        case let .targetNotFound(targetName):
+            return "Could not find target with \(targetName)"
+        case let .frameworksBuildPhaseNotFound(targetName):
+            return "Could not find frameworks build phase for target \(targetName)"
+        case let .sourcesBuildPhaseNotFound(targetName):
+            return "Could not find sources build phase for target \(targetName)"
+        case let .pathIsAbsolute(path):
+            return "Path must be relative, but path \(path.string) is absolute"
+        case let .multipleLocalPackages(productName: productName):
+            return "Found multiple top-level packages named \(productName)"
+        case let .multipleRemotePackages(productName: productName):
+            return "Can not resolve dependency \(productName) - conflicting version requirements"
         }
     }
 }

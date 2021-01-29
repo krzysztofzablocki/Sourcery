@@ -91,7 +91,7 @@ public class WorkspaceSettings: Codable, Equatable, Writable {
     ///   - rhs: Second instance to be compared.
     /// - Returns: True if the two instances are the same.
     public static func == (lhs: WorkspaceSettings, rhs: WorkspaceSettings) -> Bool {
-        return lhs.buildSystem == rhs.buildSystem &&
+        lhs.buildSystem == rhs.buildSystem &&
             lhs.autoCreateSchemes == rhs.autoCreateSchemes
     }
 

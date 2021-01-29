@@ -28,17 +28,17 @@ public final class PBXBatchUpdater {
         sourceTree: PBXSourceTree = .group
     )
         throws -> PBXFileReference {
-        let (group, groupPath) = try groupAndGroupPathForFile(
-            at: filePath,
-            project: project
-        )
-        return try addFile(
-            to: group,
-            groupPath: groupPath,
-            filePath: filePath,
-            sourceTree: sourceTree
-        )
-    }
+            let (group, groupPath) = try groupAndGroupPathForFile(
+                at: filePath,
+                project: project
+            )
+            return try addFile(
+                to: group,
+                groupPath: groupPath,
+                filePath: filePath,
+                sourceTree: sourceTree
+            )
+        }
 
     /// Adds file at the give path to the project or returns existing file and its reference.
     ///
@@ -54,15 +54,15 @@ public final class PBXBatchUpdater {
         sourceTree: PBXSourceTree = .group
     )
         throws -> PBXFileReference {
-        let groupPath = try group.fullPath(sourceRoot: sourceRoot)!
-        let filePath = groupPath + Path(fileName)
-        return try addFile(
-            to: group,
-            groupPath: groupPath,
-            filePath: filePath,
-            sourceTree: sourceTree
-        )
-    }
+            let groupPath = try group.fullPath(sourceRoot: sourceRoot)!
+            let filePath = groupPath + Path(fileName)
+            return try addFile(
+                to: group,
+                groupPath: groupPath,
+                filePath: filePath,
+                sourceTree: sourceTree
+            )
+        }
 
     private func addFile(
         to group: PBXGroup,
@@ -71,36 +71,36 @@ public final class PBXBatchUpdater {
         sourceTree: PBXSourceTree = .group
     )
         throws -> PBXFileReference {
-        if let existing = try existingFileReference(at: filePath, in: group) {
-            return existing
-        }
+            if let existing = try existingFileReference(at: filePath, in: group) {
+                return existing
+            }
 
-        let path: String?
-        switch sourceTree {
-        case .group:
-            path = filePath.relative(to: groupPath).string
-        case .sourceRoot:
-            path = filePath.relative(to: sourceRoot).string
-        case .absolute:
-            path = filePath.string
-        default:
-            path = nil
+            let path: String?
+            switch sourceTree {
+            case .group:
+                path = filePath.relative(to: groupPath).string
+            case .sourceRoot:
+                path = filePath.relative(to: sourceRoot).string
+            case .absolute:
+                path = filePath.string
+            default:
+                path = nil
+            }
+            let fileReference = PBXFileReference(
+                sourceTree: sourceTree,
+                name: filePath.lastComponent,
+                explicitFileType: filePath.extension.flatMap(Xcode.filetype),
+                lastKnownFileType: filePath.extension.flatMap(Xcode.filetype),
+                path: path
+            )
+            objects.add(object: fileReference)
+            fileReference.parent = group
+            references?[filePath] = fileReference.reference
+            if !group.childrenReferences.contains(fileReference.reference) {
+                group.childrenReferences.append(fileReference.reference)
+            }
+            return fileReference
         }
-        let fileReference = PBXFileReference(
-            sourceTree: sourceTree,
-            name: filePath.lastComponent,
-            explicitFileType: filePath.extension.flatMap(Xcode.filetype),
-            lastKnownFileType: filePath.extension.flatMap(Xcode.filetype),
-            path: path
-        )
-        objects.add(object: fileReference)
-        fileReference.parent = group
-        references?[filePath] = fileReference.reference
-        if !group.childrenReferences.contains(fileReference.reference) {
-            group.childrenReferences.append(fileReference.reference)
-        }
-        return fileReference
-    }
 
     private func existingFileReference(at filePath: Path, in group: PBXGroup) throws -> PBXFileReference? {
         let objectReferences = try lazilyInstantiateObjectReferences()
@@ -119,7 +119,7 @@ public final class PBXBatchUpdater {
         if let fileParentGroup = try lazilyInstantiateGroups()[groupPath] {
             return (fileParentGroup, groupPath)
         }
-        var components = groupPath.components
+        let components = groupPath.components
         let componentsCount = components.count - 1
         for componentIndex in (0 ... componentsCount).reversed() {
             let currentPathComponents = components[0 ... componentIndex]
@@ -155,14 +155,14 @@ public final class PBXBatchUpdater {
         with names: [String]
     )
         throws -> PBXGroup {
-        var parent = group
-        for (index, name) in names.enumerated() {
-            let path = groupPath + Path(components: names[0 ... index])
-            parent = try parent.addGroup(named: name).last!
-            groups?[path] = parent
+            var parent = group
+            for (index, name) in names.enumerated() {
+                let path = groupPath + Path(components: names[0 ... index])
+                parent = try parent.addGroup(named: name).last!
+                groups?[path] = parent
+            }
+            return parent
         }
-        return parent
-    }
 
     private func lazilyInstantiateObjectReferences()
         throws -> [Path: PBXObjectReference] {
@@ -174,7 +174,7 @@ public final class PBXBatchUpdater {
                 try objects.fileReferences.compactMap {
                     let fullPath = try $0.value.fullPath(sourceRoot: sourceRoot)!
                     return (fullPath, $0.key)
-            })
+                })
             references = objectReferences
         }
         return objectReferences
@@ -189,7 +189,7 @@ public final class PBXBatchUpdater {
                 try objects.groups.compactMap {
                     let fullPath = try $0.value.fullPath(sourceRoot: sourceRoot)!
                     return (fullPath, $0.value)
-            })
+                })
             groups = unwrappedGroups
         }
         return unwrappedGroups

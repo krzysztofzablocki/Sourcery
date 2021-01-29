@@ -21,26 +21,50 @@
  */
 
 import Foundation
+#if canImport(CryptoKit)
+import CryptoKit
+#endif
 
 extension String {
     var md5: String {
-        if let data = data(using: .utf8, allowLossyConversion: true) {
-            let message = data.withUnsafeBytes { bytes -> [UInt8] in
-                Array(UnsafeBufferPointer(start: bytes, count: data.count))
-            }
-
-            let MD5Calculator = MD5(message)
-            let MD5Data = MD5Calculator.calculate()
-
-            var MD5String = String()
-            for c in MD5Data {
-                MD5String += String(format: "%02x", c)
-            }
-            return MD5String
-
-        } else {
+        guard let data = data(using: .utf8, allowLossyConversion: true) else {
             return self
         }
+        #if canImport(CryptoKit)
+        if #available(OSX 10.15, *) {
+            var hasher = Insecure.MD5()
+            hasher.update(data: data)
+            let digest = hasher.finalize()
+            return digest.reduce(into: "") { hexString, byte in
+                hexString.append(String(format: "%02hhx", byte))
+            }
+        } else {
+            return data.slowMD5
+        }
+        #else
+        return data.slowMD5
+        #endif
+    }
+}
+
+private extension Data {
+    // Custom md5 for systems without CryptoKit.
+    var slowMD5: String {
+        let message = withUnsafeBytes { bufferPointer in
+            Array(UnsafeBufferPointer(
+                start: bufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self),
+                count: count
+            ))
+        }
+
+        let MD5Calculator = MD5(message)
+        let MD5Data = MD5Calculator.calculate()
+
+        var MD5String = String()
+        for c in MD5Data {
+            MD5String += String(format: "%02x", c)
+        }
+        return MD5String
     }
 }
 
@@ -73,7 +97,7 @@ func arrayOfBytes<T>(_ value: T, length: Int? = nil) -> [UInt8] {
 extension Int {
     /** Array of bytes with optional padding (little-endian) */
     func bytes(_ totalBytes: Int = MemoryLayout<Int>.size) -> [UInt8] {
-        return arrayOfBytes(self, length: totalBytes)
+        arrayOfBytes(self, length: totalBytes)
     }
 }
 
@@ -152,12 +176,12 @@ struct BytesSequence: Sequence {
     let data: [UInt8]
 
     func makeIterator() -> BytesIterator {
-        return BytesIterator(chunkSize: chunkSize, data: data)
+        BytesIterator(chunkSize: chunkSize, data: data)
     }
 }
 
 func rotateLeft(_ value: UInt32, bits: UInt32) -> UInt32 {
-    return ((value << bits) & 0xFFFF_FFFF) | (value >> (32 - bits))
+    ((value << bits) & 0xFFFF_FFFF) | (value >> (32 - bits))
 }
 
 class MD5: HashProtocol {
@@ -215,7 +239,7 @@ class MD5: HashProtocol {
 
         for chunk in BytesSequence(chunkSize: chunkSizeBytes, data: tmpMessage) {
             // break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15
-            var M = toUInt32Array(chunk)
+            let M = toUInt32Array(chunk)
             assert(M.count == 16, "Invalid array")
 
             // Initialize hash value for this chunk:

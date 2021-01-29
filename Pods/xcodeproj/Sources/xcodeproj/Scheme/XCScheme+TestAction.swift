@@ -15,12 +15,14 @@ extension XCScheme {
         // MARK: - Attributes
 
         public var testables: [TestableReference]
+        public var testPlans: [TestPlanReference]?
         public var codeCoverageTargets: [BuildableReference]
         public var buildConfiguration: String
         public var selectedDebuggerIdentifier: String
         public var selectedLauncherIdentifier: String
         public var shouldUseLaunchSchemeArgsEnv: Bool
         public var codeCoverageEnabled: Bool
+        public var onlyGenerateCoverageForSpecifiedTargets: Bool?
         public var enableAddressSanitizer: Bool
         public var enableASanStackUseAfterReturn: Bool
         public var enableThreadSanitizer: Bool
@@ -34,12 +36,14 @@ extension XCScheme {
         public var region: String?
         public var systemAttachmentLifetime: AttachmentLifetime?
         public var userAttachmentLifetime: AttachmentLifetime?
+        public var customLLDBInitFile: String?
 
         // MARK: - Init
 
         public init(buildConfiguration: String,
                     macroExpansion: BuildableReference?,
                     testables: [TestableReference] = [],
+                    testPlans: [TestPlanReference]? = nil,
                     preActions: [ExecutionAction] = [],
                     postActions: [ExecutionAction] = [],
                     selectedDebuggerIdentifier: String = XCScheme.defaultDebugger,
@@ -47,6 +51,7 @@ extension XCScheme {
                     shouldUseLaunchSchemeArgsEnv: Bool = true,
                     codeCoverageEnabled: Bool = false,
                     codeCoverageTargets: [BuildableReference] = [],
+                    onlyGenerateCoverageForSpecifiedTargets: Bool? = nil,
                     enableAddressSanitizer: Bool = false,
                     enableASanStackUseAfterReturn: Bool = false,
                     enableThreadSanitizer: Bool = false,
@@ -58,15 +63,18 @@ extension XCScheme {
                     language: String? = nil,
                     region: String? = nil,
                     systemAttachmentLifetime: AttachmentLifetime? = nil,
-                    userAttachmentLifetime: AttachmentLifetime? = nil) {
+                    userAttachmentLifetime: AttachmentLifetime? = nil,
+                    customLLDBInitFile: String? = nil) {
             self.buildConfiguration = buildConfiguration
             self.macroExpansion = macroExpansion
             self.testables = testables
+            self.testPlans = testPlans
             self.selectedDebuggerIdentifier = selectedDebuggerIdentifier
             self.selectedLauncherIdentifier = selectedLauncherIdentifier
             self.shouldUseLaunchSchemeArgsEnv = shouldUseLaunchSchemeArgsEnv
             self.codeCoverageEnabled = codeCoverageEnabled
             self.codeCoverageTargets = codeCoverageTargets
+            self.onlyGenerateCoverageForSpecifiedTargets = onlyGenerateCoverageForSpecifiedTargets
             self.enableAddressSanitizer = enableAddressSanitizer
             self.enableASanStackUseAfterReturn = enableASanStackUseAfterReturn
             self.enableThreadSanitizer = enableThreadSanitizer
@@ -79,6 +87,7 @@ extension XCScheme {
             self.region = region
             self.systemAttachmentLifetime = systemAttachmentLifetime
             self.userAttachmentLifetime = userAttachmentLifetime
+            self.customLLDBInitFile = customLLDBInitFile
             super.init(preActions, postActions)
         }
 
@@ -88,6 +97,8 @@ extension XCScheme {
             selectedLauncherIdentifier = element.attributes["selectedLauncherIdentifier"] ?? XCScheme.defaultLauncher
             shouldUseLaunchSchemeArgsEnv = element.attributes["shouldUseLaunchSchemeArgsEnv"].map { $0 == "YES" } ?? true
             codeCoverageEnabled = element.attributes["codeCoverageEnabled"] == "YES"
+            onlyGenerateCoverageForSpecifiedTargets = element.attributes["onlyGenerateCoverageForSpecifiedTargets"]
+                .map { $0 == "YES" }
             enableAddressSanitizer = element.attributes["enableAddressSanitizer"] == "YES"
             enableASanStackUseAfterReturn = element.attributes["enableASanStackUseAfterReturn"] == "YES"
             enableThreadSanitizer = element.attributes["enableThreadSanitizer"] == "YES"
@@ -96,6 +107,9 @@ extension XCScheme {
             testables = try element["Testables"]["TestableReference"]
                 .all?
                 .map(TestableReference.init) ?? []
+            testPlans = try element["TestPlans"]["TestPlanReference"]
+                .all?
+                .map(TestPlanReference.init)
             codeCoverageTargets = try element["CodeCoverageTargets"]["BuildableReference"]
                 .all?
                 .map(BuildableReference.init) ?? []
@@ -125,6 +139,7 @@ extension XCScheme {
                 .flatMap(AttachmentLifetime.init(rawValue:))
             userAttachmentLifetime = element.attributes["userAttachmentLifetime"]
                 .flatMap(AttachmentLifetime.init(rawValue:))
+            customLLDBInitFile = element.attributes["customLLDBInitFile"]
             try super.init(element: element)
         }
 
@@ -142,6 +157,9 @@ extension XCScheme {
             attributes["shouldUseLaunchSchemeArgsEnv"] = shouldUseLaunchSchemeArgsEnv.xmlString
             if codeCoverageEnabled {
                 attributes["codeCoverageEnabled"] = codeCoverageEnabled.xmlString
+            }
+            if let onlyGenerateCoverageForSpecifiedTargets = onlyGenerateCoverageForSpecifiedTargets {
+                attributes["onlyGenerateCoverageForSpecifiedTargets"] = onlyGenerateCoverageForSpecifiedTargets.xmlString
             }
             if enableAddressSanitizer {
                 attributes["enableAddressSanitizer"] = enableAddressSanitizer.xmlString
@@ -162,9 +180,20 @@ extension XCScheme {
             if case .keepAlways? = userAttachmentLifetime {
                 attributes["userAttachmentLifetime"] = userAttachmentLifetime?.rawValue
             }
+            if let customLLDBInitFile = customLLDBInitFile {
+                attributes["customLLDBInitFile"] = customLLDBInitFile
+            }
 
             let element = AEXMLElement(name: "TestAction", value: nil, attributes: attributes)
             super.writeXML(parent: element)
+
+            if let testPlans = testPlans {
+                let testPlansElement = element.addChild(name: "TestPlans")
+                testPlans.forEach { testPlan in
+                    testPlansElement.addChild(testPlan.xmlElement())
+                }
+            }
+
             let testablesElement = element.addChild(name: "Testables")
             testables.forEach { testable in
                 testablesElement.addChild(testable.xmlElement())
@@ -182,14 +211,18 @@ extension XCScheme {
                 element.addChild(EnvironmentVariable.xmlElement(from: environmentVariables))
             }
 
-            let additionalOptionsElement = element.addChild(AEXMLElement(name: "AdditionalOptions"))
-            additionalOptions.forEach { additionalOption in
-                additionalOptionsElement.addChild(additionalOption.xmlElement())
+            if !additionalOptions.isEmpty {
+                let additionalOptionsElement = element.addChild(AEXMLElement(name: "AdditionalOptions"))
+                additionalOptions.forEach { additionalOption in
+                    additionalOptionsElement.addChild(additionalOption.xmlElement())
+                }
             }
 
-            let codeCoverageTargetsElement = element.addChild(AEXMLElement(name: "CodeCoverageTargets"))
-            codeCoverageTargets.forEach { target in
-                codeCoverageTargetsElement.addChild(target.xmlElement())
+            if !codeCoverageTargets.isEmpty {
+                let codeCoverageTargetsElement = element.addChild(AEXMLElement(name: "CodeCoverageTargets"))
+                codeCoverageTargets.forEach { target in
+                    codeCoverageTargetsElement.addChild(target.xmlElement())
+                }
             }
 
             return element
@@ -200,11 +233,13 @@ extension XCScheme {
         override func isEqual(to: Any?) -> Bool {
             guard let rhs = to as? TestAction else { return false }
             return testables == rhs.testables &&
+                testPlans == rhs.testPlans &&
                 buildConfiguration == rhs.buildConfiguration &&
                 selectedDebuggerIdentifier == rhs.selectedDebuggerIdentifier &&
                 selectedLauncherIdentifier == rhs.selectedLauncherIdentifier &&
                 shouldUseLaunchSchemeArgsEnv == rhs.shouldUseLaunchSchemeArgsEnv &&
                 codeCoverageEnabled == rhs.codeCoverageEnabled &&
+                onlyGenerateCoverageForSpecifiedTargets == onlyGenerateCoverageForSpecifiedTargets &&
                 enableAddressSanitizer == rhs.enableAddressSanitizer &&
                 enableASanStackUseAfterReturn == rhs.enableASanStackUseAfterReturn &&
                 enableThreadSanitizer == rhs.enableThreadSanitizer &&
@@ -218,7 +253,8 @@ extension XCScheme {
                 region == rhs.region &&
                 systemAttachmentLifetime == rhs.systemAttachmentLifetime &&
                 userAttachmentLifetime == rhs.userAttachmentLifetime &&
-                codeCoverageTargets == rhs.codeCoverageTargets
+                codeCoverageTargets == rhs.codeCoverageTargets &&
+                customLLDBInitFile == rhs.customLLDBInitFile
         }
     }
 }

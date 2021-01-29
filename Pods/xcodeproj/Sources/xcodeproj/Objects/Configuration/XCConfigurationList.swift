@@ -13,7 +13,7 @@ public final class XCConfigurationList: PBXObject {
             buildConfigurationReferences = newValue.references()
         }
         get {
-            return buildConfigurationReferences.objects()
+            buildConfigurationReferences.objects()
         }
     }
 
@@ -59,6 +59,11 @@ public final class XCConfigurationList: PBXObject {
         defaultConfigurationName = try container.decodeIfPresent(.defaultConfigurationName)
         try super.init(from: decoder)
     }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? XCConfigurationList else { return false }
+        return isEqual(to: rhs)
+    }
 }
 
 // MARK: - Helpers
@@ -69,7 +74,7 @@ extension XCConfigurationList {
     /// - Parameter name: configuration name.
     /// - Returns: build configuration if it exists.
     public func configuration(name: String) -> XCBuildConfiguration? {
-        return buildConfigurations.first(where: { $0.name == name })
+        buildConfigurations.first(where: { $0.name == name })
     }
 
     /// Adds the default configurations, debug and release
@@ -113,7 +118,7 @@ extension XCConfigurationList: PlistSerializable {
             .map { configReference in
                 let config: XCBuildConfiguration? = configReference.getObject()
                 return .string(CommentedString(configReference.value, comment: config?.name))
-        })
+            })
         dictionary["defaultConfigurationIsVisible"] = .string(CommentedString("\(defaultConfigurationIsVisible.int)"))
         if let defaultConfigurationName = defaultConfigurationName {
             dictionary["defaultConfigurationName"] = .string(CommentedString(defaultConfigurationName))

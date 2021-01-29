@@ -3,8 +3,13 @@ import PathKit
 
 /// This is the element for the framework headers build phase.
 public final class PBXHeadersBuildPhase: PBXBuildPhase {
-    public override var buildPhase: BuildPhase {
-        return .headers
+    override public var buildPhase: BuildPhase {
+        .headers
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXHeadersBuildPhase else { return false }
+        return isEqual(to: rhs)
     }
 }
 

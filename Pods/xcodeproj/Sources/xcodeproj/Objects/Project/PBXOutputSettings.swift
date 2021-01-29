@@ -34,7 +34,7 @@ public enum PBXFileOrder {
 
     internal func sort<Object>(lhs: (PBXObjectReference, Object), rhs: (PBXObjectReference, Object)) -> Bool
         where Object: PlistSerializable & Equatable {
-        return lhs.0 < rhs.0
+        lhs.0 < rhs.0
     }
 
     internal func sort(lhs: (PBXObjectReference, PBXBuildFile), rhs: (PBXObjectReference, PBXBuildFile)) -> Bool {

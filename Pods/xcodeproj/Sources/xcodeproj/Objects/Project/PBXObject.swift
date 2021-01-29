@@ -7,7 +7,7 @@ public class PBXObject: Hashable, Decodable, Equatable, AutoEquatable {
     /// Note: The unique identifier of an object might change when the project gets written.
     /// If you use this identifier from a scheme, make sure the project is written before the project is.
     public var uuid: String {
-        return reference.value
+        reference.value
     }
 
     /// The object reference in the project that contains it.
@@ -52,16 +52,16 @@ public class PBXObject: Hashable, Decodable, Equatable, AutoEquatable {
 
     /// Object isa (type id)
     public static var isa: String {
-        return String(describing: self)
+        String(describing: self)
     }
 
     public static func == (lhs: PBXObject,
                            rhs: PBXObject) -> Bool {
-        return lhs.isEqual(to: rhs)
+        lhs.isEqual(to: rhs)
     }
 
-    @objc dynamic func isEqual(to _: Any?) -> Bool {
-        return true
+    func isEqual(to _: Any?) -> Bool {
+        true
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -73,7 +73,7 @@ public class PBXObject: Hashable, Decodable, Equatable, AutoEquatable {
     /// - Returns: objects the object belongs to.
     /// - Throws: an error if this method is accessed before the object has been added to a project.
     func objects() throws -> PBXObjects {
-        guard let objects = self.reference.objects else {
+        guard let objects = reference.objects else {
             let objectType = String(describing: type(of: self))
             throw PBXObjectError.orphaned(type: objectType, reference: reference.value)
         }

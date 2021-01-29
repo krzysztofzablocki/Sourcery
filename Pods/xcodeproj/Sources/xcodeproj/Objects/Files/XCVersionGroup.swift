@@ -12,7 +12,7 @@ public final class XCVersionGroup: PBXGroup {
     /// Returns the current version file reference.
     public var currentVersion: PBXFileReference? {
         get {
-            return currentVersionReference?.getObject()
+            currentVersionReference?.getObject()
         }
         set {
             currentVersionReference = newValue?.reference
@@ -96,5 +96,10 @@ public final class XCVersionGroup: PBXGroup {
         }
         return (key: CommentedString(reference, comment: path?.split(separator: "/").last.map(String.init)),
                 value: .dictionary(dictionary))
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? XCVersionGroup else { return false }
+        return isEqual(to: rhs)
     }
 }

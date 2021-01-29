@@ -105,7 +105,7 @@ public final class PBXFileReference: PBXFileElement {
 
     // MARK: - PlistSerializable
 
-    override var multiline: Bool { return false }
+    override var multiline: Bool { false }
 
     override func plistKeyAndValue(proj: PBXProj, reference: String) throws -> (key: CommentedString, value: PlistValue) {
         var dictionary: [CommentedString: PlistValue] = try super.plistKeyAndValue(proj: proj, reference: reference).value.dictionary ?? [:]
@@ -133,5 +133,10 @@ public final class PBXFileReference: PBXFileElement {
         }
         return (key: CommentedString(reference, comment: name ?? path),
                 value: .dictionary(dictionary))
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXFileReference else { return false }
+        return isEqual(to: rhs)
     }
 }

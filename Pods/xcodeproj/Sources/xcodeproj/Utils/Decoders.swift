@@ -13,7 +13,7 @@ class PBXObjectReferenceRepository {
     ///   - objects: objects.
     /// - Returns: object reference.
     func getOrCreate(reference: String, objects: PBXObjects) -> PBXObjectReference {
-        return lock.whileLocked {
+        lock.whileLocked {
             if let objectReference = references[reference] {
                 return objectReference
             }
@@ -71,6 +71,6 @@ extension Decoder {
     /// Returns the decoding context.
     var context: ProjectDecodingContext {
         // swiftlint:disable:next force_cast
-        return userInfo[.context] as! ProjectDecodingContext
+        userInfo[.context] as! ProjectDecodingContext
     }
 }

@@ -2,11 +2,11 @@ import Foundation
 
 extension KeyedDecodingContainer {
     func decode<T>(_ key: KeyedDecodingContainer.Key) throws -> T where T: Decodable {
-        return try decode(T.self, forKey: key)
+        try decode(T.self, forKey: key)
     }
 
     func decodeIfPresent<T>(_ key: KeyedDecodingContainer.Key) throws -> T? where T: Decodable {
-        return try decodeIfPresent(T.self, forKey: key)
+        try decodeIfPresent(T.self, forKey: key)
     }
 
     func decodeIntIfPresent(_ key: KeyedDecodingContainer.Key) throws -> UInt? {

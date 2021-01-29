@@ -10,7 +10,7 @@ public final class PBXBuildFile: PBXObject {
     /// Returns the file the build file refers to.
     public var file: PBXFileElement? {
         get {
-            return fileReference?.getObject()
+            fileReference?.getObject()
         }
         set {
             fileReference = newValue?.reference
@@ -23,7 +23,7 @@ public final class PBXBuildFile: PBXObject {
     /// Product.
     public var product: XCSwiftPackageProductDependency? {
         get {
-            return productReference?.getObject()
+            productReference?.getObject()
         }
         set {
             productReference = newValue?.reference
@@ -32,6 +32,10 @@ public final class PBXBuildFile: PBXObject {
 
     /// Element settings
     public var settings: [String: Any]?
+
+    /// Platform filter attribute.
+    /// Introduced in: Xcode 11
+    public var platformFilter: String?
 
     /// The cached build phase this build file belongs to
     weak var buildPhase: PBXBuildPhase?
@@ -59,6 +63,7 @@ public final class PBXBuildFile: PBXObject {
         case fileRef
         case settings
         case productRef
+        case platformFilter
     }
 
     public required init(from decoder: Decoder) throws {
@@ -72,7 +77,13 @@ public final class PBXBuildFile: PBXObject {
             productReference = objectReferenceRepository.getOrCreate(reference: productRefString, objects: objects)
         }
         settings = try container.decodeIfPresent([String: Any].self, forKey: .settings)
+        platformFilter = try container.decodeIfPresent(.platformFilter)
         try super.init(from: decoder)
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXBuildFile else { return false }
+        return isEqual(to: rhs)
     }
 }
 
@@ -137,7 +148,7 @@ extension PBXBuildFile {
 
 // Helper for serialize the BuildFile with associated BuildPhase
 final class PBXBuildPhaseFile: PlistSerializable, Equatable {
-    var multiline: Bool { return false }
+    var multiline: Bool { false }
 
     let buildFile: PBXBuildFile
     let buildPhase: PBXBuildPhase
@@ -160,12 +171,15 @@ final class PBXBuildPhaseFile: PlistSerializable, Equatable {
         if let settings = buildFile.settings {
             dictionary["settings"] = settings.plist()
         }
+        if let platformFilter = buildFile.platformFilter {
+            dictionary["platformFilter"] = .string(.init(platformFilter))
+        }
         let comment = try buildPhase.name().flatMap { "\(try buildFile.fileName() ?? "(null)") in \($0)" }
         return (key: CommentedString(reference, comment: comment),
                 value: .dictionary(dictionary))
     }
 
     static func == (lhs: PBXBuildPhaseFile, rhs: PBXBuildPhaseFile) -> Bool {
-        return lhs.buildFile == rhs.buildFile && lhs.buildPhase == rhs.buildPhase
+        lhs.buildFile == rhs.buildFile && lhs.buildPhase == rhs.buildPhase
     }
 }

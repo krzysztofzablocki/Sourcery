@@ -201,24 +201,22 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Commander/Commander.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Shell/Shell.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SourceKittenFramework/SourceKittenFramework.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/xcodeproj/xcodeproj.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Commander/Commander.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Shell/Shell.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SourceKittenFramework/SourceKittenFramework.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/xcodeproj/xcodeproj.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

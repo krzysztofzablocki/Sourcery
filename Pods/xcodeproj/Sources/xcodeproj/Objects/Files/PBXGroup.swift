@@ -4,7 +4,7 @@ import PathKit
 public class PBXGroup: PBXFileElement {
     // MARK: - Attributes
 
-    /// Grou children references.
+    /// Group children references.
     var childrenReferences: [PBXObjectReference]
 
     /// Group children.
@@ -13,7 +13,7 @@ public class PBXGroup: PBXFileElement {
             childrenReferences = newValue.references()
         }
         get {
-            return childrenReferences.objects()
+            childrenReferences.objects()
         }
     }
 
@@ -80,6 +80,11 @@ public class PBXGroup: PBXFileElement {
                                      comment: name ?? path),
                 value: .dictionary(dictionary))
     }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXGroup else { return false }
+        return isEqual(to: rhs)
+    }
 }
 
 // MARK: - Helpers
@@ -106,7 +111,7 @@ public extension PBXGroup {
     /// - Parameter groupName: group name.
     /// - Returns: group with the given name contained in the given parent group.
     func group(named name: String) -> PBXGroup? {
-        return childrenReferences
+        childrenReferences
             .objects()
             .first(where: { $0.name == name })
     }
@@ -116,7 +121,7 @@ public extension PBXGroup {
     /// - Parameter name: file name.
     /// - Returns: file with the given name contained in the given parent group.
     func file(named name: String) -> PBXFileReference? {
-        return childrenReferences
+        childrenReferences
             .objects()
             .first(where: { $0.name == name })
     }
@@ -133,6 +138,25 @@ public extension PBXGroup {
         return groupName.components(separatedBy: "/").reduce(into: [PBXGroup]()) { groups, name in
             let group = groups.last ?? self
             let newGroup = PBXGroup(children: [], sourceTree: .group, name: name, path: options.contains(.withoutFolder) ? nil : name)
+            newGroup.parent = self
+            group.childrenReferences.append(newGroup.reference)
+            objects.add(object: newGroup)
+            groups.append(newGroup)
+        }
+    }
+
+    /// Creates a variant group with the given name and returns it.
+    ///
+    /// - Parameters:
+    ///   - groupName: group name.
+    /// - Returns: created groups.
+    @discardableResult
+    func addVariantGroup(named groupName: String) throws -> [PBXVariantGroup] {
+        let objects = try self.objects()
+
+        return groupName.components(separatedBy: "/").reduce(into: [PBXVariantGroup]()) { groups, name in
+            let group = groups.last ?? self
+            let newGroup = PBXVariantGroup(children: [], sourceTree: .group, name: name)
             newGroup.parent = self
             group.childrenReferences.append(newGroup.reference)
             objects.add(object: newGroup)
@@ -187,7 +211,9 @@ public extension PBXGroup {
             path = groupPath.map { filePath.relative(to: $0) }?.string
         case .sourceRoot:
             path = filePath.relative(to: sourceRoot).string
-        case .absolute:
+        case .absolute,
+             .sdkRoot,
+             .developerDir:
             path = filePath.string
         default:
             path = nil

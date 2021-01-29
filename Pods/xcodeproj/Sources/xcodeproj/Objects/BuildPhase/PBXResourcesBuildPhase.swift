@@ -2,8 +2,13 @@ import Foundation
 
 /// This is the element for the resources copy build phase.
 public final class PBXResourcesBuildPhase: PBXBuildPhase {
-    public override var buildPhase: BuildPhase {
-        return .resources
+    override public var buildPhase: BuildPhase {
+        .resources
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXResourcesBuildPhase else { return false }
+        return isEqual(to: rhs)
     }
 }
 

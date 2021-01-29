@@ -118,7 +118,7 @@ public final class XCScheme: Writable, Equatable {
     // MARK: - Equatable
 
     public static func == (lhs: XCScheme, rhs: XCScheme) -> Bool {
-        return lhs.buildAction == rhs.buildAction &&
+        lhs.buildAction == rhs.buildAction &&
             lhs.testAction == rhs.testAction &&
             lhs.launchAction == rhs.launchAction &&
             lhs.profileAction == rhs.profileAction &&

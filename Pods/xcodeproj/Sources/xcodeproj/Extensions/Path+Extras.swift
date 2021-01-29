@@ -4,7 +4,11 @@ import PathKit
 
 // MARK: - Path extras.
 
+#if os(macOS)
 let systemGlob = Darwin.glob
+#else
+let systemGlob = Glibc.glob
+#endif
 
 extension Path {
     /// Creates a directory
@@ -28,7 +32,11 @@ extension Path {
 
         let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
         if systemGlob(cPattern, flags, nil, &gt) == 0 {
+            #if os(macOS)
             let matchc = gt.gl_matchc
+            #else
+            let matchc = gt.gl_pathc
+            #endif
             return (0 ..< Int(matchc)).compactMap { index in
                 if let path = String(validatingUTF8: gt.gl_pathv[index]!) {
                     return Path(path)

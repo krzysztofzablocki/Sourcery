@@ -8,7 +8,7 @@ public class PBXTarget: PBXContainerItem {
     /// Build configuration list.
     public var buildConfigurationList: XCConfigurationList? {
         get {
-            return buildConfigurationListReference?.getObject()
+            buildConfigurationListReference?.getObject()
         }
         set {
             buildConfigurationListReference = newValue?.reference
@@ -21,7 +21,7 @@ public class PBXTarget: PBXContainerItem {
     /// Target build phases.
     public var buildPhases: [PBXBuildPhase] {
         get {
-            return buildPhaseReferences.objects()
+            buildPhaseReferences.objects()
         }
         set {
             buildPhaseReferences = newValue.references()
@@ -34,7 +34,7 @@ public class PBXTarget: PBXContainerItem {
     /// Target build rules.
     public var buildRules: [PBXBuildRule] {
         get {
-            return buildRuleReferences.objects()
+            buildRuleReferences.objects()
         }
         set {
             buildRuleReferences = newValue.references()
@@ -47,7 +47,7 @@ public class PBXTarget: PBXContainerItem {
     /// Target dependencies.
     public var dependencies: [PBXTargetDependency] {
         get {
-            return dependencyReferences.objects()
+            dependencyReferences.objects()
         }
         set {
             dependencyReferences = newValue.references()
@@ -66,7 +66,7 @@ public class PBXTarget: PBXContainerItem {
     /// Target product.
     public var product: PBXFileReference? {
         get {
-            return productReference?.getObject()
+            productReference?.getObject()
         }
         set {
             productReference = newValue?.reference
@@ -82,7 +82,7 @@ public class PBXTarget: PBXContainerItem {
             packageProductDependencyReferences = newValue.references()
         }
         get {
-            return packageProductDependencyReferences.objects()
+            packageProductDependencyReferences.objects()
         }
     }
 
@@ -160,7 +160,9 @@ public class PBXTarget: PBXContainerItem {
         }
 
         let packageProductDependencyReferenceStrings: [String] = try container.decodeIfPresent(.packageProductDependencies) ?? []
-        packageProductDependencyReferences = packageProductDependencyReferenceStrings.map { objectReferenceRepository.getOrCreate(reference: $0, objects: objects) }
+        packageProductDependencyReferences = packageProductDependencyReferenceStrings.map {
+            objectReferenceRepository.getOrCreate(reference: $0, objects: objects)
+        }
 
         productType = try container.decodeIfPresent(.productType)
         try super.init(from: decoder)
@@ -178,7 +180,7 @@ public class PBXTarget: PBXContainerItem {
             .map { (buildPhaseReference: PBXObjectReference) in
                 let buildPhase: PBXBuildPhase? = buildPhaseReference.getObject()
                 return .string(CommentedString(buildPhaseReference.value, comment: buildPhase?.name()))
-        })
+            })
 
         // Xcode doesn't write PBXAggregateTarget buildRules or empty PBXLegacyTarget buildRules
         if !(self is PBXAggregateTarget), !(self is PBXLegacyTarget) || !buildRuleReferences.isEmpty {
@@ -205,6 +207,11 @@ public class PBXTarget: PBXContainerItem {
         return (key: CommentedString(reference, comment: name),
                 value: .dictionary(dictionary))
     }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXTarget else { return false }
+        return isEqual(to: rhs)
+    }
 }
 
 // MARK: - Helpers
@@ -215,7 +222,7 @@ public extension PBXTarget {
     /// - Returns: product name with extension.
     func productNameWithExtension() -> String? {
         guard let productName = self.productName else { return nil }
-        guard let fileExtension = self.productType?.fileExtension else { return nil }
+        guard let fileExtension = productType?.fileExtension else { return nil }
         return "\(productName).\(fileExtension)"
     }
 
@@ -224,7 +231,7 @@ public extension PBXTarget {
     /// - Returns: frameworks build phase.
     /// - Throws: an error if the build phase cannot be obtained.
     func frameworksBuildPhase() throws -> PBXFrameworksBuildPhase? {
-        return try buildPhaseReferences
+        try buildPhaseReferences
             .compactMap { try $0.getThrowingObject() as? PBXBuildPhase }
             .filter { $0.buildPhase == .frameworks }
             .compactMap { $0 as? PBXFrameworksBuildPhase }
@@ -236,7 +243,7 @@ public extension PBXTarget {
     /// - Returns: sources build phase.
     /// - Throws: an error if the build phase cannot be obtained.
     func sourcesBuildPhase() throws -> PBXSourcesBuildPhase? {
-        return try buildPhaseReferences
+        try buildPhaseReferences
             .compactMap { try $0.getThrowingObject() as? PBXBuildPhase }
             .filter { $0.buildPhase == .sources }
             .compactMap { $0 as? PBXSourcesBuildPhase }
@@ -248,7 +255,7 @@ public extension PBXTarget {
     /// - Returns: sources build phase.
     /// - Throws: an error if the build phase cannot be obtained.
     func resourcesBuildPhase() throws -> PBXResourcesBuildPhase? {
-        return try buildPhaseReferences
+        try buildPhaseReferences
             .compactMap { try $0.getThrowingObject() as? PBXResourcesBuildPhase }
             .filter { $0.buildPhase == .resources }
             .first
@@ -259,7 +266,7 @@ public extension PBXTarget {
     /// - Returns: source files.
     /// - Throws: an error if something goes wrong.
     func sourceFiles() throws -> [PBXFileElement] {
-        return try sourcesBuildPhase()?.fileReferences?
+        try sourcesBuildPhase()?.fileReferences?
             .compactMap { try $0.getThrowingObject() as? PBXBuildFile }
             .filter { $0.fileReference != nil }
             .compactMap { try $0.fileReference!.getThrowingObject() as? PBXFileElement }
@@ -270,7 +277,7 @@ public extension PBXTarget {
     ///
     /// - Returns: Embed frameworks build phases.
     func embedFrameworksBuildPhases() -> [PBXCopyFilesBuildPhase] {
-        return buildPhases
+        buildPhases
             .filter { $0.buildPhase == .copyFiles }
             .compactMap { $0 as? PBXCopyFilesBuildPhase }
             .filter { $0.dstSubfolderSpec == .frameworks }

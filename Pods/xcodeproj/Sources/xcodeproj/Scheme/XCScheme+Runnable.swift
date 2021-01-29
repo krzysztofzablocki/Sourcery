@@ -33,9 +33,13 @@ extension XCScheme {
 
         // MARK: - Equatable
 
+        func isEqual(other: Runnable) -> Bool {
+            runnableDebuggingMode == other.runnableDebuggingMode &&
+                buildableReference == other.buildableReference
+        }
+
         public static func == (lhs: Runnable, rhs: Runnable) -> Bool {
-            return lhs.runnableDebuggingMode == rhs.runnableDebuggingMode &&
-                lhs.buildableReference == rhs.buildableReference
+            lhs.isEqual(other: rhs) && rhs.isEqual(other: lhs)
         }
     }
 }

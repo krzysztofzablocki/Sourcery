@@ -71,7 +71,7 @@ public enum XCWorkspaceDataElementLocationType {
 
 extension XCWorkspaceDataElementLocationType: CustomStringConvertible {
     public var description: String {
-        return "\(schema):\(path)"
+        "\(schema):\(path)"
     }
 }
 
@@ -88,8 +88,8 @@ extension XCWorkspaceDataElementLocationType: Equatable {
             return lhs == rhs
         case let (.self(lhs), .self(rhs)):
             return lhs == rhs
-        case let (.other(lhs), .other(rhs)):
-            return lhs.0 == rhs.0 && lhs.1 == rhs.1
+        case let (.other(lhs0, lhs1), .other(rhs0, rhs1)):
+            return lhs0 == rhs0 && lhs1 == rhs1
         default: return false
         }
     }

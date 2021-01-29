@@ -7,7 +7,7 @@ protocol PlistSerializable {
 }
 
 extension PlistSerializable {
-    var multiline: Bool { return true }
+    var multiline: Bool { true }
 }
 
 final class StateHolder {
@@ -28,7 +28,7 @@ final class StateHolder {
     }
 
     func copy() -> StateHolder {
-        return StateHolder(indent: indent, multiline: multiline)
+        StateHolder(indent: indent, multiline: multiline)
     }
 }
 
@@ -308,7 +308,7 @@ final class PBXProjEncoder {
         try write(section: section, proj: proj, objects: objects, sort: outputSettings.projFileListOrder.sort, stateHolder: &stateHolder, to: &output)
     }
 
-    final class PBXProjElement {
+    final class PBXProjElement: NSObject {
         let key: CommentedString
         let value: PlistValue
         let multiline: Bool

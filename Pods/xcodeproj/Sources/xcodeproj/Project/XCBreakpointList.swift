@@ -85,7 +85,7 @@ public final class XCBreakpointList: Equatable, Writable {
                     // MARK: - Equatable
 
                     public static func == (lhs: ActionContent, rhs: ActionContent) -> Bool {
-                        return lhs.consoleCommand == rhs.consoleCommand &&
+                        lhs.consoleCommand == rhs.consoleCommand &&
                             lhs.message == rhs.message &&
                             lhs.conveyanceType == rhs.conveyanceType &&
                             lhs.command == rhs.command &&
@@ -143,7 +143,7 @@ public final class XCBreakpointList: Equatable, Writable {
                 // MARK: - Equatable
 
                 public static func == (lhs: BreakpointActionProxy, rhs: BreakpointActionProxy) -> Bool {
-                    return lhs.actionExtensionID == rhs.actionExtensionID &&
+                    lhs.actionExtensionID == rhs.actionExtensionID &&
                         lhs.actionContent == rhs.actionContent
                 }
             }
@@ -163,12 +163,12 @@ public final class XCBreakpointList: Equatable, Writable {
                 }
 
                 public static func == (_: BreakpointLocationProxy, _: BreakpointLocationProxy) -> Bool {
-                    return true
+                    true
                 }
             }
 
             public static func == (lhs: BreakpointContent, rhs: BreakpointContent) -> Bool {
-                return lhs.enabled == rhs.enabled &&
+                lhs.enabled == rhs.enabled &&
                     lhs.ignoreCount == rhs.ignoreCount &&
                     lhs.continueAfterRunningActions == rhs.continueAfterRunningActions &&
                     lhs.filePath == rhs.filePath &&
@@ -353,7 +353,7 @@ public final class XCBreakpointList: Equatable, Writable {
         // MARK: - Equatable
 
         public static func == (lhs: BreakpointProxy, rhs: BreakpointProxy) -> Bool {
-            return lhs.breakpointExtensionID == rhs.breakpointExtensionID &&
+            lhs.breakpointExtensionID == rhs.breakpointExtensionID &&
                 lhs.breakpointContent == rhs.breakpointContent
         }
     }
@@ -421,7 +421,7 @@ public final class XCBreakpointList: Equatable, Writable {
     // MARK: - Equatable
 
     public static func == (lhs: XCBreakpointList, rhs: XCBreakpointList) -> Bool {
-        return lhs.breakpoints == rhs.breakpoints &&
+        lhs.breakpoints == rhs.breakpoints &&
             lhs.type == rhs.type &&
             lhs.version == rhs.version
     }

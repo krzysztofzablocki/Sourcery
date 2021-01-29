@@ -11,7 +11,7 @@ public class XCSwiftPackageProductDependency: PBXContainerItem, PlistSerializabl
     /// Package the product dependency refers to.
     public var package: XCRemoteSwiftPackageReference? {
         get {
-            return packageReference?.getObject()
+            packageReference?.getObject()
         }
         set {
             packageReference = newValue?.reference
@@ -59,12 +59,8 @@ public class XCSwiftPackageProductDependency: PBXContainerItem, PlistSerializabl
         case package
     }
 
-    // MARK: - Equatable
-
-    @objc public override func isEqual(to object: Any?) -> Bool {
+    override func isEqual(to object: Any?) -> Bool {
         guard let rhs = object as? XCSwiftPackageProductDependency else { return false }
-        if packageReference != rhs.packageReference { return false }
-        if productName != rhs.productName { return false }
-        return super.isEqual(to: rhs)
+        return isEqual(to: rhs)
     }
 }

@@ -50,15 +50,17 @@ final class ReferenceGenerator: ReferenceGenerating {
             try generateGroupReferences(productsGroup, identifiers: identifiers)
         }
 
+        // Project references
+        try project.projectReferences.forEach { objectReferenceDict in
+            guard let projectReference = objectReferenceDict[Xcode.ProjectReference.projectReferenceKey]?.getObject() as? PBXFileReference,
+                let productsGroup = objectReferenceDict[Xcode.ProjectReference.productGroupKey]?.getObject() as? PBXGroup else { return }
+            try generateFileReference(projectReference, identifiers: identifiers)
+            try generateGroupReferences(productsGroup, identifiers: identifiers + [projectReference.name ?? projectReference.path ?? ""])
+        }
+
         // Targets
         let targets: [PBXTarget] = project.targets
         try targets.forEach { try generateTargetReferences($0, identifiers: identifiers) }
-
-        // Project references
-        try project.projectReferences.flatMap { $0.values }.forEach { objectReference in
-            guard let fileReference: PBXFileReference = objectReference.getObject() else { return }
-            try generateFileReference(fileReference, identifiers: identifiers)
-        }
 
         /// Configuration list
         if let configurationList: XCConfigurationList = project.buildConfigurationListReference.getObject() {
@@ -123,6 +125,8 @@ final class ReferenceGenerator: ReferenceGenerating {
                 try generateGroupReferences(childGroup, identifiers: identifiers)
             } else if let childFileReference = childFileElement as? PBXFileReference {
                 try generateFileReference(childFileReference, identifiers: identifiers)
+            } else if let childReferenceProxy = childFileElement as? PBXReferenceProxy {
+                try generateReferenceProxyReference(childReferenceProxy, identifiers: identifiers)
             }
         }
     }
@@ -221,6 +225,41 @@ final class ReferenceGenerator: ReferenceGenerating {
             }
             fixReference(for: targetDependency, identifiers: identifiers)
         }
+    }
+
+    /// Generates the reference for a reference proxy object.
+    ///
+    /// - Parameters:
+    ///   - referenceProxy: reference proxy instance.
+    ///   - identifiers: list of identifiers.
+    private func generateReferenceProxyReference(_ referenceProxy: PBXReferenceProxy,
+                                                 identifiers: [String]) throws {
+        var identifiers = identifiers
+
+        if let path = referenceProxy.path {
+            identifiers.append(path)
+        }
+
+        fixReference(for: referenceProxy, identifiers: identifiers)
+
+        if let remote = referenceProxy.remote {
+            try generateContainerItemProxyReference(remote, identifiers: identifiers)
+        }
+    }
+
+    /// Generates the reference for a container item proxy object.
+    ///
+    /// - Parameters:
+    ///   - containerItemProxy: ontainer item proxy instance.
+    ///   - identifiers: list of identifiers.
+    private func generateContainerItemProxyReference(_ containerItemProxy: PBXContainerItemProxy,
+                                                     identifiers: [String]) throws {
+        var identifiers = identifiers
+
+        if let remoteInfo = containerItemProxy.remoteInfo {
+            identifiers.append(remoteInfo)
+        }
+        fixReference(for: containerItemProxy, identifiers: identifiers)
     }
 
     /// Generates the reference for a build phase object.
@@ -324,7 +363,7 @@ extension ReferenceGenerator {
             }
         case .xcode:
             let reference = "\(acronym)_\(typeNameAndIdentifiers)_\(counter)".md5.uppercased()
-            return String(reference.substring(to: reference.index(reference.startIndex, offsetBy: 24)))
+            return String(reference[...reference.index(reference.startIndex, offsetBy: 23)])
         }
     }
 }

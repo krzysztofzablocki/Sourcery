@@ -1,4 +1,5 @@
 import Foundation
+import PathKit
 
 public final class PBXProject: PBXObject {
     // MARK: - Attributes
@@ -15,7 +16,7 @@ public final class PBXProject: PBXObject {
             buildConfigurationListReference = newValue.reference
         }
         get {
-            return buildConfigurationListReference.getObject()
+            buildConfigurationListReference.getObject()
         }
     }
 
@@ -40,7 +41,7 @@ public final class PBXProject: PBXObject {
             mainGroupReference = newValue.reference
         }
         get {
-            return mainGroupReference.getObject()
+            mainGroupReference.getObject()
         }
     }
 
@@ -53,7 +54,7 @@ public final class PBXProject: PBXObject {
             productsGroupReference = newValue?.reference
         }
         get {
-            return productsGroupReference?.getObject()
+            productsGroupReference?.getObject()
         }
     }
 
@@ -75,7 +76,7 @@ public final class PBXProject: PBXObject {
             }
         }
         get {
-            return projectReferences.map { project in
+            projectReferences.map { project in
                 project.mapValues { $0.getObject()! }
             }
         }
@@ -95,7 +96,7 @@ public final class PBXProject: PBXObject {
             targetReferences = newValue.references()
         }
         get {
-            return targetReferences.objects()
+            targetReferences.objects()
         }
     }
 
@@ -133,7 +134,7 @@ public final class PBXProject: PBXObject {
             packageReferences = newValue.references()
         }
         get {
-            return packageReferences?.objects() ?? []
+            packageReferences?.objects() ?? []
         }
     }
 
@@ -163,33 +164,91 @@ public final class PBXProject: PBXObject {
     /// - Parameter for: target whose attributes will be returned.
     /// - Returns: target attributes.
     public func attributes(for target: PBXTarget) -> [String: Any]? {
-        return targetAttributeReferences[target.reference]
+        targetAttributeReferences[target.reference]
     }
 
+    /// Adds a remote swift package
+    ///
+    /// - Parameters:
+    ///   - repositoryURL: URL in String pointing to the location of remote Swift package
+    ///   - productName: The product to depend on without the extension
+    ///   - versionRequirement: Describes the rules of the version to use
+    ///   - targetName: Target's name to link package product to
     public func addSwiftPackage(repositoryURL: String,
                                 productName: String,
                                 versionRequirement: XCRemoteSwiftPackageReference.VersionRequirement,
-                                target: PBXTarget? = nil) -> XCRemoteSwiftPackageReference {
-        let objects = try! self.objects()
+                                targetName: String) throws -> XCRemoteSwiftPackageReference {
+        let objects = try self.objects()
+
+        guard let target = targets.first(where: { $0.name == targetName }) else { throw PBXProjError.targetNotFound(targetName: targetName) }
 
         // Reference
-        let reference = XCRemoteSwiftPackageReference(repositoryURL: repositoryURL, versionRequirement: versionRequirement)
-        objects.add(object: reference)
-        packages.append(reference)
+        let reference = try addSwiftPackageReference(repositoryURL: repositoryURL,
+                                                     productName: productName,
+                                                     versionRequirement: versionRequirement)
 
         // Product
-        let productDependency = XCSwiftPackageProductDependency(productName: productName, package: reference)
-        objects.add(object: productDependency)
-        target?.packageProductDependencies.append(productDependency)
+        let productDependency = try addSwiftPackageProduct(reference: reference,
+                                                           productName: productName,
+                                                           target: target)
 
         // Build file
         let buildFile = PBXBuildFile(product: productDependency)
         objects.add(object: buildFile)
 
         // Link the product
-        try? target?.sourcesBuildPhase()?.files?.append(buildFile)
+        guard let frameworksBuildPhase = try target.frameworksBuildPhase() else { throw PBXProjError.frameworksBuildPhaseNotFound(targetName: targetName) }
+        frameworksBuildPhase.files?.append(buildFile)
 
         return reference
+    }
+
+    /// Adds a local swift package
+    ///
+    /// - Parameters:
+    ///   - path: Relative path to the swift package (throws an error if the path is absolute)
+    ///   - productName: The product to depend on without the extension
+    ///   - targetName: Target's name to link package product to
+    ///   - addFileReference: Include a file reference to the package (defaults to main group)
+    public func addLocalSwiftPackage(path: Path,
+                                     productName: String,
+                                     targetName: String,
+                                     addFileReference: Bool = true) throws -> XCSwiftPackageProductDependency {
+        guard path.isRelative else { throw PBXProjError.pathIsAbsolute(path) }
+
+        let objects = try self.objects()
+
+        guard let target = targets.first(where: { $0.name == targetName }) else { throw PBXProjError.targetNotFound(targetName: targetName) }
+
+        // Product
+        let productDependency = try addLocalSwiftPackageProduct(path: path,
+                                                                productName: productName,
+                                                                target: target)
+
+        // Build file
+        let buildFile = PBXBuildFile(product: productDependency)
+        objects.add(object: buildFile)
+
+        // Link the product
+        guard let frameworksBuildPhase = try target.frameworksBuildPhase() else {
+            throw PBXProjError.frameworksBuildPhaseNotFound(targetName: targetName)
+        }
+
+        frameworksBuildPhase.files?.append(buildFile)
+
+        // File reference
+        // The user might want to control adding the file's reference (to be exact when the reference is added)
+        // to achieve desired hierarchy of the group's children
+        if addFileReference {
+            let reference = PBXFileReference(sourceTree: .group,
+                                             name: productName,
+                                             lastKnownFileType: "folder",
+                                             path: path.string)
+            objects.add(object: reference)
+            mainGroup.children.append(reference)
+        }
+
+        return productDependency
     }
 
     // MARK: - Init
@@ -311,6 +370,75 @@ public final class PBXProject: PBXObject {
 
         try super.init(from: decoder)
     }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXProject else { return false }
+        return isEqual(to: rhs)
+    }
+}
+
+// MARK: - Helpers
+
+extension PBXProject {
+    /// Adds reference for remote Swift package
+    private func addSwiftPackageReference(repositoryURL: String,
+                                          productName: String,
+                                          versionRequirement: XCRemoteSwiftPackageReference.VersionRequirement) throws -> XCRemoteSwiftPackageReference {
+        let reference: XCRemoteSwiftPackageReference
+        if let package = packages.first(where: { $0.repositoryURL == repositoryURL }) {
+            guard package.versionRequirement == versionRequirement else {
+                throw PBXProjError.multipleRemotePackages(productName: productName)
+            }
+            reference = package
+        } else {
+            reference = XCRemoteSwiftPackageReference(repositoryURL: repositoryURL, versionRequirement: versionRequirement)
+            try objects().add(object: reference)
+            packages.append(reference)
+        }
+
+        return reference
+    }
+
+    /// Adds package product for remote Swift package
+    private func addSwiftPackageProduct(reference: XCRemoteSwiftPackageReference,
+                                        productName: String,
+                                        target: PBXTarget) throws -> XCSwiftPackageProductDependency {
+        let objects = try self.objects()
+
+        let productDependency: XCSwiftPackageProductDependency
+        // Avoid duplication
+        if let product = objects.swiftPackageProductDependencies.first(where: { $0.value.package == reference })?.value {
+            productDependency = product
+        } else {
+            productDependency = XCSwiftPackageProductDependency(productName: productName, package: reference)
+            objects.add(object: productDependency)
+        }
+        target.packageProductDependencies.append(productDependency)
+
+        return productDependency
+    }
+
+    /// Adds package product for local Swift package
+    private func addLocalSwiftPackageProduct(path: Path,
+                                             productName: String,
+                                             target: PBXTarget) throws -> XCSwiftPackageProductDependency {
+        let objects = try self.objects()
+
+        let productDependency: XCSwiftPackageProductDependency
+        // Avoid duplication
+        if let product = objects.swiftPackageProductDependencies.first(where: { $0.value.productName == productName }) {
+            guard objects.fileReferences.first(where: { $0.value.name == productName })?.value.path == path.string else {
+                throw PBXProjError.multipleLocalPackages(productName: productName)
+            }
+            productDependency = product.value
+        } else {
+            productDependency = XCSwiftPackageProductDependency(productName: productName)
+            objects.add(object: productDependency)
+        }
+        target.packageProductDependencies.append(productDependency)
+
+        return productDependency
+    }
 }
 
 // MARK: - PlistSerializable
@@ -354,7 +482,7 @@ extension PBXProject: PlistSerializable {
             .map { targetReference in
                 let target: PBXTarget? = targetReference.getObject()
                 return .string(CommentedString(targetReference.value, comment: target?.name))
-        })
+            })
 
         if !packages.isEmpty {
             dictionary["packageReferences"] = PlistValue.array(packages.map {
@@ -363,16 +491,16 @@ extension PBXProject: PlistSerializable {
         }
 
         var plistAttributes: [String: Any] = attributes
-        if !targetAttributeReferences.isEmpty {
-            // merge target attributes
-            var plistTargetAttributes: [String: Any] = [:]
-            for (reference, value) in targetAttributeReferences {
-                plistTargetAttributes[reference.value] = value.mapValues { value in
-                    (value as? PBXObject)?.reference.value ?? value
-                }
+
+        // merge target attributes
+        var plistTargetAttributes: [String: Any] = [:]
+        for (reference, value) in targetAttributeReferences {
+            plistTargetAttributes[reference.value] = value.mapValues { value in
+                (value as? PBXObject)?.reference.value ?? value
             }
-            plistAttributes[PBXProject.targetAttributesKey] = plistTargetAttributes
         }
+        plistAttributes[PBXProject.targetAttributesKey] = plistTargetAttributes
+
         dictionary["attributes"] = plistAttributes.plist()
 
         return (key: CommentedString(reference,
@@ -385,7 +513,8 @@ extension PBXProject: PlistSerializable {
             return nil
         }
         return .array(projectReferences.compactMap { reference in
-            guard let productGroupReference = reference["ProductGroup"], let projectRef = reference["ProjectRef"] else {
+            guard let productGroupReference = reference[Xcode.ProjectReference.productGroupKey],
+                let projectRef = reference[Xcode.ProjectReference.projectReferenceKey] else {
                 return nil
             }
             let producGroup: PBXGroup? = productGroupReference.getObject()
@@ -394,8 +523,8 @@ extension PBXProject: PlistSerializable {
             let fileRefName = project?.fileName()
 
             return [
-                CommentedString("ProductGroup"): PlistValue.string(CommentedString(productGroupReference.value, comment: groupName)),
-                CommentedString("ProjectRef"): PlistValue.string(CommentedString(projectRef.value, comment: fileRefName)),
+                CommentedString(Xcode.ProjectReference.productGroupKey): PlistValue.string(CommentedString(productGroupReference.value, comment: groupName)),
+                CommentedString(Xcode.ProjectReference.projectReferenceKey): PlistValue.string(CommentedString(projectRef.value, comment: fileRefName)),
             ]
         })
     }

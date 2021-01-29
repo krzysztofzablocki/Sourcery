@@ -65,7 +65,7 @@ extension XCScheme {
             // MARK: - Equatable
 
             public static func == (lhs: Entry, rhs: Entry) -> Bool {
-                return lhs.buildableReference == rhs.buildableReference &&
+                lhs.buildableReference == rhs.buildableReference &&
                     lhs.buildFor == rhs.buildFor
             }
         }

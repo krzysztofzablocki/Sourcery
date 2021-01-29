@@ -10,6 +10,6 @@ public final class XCWorkspaceDataFileRef {
 
 extension XCWorkspaceDataFileRef: Equatable {
     public static func == (lhs: XCWorkspaceDataFileRef, rhs: XCWorkspaceDataFileRef) -> Bool {
-        return lhs.location == rhs.location
+        lhs.location == rhs.location
     }
 }

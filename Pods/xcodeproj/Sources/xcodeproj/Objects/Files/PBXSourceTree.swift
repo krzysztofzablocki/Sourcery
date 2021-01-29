@@ -97,6 +97,6 @@ public enum PBXSourceTree: CustomStringConvertible, Equatable, Decodable {
 
 extension PBXSourceTree {
     func plist() -> PlistValue {
-        return .string(CommentedString(String(describing: self)))
+        .string(CommentedString(String(describing: self)))
     }
 }

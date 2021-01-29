@@ -60,13 +60,17 @@ public final class PBXContainerItemProxy: PBXObject {
     /// The object is a reference to a PBXProject element if proxy is for the object located in current .xcodeproj, otherwise PBXFileReference.
     var containerPortalReference: PBXObjectReference
 
-    /// Returns the project that contains the remote object. If container portal is a remote project this getter will fail. Use isContainerPortalFileReference to check if you can use the getter
+    /// Returns the project that contains the remote object.
+    /// If container portal is a remote project this getter will fail.
+    /// Use isContainerPortalFileReference to check if you can use the getter
     public var containerPortal: ContainerPortal {
         get {
-            return ContainerPortal(object: containerPortalReference.getObject())
+            ContainerPortal(object: containerPortalReference.getObject())
         }
         set {
-            guard let reference = newValue.reference else { fatalError("Container portal is mandatory field that has to be set to a known value instead of: \(newValue)") }
+            guard let reference = newValue.reference else {
+                fatalError("Container portal is mandatory field that has to be set to a known value instead of: \(newValue)")
+            }
             containerPortalReference = reference
         }
     }
@@ -77,7 +81,7 @@ public final class PBXContainerItemProxy: PBXObject {
     /// Element remote global ID reference. ID of the proxied object.
     public var remoteGlobalID: RemoteGlobalID? {
         get {
-            return remoteGlobalIDReference?.id
+            remoteGlobalIDReference?.id
         } set {
             remoteGlobalIDReference = newValue?.reference
         }
@@ -93,7 +97,8 @@ public final class PBXContainerItemProxy: PBXObject {
     /// Use this initializer if the proxy is for an object within the same .pbxproj file.
     ///
     /// - Parameters:
-    ///   - containerPortal: container portal. For proxied object located in the same .xcodeproj use .project. For remote object use .fileReference with PBXFileRefence of remote .xcodeproj
+    ///   - containerPortal: container portal. For proxied object located in the same .xcodeproj use .project.
+    ///   For remote object use .fileReference with PBXFileRefence of remote .xcodeproj
     ///   - remoteGlobalID: ID of the proxied object. Can be ID from remote .xcodeproj referenced if containerPortal is .fileReference
     ///   - proxyType: proxy type.
     ///   - remoteInfo: remote info.
@@ -101,7 +106,9 @@ public final class PBXContainerItemProxy: PBXObject {
                 remoteGlobalID: RemoteGlobalID? = nil,
                 proxyType: ProxyType? = nil,
                 remoteInfo: String? = nil) {
-        guard let containerPortalReference = containerPortal.reference else { fatalError("Container portal is mandatory field that has to be set to a known value instead of: \(containerPortal)") }
+        guard let containerPortalReference = containerPortal.reference else {
+            fatalError("Container portal is mandatory field that has to be set to a known value instead of: \(containerPortal)")
+        }
         self.containerPortalReference = containerPortalReference
         remoteGlobalIDReference = remoteGlobalID?.reference
         self.remoteInfo = remoteInfo
@@ -134,6 +141,11 @@ public final class PBXContainerItemProxy: PBXObject {
         }
         remoteInfo = try container.decodeIfPresent(.remoteInfo)
         try super.init(from: decoder)
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXContainerItemProxy else { return false }
+        return isEqual(to: rhs)
     }
 }
 

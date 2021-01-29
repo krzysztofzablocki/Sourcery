@@ -34,7 +34,7 @@ target 'Sourcery' do
   pod 'StencilSwiftKit', :git =>'git@github.com:SwiftGen/StencilSwiftKit.git', :branch => 'stable'
   pod 'Commander', '0.9.1'
   pathkit
-  pod "xcodeproj", :git =>'git@github.com:tuist/XcodeProj.git', :tag => '7.0.0'
+  pod "xcodeproj", :git =>'git@github.com:tuist/XcodeProj.git', :tag => '7.18.0'
   pod 'SourceKittenFramework', '0.30.1'
   pod 'Yams', '4.0.0'
 

@@ -27,19 +27,19 @@ extension XCScheme {
         // MARK: - XML
 
         func xmlElement() -> AEXMLElement {
-            return AEXMLElement(name: "AdditionalOption",
-                                value: nil,
-                                attributes: [
-                                    "key": key,
-                                    "value": value,
-                                    "isEnabled": isEnabled.xmlString,
-                                ])
+            AEXMLElement(name: "AdditionalOption",
+                         value: nil,
+                         attributes: [
+                             "key": key,
+                             "value": value,
+                             "isEnabled": isEnabled.xmlString,
+                         ])
         }
 
         // MARK: - Equatable
 
         public static func == (lhs: AdditionalOption, rhs: AdditionalOption) -> Bool {
-            return lhs.key == rhs.key &&
+            lhs.key == rhs.key &&
                 lhs.value == rhs.value &&
                 lhs.isEnabled == rhs.isEnabled
         }

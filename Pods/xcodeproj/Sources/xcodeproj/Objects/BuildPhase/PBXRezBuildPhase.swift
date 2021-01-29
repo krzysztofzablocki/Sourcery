@@ -3,8 +3,13 @@ import Foundation
 /// This is the element for the Build Carbon Resources build phase.
 /// These are legacy .r files from the Classic Mac OS era.
 public final class PBXRezBuildPhase: PBXBuildPhase {
-    public override var buildPhase: BuildPhase {
-        return .carbonResources
+    override public var buildPhase: BuildPhase {
+        .carbonResources
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXRezBuildPhase else { return false }
+        return isEqual(to: rhs)
     }
 }
 

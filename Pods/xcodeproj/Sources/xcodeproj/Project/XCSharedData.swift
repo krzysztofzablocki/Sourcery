@@ -51,7 +51,7 @@ public final class XCSharedData: Equatable {
     // MARK: - Equatable
 
     public static func == (lhs: XCSharedData, rhs: XCSharedData) -> Bool {
-        return lhs.schemes == rhs.schemes &&
+        lhs.schemes == rhs.schemes &&
             lhs.breakpoints == rhs.breakpoints &&
             lhs.workspaceSettings == rhs.workspaceSettings
     }

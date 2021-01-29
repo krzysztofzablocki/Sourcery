@@ -48,7 +48,7 @@ extension XCScheme {
         // MARK: - Equatable
 
         public static func == (lhs: ExecutionAction, rhs: ExecutionAction) -> Bool {
-            return lhs.title == rhs.title &&
+            lhs.title == rhs.title &&
                 lhs.scriptText == rhs.scriptText &&
                 lhs.environmentBuildable == rhs.environmentBuildable
         }

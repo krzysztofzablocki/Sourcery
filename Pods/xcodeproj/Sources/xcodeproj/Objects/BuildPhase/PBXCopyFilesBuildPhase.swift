@@ -27,8 +27,8 @@ public final class PBXCopyFilesBuildPhase: PBXBuildPhase {
     /// Copy files build phase name
     public var name: String?
 
-    public override var buildPhase: BuildPhase {
-        return .copyFiles
+    override public var buildPhase: BuildPhase {
+        .copyFiles
     }
 
     // MARK: - Init
@@ -70,6 +70,11 @@ public final class PBXCopyFilesBuildPhase: PBXBuildPhase {
         dstSubfolderSpec = try container.decodeIntIfPresent(.dstSubfolderSpec).flatMap(SubFolder.init)
         name = try container.decodeIfPresent(.name)
         try super.init(from: decoder)
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? PBXCopyFilesBuildPhase else { return false }
+        return isEqual(to: rhs)
     }
 }
 

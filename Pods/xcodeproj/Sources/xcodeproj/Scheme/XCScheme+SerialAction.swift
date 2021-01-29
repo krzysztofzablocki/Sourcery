@@ -46,7 +46,7 @@ extension XCScheme {
         }
 
         public static func == (lhs: SerialAction, rhs: SerialAction) -> Bool {
-            return lhs.isEqual(to: rhs)
+            lhs.isEqual(to: rhs)
         }
     }
 }

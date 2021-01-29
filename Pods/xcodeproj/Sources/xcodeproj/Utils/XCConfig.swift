@@ -51,7 +51,7 @@ final class XCConfigParser {
     /// - Parameter projectPath: path where the .xcodeproj is, for resolving project-relative includes.
     /// - Returns: function that parses the line.
     static func configFrom(path: Path, projectPath: Path?) -> (String) -> (include: Path, config: XCConfig)? {
-        return { line in
+        { line in
             includeRegex.matches(in: line,
                                  options: [],
                                  range: NSRange(location: 0,
@@ -81,10 +81,10 @@ final class XCConfigParser {
     }
 
     static func settingFrom(line: String) -> (key: String, value: String)? {
-        return settingRegex.matches(in: line,
-                                    options: [],
-                                    range: NSRange(location: 0,
-                                                   length: line.count))
+        settingRegex.matches(in: line,
+                             options: [],
+                             range: NSRange(location: 0,
+                                            length: line.count))
             .compactMap { (match) -> (key: String, value: String)? in
                 if match.numberOfRanges == 3 {
                     let key: String = NSString(string: line).substring(with: match.range(at: 1))

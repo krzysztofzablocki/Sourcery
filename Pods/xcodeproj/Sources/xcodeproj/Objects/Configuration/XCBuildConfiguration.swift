@@ -10,7 +10,7 @@ public final class XCBuildConfiguration: PBXObject {
     /// Base xcconfig file reference.
     public var baseConfiguration: PBXFileReference? {
         get {
-            return baseConfigurationReference?.getObject()
+            baseConfigurationReference?.getObject()
         }
         set {
             if let newValue = newValue {
@@ -88,6 +88,11 @@ public final class XCBuildConfiguration: PBXObject {
         default:
             break
         }
+    }
+
+    override func isEqual(to object: Any?) -> Bool {
+        guard let rhs = object as? XCBuildConfiguration else { return false }
+        return isEqual(to: rhs)
     }
 }
 

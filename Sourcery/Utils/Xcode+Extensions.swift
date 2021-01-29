@@ -1,6 +1,6 @@
 import Foundation
 import PathKit
-import xcodeproj
+import XcodeProj
 import SourceryRuntime
 
 private struct UnableToAddSourceFile: Error {

@@ -25,7 +25,7 @@ extension XCScheme {
 
         private var blueprint: Blueprint
         public var blueprintIdentifier: String {
-            return blueprint.string
+            blueprint.string
         }
 
         public var buildableName: String
@@ -72,21 +72,21 @@ extension XCScheme {
         }
 
         func xmlElement() -> AEXMLElement {
-            return AEXMLElement(name: "BuildableReference",
-                                value: nil,
-                                attributes: [
-                                    "BuildableIdentifier": buildableIdentifier,
-                                    "BlueprintIdentifier": blueprint.string,
-                                    "BuildableName": buildableName,
-                                    "BlueprintName": blueprintName,
-                                    "ReferencedContainer": referencedContainer,
-                                ])
+            AEXMLElement(name: "BuildableReference",
+                         value: nil,
+                         attributes: [
+                             "BuildableIdentifier": buildableIdentifier,
+                             "BlueprintIdentifier": blueprint.string,
+                             "BuildableName": buildableName,
+                             "BlueprintName": blueprintName,
+                             "ReferencedContainer": referencedContainer,
+                         ])
         }
 
         // MARK: - Equatable
 
         public static func == (lhs: BuildableReference, rhs: BuildableReference) -> Bool {
-            return lhs.referencedContainer == rhs.referencedContainer &&
+            lhs.referencedContainer == rhs.referencedContainer &&
                 lhs.blueprintIdentifier == rhs.blueprintIdentifier &&
                 lhs.buildableName == rhs.buildableName &&
                 lhs.blueprint == rhs.blueprint &&

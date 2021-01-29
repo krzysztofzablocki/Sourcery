@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double xcodeprojVersionNumber;
-FOUNDATION_EXPORT const unsigned char xcodeprojVersionString[];
+FOUNDATION_EXPORT double XcodeProjVersionNumber;
+FOUNDATION_EXPORT const unsigned char XcodeProjVersionString[];
 
