@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.0.3
 
 ### Internal Changes
 - updated xcodeproj, Stencil and StencilSwiftKit to newest versions
