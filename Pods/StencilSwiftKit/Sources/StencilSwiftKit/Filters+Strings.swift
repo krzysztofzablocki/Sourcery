@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright (c) 2017 SwiftGen
+// Copyright © 2020 SwiftGen
 // MIT Licence
 //
 
@@ -11,8 +11,8 @@ import Stencil
 // MARK: - Strings Filters
 
 extension Filters {
-    enum Strings {
-    }
+  enum Strings {
+  }
 }
 
 enum RemoveNewlinesModes: String {
@@ -88,6 +88,7 @@ extension Filters.Strings {
   /// e.g. "PeoplePicker" gives "peoplePicker" but "URLChooser" gives "urlChooser"
   static func lowerFirstWord(_ value: Any?) throws -> Any? {
     let string = try Filters.parseString(from: value)
+    guard !string.isEmpty else { return "" }
     let characterSet = CharacterSet.uppercaseLetters
     let scalars = string.unicodeScalars
     let start = scalars.startIndex
@@ -168,7 +169,7 @@ extension Filters.Strings {
 
     // only if passed true, strip the prefix underscores
     var prefixUnderscores = ""
-    var result: String { return prefixUnderscores + unprefixed }
+    var result: String { prefixUnderscores + unprefixed }
     if stripLeading {
       return result
     }
@@ -209,14 +210,18 @@ extension Filters.Strings {
     let camelCased = try NSRegularExpression(pattern: "([a-z\\d])([A-Z])", options: .dotMatchesLineSeparators)
 
     let fullRange = NSRange(location: 0, length: string.unicodeScalars.count)
-    var result = longUpper.stringByReplacingMatches(in: string,
-                                                    options: .reportCompletion,
-                                                    range: fullRange,
-                                                    withTemplate: "$1_$2")
-    result = camelCased.stringByReplacingMatches(in: result,
-                                                 options: .reportCompletion,
-                                                 range: fullRange,
-                                                 withTemplate: "$1_$2")
+    var result = longUpper.stringByReplacingMatches(
+      in: string,
+      options: .reportCompletion,
+      range: fullRange,
+      withTemplate: "$1_$2"
+    )
+    result = camelCased.stringByReplacingMatches(
+      in: result,
+      options: .reportCompletion,
+      range: fullRange,
+      withTemplate: "$1_$2"
+    )
     return result.replacingOccurrences(of: "-", with: "_")
   }
 }

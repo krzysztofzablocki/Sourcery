@@ -3,7 +3,7 @@ This application makes use of the following third party libraries:
 
 ## AEXML
 
-Copyright (c) 2014-2018 Marko Tadić <tadija@me.com> http://tadija.net
+Copyright (c) 2014-2020 Marko Tadić <tadija@me.com> http://tadija.net
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -160,9 +160,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## StencilSwiftKit
 
-MIT License
+MIT Licence
 
-Copyright (c) 2017 SwiftGen
+Copyright (c) 2019 SwiftGen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -208,11 +208,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-## xcproj
+## xcodeproj
 
 MIT License
 
-Copyright (c) 2017 xcode.swift
+Copyright (c) from 2018 Pedro Piñera Buendía
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

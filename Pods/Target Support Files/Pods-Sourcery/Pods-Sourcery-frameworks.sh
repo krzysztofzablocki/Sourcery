@@ -205,7 +205,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework"
@@ -216,7 +216,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Yams/Yams.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/xcproj/xcproj.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

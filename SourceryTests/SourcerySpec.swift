@@ -3,7 +3,7 @@ import Nimble
 import PathKit
 @testable import Sourcery
 @testable import SourceryRuntime
-import xcproj
+import XcodeProj
 
 private let version = "Major.Minor.Patch"
 
@@ -978,14 +978,14 @@ class SourcerySpecTests: QuickSpec {
 
                 afterEach {
                     expect {
-                        try originalProject?.writePBXProj(path: projectFilePath)
+                        try originalProject?.writePBXProj(path: projectFilePath, outputSettings: .init())
                         }.toNot(throwError())
                 }
 
                 it("links generated files") {
                     expect {
                         try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
 
                     expect(sourceFilesPaths.contains(outputDir + "Other.generated.swift")).to(beTrue())
                 }
@@ -1006,13 +1006,13 @@ class SourcerySpecTests: QuickSpec {
 
                     expect {
                         try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output)
-                        }.toNot(throwError())
+                    }.toNot(throwError())
 
                     expect {
                         let paths = sourceFilesPaths
                         expect(paths.contains(outputDir + "PerFileGeneration.generated.swift")).to(beTrue())
                         expect(paths.contains(outputDir + "Generated/Foo.generated.swift")).to(beTrue())
-                        }.toNot(throwError())
+                    }.toNot(throwError())
                 }
             }
         }

@@ -1,10 +1,13 @@
 /**
  *  https://github.com/tadija/AEXML
- *  Copyright (c) Marko Tadić 2014-2018
- *  Licensed under the MIT license. See LICENSE file.
+ *  Copyright © Marko Tadić 2014-2020
+ *  Licensed under the MIT license
  */
 
 import Foundation
+#if canImport(FoundationXML)
+import FoundationXML
+#endif
 
 /**
     This class is inherited from `AEXMLElement` and has a few addons to represent **XML Document**.
@@ -48,7 +51,7 @@ open class AEXMLDocument: AEXMLElement {
         
         // add root element to document (if any)
         if let rootElement = root {
-            _ = addChild(rootElement)
+            addChild(rootElement)
         }
     }
     

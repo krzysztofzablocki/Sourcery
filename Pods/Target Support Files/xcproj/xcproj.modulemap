@@ -1,6 +1,0 @@
-framework module xcproj {
-  umbrella header "xcproj-umbrella.h"
-
-  export *
-  module * { export * }
-}

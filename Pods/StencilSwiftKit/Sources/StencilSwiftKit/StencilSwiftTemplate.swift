@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright (c) 2017 SwiftGen
+// Copyright © 2020 SwiftGen
 // MIT Licence
 //
 
@@ -15,14 +15,14 @@ typealias NSRegularExpression = RegularExpression
 open class StencilSwiftTemplate: Template {
   public required init(templateString: String, environment: Environment? = nil, name: String? = nil) {
     let templateStringWithMarkedNewlines = templateString
-        .replacingOccurrences(of: "\n\n", with: "\n\u{000b}\n")
-        .replacingOccurrences(of: "\n\n", with: "\n\u{000b}\n")
+      .replacingOccurrences(of: "\n\n", with: "\n\u{000b}\n")
+      .replacingOccurrences(of: "\n\n", with: "\n\u{000b}\n")
     super.init(templateString: templateStringWithMarkedNewlines, environment: environment, name: name)
   }
 
   // swiftlint:disable:next discouraged_optional_collection
   override open func render(_ dictionary: [String: Any]? = nil) throws -> String {
-    return try removeExtraLines(from: super.render(dictionary))
+    try removeExtraLines(from: super.render(dictionary))
   }
 
   // Workaround until Stencil fixes https://github.com/stencilproject/Stencil/issues/22

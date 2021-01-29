@@ -1,10 +1,13 @@
 /**
  *  https://github.com/tadija/AEXML
- *  Copyright (c) Marko Tadić 2014-2018
- *  Licensed under the MIT license. See LICENSE file.
+ *  Copyright © Marko Tadić 2014-2020
+ *  Licensed under the MIT license
  */
 
 import Foundation
+#if canImport(FoundationXML)
+import FoundationXML
+#endif
 
 /**
     This is base class for holding XML structure.
@@ -38,15 +41,24 @@ open class AEXMLElement {
     open var string: String { return value ?? String() }
     
     /// Boolean representation of `value` property (`nil` if `value` can't be represented as Bool).
-    open var bool: Bool? { return Bool(string) }
-    
+    open var bool: Bool? {
+        switch string.lowercased() {
+        case "true", "1":
+            return true
+        case "false", "0":
+            return false
+        default:
+            return nil
+        }
+    }
+
     /// Integer representation of `value` property (`nil` if `value` can't be represented as Integer).
     open var int: Int? { return Int(string) }
     
     /// Double representation of `value` property (`nil` if `value` can't be represented as Double).
     open var double: Double? { return Double(string) }
     
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /**
         Designated initializer - all parameters are optional.
@@ -57,7 +69,7 @@ open class AEXMLElement {
     
         - returns: An initialized `AEXMLElement` object.
     */
-    public init(name: String, value: String? = nil, attributes: [String : String] = [String : String]()) {
+    public init(name: String, value: String? = nil, attributes: [String : String] = [:]) {
         self.name = name
         self.value = value
         self.attributes = attributes
@@ -199,7 +211,8 @@ open class AEXMLElement {
     
         - returns: Child XML element with `self` as `parent`.
     */
-    @discardableResult open func addChild(_ child: AEXMLElement) -> AEXMLElement {
+    @discardableResult
+    open func addChild(_ child: AEXMLElement) -> AEXMLElement {
         child.parent = self
         children.append(child)
         return child
@@ -214,9 +227,10 @@ open class AEXMLElement {
         
         - returns: Child XML element with `self` as `parent`.
     */
-    @discardableResult open func addChild(name: String,
+    @discardableResult
+    open func addChild(name: String,
                        value: String? = nil,
-                       attributes: [String : String] = [String : String]()) -> AEXMLElement {
+                       attributes: [String : String] = [:]) -> AEXMLElement {
         let child = AEXMLElement(name: name, value: value, attributes: attributes)
         return addChild(child)
     }
@@ -228,44 +242,17 @@ open class AEXMLElement {
     
         - returns: Child XML elements with `self` as `parent`.
     */
-    @discardableResult open func addChildren(_ children: [AEXMLElement]) -> [AEXMLElement] {
+    @discardableResult
+    open func addChildren(_ children: [AEXMLElement]) -> [AEXMLElement] {
         children.forEach{ addChild($0) }
         return children
     }
     
     /// Removes `self` from `parent` XML element.
     open func removeFromParent() {
-        parent?.removeChild(self)
-    }
-    
-    fileprivate func removeChild(_ child: AEXMLElement) {
-        if let childIndex = children.index(where: { $0 === child }) {
-            children.remove(at: childIndex)
+        if let index = parent?.children.firstIndex(where: { $0 === self }) {
+            parent?.children.remove(at: index)
         }
-    }
-    
-    fileprivate var parentsCount: Int {
-        var count = 0
-        var element = self
-        
-        while let parent = element.parent {
-            count += 1
-            element = parent
-        }
-        
-        return count
-    }
-    
-    fileprivate func indent(withDepth depth: Int) -> String {
-        var count = depth
-        var indent = String()
-        
-        while count > 0 {
-            indent += "\t"
-            count -= 1
-        }
-        
-        return indent
     }
     
     /// Complete hierarchy of `self` and `children` in **XML** escaped and formatted String
@@ -278,7 +265,7 @@ open class AEXMLElement {
         
         if attributes.count > 0 {
             // insert attributes
-            for (key, value) in attributes {
+            for (key, value) in attributes.sorted(by: { $0.key < $1.key }) {
                 xml += " \(key)=\"\(value.xmlEscaped)\""
             }
         }
@@ -316,12 +303,39 @@ open class AEXMLElement {
         let chars = CharacterSet(charactersIn: "\t")
         return xml.components(separatedBy: chars).joined(separator: "    ")
     }
+
+    // MARK: - Helpers
+
+    private var parentsCount: Int {
+        var count = 0
+        var element = self
+
+        while let parent = element.parent {
+            count += 1
+            element = parent
+        }
+
+        return count
+    }
+
+    private func indent(withDepth depth: Int) -> String {
+        var count = depth
+        var indent = String()
+
+        while count > 0 {
+            indent += "\t"
+            count -= 1
+        }
+
+        return indent
+    }
+
 }
 
 public extension String {
     
     /// String representation of self with XML special characters escaped.
-    public var xmlEscaped: String {
+    var xmlEscaped: String {
         // we need to make sure "&" is escaped first. Not doing this may break escaping the other characters
         var escaped = replacingOccurrences(of: "&", with: "&amp;", options: .literal)
         

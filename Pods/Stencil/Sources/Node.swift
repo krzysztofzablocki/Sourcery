@@ -2,26 +2,27 @@ import Foundation
 
 public protocol NodeType {
   /// Render the node in the given context
-  func render(_ context:Context) throws -> String
+  func render(_ context: Context) throws -> String
 
   /// Reference to this node's token
   var token: Token? { get }
 }
 
-
 /// Render the collection of nodes in the given context
-public func renderNodes(_ nodes:[NodeType], _ context:Context) throws -> String {
-  return try nodes.map {
-    do {
-      return try $0.render(context)
-    } catch {
-      throw error.withToken($0.token)
+public func renderNodes(_ nodes: [NodeType], _ context: Context) throws -> String {
+  return try nodes
+    .map {
+      do {
+        return try $0.render(context)
+      } catch {
+        throw error.withToken($0.token)
+      }
     }
-    }.joined(separator: "")
+    .joined()
 }
 
-public class SimpleNode : NodeType {
-  public let handler:(Context) throws -> String
+public class SimpleNode: NodeType {
+  public let handler: (Context) throws -> String
   public let token: Token?
 
   public init(token: Token, handler: @escaping (Context) throws -> String) {
@@ -34,35 +35,32 @@ public class SimpleNode : NodeType {
   }
 }
 
-
-public class TextNode : NodeType {
-  public let text:String
+public class TextNode: NodeType {
+  public let text: String
   public let token: Token?
 
-  public init(text:String) {
+  public init(text: String) {
     self.text = text
     self.token = nil
   }
 
-  public func render(_ context:Context) throws -> String {
+  public func render(_ context: Context) throws -> String {
     return self.text
   }
 }
-
 
 public protocol Resolvable {
   func resolve(_ context: Context) throws -> Any?
 }
 
-
-public class VariableNode : NodeType {
+public class VariableNode: NodeType {
   public let variable: Resolvable
   public var token: Token?
   let condition: Expression?
   let elseExpression: Resolvable?
 
-  class func parse(_ parser:TokenParser, token:Token) throws -> NodeType {
-    var components = token.components()
+  class func parse(_ parser: TokenParser, token: Token) throws -> NodeType {
+    var components = token.components
 
     func hasToken(_ token: String, at index: Int) -> Bool {
       return components.count > (index + 1) && components[index] == token
@@ -73,12 +71,12 @@ public class VariableNode : NodeType {
 
     if hasToken("if", at: 1) {
       let components = components.suffix(from: 2)
-      if let elseIndex = components.index(of: "else") {
-        condition = try parseExpression(components: Array(components.prefix(upTo: elseIndex)), tokenParser: parser, token: token)
+      if let elseIndex = components.firstIndex(of: "else") {
+        condition = try parser.compileExpression(components: Array(components.prefix(upTo: elseIndex)), token: token)
         let elseToken = components.suffix(from: elseIndex.advanced(by: 1)).joined(separator: " ")
         elseExpression = try parser.compileResolvable(elseToken, containedIn: token)
       } else {
-        condition = try parseExpression(components: Array(components), tokenParser: parser, token: token)
+        condition = try parser.compileExpression(components: Array(components), token: token)
         elseExpression = nil
       }
     } else {
@@ -86,7 +84,10 @@ public class VariableNode : NodeType {
       elseExpression = nil
     }
 
-    let filter = try parser.compileResolvable(components[0], containedIn: token)
+    guard let resolvable = components.first else {
+      throw TemplateSyntaxError(reason: "Missing variable name", token: token)
+    }
+    let filter = try parser.compileResolvable(resolvable, containedIn: token)
     return VariableNode(variable: filter, token: token, condition: condition, elseExpression: elseExpression)
   }
 
@@ -121,7 +122,6 @@ public class VariableNode : NodeType {
   }
 }
 
-
 func stringify(_ result: Any?) -> String {
   if let result = result as? String {
     return result
@@ -144,7 +144,6 @@ func unwrap(_ array: [Any?]) -> [Any] {
       } else {
         return item
       }
-    }
-    else { return item as Any }
+    } else { return item as Any }
   }
 }

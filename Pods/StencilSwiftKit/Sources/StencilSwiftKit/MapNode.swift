@@ -1,7 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright (c) 2017 Olivier Halligon
-// Created by Peter Livesey.
+// Copyright © 2020 SwiftGen
 // MIT Licence
 //
 
@@ -15,21 +14,23 @@ class MapNode: NodeType {
   let token: Token?
 
   class func parse(parser: TokenParser, token: Token) throws -> NodeType {
-    let components = token.components()
+    let components = token.components
 
     func hasToken(_ token: String, at index: Int) -> Bool {
-      return components.indices ~= index + 1 && components[index] == token
+      components.indices ~= index + 1 && components[index] == token
     }
 
     func endsOrHasToken(_ token: String, at index: Int) -> Bool {
-      return components.count == index || hasToken(token, at: index)
+      components.count == index || hasToken(token, at: index)
     }
 
     guard hasToken("into", at: 2) && endsOrHasToken("using", at: 4) else {
-        throw TemplateSyntaxError("""
-          'map' statements should use the following 'map {array} into \
-          {varname} [using {element}]'.
-          """)
+      throw TemplateSyntaxError(
+        """
+        'map' statements should use the following 'map {array} into \
+        {varname} [using {element}]'.
+        """
+      )
     }
 
     let resolvable = try parser.compileResolvable(components[1], containedIn: token)

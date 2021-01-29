@@ -3,6 +3,9 @@
 ---
 ## Master
 
+### Internal Changes
+- updated xcodeproj, Stencil and StencilSwiftKit to newest versions
+
 ### Bug fixes
 - [Fixes type resolution when using xcode project integration](https://github.com/krzysztofzablocki/Sourcery/issues/887)
 - Matches the behaviour of `allMethods` to `allVariables` by only listing the same method once, even if defined in both base protocol and extended class. You could still walk the inheritance tree if you need to (to get all original methods), but for purpose of majority of codegen this is unneccessary.

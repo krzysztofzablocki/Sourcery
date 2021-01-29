@@ -14,7 +14,7 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>Copyright (c) 2014-2018 Marko Tadić &lt;tadija@me.com&gt; http://tadija.net
+			<string>Copyright (c) 2014-2020 Marko Tadić &lt;tadija@me.com&gt; http://tadija.net
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -207,9 +207,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>MIT License
+			<string>MIT Licence
 
-Copyright (c) 2017 SwiftGen
+Copyright (c) 2019 SwiftGen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -271,7 +271,7 @@ SOFTWARE.
 			<key>FooterText</key>
 			<string>MIT License
 
-Copyright (c) 2017 xcode.swift
+Copyright (c) from 2018 Pedro Piñera Buendía
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -294,7 +294,7 @@ SOFTWARE.
 			<key>License</key>
 			<string>MIT</string>
 			<key>Title</key>
-			<string>xcproj</string>
+			<string>xcodeproj</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
