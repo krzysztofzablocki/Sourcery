@@ -240,6 +240,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <li>Trim <em>all</em> whitespaces before/after control flow tag with <code>&lt;%_</code> and <code>_%&gt;</code></li>
 <li>Use <code>&lt;%# %&gt;</code> for comments</li>
 <li>Use <code>&lt;%- include(&quot;relative_path_to_template.swifttemplate&quot;) %&gt;</code> to include another template. The <code>swifttemplate</code> extension can be omitted. The path is relative to the including template.</li>
+<li>Use <code>&lt;%- includeFile(&quot;relative_path_to_file.swift&quot;) %&gt;</code> to include another Swift file.  The path is relative to the including template.  Included Swift files <em>may</em> depend upon <code>SourceryRuntime</code> module, as this will be injected during processing.</li>
 </ul>
 
 <p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryTests/Stub/SwiftTemplates/Equality.swifttemplate">Equality.swifttemplate</a></p>
