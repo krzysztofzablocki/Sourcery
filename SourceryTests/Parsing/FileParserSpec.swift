@@ -699,6 +699,31 @@ class FileParserSpec: QuickSpec {
                                 Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
                                 ))
                     }
+
+                    it("flattens inherited protocol methods as expected") {
+                        let parsed = parse(
+                            """
+                            protocol RemoteUrlOpening {
+                              func open(_ url: URL)
+                            }
+
+                            //sourcery: AutoMockable
+                            protocol UrlOpening: RemoteUrlOpening {
+                              func open(
+                                _ url: URL,
+                                options: [UIApplication.OpenExternalURLOptionsKey: Any],
+                                completionHandler completion: ((Bool) -> Void)?
+                              )
+                            }
+                            """
+                        )
+
+                        expect(parsed).to(haveCount(2))
+
+                        let childProtocol = parsed.last
+                        expect(childProtocol?.name).to(equal("UrlOpening"))
+                        expect(childProtocol?.allMethods.map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)"]))
+                    }
                 }
             }
         }
