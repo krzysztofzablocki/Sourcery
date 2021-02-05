@@ -13,9 +13,9 @@ class StencilTemplateSpec: QuickSpec {
         describe("StencilTemplate") {
 
             func generate(_ template: String) -> String {
-                let arrayAnnotations = Variable(name: "annotated", typeName: TypeName("MyClass"))
+                let arrayAnnotations = Variable(name: "annotated1", typeName: TypeName("MyClass"))
                 arrayAnnotations.annotations = ["Foo": ["Hello", "beautiful", "World"] as NSArray]
-                let singleAnnotation = Variable(name: "annotated", typeName: TypeName("MyClass"))
+                let singleAnnotation = Variable(name: "annotated2", typeName: TypeName("MyClass"))
                 singleAnnotation.annotations = ["Foo": "HelloWorld" as NSString]
                 return (try? Generator.generate(Types(types: [
                     Class(name: "MyClass", variables: [

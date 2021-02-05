@@ -60,10 +60,13 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -128,10 +131,13 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -243,10 +249,13 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -283,10 +292,13 @@ extension Protocol: ProtocolAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -371,10 +383,13 @@ extension TupleType: TupleTypeAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }

@@ -263,14 +263,14 @@ public final class FileParser {
     private func process(declaration: Any, containedIn type: Type) {
         switch (type, declaration) {
         case let (_, variable as Variable):
-            type.variables += [variable]
+            type.rawVariables += [variable]
         case let (_, `subscript` as Subscript):
-            type.subscripts += [`subscript`]
+            type.rawSubscripts += [`subscript`]
         case let (_, method as SourceryMethod):
             if method.isInitializer {
                 method.returnTypeName = TypeName(type.name)
             }
-            type.methods += [method]
+            type.rawMethods += [method]
         case let (_, childType as Type):
             type.containedTypes += [childType]
             childType.parent = type

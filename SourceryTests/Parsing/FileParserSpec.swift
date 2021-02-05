@@ -758,7 +758,7 @@ class FileParserSpec: QuickSpec {
 
                             let childProtocol = parsed.last
                             expect(childProtocol?.name).to(equal("UrlOpening"))
-                            expect(childProtocol?.allMethods.map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)"]))
+                            expect(childProtocol?.allMethods.filter({ $0.definedInType?.isExtension == false }).map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)"]))
                         }
                     }
                 }

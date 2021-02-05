@@ -726,9 +726,9 @@ extension Type {
         string += "name = \\(String(describing: self.name)), "
         string += "isGeneric = \\(String(describing: self.isGeneric)), "
         string += "localName = \\(String(describing: self.localName)), "
-        string += "variables = \\(String(describing: self.variables)), "
-        string += "methods = \\(String(describing: self.methods)), "
-        string += "subscripts = \\(String(describing: self.subscripts)), "
+        string += "rawVariables = \\(String(describing: self.rawVariables)), "
+        string += "rawMethods = \\(String(describing: self.rawMethods)), "
+        string += "rawSubscripts = \\(String(describing: self.rawSubscripts)), "
         string += "initializers = \\(String(describing: self.initializers)), "
         string += "annotations = \\(String(describing: self.annotations)), "
         string += "staticVariables = \\(String(describing: self.staticVariables)), "
@@ -1109,9 +1109,9 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "isGeneric").trackDifference(actual: self.isGeneric, expected: castObject.isGeneric))
         results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
-        results.append(contentsOf: DiffableResult(identifier: "variables").trackDifference(actual: self.variables, expected: castObject.variables))
-        results.append(contentsOf: DiffableResult(identifier: "methods").trackDifference(actual: self.methods, expected: castObject.methods))
-        results.append(contentsOf: DiffableResult(identifier: "subscripts").trackDifference(actual: self.subscripts, expected: castObject.subscripts))
+        results.append(contentsOf: DiffableResult(identifier: "rawVariables").trackDifference(actual: self.rawVariables, expected: castObject.rawVariables))
+        results.append(contentsOf: DiffableResult(identifier: "rawMethods").trackDifference(actual: self.rawMethods, expected: castObject.rawMethods))
+        results.append(contentsOf: DiffableResult(identifier: "rawSubscripts").trackDifference(actual: self.rawSubscripts, expected: castObject.rawSubscripts))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "inheritedTypes").trackDifference(actual: self.inheritedTypes, expected: castObject.inheritedTypes))
         results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: castObject.containedTypes))
@@ -1877,9 +1877,9 @@ extension Type {
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
         if self.localName != rhs.localName { return false }
-        if self.variables != rhs.variables { return false }
-        if self.methods != rhs.methods { return false }
-        if self.subscripts != rhs.subscripts { return false }
+        if self.rawVariables != rhs.rawVariables { return false }
+        if self.rawMethods != rhs.rawMethods { return false }
+        if self.rawSubscripts != rhs.rawSubscripts { return false }
         if self.annotations != rhs.annotations { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
@@ -2271,10 +2271,13 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -2339,10 +2342,13 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -2454,10 +2460,13 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -2494,10 +2503,13 @@ extension Protocol: ProtocolAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -2582,10 +2594,13 @@ extension TupleType: TupleTypeAutoJSExport {}
     var isGeneric: Bool { get }
     var localName: String { get }
     var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
     var allVariables: [Variable] { get }
     var methods: [Method] { get }
+    var rawMethods: [Method] { get }
     var allMethods: [Method] { get }
     var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: [String: NSObject] { get }
@@ -3116,13 +3131,6 @@ public typealias SourceryProtocol = Protocol
             annotations: annotations,
             isGeneric: isGeneric
         )
-    }
-
-    /// :nodoc:
-    override public func extend(_ type: Type) {
-        type.variables = type.variables.filter({ v in !variables.contains(where: { $0.name == v.name && $0.isStatic == v.isStatic }) })
-        type.methods = type.methods.filter({ !methods.contains($0) })
-        super.extend(type)
     }
 
 // sourcery:inline:Protocol.AutoCoding
@@ -3750,9 +3758,16 @@ import Foundation
     /// Type name in its own scope.
     public var localName: String
 
+    // sourcery: skipEquality, skipDescription
     /// Variables defined in this type only, inluding variables defined in its extensions,
     /// but not including variables inherited from superclasses (for classes only) and protocols
-    public var variables: [Variable]
+    public var variables: [Variable] {
+        unique({ $0.rawVariables }, filter: Self.uniqueVariableFilter)
+    }
+
+    /// Unfiltered (can contain duplications from extensions) variables defined in this type only, inluding variables defined in its extensions,
+    /// but not including variables inherited from superclasses (for classes only) and protocols
+    public var rawVariables: [Variable]
 
     // sourcery: skipEquality, skipDescription
     /// All variables defined for this type, including variables defined in extensions,
@@ -3760,7 +3775,9 @@ import Foundation
     public var allVariables: [Variable] {
         return flattenAll({
             return $0.variables
-        }, filter: { all, extracted in
+        },
+        isExtension: { $0.definedInType?.isExtension == true },
+        filter: { all, extracted in
             !all.contains(where: { Self.uniqueVariableFilter($0, rhs: extracted) })
         })
     }
@@ -3769,9 +3786,16 @@ import Foundation
         return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.typeName == rhs.typeName
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Methods defined in this type only, inluding methods defined in its extensions,
     /// but not including methods inherited from superclasses (for classes only) and protocols
-    public var methods: [Method]
+    public var methods: [Method] {
+        unique({ $0.rawMethods }, filter: Self.uniqueMethodFilter)
+    }
+
+    /// Unfiltered (can contain duplications from extensions) methods defined in this type only, inluding methods defined in its extensions,
+    /// but not including methods inherited from superclasses (for classes only) and protocols
+    public var rawMethods: [Method]
 
     // sourcery: skipEquality, skipDescription
     /// All methods defined for this type, including methods defined in extensions,
@@ -3779,7 +3803,9 @@ import Foundation
     public var allMethods: [Method] {
         return flattenAll({
             $0.methods
-        }, filter: { all, extracted in
+        },
+        isExtension: { $0.definedInType?.isExtension == true },
+        filter: { all, extracted in
             !all.contains(where: { Self.uniqueMethodFilter($0, rhs: extracted) })
         })
     }
@@ -3788,17 +3814,26 @@ import Foundation
         return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.isClass == rhs.isClass
     }
 
+    // sourcery: skipEquality, skipDescription
     /// Subscripts defined in this type only, inluding subscripts defined in its extensions,
     /// but not including subscripts inherited from superclasses (for classes only) and protocols
-    public var subscripts: [Subscript]
+    public var subscripts: [Subscript] {
+        unique({ $0.rawSubscripts }, filter: Self.uniqueSubscriptFilter)
+    }
+
+    /// Unfiltered (can contain duplications from extensions) Subscripts defined in this type only, inluding subscripts defined in its extensions,
+    /// but not including subscripts inherited from superclasses (for classes only) and protocols
+    public var rawSubscripts: [Subscript]
 
     // sourcery: skipEquality, skipDescription
     /// All subscripts defined for this type, including subscripts defined in extensions,
     /// in superclasses (for classes only) and protocols
     public var allSubscripts: [Subscript] {
-        return flattenAll({ $0.subscripts }, filter: { all, extracted in
-            !all.contains(where: { Self.uniqueSubscriptFilter($0, rhs: extracted) })
-        })
+        return flattenAll({ $0.subscripts },
+            isExtension: { $0.definedInType?.isExtension == true },
+            filter: { all, extracted in
+                !all.contains(where: { Self.uniqueSubscriptFilter($0, rhs: extracted) })
+            })
     }
 
     private static func uniqueSubscriptFilter(_ lhs: Subscript, rhs: Subscript) -> Bool {
@@ -3809,23 +3844,46 @@ import Foundation
     /// Bytes position of the body of this type in its declaration file if available.
     public var bodyBytesRange: BytesRange?
 
-    private func flattenAll<T>(_ extraction: @escaping (Type) -> [T], filter: (([T], T) -> Bool)? = nil) -> [T] {
+    private func flattenAll<T>(_ extraction: @escaping (Type) -> [T], isExtension: (T) -> Bool, filter: ([T], T) -> Bool) -> [T] {
         let all = NSMutableOrderedSet()
-        all.addObjects(from: extraction(self))
+        let allObjects = extraction(self)
 
-        let filteredExtraction = { (target: Type) -> [T] in
-            if let filter = filter {
-                // swiftlint:disable:next force_cast
-                let all = all.array as! [T]
-                let extracted = extraction(target).filter({ filter(all, $0) })
-                return extracted
-            } else {
-                return extraction(target)
-            }
+        /// The order of importance for properties is:
+        /// Base class
+        /// Inheritance
+        /// Protocol conformance
+        /// Extension
+
+        let extensions = allObjects.filter({ isExtension($0) })
+        let baseObjects = allObjects.filter({ !isExtension($0) })
+
+        all.addObjects(from: baseObjects)
+
+        func filteredExtraction(_ target: Type) -> [T] {
+            // swiftlint:disable:next force_cast
+            let all = all.array as! [T]
+            let extracted = extraction(target).filter({ filter(all, $0) })
+            return extracted
         }
 
         inherits.values.sorted(by: { $0.name < $1.name }).forEach { all.addObjects(from: filteredExtraction($0)) }
         implements.values.sorted(by: { $0.name < $1.name }).forEach { all.addObjects(from: filteredExtraction($0)) }
+
+        // swiftlint:disable:next force_cast
+        let array = all.array as! [T]
+        all.addObjects(from: extensions.filter({ filter(array, $0) }))
+
+        return all.array.compactMap { $0 as? T }
+    }
+
+    private func unique<T>(_ extraction: @escaping (Type) -> [T], filter: (T, T) -> Bool) -> [T] {
+        let all = NSMutableOrderedSet()
+        for nextItem in extraction(self) {
+            // swiftlint:disable:next force_cast
+            if !all.contains(where: { filter($0 as! T, nextItem) }) {
+                all.add(nextItem)
+            }
+        }
 
         return all.array.compactMap { $0 as? T }
     }
@@ -3964,9 +4022,9 @@ import Foundation
         self.localName = name
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
-        self.variables = variables
-        self.methods = methods
-        self.subscripts = subscripts
+        self.rawVariables = variables
+        self.rawMethods = methods
+        self.rawSubscripts = subscripts
         self.inheritedTypes = inheritedTypes
         self.containedTypes = containedTypes
         self.typealiases = [:]
@@ -3992,15 +4050,15 @@ import Foundation
 
     /// :nodoc:
     public func extend(_ type: Type) {
-        self.variables += type.variables.filter { newVariable in !self.variables.contains(where: { Self.uniqueVariableFilter($0, rhs: newVariable) })}
-        self.methods += type.methods.filter { newMethod in !self.methods.contains(where: { Self.uniqueMethodFilter($0, rhs: newMethod) })}
-        self.subscripts += type.subscripts.filter { newSubscript in !self.subscripts.contains(where: { Self.uniqueSubscriptFilter($0, rhs: newSubscript) })}
-        self.inheritedTypes += type.inheritedTypes
-        self.containedTypes += type.containedTypes
-
         type.annotations.forEach { self.annotations[$0.key] = $0.value }
         type.inherits.forEach { self.inherits[$0.key] = $0.value }
         type.implements.forEach { self.implements[$0.key] = $0.value }
+        self.inheritedTypes += type.inheritedTypes
+        self.containedTypes += type.containedTypes
+
+        self.rawVariables += type.rawVariables
+        self.rawMethods += type.rawMethods
+        self.rawSubscripts += type.rawSubscripts
     }
 
 // sourcery:inline:Type.AutoCoding
@@ -4013,9 +4071,9 @@ import Foundation
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
             guard let localName: String = aDecoder.decode(forKey: "localName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["localName"])); fatalError() }; self.localName = localName
-            guard let variables: [Variable] = aDecoder.decode(forKey: "variables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["variables"])); fatalError() }; self.variables = variables
-            guard let methods: [Method] = aDecoder.decode(forKey: "methods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["methods"])); fatalError() }; self.methods = methods
-            guard let subscripts: [Subscript] = aDecoder.decode(forKey: "subscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["subscripts"])); fatalError() }; self.subscripts = subscripts
+            guard let rawVariables: [Variable] = aDecoder.decode(forKey: "rawVariables") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawVariables"])); fatalError() }; self.rawVariables = rawVariables
+            guard let rawMethods: [Method] = aDecoder.decode(forKey: "rawMethods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawMethods"])); fatalError() }; self.rawMethods = rawMethods
+            guard let rawSubscripts: [Subscript] = aDecoder.decode(forKey: "rawSubscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawSubscripts"])); fatalError() }; self.rawSubscripts = rawSubscripts
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
@@ -4040,9 +4098,9 @@ import Foundation
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isGeneric, forKey: "isGeneric")
             aCoder.encode(self.localName, forKey: "localName")
-            aCoder.encode(self.variables, forKey: "variables")
-            aCoder.encode(self.methods, forKey: "methods")
-            aCoder.encode(self.subscripts, forKey: "subscripts")
+            aCoder.encode(self.rawVariables, forKey: "rawVariables")
+            aCoder.encode(self.rawMethods, forKey: "rawMethods")
+            aCoder.encode(self.rawSubscripts, forKey: "rawSubscripts")
             aCoder.encode(self.bodyBytesRange, forKey: "bodyBytesRange")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
