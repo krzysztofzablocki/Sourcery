@@ -149,8 +149,16 @@ import Foundation
         /// Protocol conformance
         /// Extension
 
-        let extensions = allObjects.filter({ isExtension($0) })
-        let baseObjects = allObjects.filter({ !isExtension($0) })
+        var extensions = [T]()
+        var baseObjects = [T]()
+
+        allObjects.forEach {
+            if isExtension($0) {
+                extensions.append($0)
+            } else {
+                baseObjects.append($0)
+            }
+        }
 
         all.addObjects(from: baseObjects)
 
