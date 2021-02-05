@@ -103,13 +103,21 @@ class TypeSpec: QuickSpec {
             }
 
             describe("when extending with Type extension") {
-                it("adds variables") {
-                    let extraVariable = Variable(name: "variable", typeName: TypeName("Int"))
+                it("adds variables if they are unique") {
+                    let extraVariable = Variable(name: "variable2", typeName: TypeName("Int"))
                     let type = Type(name: "Foo", isExtension: true, variables: [extraVariable])
 
                     sut?.extend(type)
 
                     expect(sut?.variables).to(equal([storedVariable, computedVariable, staticVariable, overrideVariable, extraVariable]))
+                }
+
+                it("does not duplicate variables of same configuration") {
+                    let type = Type(name: "Foo", isExtension: true, variables: [storedVariable])
+
+                    sut?.extend(type)
+
+                    expect(sut?.variables).to(equal([storedVariable, computedVariable, staticVariable, overrideVariable]))
                 }
 
                 it("does not duplicate variables with protocol extension") {

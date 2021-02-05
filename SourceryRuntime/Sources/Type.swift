@@ -64,8 +64,12 @@ import Foundation
         return flattenAll({
             return $0.variables
         }, filter: { all, extracted in
-            !all.contains(where: { $0.name == extracted.name && $0.isStatic == extracted.isStatic })
+            !all.contains(where: { Self.uniqueVariableFilter($0, rhs: extracted) })
         })
+    }
+
+    private static func uniqueVariableFilter(_ lhs: Variable, rhs: Variable) -> Bool {
+        return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.typeName == rhs.typeName
     }
 
     /// Methods defined in this type only, inluding methods defined in its extensions,
@@ -79,8 +83,12 @@ import Foundation
         return flattenAll({
             $0.methods
         }, filter: { all, extracted in
-            !all.contains(where: { $0.name == extracted.name && $0.isStatic == extracted.isStatic && $0.isClass == extracted.isClass})
+            !all.contains(where: { Self.uniqueMethodFilter($0, rhs: extracted) })
         })
+    }
+
+    private static func uniqueMethodFilter(_ lhs: Method, rhs: Method) -> Bool {
+        return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.isClass == rhs.isClass
     }
 
     /// Subscripts defined in this type only, inluding subscripts defined in its extensions,
@@ -91,7 +99,13 @@ import Foundation
     /// All subscripts defined for this type, including subscripts defined in extensions,
     /// in superclasses (for classes only) and protocols
     public var allSubscripts: [Subscript] {
-        return flattenAll({ $0.subscripts })
+        return flattenAll({ $0.subscripts }, filter: { all, extracted in
+            !all.contains(where: { Self.uniqueSubscriptFilter($0, rhs: extracted) })
+        })
+    }
+
+    private static func uniqueSubscriptFilter(_ lhs: Subscript, rhs: Subscript) -> Bool {
+        return lhs.parameters == rhs.parameters && lhs.returnTypeName == rhs.returnTypeName && lhs.readAccess == rhs.readAccess && lhs.writeAccess == rhs.writeAccess
     }
 
     // sourcery: skipEquality, skipDescription, skipJSExport
@@ -281,9 +295,9 @@ import Foundation
 
     /// :nodoc:
     public func extend(_ type: Type) {
-        self.variables += type.variables
-        self.methods += type.methods
-        self.subscripts += type.subscripts
+        self.variables += type.variables.filter { newVariable in !self.variables.contains(where: { Self.uniqueVariableFilter($0, rhs: newVariable) })}
+        self.methods += type.methods.filter { newMethod in !self.methods.contains(where: { Self.uniqueMethodFilter($0, rhs: newMethod) })}
+        self.subscripts += type.subscripts.filter { newSubscript in !self.subscripts.contains(where: { Self.uniqueSubscriptFilter($0, rhs: newSubscript) })}
         self.inheritedTypes += type.inheritedTypes
         self.containedTypes += type.containedTypes
 

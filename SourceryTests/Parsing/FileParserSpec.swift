@@ -700,29 +700,66 @@ class FileParserSpec: QuickSpec {
                                 ))
                     }
 
-                    it("flattens inherited protocol methods as expected") {
-                        let parsed = parse(
-                            """
-                            protocol RemoteUrlOpening {
-                              func open(_ url: URL)
-                            }
+                    describe("when dealing with protocol inheritance") {
+                        it("flattens protocol with default implementation as expected") {
+                            let parsed = parse(
+                                """
+                                protocol UrlOpening {
+                                  func open(
+                                    _ url: URL,
+                                    options: [UIApplication.OpenExternalURLOptionsKey: Any],
+                                    completionHandler completion: ((Bool) -> Void)?
+                                  )
+                                  func open(_ url: URL)
+                                }
 
-                            //sourcery: AutoMockable
-                            protocol UrlOpening: RemoteUrlOpening {
-                              func open(
-                                _ url: URL,
-                                options: [UIApplication.OpenExternalURLOptionsKey: Any],
-                                completionHandler completion: ((Bool) -> Void)?
-                              )
-                            }
-                            """
-                        )
+                                extension UrlOpening {
+                                    func open(_ url: URL) {
+                                        open(url, options: [:], completionHandler: nil)
+                                    }
 
-                        expect(parsed).to(haveCount(2))
+                                    func anotherFunction(key: String) {
+                                    }
+                                }
+                                """
+                            )
 
-                        let childProtocol = parsed.last
-                        expect(childProtocol?.name).to(equal("UrlOpening"))
-                        expect(childProtocol?.allMethods.map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)"]))
+                            expect(parsed).to(haveCount(1))
+
+                            let childProtocol = parsed.last
+                            expect(childProtocol?.name).to(equal("UrlOpening"))
+                            expect(childProtocol?.allMethods.map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)", "anotherFunction(key:)"]))
+                        }
+
+                        it("flattens inherited protocols with default implementation as expected") {
+                            let parsed = parse(
+                                """
+                                protocol RemoteUrlOpening {
+                                  func open(_ url: URL)
+                                }
+
+                                protocol UrlOpening: RemoteUrlOpening {
+                                  func open(
+                                    _ url: URL,
+                                    options: [UIApplication.OpenExternalURLOptionsKey: Any],
+                                    completionHandler completion: ((Bool) -> Void)?
+                                  )
+                                }
+
+                                extension UrlOpening {
+                                  func open(_ url: URL) {
+                                    open(url, options: [:], completionHandler: nil)
+                                  }
+                                }
+                                """
+                            )
+
+                            expect(parsed).to(haveCount(2))
+
+                            let childProtocol = parsed.last
+                            expect(childProtocol?.name).to(equal("UrlOpening"))
+                            expect(childProtocol?.allMethods.map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)"]))
+                        }
                     }
                 }
             }
