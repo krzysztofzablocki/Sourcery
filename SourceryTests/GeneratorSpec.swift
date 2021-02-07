@@ -23,25 +23,25 @@ class GeneratorSpec: QuickSpec {
                 let barVar = Variable(name: "bar", typeName: TypeName("Bar"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Complex"))
                 barVar.type = barType
 
-                complexType.variables = [
+                complexType.rawVariables = [
                     fooVar,
                     barVar,
                     Variable(name: "fooBar", typeName: TypeName("Int?"), isComputed: true, definedInTypeName: TypeName("Complex")),
                     Variable(name: "tuple", typeName: TypeName("(Int, Bar)"), definedInTypeName: TypeName("Complex"))
                 ]
 
-                complexType.methods = [
+                complexType.rawMethods = [
                     Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], accessLevel: .public, definedInTypeName: TypeName("Complex")),
                     Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true, definedInTypeName: TypeName("Complex")),
                     Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true, definedInTypeName: TypeName("Complex"))
                 ]
 
                 let complexTypeExtension = Type(name: "Complex", isExtension: true, variables: [])
-                complexTypeExtension.variables = [
+                complexTypeExtension.rawVariables = [
                     Variable(name: "fooBarFromExtension", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("Complex")),
                     Variable(name: "tupleFromExtension", typeName: TypeName("(Int, Bar)"), isComputed: true, definedInTypeName: TypeName("Complex"))
                 ]
-                complexTypeExtension.methods = [
+                complexTypeExtension.rawMethods = [
                     Method(name: "fooFromExtension(some: Int)", selectorName: "fooFromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], definedInTypeName: TypeName("Complex")),
                     Method(name: "foo2FromExtension(some: Int)", selectorName: "foo2FromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], definedInTypeName: TypeName("Complex"))
                 ]

@@ -1,6 +1,20 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+### New Features
+- [PR](https://github.com/krzysztofzablocki/Sourcery/pull/897) Methods, Variables and Subscripts are now uniqued in all accessors:
+  - `methods` and `allMethods` 
+  - `variables` and `allVariables`
+  - `subscripts` and `allSubscripts`
+  - New accessor is introduced that doesn't get rid of duplicates `rawMethods`, `rawVariables`, `rawSubscripts`s. 
+  - The deduping process works by priority order (highest to lowest):
+    - base declaration
+    - inheritance
+    - protocol conformance
+    - extensions
+
 ## 1.0.3
 
 ### Internal Changes

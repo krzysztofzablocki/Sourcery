@@ -251,9 +251,9 @@ extension Type {
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isGeneric != rhs.isGeneric { return false }
         if self.localName != rhs.localName { return false }
-        if self.variables != rhs.variables { return false }
-        if self.methods != rhs.methods { return false }
-        if self.subscripts != rhs.subscripts { return false }
+        if self.rawVariables != rhs.rawVariables { return false }
+        if self.rawMethods != rhs.rawMethods { return false }
+        if self.rawSubscripts != rhs.rawSubscripts { return false }
         if self.annotations != rhs.annotations { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.containedTypes != rhs.containedTypes { return false }
