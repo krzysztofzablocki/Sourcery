@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.1.0
 
 ### New Features
 - [PR](https://github.com/krzysztofzablocki/Sourcery/pull/897) Methods, Variables and Subscripts are now uniqued in all accessors:
