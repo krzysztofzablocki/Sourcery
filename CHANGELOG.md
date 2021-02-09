@@ -1,6 +1,10 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+
+- Updates StencilSwiftKit to 2.8.0
+
 ## 1.1.0
 
 ### New Features

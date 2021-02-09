@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright © 2020 SwiftGen
+// Copyright © 2021 SwiftGen
 // MIT Licence
 //
 

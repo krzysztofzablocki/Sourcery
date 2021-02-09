@@ -19,7 +19,7 @@ let package = Package(
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
         .package(url: "https://github.com/kylef/PathKit.git", .exact("1.0.0")),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .exact("0.30.1")),
-        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", .branch("stable")),
+        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.8.0")),
         .package(url: "https://github.com/tuist/xcodeproj", .exact("7.18.0")),
     ],
     targets: [

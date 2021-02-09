@@ -9,7 +9,7 @@ PODS:
     - Yams (~> 4.0)
   - Stencil (0.14.0):
     - PathKit (~> 1.0.0)
-  - StencilSwiftKit (2.7.2):
+  - StencilSwiftKit (2.8.0):
     - Stencil (~> 0.14.0)
   - SwiftLint (0.27.0)
   - SWXMLHash (5.0.1)
@@ -25,7 +25,7 @@ DEPENDENCIES:
   - Quick
   - SourceKittenFramework (= 0.30.1)
   - Stencil (= 0.14.0)
-  - "StencilSwiftKit (from `git@github.com:SwiftGen/StencilSwiftKit.git`, branch `stable`)"
+  - StencilSwiftKit (= 2.8.0)
   - SwiftLint
   - "xcodeproj (from `git@github.com:tuist/XcodeProj.git`, tag `7.18.0`)"
   - Yams (= 4.0.0)
@@ -41,21 +41,16 @@ SPEC REPOS:
     - PathKit
     - SourceKittenFramework
     - Stencil
+    - StencilSwiftKit
     - SWXMLHash
     - Yams
 
 EXTERNAL SOURCES:
-  StencilSwiftKit:
-    :branch: stable
-    :git: "git@github.com:SwiftGen/StencilSwiftKit.git"
   xcodeproj:
     :git: "git@github.com:tuist/XcodeProj.git"
     :tag: 7.18.0
 
 CHECKOUT OPTIONS:
-  StencilSwiftKit:
-    :commit: 49b703b3c87ddd69647c42789dd3bc7fb7f40ac4
-    :git: "git@github.com:SwiftGen/StencilSwiftKit.git"
   xcodeproj:
     :git: "git@github.com:tuist/XcodeProj.git"
     :tag: 7.18.0
@@ -68,12 +63,12 @@ SPEC CHECKSUMS:
   Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
   SourceKittenFramework: 540d9d048c0bab3c0faa4668425364fabff12cb0
   Stencil: 19487b54873a6ed8d8e4cccc4b45c1a601941f06
-  StencilSwiftKit: a6c185149c2ed5f82b2a87c93cadec325e445623
+  StencilSwiftKit: 946b0a1ae1067ef195231a135fe6d8f240b46942
   SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
   SWXMLHash: 9cc0c2e4807926c74377724aa8722ee5707a0485
   xcodeproj: 760cfd754df4cfac71ec86b1cbdd6075f9fd3102
   Yams: 9d49b85824751ee13d31e9ec6617c4dfb9a8c3cd
 
-PODFILE CHECKSUM: 4c5de3219d6f68a0bee81648c8ad6c8a18a31837
+PODFILE CHECKSUM: 2300c7f79da5a3b49abf433b48b325dd11032420
 
 COCOAPODS: 1.9.3

@@ -1,16 +1,16 @@
 //
 // StencilSwiftKit
-// Copyright © 2020 SwiftGen
+// Copyright © 2021 SwiftGen
 // MIT Licence
 //
 
 import Foundation
 import Stencil
 
-enum Filters {
+public enum Filters {
   typealias BooleanWithArguments = (Any?, [Any?]) throws -> Bool
 
-  enum Error: Swift.Error {
+  public enum Error: Swift.Error {
     case invalidInputType
     case invalidOption(option: String)
   }
@@ -21,7 +21,7 @@ enum Filters {
   /// - Parameters:
   ///   - value: an input value, may be nil
   /// - Throws: Filters.Error.invalidInputType
-  static func parseString(from value: Any?) throws -> String {
+  public static func parseString(from value: Any?) throws -> String {
     if let losslessString = value as? LosslessStringConvertible {
       return String(describing: losslessString)
     }
@@ -44,7 +44,7 @@ enum Filters {
   ///   - arguments: an array of argument values, may be empty
   ///   - index: the index in the arguments array
   /// - Throws: Filters.Error.invalidInputType
-  static func parseStringArgument(from arguments: [Any?], at index: Int = 0) throws -> String {
+  public static func parseStringArgument(from arguments: [Any?], at index: Int = 0) throws -> String {
     guard index < arguments.count else {
       throw Error.invalidInputType
     }
@@ -68,7 +68,7 @@ enum Filters {
   ///               If false, returns nil on missing args.
   /// - Throws: Filters.Error.invalidInputType
   // swiftlint:disable discouraged_optional_boolean
-  static func parseBool(from arguments: [Any?], at index: Int = 0, required: Bool = true) throws -> Bool? {
+  public static func parseBool(from arguments: [Any?], at index: Int = 0, required: Bool = true) throws -> Bool? {
     guard index < arguments.count, let boolArg = arguments[index] as? String else {
       if required {
         throw Error.invalidInputType
@@ -95,7 +95,7 @@ enum Filters {
   ///   - index: the index in the arguments array
   ///   - default: The default value should no argument be provided
   /// - Throws: Filters.Error.invalidInputType
-  static func parseEnum<T>(
+  public static func parseEnum<T>(
     from arguments: [Any?],
     at index: Int = 0,
     default: T

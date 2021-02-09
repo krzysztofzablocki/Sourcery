@@ -1,6 +1,6 @@
 //
 // StencilSwiftKit
-// Copyright © 2020 SwiftGen
+// Copyright © 2021 SwiftGen
 // MIT Licence
 //
 
@@ -10,22 +10,22 @@ import Stencil
 
 // MARK: - Strings Filters
 
-extension Filters {
+public extension Filters {
   enum Strings {
   }
 }
 
-enum RemoveNewlinesModes: String {
+public enum RemoveNewlinesModes: String {
   case all, leading
 }
 
-enum SwiftIdentifierModes: String {
+public enum SwiftIdentifierModes: String {
   case normal, pretty
 }
 
 // MARK: - String Filters: Boolean filters
 
-extension Filters.Strings {
+public extension Filters.Strings {
   /// Checks if the given string contains given substring
   ///
   /// - Parameters:
@@ -71,7 +71,7 @@ extension Filters.Strings {
 
 // MARK: - String Filters: Lettercase filters
 
-extension Filters.Strings {
+public extension Filters.Strings {
   /// Lowers the first letter of the string
   /// e.g. "People picker" gives "people picker", "Sports Stats" gives "sports Stats"
   static func lowerFirstLetter(_ value: Any?) throws -> Any? {
@@ -179,10 +179,10 @@ extension Filters.Strings {
     }
     return result
   }
+}
 
-  // MARK: Private
-
-  private static func containsAnyLowercasedChar(_ string: String) throws -> Bool {
+private extension Filters.Strings {
+  static func containsAnyLowercasedChar(_ string: String) throws -> Bool {
     let lowercaseCharRegex = try NSRegularExpression(pattern: "[a-z]", options: .dotMatchesLineSeparators)
     let fullRange = NSRange(location: 0, length: string.unicodeScalars.count)
     return lowercaseCharRegex.firstMatch(in: string, options: .reportCompletion, range: fullRange) != nil
@@ -196,7 +196,7 @@ extension Filters.Strings {
   ///   - arguments: the arguments to the function; expecting zero
   /// - Returns: the string with first letter being uppercased
   /// - Throws: FilterError.invalidInputType if the value parameter isn't a string
-  private static func upperFirstLetter(_ value: String) -> String {
+  static func upperFirstLetter(_ value: String) -> String {
     guard let first = value.unicodeScalars.first else { return value }
     return String(first).uppercased() + String(value.unicodeScalars.dropFirst())
   }
@@ -205,7 +205,7 @@ extension Filters.Strings {
   ///
   /// - Parameter string: The string to snake_case
   /// - Returns: The string snake cased from either snake_cased or camelCased string.
-  private static func snakecase(_ string: String) throws -> String {
+  static func snakecase(_ string: String) throws -> String {
     let longUpper = try NSRegularExpression(pattern: "([A-Z\\d]+)([A-Z][a-z])", options: .dotMatchesLineSeparators)
     let camelCased = try NSRegularExpression(pattern: "([a-z\\d])([A-Z])", options: .dotMatchesLineSeparators)
 
@@ -228,26 +228,7 @@ extension Filters.Strings {
 
 // MARK: - String Filters: Mutation filters
 
-extension Filters.Strings {
-  fileprivate static let reservedKeywords = [
-    "associatedtype", "class", "deinit", "enum", "extension",
-    "fileprivate", "func", "import", "init", "inout", "internal",
-    "let", "open", "operator", "private", "protocol", "public",
-    "static", "struct", "subscript", "typealias", "var", "break",
-    "case", "continue", "default", "defer", "do", "else",
-    "fallthrough", "for", "guard", "if", "in", "repeat", "return",
-    "switch", "where", "while", "as", "Any", "catch", "false", "is",
-    "nil", "rethrows", "super", "self", "Self", "throw", "throws",
-    "true", "try", "_", "#available", "#colorLiteral", "#column",
-    "#else", "#elseif", "#endif", "#file", "#fileLiteral",
-    "#function", "#if", "#imageLiteral", "#line", "#selector",
-    "#sourceLocation", "associativity", "convenience", "dynamic",
-    "didSet", "final", "get", "infix", "indirect", "lazy", "left",
-    "mutating", "none", "nonmutating", "optional", "override",
-    "postfix", "precedence", "prefix", "Protocol", "required",
-    "right", "set", "Type", "unowned", "weak", "willSet"
-  ]
-
+public extension Filters.Strings {
   static func escapeReservedKeywords(value: Any?) throws -> Any? {
     let string = try Filters.parseString(from: value)
     return escapeReservedKeywords(in: string)
@@ -350,10 +331,29 @@ extension Filters.Strings {
         .trimmingCharacters(in: .whitespaces)
     }
   }
+}
 
-  // MARK: Private
+private extension Filters.Strings {
+  static let reservedKeywords = [
+    "associatedtype", "class", "deinit", "enum", "extension",
+    "fileprivate", "func", "import", "init", "inout", "internal",
+    "let", "open", "operator", "private", "protocol", "public",
+    "static", "struct", "subscript", "typealias", "var", "break",
+    "case", "continue", "default", "defer", "do", "else",
+    "fallthrough", "for", "guard", "if", "in", "repeat", "return",
+    "switch", "where", "while", "as", "Any", "catch", "false", "is",
+    "nil", "rethrows", "super", "self", "Self", "throw", "throws",
+    "true", "try", "_", "#available", "#colorLiteral", "#column",
+    "#else", "#elseif", "#endif", "#file", "#fileLiteral",
+    "#function", "#if", "#imageLiteral", "#line", "#selector",
+    "#sourceLocation", "associativity", "convenience", "dynamic",
+    "didSet", "final", "get", "infix", "indirect", "lazy", "left",
+    "mutating", "none", "nonmutating", "optional", "override",
+    "postfix", "precedence", "prefix", "Protocol", "required",
+    "right", "set", "Type", "unowned", "weak", "willSet"
+  ]
 
-  private static func removeLeadingWhitespaces(from string: String) -> String {
+  static func removeLeadingWhitespaces(from string: String) -> String {
     let chars = string.unicodeScalars.drop { CharacterSet.whitespaces.contains($0) }
     return String(chars)
   }
@@ -362,7 +362,7 @@ extension Filters.Strings {
   ///
   /// - Parameter in: the string to possibly escape
   /// - Returns: if the string is a reserved keyword, the escaped string, otherwise the original one
-  private static func escapeReservedKeywords(in string: String) -> String {
+  static func escapeReservedKeywords(in string: String) -> String {
     guard reservedKeywords.contains(string) else {
       return string
     }

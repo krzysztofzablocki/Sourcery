@@ -1,25 +1,25 @@
 //
 // StencilSwiftKit
-// Copyright © 2020 SwiftGen
+// Copyright © 2021 SwiftGen
 // MIT Licence
 //
 
 import Foundation
 import Stencil
 
-extension Filters {
+public extension Filters {
   enum Numbers {
-    static func hexToInt(_ value: Any?) throws -> Any? {
+    public static func hexToInt(_ value: Any?) throws -> Any? {
       guard let value = value as? String else { throw Filters.Error.invalidInputType }
       return Int(value, radix: 16)
     }
 
-    static func int255toFloat(_ value: Any?) throws -> Any? {
+    public static func int255toFloat(_ value: Any?) throws -> Any? {
       guard let value = value as? Int else { throw Filters.Error.invalidInputType }
       return Float(value) / Float(255.0)
     }
 
-    static func percent(_ value: Any?) throws -> Any? {
+    public static func percent(_ value: Any?) throws -> Any? {
       guard let value = value as? Float else { throw Filters.Error.invalidInputType }
 
       let percent = Int(value * 100.0)
