@@ -141,6 +141,10 @@ args:
 
 Read more about this configuration file [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/usage.html#configuration-file).
 
+## Issues
+If you get unverified developer warning when using binary zip distribution try:
+`xattr -dr com.apple.quarantine Sourcery-1.1.1`
+
 ## Contributing
 
 Contributions to Sourcery are welcomed and encouraged!
