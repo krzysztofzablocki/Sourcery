@@ -50,23 +50,23 @@ public struct Composer {
         parsedTypes
             .filter { $0.isExtension == true }
             .forEach {
-                $0.localName = actualTypeName(for: TypeName($0.name), typealiases: resolvedTypealiases) ?? $0.localName
+                $0.localName = actualTypeName(for: TypeName($0.name), modules: modules, typealiases: resolvedTypealiases) ?? $0.localName
             }
 
         //extend all types with their extensions
         parsedTypes.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), typealiases: resolvedTypealiases) ?? $0 }
+            type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), modules: modules, typealiases: resolvedTypealiases) ?? $0 }
 
             let uniqueType = unique[type.globalName] ?? typeFromModule(type.name, modules: modules) ?? type.imports.lazy.compactMap { modules[$0]?[type.name] }.first
 
             guard let current = uniqueType else {
-                //for unknown types we still store their extensions
+                // for unknown types we still store their extensions
                 unique[type.globalName] = type
 
                 let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
                         ": \(type.inheritedTypes.joined(separator: ", "))"
 
-                Log.verbose("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
+                Log.warning("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
                 return
             }
 
@@ -120,14 +120,14 @@ public struct Composer {
 
         updateTypeRelationships(types: types)
         return (
-            types: types.sorted { $0.name < $1.name },
+            types: types.sorted { $0.globalName < $1.globalName },
             functions: functions.sorted { $0.name < $1.name },
             typealiases: typealiases.sorted(by: { $0.name < $1.name })
         )
     }
 
     private static func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
-        let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, typealiases: typealiases)
+        let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         if let actualTypeName = actualTypeName, actualTypeName != typeName.unwrappedTypeName {
             typeName.actualTypeName = TypeName(actualTypeName)
         }
@@ -306,7 +306,7 @@ public struct Composer {
     }
 
     /// returns actual type name for type alias
-    private static func actualTypeName(for typeName: TypeName, containingType: Type? = nil, unique: [String: Type]? = nil, typealiases: [String: Typealias]) -> String? {
+    private static func actualTypeName(for typeName: TypeName, containingType: Type? = nil, unique: [String: Type]? = nil, modules: [String: [String: Type]], typealiases: [String: Typealias]) -> String? {
         let optionalPrefix = typeName.isOptional ? "?" : typeName.isImplicitlyUnwrappedOptional ? "!" : ""
         let unwrappedTypeName = typeName.unwrappedTypeName
         var actualTypeName: String?
@@ -317,8 +317,12 @@ public struct Composer {
         }
 
         if let containingType = containingType {
-            //check if typealias is for one of contained types
-            if let possibleTypeName = typealiases["\(containingType.globalName).\(unwrappedTypeName)"]?.typeName.name {
+            // check if self
+            if typeName.unwrappedTypeName == "Self" {
+                actualTypeName = containingType.globalName
+            }
+            // check if typealias is for one of contained types
+            else if let possibleTypeName = typealiases["\(containingType.globalName).\(unwrappedTypeName)"]?.typeName.name {
                 let containedType = containingType.containedTypes.first(where: {
                     $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
                 })
@@ -339,10 +343,7 @@ public struct Composer {
                     }
 
                     if actualTypeName == nil {
-                        //check with module name
-                        if let module = containingType.module, let name = unique?["\(module).\(unwrappedTypeName)"]?.globalName {
-                            actualTypeName = name
-                        }
+                        actualTypeName = inferActualTypename(from: typeName, containedInType: containingType, uniqueTypes: unique ?? [:], modules: modules)
                     }
                     actualTypeName = actualTypeName ?? unwrappedTypeName
                 }
@@ -356,10 +357,10 @@ public struct Composer {
                 for element in elements {
                     let nameAndValue = element.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
                     if nameAndValue.count == 1 {
-                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[0]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
                         actualElements.append(valueName ?? nameAndValue[0])
                     } else {
-                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[1]), containingType: containingType, unique: unique, typealiases: typealiases)
+                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[1]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
                         actualElements.append("\(nameAndValue[0]): \(valueName ?? nameAndValue[1])")
                     }
                 }
@@ -370,23 +371,23 @@ public struct Composer {
                     .map({ $0.trimmingCharacters(in: .whitespaces) })
                 if types.count == 1 {
                     //array literal
-                    let name = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    let name = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
                     actualTypeName = "[\(name ?? types[0])]"
                 } else {
                     //dictionary literal
-                    let keyName = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, typealiases: typealiases)
-                    let valueName = self.actualTypeName(for: TypeName(types[1]), containingType: containingType, unique: unique, typealiases: typealiases)
+                    let keyName = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+                    let valueName = self.actualTypeName(for: TypeName(types[1]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
                     actualTypeName = "[\(keyName ?? types[0]): \(valueName ?? types[1])]"
                 }
             } else if let genericStartIndex = unwrappedTypeName.firstIndex(of: "<"), unwrappedTypeName.last == ">" {
                 let genericTypeNameString = String(unwrappedTypeName.prefix(upTo: genericStartIndex))
-                let genericTypeName = self.actualTypeName(for: TypeName(genericTypeNameString), containingType: containingType, unique: unique, typealiases: typealiases)
+                let genericTypeName = self.actualTypeName(for: TypeName(genericTypeNameString), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
 
                 let typeParametersString = unwrappedTypeName.suffix(from: genericStartIndex).dropFirst().dropLast()
                 let typeParameters = String(typeParametersString).commaSeparated()
                 var actualTypeParameters = [String]()
                 for typeParameter in typeParameters {
-                    if let typeName = self.actualTypeName(for: TypeName(typeParameter), containingType: containingType, unique: unique, typealiases: typealiases) {
+                    if let typeName = self.actualTypeName(for: TypeName(typeParameter), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) {
                         actualTypeParameters.append(typeName)
                     } else {
                         actualTypeParameters.append(typeParameter)
@@ -398,6 +399,61 @@ public struct Composer {
         } else {
             return nil
         }
+    }
+
+    private static func inferActualTypename(from typename: TypeName, containedInType: Type?, uniqueTypes: [String: Type], modules: [String: [String: Type]]) -> String? {
+        let unwrappedTypeName = typename.unwrappedTypeName
+
+        func fullName(for module: String) -> String {
+            "\(module).\(unwrappedTypeName)"
+        }
+
+        func type(for module: String) -> Type? {
+            return modules[module]?[unwrappedTypeName]
+        }
+
+        func ambigiousErrorMessage(from types: [Type]) -> String? {
+            Log.warning("Ambigious type \(typename), found \(types.map { $0.globalName }.joined(separator: ", ")). Specify module name at declaration site to disambigutate.")
+            return nil
+        }
+
+        let explicitModulesAtDeclarationSite: [String] = [
+            containedInType?.module.map { [$0] } ?? [],    // main module for this typename
+            containedInType?.imports ?? []    // imported modules
+        ]
+        .flatMap { $0 }
+
+        let remainingModules = Set(modules.keys).subtracting(explicitModulesAtDeclarationSite)
+
+        /// We need to check whether we can find type in one of the modules but we need to be careful to avoid amibiguity
+        /// First checking explicit modules available at declaration site (so source module + all imported ones)
+        /// If there is no ambigiuity there we can assume that module will be resolved by the compiler
+        /// If that's not the case we look after remaining modules in the application and if the typename has no ambigiuity we use that
+        /// But if there is more than 1 typename duplication across modules we have no way to resolve what is the compiler going to use so we fail
+        let moduleSetsToCheck: [Array<String>] = [
+            explicitModulesAtDeclarationSite,
+            Array(remainingModules)
+        ]
+
+        for modules in moduleSetsToCheck {
+            let possibleTypes = modules
+                .compactMap { type(for: $0) }
+
+            if possibleTypes.count > 1 {
+                return ambigiousErrorMessage(from: possibleTypes)
+            }
+
+            if let type = possibleTypes.first {
+                return type.globalName
+            }
+        }
+
+        // as last result for unknown types / extensions
+        // try extracting type from unique array
+        if let module = containedInType?.module {
+            return uniqueTypes[fullName(for: module)]?.globalName
+        }
+        return nil
     }
 
     private static func typeFromModule(_ name: String, modules: [String: [String: Type]]) -> Type? {
