@@ -584,6 +584,82 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                describe("when using Self instead of type name") {
+                    it("replaces variable types with actual types") {
+
+                        let expectedVariable = Variable(
+                            name: "variable",
+                            typeName: TypeName("Self", actualTypeName: TypeName("Foo")),
+                            accessLevel: (.internal, .none),
+                            isComputed: true,
+                            definedInTypeName: TypeName("Foo")
+                        )
+
+                        let expectedStaticVariable = Variable(
+                            name: "staticVar",
+                            typeName: TypeName("Self", actualTypeName: TypeName("Foo.SubType")),
+                            accessLevel: (.internal, .internal),
+                            isStatic: true,
+                            defaultValue: ".init()",
+                            definedInTypeName: TypeName("Foo.SubType")
+                        )
+
+                        let subType = Struct(name: "SubType", variables: [expectedStaticVariable])
+                        let fooType = Struct(name: "Foo", variables: [expectedVariable], containedTypes: [subType])
+
+                        subType.parent = fooType
+
+                        expectedVariable.type = fooType
+                        expectedStaticVariable.type = subType
+
+                        let types = parse(
+                            """
+                            struct Foo {
+                                var variable: Self { .init() }
+
+                                struct SubType {
+                                    static var staticVar: Self = .init()
+                                }
+                            }
+                            """
+                        )
+
+                        func verify(_ variable: Variable?, expected: Variable) {
+                            expect(variable).to(equal(expected))
+                            expect(variable?.actualTypeName).to(equal(expected.actualTypeName))
+                            expect(variable?.type).to(equal(expected.type))
+                        }
+
+                        verify(types.first(where: { $0.name == "Foo" })?.instanceVariables.first, expected: expectedVariable)
+                        verify(types.first(where: { $0.name == "Foo.SubType" })?.staticVariables.first, expected: expectedStaticVariable)
+                    }
+
+                    it("replaces method types with actual types") {
+
+                        let expectedMethod = Method(name: "myMethod()", selectorName: "myMethod", returnTypeName: TypeName("Self", actualTypeName: TypeName("Foo.SubType")), definedInTypeName: TypeName("Foo.SubType"))
+
+                        let subType = Struct(name: "SubType", methods: [expectedMethod])
+                        let fooType = Struct(name: "Foo", containedTypes: [subType])
+
+                        subType.parent = fooType
+
+                        let types = parse(
+                            """
+                            struct Foo {
+                                struct SubType {
+                                    func myMethod() -> Self {
+                                        return self
+                                    }
+                                }
+                            }
+                            """
+                        )
+
+                        let parsedSubType = types.first(where: { $0.name == "Foo.SubType" })
+                        expect(parsedSubType?.methods.first).to(equal(expectedMethod))
+                    }
+                }
+
                 context("given typealiases") {
                     func parseTypealiases(_ code: String) -> [Typealias] {
                         guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }

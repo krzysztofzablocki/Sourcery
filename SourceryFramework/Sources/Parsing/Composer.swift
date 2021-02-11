@@ -317,8 +317,12 @@ public struct Composer {
         }
 
         if let containingType = containingType {
-            //check if typealias is for one of contained types
-            if let possibleTypeName = typealiases["\(containingType.globalName).\(unwrappedTypeName)"]?.typeName.name {
+            // check if self
+            if typeName.unwrappedTypeName == "Self" {
+                actualTypeName = containingType.globalName
+            }
+            // check if typealias is for one of contained types
+            else if let possibleTypeName = typealiases["\(containingType.globalName).\(unwrappedTypeName)"]?.typeName.name {
                 let containedType = containingType.containedTypes.first(where: {
                     $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
                 })
