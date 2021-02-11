@@ -1118,7 +1118,7 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
-                context("given type name with module name") {
+                context("given types within modules") {
                     func parseModules(_ modules: (name: String?, contents: String)...) -> [Type] {
                         let moduleResults = modules.compactMap {
                             try? FileParser(contents: $0.contents, module: $0.name).parse()
@@ -1133,144 +1133,202 @@ class ParserComposerSpec: QuickSpec {
                         return Composer.uniqueTypesAndFunctions(parserResult).types
                     }
 
-                    it("extends type with extension") {
-                        let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .none, write: .none), isComputed: true, definedInTypeName: TypeName("MyModule.Bar"))])
-                        expectedBar.module = "MyModule"
+                    context("when using global names") {
 
-                        let types = parseModules(
-                            (name: "MyModule", contents: "struct Bar {}"),
-                            (name: nil, contents: "extension MyModule.Bar { var foo: Int { return 0 } }")
-                        )
+                        it("extends type with extension") {
+                            let expectedBar = Struct(name: "Bar", variables: [Variable(name: "foo", typeName: TypeName("Int"), accessLevel: (read: .none, write: .none), isComputed: true, definedInTypeName: TypeName("MyModule.Bar"))])
+                            expectedBar.module = "MyModule"
 
-                        expect(types).to(equal([expectedBar]))
-                    }
+                            let types = parseModules(
+                                (name: "MyModule", contents: "struct Bar {}"),
+                                (name: nil, contents: "extension MyModule.Bar { var foo: Int { return 0 } }")
+                            )
 
-                    it("resolves variable type") {
-                        let expectedBar = Struct(name: "Bar")
-                        expectedBar.module = "MyModule"
-                        let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar, definedInTypeName: TypeName("Foo"))])
-
-                        let types = parseModules(
-                            (name: "MyModule", contents: "struct Bar {}"),
-                            (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
-                        )
-
-                        expect(types).to(equal([expectedBar, expectedFoo]))
-                        expect(types.last?.variables.first?.type).to(equal(expectedBar))
-                    }
-
-                    it("resolves variable defined in type") {
-                        let expectedBar = Struct(name: "Bar")
-                        expectedBar.module = "MyModule"
-                        let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar, definedInTypeName: TypeName("Foo"))])
-
-                        let types = parseModules(
-                            (name: "MyModule", contents: "struct Bar {}"),
-                            (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
-                        )
-
-                        expect(types).to(equal([expectedBar, expectedFoo]))
-                        expect(types.last?.variables.first?.type).to(equal(expectedBar))
-                        expect(types.last?.variables.first?.definedInType).to(equal(expectedFoo))
-                    }
-
-                    it("resolves variable type correctly") {
-                        let expectedBar = Struct(name: "Bar", variables: [
-                                                    Variable(name: "bat", typeName: TypeName("Int"), type: nil, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo.Bar"))
-                        ])
-                        expectedBar.module = "Foo"
-
-                        let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo"))], containedTypes: [expectedBar])
-                        expectedFoo.module = "Foo"
-
-                        let types = parseModules(
-                            (name: "Foo", contents:
-                                """
-                                struct Foo {
-                                    struct Bar {
-                                        let bat: Int
-                                    }
-                                    let bar: Bar
-                                }
-                                """
-                            ))
-
-                        expect(types).to(equal([expectedFoo, expectedBar]))
-
-                        let parsedFoo = types.first(where: { $0.globalName == "Foo.Foo" })
-                        expect(parsedFoo).to(equal(expectedFoo))
-                        expect(parsedFoo?.variables.first?.type).to(equal(expectedBar))
-                    }
-
-                    it("resolves variable type correctly when generics are used") {
-                        let expectedBar = Struct(name: "Bar", variables: [
-                            Variable(name: "batDouble", typeName: TypeName("Double"), type: nil, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo.Bar")),
-                            Variable(name: "batInt", typeName: TypeName("Int"), type: nil, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo.Bar"))
-                        ])
-                        expectedBar.module = "Foo"
-
-                        let expectedBaz = Struct(name: "Baz", isGeneric: true)
-                        expectedBaz.module = "Foo"
-
-                        let expectedFoo = Struct(name: "Foo", variables: [
-                            Variable(name: "bar", typeName: TypeName("Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo")),
-                            Variable(name: "bazbars", typeName: TypeName("Baz<Bar>", generic: .init(name: "Foo.Foo.Baz", typeParameters: [.init(typeName: .init("Foo.Foo.Bar"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo")),
-                            Variable(name: "bazDoubles", typeName: TypeName("Baz<Double>", generic: .init(name: "Foo.Foo.Baz", typeParameters: [.init(typeName: .init("Foo.Double"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo")),
-                            Variable(name: "bazInts", typeName: TypeName("Baz<Int>", generic: .init(name: "Foo.Foo.Baz", typeParameters: [.init(typeName: .init("Int"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo"))
-                        ], containedTypes: [expectedBar, expectedBaz])
-                        expectedFoo.module = "Foo"
-
-                        let expectedDouble = Type(name: "Double", accessLevel: .none, isExtension: true)
-                        expectedDouble.module = "Foo"
-
-                        let types = parseModules(
-                            (name: "Foo", contents:
-                                """
-                                extension Double {}
-                                struct Foo {
-                                        struct Bar {
-                                            let batDouble: Double
-                                            let batInt: Int
-                                        }
-
-                                        struct Baz<T> {
-                                        }
-
-                                        let bar: Bar
-                                        let bazbars: Baz<Bar>
-                                        let bazDoubles: Baz<Double>
-                                        let bazInts: Baz<Int>
-                                }
-                                """
-                            ))
-
-                        expect(types).to(equal([expectedDouble, expectedFoo, expectedBar, expectedBaz]))
-
-                        func check(variable: String, typeName: String?, type: String?, onType globalName: String) {
-                            let entity = types.first(where: { $0.globalName == globalName })
-                            expect(entity).toNot(beNil())
-
-                            let variable = entity?.allVariables.first(where: { $0.name == variable })
-                            expect(variable).toNot(beNil())
-                            if let typeName = typeName {
-                                expect(variable?.typeName.description).to(equal(typeName))
-                            } else {
-                                expect(variable?.typeName.description).to(beNil())
-                            }
-
-                            if let type = type {
-                                expect(variable?.type?.name).to(equal(type))
-                            } else {
-                                expect(variable?.type?.name).to(beNil())
-                            }
+                            expect(types).to(equal([expectedBar]))
                         }
 
-                        check(variable: "bar", typeName: "Bar", type: "Foo.Bar", onType: "Foo.Foo")
-                        check(variable: "bazbars", typeName: "Baz<Bar>", type: "Foo.Baz", onType: "Foo.Foo")
-                        check(variable: "bazDoubles", typeName: "Baz<Double>", type: "Foo.Baz", onType: "Foo.Foo")
-                        check(variable: "bazInts", typeName: "Baz<Int>", type: "Foo.Baz", onType: "Foo.Foo")
-                        check(variable: "batDouble", typeName: "Double", type: "Double", onType: "Foo.Foo.Bar")
-                        check(variable: "batInt", typeName: "Int", type: nil, onType: "Foo.Foo.Bar")
+                        it("resolves variable type") {
+                            let expectedBar = Struct(name: "Bar")
+                            expectedBar.module = "MyModule"
+                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar, definedInTypeName: TypeName("Foo"))])
+
+                            let types = parseModules(
+                                (name: "MyModule", contents: "struct Bar {}"),
+                                (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
+                            )
+
+                            expect(types).to(equal([expectedFoo, expectedBar]))
+                            expect(types.first?.variables.first?.type).to(equal(expectedBar))
+                        }
+
+                        it("resolves variable defined in type") {
+                            let expectedBar = Struct(name: "Bar")
+                            expectedBar.module = "MyModule"
+                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("MyModule.Bar"), type: expectedBar, definedInTypeName: TypeName("Foo"))])
+
+                            let types = parseModules(
+                                (name: "MyModule", contents: "struct Bar {}"),
+                                (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
+                            )
+
+                            expect(types).to(equal([expectedFoo, expectedBar]))
+                            expect(types.first?.variables.first?.type).to(equal(expectedBar))
+                            expect(types.first?.variables.first?.definedInType).to(equal(expectedFoo))
+                        }
+                    }
+
+                    context("when using local names") {
+                        it("resolves variable type properly") {
+                            let expectedBarA = Struct(name: "Bar")
+                            expectedBarA.module = "ModuleA"
+
+                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("Bar"), type: expectedBarA, definedInTypeName: TypeName("Foo"))])
+                            expectedFoo.module = "ModuleB"
+                            expectedFoo.imports = ["ModuleA"]
+
+                            let expectedBarC = Struct(name: "Bar")
+                            expectedBarC.module = "ModuleC"
+
+                            let types = parseModules(
+                                (name: "ModuleA", contents: "struct Bar {}"),
+                                (name: "ModuleB", contents:
+                                    """
+                                    import ModuleA
+                                    struct Foo { var bar: Bar }
+                                    """
+                                ),
+                                (name: "ModuleC", contents: "struct Bar {}")
+                            )
+
+                            expect(types).to(equal([expectedBarA, expectedFoo, expectedBarC]))
+                            expect(types.first(where: { $0.name == "Foo" })?.variables.first?.type).to(equal(expectedBarA))
+                        }
+
+                        it("throws error when variable type is ambigious") {
+                            let expectedBarA = Struct(name: "Bar")
+                            expectedBarA.module = "ModuleA"
+
+                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("Bar"), type: expectedBarA, definedInTypeName: TypeName("Foo"))])
+                            expectedFoo.module = "ModuleB"
+
+                            let expectedBarC = Struct(name: "Bar")
+                            expectedBarC.module = "ModuleC"
+
+                            let types = parseModules(
+                                (name: "ModuleA", contents: "struct Bar {}"),
+                                (name: "ModuleB", contents:
+                                    """
+                                    struct Foo { var bar: Bar }
+                                    """
+                                ),
+                                (name: "ModuleC", contents: "struct Bar {}")
+                            )
+
+                            let barVariable = types.last?.variables.first
+
+                            expect(types).to(equal([expectedBarA, expectedFoo, expectedBarC]))
+                            expect(barVariable?.typeName).to(beNil())
+                            expect(barVariable?.type).to(beNil())
+                        }
+
+                        it("resolves variable type correctly") {
+                            let expectedBar = Struct(name: "Bar", variables: [
+                                                        Variable(name: "bat", typeName: TypeName("Int"), type: nil, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo.Bar"))
+                            ])
+                            expectedBar.module = "Foo"
+
+                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName("Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo"))], containedTypes: [expectedBar])
+                            expectedFoo.module = "Foo"
+
+                            let types = parseModules(
+                                (name: "Foo", contents:
+                                    """
+                                    struct Foo {
+                                        struct Bar {
+                                            let bat: Int
+                                        }
+                                        let bar: Bar
+                                    }
+                                    """
+                                ))
+
+                            expect(types).to(equal([expectedFoo, expectedBar]))
+
+                            let parsedFoo = types.first(where: { $0.globalName == "Foo.Foo" })
+                            expect(parsedFoo).to(equal(expectedFoo))
+                            expect(parsedFoo?.variables.first?.type).to(equal(expectedBar))
+                        }
+
+                        it("resolves variable type correctly when generics are used") {
+                            let expectedBar = Struct(name: "Bar", variables: [
+                                Variable(name: "batDouble", typeName: TypeName("Double"), type: nil, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo.Bar")),
+                                Variable(name: "batInt", typeName: TypeName("Int"), type: nil, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo.Bar"))
+                            ])
+                            expectedBar.module = "ModuleA"
+
+                            let expectedBaz = Struct(name: "Baz", isGeneric: true)
+                            expectedBaz.module = "ModuleA"
+
+                            let expectedFoo = Struct(name: "Foo", variables: [
+                                Variable(name: "bar", typeName: TypeName("Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo")),
+                                Variable(name: "bazbars", typeName: TypeName("Baz<Bar>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("ModuleA.Foo.Bar"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo")),
+                                Variable(name: "bazDoubles", typeName: TypeName("Baz<Double>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("ModuleA.Double"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo")),
+                                Variable(name: "bazInts", typeName: TypeName("Baz<Int>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("Int"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName("Foo"))
+                            ], containedTypes: [expectedBar, expectedBaz])
+                            expectedFoo.module = "ModuleA"
+
+                            let expectedDouble = Type(name: "Double", accessLevel: .none, isExtension: true)
+                            expectedDouble.module = "ModuleA"
+
+                            let types = parseModules(
+                                (name: "ModuleA", contents:
+                                    """
+                                    extension Double {}
+                                    struct Foo {
+                                            struct Bar {
+                                                let batDouble: Double
+                                                let batInt: Int
+                                            }
+
+                                            struct Baz<T> {
+                                            }
+
+                                            let bar: Bar
+                                            let bazbars: Baz<Bar>
+                                            let bazDoubles: Baz<Double>
+                                            let bazInts: Baz<Int>
+                                    }
+                                    """
+                                ))
+
+                            expect(types).to(equal([expectedDouble, expectedFoo, expectedBar, expectedBaz]))
+
+                            func check(variable: String, typeName: String?, type: String?, onType globalName: String) {
+                                let entity = types.first(where: { $0.globalName == globalName })
+                                expect(entity).toNot(beNil())
+
+                                let variable = entity?.allVariables.first(where: { $0.name == variable })
+                                expect(variable).toNot(beNil())
+                                if let typeName = typeName {
+                                    expect(variable?.typeName.description).to(equal(typeName))
+                                } else {
+                                    expect(variable?.typeName.description).to(beNil())
+                                }
+
+                                if let type = type {
+                                    expect(variable?.type?.name).to(equal(type))
+                                } else {
+                                    expect(variable?.type?.name).to(beNil())
+                                }
+                            }
+
+                            check(variable: "bar", typeName: "Bar", type: "Foo.Bar", onType: "ModuleA.Foo")
+                            check(variable: "bazbars", typeName: "Baz<Bar>", type: "Foo.Baz", onType: "ModuleA.Foo")
+                            check(variable: "bazDoubles", typeName: "Baz<Double>", type: "Foo.Baz", onType: "ModuleA.Foo")
+                            check(variable: "bazInts", typeName: "Baz<Int>", type: "Foo.Baz", onType: "ModuleA.Foo")
+                            check(variable: "batDouble", typeName: "Double", type: "Double", onType: "ModuleA.Foo.Bar")
+                            check(variable: "batInt", typeName: "Int", type: nil, onType: "ModuleA.Foo.Bar")
+                        }
                     }
                 }
 
