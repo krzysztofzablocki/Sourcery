@@ -7,6 +7,9 @@
 - `Self` reference is resolved to correct type. [Enchancement Request](https://github.com/krzysztofzablocki/Sourcery/issues/900)
 - Sourcery will now attempt to resolve local type names across modules when it can be done without ambiguity. Previously we only supported fully qualified names. [Enchancement Request](https://github.com/krzysztofzablocki/Sourcery/issues/899)
 
+## Internal Changes
+- Sourcery is now always distributed via SPM, this creates much nicer diffs when using CocoaPods distribution.
+
 ## 1.1.1
 
 - Updates StencilSwiftKit to 2.8.0

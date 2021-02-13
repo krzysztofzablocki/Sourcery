@@ -13,7 +13,7 @@
 
 ## Build generated
 build/
-bin/Sourcery.app
+bin/sourcery
 DerivedData/
 
 ## Various settings
