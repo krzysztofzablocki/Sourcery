@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.2.0
 
 ### New Features
 - `Self` reference is resolved to correct type. [Enchancement Request](https://github.com/krzysztofzablocki/Sourcery/issues/900)
