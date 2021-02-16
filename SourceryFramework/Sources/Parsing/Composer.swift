@@ -66,7 +66,7 @@ public struct Composer {
                 let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
                         ": \(type.inheritedTypes.joined(separator: ", "))"
 
-                Log.warning("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
+                Log.info("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
                 return
             }
 
@@ -413,7 +413,7 @@ public struct Composer {
         }
 
         func ambigiousErrorMessage(from types: [Type]) -> String? {
-            Log.warning("Ambigious type \(typename), found \(types.map { $0.globalName }.joined(separator: ", ")). Specify module name at declaration site to disambigutate.")
+            Log.info("Ambigious type \(typename), found \(types.map { $0.globalName }.joined(separator: ", ")). Specify module name at declaration site to disambigutate.")
             return nil
         }
 

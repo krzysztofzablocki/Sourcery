@@ -532,7 +532,7 @@ extension FileParser {
         } else {
             let declaration = extract(.key, from: source)
             // swiftlint:disable:next force_unwrapping
-            Log.warning("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
+            Log.info("<<unknown type, please add type attribution to variable\(declaration != nil ? " '\(declaration!)'" : "")>>")
             typeName = TypeName("UnknownTypeSoAddTypeAttributionToVariable")
         }
 
