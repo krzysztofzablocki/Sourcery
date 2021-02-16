@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.2.1
 
 ## Internal Changes
 Tweaks some warnings into info logs to not generate Xcode warnings
