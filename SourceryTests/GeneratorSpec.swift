@@ -27,7 +27,7 @@ class GeneratorSpec: QuickSpec {
                     fooVar,
                     barVar,
                     Variable(name: "fooBar", typeName: TypeName("Int?"), isComputed: true, definedInTypeName: TypeName("Complex")),
-                    Variable(name: "tuple", typeName: TypeName("(Int, Bar)"), definedInTypeName: TypeName("Complex"))
+                    Variable(name: "tuple", typeName: .buildTuple(.Int, TypeName(name: "Bar")), definedInTypeName: TypeName("Complex"))
                 ]
 
                 complexType.rawMethods = [
@@ -39,7 +39,7 @@ class GeneratorSpec: QuickSpec {
                 let complexTypeExtension = Type(name: "Complex", isExtension: true, variables: [])
                 complexTypeExtension.rawVariables = [
                     Variable(name: "fooBarFromExtension", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("Complex")),
-                    Variable(name: "tupleFromExtension", typeName: TypeName("(Int, Bar)"), isComputed: true, definedInTypeName: TypeName("Complex"))
+                    Variable(name: "tupleFromExtension", typeName: .buildTuple(.Int, TypeName(name: "Bar")), isComputed: true, definedInTypeName: TypeName("Complex"))
                 ]
                 complexTypeExtension.rawMethods = [
                     Method(name: "fooFromExtension(some: Int)", selectorName: "fooFromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], definedInTypeName: TypeName("Complex")),

@@ -372,6 +372,7 @@ public typealias AttributeList = [String: [Attribute]]
     }
 
 // sourcery:inline:Type.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.module = aDecoder.decode(forKey: "module")

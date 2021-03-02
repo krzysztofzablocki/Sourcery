@@ -52,6 +52,7 @@ import Foundation
     }
 
 // sourcery:inline:ProtocolComposition.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let composedTypeNames: [TypeName] = aDecoder.decode(forKey: "composedTypeNames") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["composedTypeNames"])); fatalError() }; self.composedTypeNames = composedTypeNames

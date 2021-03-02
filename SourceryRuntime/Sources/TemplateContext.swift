@@ -23,6 +23,7 @@ import Foundation
     }
 
 // sourcery:inline:TemplateContext.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let functions: [SourceryMethod] = aDecoder.decode(forKey: "functions") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["functions"])); fatalError() }; self.functions = functions
@@ -93,6 +94,7 @@ extension ProcessInfo {
     }
 
 // sourcery:inline:Types.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types

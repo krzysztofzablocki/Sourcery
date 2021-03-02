@@ -101,6 +101,7 @@ import Foundation
     }
 
 // sourcery:inline:Subscript.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters

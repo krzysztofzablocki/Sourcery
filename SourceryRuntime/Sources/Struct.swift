@@ -49,6 +49,7 @@ import Foundation
     }
 
 // sourcery:inline:Struct.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)

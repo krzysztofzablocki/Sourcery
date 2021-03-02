@@ -21,6 +21,7 @@ import Foundation
     }
 
 // sourcery:inline:BytesRange.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.offset = aDecoder.decodeInt64(forKey: "offset")

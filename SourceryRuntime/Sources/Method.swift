@@ -70,6 +70,7 @@ public typealias SourceryMethod = Method
     }
 
 // sourcery:inline:MethodParameter.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
@@ -160,6 +161,7 @@ extension Array where Element == MethodParameter {
     }
 
     // sourcery:inline:ClosureParameter.AutoCoding
+
             /// :nodoc:
             required public init?(coder aDecoder: NSCoder) {
                 self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
@@ -380,6 +382,7 @@ extension Array where Element == ClosureParameter {
     }
 
 // sourcery:inline:Method.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name

@@ -204,7 +204,8 @@ class SyntaxTreeCollector: SyntaxVisitor {
           aliasName: localName,
           typeName: typeName,
           accessLevel: baseModifiers.readAccess,
-          parent: visitingType
+          parent: visitingType,
+          module: module
         )
 
         // TODO: add generic requirements

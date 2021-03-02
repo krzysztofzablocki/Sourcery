@@ -48,6 +48,7 @@ import Foundation
     }
 
 // sourcery:inline:FileParserResult.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.path = aDecoder.decode(forKey: "path")

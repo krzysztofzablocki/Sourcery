@@ -19,13 +19,23 @@ public enum Composer {
     /// - Parameter parserResult: Result of parsing source code.
     /// - Returns: Final types and extensions of unknown types.
     public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
-        var unique = [String: Type]()
+
+
+        // TODO: This logic should really be more complicated
+        // For any resolution we need to be looking at accesssLevel and module boundries
+        // e.g. there might be a typealias `private typealias Something = MyType` in one module and same name in another with public modifier, one could be acccesed and the other could not
+
+
+        var typeMap = [String: Type]()
         var modules = [String: [String: Type]]()
         let parsedTypes = parserResult.types
         let functions = parserResult.functions
         let (resolvedTypealiases, unresolvedTypealiases) = self.typealiases(parserResult)
+        let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
+            return self.resolveType(typeName: typeName, containingType: containingType, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)
+        }
 
-        //set definedInType for all methods and variables
+        // set definedInType for all methods and variables
         parsedTypes
             .forEach { type in
                 type.variables.forEach { $0.definedInType = type }
@@ -33,11 +43,11 @@ public enum Composer {
                 type.subscripts.forEach { $0.definedInType = type }
             }
 
-        //map all known types to their names
+        // map all known types to their names
         parsedTypes
-            .filter { $0.isExtension == false}
+            .filter { $0.isExtension == false }
             .forEach {
-                unique[$0.globalName] = $0
+                typeMap[$0.globalName] = $0
                 if let module = $0.module {
                     var typesByModules = modules[module, default: [:]]
                     typesByModules[$0.name] = $0
@@ -45,26 +55,56 @@ public enum Composer {
                 }
             }
 
-        //replace extensions for type aliases with original types
-        //extract all methods and variables from extensions
+        /// Resolve typealiases
+        let typealiases = Array(unresolvedTypealiases.values)
+        typealiases.parallelPerform { alias in
+            alias.type = resolveType(alias.typeName, alias.parent)
+        }
+
+        /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
         parsedTypes
             .filter { $0.isExtension == true }
             .forEach {
-                $0.localName = actualTypeName(for: TypeName($0.name), modules: modules, typealiases: resolvedTypealiases) ?? $0.localName
+                let oldName = $0.globalName
+
+                if let resolved = resolveGlobalName(for: oldName, containingType: $0.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                    $0.localName = resolved.replacingOccurrences(of: "\($0.module != nil ? "\($0.module!)." : "")", with: "")
+                } else {
+                    return
+                }
+
+                // nothing left to do
+                guard oldName != $0.globalName else {
+                    return
+                }
+
+                // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
+                func rewriteChildren(of type: Type) {
+                    // child is never an extension so no need to check
+                    for child in type.containedTypes {
+                        typeMap[child.globalName] = child
+                        rewriteChildren(of: child)
+                    }
+                }
+                rewriteChildren(of: $0)
             }
 
-        //extend all types with their extensions
+        // extend all types with their extensions
         parsedTypes.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { actualTypeName(for: TypeName($0), modules: modules, typealiases: resolvedTypealiases) ?? $0 }
+            type.inheritedTypes = type.inheritedTypes.map { inheritedName in
+                resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name ?? inheritedName
+            }
 
-            let uniqueType = unique[type.globalName] ??
-                typeFromModule(type.name, modules: modules) ??
-                type.imports.lazy.compactMap { modules[$0.moduleName]?[type.name] }.first
+            let uniqueType = typeMap[type.globalName] ?? // this check will only fail on an extension?
+                fakeTypeFromComposedName(type.name, modules: modules) ?? // this can happen for an extension on unknown type, this case should probably be handled by the inferTypeNameFromModules
+              (inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] })
 
             guard let current = uniqueType else {
+                assert(type.isExtension)
+
                 // for unknown types we still store their extensions but mark them as unknown
                 type.isUnknownExtension = true
-                unique[type.globalName] = type
+                typeMap[type.globalName] = type
 
                 let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
                     ": \(type.inheritedTypes.joined(separator: ", "))"
@@ -76,16 +116,19 @@ public enum Composer {
             if current == type { return }
 
             current.extend(type)
-            unique[current.globalName] = current
+            typeMap[current.globalName] = current
         }
 
         let resolutionStart = currentTimestamp()
 
-        let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: resolvedTypealiases)
-        }
-
-        let types = Array(unique.values)
+        let values = typeMap.values
+        var processed = Set<String>(minimumCapacity: values.count)
+        let types = typeMap.values.filter({
+            let name = $0.globalName
+            let wasProcessed = processed.contains(name)
+            processed.insert(name)
+            return !wasProcessed
+        })
         types.parallelPerform { type in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
@@ -98,7 +141,7 @@ public enum Composer {
             }
 
             if let enumeration = type as? Enum {
-                resolveEnumTypes(enumeration, types: unique, resolve: resolveType)
+                resolveEnumTypes(enumeration, types: typeMap, resolve: resolveType)
             }
 
             if let composition = type as? ProtocolComposition {
@@ -114,11 +157,6 @@ public enum Composer {
             resolveMethodTypes(function, of: nil, resolve: resolveType)
         }
 
-        let typealiases = Array(unresolvedTypealiases.values)
-        typealiases.parallelPerform { alias in
-            alias.type = resolveType(alias.typeName, nil)
-        }
-
         Log.benchmark("\tresolution took \(currentTimestamp() - resolutionStart)")
 
         updateTypeRelationships(types: types)
@@ -130,59 +168,168 @@ public enum Composer {
     }
 
     private static func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
-        let actualTypeName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-        if let actualTypeName = actualTypeName, actualTypeName != typeName.unwrappedTypeName {
-            typeName.actualTypeName = TypeName(actualTypeName)
-        }
-
-        let lookupName = typeName.actualTypeName ?? typeName
-
         let resolveTypeWithName = { (typeName: TypeName) -> Type? in
             return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
         }
 
-        // should we also set these types on lookupName?
-        if let array = lookupName.arrayType {
-            lookupName.array = array
-            array.elementType = resolveTypeWithName(array.elementTypeName)
-            lookupName.generic = GenericType(name: "Array", typeParameters: [
-                GenericTypeParameter(typeName: array.elementTypeName, type: array.elementType)
-                ])
-        } else if let dictionary = lookupName.dictionaryType {
-            lookupName.dictionary = dictionary
-            dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName)
-            dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName)
-            lookupName.generic = GenericType(name: "Dictionary", typeParameters: [
-                GenericTypeParameter(typeName: dictionary.keyTypeName, type: dictionary.keyType),
-                GenericTypeParameter(typeName: dictionary.valueTypeName, type: dictionary.valueType)
-                ])
-        } else if let tuple = lookupName.tupleType {
-            lookupName.tuple = tuple
+        if let name = typeName.actualTypeName {
+            let resolvedIdentifier = name.generic?.name ?? name.unwrappedTypeName
+            return unique[resolvedIdentifier]
+        }
+
+        let retrievedName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+        let lookupName = retrievedName ?? typeName
+
+        if let tuple = lookupName.tuple {
+            var needsUpdate = false
+
             tuple.elements.forEach { tupleElement in
                 tupleElement.type = resolveTypeWithName(tupleElement.typeName)
+                if tupleElement.typeName.actualTypeName != nil {
+                    needsUpdate = true
+                }
             }
-        } else if let closure = lookupName.closureType {
-            lookupName.closure = closure
+
+            if needsUpdate || retrievedName != nil {
+                let tupleCopy = TupleType(name: tuple.name, elements: tuple.elements)
+                tupleCopy.elements.forEach {
+                    $0.typeName = $0.actualTypeName ?? $0.typeName
+                    $0.typeName.actualTypeName = nil
+                }
+                tupleCopy.name = tupleCopy.elements.asTypeName
+
+                typeName.tuple = tupleCopy // TODO: really don't like this old behaviour
+                typeName.actualTypeName = TypeName(name: tupleCopy.name,
+                                                   isOptional: typeName.isOptional,
+                                                   isImplicitlyUnwrappedOptional: typeName.isImplicitlyUnwrappedOptional,
+                                                   tuple: tupleCopy,
+                                                   array: lookupName.array,
+                                                   dictionary: lookupName.dictionary,
+                                                   closure: lookupName.closure,
+                                                   generic: lookupName.generic
+                )
+            }
+            return nil
+        } else
+        if let array = lookupName.array {
+            array.elementType = resolveTypeWithName(array.elementTypeName)
+
+            if array.elementTypeName.actualTypeName != nil || retrievedName != nil {
+                let array = ArrayType(name: array.name, elementTypeName: array.elementTypeName, elementType: array.elementType)
+                array.elementTypeName = array.elementTypeName.actualTypeName ?? array.elementTypeName
+                array.elementTypeName.actualTypeName = nil
+                array.name = array.asSource
+                typeName.array = array // TODO: really don't like this old behaviour
+                typeName.generic = array.asGeneric // TODO: really don't like this old behaviour
+
+                typeName.actualTypeName = TypeName(name: array.name,
+                                                   isOptional: typeName.isOptional,
+                                                   isImplicitlyUnwrappedOptional: typeName.isImplicitlyUnwrappedOptional,
+                                                   tuple: lookupName.tuple,
+                                                   array: array,
+                                                   dictionary: lookupName.dictionary,
+                                                   closure: lookupName.closure,
+                                                   generic: array.asGeneric
+                )
+            }
+        } else
+        if let dictionary = lookupName.dictionary {
+            dictionary.keyType = resolveTypeWithName(dictionary.keyTypeName)
+            dictionary.valueType = resolveTypeWithName(dictionary.valueTypeName)
+
+            if dictionary.keyTypeName.actualTypeName != nil || dictionary.valueTypeName.actualTypeName != nil || retrievedName != nil {
+                let dictionary = DictionaryType(name: dictionary.name, valueTypeName: dictionary.valueTypeName, valueType: dictionary.valueType, keyTypeName: dictionary.keyTypeName, keyType: dictionary.keyType)
+                dictionary.keyTypeName = dictionary.keyTypeName.actualTypeName ?? dictionary.keyTypeName
+                dictionary.keyTypeName.actualTypeName = nil // TODO: really don't like this old behaviour
+                dictionary.valueTypeName = dictionary.valueTypeName.actualTypeName ?? dictionary.valueTypeName
+                dictionary.valueTypeName.actualTypeName = nil // TODO: really don't like this old behaviour
+
+                dictionary.name = dictionary.asSource
+
+                typeName.dictionary = dictionary // TODO: really don't like this old behaviour
+                typeName.generic = dictionary.asGeneric // TODO: really don't like this old behaviour
+
+                typeName.actualTypeName = TypeName(name: dictionary.asSource,
+                                                   isOptional: typeName.isOptional,
+                                                   isImplicitlyUnwrappedOptional: typeName.isImplicitlyUnwrappedOptional,
+                                                   tuple: lookupName.tuple,
+                                                   array: lookupName.array,
+                                                   dictionary: dictionary,
+                                                   closure: lookupName.closure,
+                                                   generic: dictionary.asGeneric
+                )
+            }
+        } else
+        if let closure = lookupName.closure {
+            var needsUpdate = false
+
             closure.returnType = resolveTypeWithName(closure.returnTypeName)
-            closure.parameters.forEach({ parameter in
+            closure.parameters.forEach { parameter in
                 parameter.type = resolveTypeWithName(parameter.typeName)
-            })
-        } else if let generic = lookupName.genericType {
-            // should also set generic data for optional types
-            lookupName.generic = generic
-            generic.typeParameters.forEach {typeParameter in
-                typeParameter.type = resolveTypeWithName(typeParameter.typeName)
+                if parameter.typeName.actualTypeName != nil {
+                    needsUpdate = true
+                }
+            }
+
+            if closure.returnTypeName.actualTypeName != nil || needsUpdate || retrievedName != nil {
+                typeName.closure = closure // TODO: really don't like this old behaviour
+
+                typeName.actualTypeName = TypeName(name: closure.asSource,
+                                                   isOptional: typeName.isOptional,
+                                                   isImplicitlyUnwrappedOptional: typeName.isImplicitlyUnwrappedOptional,
+                                                   tuple: lookupName.tuple,
+                                                   array: lookupName.array,
+                                                   dictionary: lookupName.dictionary,
+                                                   closure: closure,
+                                                   generic: lookupName.generic
+                )
+            }
+
+            return nil
+        } else
+        if let generic = lookupName.generic {
+            var needsUpdate = false
+
+            generic.typeParameters.forEach { parameter in
+                parameter.type = resolveTypeWithName(parameter.typeName)
+                if parameter.typeName.actualTypeName != nil {
+                    needsUpdate = true
+                }
+            }
+
+            if needsUpdate || retrievedName != nil {
+                let generic = GenericType(name: generic.name, typeParameters: generic.typeParameters)
+                generic.typeParameters.forEach {
+                    $0.typeName = $0.typeName.actualTypeName ?? $0.typeName
+                    $0.typeName.actualTypeName = nil // TODO: really don't like this old behaviour
+                }
+                typeName.generic = generic // TODO: really don't like this old behaviour
+                typeName.array = lookupName.array // TODO: really don't like this old behaviour
+                typeName.dictionary = lookupName.dictionary // TODO: really don't like this old behaviour
+
+                let params = generic.typeParameters.map { $0.typeName.asSource }.joined(separator: ", ")
+
+                typeName.actualTypeName = TypeName(name: "\(generic.name)<\(params)>",
+                                                   isOptional: typeName.isOptional,
+                                                   isImplicitlyUnwrappedOptional: typeName.isImplicitlyUnwrappedOptional,
+                                                   tuple: lookupName.tuple,
+                                                   array: lookupName.array, // TODO: asArray
+                                                   dictionary: lookupName.dictionary, // TODO: asDictionary
+                                                   closure: lookupName.closure,
+                                                   generic: generic
+                )
             }
         }
 
-        typeName.array = lookupName.array
-        typeName.dictionary = lookupName.dictionary
-        typeName.tuple = lookupName.tuple
-        typeName.closure = lookupName.closure
-        typeName.generic = lookupName.generic
+        if let aliasedName = (typeName.actualTypeName ?? retrievedName), aliasedName.unwrappedTypeName != typeName.unwrappedTypeName {
+            typeName.actualTypeName = aliasedName
+        }
 
-        let resolvedTypeName = lookupName.generic?.name ?? lookupName.unwrappedTypeName
-        return unique[resolvedTypeName] ?? typeFromModule(resolvedTypeName, modules: modules)
+        let finalLookup = typeName.actualTypeName ?? typeName
+        let resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
+
+        // should we cache resolved typenames?
+        return unique[resolvedIdentifier]
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
@@ -286,8 +433,6 @@ public enum Composer {
         }
     }
 
-    
-
     /// returns typealiases map to their full names, with `resolved` removing intermediate
     /// typealises and `unresolved` including typealiases that reference other typealiases.
     private static func typealiases(_ parserResult: FileParserResult) -> (resolved: [String: Typealias], unresolved: [String: Typealias]) {
@@ -295,6 +440,8 @@ public enum Composer {
         parserResult.typealiases.forEach { typealiasesByNames[$0.name] = $0 }
         parserResult.types.forEach { type in
             type.typealiases.forEach({ (_, alias) in
+                // TODO: should I deal with the fact that alias.name depends on type name but typenames might be updated later on
+                // maybe just handle non extension case here and extension aliases after resolving them?
                 typealiasesByNames[alias.name] = alias
             })
         }
@@ -317,115 +464,102 @@ public enum Composer {
         return (resolved: typealiasesByNames, unresolved: unresolved)
     }
 
-    /// returns actual type name for type alias
-    private static func actualTypeName(for typeName: TypeName, containingType: Type? = nil, unique: [String: Type]? = nil, modules: [String: [String: Type]], typealiases: [String: Typealias]) -> String? {
-        let optionalPrefix = typeName.isOptional ? "?" : typeName.isImplicitlyUnwrappedOptional ? "!" : ""
-        let unwrappedTypeName = typeName.unwrappedTypeName
-        var actualTypeName: String?
 
-        // first try global typealiases
-        if let name = typealiases[unwrappedTypeName]?.typeName.name {
-            actualTypeName = name
+    /// Resolves type identifier for name
+    private static func resolveGlobalName(for type: String,
+                                          containingType: Type? = nil,
+                                          unique: [String: Type]? = nil,
+                                          modules: [String: [String: Type]],
+                                          typealiases: [String: Typealias]) -> (name: String, typealias: Typealias?)? {
+        // if the type exists for this name and isn't an extension just return it's name
+        // if it's extension we need to check if there aren't other options TODO: verify
+        if let realType = unique?[type], realType.isExtension == false {
+            return (name: realType.globalName, typealias: nil)
+        }
+
+        if let alias = typealiases[type] {
+            return (name: alias.type?.globalName ?? alias.typeName.name, typealias: alias)
         }
 
         if let containingType = containingType {
-            // check if self
-            if typeName.unwrappedTypeName == "Self" {
-                actualTypeName = containingType.globalName
+            if type == "Self" {
+                return (name: containingType.globalName, typealias: nil)
             }
-            // check if typealias is for one of contained types
-            else if let possibleTypeName = typealiases["\(containingType.globalName).\(unwrappedTypeName)"]?.typeName.name {
-                let containedType = containingType.containedTypes.first(where: {
-                    $0.name == "\(containingType.name).\(possibleTypeName)" || $0.name == possibleTypeName
-                })
 
-                actualTypeName = containedType?.name ?? possibleTypeName
-            } else {
-                if let name = unique?["\(containingType.globalName).\(unwrappedTypeName)"]?.globalName {
-                    //check contained types first
-                    actualTypeName = name
-                } else {
-                    //otherwise go up contained types chain to find a type
-                    let parentTypes = containingType.parentTypes
-                    while let parent = parentTypes.next() {
-                        if let name = unique?["\(parent.globalName).\(unwrappedTypeName)"]?.globalName {
-                            actualTypeName = name
-                            break
-                        }
-                    }
-
-                    if actualTypeName == nil {
-                        actualTypeName = inferActualTypename(from: typeName, containedInType: containingType, uniqueTypes: unique ?? [:], modules: modules)
-                    }
-                    actualTypeName = actualTypeName ?? unwrappedTypeName
+            var currentContainer: Type? = containingType
+            while currentContainer != nil, let parentName = currentContainer?.globalName {
+                /// TODO: no parent for sure?
+                /// manually walk the containment tree
+                if let name = resolveGlobalName(for: "\(parentName).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
+                    return name
                 }
+
+                currentContainer = currentContainer?.parent
             }
+
+//            if let name = resolveGlobalName(for: "\(containingType.globalName).\(type)", containingType: containingType.parent, unique: unique, modules: modules, typealiases: typealiases) {
+//                return name
+//            }
+
+//             last check it's via module
+//            if let module = containingType.module, let name = resolveGlobalName(for: "\(module).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
+//                return name
+//            }
         }
 
-        if var actualTypeName = actualTypeName {
-            if unwrappedTypeName.isValidTupleName() {
-                let elements = typeName.unwrappedTypeName.dropFirstAndLast().commaSeparated()
-                var actualElements = [String]()
-                for element in elements {
-                    let nameAndValue = element.colonSeparated().map({ $0.trimmingCharacters(in: .whitespaces) })
-                    if nameAndValue.count == 1 {
-                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[0]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-                        actualElements.append(valueName ?? nameAndValue[0])
-                    } else {
-                        let valueName = self.actualTypeName(for: TypeName(nameAndValue[1]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-                        actualElements.append("\(nameAndValue[0]): \(valueName ?? nameAndValue[1])")
-                    }
-                }
-                actualTypeName = "(\(actualElements.joined(separator: ", ")))"
-            } else if unwrappedTypeName.first == "[", unwrappedTypeName.last == "]" {
-                let types = unwrappedTypeName.dropFirstAndLast()
-                    .colonSeparated()
-                    .map({ $0.trimmingCharacters(in: .whitespaces) })
-                if types.count == 1 {
-                    //array literal
-                    let name = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-                    actualTypeName = "[\(name ?? types[0])]"
-                } else {
-                    //dictionary literal
-                    let keyName = self.actualTypeName(for: TypeName(types[0]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-                    let valueName = self.actualTypeName(for: TypeName(types[1]), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-                    actualTypeName = "[\(keyName ?? types[0]): \(valueName ?? types[1])]"
-                }
-            } else if let genericStartIndex = unwrappedTypeName.firstIndex(of: "<"), unwrappedTypeName.last == ">" {
-                let genericTypeNameString = String(unwrappedTypeName.prefix(upTo: genericStartIndex))
-                let genericTypeName = self.actualTypeName(for: TypeName(genericTypeNameString), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
-
-                let typeParametersString = unwrappedTypeName.suffix(from: genericStartIndex).dropFirst().dropLast()
-                let typeParameters = String(typeParametersString).commaSeparated()
-                var actualTypeParameters = [String]()
-                for typeParameter in typeParameters {
-                    if let typeName = self.actualTypeName(for: TypeName(typeParameter), containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) {
-                        actualTypeParameters.append(typeName)
-                    } else {
-                        actualTypeParameters.append(typeParameter)
-                    }
-                }
-                actualTypeName = "\(genericTypeName ?? genericTypeNameString)<\(actualTypeParameters.joined(separator: ", "))>"
-            }
-            return actualTypeName + optionalPrefix
-        } else {
-            return nil
+        // TODO: is this needed?
+        if let inferred = inferTypeNameFromModules(from: type, containedInType: containingType, uniqueTypes: unique ?? [:], modules: modules) {
+            return (name: inferred, typealias: nil)
         }
+
+        return typeFromComposedName(type, modules: modules).map { (name: $0.globalName, typealias: nil) }
     }
 
-    private static func inferActualTypename(from typename: TypeName, containedInType: Type?, uniqueTypes: [String: Type], modules: [String: [String: Type]]) -> String? {
-        let unwrappedTypeName = typename.unwrappedTypeName
+    private static func actualTypeName(for typeName: TypeName,
+                                       containingType: Type? = nil,
+                                       unique: [String: Type]? = nil,
+                                       modules: [String: [String: Type]],
+                                       typealiases: [String: Typealias]) -> TypeName? {
 
+        var unwrapped = typeName.unwrappedTypeName
+        if let generic = typeName.generic {
+            unwrapped = generic.name
+        }
+
+        guard let aliased = resolveGlobalName(for: unwrapped, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) else {
+            return nil
+        }
+
+        /// TODO: verify
+        let generic = typeName.generic.map { GenericType(name: $0.name, typeParameters: $0.typeParameters) }
+        generic?.name = aliased.name
+        let dictionary = typeName.dictionary.map { DictionaryType(name: $0.name, valueTypeName: $0.valueTypeName, valueType: $0.valueType, keyTypeName: $0.keyTypeName, keyType: $0.keyType) }
+        dictionary?.name = aliased.name
+        let array = typeName.array.map { ArrayType(name: $0.name, elementTypeName: $0.elementTypeName, elementType: $0.elementType) }
+        array?.name = aliased.name
+
+        return TypeName(name: aliased.name,
+                        isOptional: typeName.isOptional,
+                        isImplicitlyUnwrappedOptional: typeName.isImplicitlyUnwrappedOptional,
+                        tuple: aliased.typealias?.typeName.tuple ?? typeName.tuple, // TODO: verify
+                        array: aliased.typealias?.typeName.array ?? array,
+                        dictionary: aliased.typealias?.typeName.dictionary ?? dictionary,
+                        closure: aliased.typealias?.typeName.closure ?? typeName.closure,
+                        generic: aliased.typealias?.typeName.generic ?? generic
+        )
+    }
+
+    private static func inferTypeNameFromModules(from typeIdentifier: String, containedInType: Type?, uniqueTypes: [String: Type], modules: [String: [String: Type]]) -> String? {
         func fullName(for module: String) -> String {
-            "\(module).\(unwrappedTypeName)"
+            "\(module).\(typeIdentifier)"
         }
 
         func type(for module: String) -> Type? {
-            return modules[module]?[unwrappedTypeName]
+            return modules[module]?[typeIdentifier]
         }
 
         func ambiguousErrorMessage(from types: [Type]) -> String? {
-            Log.astWarning("Ambiguous type \(typename), found \(types.map { $0.globalName }.joined(separator: ", ")). Specify module name at declaration site to disambiguate.")
+            Log.astWarning("Ambiguous type \(typeIdentifier), found \(types.map { $0.globalName }.joined(separator: ", ")). Specify module name at declaration site to disambiguate.")
             return nil
         }
 
@@ -522,12 +656,17 @@ public enum Composer {
                     }
                 }
             } else if baseType is ProtocolComposition {
+                // TODO: associated types?
                 type.implements[globalName] = baseType
             }
         }
     }
 
-    static func typeFromModule(_ name: String, modules: [String: [String: Type]]) -> Type? {
+    static func fakeTypeFromComposedName(_ name: String, modules: [String: [String: Type]]) -> Type? {
+        return typeFromComposedName(name, modules: modules)
+    }
+
+    static func typeFromComposedName(_ name: String, modules: [String: [String: Type]]) -> Type? {
         guard name.contains(".") else { return nil }
         let nameComponents = name.components(separatedBy: ".")
         let moduleName = nameComponents[0]

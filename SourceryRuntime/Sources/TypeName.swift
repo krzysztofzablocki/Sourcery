@@ -285,6 +285,7 @@ public protocol Typed {
     }
 
 // sourcery:inline:TypeName.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -337,7 +338,7 @@ public protocol Typed {
 @objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
 
     /// Generic parameter type name
-    public let typeName: TypeName
+    public var typeName: TypeName
 
     // sourcery: skipEquality, skipDescription
     /// Generic parameter type, if known
@@ -350,6 +351,7 @@ public protocol Typed {
     }
 
 // sourcery:inline:GenericTypeParameter.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
@@ -368,7 +370,7 @@ public protocol Typed {
 /// Descibes Swift generic type
 @objcMembers public final class GenericType: NSObject, SourceryModelWithoutDescription {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
-    public let name: String
+    public var name: String
 
     /// This generic type parameters
     public let typeParameters: [GenericTypeParameter]
@@ -391,6 +393,7 @@ public protocol Typed {
     }
 
 // sourcery:inline:GenericType.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -413,7 +416,7 @@ public protocol Typed {
     public let name: String?
 
     /// Tuple element type name
-    public let typeName: TypeName
+    public var typeName: TypeName
 
     // sourcery: skipEquality, skipDescription
     /// Tuple element type, if known
@@ -432,6 +435,7 @@ public protocol Typed {
     }
 
 // sourcery:inline:TupleElement.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.name = aDecoder.decode(forKey: "name")
@@ -452,16 +456,20 @@ extension Array where Element == TupleElement {
     public var asSource: String {
         "(\(map { $0.asSource }.joined(separator: ", ")))"
     }
+
+    public var asTypeName: String {
+        "(\(map { $0.typeName.asSource }.joined(separator: ", ")))"
+    }
 }
 
 /// Describes tuple type
 @objcMembers public final class TupleType: NSObject, SourceryModel {
 
     /// Type name used in declaration
-    public let name: String
+    public var name: String
 
     /// Tuple elements
-    public let elements: [TupleElement]
+    public var elements: [TupleElement]
 
     /// :nodoc:
     public init(name: String, elements: [TupleElement]) {
@@ -476,6 +484,7 @@ extension Array where Element == TupleElement {
     }
 
 // sourcery:inline:TupleType.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -494,10 +503,10 @@ extension Array where Element == TupleElement {
 @objcMembers public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name used in declaration
-    public let name: String
+    public var name: String
 
     /// Array element type name
-    public let elementTypeName: TypeName
+    public var elementTypeName: TypeName
 
     // sourcery: skipEquality, skipDescription
     /// Array element type, if known
@@ -522,6 +531,7 @@ extension Array where Element == TupleElement {
     }
 
 // sourcery:inline:ArrayType.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -541,17 +551,17 @@ extension Array where Element == TupleElement {
 /// Describes dictionary type
 @objcMembers public final class DictionaryType: NSObject, SourceryModel {
     /// Type name used in declaration
-    public let name: String
+    public var name: String
 
     /// Dictionary value type name
-    public let valueTypeName: TypeName
+    public var valueTypeName: TypeName
 
     // sourcery: skipEquality, skipDescription
     /// Dictionary value type, if known
     public var valueType: Type?
 
     /// Dictionary key type name
-    public let keyTypeName: TypeName
+    public var keyTypeName: TypeName
 
     // sourcery: skipEquality, skipDescription
     /// Dictionary key type, if known
@@ -579,6 +589,7 @@ extension Array where Element == TupleElement {
     }
 
 // sourcery:inline:DictionaryType.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
@@ -654,7 +665,12 @@ extension Array where Element == TupleElement {
         self.`throws` = throwsOrRethrowsKeyword != nil
     }
 
+    public var asSource: String {
+        "\(parameters.asSource)\(throwsOrRethrowsKeyword != nil ? " \(throwsOrRethrowsKeyword!)" : "") -> \(returnTypeName.asSource)"
+    }
+
 // sourcery:inline:ClosureType.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name

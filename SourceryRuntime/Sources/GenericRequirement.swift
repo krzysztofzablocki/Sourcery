@@ -35,6 +35,7 @@ import Foundation
     }
 
     // sourcery:inline:GenericRequirement.AutoCoding
+
             /// :nodoc:
             required public init?(coder aDecoder: NSCoder) {
                 guard let leftType: AssociatedType = aDecoder.decode(forKey: "leftType") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["leftType"])); fatalError() }; self.leftType = leftType

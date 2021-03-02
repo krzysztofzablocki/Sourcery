@@ -78,7 +78,8 @@ extension ClosureType {
         string += "returnTypeName = \(String(describing: self.returnTypeName)), "
         string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
         string += "`throws` = \(String(describing: self.`throws`)), "
-        string += "throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword))"
+        string += "throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword)), "
+        string += "asSource = \(String(describing: self.asSource))"
         return string
     }
 }
@@ -310,6 +311,7 @@ extension Typealias {
         var string = "\(Swift.type(of: self)): "
         string += "aliasName = \(String(describing: self.aliasName)), "
         string += "typeName = \(String(describing: self.typeName)), "
+        string += "module = \(String(describing: self.module)), "
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "parentName = \(String(describing: self.parentName)), "
         string += "name = \(String(describing: self.name))"

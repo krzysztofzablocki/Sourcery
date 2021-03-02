@@ -162,7 +162,7 @@ extension TypeName {
         } else if node.as(ClassRestrictionTypeSyntax.self) != nil {
             self.init(name: "AnyObject")
         } else {
-            assertionFailure("This is unexpected \(node)")
+//            assertionFailure("This is unexpected \(node)")
             self.init(node.sourcerySafeTypeIdentifier)
         }
     }

@@ -37,6 +37,7 @@ import Foundation
     }
 
 // sourcery:inline:Import.AutoCoding
+
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.kind = aDecoder.decode(forKey: "kind")

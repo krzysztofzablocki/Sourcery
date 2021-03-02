@@ -27,6 +27,21 @@ class ParserComposerSpec: QuickSpec {
                     return Composer.uniqueTypesAndFunctions(parserResult).functions
                 }
 
+                func parseModules(_ modules: (name: String?, contents: String)...) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
+                    let moduleResults = modules.compactMap {
+                        try? makeParser(for: $0.contents, module: $0.name).parse()
+                    }
+
+                    let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: [])) { acc, next in
+                        acc.typealiases += next.typealiases
+                        acc.types += next.types
+                        acc.functions += next.functions
+                        return acc
+                    }
+
+                    return Composer.uniqueTypesAndFunctions(parserResult)
+                }
+
                 context("given class hierarchy") {
                     var fooType: Type!
                     var barType: Type!
@@ -659,6 +674,111 @@ class ParserComposerSpec: QuickSpec {
                         return Composer.uniqueTypesAndFunctions(parserResult).typealiases
                     }
 
+                    describe("Updated composer") {
+                        it("follows through typealias chain to final type") {
+                            let code = """
+                                       enum Bar {}
+                                       struct Foo {}
+                                       typealias Root = Bar
+                                       typealias Leaf1 = Root
+                                       typealias Leaf2 = Leaf1
+                                       typealias Leaf3 = Leaf1
+                                       """
+
+                            parseTypealiases(code)
+                              .forEach {
+                                  expect($0.type?.name)
+                                    .to(equal("Bar"))
+                              }
+                        }
+
+                        it("follows through typealias chain contained in types to final type") {
+                            let code = """
+                                       enum Bar {
+                                         typealias Root = Bar
+                                       }
+
+                                       struct Foo {
+                                         typealias Leaf1 = Bar.Root
+                                       }
+                                       typealias Leaf2 = Foo.Leaf1
+                                       typealias Leaf3 = Leaf2
+                                       typealias Leaf4 = Bar.Root
+                                       """
+
+                            parseTypealiases(code)
+                              .forEach {
+                                  expect($0.type?.name)
+                                    .to(equal("Bar"))
+                              }
+                        }
+
+                        it("follows through typealias chain contained in different modules to final type") {
+                            // TODO: add module inference logic to typealias resolution!
+                            let typealiases = parseModules(
+                              (name: "RootModule", contents: "struct Bar {}"),
+                              (name: "LeafModule1", contents: "typealias Leaf1 = RootModule.Bar"),
+                              (name: "LeafModule2", contents: "typealias Leaf2 = LeafModule1.Leaf1")
+                            ).typealiases
+
+                            typealiases
+                              .forEach {
+                                  expect($0.type?.name)
+                                    .to(equal("Bar"))
+                              }
+                        }
+
+                        it("gathers full type information if a type is defined on an typealiased unknown parent via extension") {
+                            let code = """
+                                       typealias UnknownTypeAlias = Unknown
+                                       extension UnknownTypeAlias {
+                                         struct KnownStruct {
+                                           var name: Int = 0
+                                           var meh: Float = 0
+                                         }
+                                       }
+                                       """
+                            let result = parse(code)
+                            let knownType = result.first(where: { $0.localName == "KnownStruct" })
+
+                            expect(knownType?.isExtension).to(beFalse())
+                            expect(knownType?.variables).to(haveCount(2))
+                        }
+
+                        it("extends the actual type when using typealias") {
+                            let code = """
+                                       struct Foo {
+                                       }
+                                       typealias FooAlias = Foo
+                                       extension FooAlias {
+                                         var name: Int { 0 }
+                                       }
+                                       """
+                            let result = parse(code)
+
+                            expect(result.first?.variables.first?.typeName)
+                              .to(equal(TypeName.Int))
+                        }
+
+                        it("resolves inheritance chain via typealias") {
+                            let code = """
+                                       class Foo {
+                                         class Inner {
+                                           var innerBase: Bool
+                                         }
+                                         typealias Hidden = Inner
+                                         class InnerInherited: Hidden {
+                                           var innerInherited: Bool = true
+                                         }
+                                       }
+                                       """
+                            let result = parse(code)
+                            let innerInherited = result.first(where: { $0.localName == "InnerInherited" })
+
+                            expect(innerInherited?.inheritedTypes).to(equal(["Foo.Inner"]))
+                        }
+                    }
+
                     it("resolves definedInType for methods") {
                         let input = "class Foo { func bar() {} }; typealias FooAlias = Foo; extension FooAlias { func baz() {} }"
                         let type = parse(input).first
@@ -709,7 +829,7 @@ class ParserComposerSpec: QuickSpec {
                         }
 
                         it("replaces tuple elements alias types with actual types") {
-                            let expectedActualTypeName = TypeName("(Foo, Int)")
+                            let expectedActualTypeName = TypeName(name: "(Foo, Int)")
                             expectedActualTypeName.tuple = TupleType(name: "(Foo, Int)", elements: [
                                 TupleElement(name: "0", typeName: TypeName("Foo"), type: Type(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName("Int"))
@@ -1145,7 +1265,7 @@ class ParserComposerSpec: QuickSpec {
                         let expectedActualTypeName = TypeName("[Blah.Foo]?")
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo]?", actualTypeName: expectedActualTypeName), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
-                        expectedActualTypeName.array = ArrayType(name: "[Blah.Foo]?", elementTypeName: TypeName("Blah.Foo"), elementType: Struct(name: "Foo", parent: expectedBlah))
+                        expectedActualTypeName.array = ArrayType(name: "[Blah.Foo]", elementTypeName: TypeName("Blah.Foo"), elementType: Struct(name: "Foo", parent: expectedBlah))
                         expectedVariable.typeName.array = expectedActualTypeName.array
                         expectedActualTypeName.generic = GenericType(name: "Array", typeParameters: [GenericTypeParameter(typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo", parent: expectedBlah))])
                         expectedVariable.typeName.generic = expectedActualTypeName.generic
@@ -1163,7 +1283,7 @@ class ParserComposerSpec: QuickSpec {
                         let expectedActualTypeName = TypeName("[Blah.Foo: Blah.Foo]?")
                         let expectedVariable = Variable(name: "foo", typeName: TypeName("[Foo: Foo]?", actualTypeName: expectedActualTypeName), accessLevel: (read: .internal, write: .none), definedInTypeName: TypeName("Blah.Bar"))
                         let expectedBlah = Struct(name: "Blah", containedTypes: [Struct(name: "Foo"), Struct(name: "Bar", variables: [expectedVariable])])
-                        expectedActualTypeName.dictionary = DictionaryType(name: "[Blah.Foo: Blah.Foo]?", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: expectedBlah), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: expectedBlah))
+                        expectedActualTypeName.dictionary = DictionaryType(name: "[Blah.Foo: Blah.Foo]", valueTypeName: TypeName("Blah.Foo"), valueType: Struct(name: "Foo", parent: expectedBlah), keyTypeName: TypeName("Blah.Foo"), keyType: Struct(name: "Foo", parent: expectedBlah))
                         expectedVariable.typeName.dictionary = expectedActualTypeName.dictionary
                         expectedActualTypeName.generic = GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo", parent: expectedBlah)), GenericTypeParameter(typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo", parent: expectedBlah))])
                         expectedVariable.typeName.generic = expectedActualTypeName.generic
@@ -1178,7 +1298,7 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts property of nested type tuple properly") {
-                        let expectedActualTypeName = TypeName("(a: Blah.Foo, _: Blah.Foo, Blah.Foo)?", tuple: TupleType(name: "(a: Blah.Foo, _: Blah.Foo, Blah.Foo)?", elements: [
+                        let expectedActualTypeName = TypeName("(Blah.Foo, Blah.Foo, Blah.Foo)?", tuple: TupleType(name: "(Blah.Foo, Blah.Foo, Blah.Foo)", elements: [
                             TupleElement(name: "a", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
                             TupleElement(name: "1", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo")),
                             TupleElement(name: "2", typeName: TypeName("Blah.Foo"), type: Struct(name: "Foo"))
@@ -1225,20 +1345,6 @@ class ParserComposerSpec: QuickSpec {
                 }
 
                 context("given types within modules") {
-                    func parseModules(_ modules: (name: String?, contents: String)...) -> [Type] {
-                        let moduleResults = modules.compactMap {
-                            try? makeParser(for: $0.contents, module: $0.name).parse()
-                        }
-
-                        let parserResult = moduleResults.reduce(FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: [])) { acc, next in
-                            acc.typealiases += next.typealiases
-                            acc.types += next.types
-                            return acc
-                        }
-
-                        return Composer.uniqueTypesAndFunctions(parserResult).types
-                    }
-
                     it("doesn't automatically add module name to unknown types but keeps the info in the AST via module property") {
                         let extensionType = Type(name: "AnyPublisher", isExtension: true).asUnknownException()
                         extensionType.module = "MyModule"
@@ -1251,7 +1357,7 @@ class ParserComposerSpec: QuickSpec {
                                     var publisher: AnyPublisher<TimeInterval, Never>
                                 }
                                 """)
-                        )
+                        ).types
                         let publisher = types.first
                         let fooVariable = types.last?.variables.last
 
@@ -1278,7 +1384,7 @@ class ParserComposerSpec: QuickSpec {
                             var property2: String { "" }
                           }
                           """)
-                        )
+                        ).types
 
                         expect(types).to(equal([extensionType]))
                         expect(types.first?.globalName).to(equal("AnyPublisher"))
@@ -1301,7 +1407,7 @@ class ParserComposerSpec: QuickSpec {
                             var property2: String { "" }
                           }
                           """)
-                        )
+                        ).types
 
                         expect(types).to(equal([fooType]))
                         expect(types.first?.globalName).to(equal("MyModule.Foo"))
@@ -1318,7 +1424,7 @@ class ParserComposerSpec: QuickSpec {
                             let types = parseModules(
                                 (name: "MyModule", contents: "struct Bar {}"),
                                 (name: nil, contents: "extension MyModule.Bar { var foo: Int { return 0 } }")
-                            )
+                            ).types
 
                             expect(types).to(equal([expectedBar]))
                         }
@@ -1331,7 +1437,7 @@ class ParserComposerSpec: QuickSpec {
                             let types = parseModules(
                                 (name: "MyModule", contents: "struct Bar {}"),
                                 (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
-                            )
+                            ).types
 
                             expect(types).to(equal([expectedFoo, expectedBar]))
                             expect(types.first?.variables.first?.type).to(equal(expectedBar))
@@ -1345,7 +1451,7 @@ class ParserComposerSpec: QuickSpec {
                             let types = parseModules(
                                 (name: "MyModule", contents: "struct Bar {}"),
                                 (name: nil, contents: "struct Foo { var bar: MyModule.Bar }")
-                            )
+                            ).types
 
                             expect(types).to(equal([expectedFoo, expectedBar]))
                             expect(types.first?.variables.first?.type).to(equal(expectedBar))
@@ -1374,7 +1480,7 @@ class ParserComposerSpec: QuickSpec {
                                     """
                                 ),
                                 (name: "ModuleC", contents: "struct Bar {}")
-                            )
+                            ).types
 
                             expect(types).to(equal([expectedBarA, expectedFoo, expectedBarC]))
                             expect(types.first(where: { $0.name == "Foo" })?.variables.first?.type).to(equal(expectedBarA))
@@ -1400,7 +1506,7 @@ class ParserComposerSpec: QuickSpec {
                                     """
                                 ),
                                 (name: "ModuleC", contents: "struct Bar {}")
-                            )
+                            ).types
 
                             expect(types).to(equal([expectedBarA, expectedFoo, expectedBarC]))
                             expect(types.first(where: { $0.name == "Foo" })?.variables.first?.type).to(equal(expectedBarA))
@@ -1424,7 +1530,7 @@ class ParserComposerSpec: QuickSpec {
                                     """
                                 ),
                                 (name: "ModuleC", contents: "struct Bar {}")
-                            )
+                            ).types
 
                             let barVariable = types.last?.variables.first
 
@@ -1452,7 +1558,7 @@ class ParserComposerSpec: QuickSpec {
                                         let bar: Bar
                                     }
                                     """
-                                ))
+                                )).types
 
                             expect(types).to(equal([expectedFoo, expectedBar]))
 
@@ -1501,7 +1607,7 @@ class ParserComposerSpec: QuickSpec {
                                             let bazInts: Baz<Int>
                                     }
                                     """
-                                ))
+                                )).types
 
                             expect(types).to(equal([expectedDouble, expectedFoo, expectedBar, expectedBaz]))
 

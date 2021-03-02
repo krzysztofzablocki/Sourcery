@@ -124,6 +124,7 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var unwrappedReturnTypeName: String { get }
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
+    var asSource: String { get }
 }
 
 extension ClosureType: ClosureTypeAutoJSExport {}
