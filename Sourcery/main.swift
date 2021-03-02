@@ -119,19 +119,23 @@ func runCLI() {
                 ? (EJSTemplate.ejsPath ?? Path(ProcessInfo.processInfo.arguments[0]).parent() + "ejs.js")
                 : ejsPath
 
-            let configuration: Configuration
+            let configurations: [Configuration]
             let yamlPath: Path = configPath.isDirectory ? configPath + ".sourcery.yml" : configPath
 
             if !yamlPath.exists {
                 Log.info("No config file provided or it does not exist. Using command line arguments.")
                 let args = args.joined(separator: ",")
                 let arguments = AnnotationsParser.parse(line: args)
-                configuration = Configuration(sources: Paths(include: sources, exclude: excludeSources) ,
-                                              templates: Paths(include: templates, exclude: excludeTemplates),
-                                              output: output.string.isEmpty ? "." : output,
-                                              cacheBasePath: Path.defaultBaseCachePath,
-                                              forceParse: forceParse,
-                                              args: arguments)
+                configurations = [
+                    Configuration(
+                        sources: Paths(include: sources, exclude: excludeSources) ,
+                        templates: Paths(include: templates, exclude: excludeTemplates),
+                        output: output.string.isEmpty ? "." : output,
+                        cacheBasePath: Path.defaultBaseCachePath,
+                        forceParse: forceParse,
+                        args: arguments
+                    )
+                ]
             } else {
                 _ = Validators.isFileOrDirectory(path: configPath)
                 _ = Validators.isReadable(path: yamlPath)
@@ -139,7 +143,7 @@ func runCLI() {
                 do {
                     let relativePath: Path = configPath.isDirectory ? configPath : configPath.parent()
 
-                    configuration = try Configuration(
+                    configurations = try Configurations.make(
                         path: yamlPath,
                         relativePath: relativePath,
                         env: ProcessInfo.processInfo.environment
@@ -168,24 +172,31 @@ func runCLI() {
                 }
             }
 
-            configuration.validate()
-
             let start = CFAbsoluteTimeGetCurrent()
-            let sourcery = Sourcery(verbose: verboseLogging,
-                                    watcherEnabled: watcherEnabled,
-                                    cacheDisabled: disableCache,
-                                    cacheBasePath: configuration.cacheBasePath,
-                                    prune: prune,
-                                    arguments: configuration.args)
-            if let keepAlive = try sourcery.processFiles(
-                configuration.source,
-                usingTemplates: configuration.templates,
-                output: configuration.output,
-                forceParse: configuration.forceParse) {
+
+            let keepAlive = try configurations.flatMap { configuration -> [FolderWatcher.Local] in
+                configuration.validate()
+
+                let sourcery = Sourcery(verbose: verboseLogging,
+                                        watcherEnabled: watcherEnabled,
+                                        cacheDisabled: disableCache,
+                                        cacheBasePath: configuration.cacheBasePath,
+                                        prune: prune,
+                                        arguments: configuration.args)
+
+                return try sourcery.processFiles(
+                    configuration.source,
+                    usingTemplates: configuration.templates,
+                    output: configuration.output,
+                    forceParse: configuration.forceParse
+                ) ?? []
+            }
+
+            if keepAlive.isEmpty {
+                Log.info("Processing time \(CFAbsoluteTimeGetCurrent() - start) seconds")
+            } else {
                 RunLoop.current.run()
                 _ = keepAlive
-            } else {
-                Log.info("Processing time \(CFAbsoluteTimeGetCurrent() - start) seconds")
             }
         } catch {
             Log.error("\(error)")

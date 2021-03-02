@@ -1,0 +1,18 @@
+configurations:
+    - sources:
+        - "${SOURCE_PATH}/0"
+      templates:
+        - "Templates/0"
+      output: "Output/0"
+      args:
+        serverUrl: "${serverUrl}/0"
+        serverPort: "${serverPort}/0"
+    - sources:
+        - "${SOURCE_PATH}/1"
+      templates:
+        - "Templates/1"
+      output: "Output/1"
+      args:
+        serverUrl: "${serverUrl}/1"
+        serverPort: "${serverPort}1"
+
