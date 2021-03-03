@@ -15,7 +15,31 @@ Try **Sourcery** for your next project or add it to an existing one -- you'll sa
 
 ## TL;DR
 Sourcery allows you to get rid of repetitive code and create better architecture and developer workflows. 
-An example might be implementing `Mocks` for all your protocols, without Sourcery you will need to write **hundreds lines of code per each protocol**, with Sourcery ?
+An example might be implementing `Mocks` for all your protocols, without Sourcery you will need to write **hundreds lines of code per each protocol** like this:
+
+```swift
+class MyProtocolMock: MyProtocol {
+
+    //MARK: - sayHelloWith
+    var sayHelloWithNameCallsCount = 0
+    var sayHelloWithNameCalled: Bool {
+        return sayHelloWithNameCallsCount > 0
+    }
+    var sayHelloWithNameReceivedName: String?
+    var sayHelloWithNameReceivedInvocations: [String] = []
+    var sayHelloWithNameClosure: ((String) -> Void)?
+
+    func sayHelloWith(name: String) {
+        sayHelloWithNameCallsCount += 1
+        sayHelloWithNameReceivedName = name
+        sayHelloWithNameReceivedInvocations.append(name)
+        sayHelloWithNameClosure?(name)
+    }
+
+}
+```
+
+and with Sourcery ?
 
 ```swift
 extension MyProtocol: AutoMockable {}
@@ -148,6 +172,10 @@ It is easy to get involved. Please see the [Contributing guide](CONTRIBUTING.md)
 [A list of contributors is available through GitHub](https://github.com/krzysztofzablocki/Sourcery/graphs/contributors).
 
 To clarify what is expected of our community, Sourcery has adopted the code of conduct defined by the Contributor Covenant. This document is used across many open source communities, and articulates my values well. For more, see the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Sponsoring
+
+If you'd like to support Sourcery development you can do so through [GitHub Sponsors](https://github.com/sponsors/krzysztofzablocki) or [Open Collective](https://opencollective.com/sourcery), it's highly appreciated 🙇‍
 
 ## License
 
