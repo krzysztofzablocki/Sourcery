@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.3.0
 ## Internal changes
 - Sourcery is now using SwiftSyntax not SourceKit
 - Performance is significantly improved
