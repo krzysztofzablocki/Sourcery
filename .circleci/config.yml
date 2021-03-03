@@ -14,6 +14,10 @@ jobs:
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
+      - run: sudo defaults write com.apple.dt.Xcode IDEPackageSupportUseBuiltinSCM YES
+      - run: rm ~/.ssh/id_rsa || true
+      - run: for ip in $(dig @8.8.8.8 bitbucket.org +short); do ssh-keyscan bitbucket.org,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts || true 
+      - run: for ip in $(dig @8.8.8.8 github.com +short); do ssh-keyscan github.com,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts || true
       - run: brew update 1> /dev/null 2> /dev/null
       - run: brew install sourcekitten
       - run: echo "ruby-2.6" > ~/.ruby-version

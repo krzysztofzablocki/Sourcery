@@ -138,8 +138,8 @@ namespace :release do
     `sed -i '' -e 's/CURRENT_PROJECT_VERSION = #{project_version(project)};/CURRENT_PROJECT_VERSION = #{version};/g' #{project}.xcodeproj/project.pbxproj`
   end
 
-  def project_version(project = 'Sourcery')
-    `xcodebuild -showBuildSettings -project #{project}.xcodeproj | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
+  def project_version(workspace = 'Sourcery', scheme = "Sourcery")
+    `xcodebuild -showBuildSettings -workspace #{workspace}.xcworkspace -scheme #{scheme} | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
   end
 
   VERSION_REGEX = /(?<begin>public static let current\s*=\s*SourceryVersion\(value:\s*.*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i.freeze
