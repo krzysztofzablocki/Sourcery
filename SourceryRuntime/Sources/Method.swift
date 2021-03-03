@@ -4,7 +4,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-@objcMembers public final class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+@objcMembers public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -24,7 +24,7 @@ public typealias SourceryMethod = Method
     public var type: Type?
 
     /// Parameter type attributes, i.e. `@escaping`
-    public var typeAttributes: [String: Attribute] {
+    public var typeAttributes: AttributeList {
         return typeName.attributes
     }
 
@@ -33,11 +33,6 @@ public typealias SourceryMethod = Method
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: [String: NSObject] = [:]
-
-    /// Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    public var __parserData: Any?
 
     /// :nodoc:
     public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
@@ -59,6 +54,19 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+    }
+
+    public var asSource: String {
+        let typeSuffix = ": \(`inout` ? "inout " : "")\(typeName.asSource)\(defaultValue.map { " = \($0)" } ?? "")"
+        guard argumentLabel != name else {
+            return name + typeSuffix
+        }
+
+        let labels = [argumentLabel ?? "_", name.nilIfEmpty]
+          .compactMap { $0 }
+          .joined(separator: " ")
+
+        return (labels.nilIfEmpty ?? "_") + typeSuffix
     }
 
 // sourcery:inline:MethodParameter.AutoCoding
@@ -84,6 +92,103 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.annotations, forKey: "annotations")
         }
 // sourcery:end
+}
+
+extension Array where Element == MethodParameter {
+    public var asSource: String {
+        "(\(map { $0.asSource }.joined(separator: ", ")))"
+    }
+}
+
+// sourcery: skipDiffing
+@objcMembers public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
+    /// Parameter external name
+    public var argumentLabel: String?
+
+    /// Parameter internal name
+    public let name: String?
+
+    /// Parameter type name
+    public let typeName: TypeName
+
+    /// Parameter flag whether it's inout or not
+    public let `inout`: Bool
+
+    // sourcery: skipEquality, skipDescription
+    /// Parameter type, if known
+    public var type: Type?
+
+    /// Parameter type attributes, i.e. `@escaping`
+    public var typeAttributes: AttributeList {
+        return typeName.attributes
+    }
+
+    /// Method parameter default value expression
+    public var defaultValue: String?
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public var annotations: [String: NSObject] = [:]
+
+    /// :nodoc:
+    public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
+                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+        self.typeName = typeName
+        self.argumentLabel = argumentLabel
+        self.name = name
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+        self.`inout` = isInout
+    }
+
+    public var asSource: String {
+        let typeInfo = "\(`inout` ? "inout " : "")\(typeName.asSource)"
+        if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
+            return typeInfo
+        }
+
+        let typeSuffix = ": \(typeInfo)"
+        guard argumentLabel != name else {
+            return name ?? "" + typeSuffix
+        }
+
+        let labels = [argumentLabel ?? "_", name?.nilIfEmpty]
+          .compactMap { $0 }
+          .joined(separator: " ")
+
+        return (labels.nilIfEmpty ?? "_") + typeSuffix
+    }
+
+    // sourcery:inline:ClosureParameter.AutoCoding
+            /// :nodoc:
+            required public init?(coder aDecoder: NSCoder) {
+                self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
+                self.name = aDecoder.decode(forKey: "name")
+                guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+                self.`inout` = aDecoder.decode(forKey: "`inout`")
+                self.type = aDecoder.decode(forKey: "type")
+                self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+                guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            }
+
+            /// :nodoc:
+            public func encode(with aCoder: NSCoder) {
+                aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+                aCoder.encode(self.name, forKey: "name")
+                aCoder.encode(self.typeName, forKey: "typeName")
+                aCoder.encode(self.`inout`, forKey: "`inout`")
+                aCoder.encode(self.type, forKey: "type")
+                aCoder.encode(self.defaultValue, forKey: "defaultValue")
+                aCoder.encode(self.annotations, forKey: "annotations")
+            }
+
+    // sourcery:end
+}
+
+extension Array where Element == ClosureParameter {
+    public var asSource: String {
+        "(\(map { $0.asSource }.joined(separator: ", ")))"
+    }
 }
 
 /// Describes method
@@ -171,7 +276,7 @@ public typealias SourceryMethod = Method
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
-    // sourcery: skipEqaulitey, skipDescription, skipCoding, skipJSExport
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     /// :nodoc:
     @available(*, deprecated, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
         return attributes[Attribute.Identifier.convenience.name] != nil
@@ -232,7 +337,10 @@ public typealias SourceryMethod = Method
     public var definedInType: Type?
 
     /// Method attributes, i.e. `@discardableResult`
-    public let attributes: [String: Attribute]
+    public let attributes: AttributeList
+
+    /// Method modifiers, i.e. `private`
+    public let modifiers: [SourceryModifier]
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
@@ -250,7 +358,8 @@ public typealias SourceryMethod = Method
                 isStatic: Bool = false,
                 isClass: Bool = false,
                 isFailableInitializer: Bool = false,
-                attributes: [String: Attribute] = [:],
+                attributes: AttributeList = [:],
+                modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 definedInTypeName: TypeName? = nil) {
 
@@ -265,6 +374,7 @@ public typealias SourceryMethod = Method
         self.isClass = isClass
         self.isFailableInitializer = isFailableInitializer
         self.attributes = attributes
+        self.modifiers = modifiers
         self.annotations = annotations
         self.definedInTypeName = definedInTypeName
     }
@@ -286,7 +396,8 @@ public typealias SourceryMethod = Method
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
         }
 
         /// :nodoc:
@@ -306,6 +417,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.modifiers, forKey: "modifiers")
         }
 // sourcery:end
 }

@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable variable_name
 infix operator *~: MultiplicationPrecedence

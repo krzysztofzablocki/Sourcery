@@ -28,7 +28,7 @@ import Foundation
                 inheritedTypes: [String] = [],
                 containedTypes: [Type] = [],
                 typealiases: [Typealias] = [],
-                attributes: [String: Attribute] = [:],
+                attributes: AttributeList = [:],
                 annotations: [String: NSObject] = [:],
                 isGeneric: Bool = false,
                 composedTypeNames: [TypeName] = [],

@@ -145,7 +145,7 @@ class MethodSpec: QuickSpec {
 
             context("given method parameter with attributes") {
                 beforeEach {
-                    sut = MethodParameter(typeName: TypeName("@escaping ConversationApiResponse", attributes: ["escaping": Attribute(name: "escaping")]))
+                    sut = MethodParameter(typeName: TypeName("@escaping ConversationApiResponse", attributes: ["escaping": [Attribute(name: "escaping")]]))
                 }
 
                 it("returns unwrapped type name") {

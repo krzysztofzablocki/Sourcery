@@ -23,6 +23,11 @@ import Foundation
         self._description = description ?? "@\(name)"
     }
 
+    /// TODO: unify `asSource` / `description`?
+    public var asSource: String {
+        description
+    }
+
     /// Attribute description that can be used in a template.
     public override var description: String {
         return _description

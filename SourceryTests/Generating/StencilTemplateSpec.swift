@@ -182,6 +182,10 @@ class StencilTemplateSpec: QuickSpec {
 
             context("given TypeName") {
                 it("generates upperFirstLetter") {
+                    expect(generate("{{ type.MyClass.variables.0.typeName }}")).to(equal("myClass"))
+                }
+
+                it("generates upperFirstLetter") {
                     expect(generate("{{ type.MyClass.variables.0.typeName | upperFirstLetter }}")).to(equal("MyClass"))
                 }
 

@@ -860,6 +860,8 @@ class SourcerySpecTests: QuickSpec {
 
                         let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate)).read(.utf8)) }
                         expect(result()).toEventually(contain("\(Sourcery.generationHeader)Found 3 Types"))
+
+                        _ = watcher
                     }
                 }
             }

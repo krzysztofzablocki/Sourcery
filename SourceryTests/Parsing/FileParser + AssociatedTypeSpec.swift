@@ -1,21 +1,16 @@
 import Quick
 import Nimble
 import PathKit
-import SourceKittenFramework
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime
-
-private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
-}
 
 final class FileParserAssociatedTypeSpec: QuickSpec {
     override func spec() {
         describe("Parser") {
             describe("parse associated type") {
                 func parse(_ code: String) -> [Type] {
-                    guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
+                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
                     return Composer.uniqueTypesAndFunctions(parserResult).types
                 }
 

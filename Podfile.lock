@@ -4,15 +4,11 @@ PODS:
   - Nimble (9.0.0)
   - PathKit (1.0.0)
   - Quick (3.0.0)
-  - SourceKittenFramework (0.30.1):
-    - SWXMLHash (~> 5.0.1)
-    - Yams (~> 4.0)
   - Stencil (0.14.0):
     - PathKit (~> 1.0.0)
   - StencilSwiftKit (2.8.0):
     - Stencil (~> 0.14.0)
   - SwiftLint (0.27.0)
-  - SWXMLHash (5.0.1)
   - xcodeproj (7.18.0):
     - AEXML (~> 4.6.0)
     - PathKit (~> 1.0.0)
@@ -23,7 +19,6 @@ DEPENDENCIES:
   - Nimble
   - PathKit (= 1.0.0)
   - Quick
-  - SourceKittenFramework (= 0.30.1)
   - Stencil (= 0.14.0)
   - StencilSwiftKit (= 2.8.0)
   - SwiftLint
@@ -31,7 +26,7 @@ DEPENDENCIES:
   - Yams (= 4.0.0)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Nimble
     - Quick
     - SwiftLint
@@ -39,10 +34,8 @@ SPEC REPOS:
     - AEXML
     - Commander
     - PathKit
-    - SourceKittenFramework
     - Stencil
     - StencilSwiftKit
-    - SWXMLHash
     - Yams
 
 EXTERNAL SOURCES:
@@ -61,14 +54,12 @@ SPEC CHECKSUMS:
   Nimble: 3b4ec3fd40f1dc178058e0981107721c615643d8
   PathKit: 364e0de7fb5adb142aecab4e112187e5548fc4b6
   Quick: 6d9559f40647bc4d510103842ef2fdd882d753e2
-  SourceKittenFramework: 540d9d048c0bab3c0faa4668425364fabff12cb0
   Stencil: 19487b54873a6ed8d8e4cccc4b45c1a601941f06
   StencilSwiftKit: 946b0a1ae1067ef195231a135fe6d8f240b46942
   SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
-  SWXMLHash: 9cc0c2e4807926c74377724aa8722ee5707a0485
   xcodeproj: 760cfd754df4cfac71ec86b1cbdd6075f9fd3102
   Yams: 9d49b85824751ee13d31e9ec6617c4dfb9a8c3cd
 
-PODFILE CHECKSUM: 2300c7f79da5a3b49abf433b48b325dd11032420
+PODFILE CHECKSUM: 33c99d89adf507ac949b1bab320f091f9f8555cb
 
 COCOAPODS: 1.9.3

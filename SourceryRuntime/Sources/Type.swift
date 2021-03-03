@@ -5,14 +5,16 @@
 
 import Foundation
 
+public typealias AttributeList = [String: [Attribute]]
+
 /// Defines Swift type
 @objcMembers public class Type: NSObject, SourceryModel, Annotated {
 
     /// :nodoc:
     public var module: String?
 
-    /// :nodoc:
-    public var imports: [String] = []
+    /// Imports that existed in the file that contained this type declaration
+    public var imports: [Import] = []
 
     // All local typealiases
     // sourcery: skipJSExport
@@ -40,10 +42,14 @@ import Foundation
         return "\(parentName).\(localName)"
     }
 
+    /// Whether the type has been resolved as unknown extension
+    // sourcery: skipCoding
+    public var isUnknownExtension: Bool = false
+
     // sourcery: skipDescription
-    /// Global type name including module name
+    /// Global type name including module name, unless it's an extension of unknown type
     public var globalName: String {
-        guard let module = module else { return name }
+        guard let module = module, !isUnknownExtension else { return name }
         return "\(module).\(name)"
     }
 
@@ -249,7 +255,7 @@ import Foundation
     public var based = [String: String]()
 
     // sourcery: skipEquality, skipDescription
-    /// Types this type inherits from (only for classes)
+    /// Types this type inherits from
     public var inherits = [String: Type]()
 
     // sourcery: skipEquality, skipDescription
@@ -296,12 +302,11 @@ import Foundation
     public var supertype: Type?
 
     /// Type attributes, i.e. `@objc`
-    public var attributes: [String: Attribute]
+    public var attributes: AttributeList
 
-    // Underlying parser data, never to be used by anything else
-    // sourcery: skipDescription, skipEquality, skipCoding, skipJSExport
-    /// :nodoc:
-    public var __parserData: Any?
+    /// Type modifiers, i.e. `private`, `final`
+    public var modifiers: [SourceryModifier]
+
     // Path to file where the type is defined
     // sourcery: skipDescription, skipEquality, skipJSExport
     /// :nodoc:
@@ -318,7 +323,8 @@ import Foundation
                 inheritedTypes: [String] = [],
                 containedTypes: [Type] = [],
                 typealiases: [Typealias] = [],
-                attributes: [String: Attribute] = [:],
+                attributes: AttributeList = [:],
+                modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 isGeneric: Bool = false) {
 
@@ -334,6 +340,7 @@ import Foundation
         self.parent = parent
         self.parentName = parent?.name
         self.attributes = attributes
+        self.modifiers = modifiers
         self.annotations = annotations
         self.isGeneric = isGeneric
 
@@ -368,7 +375,7 @@ import Foundation
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.module = aDecoder.decode(forKey: "module")
-            guard let imports: [String] = aDecoder.decode(forKey: "imports") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["imports"])); fatalError() }; self.imports = imports
+            guard let imports: [Import] = aDecoder.decode(forKey: "imports") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["imports"])); fatalError() }; self.imports = imports
             guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
@@ -388,7 +395,8 @@ import Foundation
             self.parentName = aDecoder.decode(forKey: "parentName")
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
-            guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
             self.__path = aDecoder.decode(forKey: "__path")
         }
 
@@ -416,6 +424,7 @@ import Foundation
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.supertype, forKey: "supertype")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.__path, forKey: "__path")
         }
 // sourcery:end

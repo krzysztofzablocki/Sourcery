@@ -12,3 +12,10 @@ extension String {
         return components(separatedBy: .whitespacesAndNewlines).joined(separator: "")
     }
 }
+
+extension Type {
+    public func asUnknownException() -> Self {
+        isUnknownExtension = true
+        return self
+    }
+}

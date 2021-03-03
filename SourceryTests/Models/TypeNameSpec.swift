@@ -145,7 +145,7 @@ class TypeNameSpec: QuickSpec {
 
             it("removes attributes in unwrappedTypeName") {
                 expect(TypeName("@escaping (@escaping ()->())->()", attributes: [
-                    "escaping": Attribute(name: "escaping")
+                    "escaping": [Attribute(name: "escaping")]
                     ]).unwrappedTypeName).to(equal("(@escaping ()->())->()"))
             }
 

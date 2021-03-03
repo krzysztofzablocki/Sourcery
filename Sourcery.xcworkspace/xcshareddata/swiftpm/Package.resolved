@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SwiftSyntax",
+        "repositoryURL": "https://github.com/apple/swift-syntax.git",
+        "state": {
+          "branch": null,
+          "revision": "844574d683f53d0737a9c6d706c3ef31ed2955eb",
+          "version": "0.50300.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,14 +1,9 @@
 import Quick
 import Nimble
 import PathKit
-import SourceKittenFramework
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime
-
-private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
-}
 
 class FileParserVariableSpec: QuickSpec {
     // swiftlint:disable:next function_body_length
@@ -16,15 +11,30 @@ class FileParserVariableSpec: QuickSpec {
         describe("Parser") {
             describe("parseVariable") {
                 func parse(_ code: String) -> Variable? {
-                    guard let parser = try? FileParser(contents: code) else { fail(); return nil }
-                    let code = build(code)
-                    guard let substructures = code?[SwiftDocKey.substructure.rawValue] as? [SourceKitRepresentable],
-                          let src = substructures.first as? [String: SourceKitRepresentable] else {
-                        fail()
-                        return nil
-                    }
-                    _ = try? parser.parse()
-                    return parser.parseVariable(src, definedIn: nil)
+                    let wrappedCode =
+                        """
+                        struct Wrapper {
+                            \(code)
+                        }
+                        """
+                    guard let parser = try? makeParser(for: wrappedCode) else { fail(); return nil }
+                    let result = try? parser.parse()
+                    let variable = result?.types.first?.variables.first
+                    variable?.definedInType = nil
+                    variable?.definedInTypeName = nil
+                    return variable
+                }
+
+                it("infers types for variables when it's easy") {
+                    expect(parse("static let redirectButtonDefaultURL = URL(string: \"https://www.nytimes.com\")!")?.typeName).to(equal(TypeName("URL!")))
+
+                    expect(parse(
+                    """
+                    var pointPool = {
+                        ReusableItemPool<Point>(something: "cool")
+                    }()
+                    """
+                    )?.typeName).to(equal(TypeName("ReusableItemPool<Point>")))
                 }
 
                 it("reports variable mutability") {
@@ -36,6 +46,45 @@ class FileParserVariableSpec: QuickSpec {
 
                 it("extracts standard property correctly") {
                     expect(parse("var name: String")).to(equal(Variable(name: "name", typeName: TypeName("String"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                }
+
+                it("extracts property with custom access correctly") {
+                    expect(parse("private var name: String"))
+                        .to(equal(
+                                Variable(name: "name",
+                                         typeName: TypeName("String"),
+                                         accessLevel: (read: .private, write: .private),
+                                         isComputed: false,
+                                         modifiers: [
+                                            Modifier(name: "private")
+                                         ]
+                                )
+                        ))
+
+                    expect(parse("private(set) var name: String"))
+                        .to(equal(
+                                Variable(name: "name",
+                                         typeName: TypeName("String"),
+                                         accessLevel: (read: .internal, write: .private),
+                                         isComputed: false,
+                                         modifiers: [
+                                            Modifier(name: "private", detail: "set")
+                                         ]
+                                )
+                        ))
+
+                    expect(parse("public private(set) var name: String"))
+                        .to(equal(
+                                Variable(name: "name",
+                                         typeName: TypeName("String"),
+                                         accessLevel: (read: .public, write: .private),
+                                         isComputed: false,
+                                         modifiers: [
+                                            Modifier(name: "public"),
+                                            Modifier(name: "private", detail: "set")
+                                         ]
+                                )
+                        ))
                 }
 
                 context("given variable with initial value") {
@@ -80,35 +129,47 @@ class FileParserVariableSpec: QuickSpec {
                     }
 
                     it("extracts property with array literal value correctly") {
-                        expect(parse("var name = [Int]()")?.typeName).to(equal(TypeName("[Int]")))
-                        expect(parse("var name = [1]")?.typeName).to(equal(TypeName("[Int]")))
-                        expect(parse("var name = [1, 2]")?.typeName).to(equal(TypeName("[Int]")))
-                        expect(parse("var name = [1, \"a\"]")?.typeName).to(equal(TypeName("[Any]")))
-                        expect(parse("var name = [1, nil]")?.typeName).to(equal(TypeName("[Int?]")))
-                        expect(parse("var name = [1, [1, 2]]")?.typeName).to(equal(TypeName("[Any]")))
-                        expect(parse("var name = [[1, 2], [1, 2]]")?.typeName).to(equal(TypeName("[[Int]]")))
-                        expect(parse("var name = [Int()]")?.typeName).to(equal(TypeName("[Int]")))
+                        expect(parse("var name = [Int]()")?.typeName).to(equal(TypeName.buildArray(of: .Int)))
+                        expect(parse("var name = [1]")?.typeName).to(equal(TypeName.buildArray(of: .Int)))
+                        expect(parse("var name = [1, 2]")?.typeName).to(equal(TypeName.buildArray(of: .Int)))
+                        expect(parse("var name = [1, \"a\"]")?.typeName).to(equal(TypeName.buildArray(of: .Any)))
+                        expect(parse("var name = [1, nil]")?.typeName).to(equal(TypeName.buildArray(of: TypeName.Int.asOptional)))
+                        expect(parse("var name = [1, [1, 2]]")?.typeName).to(equal(TypeName.buildArray(of: .Any)))
+                        expect(parse("var name = [[1, 2], [1, 2]]")?.typeName).to(equal(TypeName.buildArray(of: TypeName.buildArray(of: .Int))))
+                        expect(parse("var name = [Int()]")?.typeName).to(equal(TypeName.buildArray(of: .Int)))
                     }
 
                     it("extracts property with dictionary literal value correctly") {
-                        expect(parse("var name = [Int: Int]()")?.typeName).to(equal(TypeName("[Int: Int]")))
-                        expect(parse("var name = [1: 2]")?.typeName).to(equal(TypeName("[Int: Int]")))
-                        expect(parse("var name = [1: 2, 2: 3]")?.typeName).to(equal(TypeName("[Int: Int]")))
-                        expect(parse("var name = [1: 1, 2: \"a\"]")?.typeName).to(equal(TypeName("[Int: Any]")))
-                        expect(parse("var name = [1: 1, 2: nil]")?.typeName).to(equal(TypeName("[Int: Int?]")))
-                        expect(parse("var name = [1: 1, 2: [1, 2]]")?.typeName).to(equal(TypeName("[Int: Any]")))
-                        expect(parse("var name = [[1: 1, 2: 2], [1: 1, 2: 2]]")?.typeName).to(equal(TypeName("[[Int: Int]]")))
-                        expect(parse("var name = [1: [1: 1, 2: 2], 2: [1: 1, 2: 2]]")?.typeName).to(equal(TypeName("[Int: [Int: Int]]")))
-                        expect(parse("var name = [Int(): String()]")?.typeName).to(equal(TypeName("[Int: String]")))
+                        expect(parse("var name = [Int: Int]()")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: .Int)))
+                        expect(parse("var name = [1: 2]")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: .Int)))
+                        expect(parse("var name = [1: 2, 2: 3]")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: .Int)))
+                        expect(parse("var name = [1: 1, 2: \"a\"]")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: .Any)))
+                        expect(parse("var name = [1: 1, 2: nil]")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: TypeName.Int.asOptional)))
+                        expect(parse("var name = [1: 1, 2: [1, 2]]")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: .Any)))
+                        expect(parse("var name = [[1: 1, 2: 2], [1: 1, 2: 2]]")?.typeName).to(equal(TypeName.buildArray(of: .buildDictionary(key: .Int, value: .Int))))
+                        expect(parse("var name = [1: [1: 1, 2: 2], 2: [1: 1, 2: 2]]")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: .buildDictionary(key: .Int, value: .Int))))
+                        expect(parse("var name = [Int(): String()]")?.typeName).to(equal(TypeName.buildDictionary(key: .Int, value: .String)))
+                    }
+
+                    it("matches inference with parser tuple") {
+                        let infer = parse("var name = (1, b: \"[2,3]\", c: 1)")?.typeName
+                        let parsed = parse("var name: (Int, b: String, c: Int)")?.typeName
+                        expect(infer).to(equal(parsed))
                     }
 
                     it("extracts property with tuple literal value correctly") {
-                        expect(parse("var name = (1, 2)")?.typeName).to(equal(TypeName("(Int, Int)")))
-                        expect(parse("var name = (1, b: \"[2,3]\", c: 1)")?.typeName).to(equal(TypeName("(Int, b: String, c: Int)")))
-                        expect(parse("var name = (_: 1, b: 2)")?.typeName).to(equal(TypeName("(Int, b: Int)")))
-                        expect(parse("var name = ((1, 2), [\"a\": \"b\"])")?.typeName).to(equal(TypeName("((Int, Int), [String: String])")))
-                        expect(parse("var name = ((1, 2), [1, 2])")?.typeName).to(equal(TypeName("((Int, Int), [Int])")))
-                        expect(parse("var name = ((1, 2), [\"a,b\": \"b\"])")?.typeName).to(equal(TypeName("((Int, Int), [String: String])")))
+                        expect(parse("var name = (1, 2)")?.typeName).to(equal(TypeName.buildTuple(TypeName.Int, TypeName.Int)))
+                        expect(parse("var name = (1, b: \"[2,3]\", c: 1)")?.typeName).to(equal(TypeName.buildTuple(.init(name: "0", typeName: .Int), .init(name: "b", typeName: .String), .init(name: "c", typeName: .Int))))
+                        expect(parse("var name = (_: 1, b: 2)")?.typeName).to(equal(TypeName.buildTuple(.init(name: "0", typeName: .Int), .init(name: "b", typeName: .Int))))
+                        expect(parse("var name = ((1, 2), [\"a\": \"b\"])")?.typeName).to(equal(TypeName.buildTuple(TypeName.buildTuple(TypeName.Int, TypeName.Int), TypeName.buildDictionary(key: .String, value: .String))))
+                        expect(parse("var name = ((1, 2), [1, 2])")?.typeName).to(equal(TypeName.buildTuple(TypeName.buildTuple(TypeName.Int, TypeName.Int), TypeName.buildArray(of: .Int))))
+                        let variable = parse("var name = ((1, 2), [\"a,b\": \"b\"])")
+                        expect(variable?.typeName)
+                          .to(
+                            equal(TypeName.buildTuple(
+                              .buildTuple(.Int, .Int),
+                              .buildDictionary(key: .String, value: .String))
+                            ))
                     }
                 }
 
@@ -127,7 +188,9 @@ class FileParserVariableSpec: QuickSpec {
                 }
 
                 it("extracts generic property correctly") {
-                    expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", typeName: TypeName("Observable<Int>"), accessLevel: (read: .internal, write: .none), isComputed: false)))
+                    expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", typeName:
+                    TypeName("Observable<Int>", generic: .init(name: "Observable", typeParameters: [.init(typeName: TypeName("Int"))])
+                    ), accessLevel: (read: .internal, write: .none), isComputed: false)))
                 }
 
                 context("given it has sourcery annotations") {

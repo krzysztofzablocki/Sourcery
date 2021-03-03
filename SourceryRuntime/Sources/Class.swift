@@ -22,7 +22,8 @@ import Foundation
                          inheritedTypes: [String] = [],
                          containedTypes: [Type] = [],
                          typealiases: [Typealias] = [],
-                         attributes: [String: Attribute] = [:],
+                         attributes: AttributeList = [:],
+                         modifiers: [SourceryModifier] = [],
                          annotations: [String: NSObject] = [:],
                          isGeneric: Bool = false) {
         super.init(
@@ -36,6 +37,8 @@ import Foundation
             inheritedTypes: inheritedTypes,
             containedTypes: containedTypes,
             typealiases: typealiases,
+            attributes: attributes,
+            modifiers: modifiers,
             annotations: annotations,
             isGeneric: isGeneric
         )

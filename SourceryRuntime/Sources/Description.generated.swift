@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -8,7 +8,9 @@ extension ArrayType {
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string += "name = \(String(describing: self.name)), "
-        string += "elementTypeName = \(String(describing: self.elementTypeName))"
+        string += "elementTypeName = \(String(describing: self.elementTypeName)), "
+        string += "asGeneric = \(String(describing: self.asGeneric)), "
+        string += "asSource = \(String(describing: self.asSource))"
         return string
     }
 }
@@ -52,6 +54,21 @@ extension Class {
         return string
     }
 }
+extension ClosureParameter {
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "argumentLabel = \(String(describing: self.argumentLabel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "`inout` = \(String(describing: self.`inout`)), "
+        string += "typeAttributes = \(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+}
 extension ClosureType {
     /// :nodoc:
     override public var description: String {
@@ -60,7 +77,8 @@ extension ClosureType {
         string += "parameters = \(String(describing: self.parameters)), "
         string += "returnTypeName = \(String(describing: self.returnTypeName)), "
         string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
-        string += "`throws` = \(String(describing: self.`throws`))"
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword))"
         return string
     }
 }
@@ -70,7 +88,9 @@ extension DictionaryType {
         var string = "\(Swift.type(of: self)): "
         string += "name = \(String(describing: self.name)), "
         string += "valueTypeName = \(String(describing: self.valueTypeName)), "
-        string += "keyTypeName = \(String(describing: self.keyTypeName))"
+        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
+        string += "asGeneric = \(String(describing: self.asGeneric)), "
+        string += "asSource = \(String(describing: self.asSource))"
         return string
     }
 }
@@ -110,16 +130,19 @@ extension FileParserResult {
         string += "inlineRanges = \(String(describing: self.inlineRanges)), "
         string += "inlineIndentations = \(String(describing: self.inlineIndentations)), "
         string += "modifiedDate = \(String(describing: self.modifiedDate)), "
-        string += "sourceryVersion = \(String(describing: self.sourceryVersion))"
+        string += "sourceryVersion = \(String(describing: self.sourceryVersion)), "
+        string += "isEmpty = \(String(describing: self.isEmpty))"
         return string
     }
 }
-extension GenericType {
+extension GenericRequirement {
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "typeParameters = \(String(describing: self.typeParameters))"
+        string += "leftType = \(String(describing: self.leftType)), "
+        string += "rightType = \(String(describing: self.rightType)), "
+        string += "relationship = \(String(describing: self.relationship)), "
+        string += "relationshipSyntax = \(String(describing: self.relationshipSyntax))"
         return string
     }
 }
@@ -147,7 +170,8 @@ extension Method {
         string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
-        string += "attributes = \(String(describing: self.attributes))"
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
         return string
     }
 }
@@ -161,7 +185,8 @@ extension MethodParameter {
         string += "`inout` = \(String(describing: self.`inout`)), "
         string += "typeAttributes = \(String(describing: self.typeAttributes)), "
         string += "defaultValue = \(String(describing: self.defaultValue)), "
-        string += "annotations = \(String(describing: self.annotations))"
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "asSource = \(String(describing: self.asSource))"
         return string
     }
 }
@@ -171,7 +196,8 @@ extension Protocol {
         var string = super.description
         string += ", "
         string += "kind = \(String(describing: self.kind)), "
-        string += "associatedTypes = \(String(describing: self.associatedTypes))"
+        string += "associatedTypes = \(String(describing: self.associatedTypes)), "
+        string += "genericRequirements = \(String(describing: self.genericRequirements))"
         return string
     }
 }
@@ -208,7 +234,8 @@ extension Subscript {
         string += "annotations = \(String(describing: self.annotations)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
         string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
-        string += "attributes = \(String(describing: self.attributes))"
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
         return string
     }
 }
@@ -228,7 +255,8 @@ extension TupleElement {
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string += "name = \(String(describing: self.name)), "
-        string += "typeName = \(String(describing: self.typeName))"
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "asSource = \(String(describing: self.asSource))"
         return string
     }
 }
@@ -252,6 +280,7 @@ extension Type {
         string += "kind = \(String(describing: self.kind)), "
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "name = \(String(describing: self.name)), "
+        string += "isUnknownExtension = \(String(describing: self.isUnknownExtension)), "
         string += "isGeneric = \(String(describing: self.isGeneric)), "
         string += "localName = \(String(describing: self.localName)), "
         string += "rawVariables = \(String(describing: self.rawVariables)), "
@@ -270,7 +299,8 @@ extension Type {
         string += "containedTypes = \(String(describing: self.containedTypes)), "
         string += "parentName = \(String(describing: self.parentName)), "
         string += "parentTypes = \(String(describing: self.parentTypes)), "
-        string += "attributes = \(String(describing: self.attributes))"
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
         return string
     }
 }
@@ -280,6 +310,7 @@ extension Typealias {
         var string = "\(Swift.type(of: self)): "
         string += "aliasName = \(String(describing: self.aliasName)), "
         string += "typeName = \(String(describing: self.typeName)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "parentName = \(String(describing: self.parentName)), "
         string += "name = \(String(describing: self.name))"
         return string
@@ -308,6 +339,7 @@ extension Variable {
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers)), "
         string += "isFinal = \(String(describing: self.isFinal)), "
         string += "isLazy = \(String(describing: self.isLazy)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "

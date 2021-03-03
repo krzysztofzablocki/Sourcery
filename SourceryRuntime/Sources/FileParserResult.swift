@@ -29,6 +29,10 @@ import Foundation
     public var modifiedDate: Date
     public var sourceryVersion: String
 
+    var isEmpty: Bool {
+        types.isEmpty && functions.isEmpty && typealiases.isEmpty && inlineRanges.isEmpty && inlineIndentations.isEmpty
+    }
+
     public init(path: String?, module: String?, types: [Type], functions: [SourceryMethod], typealiases: [Typealias] = [], inlineRanges: [String: NSRange] = [:], inlineIndentations: [String: String] = [:], modifiedDate: Date = Date(), sourceryVersion: String = "") {
         self.path = path
         self.module = module

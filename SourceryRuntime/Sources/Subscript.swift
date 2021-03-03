@@ -71,7 +71,10 @@ import Foundation
     public var definedInType: Type?
 
     /// Method attributes, i.e. `@discardableResult`
-    public let attributes: [String: Attribute]
+    public let attributes: AttributeList
+
+    /// Method modifiers, i.e. `private`
+    public let modifiers: [SourceryModifier]
 
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
@@ -82,7 +85,8 @@ import Foundation
     public init(parameters: [MethodParameter] = [],
                 returnTypeName: TypeName,
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
-                attributes: [String: Attribute] = [:],
+                attributes: AttributeList = [:],
+                modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 definedInTypeName: TypeName? = nil) {
 
@@ -91,6 +95,7 @@ import Foundation
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
         self.attributes = attributes
+        self.modifiers = modifiers
         self.annotations = annotations
         self.definedInTypeName = definedInTypeName
     }
@@ -106,7 +111,8 @@ import Foundation
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
         }
 
         /// :nodoc:
@@ -120,6 +126,7 @@ import Foundation
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.modifiers, forKey: "modifiers")
         }
 // sourcery:end
 

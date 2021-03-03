@@ -19,6 +19,9 @@ import Foundation
         }
     }
 
+    /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
+    public let accessLevel: String
+
     var parentName: String?
 
     public var name: String {
@@ -29,11 +32,10 @@ import Foundation
         }
     }
 
-    // TODO: access level
-
-    public init(aliasName: String = "", typeName: TypeName, parent: Type? = nil) {
+    public init(aliasName: String = "", typeName: TypeName, accessLevel: AccessLevel = .internal, parent: Type? = nil) {
         self.aliasName = aliasName
         self.typeName = typeName
+        self.accessLevel = accessLevel.rawValue
         self.parent = parent
         self.parentName = parent?.name
     }
@@ -45,6 +47,7 @@ import Foundation
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.parent = aDecoder.decode(forKey: "parent")
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
             self.parentName = aDecoder.decode(forKey: "parentName")
         }
 
@@ -54,6 +57,7 @@ import Foundation
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.parent, forKey: "parent")
+            aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.parentName, forKey: "parentName")
         }
 // sourcery:end

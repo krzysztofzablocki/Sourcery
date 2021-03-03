@@ -1,6 +1,49 @@
 import Foundation
 
+public extension StringProtocol {
+    /// Trimms leading and trailing whitespaces and newlines
+    var trimmed: String {
+        self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 public extension String {
+
+    /// Returns nil if string is empty
+    var nilIfEmpty: String? {
+        if isEmpty {
+            return nil
+        }
+
+        return self
+    }
+
+    /// Returns nil if string is empty or contains `_` character
+    var nilIfNotValidParameterName: String? {
+        if isEmpty {
+            return nil
+        }
+
+        if self == "_" {
+            return nil
+        }
+
+        return self
+    }
+
+    /// :nodoc:
+    /// - Parameter substring: Instance of a substring
+    /// - Returns: Returns number of times a substring appears in self
+    func countInstances(of substring: String) -> Int {
+        guard !substring.isEmpty else { return 0 }
+        var count = 0
+        var searchRange: Range<String.Index>?
+        while let foundRange = range(of: substring, options: [], range: searchRange) {
+            count += 1
+            searchRange = Range(uncheckedBounds: (lower: foundRange.upperBound, upper: endIndex))
+        }
+        return count
+    }
 
     /// :nodoc:
     /// Removes leading and trailing whitespace from str. Returns false if str was not altered.

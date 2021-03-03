@@ -1,9 +1,9 @@
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/PathKit" "${PODS_CONFIGURATION_BUILD_DIR}/SWXMLHash" "${PODS_CONFIGURATION_BUILD_DIR}/SourceKittenFramework" "${PODS_CONFIGURATION_BUILD_DIR}/Yams"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/PathKit"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SWXMLHash/SWXMLHash.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SourceKittenFramework/SourceKittenFramework.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Yams/Yams.framework/Headers"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/../Frameworks' '@loader_path/Frameworks'
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/SWXMLHash/SWXMLHash.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/SourceKittenFramework/SourceKittenFramework.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/Yams/Yams.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/PathKit" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/SWXMLHash" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/SourceKittenFramework" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/Yams"
-OTHER_LDFLAGS = $(inherited) -framework "PathKit" -framework "SWXMLHash" -framework "SourceKittenFramework" -framework "Yams"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/PathKit"
+OTHER_LDFLAGS = $(inherited) -framework "PathKit"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

@@ -6,14 +6,9 @@
 import Quick
 import Nimble
 import PathKit
-import SourceKittenFramework
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime
-
-private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
-}
 
 class TemplateAnnotationsParserSpec: QuickSpec {
     override func spec() {

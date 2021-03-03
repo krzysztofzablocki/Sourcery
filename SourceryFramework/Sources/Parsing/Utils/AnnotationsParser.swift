@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
 public typealias Annotations = [String: NSObject]
 
@@ -37,12 +37,14 @@ public struct AnnotationsParser {
 
     private let lines: [Line]
     private let contents: String
+    internal var sourceLocationConverter: SourceLocationConverter?
 
     /// Initializes parser
     ///
     /// - Parameter contents: Contents to parse
-    init(contents: String) {
+    init(contents: String, sourceLocationConverter: SourceLocationConverter? = nil) {
         self.lines = AnnotationsParser.parse(contents: contents)
+        self.sourceLocationConverter = sourceLocationConverter
         self.contents = contents
     }
 
@@ -57,26 +59,35 @@ public struct AnnotationsParser {
         return all
     }
 
-    /// Extracts annotations from given source
-    ///
-    /// - Parameter source: Source to extract annotations for.
-    /// - Returns: All annotations associated with given source.
-    func from(_ source: [String: SourceKitRepresentable]) -> Annotations {
-        guard let range = Substring.key.range(for: source) else {
-            return [:]
-        }
-        
-        let location = StringView(contents).location(fromByteOffset: ByteCount(range.offset))
-        
-        guard let lineInfo = StringView(contents).lineAndCharacter(forCharacterOffset: location) else {
+    func annotations(from node: IdentifierSyntax) -> Annotations {
+        from(
+          location: findLocation(syntax: node.identifier),
+          precedingComments: node.leadingTrivia?.compactMap({ $0.comment }) ?? []
+        )
+    }
+
+    func annotations(fromToken token: SyntaxProtocol) -> Annotations {
+        from(
+          location: findLocation(syntax: token),
+          precedingComments: token.leadingTrivia?.compactMap({ $0.comment }) ?? []
+        )
+    }
+
+    // TODO: once removing SourceKitten just kill this optionality
+    private func findLocation(syntax: SyntaxProtocol) -> SwiftSyntax.SourceLocation {
+        return sourceLocationConverter!.location(for: syntax.positionAfterSkippingLeadingTrivia)
+    }
+
+    private func from(location: SwiftSyntax.SourceLocation, precedingComments: [String]) -> Annotations {
+        guard let lineNumber = location.line, let column = location.column else {
             return [:]
         }
 
         var stop = false
-        var annotations = inlineFrom(line: lineInfo, stop: &stop)
+        var annotations = inlineFrom(line: (lineNumber, column), stop: &stop)
         guard !stop else { return annotations }
 
-        for line in lines[0..<lineInfo.line-1].reversed() {
+        for line in lines[0..<lineNumber-1].reversed() {
             line.annotations.forEach { annotation in
                 AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
             }
@@ -95,11 +106,14 @@ public struct AnnotationsParser {
             .trimmingCharacters(in: .whitespaces)
 
         guard !prefix.isEmpty else { return [:] }
-        var annotations = sourceLine.blockAnnotations //get block annotations for this line
+        var annotations = sourceLine.blockAnnotations // get block annotations for this line
+        sourceLine.annotations.forEach { annotation in  // TODO: verify
+            AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
+        }
 
         // `case` is not included in the key of enum case definition, so we strip it manually
-        prefix = prefix.trimmingSuffix("case").trimmingCharacters(in: .whitespaces)
-
+        let isInsideCaseDefinition = prefix.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("case")
+        prefix = prefix.trimmingPrefix("case").trimmingCharacters(in: .whitespaces)
         var inlineCommentFound = false
 
         while !prefix.isEmpty {
@@ -116,13 +130,13 @@ public struct AnnotationsParser {
             prefix = prefix[..<commentStart.lowerBound].trimmingCharacters(in: .whitespaces)
         }
 
-        if inlineCommentFound && !prefix.isEmpty {
+        if (inlineCommentFound || isInsideCaseDefinition) && !prefix.isEmpty {
             stop = true
             return annotations
         }
 
         // if previous line is not comment or has some trailing non-comment blocks
-        // we return currently agregated annotations
+        // we return currently aggregated annotations
         // as annotations on previous line belong to previous declaration
         if lineInfo.line - 2 > 0 {
             let previousLine = lines[lineInfo.line - 2]

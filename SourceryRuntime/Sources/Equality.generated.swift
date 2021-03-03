@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -59,6 +59,19 @@ extension Class {
         return super.isEqual(rhs)
     }
 }
+extension ClosureParameter {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+}
 extension ClosureType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -67,6 +80,7 @@ extension ClosureType {
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
         if self.`throws` != rhs.`throws` { return false }
+        if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
         return true
     }
 }
@@ -82,7 +96,7 @@ extension DictionaryType {
 }
 extension DiffableResult {
     /// :nodoc:
-    override internal func isEqual(_ object: Any?) -> Bool {
+    override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? DiffableResult else { return false }
         if self.identifier != rhs.identifier { return false }
         return true
@@ -125,6 +139,17 @@ extension FileParserResult {
         return true
     }
 }
+extension GenericRequirement {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericRequirement else { return false }
+        if self.leftType != rhs.leftType { return false }
+        if self.rightType != rhs.rightType { return false }
+        if self.relationship != rhs.relationship { return false }
+        if self.relationshipSyntax != rhs.relationshipSyntax { return false }
+        return true
+    }
+}
 extension GenericType {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
@@ -139,6 +164,15 @@ extension GenericTypeParameter {
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? GenericTypeParameter else { return false }
         if self.typeName != rhs.typeName { return false }
+        return true
+    }
+}
+extension Import {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Import else { return false }
+        if self.kind != rhs.kind { return false }
+        if self.path != rhs.path { return false }
         return true
     }
 }
@@ -159,6 +193,7 @@ extension Method {
         if self.annotations != rhs.annotations { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
         return true
     }
 }
@@ -175,11 +210,21 @@ extension MethodParameter {
         return true
     }
 }
+extension Modifier {
+    /// :nodoc:
+    override public func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Modifier else { return false }
+        if self.name != rhs.name { return false }
+        if self.detail != rhs.detail { return false }
+        return true
+    }
+}
 extension Protocol {
     /// :nodoc:
     override public func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Protocol else { return false }
         if self.associatedTypes != rhs.associatedTypes { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
         return super.isEqual(rhs)
     }
 }
@@ -209,6 +254,7 @@ extension Subscript {
         if self.annotations != rhs.annotations { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
         return true
     }
 }
@@ -249,6 +295,7 @@ extension Type {
         if self.typealiases != rhs.typealiases { return false }
         if self.isExtension != rhs.isExtension { return false }
         if self.accessLevel != rhs.accessLevel { return false }
+        if self.isUnknownExtension != rhs.isUnknownExtension { return false }
         if self.isGeneric != rhs.isGeneric { return false }
         if self.localName != rhs.localName { return false }
         if self.rawVariables != rhs.rawVariables { return false }
@@ -259,6 +306,7 @@ extension Type {
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
         if self.kind != rhs.kind { return false }
         return true
     }
@@ -270,7 +318,9 @@ extension TypeName {
         if self.name != rhs.name { return false }
         if self.generic != rhs.generic { return false }
         if self.isGeneric != rhs.isGeneric { return false }
+        if self.isProtocolComposition != rhs.isProtocolComposition { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
         if self.tuple != rhs.tuple { return false }
         if self.array != rhs.array { return false }
         if self.dictionary != rhs.dictionary { return false }
@@ -284,6 +334,7 @@ extension Typealias {
         guard let rhs = object as? Typealias else { return false }
         if self.aliasName != rhs.aliasName { return false }
         if self.typeName != rhs.typeName { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
         if self.parentName != rhs.parentName { return false }
         return true
     }
@@ -310,6 +361,7 @@ extension Variable {
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         return true
     }

@@ -1,7 +1,0 @@
-#include "BuildSystem.h"
-#include "CXCompilationDatabase.h"
-#include "CXErrorCode.h"
-#include "CXString.h"
-#include "Documentation.h"
-#include "Index.h"
-#include "Platform.h"

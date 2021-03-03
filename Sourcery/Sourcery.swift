@@ -37,6 +37,11 @@ class Sourcery {
     // content annotated with file annotations per file path to write it to
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
+    private (set) var numberOfFilesThatHadToBeParsed: Int32 = 0
+    func incrementFileParsedCount() {
+        OSAtomicIncrement32(&numberOfFilesThatHadToBeParsed)
+    }
+
     /// Creates Sourcery processor
     init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, prune: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
@@ -232,6 +237,8 @@ class Sourcery {
 extension Sourcery {
     typealias ParsingResult = (types: Types, functions: [SourceryMethod], inlineRanges: [(file: String, ranges: [String: NSRange], indentations: [String: String])])
 
+    typealias ParserWrapper = (path: Path, parse: () throws -> FileParserResult)
+
     fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], modules: [String]?) throws -> ParsingResult {
         if let modules = modules {
             precondition(from.count == modules.count, "There should be module for each file to parse")
@@ -249,48 +256,51 @@ extension Sourcery {
 
         try from.enumerated().forEach { index, from in
             let fileList = from.isDirectory ? try from.recursiveChildren() : [from]
-            let sources = try fileList
+            let parserGenerator: [ParserWrapper] = fileList
                 .filter { $0.isSwiftSourceFile }
                 .filter {
                     return !excludeSet.contains($0)
                 }
-                .compactMap { (path: Path) -> (path: Path, contents: String)? in
-                    do {
-                        return (path: path, contents: try path.read(.utf8))
-                    } catch {
-                        Log.warning("Skipping file at \(path) as it does not exist")
-                        return nil
-                    }
-                }
-                .filter {
-                    let result = Verifier.canParse(content: $0.contents,
-                                                   path: $0.path,
-                                                   generationMarker: Sourcery.generationMarker,
-                                                   forceParse: forceParse)
-                    if result == .containsConflictMarkers {
-                        throw Error.containsMergeConflictMarkers
-                    }
+                .map { path in
+                    return (path: path, makeParser: {
+                        let module = modules?[index]
 
-                    return result == .approved
+                        guard path.exists else {
+                            return FileParserResult(path: path.string, module: module, types: [], functions: [])
+                        }
+
+                        let content = try path.read(.utf8)
+                        let status = Verifier.canParse(content: content, path: path, generationMarker: Sourcery.generationMarker, forceParse: forceParse)
+                        switch status {
+                        case .containsConflictMarkers:
+                            throw Error.containsMergeConflictMarkers
+                        case .isCodeGenerated:
+                            return FileParserResult(path: path.string, module: module, types: [], functions: [])
+                        case .approved:
+                            return try makeParser(for: content, path: path, module: module).parse()
+                        }
+                    })
                 }
-                .map {
-                    try FileParser(contents: $0.contents, path: $0.path, module: modules?[index])
-            }
 
             var previousUpdate = 0
             var accumulator = 0
-            let step = sources.count / 10 // every 10%
+            let step = parserGenerator.count / 10 // every 10%
+            numberOfFilesThatHadToBeParsed = 0
 
-            let results = try sources.parallelMap({ try self.loadOrParse(parser: $0, cachesPath: cachesDir(sourcePath: from)) }, progress: !(verbose || watcherEnabled) ? nil : { _ in
+            let results = try parserGenerator.parallelMap({
+                try self.loadOrParse(parser: $0, cachesPath: cachesDir(sourcePath: from))
+            }, progress: !(verbose || watcherEnabled) ? nil : { _ in
                 if accumulator > previousUpdate + step {
                     previousUpdate = accumulator
-                    let percentage = accumulator * 100 / sources.count
-                    Log.info("Scanning sources... \(percentage)% (\(sources.count) files)")
+                    let percentage = accumulator * 100 / parserGenerator.count
+                    Log.info("Scanning sources... \(percentage)% (\(parserGenerator.count) files)")
                 }
                 accumulator += 1
                 })
 
-            allResults.append(contentsOf: results)
+            if !results.isEmpty {
+                allResults.append(contentsOf: results)
+            }
         }
 
         Log.benchmark("\tloadOrParse: \(currentTimestamp() - startScan)")
@@ -311,31 +321,32 @@ extension Sourcery {
         let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
 
         Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
-        Log.info("Found \(types.count) types.")
+        Log.info("Found \(types.count) types in \(allResults.count) files, \(numberOfFilesThatHadToBeParsed) changed from last run.")
         return (Types(types: types, typealiases: typealiases), functions, inlineRanges)
     }
 
-    private func loadOrParse(parser: FileParser, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult {
-        guard let pathString = parser.path else { fatalError("Unable to retrieve \(String(describing: parser.path))") }
-
+    private func loadOrParse(parser: ParserWrapper, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult {
         guard let cachesPath = cachesPath() else {
+            incrementFileParsedCount()
             return try parser.parse()
         }
 
-        let path = Path(pathString)
-        let artifacts = cachesPath + "\(pathString.hash).srf"
+        let path = parser.path
+        let artifactsPath = cachesPath + "\(path.string.hash).srf"
 
-        guard artifacts.exists,
-            let modifiedDate = parser.modifiedDate,
-            let unarchived = load(artifacts: artifacts.string, modifiedDate: modifiedDate) else {
+        guard
+            artifactsPath.exists,
+            let modifiedDate = path.modifiedDate,
+            let unarchived = load(artifacts: artifactsPath.string, modifiedDate: modifiedDate, path: path) else {
 
+            incrementFileParsedCount()
             let result = try parser.parse()
 
             let data = NSKeyedArchiver.archivedData(withRootObject: result)
             do {
-                try artifacts.write(data)
+                try artifactsPath.write(data)
             } catch {
-                fatalError("Unable to save artifacts for \(path) under \(artifacts), error: \(error)")
+                fatalError("Unable to save artifacts for \(path) under \(artifactsPath), error: \(error)")
             }
 
             return result
@@ -344,7 +355,7 @@ extension Sourcery {
         return unarchived
     }
 
-    private func load(artifacts: String, modifiedDate: Date) -> FileParserResult? {
+    private func load(artifacts: String, modifiedDate: Date, path: Path) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
         SwiftTryCatch.try({
 
@@ -354,7 +365,7 @@ extension Sourcery {
                 }
             }
         }, catch: { _ in
-            Log.warning("Failed to unarchive \(artifacts) due to error, re-parsing")
+            Log.warning("Failed to unarchive cache for \(path.string) due to error, re-parsing file")
         }, finallyBlock: {})
 
         return unarchivedResult
@@ -509,6 +520,8 @@ extension Sourcery {
             indentation: String
         )
 
+        let contentsView = StringView(contents)
+
         try annotatedRanges
             .map { (key: $0, range: $1[0].range) }
             .compactMap { (key, range) -> MappedInlineAnnotations? in
@@ -527,9 +540,9 @@ extension Sourcery {
                 let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
-                    let path = definition.path,
+                    let path = definition.__path.map({ Path($0) }),
                     let contents = try? path.read(.utf8),
-                    let bodyRange = definition.bodyRange(contents) else {
+                    let bodyRange = bodyRange(for: definition, contentsView: contentsView) else {
                         rangesToReplace.remove(range)
                         return nil
                 }
@@ -541,7 +554,6 @@ extension Sourcery {
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location
             }.forEach { (arg) in
-
                 let (_, path, rangeInFile, toInsert, indentation) = arg
                 let content = try path.read(.utf8)
                 let updated = content.bridge().replacingCharacters(in: rangeInFile, with: indent(toInsert: toInsert, indentation: indentation))
@@ -555,6 +567,11 @@ extension Sourcery {
                 bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
         }
         return bridged as String
+    }
+
+    private func bodyRange(for type: Type, contentsView: StringView) -> NSRange? {
+        guard let bytesRange = type.bodyBytesRange else { return nil }
+        return contentsView.byteRangeToNSRange(ByteRange(location: ByteCount(bytesRange.offset), length: ByteCount(bytesRange.length)))
     }
 
     private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path) -> String {

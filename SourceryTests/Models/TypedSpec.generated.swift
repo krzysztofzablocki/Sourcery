@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Quick
 import Nimble
@@ -38,6 +38,43 @@ class TypedSpec: QuickSpec {
 
             it("can report actual type name via KVC") {
                 let sut = AssociatedValue(typeName: TypeName("Alias"))
+                expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
+
+                sut.typeName.actualTypeName = TypeName("Int")
+                expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Int")))
+            }
+        }
+        describe("ClosureParameter") {
+            it("can report optional via KVC") {
+                expect(ClosureParameter(typeName: TypeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(ClosureParameter(typeName: TypeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(ClosureParameter(typeName: TypeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect(ClosureParameter(typeName: TypeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+                expect(ClosureParameter(typeName: TypeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+            }
+
+            it("can report tuple type via KVC") {
+                let sut = ClosureParameter(typeName: TypeName("(Int, Int)", tuple: TupleType(name: "(Int, Int)", elements: [])))
+                expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
+            }
+
+            it("can report closure type via KVC") {
+                let sut = ClosureParameter(typeName: TypeName("(Int) -> (Int)"))
+                expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
+            }
+
+            it("can report array type via KVC") {
+                let sut = ClosureParameter(typeName: TypeName("[Int]"))
+                expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
+            }
+
+            it("can report dictionary type via KVC") {
+                let sut = ClosureParameter(typeName: TypeName("[Int: Int]"))
+                expect(sut.value(forKeyPath: "isDictionary") as? Bool).to(equal(true))
+            }
+
+            it("can report actual type name via KVC") {
+                let sut = ClosureParameter(typeName: TypeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(TypeName("Alias")))
 
                 sut.typeName.actualTypeName = TypeName("Int")

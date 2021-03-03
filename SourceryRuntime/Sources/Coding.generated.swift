@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.2.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -52,6 +52,8 @@ extension Attribute: NSCoding {}
 extension BytesRange: NSCoding {}
 
 
+extension ClosureParameter: NSCoding {}
+
 extension ClosureType: NSCoding {}
 
 extension DictionaryType: NSCoding {}
@@ -61,13 +63,19 @@ extension EnumCase: NSCoding {}
 
 extension FileParserResult: NSCoding {}
 
+extension GenericRequirement: NSCoding {}
+
 extension GenericType: NSCoding {}
 
 extension GenericTypeParameter: NSCoding {}
 
+extension Import: NSCoding {}
+
 extension Method: NSCoding {}
 
 extension MethodParameter: NSCoding {}
+
+extension Modifier: NSCoding {}
 
 
 

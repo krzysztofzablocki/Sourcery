@@ -26,9 +26,10 @@ class EnumSpec: QuickSpec {
             }
 
             context("given associated values") {
-                let sut = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA", associatedValues: [AssociatedValue(name: nil, typeName: TypeName("Int"))]), EnumCase(name: "CaseB")])
 
                 it("hasAssociatedValues") {
+                    let sut = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA", associatedValues: [AssociatedValue(name: nil, typeName: TypeName("Int"))]), EnumCase(name: "CaseB")])
+
                     expect(sut.hasAssociatedValues).to(beTrue())
                 }
             }

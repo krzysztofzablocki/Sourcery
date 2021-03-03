@@ -46,7 +46,10 @@ public typealias SourceryVariable = Variable
     public var annotations: [String: NSObject] = [:]
 
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
-    public var attributes: [String: Attribute]
+    public var attributes: AttributeList
+
+    /// Modifiers, i.e. `private`
+    public var modifiers: [SourceryModifier]
 
     /// Whether variable is final or not
     public var isFinal: Bool {
@@ -60,7 +63,7 @@ public typealias SourceryVariable = Variable
 
     /// Reference to type name where the variable is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
-    public let definedInTypeName: TypeName?
+    public internal(set) var definedInTypeName: TypeName?
 
     /// Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
     public var actualDefinedInTypeName: TypeName? {
@@ -72,11 +75,6 @@ public typealias SourceryVariable = Variable
     /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown
     public var definedInType: Type?
 
-    // Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    public var __parserData: Any?
-
     /// :nodoc:
     public init(name: String = "",
                 typeName: TypeName,
@@ -85,7 +83,8 @@ public typealias SourceryVariable = Variable
                 isComputed: Bool = false,
                 isStatic: Bool = false,
                 defaultValue: String? = nil,
-                attributes: [String: Attribute] = [:],
+                attributes: AttributeList = [:],
+                modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 definedInTypeName: TypeName? = nil) {
 
@@ -98,6 +97,7 @@ public typealias SourceryVariable = Variable
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
         self.attributes = attributes
+        self.modifiers = modifiers
         self.annotations = annotations
         self.definedInTypeName = definedInTypeName
     }
@@ -114,7 +114,8 @@ public typealias SourceryVariable = Variable
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
-            guard let attributes: [String: Attribute] = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
         }
@@ -131,6 +132,7 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
         }

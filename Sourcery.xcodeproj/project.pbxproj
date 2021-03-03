@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -43,7 +43,7 @@
 		0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA601E0341400084F702 /* ProtocolSpec.swift */; };
 		097E11F01E05E78600FEB751 /* TypealiasSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */; };
 		097E11F71E0EF63100FEB751 /* MethodSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11F61E0EF63100FEB751 /* MethodSpec.swift */; };
-		098442731E21BF850051E1A1 /* FileParser + AttributesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */; };
+		098442731E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098442721E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift */; };
 		09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */; };
 		09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
@@ -89,9 +89,7 @@
 		B5BCFA0021D161BF009DF652 /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
 		B5BCFA1121D1623D009DF652 /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0721D1623D009DF652 /* Generator.swift */; };
 		B5BCFA1221D1623D009DF652 /* Template.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0821D1623D009DF652 /* Template.swift */; };
-		B5BCFA1321D1623D009DF652 /* FileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0A21D1623D009DF652 /* FileParser.swift */; };
 		B5BCFA1421D1623D009DF652 /* Verifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0C21D1623D009DF652 /* Verifier.swift */; };
-		B5BCFA1521D1623D009DF652 /* Substring.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0D21D1623D009DF652 /* Substring.swift */; };
 		B5BCFA1621D1623D009DF652 /* InlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0E21D1623D009DF652 /* InlineParser.swift */; };
 		B5BCFA1721D1623D009DF652 /* AnnotationsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */; };
 		B5BCFA1821D1623D009DF652 /* Composer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA1021D1623D009DF652 /* Composer.swift */; };
@@ -99,30 +97,60 @@
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
 		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
 		CBA417B6830DC91D7FF24055 /* Pods_Sourcery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39E4BBC6C7A5FE28E65D2364 /* Pods_Sourcery.framework */; };
+		CD0E9A5925E95B4A0055EE8F /* Bridges.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E9A5825E95B4A0055EE8F /* Bridges.swift */; };
+		CD0E9A6125E95BA40055EE8F /* StringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E9A6025E95BA40055EE8F /* StringView.swift */; };
 		CD475D6F1DE9B98B009AD8B0 /* Result in Resources */ = {isa = PBXBuildFile; fileRef = CD475D6E1DE9B98B009AD8B0 /* Result */; };
 		CD53EE661D897C1F00F5886C /* Source in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE651D897C1F00F5886C /* Source */; };
 		CD53EE681D897D2900F5886C /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE671D897D2900F5886C /* Templates */; };
+		CD548AD925EA258C0081BB66 /* Modifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AD825EA258C0081BB66 /* Modifier.swift */; };
+		CD548AED25EA31320081BB66 /* GenericRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AEC25EA31320081BB66 /* GenericRequirement.swift */; };
+		CD548AF525EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AF425EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift */; };
+		CD548AFD25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AFC25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift */; };
+		CD548B0B25EA80D30081BB66 /* GenericType+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548B0A25EA80D30081BB66 /* GenericType+SwiftSyntax.swift */; };
+		CD6008F525E248740025EB14 /* lib_InternalSwiftSyntaxParser.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD6008F425E248740025EB14 /* lib_InternalSwiftSyntaxParser.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		CD801FD225E7E6DC00658CFC /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = CD6568E025E2464D002F1B4F /* SwiftSyntax */; };
+		CD801FF925E7EC6100658CFC /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD801FF825E7EC6000658CFC /* Import.swift */; };
 		CD83A1861EA4C5D7003E0E7D /* Errors in Resources */ = {isa = PBXBuildFile; fileRef = CD83A1851EA4C5D7003E0E7D /* Errors */; };
 		CD9C459D1DFAF76D00161C2C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9C459C1DFAF76D00161C2C /* main.swift */; };
+		CDAB713125E2405E0027D85A /* FileParserSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB713025E2405E0027D85A /* FileParserSyntax.swift */; };
+		CDAB714125E241900027D85A /* FileParserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB714025E241900027D85A /* FileParserType.swift */; };
 		CDAB7CFC231E412C00ED8A32 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB7CFB231E412C00ED8A32 /* Time.swift */; };
 		CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBEC15B1E242B9E0090E881 /* StencilTemplate.swift */; };
 		CDDF5BF82572697200F494EA /* Array+Parallel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D6548CB0B086F0574D1B /* Array+Parallel.swift */; };
 		CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */; };
 		CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */ = {isa = PBXBuildFile; fileRef = CDE812EE1E112CC700F1FF97 /* Performance-Code */; };
 		CDF5E71D1E671B8500664763 /* TypedSpec.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF5E71C1E671B8500664763 /* TypedSpec.generated.swift */; };
+		CDF80DA425E50E5800443FA1 /* Method+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF80DA325E50E5800443FA1 /* Method+SwiftSyntax.swift */; };
+		CDF80DAC25E50EA500443FA1 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF80DAB25E50EA500443FA1 /* Signature.swift */; };
+		CDF80DC825E50F0A00443FA1 /* AccessLevel+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF80DC725E50F0A00443FA1 /* AccessLevel+SwiftSyntax.swift */; };
+		CDF80DE225E51C7E00443FA1 /* Attribute+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D754B5416F3B4595691B /* Attribute+SwiftSyntax.swift */; };
+		CDF80DF025E5435500443FA1 /* MethodParameter+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF80DEF25E5435500443FA1 /* MethodParameter+SwiftSyntax.swift */; };
+		CDF80E2025E62B8C00443FA1 /* Syntax+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF80E1F25E62B8C00443FA1 /* Syntax+Extensions.swift */; };
+		CDF80E2825E62BD900443FA1 /* SyntaxTreeCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF80E2725E62BD900443FA1 /* SyntaxTreeCollector.swift */; };
+		CDF80E4225E62E3C00443FA1 /* Variable+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D93CC178B2CAAEF06EA6 /* Variable+SwiftSyntax.swift */; };
 		E291D00F3B27A346A9ACCDA4 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D5CD7EEDC70CB423C0BE /* Extensions.swift */; };
 		E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D139206162204C48F396 /* CustomMatchers.swift */; };
+		E291D2220D8D415F72E5199F /* EnumCase+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DC79BD4B5129394101B8 /* EnumCase+SwiftSyntax.swift */; };
+		E291D249CFE8AAA6926B2796 /* Struct+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D6E4F91A811F4AC09E9D /* Struct+SwiftSyntax.swift */; };
 		E291D33EA3BB6FC777B3950E /* FolderWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DBAA16ABFED8C04CB42A /* FolderWatcher.swift */; };
+		E291D40C67F4C7EF899EBC0D /* String+TypeInference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D57796261B72161F2329 /* String+TypeInference.swift */; };
 		E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3D222F05C42C246CB73 /* EnumSpec.swift */; };
 		E291D4E250805568DBC33F7E /* TypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF48D4FBBB43C1F7EF8A /* TypeSpec.swift */; };
 		E291D5115BBE9AB32275F38F /* VerifierSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DA3CE0BD58D0BF35138C /* VerifierSpec.swift */; };
 		E291D52FDFF7CF446E239C13 /* TemplateAnnotationsParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DC650271984B35942FE4 /* TemplateAnnotationsParserSpec.swift */; };
+		E291D54CE831297F59146FB7 /* Enum+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DFB06CF9491CF04C6125 /* Enum+SwiftSyntax.swift */; };
+		E291D5981E6D5F747D6E204F /* Modifier+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D6E6BC975B97EED3AE01 /* Modifier+SwiftSyntax.swift */; };
 		E291D7114BA1479EC337A070 /* FileParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */; };
+		E291D751C84D48A80353AE8E /* Protocol+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D97FC3C249E83DD5049D /* Protocol+SwiftSyntax.swift */; };
+		E291D766611C58381F071B46 /* Builders.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DAD251B774ABFA42C12C /* Builders.swift */; };
+		E291D7CB6A5ABF7D51B94819 /* TypeName+Converter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D1500DE07768CDB35A90 /* TypeName+Converter.swift */; };
+		E291D87C3D0BF3E77775E695 /* Class+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D49E56C7250221412DA1 /* Class+SwiftSyntax.swift */; };
 		E291D8BB621560C275813B1F /* SourcerySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */; };
 		E291D8DB06EC63770326562B /* Type+Stencil.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D04C9425FA502B37895D /* Type+Stencil.swift */; };
 		E291D90EC943AC5CBA99899A /* ComposerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */; };
 		E291DA3352C0EDD1EB8DDCB3 /* FileParser + VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D37EF6AA39833209828F /* FileParser + VariableSpec.swift */; };
 		E291DC5F2343BF3DE3334986 /* Stubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D2450093BB4B3A9ADFEC /* Stubs.swift */; };
+		E291DC64473CC35BE4B5B1DE /* Subscript+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DC171BE75A37B36B83BE /* Subscript+SwiftSyntax.swift */; };
 		E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DB6A95BAECDB6E978A76 /* Sourcery.swift */; };
 		E291DCD43D41B7F8D7AAF7B9 /* DiffableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D30C065089B348EE7C42 /* DiffableSpec.swift */; };
 		E291DE1CB3B72BAA22DEDEDA /* StencilTemplateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D0D4A5AF091CD15550FD /* StencilTemplateSpec.swift */; };
@@ -215,6 +243,16 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD6008F325E248600025EB14 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CD6008F525E248740025EB14 /* lib_InternalSwiftSyntaxParser.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -263,7 +301,7 @@
 		097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypealiasSpec.swift; sourceTree = "<group>"; };
 		097E11F61E0EF63100FEB751 /* MethodSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MethodSpec.swift; sourceTree = "<group>"; };
 		097E11F81E0F01BD00FEB751 /* Diffable.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Diffable.stencil; sourceTree = "<group>"; };
-		098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + AttributesSpec.swift"; sourceTree = "<group>"; };
+		098442721E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + AttributesModifierSpec.swift"; sourceTree = "<group>"; };
 		09B1DD381E219D95009228EE /* TypedSpec.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TypedSpec.stencil; sourceTree = "<group>"; };
 		09C61FA31E760FF2005EA58A /* Xcode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Xcode.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Sourcery-gbqvopozrlnehjdzvxfvrvqwyvsg/Build/Products/Debug/Xcode.framework"; sourceTree = "<group>"; };
 		09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Xcode+Extensions.swift"; sourceTree = "<group>"; };
@@ -302,9 +340,7 @@
 		B5BCF9F621D161B5009DF652 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5BCFA0721D1623D009DF652 /* Generator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
 		B5BCFA0821D1623D009DF652 /* Template.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Template.swift; sourceTree = "<group>"; };
-		B5BCFA0A21D1623D009DF652 /* FileParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileParser.swift; sourceTree = "<group>"; };
 		B5BCFA0C21D1623D009DF652 /* Verifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Verifier.swift; sourceTree = "<group>"; };
-		B5BCFA0D21D1623D009DF652 /* Substring.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Substring.swift; sourceTree = "<group>"; };
 		B5BCFA0E21D1623D009DF652 /* InlineParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InlineParser.swift; sourceTree = "<group>"; };
 		B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationsParser.swift; sourceTree = "<group>"; };
 		B5BCFA1021D1623D009DF652 /* Composer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Composer.swift; sourceTree = "<group>"; };
@@ -318,15 +354,26 @@
 		C894A1B61E19381A0098327C /* Coding.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Coding.stencil; sourceTree = "<group>"; };
 		CB592E6C7511363520AB29E8 /* Pods_SourceryFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC54F603FD22AD275A3E7B3F /* Pods_SourceryUtils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryUtils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD0E9A5825E95B4A0055EE8F /* Bridges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridges.swift; sourceTree = "<group>"; };
+		CD0E9A6025E95BA40055EE8F /* StringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringView.swift; sourceTree = "<group>"; };
 		CD475D6E1DE9B98B009AD8B0 /* Result */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Result; sourceTree = "<group>"; };
 		CD53EE651D897C1F00F5886C /* Source */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Source; sourceTree = "<group>"; };
 		CD53EE671D897D2900F5886C /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
+		CD548AD825EA258C0081BB66 /* Modifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Modifier.swift; path = SourceryRuntime/Sources/Modifier.swift; sourceTree = SOURCE_ROOT; };
+		CD548AEC25EA31320081BB66 /* GenericRequirement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenericRequirement.swift; path = SourceryRuntime/Sources/GenericRequirement.swift; sourceTree = SOURCE_ROOT; };
+		CD548AF425EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericRequirement+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		CD548AFC25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TypeName+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		CD548B0A25EA80D30081BB66 /* GenericType+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericType+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		CD6008F425E248740025EB14 /* lib_InternalSwiftSyntaxParser.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = lib_InternalSwiftSyntaxParser.dylib; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib; sourceTree = DEVELOPER_DIR; };
 		CD754C8B1D853F000082B512 /* Sourcery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sourcery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD754C951D853F000082B512 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD754C9A1D853F000082B512 /* SourceryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SourceryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD754CA01D853F000082B512 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD801FF825E7EC6000658CFC /* Import.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Import.swift; path = SourceryRuntime/Sources/Import.swift; sourceTree = SOURCE_ROOT; };
 		CD83A1851EA4C5D7003E0E7D /* Errors */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Errors; sourceTree = "<group>"; };
 		CD9C459C1DFAF76D00161C2C /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		CDAB713025E2405E0027D85A /* FileParserSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileParserSyntax.swift; sourceTree = "<group>"; };
+		CDAB714025E241900027D85A /* FileParserType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileParserType.swift; sourceTree = "<group>"; };
 		CDAB7CFB231E412C00ED8A32 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		CDBD141D1DFFC2CC00FF9F21 /* Description.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Description.stencil; sourceTree = "<group>"; };
 		CDBD141E1DFFC2CC00FF9F21 /* Equality.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Equality.stencil; sourceTree = "<group>"; };
@@ -335,26 +382,44 @@
 		CDE812EE1E112CC700F1FF97 /* Performance-Code */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Performance-Code"; sourceTree = "<group>"; };
 		CDF5E71C1E671B8500664763 /* TypedSpec.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedSpec.generated.swift; sourceTree = "<group>"; };
 		CDF68B731E1C137E007C5396 /* Typed.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Typed.stencil; sourceTree = "<group>"; };
+		CDF80DA325E50E5800443FA1 /* Method+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Method+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		CDF80DAB25E50EA500443FA1 /* Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
+		CDF80DC725E50F0A00443FA1 /* AccessLevel+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccessLevel+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		CDF80DEF25E5435500443FA1 /* MethodParameter+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MethodParameter+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		CDF80E1F25E62B8C00443FA1 /* Syntax+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Syntax+Extensions.swift"; sourceTree = "<group>"; };
+		CDF80E2725E62BD900443FA1 /* SyntaxTreeCollector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxTreeCollector.swift; sourceTree = "<group>"; };
 		D0C82AE0D8342A0606F1E8CE /* Pods_SourceryJS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryJS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E291D04C9425FA502B37895D /* Type+Stencil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Type+Stencil.swift"; sourceTree = "<group>"; };
 		E291D0D4A5AF091CD15550FD /* StencilTemplateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StencilTemplateSpec.swift; sourceTree = "<group>"; };
 		E291D139206162204C48F396 /* CustomMatchers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMatchers.swift; sourceTree = "<group>"; };
+		E291D1500DE07768CDB35A90 /* TypeName+Converter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TypeName+Converter.swift"; sourceTree = "<group>"; };
 		E291D2450093BB4B3A9ADFEC /* Stubs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stubs.swift; sourceTree = "<group>"; };
 		E291D30C065089B348EE7C42 /* DiffableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiffableSpec.swift; sourceTree = "<group>"; };
 		E291D37EF6AA39833209828F /* FileParser + VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + VariableSpec.swift"; sourceTree = "<group>"; };
 		E291D3D222F05C42C246CB73 /* EnumSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumSpec.swift; sourceTree = "<group>"; };
+		E291D49E56C7250221412DA1 /* Class+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Class+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		E291D57796261B72161F2329 /* String+TypeInference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+TypeInference.swift"; sourceTree = "<group>"; };
 		E291D5CD7EEDC70CB423C0BE /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E291D6548CB0B086F0574D1B /* Array+Parallel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Parallel.swift"; sourceTree = "<group>"; };
+		E291D6E4F91A811F4AC09E9D /* Struct+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Struct+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		E291D6E6BC975B97EED3AE01 /* Modifier+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Modifier+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		E291D754B5416F3B4595691B /* Attribute+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attribute+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
+		E291D93CC178B2CAAEF06EA6 /* Variable+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Variable+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		E291D97FC3C249E83DD5049D /* Protocol+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Protocol+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291DA3CE0BD58D0BF35138C /* VerifierSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerifierSpec.swift; sourceTree = "<group>"; };
+		E291DAD251B774ABFA42C12C /* Builders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Builders.swift; sourceTree = "<group>"; };
 		E291DB1241856B9CFAAA25E7 /* SourcerySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourcerySpec.swift; sourceTree = "<group>"; };
 		E291DB6A95BAECDB6E978A76 /* Sourcery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sourcery.swift; sourceTree = "<group>"; };
 		E291DBAA16ABFED8C04CB42A /* FolderWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FolderWatcher.swift; sourceTree = "<group>"; };
+		E291DC171BE75A37B36B83BE /* Subscript+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Subscript+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291DC650271984B35942FE4 /* TemplateAnnotationsParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateAnnotationsParserSpec.swift; sourceTree = "<group>"; };
+		E291DC79BD4B5129394101B8 /* EnumCase+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EnumCase+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291DCF0A8E779EC67C9A37E /* AnnotationsParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationsParserSpec.swift; sourceTree = "<group>"; };
 		E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileParserSpec.swift; sourceTree = "<group>"; };
 		E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorSpec.swift; sourceTree = "<group>"; };
 		E291DF48D4FBBB43C1F7EF8A /* TypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeSpec.swift; sourceTree = "<group>"; };
+		E291DFB06CF9491CF04C6125 /* Enum+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Enum+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposerSpec.swift; sourceTree = "<group>"; };
 		F1A3DAD7FDF3830E52EF0509 /* Pods-SourceryFramework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.release.xcconfig"; path = "Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.release.xcconfig"; sourceTree = "<group>"; };
 		F3C3A7B6CE0BCA036E0835CE /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
@@ -412,6 +477,7 @@
 				47635CB021DA342600B2D5A1 /* SourceryUtils.framework in Frameworks */,
 				B5BCFA0021D161BF009DF652 /* SourceryRuntime.framework in Frameworks */,
 				60CC7E378065D25B8D555BCF /* Pods_SourceryFramework.framework in Frameworks */,
+				CD801FD225E7E6DC00658CFC /* SwiftSyntax in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,12 +564,14 @@
 		09334E221EB914420092806F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				CD801FF825E7EC6000658CFC /* Import.swift */,
 				09334E621EB916040092806F /* AccessLevel.swift */,
 				09334E631EB916040092806F /* Annotations.swift */,
 				F63E56CD24BCB13700715CD1 /* AssociatedType.swift */,
 				524A2EA61FFD3C40001CD8F9 /* BytesRange.swift */,
 				6D31FC5E1F0C2DE4000E77E3 /* Definition.swift */,
 				09334E641EB916040092806F /* Attribute.swift */,
+				CD548AD825EA258C0081BB66 /* Modifier.swift */,
 				09334E651EB916040092806F /* Class.swift */,
 				09334E661EB916040092806F /* Diffable.swift */,
 				09334E671EB916040092806F /* Enum.swift */,
@@ -519,6 +587,7 @@
 				09334E701EB916040092806F /* TypeName.swift */,
 				09334E711EB916040092806F /* Variable.swift */,
 				A65B189C23F3F05D0023F4A9 /* ProtocolComposition.swift */,
+				CD548AEC25EA31320081BB66 /* GenericRequirement.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -657,8 +726,11 @@
 			isa = PBXGroup;
 			children = (
 				B5BCFA0B21D1623D009DF652 /* Utils */,
-				B5BCFA0A21D1623D009DF652 /* FileParser.swift */,
+				CDF80D9625E50E4900443FA1 /* SwiftSyntax */,
+				CDAB714025E241900027D85A /* FileParserType.swift */,
 				B5BCFA1021D1623D009DF652 /* Composer.swift */,
+				E291D1500DE07768CDB35A90 /* TypeName+Converter.swift */,
+				E291D57796261B72161F2329 /* String+TypeInference.swift */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -667,10 +739,11 @@
 			isa = PBXGroup;
 			children = (
 				B5BCFA0C21D1623D009DF652 /* Verifier.swift */,
-				B5BCFA0D21D1623D009DF652 /* Substring.swift */,
 				B5BCFA0E21D1623D009DF652 /* InlineParser.swift */,
 				B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */,
 				CDAB7CFB231E412C00ED8A32 /* Time.swift */,
+				CD0E9A5825E95B4A0055EE8F /* Bridges.swift */,
+				CD0E9A6025E95BA40055EE8F /* StringView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -705,6 +778,7 @@
 		CD754C821D853F000082B512 = {
 			isa = PBXGroup;
 			children = (
+				CD6008F425E248740025EB14 /* lib_InternalSwiftSyntaxParser.dylib */,
 				0054C4FA224964BA007F9AA7 /* Package.swift */,
 				CD754C8D1D853F000082B512 /* Sourcery */,
 				CD754C9D1D853F000082B512 /* SourceryTests */,
@@ -783,11 +857,46 @@
 			path = Templates;
 			sourceTree = "<group>";
 		};
+		CDF80D9625E50E4900443FA1 /* SwiftSyntax */ = {
+			isa = PBXGroup;
+			children = (
+				CDF80E0C25E62B6600443FA1 /* AST */,
+				CDF80E1F25E62B8C00443FA1 /* Syntax+Extensions.swift */,
+				CDF80E2725E62BD900443FA1 /* SyntaxTreeCollector.swift */,
+				CDAB713025E2405E0027D85A /* FileParserSyntax.swift */,
+			);
+			path = SwiftSyntax;
+			sourceTree = "<group>";
+		};
+		CDF80E0C25E62B6600443FA1 /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				CD548B0A25EA80D30081BB66 /* GenericType+SwiftSyntax.swift */,
+				CD548AFC25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift */,
+				CDF80DAB25E50EA500443FA1 /* Signature.swift */,
+				CDF80DC725E50F0A00443FA1 /* AccessLevel+SwiftSyntax.swift */,
+				CDF80DEF25E5435500443FA1 /* MethodParameter+SwiftSyntax.swift */,
+				CDF80DA325E50E5800443FA1 /* Method+SwiftSyntax.swift */,
+				E291D754B5416F3B4595691B /* Attribute+SwiftSyntax.swift */,
+				E291D93CC178B2CAAEF06EA6 /* Variable+SwiftSyntax.swift */,
+				E291D6E4F91A811F4AC09E9D /* Struct+SwiftSyntax.swift */,
+				E291D49E56C7250221412DA1 /* Class+SwiftSyntax.swift */,
+				E291DFB06CF9491CF04C6125 /* Enum+SwiftSyntax.swift */,
+				E291DC79BD4B5129394101B8 /* EnumCase+SwiftSyntax.swift */,
+				E291D97FC3C249E83DD5049D /* Protocol+SwiftSyntax.swift */,
+				E291DC171BE75A37B36B83BE /* Subscript+SwiftSyntax.swift */,
+				E291D6E6BC975B97EED3AE01 /* Modifier+SwiftSyntax.swift */,
+				CD548AF425EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
 		E291D0AE58E620796FB2B57D /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				E291D139206162204C48F396 /* CustomMatchers.swift */,
 				E291D5CD7EEDC70CB423C0BE /* Extensions.swift */,
+				E291DAD251B774ABFA42C12C /* Builders.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -800,7 +909,7 @@
 				E291DCF0A8E779EC67C9A37E /* AnnotationsParserSpec.swift */,
 				E291D37EF6AA39833209828F /* FileParser + VariableSpec.swift */,
 				F63E602724BCF57E00715CD1 /* FileParser + AssociatedTypeSpec.swift */,
-				098442721E21BF850051E1A1 /* FileParser + AttributesSpec.swift */,
+				098442721E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift */,
 				E291DC650271984B35942FE4 /* TemplateAnnotationsParserSpec.swift */,
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
 				6359E6641FE409250015AF8F /* FileParser+SubscriptsSpec.swift */,
@@ -1053,6 +1162,7 @@
 			buildPhases = (
 				0C9787A07015EDEDC16F5120 /* [CP] Check Pods Manifest.lock */,
 				B5BCF9EE21D161B5009DF652 /* Headers */,
+				CD6008F325E248600025EB14 /* CopyFiles */,
 				B5BCF9EF21D161B5009DF652 /* Sources */,
 				B5BCF9F021D161B5009DF652 /* Frameworks */,
 				B5BCF9F121D161B5009DF652 /* Resources */,
@@ -1063,6 +1173,10 @@
 				47635CAD21DA33A200B2D5A1 /* PBXTargetDependency */,
 			);
 			name = SourceryFramework;
+			packageProductDependencies = (
+				CD6568E025E2464D002F1B4F /* SwiftSyntax */,
+				CD6568E025E2464D002F1B4F /* SwiftSyntax */,
+			);
 			productName = SourceryFramework;
 			productReference = B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1172,6 +1286,10 @@
 				Base,
 			);
 			mainGroup = CD754C821D853F000082B512;
+			packageReferences = (
+				CDAB712625E240410027D85A /* XCRemoteSwiftPackageReference "swift-syntax" */,
+				CDAB712625E240410027D85A /* XCRemoteSwiftPackageReference "swift-syntax" */,
+			);
 			productRefGroup = CD754C8C1D853F000082B512 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1343,29 +1461,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework",
-				"${BUILT_PRODUCTS_DIR}/Commander/Commander.framework",
-				"${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework",
-				"${BUILT_PRODUCTS_DIR}/SWXMLHash/SWXMLHash.framework",
-				"${BUILT_PRODUCTS_DIR}/SourceKittenFramework/SourceKittenFramework.framework",
-				"${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework",
-				"${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Yams/Yams.framework",
-				"${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AEXML.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Commander.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PathKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SWXMLHash.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SourceKittenFramework.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stencil.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StencilSwiftKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Yams.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XcodeProj.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1483,15 +1584,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
-				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1556,6 +1654,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09334E761EB916040092806F /* Diffable.swift in Sources */,
+				CD548AED25EA31320081BB66 /* GenericRequirement.swift in Sources */,
 				09334E751EB916040092806F /* Class.swift in Sources */,
 				09334E831EB916340092806F /* Log.swift in Sources */,
 				09334E771EB916040092806F /* Enum.swift in Sources */,
@@ -1578,7 +1677,9 @@
 				09334E5F1EB915E00092806F /* JSExport.generated.swift in Sources */,
 				09334E601EB915E00092806F /* Typed.generated.swift in Sources */,
 				09334E7E1EB916040092806F /* Type.swift in Sources */,
+				CD548AD925EA258C0081BB66 /* Modifier.swift in Sources */,
 				09334E851EB9163F0092806F /* Extensions.swift in Sources */,
+				CD801FF925E7EC6100658CFC /* Import.swift in Sources */,
 				6D31FC5F1F0C2DE4000E77E3 /* Definition.swift in Sources */,
 				09334E781EB916040092806F /* FileParserResult.swift in Sources */,
 				09334E5C1EB915E00092806F /* Description.generated.swift in Sources */,
@@ -1591,15 +1692,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD0E9A5925E95B4A0055EE8F /* Bridges.swift in Sources */,
+				CD548AFD25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift in Sources */,
 				B5BCFA1721D1623D009DF652 /* AnnotationsParser.swift in Sources */,
+				CDAB713125E2405E0027D85A /* FileParserSyntax.swift in Sources */,
+				CDF80E4225E62E3C00443FA1 /* Variable+SwiftSyntax.swift in Sources */,
 				B5BCFA1821D1623D009DF652 /* Composer.swift in Sources */,
 				B5BCFA1121D1623D009DF652 /* Generator.swift in Sources */,
+				CDF80DAC25E50EA500443FA1 /* Signature.swift in Sources */,
+				CDF80E2825E62BD900443FA1 /* SyntaxTreeCollector.swift in Sources */,
+				CDF80DF025E5435500443FA1 /* MethodParameter+SwiftSyntax.swift in Sources */,
 				B5BCFA1421D1623D009DF652 /* Verifier.swift in Sources */,
-				B5BCFA1521D1623D009DF652 /* Substring.swift in Sources */,
+				CDAB714125E241900027D85A /* FileParserType.swift in Sources */,
+				CDF80DE225E51C7E00443FA1 /* Attribute+SwiftSyntax.swift in Sources */,
+				CDF80E2025E62B8C00443FA1 /* Syntax+Extensions.swift in Sources */,
 				B5BCFA1621D1623D009DF652 /* InlineParser.swift in Sources */,
 				CDAB7CFC231E412C00ED8A32 /* Time.swift in Sources */,
-				B5BCFA1321D1623D009DF652 /* FileParser.swift in Sources */,
+				CD548B0B25EA80D30081BB66 /* GenericType+SwiftSyntax.swift in Sources */,
 				B5BCFA1221D1623D009DF652 /* Template.swift in Sources */,
+				CDF80DC825E50F0A00443FA1 /* AccessLevel+SwiftSyntax.swift in Sources */,
+				CDF80DA425E50E5800443FA1 /* Method+SwiftSyntax.swift in Sources */,
+				CD0E9A6125E95BA40055EE8F /* StringView.swift in Sources */,
+				E291D249CFE8AAA6926B2796 /* Struct+SwiftSyntax.swift in Sources */,
+				E291D87C3D0BF3E77775E695 /* Class+SwiftSyntax.swift in Sources */,
+				E291D54CE831297F59146FB7 /* Enum+SwiftSyntax.swift in Sources */,
+				E291D2220D8D415F72E5199F /* EnumCase+SwiftSyntax.swift in Sources */,
+				E291D751C84D48A80353AE8E /* Protocol+SwiftSyntax.swift in Sources */,
+				E291DC64473CC35BE4B5B1DE /* Subscript+SwiftSyntax.swift in Sources */,
+				E291D5981E6D5F747D6E204F /* Modifier+SwiftSyntax.swift in Sources */,
+				CD548AF525EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift in Sources */,
+				E291D7CB6A5ABF7D51B94819 /* TypeName+Converter.swift in Sources */,
+				E291D40C67F4C7EF899EBC0D /* String+TypeInference.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1638,7 +1761,7 @@
 				09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */,
 				E291DC5F2343BF3DE3334986 /* Stubs.swift in Sources */,
 				097E11F01E05E78600FEB751 /* TypealiasSpec.swift in Sources */,
-				098442731E21BF850051E1A1 /* FileParser + AttributesSpec.swift in Sources */,
+				098442731E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift in Sources */,
 				C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */,
 				E291D1C26BD65C6E109966AF /* CustomMatchers.swift in Sources */,
 				E291DCD43D41B7F8D7AAF7B9 /* DiffableSpec.swift in Sources */,
@@ -1654,6 +1777,7 @@
 				E291D5115BBE9AB32275F38F /* VerifierSpec.swift in Sources */,
 				6359E6651FE409250015AF8F /* FileParser+SubscriptsSpec.swift in Sources */,
 				6393BC92201B50910044E8CC /* JavaScriptTemplateSpecs.swift in Sources */,
+				E291D766611C58381F071B46 /* Builders.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1730,7 +1854,11 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = TryCatch/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.TryCatch;
@@ -1763,7 +1891,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = TryCatch/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.TryCatch;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -1796,7 +1928,11 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/SourceryUtils/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryUtils;
@@ -1829,7 +1965,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "$(SRCROOT)/SourceryUtils/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryUtils;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -1861,7 +2001,11 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = SourcerySwift/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourcerySwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1893,7 +2037,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SourcerySwift/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourcerySwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1923,7 +2071,11 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = SourceryJS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryJS;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1953,7 +2105,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SourceryJS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryJS;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1977,7 +2133,11 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "SourceryRuntime/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixel.SourceryRuntime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2003,7 +2163,11 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "SourceryRuntime/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixel.SourceryRuntime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2034,7 +2198,11 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = SourceryFramework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryFramework;
@@ -2067,7 +2235,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SourceryFramework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -2128,7 +2300,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
@@ -2183,11 +2355,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -2206,7 +2379,10 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Sourcery/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.Sourcery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = build;
@@ -2228,7 +2404,10 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Sourcery/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.Sourcery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = build;
@@ -2244,7 +2423,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SourceryTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sourcery.app/Contents/MacOS/Sourcery";
@@ -2261,7 +2444,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SourceryTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sourcery.app/Contents/MacOS/Sourcery";
@@ -2353,6 +2540,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CDAB712625E240410027D85A /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-syntax.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.50300.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CD6568E025E2464D002F1B4F /* SwiftSyntax */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDAB712625E240410027D85A /* XCRemoteSwiftPackageReference "swift-syntax" */;
+			productName = SwiftSyntax;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CD754C831D853F000082B512 /* Project object */;
 }

@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import PathKit
-import SourceKittenFramework
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime
@@ -12,40 +11,51 @@ class FileParserSubscriptsSpec: QuickSpec {
         describe("FileParser") {
             describe("parseSubscript") {
                 func parse(_ code: String) -> [Type] {
-                    guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
+                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
                     return Composer.uniqueTypesAndFunctions(parserResult).types
                 }
 
                 it("extracts subscripts properly") {
-                    let subscripts = parse("class Foo { final private subscript(\n_ index: Int, a: String\n) -> Int { get { return 0 } set { do {} } }; public private(set) subscript(b b: Int) -> String { get { return \"\"} } set { } } }").first?.subscripts
+                    let subscripts = parse("""
+                                           class Foo {
+                                               final private subscript(_ index: Int, a: String) -> Int {
+                                                   get { return 0 }
+                                                   set { do {} }
+                                               }
+                                               public private(set) subscript(b b: Int) -> String {
+                                                   get { return \"\"}
+                                                   set { }
+                                               }
+                                           }
+                                           """).first?.subscripts
 
-                    expect(subscripts?[0]).to(equal(
+                    expect(subscripts?.first).to(equal(
                         Subscript(
                             parameters: [
                                 MethodParameter(argumentLabel: nil, name: "index", typeName: TypeName("Int")),
-                                MethodParameter(argumentLabel: nil, name: "a", typeName: TypeName("String"))
+                                MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("String"))
                             ],
                             returnTypeName: TypeName("Int"),
                             accessLevel: (.private, .private),
-                            attributes: [
-                                "final": Attribute(name: "final", description: "final"),
-                                "private": Attribute(name: "private", description: "private")
+                            modifiers: [
+                                Modifier(name: "final"),
+                                Modifier(name: "private")
                             ],
                             annotations: [:],
                             definedInTypeName: TypeName("Foo")
                         )
                     ))
 
-                    expect(subscripts?[1]).to(equal(
+                    expect(subscripts?.last).to(equal(
                         Subscript(
                             parameters: [
                                 MethodParameter(argumentLabel: "b", name: "b", typeName: TypeName("Int"))
                             ],
                             returnTypeName: TypeName("String"),
                             accessLevel: (.public, .private),
-                            attributes: [
-                                "public": Attribute(name: "public", description: "public"),
-                                "private": Attribute(name: "private", arguments: ["set": NSNumber(value: true)], description: "private(set)")
+                            modifiers: [
+                                Modifier(name: "public"),
+                                Modifier(name: "private", detail: "set")
                             ],
                             annotations: [:],
                             definedInTypeName: TypeName("Foo")

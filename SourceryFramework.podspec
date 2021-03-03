@@ -22,5 +22,4 @@ Pod::Spec.new do |s|
   
   s.dependency 'SourceryUtils'
   s.dependency 'SourceryRuntime'
-  s.dependency 'SourceKittenFramework', '~> 0.30.1'
 end

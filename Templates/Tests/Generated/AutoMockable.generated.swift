@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -165,7 +165,7 @@ class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
         return getOptionalCallsCount > 0
     }
     var getOptionalReturnValue: (() -> Void)?
-    var getOptionalClosure: (() -> () -> Void?)?
+    var getOptionalClosure: (() -> (() -> Void)?)?
 
     func getOptional() -> (() -> Void)? {
         getOptionalCallsCount += 1
@@ -185,8 +185,7 @@ class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
     var startCarOfReceivedInvocations: [(car: String, model: String)] = []
     var startCarOfClosure: ((String, String) -> Void)?
 
-    func start(car: String,
-               of model: String) {
+    func start(car: String, of model: String) {
         startCarOfCallsCount += 1
         startCarOfReceivedArguments = (car: car, model: model)
         startCarOfReceivedInvocations.append((car: car, model: model))

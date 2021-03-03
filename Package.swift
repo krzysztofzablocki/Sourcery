@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.3
 
 import PackageDescription
 
@@ -15,12 +15,15 @@ let package = Package(
         .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
+        .package(name: "Yams", url: "https://github.com/jpsim/Yams.git", .exact("4.0.0")),
+        .package(name: "Commander", url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(url: "https://github.com/kylef/PathKit.git", .exact("1.0.0")),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", .exact("0.30.1")),
-        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.8.0")),
-        .package(url: "https://github.com/tuist/xcodeproj", .exact("7.18.0")),
+        .package(name: "PathKit", url: "https://github.com/kylef/PathKit.git", .exact("1.0.0")),
+        .package(name: "StencilSwiftKit", url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.8.0")),
+        .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .exact("7.18.0")),
+        .package(name: "SwiftSyntax",
+                 url: "https://github.com/apple/swift-syntax.git",
+                 .exact("0.50300.0"))
     ],
     targets: [
         .target(name: "Sourcery", dependencies: [
@@ -30,8 +33,9 @@ let package = Package(
             "SourcerySwift",
             "Commander",
             "PathKit",
-            "SourceKittenFramework",
+            "Yams",
             "StencilSwiftKit",
+            "SwiftSyntax",
             "XcodeProj",
             "TryCatch",
         ]),
@@ -41,7 +45,7 @@ let package = Package(
         ]),
         .target(name: "SourceryFramework", dependencies: [
           "PathKit",
-          "SourceKittenFramework",
+          "SwiftSyntax",
           "SourceryUtils",
           "SourceryRuntime"
         ]),

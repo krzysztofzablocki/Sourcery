@@ -158,9 +158,10 @@ class SwiftTemplateTests: QuickSpec {
             }
 
             context("with existing cache") {
-                expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
-
-                expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
+                beforeEach {
+                    expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                    expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
+                }
 
                 context("and missing build dir") {
                     guard let buildDir = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate").map({ Path($0.path) }) else {

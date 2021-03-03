@@ -1,6 +1,35 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+## Internal changes
+- Sourcery is now using SwiftSyntax not SourceKit
+- Performance is significantly improved
+- Memory usage for common case (cached) is drastically lowered
+- If you want to use Sourcery as framework you'll need to use SPM integration since SwiftSyntax doesn't have Podspec
+
+## Configuration changes
+- added `logAST` that will cause AST warnings and errors to be logged, default `false`
+- added `logBenchmarks` that will cause benchmark informations to be logged, default `false`
+
+## AST Data Changes
+- initializers are now considered as static method not instance
+- typealiases and protocol compositions now provide proper `accessLevel`
+- if a tuple arguments are unnamed their `name` will be automatically set to index
+- default `accessLevel` when not provided in code is internal everywhere
+- Added `modifiers` to everything that had `attributes` and split them across, in sync with Swift naming
+- block annotations will be applied to associated values that are inside them
+- extensions of unknown types will not have the definition module name added in their `globalName` property. (You can still access it via `module`)
+- if you had some weird formatting around syntax declarations (newlines in-between etc) the AST data should be cleaned up rather than trying to reproduce that style
+- Imports are now proper types, with additional information
+- Protocol now has `genericRequirements`, it will also inherit `associatedType` from it's parent if it's not present
+- Single value tuples will be automatically unwrapped when parsing
+
+### Attributes
+- Attributes are now of stored in dictionary of arrays `[String: [Attribute]]` since you can have multiple attributes of the same name e.g. `@available`
+- Name when not named will be using index same as associated value do e.g. objc(name) will have `0: name` as argument 
+- spaces will no longer be replaced with `_`
+
 ## 1.2.1
 
 ## Internal Changes

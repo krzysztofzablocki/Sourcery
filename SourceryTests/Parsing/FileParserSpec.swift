@@ -1,14 +1,9 @@
 import Quick
 import Nimble
 import PathKit
-import SourceKittenFramework
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime
-
-private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
-}
 
 class FileParserSpec: QuickSpec {
     // swiftlint:disable function_body_length
@@ -16,7 +11,7 @@ class FileParserSpec: QuickSpec {
         describe("Parser") {
             describe("parse") {
                 func parse(_ code: String) -> [Type] {
-                    guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
+                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
                     return Composer.uniqueTypesAndFunctions(parserResult).types
                 }
 
@@ -30,6 +25,23 @@ class FileParserSpec: QuickSpec {
                 }
 
                 context("given it has sourcery annotations") {
+                    it("extract annotations from extensions properly") {
+                        let result = parse(
+                            """
+                            // sourcery: forceMockPublisher
+                            public extension AnyPublisher {}
+                            """
+                        )
+
+                        let annotations: [String: NSObject] = [
+                                "forceMockPublisher": NSNumber(value: true)
+                        ]
+
+                        expect(result.first?.annotations).to(equal(
+                            annotations
+                        ))
+                    }
+
                     it("extracts annotation block") {
                         let annotations = [
                                 ["skipEquality": NSNumber(value: true)],
@@ -40,14 +52,16 @@ class FileParserSpec: QuickSpec {
                                 .map { Variable(name: "property\($0)", typeName: TypeName("Int"), annotations: annotations[$0 - 1], definedInTypeName: TypeName("Foo")) }
                         let expectedType = Class(name: "Foo", variables: expectedVariables, annotations: ["skipEquality": NSNumber(value: true)])
 
-                        let result = parse("// sourcery:begin: skipEquality\n\n\n\n" +
-                                "class Foo {\n" +
-                                "  var property1: Int\n\n\n" +
-                                " // sourcery: extraAnnotation = 2\n" +
-                                "  var property2: Int\n\n" +
-                                "  // sourcery:end\n" +
-                                "  var property3: Int\n" +
-                                "}")
+                        let result = parse("""
+                                            // sourcery:begin: skipEquality
+                                            class Foo {
+                                                var property1: Int
+                                                // sourcery: extraAnnotation = 2
+                                                var property2: Int
+                                                // sourcery:end
+                                                var property3: Int
+                                            }
+                                           """)
                         expect(result).to(equal([expectedType]))
                     }
 
@@ -70,7 +84,7 @@ class FileParserSpec: QuickSpec {
                             "  // sourcery:end\n" +
                             "  var property3: Int\n" +
                             "}")
-                        expect(result).to(equal([expectedType]))
+                        expect(result.first).to(equal(expectedType))
                     }
                 }
 
@@ -81,6 +95,28 @@ class FileParserSpec: QuickSpec {
                                 .to(equal([
                                         Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [])
                                 ]))
+                    }
+
+                    it("extracts import correctly") {
+                        let expectedStruct = Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [])
+                        expectedStruct.imports = [
+                            Import(path: "SimpleModule"),
+                            Import(path: "SpecificModule.ClassName")
+                        ]
+
+                        expect(parse("""
+                                     import SimpleModule
+                                     import SpecificModule.ClassName
+                                     struct Foo {}
+                                     """).first)
+                                .to(equal(expectedStruct))
+                    }
+
+                    it("extracts properly with access information") {
+                        expect(parse("public struct Foo { }"))
+                          .to(equal([
+                                        Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [], modifiers: [Modifier(name: "public")])
+                                    ]))
                     }
 
                     it("extracts generic struct properly") {
@@ -95,6 +131,24 @@ class FileParserSpec: QuickSpec {
                                 .to(equal([
                                     Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))])
                                           ]))
+                    }
+
+                    it("extracts instance variables with custom accessors properly") {
+                        expect(parse("struct Foo { public private(set) var x: Int }"))
+                          .to(equal([
+                                        Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
+                                                Variable(
+                                                    name: "x",
+                                                    typeName: TypeName("Int"),
+                                                    accessLevel: (read: .public, write: .private),
+                                                    isComputed: false,
+                                                    modifiers: [
+                                                        Modifier(name: "public"),
+                                                        Modifier(name: "private", detail: "set")
+                                                    ],
+                                                    definedInTypeName: TypeName("Foo"))
+                                        ])
+                                    ]))
                     }
 
                     it("extracts multi-line instance variables definitions properly") {
@@ -167,12 +221,38 @@ class FileParserSpec: QuickSpec {
                         ]))
                     }
 
+                    it("extracts computed variables properly") {
+                        expect(parse("struct Foo { var x: Int { return 2 } }"))
+                          .to(equal([
+                                        Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
+                                            Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: false, definedInTypeName: TypeName("Foo"))
+                                        ])
+                                    ]))
+                    }
+
                     it("extracts class variables properly") {
                         expect(parse("struct Foo { static var x: Int { return 2 }; class var y: Int = 0 }"))
                                 .to(equal([
                                     Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [
-                                        Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isStatic: true, definedInTypeName: TypeName("Foo")),
-                                        Variable(name: "y", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, isStatic: true, defaultValue: "0", definedInTypeName: TypeName("Foo"))
+                                        Variable(name: "x",
+                                                 typeName: TypeName("Int"),
+                                                 accessLevel: (read: .internal, write: .none),
+                                                 isComputed: true,
+                                                 isStatic: true,
+                                                 modifiers: [
+                                                    Modifier(name: "static")
+                                                 ],
+                                                 definedInTypeName: TypeName("Foo")),
+                                        Variable(name: "y",
+                                                 typeName: TypeName("Int"),
+                                                 accessLevel: (read: .internal, write: .internal),
+                                                 isComputed: false,
+                                                 isStatic: true,
+                                                 defaultValue: "0",
+                                                 modifiers: [
+                                                    Modifier(name: "class")
+                                                 ],
+                                                 definedInTypeName: TypeName("Foo"))
                                         ])
                                     ]))
                     }
@@ -189,7 +269,7 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts properly from extension") {
-                            let innerType = Struct(name: "Bar", accessLevel: .none, isExtension: false, variables: [])
+                            let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
 
                             expect(parse("struct Foo {}  extension Foo { struct Bar { } }"))
                                 .to(equal([
@@ -203,13 +283,27 @@ class FileParserSpec: QuickSpec {
                 context("given class") {
 
                     it("extracts variables properly") {
+                        expect(parse("class Foo { var x: Int }"))
+                          .to(equal([
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))])
+                                    ]))
+                    }
+
+                    it("extracts variables properly from extensions") {
                         expect(parse("class Foo { }; extension Foo { var x: Int { 1 }"))
                                 .to(equal([
-                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .none, write: .none), isComputed: true, definedInTypeName: TypeName("Foo"))])
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Foo"))])
                                 ]))
                     }
 
                     it("extracts inherited types properly") {
+                        expect(parse("class Foo: TestProtocol, AnotherProtocol {}"))
+                          .to(equal([
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
+                                    ]))
+                    }
+
+                    it("extracts inherited types properly from extensions") {
                         expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
                                 .to(equal([
                                         Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
@@ -230,7 +324,7 @@ class FileParserSpec: QuickSpec {
                     it("extracts extensions properly") {
                         expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { return 0 } }"))
                             .to(equal([
-                                Type(name: "Bar", accessLevel: .none, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .none, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]),
+                                Type(name: "Bar", accessLevel: .internal, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]).asUnknownException(),
                                 Protocol(name: "Foo")
                                 ]))
                     }
@@ -238,7 +332,7 @@ class FileParserSpec: QuickSpec {
 
                 context("given typealias") {
                     func parse(_ code: String) -> FileParserResult {
-                        guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: []) }
+                        guard let parserResult = try? makeParser(for: code).parse() else { fail(); return FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: []) }
                         return parserResult
                     }
 
@@ -266,23 +360,33 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts typealias for tuple") {
-                            expect(parse("typealias GlobalAlias = (Foo, Bar)").typealiases)
-                                .to(equal([
-                                    Typealias(aliasName: "GlobalAlias", typeName: TypeName("(Foo, Bar)"))
-                                    ]))
+                            let typealiase = parse("typealias GlobalAlias = (Foo, Bar)").typealiases.first
+                            expect(typealiase)
+                              .to(equal(
+                                Typealias(aliasName: "GlobalAlias",
+                                          typeName: TypeName("(Foo, Bar)", tuple: TupleType(name: "(Foo, Bar)", elements: [.init(name: "0", typeName: .init("Foo")), .init(name: "1", typeName: .init("Bar"))]))
+                                )
+                              ))
                         }
 
                         it("extracts typealias for closure") {
                             expect(parse("typealias GlobalAlias = (Int) -> (String)").typealiases)
                                 .to(equal([
-                                    Typealias(aliasName: "GlobalAlias", typeName: TypeName("(Int) -> (String)"))
+                                        Typealias(aliasName: "GlobalAlias", typeName: TypeName("(Int) -> String", closure: ClosureType(name: "(Int) -> String", parameters: [.init(typeName: TypeName("Int"))], returnTypeName: TypeName("String"))))
                                     ]))
                         }
 
-                        it("extracts typealias for void") {
-                            expect(parse("typealias GlobalAlias = () -> ()").typealiases)
+                        it("extracts typealias for void closure") {
+                            let parsed = parse("typealias GlobalAlias = () -> ()").typealiases.first
+                            let expected = Typealias(aliasName: "GlobalAlias", typeName: TypeName("() -> ()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))))
+
+                            expect(parsed).to(equal(expected))
+                        }
+
+                        it("extracts private typealias") {
+                            expect(parse("private typealias GlobalAlias = () -> ()").typealiases)
                                 .to(equal([
-                                    Typealias(aliasName: "GlobalAlias", typeName: TypeName("() -> ()"))
+                                    Typealias(aliasName: "GlobalAlias", typeName: TypeName("() -> ()", closure: ClosureType(name: "() -> ()", parameters: [], returnTypeName: TypeName("()"))), accessLevel: .private)
                                     ]))
                         }
                     }
@@ -308,11 +412,36 @@ class FileParserSpec: QuickSpec {
                 }
 
                 context("given a protocol composition") {
+
+                    context("when used as typeName") {
+                        it("is extracted correctly as return type") {
+                            let expectedFoo = Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName(name: "ProtocolA & ProtocolB", isProtocolComposition: true), definedInTypeName: TypeName("Foo"))
+                            expectedFoo.returnType = ProtocolComposition(name: "ProtocolA & Protocol B")
+                            let expectedFooOptional = Method(name: "fooOptional()", selectorName: "fooOptional", returnTypeName: TypeName(name: "(ProtocolA & ProtocolB)", isOptional: true, isProtocolComposition: true), definedInTypeName: TypeName("Foo"))
+                            expectedFooOptional.returnType = ProtocolComposition(name: "ProtocolA & Protocol B")
+
+                            let methods = parse("""
+                                                protocol Foo {
+                                                  func foo() -> ProtocolA & ProtocolB
+                                                  func fooOptional() -> (ProtocolA & ProtocolB)?
+                                                }
+                                                """)[0].methods
+
+                            expect(methods[0]).to(equal(expectedFoo))
+                            expect(methods[1]).to(equal(expectedFooOptional))
+                        }
+                    }
+
                     context("of two protocols") {
                         it("extracts protocol composition for typealias with ampersand") {
                             expect(parse("typealias Composition = Foo & Bar; protocol Foo {}; protocol Bar {}"))
                                 .to(contain([
                                     ProtocolComposition(name: "Composition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName("Foo"), TypeName("Bar")])
+                                    ]))
+
+                            expect(parse("private typealias Composition = Foo & Bar; protocol Foo {}; protocol Bar {}"))
+                                .to(contain([
+                                    ProtocolComposition(name: "Composition", accessLevel: .private, inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName("Foo"), TypeName("Bar")])
                                     ]))
                         }
                     }
@@ -323,6 +452,13 @@ class FileParserSpec: QuickSpec {
                                 .to(contain([
                                     ProtocolComposition(name: "Composition", inheritedTypes: ["Foo", "Bar", "Baz"], composedTypeNames: [TypeName("Foo"), TypeName("Bar"), TypeName("Baz")])
                                     ]))
+                        }
+
+                        it("extracts protocol composition for typealias with ampersand") {
+                            expect(parse("typealias Composition = Foo & Bar & Baz; protocol Foo {}; protocol Bar {}; protocol Baz {}"))
+                              .to(contain([
+                                              ProtocolComposition(name: "Composition", inheritedTypes: ["Foo", "Bar", "Baz"], composedTypeNames: [TypeName("Foo"), TypeName("Bar"), TypeName("Baz")])
+                                          ]))
                         }
                     }
 
@@ -336,7 +472,7 @@ class FileParserSpec: QuickSpec {
                     }
 
                     context("given local protocol composition") {
-                        it ("extracts local protocol compositions properly") {
+                        it("extracts local protocol compositions properly") {
                             let foo = Type(name: "Foo")
                             let bar = Type(name: "Bar", parent: foo)
 
@@ -370,14 +506,21 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts cases with special names") {
-                        expect(parse("enum Foo { case `default`; case `for`(something: Int, else: Float, `default`: Bool) }"))
-                                .to(equal([
-                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [EnumCase(name: "`default`"), EnumCase(name: "`for`", associatedValues:
-                                        [
-                                            AssociatedValue(name: "something", typeName: TypeName("Int")),
-                                            AssociatedValue(name: "else", typeName: TypeName("Float")),
-                                            AssociatedValue(name: "`default`", typeName: TypeName("Bool"))
-                                        ])])
+                        expect(parse("""
+                                     enum Foo {
+                                       case `default`
+                                       case `for`(something: Int, else: Float, `default`: Bool)
+                                     }
+                                     """))
+                          .to(equal([
+                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [
+                                            EnumCase(name: "`default`"),
+                                            EnumCase(name: "`for`", associatedValues:
+                                            [
+                                                AssociatedValue(name: "something", typeName: TypeName("Int")),
+                                                AssociatedValue(name: "else", typeName: TypeName("Float")),
+                                                AssociatedValue(name: "`default`", typeName: TypeName("Bool"))
+                                            ])])
                                     ]))
                     }
 
@@ -391,13 +534,24 @@ class FileParserSpec: QuickSpec {
                     context("given enum cases annotations") {
 
                         it("extracts cases with annotations properly") {
-                            expect(parse("enum Foo {\n //sourcery:begin: block\n// sourcery: first, second=\"value\"\n case optionA(/* sourcery: first, second = \"value\" */Int)\n // sourcery: third\n case optionB\n case optionC \n//sourcery:end}"))
+                            expect(parse("""
+                                         enum Foo {
+                                             // sourcery:begin: block
+                                             // sourcery: first, second=\"value\"
+                                             case optionA(/* sourcery: first, second = \"value\" */Int)
+                                             // sourcery: third
+                                             case optionB
+                                             case optionC
+                                             // sourcery:end
+                                         }
+                                         """))
                                 .to(equal([
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
                                             AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: [
                                                 "first": NSNumber(value: true),
-                                                "second": "value" as NSString
+                                                "second": "value" as NSString,
+                                                "block": NSNumber(value: true)
                                                 ])
                                             ], annotations: [
                                                 "block": NSNumber(value: true),
@@ -418,13 +572,22 @@ class FileParserSpec: QuickSpec {
                         }
 
                         it("extracts cases with inline annotations properly") {
-                            expect(parse("enum Foo {\n //sourcery:begin: block\n/* sourcery: first, second = \"value\" */ case optionA(/* sourcery: first, second = \"value\" */Int); /* sourcery: third */ case optionB\n case optionC \n//sourcery:end\n}"))
-                                .to(equal([
+                            expect(parse("""
+                                         enum Foo {
+                                          //sourcery:begin: block
+                                         /* sourcery: first, second = \"value\" */ case optionA(/* sourcery: first, second = \"value\" */Int);
+                                         /* sourcery: third */ case optionB
+                                          case optionC
+                                         //sourcery:end
+                                         }
+                                         """).first)
+                                .to(equal(
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
                                             AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: [
                                                 "first": NSNumber(value: true),
-                                                "second": "value" as NSString
+                                                "second": "value" as NSString,
+                                                "block": NSNumber(value: true)
                                                 ])
                                             ], annotations: [
                                                 "block": NSNumber(value: true),
@@ -439,15 +602,23 @@ class FileParserSpec: QuickSpec {
                                             "block": NSNumber(value: true)
                                             ])
                                         ])
-                                    ]))
+                                    ))
                         }
 
                         it("extracts one line cases with inline annotations properly") {
-                            expect(parse("enum Foo {\n //sourcery:begin: block\ncase /* sourcery: first, second = \"value\" */ optionA(Int), /* sourcery: third, fourth = \"value\" */ optionB, optionC \n//sourcery:end\n}"))
-                                .to(equal([
+                            expect(parse("""
+                                         enum Foo {
+                                          //sourcery:begin: block
+                                         case /* sourcery: first, second = \"value\" */ optionA(Int), /* sourcery: third, fourth = \"value\" */ optionB, optionC
+                                         //sourcery:end
+                                         }
+                                         """).first)
+                                .to(equal(
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
-                                            AssociatedValue(name: nil, typeName: TypeName("Int"))
+                                            AssociatedValue(name: nil, typeName: TypeName("Int"), annotations: [
+                                                "block": NSNumber(value: true)
+                                            ])
                                             ], annotations: [
                                                 "block": NSNumber(value: true),
                                                 "first": NSNumber(value: true),
@@ -462,12 +633,23 @@ class FileParserSpec: QuickSpec {
                                             "block": NSNumber(value: true)
                                             ])
                                         ])
-                                    ]))
+                                    ))
                         }
 
                         it("extracts cases with annotations and computed variables properly") {
-                            expect(parse("enum Foo {\n // sourcery: var\n var first: Int { return 0 }\n // sourcery: first, second=\"value\"\n case optionA(Int)\n // sourcery: var\n var second: Int { return 0 }\n // sourcery: third\n case optionB\n case optionC }"))
-                                .to(equal([
+                            expect(parse("""
+                                         enum Foo {
+                                          // sourcery: var
+                                          var first: Int { return 0 }
+                                          // sourcery: first, second=\"value\"
+                                          case optionA(Int)
+                                          // sourcery: var
+                                          var second: Int { return 0 }
+                                          // sourcery: third
+                                          case optionB
+                                          case optionC }
+                                         """).first)
+                                .to(equal(
                                     Enum(name: "Foo", cases: [
                                         EnumCase(name: "optionA", associatedValues: [
                                             AssociatedValue(name: nil, typeName: TypeName("Int"))
@@ -483,12 +665,20 @@ class FileParserSpec: QuickSpec {
                                             Variable(name: "first", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ], definedInTypeName: TypeName("Foo")),
                                             Variable(name: "second", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, annotations: [ "var": NSNumber(value: true) ], definedInTypeName: TypeName("Foo"))
                                         ])
-                                    ]))
+                                    ))
                         }
                     }
 
                     it("extracts associated value annotations properly") {
-                        let result = parse("enum Foo {\n case optionA(\n// sourcery: first\n// sourcery: second, third = \"value\"\nInt)\n case optionB }")
+                        let result = parse("""
+                                           enum Foo {
+                                               case optionA(
+                                                 // sourcery: first
+                                                 // sourcery: second, third = "value"
+                                                 Int)
+                                               case optionB
+                                           }
+                                           """)
                         expect(result)
                             .to(equal([
                                 Enum(name: "Foo",
@@ -552,10 +742,23 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts enums with custom values") {
-                        expect(parse("enum Foo: String { case optionA = \"Value\" }"))
+                        expect(parse("""
+                                     enum Foo: String {
+                                       case optionA = "Value"
+                                     }
+                                     """))
                             .to(equal([
                                 Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawTypeName: TypeName("String"), cases: [EnumCase(name: "optionA", rawValue: "Value")])
                                 ]))
+
+                        expect(parse("""
+                                     enum Foo: Int {
+                                       case optionA = 2
+                                     }
+                                     """))
+                          .to(equal([
+                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawTypeName: TypeName("Int"), cases: [EnumCase(name: "optionA", rawValue: "2")])
+                                    ]))
                     }
 
                     it("extracts enums without rawType") {
@@ -589,24 +792,24 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("extracts enums with indirect cases") {
-                        expect(parse("enum Foo { case optionA; case optionB; indirect case optionC }"))
+                        expect(parse("enum Foo { case optionA; case optionB; indirect case optionC(Foo) }"))
                                 .to(equal([
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
                                             EnumCase(name: "optionA", indirect: false),
                                             EnumCase(name: "optionB"),
-                                            EnumCase(name: "optionC", indirect: true)
+                                            EnumCase(name: "optionC", associatedValues: [AssociatedValue(typeName: TypeName("Foo"))], indirect: true)
                                         ])
                                 ]))
                     }
 
-                    it("extracts enums with empty parenthesis as ones with () associated type") {
-                        expect(parse("enum Foo { case optionA(); case optionB() }"))
+                    it("extracts enums with Void associated type") {
+                        expect(parse("enum Foo { case optionA(Void); case optionB(Void) }"))
                                 .to(equal([
                                                   Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                                   [
-                                                          EnumCase(name: "optionA", associatedValues: [AssociatedValue(typeName: TypeName("()"))]),
-                                                          EnumCase(name: "optionB", associatedValues: [AssociatedValue(typeName: TypeName("()"))])
+                                                          EnumCase(name: "optionA", associatedValues: [AssociatedValue(typeName: TypeName("Void"))]),
+                                                          EnumCase(name: "optionB", associatedValues: [AssociatedValue(typeName: TypeName("Void"))])
                                                   ])
                                           ]))
                     }
@@ -622,7 +825,7 @@ class FileParserSpec: QuickSpec {
                                         AssociatedValue(localName: nil, externalName: "2", typeName: TypeName("Bool"), defaultValue: "false")
                                         ]),
                                     EnumCase(name: "optionB", associatedValues: [
-                                    AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Bool"), defaultValue: "true")
+                                        AssociatedValue(localName: nil, externalName: nil, typeName: TypeName("Bool"), defaultValue: "true")
                                     ])
                                 ])
                         ]))
@@ -665,7 +868,9 @@ class FileParserSpec: QuickSpec {
 
                         it("extracts associated value's same (indirect) enum type") {
                             let associatedValue = AssociatedValue(typeName: TypeName("Foo"))
-                            let item = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
+                            let item = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])], modifiers: [
+                                Modifier(name: "indirect")
+                            ])
                             associatedValue.type = item
 
                             let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(Foo) }")
@@ -679,6 +884,56 @@ class FileParserSpec: QuickSpec {
                 }
 
                 context("given protocol") {
+                    it("extracts generic requirements properly") {
+                        expect(parse(
+                            """
+                            protocol SomeGenericProtocol: GenericProtocol {}
+                            """
+                        ).first).to(equal(
+                            Protocol(name: "SomeGenericProtocol", inheritedTypes: ["GenericProtocol"])
+                        ))
+
+                        expect(parse(
+                            """
+                            protocol SomeGenericProtocol: GenericProtocol where LeftType == RightType {}
+                            """
+                        ).first).to(equal(
+                            Protocol(
+                                name: "SomeGenericProtocol",
+                                inheritedTypes: ["GenericProtocol"],
+                                genericRequirements: [
+                                    GenericRequirement(leftType: .init(name: "LeftType"), rightType: .init(typeName: .init("RightType")), relationship: .equals)
+                                ])
+                        ))
+
+                        expect(parse(
+                            """
+                            protocol SomeGenericProtocol: GenericProtocol where LeftType: RightType {}
+                            """
+                        ).first).to(equal(
+                            Protocol(
+                                name: "SomeGenericProtocol",
+                                inheritedTypes: ["GenericProtocol"],
+                                genericRequirements: [
+                                    GenericRequirement(leftType: .init(name: "LeftType"), rightType: .init(typeName: .init("RightType")), relationship: .conformsTo)
+                                ])
+                        ))
+
+                        expect(parse(
+                            """
+                            protocol SomeGenericProtocol: GenericProtocol where LeftType == RightType, LeftType2: RightType2 {}
+                            """
+                        ).first).to(equal(
+                            Protocol(
+                                name: "SomeGenericProtocol",
+                                inheritedTypes: ["GenericProtocol"],
+                                genericRequirements: [
+                                    GenericRequirement(leftType: .init(name: "LeftType"), rightType: .init(typeName: .init("RightType")), relationship: .equals),
+                                    GenericRequirement(leftType: .init(name: "LeftType2"), rightType: .init(typeName: .init("RightType2")), relationship: .conformsTo)
+                                ])
+                        ))
+                    }
+
                     it("extracts empty protocol properly") {
                         expect(parse("protocol Foo { }"))
                             .to(equal([
@@ -694,10 +949,20 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("does consider type variables as computed when they are, even if they adhere to protocol") {
-                        expect(parse("protocol Foo { var some: Int { get } }\nclass Bar: Foo { var some: Int { return 2 } }").first)
+                        expect(parse("protocol Foo { var some: Int { get }\nvar some2: Int { get } }\nclass Bar: Foo { var some: Int { return 2 }\nvar some2: Int { get { return 2 } } }").first)
                             .to(equal(
-                                Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
+                                Class(name: "Bar", variables: [
+                                    Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar")),
+                                    Variable(name: "some2", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar"))
+                                ], inheritedTypes: ["Foo"])
                                 ))
+                    }
+
+                    it("does not consider type variables as computed when they aren't, even if they adhere to protocol and have didSet blocks") {
+                        expect(parse("protocol Foo { var some: Int { get } }\nclass Bar: Foo { var some: Int { didSet { } }").first)
+                          .to(equal(
+                            Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .internal), isComputed: false, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
+                          ))
                     }
 
                     describe("when dealing with protocol inheritance") {

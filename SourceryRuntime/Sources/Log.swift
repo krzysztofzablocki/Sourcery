@@ -13,6 +13,7 @@ public enum Log {
 
     public static var level: Level = .warnings
     public static var logBenchmarks: Bool = false
+    public static var logAST: Bool = false
 
     public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
@@ -24,6 +25,16 @@ public enum Log {
 
     public static func warning(_ message: Any) {
         log(level: .warnings, "warning: \(message)")
+    }
+
+    public static func astWarning(_ message: Any) {
+        guard logAST else { return }
+        log(level: .warnings, "ast warning: \(message)")
+    }
+
+    public static func astError(_ message: Any) {
+        guard logAST else { return }
+        log(level: .errors, "ast error: \(message)")
     }
 
     public static func verbose(_ message: Any) {

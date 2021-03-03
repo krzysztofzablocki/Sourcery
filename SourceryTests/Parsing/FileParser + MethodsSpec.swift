@@ -1,14 +1,9 @@
 import Quick
 import Nimble
 import PathKit
-import SourceKittenFramework
-@testable import Sourcery
-@testable import SourceryFramework
-@testable import SourceryRuntime
-
-private func build(_ source: String) -> [String: SourceKitRepresentable]? {
-    return try? Structure(file: File(contents: source)).dictionary
-}
+import Sourcery
+import SourceryFramework
+import SourceryRuntime
 
 class FileParserMethodsSpec: QuickSpec {
     // swiftlint:disable function_body_length
@@ -16,42 +11,56 @@ class FileParserMethodsSpec: QuickSpec {
         describe("FileParser") {
             describe("parseMethod") {
                 func parse(_ code: String) -> [Type] {
-                    guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
+                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
                     return Composer.uniqueTypesAndFunctions(parserResult).types
                 }
 
                 func parseFunctions(_ code: String) -> [SourceryMethod] {
-                    guard let parserResult = try? FileParser(contents: code).parse() else { fail(); return [] }
+                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
                     return Composer.uniqueTypesAndFunctions(parserResult).functions
                 }
 
-                it("extracts methods properly") {
+                it("extracts methods with inout properties") {
                     let methods = parse("""
                     class Foo {
-                        init() throws {}; func bar(some: Int) throws ->Bar {}
-                        @discardableResult func foo() ->
-                                                    Foo {}
-                        func fooBar() rethrows {}
-                        func fooVoid(){}
                         func fooInOut(some: Int, anotherSome: inout String)
-                        {} deinit {}
-                        func fooWithUnnamedArgument(_: Int)
                     }
                     """)[0].methods
 
-                    expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName("Foo"), throws: true, definedInTypeName: TypeName("Foo"))))
-                    expect(methods[1]).to(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], returnTypeName: TypeName("Bar"), throws: true, definedInTypeName: TypeName("Foo"))))
-                    expect(methods[2]).to(equal(Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName("Foo"), attributes: ["discardableResult": Attribute(name: "discardableResult")], definedInTypeName: TypeName("Foo"))))
-                    expect(methods[3]).to(equal(Method(name: "fooBar()", selectorName: "fooBar", returnTypeName: TypeName("Void"), throws: false, rethrows: true, definedInTypeName: TypeName("Foo"))))
-                    expect(methods[4]).to(equal(Method(name: "fooVoid()", selectorName: "fooVoid", returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
-                    expect(methods[5]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
-                    MethodParameter(name: "some", typeName: TypeName("Int")),
-                    MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), isInout: true)
+                    expect(methods[0]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
+                        MethodParameter(name: "some", typeName: TypeName("Int")),
+                        MethodParameter(name: "anotherSome", typeName: TypeName("inout String"), isInout: true)
                     ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
-                    expect(methods[6]).to(equal(Method(name: "deinit", selectorName: "deinit", definedInTypeName: TypeName("Foo"))))
-                    expect(methods[7]).to(equal(Method(name: "fooWithUnnamedArgument(_: Int)", selectorName: "fooWithUnnamedArgument(_:)", parameters: [
-                    MethodParameter(argumentLabel: nil, name: "", typeName: TypeName("Int"))
-                    ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
+                }
+
+                it("extracts methods with attributes") {
+                    let methods = parse("""
+                                        class Foo {
+                                        @discardableResult func foo() ->
+                                                                    Foo
+                                        }
+                                        """)[0].methods
+
+                    expect(methods[0]).to(equal(Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName("Foo"), attributes: ["discardableResult": [Attribute(name: "discardableResult")]], definedInTypeName: TypeName("Foo"))))
+                }
+
+                it("extracts methods with escaping closure attribute correctly") {
+                    let methods = parse("""
+                                        protocol ClosureProtocol {
+                                            func setClosure(_ closure: @escaping () -> Void)
+                                        }
+                                        """)[0].methods
+
+                    expect(methods[0]).to(equal(
+                                            Method(name: "setClosure(_ closure: @escaping () -> Void)",
+                                                   selectorName: "setClosure(_:)",
+                                                   parameters: [
+                                                    MethodParameter(argumentLabel: nil, name: "closure", typeName: .buildClosure(TypeName("Void"), attributes: ["escaping": [Attribute(name: "escaping")]]), type: nil, defaultValue: nil, annotations: [:], isInout: false)
+                                                   ],
+                                                   returnTypeName: TypeName("Void"),
+                                                   attributes: [:],
+                                                   definedInTypeName: TypeName("ClosureProtocol")))
+                    )
                 }
 
                 it("extracts protocol methods properly") {
@@ -63,11 +72,11 @@ class FileParserMethodsSpec: QuickSpec {
                         func fooBar() rethrows ; func fooVoid();
                         func fooInOut(some: Int, anotherSome: inout String) }
                     """)[0].methods
-                    expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName("Foo"), throws: true, definedInTypeName: TypeName("Foo"))))
+                    expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName("Foo"), throws: true, isStatic: true, definedInTypeName: TypeName("Foo"))))
                     expect(methods[1]).to(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
                         MethodParameter(name: "some", typeName: TypeName("Int"))
                         ], returnTypeName: TypeName("Bar"), throws: true, definedInTypeName: TypeName("Foo"))))
-                    expect(methods[2]).to(equal(Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName("Foo"), attributes: ["discardableResult": Attribute(name: "discardableResult")], definedInTypeName: TypeName("Foo"))))
+                    expect(methods[2]).to(equal(Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName("Foo"), attributes: ["discardableResult": [Attribute(name: "discardableResult")]], definedInTypeName: TypeName("Foo"))))
                     expect(methods[3]).to(equal(Method(name: "fooBar()", selectorName: "fooBar", returnTypeName: TypeName("Void"), throws: false, rethrows: true, definedInTypeName: TypeName("Foo"))))
                     expect(methods[4]).to(equal(Method(name: "fooVoid()", selectorName: "fooVoid", returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))))
                     expect(methods[5]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
@@ -79,7 +88,7 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts class method properly") {
                     expect(parse("class Foo { class func foo() {} }")).to(equal([
                         Class(name: "Foo", methods: [
-                            Method(name: "foo()", selectorName: "foo", parameters: [], isClass: true, definedInTypeName: TypeName("Foo"))
+                            Method(name: "foo()", selectorName: "foo", parameters: [], isClass: true, modifiers: [Modifier(name: "class")], definedInTypeName: TypeName("Foo"))
                             ])
                         ]))
                 }
@@ -107,7 +116,7 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts extension method properly") {
                     expect(parse("class Baz {}; extension Baz { func foo() {} }")).to(equal([
                         Class(name: "Baz", methods: [
-                            Method(name: "foo()", selectorName: "foo", accessLevel: .none, definedInTypeName: TypeName("Baz"))
+                            Method(name: "foo()", selectorName: "foo", accessLevel: .internal, definedInTypeName: TypeName("Baz"))
                             ])
                         ]))
                 }
@@ -115,7 +124,7 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts static method properly") {
                     expect(parse("class Foo { static func foo() {} }")).to(equal([
                         Class(name: "Foo", methods: [
-                            Method(name: "foo()", selectorName: "foo", isStatic: true, definedInTypeName: TypeName("Foo"))
+                            Method(name: "foo()", selectorName: "foo", isStatic: true, modifiers: [Modifier(name: "static")], definedInTypeName: TypeName("Foo"))
                             ])
                         ]))
                 }
@@ -123,6 +132,18 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts free functions properly") {
                     expect(parseFunctions("func foo() {}")).to(equal([
                         Method(name: "foo()", selectorName: "foo", isStatic: false, definedInTypeName: nil)
+                    ]))
+                }
+
+                it("extracts free functions properly with private access") {
+                    expect(parseFunctions("private func foo() {}")).to(equal([
+                        Method(
+                            name: "foo()",
+                            selectorName: "foo",
+                            accessLevel: (.private),
+                            isStatic: false,
+                            modifiers: [Modifier(name: "private")],
+                            definedInTypeName: nil)
                     ]))
                 }
 
@@ -136,10 +157,20 @@ class FileParserMethodsSpec: QuickSpec {
                             ]))
                     }
 
+                    it("extracts method with single set parameter properly") {
+                        let type = parse("protocol Foo { func someMethod(aValue: Set<Int>) }").first
+                        expect(type).to(equal(
+                            Protocol(name: "Foo", methods: [
+                                Method(name: "someMethod(aValue: Set<Int>)", selectorName: "someMethod(aValue:)", parameters: [
+                                    MethodParameter(name: "aValue", typeName: .buildSet(of: .Int))], definedInTypeName: TypeName("Foo"))
+                                ])
+                            ))
+                    }
+
                     it("extracts method with two parameters properly") {
                         expect(parse("class Foo { func foo( bar:   Int,   foo : String  ) {} }")).to(equal([
                             Class(name: "Foo", methods: [
-                                Method(name: "foo( bar:   Int,   foo : String  )", selectorName: "foo(bar:foo:)", parameters: [
+                                Method(name: "foo(bar: Int, foo: String)", selectorName: "foo(bar:foo:)", parameters: [
                                     MethodParameter(name: "bar", typeName: TypeName("Int")),
                                     MethodParameter(name: "foo", typeName: TypeName("String"))
                                     ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
@@ -151,11 +182,11 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo( bar: [String: String],   foo : ((String, String) -> Void), other: Optional<String>) {} }"))
                             .to(equal([
                                 Class(name: "Foo", methods: [
-                                    Method(name: "foo( bar: [String: String],   foo : ((String, String) -> Void), other: Optional<String>)", selectorName: "foo(bar:foo:other:)", parameters: [
+                                    Method(name: "foo(bar: [String: String], foo: (String, String) -> Void, other: Optional<String>)", selectorName: "foo(bar:foo:other:)", parameters: [
                                         MethodParameter(name: "bar", typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("String"))]))),
-                                        MethodParameter(name: "foo", typeName: TypeName("((String, String) -> Void)", closure: ClosureType(name: "(String, String) -> Void", parameters: [
-                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String")),
-                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String"))
+                                        MethodParameter(name: "foo", typeName: TypeName("(String, String) -> Void", closure: ClosureType(name: "(String, String) -> Void", parameters: [
+                                            ClosureParameter(typeName: TypeName("String")),
+                                            ClosureParameter(typeName: TypeName("String"))
                                             ], returnTypeName: TypeName("Void")))),
                                         MethodParameter(name: "other", typeName: TypeName("Optional<String>"))
                                         ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
@@ -170,8 +201,8 @@ class FileParserMethodsSpec: QuickSpec {
                                     MethodParameter(argumentLabel: "bar", name: "Bar", typeName: TypeName("Int")),
                                     MethodParameter(argumentLabel: nil, name: "foo", typeName: TypeName("Int")),
                                     MethodParameter(name: "fooBar", typeName: TypeName("(_ a: Int, _ b: Int) -> ()", closure: ClosureType(name: "(_ a: Int, _ b: Int) -> ()", parameters: [
-                                        MethodParameter(argumentLabel: nil, name: "a", typeName: TypeName("Int")),
-                                        MethodParameter(argumentLabel: nil, name: "b", typeName: TypeName("Int"))
+                                        ClosureParameter(argumentLabel: nil, name: "a", typeName: TypeName("Int")),
+                                        ClosureParameter(argumentLabel: nil, name: "b", typeName: TypeName("Int"))
                                         ], returnTypeName: TypeName("()"))))
                                     ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
                                 ])
@@ -213,7 +244,7 @@ class FileParserMethodsSpec: QuickSpec {
                         it("extracts complex default value") {
                             expect(parse("class Foo { func foo(a: Int? = \n\t{ return nil } \n\t ) {} }")).to(equal([
                                 Class(name: "Foo", methods: [
-                                    Method(name: "foo(a: Int? = \n\t{ return nil } \n\t )", selectorName: "foo(a:)", parameters: [
+                                    Method(name: "foo(a: Int? = { return nil })", selectorName: "foo(a:)", parameters: [
                                         MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("Int?"), defaultValue: "{ return nil }")
                                         ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
                                     ])
@@ -234,16 +265,12 @@ class FileParserMethodsSpec: QuickSpec {
                             expect(result)
                             .to(equal([
                                 Class(name: "Foo", methods: [
-                                    Method(name: """
-                                    foo(bar: [String: String],
-                                                 foo: ((String, String) -> Void),
-                                                 other: Optional<String>)
-                                    """,
+                                    Method(name: "foo(bar: [String: String], foo: (String, String) -> Void, other: Optional<String>)",
                                            selectorName: "foo(bar:foo:other:)", parameters: [
                                         MethodParameter(name: "bar", typeName: TypeName("[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName("String"), keyTypeName: TypeName("String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName("String")), GenericTypeParameter(typeName: TypeName("String"))]))),
-                                        MethodParameter(name: "foo", typeName: TypeName("((String, String) -> Void)", closure: ClosureType(name: "(String, String) -> Void", parameters: [
-                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String")),
-                                            MethodParameter(argumentLabel: nil, typeName: TypeName("String"))
+                                        MethodParameter(name: "foo", typeName: TypeName("(String, String) -> Void", closure: ClosureType(name: "(String, String) -> Void", parameters: [
+                                            ClosureParameter(typeName: TypeName("String")),
+                                            ClosureParameter(typeName: TypeName("String"))
                                             ], returnTypeName: TypeName("Void")))),
                                         MethodParameter(name: "other", typeName: TypeName("Optional<String>"))
                                         ], returnTypeName: TypeName("Void"), definedInTypeName: TypeName("Foo"))
@@ -262,7 +289,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(foo?.selectorName).to(equal("foo"))
                         expect(foo?.shortName).to(equal("foo<T: Equatable>"))
                         expect(foo?.callName).to(equal("foo"))
-                        expect(foo?.returnTypeName).to(equal(TypeName("Bar?\n where \nT: Equatable")))
+                        expect(foo?.returnTypeName).to(equal(TypeName("Bar? where \nT: Equatable")))
                         expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
                         expect(foo?.returnType).to(equal(Class(name: "Bar")))
                         expect(foo?.definedInType).to(equal(types.last))
@@ -272,7 +299,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(fooBar?.selectorName).to(equal("fooBar(bar:)"))
                         expect(fooBar?.shortName).to(equal("fooBar<T>"))
                         expect(fooBar?.callName).to(equal("fooBar"))
-                        expect(fooBar?.returnTypeName).to(equal(TypeName("where T: Equatable")))
+                        expect(fooBar?.returnTypeName).to(equal(TypeName("Void where T: Equatable")))
                         expect(fooBar?.unwrappedReturnTypeName).to(equal("Void"))
                         expect(fooBar?.returnType).to(beNil())
                         expect(fooBar?.definedInType).to(equal(types.last))
@@ -315,7 +342,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(method?.returnType).to(equal(Class(name: "Bar")))
                     }
 
-                    it("extracts tuple return type correcty") {
+                    it("extracts tuple return type correctly") {
                         let expectedTypeName = TypeName("(Bar, Int)", tuple: TupleType(name: "(Bar, Int)", elements: [
                             TupleElement(name: "0", typeName: TypeName("Bar"), type: Class(name: "Bar")),
                             TupleElement(name: "1", typeName: TypeName("Int"))
@@ -332,17 +359,32 @@ class FileParserMethodsSpec: QuickSpec {
                         let method = types.last?.methods.first
 
                         expect(method?.returnTypeName).to(equal(TypeName("(Int, Int) -> ()", closure: ClosureType(name: "(Int, Int) -> ()", parameters: [
-
-                            MethodParameter(argumentLabel: nil, typeName: TypeName("Int")),
-                            MethodParameter(argumentLabel: nil, typeName: TypeName("Int"))
+                            ClosureParameter(typeName: TypeName("Int")),
+                            ClosureParameter(typeName: TypeName("Int"))
                             ], returnTypeName: TypeName("()")))))
+                    }
+
+                    it("extracts optional closure return type correctly") {
+                        let types = parse("protocol Foo { func foo() -> (() -> Void)? }")
+                        let method = types.last?.methods.first
+
+                        expect(method?.returnTypeName).to(equal(TypeName(name: "(() -> Void)?", closure: ClosureType(name: "() -> Void", parameters: [
+                        ], returnTypeName: TypeName(name: "Void")))))
+                    }
+
+                    it("extracts optional closure return type correctly") {
+                        let types = parse("protocol Foo { func foo() -> (() -> Void)? }")
+                        let method = types.last?.methods.first
+
+                        expect(method?.returnTypeName).to(equal(TypeName(name: "(() -> Void)?", closure: ClosureType(name: "() -> Void", parameters: [
+                        ], returnTypeName: TypeName(name: "Void")))))
                     }
                 }
 
                 context("given initializer") {
                     it("extracts initializer properly") {
                         let fooType = Class(name: "Foo")
-                        let expectedInitializer = Method(name: "init()", selectorName: "init", returnTypeName: TypeName("Foo"), definedInTypeName: TypeName("Foo"))
+                        let expectedInitializer = Method(name: "init()", selectorName: "init", returnTypeName: TypeName("Foo"), isStatic: true, definedInTypeName: TypeName("Foo"))
                         expectedInitializer.returnType = fooType
                         fooType.rawMethods = [Method(name: "foo()", selectorName: "foo", definedInTypeName: TypeName("Foo")), expectedInitializer]
 
@@ -355,7 +397,7 @@ class FileParserMethodsSpec: QuickSpec {
 
                     it("extracts failable initializer properly") {
                         let fooType = Class(name: "Foo")
-                        let expectedInitializer = Method(name: "init?()", selectorName: "init", returnTypeName: TypeName("Foo?"), isFailableInitializer: true, definedInTypeName: TypeName("Foo"))
+                        let expectedInitializer = Method(name: "init?()", selectorName: "init", returnTypeName: TypeName("Foo?"), isStatic: true, isFailableInitializer: true, definedInTypeName: TypeName("Foo"))
                         expectedInitializer.returnType = fooType
                         fooType.rawMethods = [Method(name: "foo()", selectorName: "foo", definedInTypeName: TypeName("Foo")), expectedInitializer]
 
@@ -394,11 +436,11 @@ class FileParserMethodsSpec: QuickSpec {
                 it("extracts parameter annotations") {
                     expect(parse("class Foo {\n //sourcery: foo\nfunc foo(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) {}\n//sourcery: bar\nfunc bar(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) {} }")).to(equal([
                         Class(name: "Foo", methods: [
-                            Method(name: "foo(\na: Int,\nb: Int)", selectorName: "foo(a:b:)", parameters: [
+                            Method(name: "foo(a: Int, b: Int)", selectorName: "foo(a:b:)", parameters: [
                                 MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
                                 MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
                                 ], annotations: ["foo": NSNumber(value: true)], definedInTypeName: TypeName("Foo")),
-                            Method(name: "bar(\na: Int,\nb: Int)", selectorName: "bar(a:b:)", parameters: [
+                            Method(name: "bar(a: Int, b: Int)", selectorName: "bar(a:b:)", parameters: [
                                 MethodParameter(name: "a", typeName: TypeName("Int"), annotations: ["annotationA": NSNumber(value: true)]),
                                 MethodParameter(name: "b", typeName: TypeName("Int"), annotations: ["annotationB": NSNumber(value: true)])
                                 ], annotations: ["bar": NSNumber(value: true)], definedInTypeName: TypeName("Foo"))

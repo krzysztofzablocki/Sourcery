@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol Diffable {
+public protocol Diffable {
 
     /// Returns `DiffableResult` for the given objects.
     ///
@@ -24,7 +24,7 @@ extension NSRange: Diffable {
         return NSEqualRanges(lhs, rhs)
     }
 
-    func diffAgainst(_ object: Any?) -> DiffableResult {
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let rhs = object as? NSRange else {
             results.append("Incorrect type <expected: FileParserResult, received: \(type(of: object))>")
@@ -36,7 +36,7 @@ extension NSRange: Diffable {
     }
 }
 
-@objcMembers class DiffableResult: NSObject, AutoEquatable {
+@objcMembers public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
     internal var identifier: String?
@@ -58,13 +58,13 @@ extension NSRange: Diffable {
 
     var isEmpty: Bool { return results.isEmpty }
 
-    override var description: String {
+    public override var description: String {
         guard !results.isEmpty else { return "" }
         return "\(identifier.flatMap { "\($0) " } ?? "")" + results.joined(separator: "\n")
     }
 }
 
-extension DiffableResult {
+public extension DiffableResult {
 
 #if swift(>=4.1)
 #else
