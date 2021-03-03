@@ -30,8 +30,8 @@ Use `--help` to see the list of all available options.
 
 You can also provide arguments using configuration file. Some of the configuration features (like excluding files) are only 
 available when using configuration file. You provide path to this file using `--config` command line option.
-If you provide path to directory Sourcery will search for file `.sourcery.yml` in this directory. You can also provide
-path to config file itself. By default Sourcery will search for `.sourcery.yml` in your current path.
+If you provide a path to a directory Sourcery will search for a file `.sourcery.yml` in this directory. You can also provide
+a path to config file itself. By default Sourcery will search for `.sourcery.yml` in your current path.
 
 Configuration file should be a valid Yaml file, like this:
 
@@ -47,6 +47,32 @@ output:
 args:
   <name>: <value>
 ```
+
+Single configuration file can contain multiple configurations under root `configurations` key:
+
+```yaml
+configurations:
+    - sources:
+        - <sources path>
+        - <sources path>
+      templates:
+        - <templates path>
+      output: <output path>
+      args:
+        <name>: <value>
+        <name>: <value>
+    - sources:
+        - <sources path>
+        - <sources path>
+      templates:
+        - <templates path>
+      output: <output path>
+      args:
+        <name>: <value>
+        <name>: <value>
+```
+
+This will be equivalent to running Sourcery separately for each of the configurations. In watch mode Sourcery will observe changes in the paths from all the configurations.
 
 #### Sources
 
