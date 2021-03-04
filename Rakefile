@@ -8,6 +8,7 @@ require 'net/http'
 require 'uri'
 
 BUILD_DIR = 'build/'
+CLI_DIR = 'cli/'
 VERSION_FILE = 'SourceryUtils/Sources/Version.swift'
 
 ## [ Utils ] ##################################################################
@@ -66,13 +67,19 @@ end
 
 task :build do
   print_info "Building project"
-  swift_path = `xcrun --find swift`
-  print_info "swift at #{swift_path}"
   xcrun %Q(swift build -c release --disable-sandbox --build-path #{BUILD_DIR})
-  sh %Q(rm -fr bin/sourcery)
-  `mv #{BUILD_DIR}release/sourcery bin/`
-  `cp "$(dirname #{swift_path})/../lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib" "bin/lib_InternalSwiftSyntaxParser.dylib"`
-  `install_name_tool -add_rpath "@executable_path" "bin/sourcery"`
+  sh %Q(rm -fr #{CLI_DIR})
+  sh %Q(mkdir -p "#{CLI_DIR}bin")
+  sh %Q(mkdir -p "#{CLI_DIR}lib")
+  # swift_path = `xcrun --find swift`
+  # print_info "swift at #{swift_path}"
+  # `cp "$(dirname #{swift_path})/../lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib" "build/lib/lib_InternalSwiftSyntaxParser.dylib"`
+  sh %Q(cp lib_InternalSwiftSyntaxParser.dylib #{CLI_DIR}lib)
+  sh %Q(cp SourceryJS/Sources/ejs.js #{CLI_DIR}bin)
+  `mv #{BUILD_DIR}release/sourcery #{CLI_DIR}bin/`
+  `install_name_tool -delete_rpath @loader_path #{CLI_DIR}bin/sourcery`
+  `install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx #{CLI_DIR}bin/sourcery`
+  `install_name_tool -add_rpath "@executable_path/../lib" "#{CLI_DIR}bin/sourcery"`
   sh %Q(rm -fr #{BUILD_DIR})
 end
 
@@ -344,7 +351,7 @@ namespace :release do
 
     sh %Q(mkdir -p "build")
     sh %Q(mkdir -p "build/Resources")
-    sh %Q(cp -r bin build/)
+    sh %Q(cp -r #{CLI_DIR} build/)
     sh %Q(cp -r Templates/Templates build/)
     sh %Q(cp -r docs/docsets/Sourcery.docset build/)
     `cp LICENSE README.md CHANGELOG.md build`

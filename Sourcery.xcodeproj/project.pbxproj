@@ -780,6 +780,7 @@
 		CD754C821D853F000082B512 = {
 			isa = PBXGroup;
 			children = (
+				CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */,
 				0054C4FA224964BA007F9AA7 /* Package.swift */,
 				CD754C8D1D853F000082B512 /* Sourcery */,
 				CD754C9D1D853F000082B512 /* SourceryTests */,
@@ -865,7 +866,6 @@
 				CDF80E1F25E62B8C00443FA1 /* Syntax+Extensions.swift */,
 				CDF80E2725E62BD900443FA1 /* SyntaxTreeCollector.swift */,
 				CDAB713025E2405E0027D85A /* FileParserSyntax.swift */,
-				CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */,
 			);
 			path = SwiftSyntax;
 			sourceTree = "<group>";

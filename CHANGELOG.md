@@ -1,6 +1,10 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+## Internal changes
+- SwiftSyntax dylib is now bundled with the binary
+
 ## 1.3.0
 ## Internal changes
 - Sourcery is now using SwiftSyntax not SourceKit

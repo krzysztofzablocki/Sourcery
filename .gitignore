@@ -13,7 +13,7 @@
 
 ## Build generated
 build/
-bin/sourcery
+cli/
 DerivedData/
 
 ## Various settings
