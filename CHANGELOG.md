@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.3.1
 ## Internal changes
 - SwiftSyntax dylib is now bundled with the binary
 
