@@ -87,7 +87,7 @@ end
 
 task :run_sourcery do
   print_info "Generating internal boilerplate code"
-  sh "bin/sourcery"
+  sh "#{CLI_DIR}bin/sourcery"
 end
 
 desc "Update internal boilerplate code"
