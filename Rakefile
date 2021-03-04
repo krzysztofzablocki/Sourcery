@@ -66,9 +66,13 @@ end
 
 task :build do
   print_info "Building project"
+  swift_path = `xcrun --find swift`
+  print_info "swift at #{swift_path}"
   xcrun %Q(swift build -c release --disable-sandbox --build-path #{BUILD_DIR})
   sh %Q(rm -fr bin/sourcery)
   `mv #{BUILD_DIR}release/sourcery bin/`
+  `cp "$(dirname #{swift_path})/../lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib" "bin/lib_InternalSwiftSyntaxParser.dylib"`
+  `install_name_tool -add_rpath "@executable_path" "bin/sourcery"`
   sh %Q(rm -fr #{BUILD_DIR})
 end
 
