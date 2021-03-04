@@ -70,7 +70,7 @@ extension Variable {
                      annotationParser: AnnotationsParser) -> [Variable] {
 
         let modifiers = variableNode.modifiers?.map(Modifier.init) ?? []
-        let baseModifiers = modifiers.baseModifiers
+        let baseModifiers = modifiers.baseModifiers(parent: visitingType)
 
         return variableNode.bindings.map { (node: PatternBindingSyntax) -> Variable in
             Variable(

@@ -10,7 +10,7 @@ extension Enum {
         self.init(
           name: node.identifier.text.trimmingCharacters(in: .whitespaces),
           parent: parent,
-          accessLevel: modifiers.lazy.compactMap(AccessLevel.init).first ?? .internal,
+          accessLevel: modifiers.lazy.compactMap(AccessLevel.init).first ?? .default(for: parent),
           isExtension: false,
           inheritedTypes: node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? [],
           rawTypeName: nil,

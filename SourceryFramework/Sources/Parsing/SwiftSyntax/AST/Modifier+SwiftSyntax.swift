@@ -33,7 +33,8 @@ extension SourceryModifier {
 }
 
 extension Array where Element == Modifier {
-    var baseModifiers: (readAccess: AccessLevel, writeAccess: AccessLevel, isStatic: Bool, isClass: Bool) {
+    func baseModifiers(parent: Type?) -> (readAccess: AccessLevel, writeAccess: AccessLevel, isStatic: Bool, isClass: Bool) {
+
         var readAccess: AccessLevel = .none
         var writeAccess: AccessLevel = .none
         var isStatic: Bool = false
@@ -61,7 +62,7 @@ extension Array where Element == Modifier {
         }
 
         if readAccess == .none {
-            readAccess = .internal
+            readAccess = .default(for: parent)
         }
         if writeAccess == .none {
             writeAccess = readAccess

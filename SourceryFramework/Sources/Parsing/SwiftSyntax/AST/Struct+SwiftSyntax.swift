@@ -9,7 +9,7 @@ extension Struct {
         self.init(
           name: node.identifier.text.trimmed,
           parent: parent,
-          accessLevel: modifiers.lazy.compactMap(AccessLevel.init).first ?? .internal,
+          accessLevel: modifiers.lazy.compactMap(AccessLevel.init).first ?? .default(for: parent),
           isExtension: false,
           variables: [],
           methods: [],

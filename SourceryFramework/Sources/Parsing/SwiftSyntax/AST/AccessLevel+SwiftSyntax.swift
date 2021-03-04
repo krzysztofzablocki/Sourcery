@@ -16,4 +16,13 @@ extension AccessLevel {
             return nil
         }
     }
+
+    static func `default`(for parent: Type?) -> AccessLevel {
+        var defaultAccess = AccessLevel.internal
+        if let type = parent, type.isExtension {
+            defaultAccess = AccessLevel(rawValue: type.accessLevel) ?? defaultAccess
+        }
+
+        return defaultAccess
+    }
 }

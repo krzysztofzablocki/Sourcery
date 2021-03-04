@@ -3,9 +3,10 @@ import SwiftSyntax
 import SourceryRuntime
 
 extension SourceryMethod {
-    convenience init(_ node: FunctionDeclSyntax, typeName: TypeName?, annotationsParser: AnnotationsParser) {
+    convenience init(_ node: FunctionDeclSyntax, parent: Type?, typeName: TypeName?, annotationsParser: AnnotationsParser) {
         self.init(
           node: node,
+          parent: parent,
           identifier: node.identifier.text.trimmed,
           typeName: typeName,
           signature: Signature(node.signature, annotationsParser: annotationsParser),
@@ -17,9 +18,10 @@ extension SourceryMethod {
         )
     }
 
-    convenience init(_ node: InitializerDeclSyntax, typeName: TypeName, annotationsParser: AnnotationsParser) {
+    convenience init(_ node: InitializerDeclSyntax, parent: Type, typeName: TypeName, annotationsParser: AnnotationsParser) {
         self.init(
           node: node,
+          parent: parent,
           identifier: "init\(node.optionalMark?.text.trimmed ?? "")",
           typeName: typeName,
           signature: Signature(parameters: node.parameters.parameterList, output: nil, throwsOrRethrowsKeyword: node.throwsOrRethrowsKeyword?.description.trimmed, annotationsParser: annotationsParser),
@@ -31,9 +33,10 @@ extension SourceryMethod {
         )
     }
 
-    convenience init(_ node: DeinitializerDeclSyntax, typeName: TypeName, annotationsParser: AnnotationsParser) {
+    convenience init(_ node: DeinitializerDeclSyntax, parent: Type, typeName: TypeName, annotationsParser: AnnotationsParser) {
         self.init(
           node: node,
+          parent: parent,
           identifier: "deinit",
           typeName: typeName,
           signature: Signature(parameters: nil, output: nil, throwsOrRethrowsKeyword: nil, annotationsParser: annotationsParser),
@@ -47,6 +50,7 @@ extension SourceryMethod {
 
     convenience init(
       node: DeclSyntaxProtocol,
+      parent: Type?,
       identifier: String,
       typeName: TypeName?,
       signature: Signature,
@@ -59,7 +63,7 @@ extension SourceryMethod {
         let initializerNode = node as? InitializerDeclSyntax
 
         let modifiers = modifiers?.map(Modifier.init) ?? []
-        let baseModifiers = modifiers.baseModifiers
+        let baseModifiers = modifiers.baseModifiers(parent: parent)
 
         var returnTypeName = signature.output ?? (initializerNode != nil ? typeName : nil) ?? TypeName("Void")
         let funcName = identifier.last == "?" ? String(identifier.dropLast()) : identifier

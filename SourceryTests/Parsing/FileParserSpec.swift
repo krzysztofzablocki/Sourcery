@@ -119,6 +119,39 @@ class FileParserSpec: QuickSpec {
                                     ]))
                     }
 
+                    it("extracts properly with access information for extended types via extension") {
+                        let foo = Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [], modifiers: [Modifier(name: "public")])
+
+                        expect(parse(
+                                """
+                                public struct Foo { }
+                                public extension Foo {
+                                    struct Boo {}
+                                }
+                                """
+                        ).last)
+                          .to(equal(
+                            Struct(name: "Boo", parent: foo, accessLevel: .public, isExtension: false, variables: [], modifiers: [])
+                       ))
+                    }
+
+                    it("extracts properly with access information for extended methods/variables via extension") {
+                        let foo = Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [.init(name: "boo", typeName: .Int, accessLevel: (.public, .none), isComputed: true, definedInTypeName: TypeName("Foo"))], methods: [.init(name: "foo()", selectorName: "foo", accessLevel: .public, definedInTypeName: TypeName("Foo"))], modifiers: [.init(name: "public")])
+
+                        expect(parse(
+                                """
+                                public struct Foo { }
+                                public extension Foo {
+                                    func foo() { }
+                                    var boo: Int { 0 }
+                                }
+                                """
+                        ).last)
+                          .to(equal(
+                            foo
+                       ))
+                    }
+
                     it("extracts generic struct properly") {
                         expect(parse("struct Foo<Something> { }"))
                                 .to(equal([

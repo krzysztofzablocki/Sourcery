@@ -99,7 +99,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
             return .skipChildren
         }
         visitingType.rawMethods.append(
-          SourceryMethod(node, typeName: TypeName(visitingType.name), annotationsParser: annotationsParser)
+            SourceryMethod(node, parent: visitingType, typeName: TypeName(visitingType.name), annotationsParser: annotationsParser)
         )
         return .skipChildren
     }
@@ -108,7 +108,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
     public override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         startVisitingType(node) { parent in
             let modifiers = node.modifiers?.map(Modifier.init) ?? []
-            let base = modifiers.baseModifiers
+            let base = modifiers.baseModifiers(parent: nil)
 
             return Type(
               name: node.extendedType.description.trimmingCharacters(in: .whitespaces),
@@ -135,7 +135,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
     }
 
     public override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-        let method = SourceryMethod(node, typeName: visitingType.map { TypeName($0.name) }, annotationsParser: annotationsParser)
+        let method = SourceryMethod(node, parent: visitingType, typeName: visitingType.map { TypeName($0.name) }, annotationsParser: annotationsParser)
         if let visitingType = visitingType {
             visitingType.rawMethods.append(method)
         } else {
@@ -155,7 +155,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
             logError("init shouldn't appear outside of type declaration \(node.description.trimmed)")
             return .skipChildren
         }
-        let method = SourceryMethod(node, typeName: TypeName(visitingType.name), annotationsParser: annotationsParser)
+        let method = SourceryMethod(node, parent: visitingType, typeName: TypeName(visitingType.name), annotationsParser: annotationsParser)
         visitingType.rawMethods.append(method)
         return .skipChildren
     }
@@ -188,7 +188,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
         let localName = node.identifier.text.trimmed
         let typeName = node.initializer.map { TypeName($0.value) } ?? TypeName.unknown(description: node.description.trimmed)
         let modifiers = node.modifiers?.map(Modifier.init) ?? []
-        let baseModifiers = modifiers.baseModifiers
+        let baseModifiers = modifiers.baseModifiers(parent: visitingType)
 
         if let composition = processPossibleProtocolComposition(for: typeName.name, localName: localName, accessLevel: baseModifiers.readAccess) {
             if let visitingType = visitingType {

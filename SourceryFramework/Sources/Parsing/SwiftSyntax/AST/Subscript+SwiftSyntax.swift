@@ -5,7 +5,7 @@ import SourceryRuntime
 extension Subscript {
     convenience init(_ node: SubscriptDeclSyntax, parent: Type, annotationsParser: AnnotationsParser) {
         let modifiers = node.modifiers?.map(Modifier.init) ?? []
-        let baseModifiers = modifiers.baseModifiers
+        let baseModifiers = modifiers.baseModifiers(parent: parent)
 
         self.init(
           parameters: node.indices.parameterList.map { MethodParameter($0, annotationsParser: annotationsParser) },
