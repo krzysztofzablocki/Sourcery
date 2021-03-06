@@ -2,6 +2,9 @@
 
 ---
 ## Master
+## New Features
+- Configuration file now supports multiple configurations at once
+
 ## Fixes
 - When resolving extensions inherit their access level for methods/subscripts/variables and sub-types fixes #910
 - When resolving Parent.ChildGenericType<Type> properly parses generic information

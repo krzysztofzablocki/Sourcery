@@ -1,7 +1,7 @@
 sources:
-- "${SOURCE_PATH}"
+    - "${SOURCE_PATH}"
 templates:
-- "Templates"
+    - "Templates"
 output: "Output"
 args:
     serverUrl: ${serverUrl}
