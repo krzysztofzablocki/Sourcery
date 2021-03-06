@@ -109,29 +109,20 @@ extension String {
               }
 
             func genericType(from itemsTypes: [TypeName]) -> TypeName {
-                // TODO: why are hashes different for same `TypeName` definitions? this should just work as set...
-                var unique = [TypeName]()
-                for item in itemsTypes {
-                    if !unique.contains(item) {
-                        unique.append(item)
-                    }
-                }
+                var unique = Set(itemsTypes)
 
                 if unique.count == 1, let type = unique.first {
                     return type
-                } else if unique.count == 2 {
-                    unique.removeAll(where: { $0 == Self.optionalTypeName })
-                    if unique.count == 1, let type = unique.first {
-                        return TypeName(name: type.name,
-                                        isOptional: true,
-                                        isImplicitlyUnwrappedOptional: false,
-                                        tuple: type.tuple,
-                                        array: type.array,
-                                        dictionary: type.dictionary,
-                                        closure: type.closure,
-                                        generic: type.generic
-                        )
-                    }
+                } else if unique.count == 2, unique.remove(Self.optionalTypeName) != nil, let type = unique.first {
+                    return TypeName(name: type.name,
+                                    isOptional: true,
+                                    isImplicitlyUnwrappedOptional: false,
+                                    tuple: type.tuple,
+                                    array: type.array,
+                                    dictionary: type.dictionary,
+                                    closure: type.closure,
+                                    generic: type.generic
+                    )
                 }
 
                 return TypeName(name: "Any")

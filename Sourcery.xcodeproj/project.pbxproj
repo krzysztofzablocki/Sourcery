@@ -84,7 +84,6 @@
 		CDAB713125E2405E0027D85A /* FileParserSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB713025E2405E0027D85A /* FileParserSyntax.swift */; };
 		CDAB714125E241900027D85A /* FileParserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB714025E241900027D85A /* FileParserType.swift */; };
 		CDAB7CFC231E412C00ED8A32 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB7CFB231E412C00ED8A32 /* Time.swift */; };
-		CDB4DA9F25F3C4B4009FE708 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = CD9713CD25EFA02900E69E69 /* SwiftSyntax */; };
 		CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBEC15B1E242B9E0090E881 /* StencilTemplate.swift */; };
 		CDDF5BF82572697200F494EA /* Array+Parallel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D6548CB0B086F0574D1B /* Array+Parallel.swift */; };
 		CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */; };
@@ -487,7 +486,6 @@
 			files = (
 				47635CB021DA342600B2D5A1 /* SourceryUtils.framework in Frameworks */,
 				B5BCFA0021D161BF009DF652 /* SourceryRuntime.framework in Frameworks */,
-				CDB4DA9F25F3C4B4009FE708 /* SwiftSyntax in Frameworks */,
 				CD4B38F125EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */,
 				60CC7E378065D25B8D555BCF /* Pods_SourceryFramework.framework in Frameworks */,
 			);
@@ -1191,7 +1189,7 @@
 			);
 			name = SourceryFramework;
 			packageProductDependencies = (
-				CD9713CD25EFA02900E69E69 /* SwiftSyntax */,
+				CD9713CD25EFA02900E69E69,
 			);
 			productName = SourceryFramework;
 			productReference = B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */;
@@ -1303,7 +1301,7 @@
 			);
 			mainGroup = CD754C821D853F000082B512;
 			packageReferences = (
-				CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */,
+				CD9713CC25EFA02900E69E69,
 			);
 			productRefGroup = CD754C8C1D853F000082B512 /* Products */;
 			projectDirPath = "";
@@ -2571,7 +2569,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
+		CD9713CC25EFA02900E69E69 = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-syntax";
 			requirement = {
@@ -2582,9 +2580,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CD9713CD25EFA02900E69E69 /* SwiftSyntax */ = {
+		CD9713CD25EFA02900E69E69 = {
 			isa = XCSwiftPackageProductDependency;
-			package = CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */;
+			package = CD9713CC25EFA02900E69E69;
 			productName = SwiftSyntax;
 		};
 /* End XCSwiftPackageProductDependency section */
