@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+## Fixes
+ - When resolving extensions inherit their access level for methods/subscripts/variables and sub-types fixes #910
+ - When resolving Parent.ChildGenericType<Type> properly parses generic information
+
 ## 1.3.1
 ## Internal changes
 - SwiftSyntax dylib is now bundled with the binary

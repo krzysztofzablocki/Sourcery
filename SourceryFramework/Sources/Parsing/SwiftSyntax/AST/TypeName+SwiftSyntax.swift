@@ -51,7 +51,13 @@ extension TypeName {
             }
         } else if let typeIdentifier = node.as(MemberTypeIdentifierSyntax.self) {
             let base = TypeName(typeIdentifier.baseType) // TODO: VERIFY IF THIS SHOULD FULLY WRAP
-            self.init(name: "\(base.name).\(typeIdentifier.name.text.trimmed)")
+            let fullName = "\(base.name).\(typeIdentifier.name.text.trimmed)"
+            let generic = typeIdentifier.genericArgumentClause.map { GenericType(name: fullName, node: $0) }
+            if let genericComponent = generic?.typeParameters.map({ $0.typeName.asSource }).joined(separator: ", ") {
+                self.init(name: "\(fullName)<\(genericComponent)>", generic: generic)
+            } else {
+                self.init(name: fullName, generic: generic)
+            }
         } else if let typeIdentifier = node.as(CompositionTypeSyntax.self) {
             let types = typeIdentifier.elements.map { TypeName($0.type) }
             let name = types.map({ $0.name }).joined(separator:" & ")

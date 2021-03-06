@@ -189,7 +189,11 @@ class FileParserVariableSpec: QuickSpec {
 
                 it("extracts generic property correctly") {
                     expect(parse("let name: Observable<Int>")).to(equal(Variable(name: "name", typeName:
-                    TypeName("Observable<Int>", generic: .init(name: "Observable", typeParameters: [.init(typeName: TypeName("Int"))])
+                    TypeName(name: "Observable<Int>", generic: .init(name: "Observable", typeParameters: [.init(typeName: TypeName("Int"))])
+                    ), accessLevel: (read: .internal, write: .none), isComputed: false)))
+
+                    expect(parse("let name: Combine.Observable<Int>")).to(equal(Variable(name: "name", typeName:
+                    TypeName(name: "Combine.Observable<Int>", generic: .init(name: "Combine.Observable", typeParameters: [.init(typeName: TypeName("Int"))])
                     ), accessLevel: (read: .internal, write: .none), isComputed: false)))
                 }
 
