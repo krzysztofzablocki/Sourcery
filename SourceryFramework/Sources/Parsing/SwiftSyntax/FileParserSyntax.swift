@@ -52,7 +52,7 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
 
         collector.types.forEach {
             $0.imports = collector.imports
-            $0.__path = path
+            $0.path = path
         }
 
         return FileParserResult(

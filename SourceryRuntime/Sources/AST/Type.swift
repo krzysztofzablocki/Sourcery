@@ -310,7 +310,7 @@ public typealias AttributeList = [String: [Attribute]]
     // Path to file where the type is defined
     // sourcery: skipDescription, skipEquality, skipJSExport
     /// :nodoc:
-    public var __path: String?
+    public var path: String?
 
     /// :nodoc:
     public init(name: String = "",
@@ -398,7 +398,7 @@ public typealias AttributeList = [String: [Attribute]]
             self.supertype = aDecoder.decode(forKey: "supertype")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
-            self.__path = aDecoder.decode(forKey: "__path")
+            self.path = aDecoder.decode(forKey: "path")
         }
 
         /// :nodoc:
@@ -426,7 +426,7 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.supertype, forKey: "supertype")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
-            aCoder.encode(self.__path, forKey: "__path")
+            aCoder.encode(self.path, forKey: "path")
         }
 // sourcery:end
 }

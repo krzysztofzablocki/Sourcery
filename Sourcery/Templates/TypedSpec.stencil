@@ -1,4 +1,4 @@
-//sourcery:file:../../SourceryTests/Models/TypedSpec
+//sourcery:file:../../../SourceryTests/Models/TypedSpec
 import Quick
 import Nimble
 @testable import Sourcery

@@ -540,7 +540,7 @@ extension Sourcery {
                 let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
-                    let path = definition.__path.map({ Path($0) }),
+                    let path = definition.path.map({ Path($0) }),
                     let contents = try? path.read(.utf8),
                     let bodyRange = bodyRange(for: definition, contentsView: contentsView) else {
                         rangesToReplace.remove(range)

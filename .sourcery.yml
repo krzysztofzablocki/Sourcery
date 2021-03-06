@@ -3,4 +3,4 @@ sources:
 templates:
   - Sourcery/Templates
 output:
-  SourceryRuntime/Sources 
+  SourceryRuntime/Sources/Generated

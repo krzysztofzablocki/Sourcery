@@ -43,7 +43,24 @@ extension String {
 func package(folder folderPath: String) throws {
     print("let sourceryRuntimeFiles: [FolderSynchronizer.File] = [")
     let folderURL = URL(fileURLWithPath: folderPath)
-    try FileManager().contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
+
+    guard let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) else {
+        print("Unable to retrieve file enumerator")
+        exit(1)
+    }
+    var files = [URL]()
+    for case let fileURL as URL in enumerator {
+        do {
+            let fileAttributes = try fileURL.resourceValues(forKeys:[.isRegularFileKey])
+            if fileAttributes.isRegularFile! {
+                files.append(fileURL)
+            }
+        } catch { 
+            print(error, fileURL) 
+        }
+    }
+    
+    try files
       .sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
       .forEach { sourceFileURL in
           print("    .init(name: \"\(sourceFileURL.lastPathComponent)\", content:")
