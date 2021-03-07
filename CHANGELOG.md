@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.3.2
 ## New Features
 - Configuration file now supports multiple configurations at once
 
