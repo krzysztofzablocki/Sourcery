@@ -12,7 +12,7 @@ extension Enum {
           parent: parent,
           accessLevel: modifiers.lazy.compactMap(AccessLevel.init).first ?? .default(for: parent),
           isExtension: false,
-          inheritedTypes: node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? [],
+          inheritedTypes: node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? [], // TODO: type name?
           rawTypeName: nil,
           cases: [],
           variables: [],

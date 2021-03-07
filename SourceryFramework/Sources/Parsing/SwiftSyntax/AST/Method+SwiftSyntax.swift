@@ -65,7 +65,17 @@ extension SourceryMethod {
         let modifiers = modifiers?.map(Modifier.init) ?? []
         let baseModifiers = modifiers.baseModifiers(parent: parent)
 
-        var returnTypeName = signature.output ?? (initializerNode != nil ? typeName : nil) ?? TypeName("Void")
+        var returnTypeName: TypeName
+        if let initializer = initializerNode, let typeName = typeName {
+            if let optional = initializer.optionalMark {
+                returnTypeName = TypeName(name: typeName.name + optional.text.trimmed)
+            } else {
+                returnTypeName = typeName
+            }
+        } else {
+            returnTypeName = signature.output ?? TypeName("Void")
+        }
+
         let funcName = identifier.last == "?" ? String(identifier.dropLast()) : identifier
         var fullName = identifier
         if let generics = genericParameterClause?.genericParameterList {
@@ -74,7 +84,6 @@ extension SourceryMethod {
 
         if let genericWhereClause = genericWhereClause {
             // TODO: add generic requirement to method
-
             // TODO: TBR
             returnTypeName = TypeName(name: returnTypeName.name + " \(genericWhereClause.description.trimmed)",
                                       unwrappedTypeName: returnTypeName.unwrappedTypeName,
