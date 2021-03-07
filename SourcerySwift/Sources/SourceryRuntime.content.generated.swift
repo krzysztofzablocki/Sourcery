@@ -521,7 +521,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -645,7 +645,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1067,7 +1067,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -1953,7 +1953,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -3206,7 +3206,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -5921,7 +5921,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.3.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
