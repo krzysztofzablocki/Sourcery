@@ -40,7 +40,7 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                                     associatedtype Baz
                                 }
                             """
-                            expect(associatedType(code)).to(equal([AssociatedType(name: "Bar"), AssociatedType(name: "Baz")]))
+                            expect(associatedType(code).sorted(by: { $0.name < $1.name })).to(equal([AssociatedType(name: "Bar"), AssociatedType(name: "Baz")]))
                         }
                     }
 
