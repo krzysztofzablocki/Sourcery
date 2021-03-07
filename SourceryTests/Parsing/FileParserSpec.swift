@@ -12,7 +12,7 @@ class FileParserSpec: QuickSpec {
             describe("parse") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypesAndFunctions(parserResult).types
+                    return parserResult.types
                 }
 
                 describe("regression files") {
@@ -132,23 +132,6 @@ class FileParserSpec: QuickSpec {
                         ).last)
                           .to(equal(
                             Struct(name: "Boo", parent: foo, accessLevel: .public, isExtension: false, variables: [], modifiers: [])
-                       ))
-                    }
-
-                    it("extracts properly with access information for extended methods/variables via extension") {
-                        let foo = Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [.init(name: "boo", typeName: .Int, accessLevel: (.public, .none), isComputed: true, definedInTypeName: TypeName("Foo"))], methods: [.init(name: "foo()", selectorName: "foo", accessLevel: .public, definedInTypeName: TypeName("Foo"))], modifiers: [.init(name: "public")])
-
-                        expect(parse(
-                                """
-                                public struct Foo { }
-                                public extension Foo {
-                                    func foo() { }
-                                    var boo: Int { 0 }
-                                }
-                                """
-                        ).last)
-                          .to(equal(
-                            foo
                        ))
                     }
 
@@ -300,16 +283,6 @@ class FileParserSpec: QuickSpec {
                                             innerType
                                     ]))
                         }
-
-                        it("extracts properly from extension") {
-                            let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
-
-                            expect(parse("struct Foo {}  extension Foo { struct Bar { } }"))
-                                .to(equal([
-                                    Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], containedTypes: [innerType]),
-                                    innerType
-                                    ]))
-                        }
                     }
                 }
 
@@ -322,25 +295,11 @@ class FileParserSpec: QuickSpec {
                                     ]))
                     }
 
-                    it("extracts variables properly from extensions") {
-                        expect(parse("class Foo { }; extension Foo { var x: Int { 1 }"))
-                                .to(equal([
-                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Foo"))])
-                                ]))
-                    }
-
                     it("extracts inherited types properly") {
-                        expect(parse("class Foo: TestProtocol, AnotherProtocol {}"))
-                          .to(equal([
+                        expect(parse("class Foo: TestProtocol, AnotherProtocol {}").first(where: { $0.name == "Foo" }))
+                          .to(equal(
                                         Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
-                                    ]))
-                    }
-
-                    it("extracts inherited types properly from extensions") {
-                        expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
-                                .to(equal([
-                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
-                                ]))
+                                    ))
                     }
 
                     it("extracts annotations correctly") {
@@ -350,16 +309,6 @@ class FileParserSpec: QuickSpec {
 
                         expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\nclass Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
-                    }
-                }
-
-                context("given unknown type") {
-                    it("extracts extensions properly") {
-                        expect(parse("protocol Foo { }; extension Bar: Foo { var x: Int { return 0 } }"))
-                            .to(equal([
-                                Type(name: "Bar", accessLevel: .internal, isExtension: true, variables: [Variable(name: "x", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"]).asUnknownException(),
-                                Protocol(name: "Foo")
-                                ]))
                     }
                 }
 
@@ -511,8 +460,9 @@ class FileParserSpec: QuickSpec {
 
                             let types = parse("protocol P {}; class Foo { typealias FooComposition = Bar & P; class Bar { typealias BarComposition = FooBar & P; class FooBar {} } }")
 
-                            let fooComposition = types.first?.containedTypes.first
-                            let barComposition = types.first?.containedTypes.last?.containedTypes.first
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooComposition = fooType?.containedTypes.first
+                            let barComposition = fooType?.containedTypes.last?.containedTypes.first
 
                             expect(fooComposition).to(equal(
                                 ProtocolComposition(name: "FooComposition", parent: foo, inheritedTypes: ["Bar", "P"], composedTypeNames: [TypeName("Bar"), TypeName("P")])))
@@ -754,24 +704,6 @@ class FileParserSpec: QuickSpec {
                                     ]))
 
                         }
-
-                        it("extracts types inherited in extension properly") {
-                            expect(parse("enum Foo { case optionA }; extension Foo: SomeProtocol {}; protocol SomeProtocol {}"))
-                                .to(equal([
-                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["SomeProtocol"], rawTypeName: nil, cases: [EnumCase(name: "optionA")]),
-                                    Protocol(name: "SomeProtocol")
-                                    ]))
-                        }
-
-                        it("does not use extension to infer rawType") {
-                            expect(parse("enum Foo { case one }; extension Foo: Equatable {}")).to(equal([
-                                Enum(name: "Foo",
-                                     inheritedTypes: ["Equatable"],
-                                     cases: [EnumCase(name: "one")]
-                                )
-                                ]))
-                        }
-
                     }
 
                     it("extracts enums with custom values") {
@@ -781,7 +713,7 @@ class FileParserSpec: QuickSpec {
                                      }
                                      """))
                             .to(equal([
-                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawTypeName: TypeName("String"), cases: [EnumCase(name: "optionA", rawValue: "Value")])
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "optionA", rawValue: "Value")])
                                 ]))
 
                         expect(parse("""
@@ -790,7 +722,7 @@ class FileParserSpec: QuickSpec {
                                      }
                                      """))
                           .to(equal([
-                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, rawTypeName: TypeName("Int"), cases: [EnumCase(name: "optionA", rawValue: "2")])
+                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["Int"], cases: [EnumCase(name: "optionA", rawValue: "2")])
                                     ]))
                     }
 
@@ -847,7 +779,7 @@ class FileParserSpec: QuickSpec {
                                           ]))
                     }
 
-                    it("extracts default values for asssociated values") {
+                    it("extracts default values for associated values") {
                         expect(parse("enum Foo { case optionA(Int = 1, named: Float = 42.0, _: Bool = false); case optionB(Bool = true) }"))
                         .to(equal([
                             Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
@@ -862,57 +794,6 @@ class FileParserSpec: QuickSpec {
                                     ])
                                 ])
                         ]))
-                    }
-
-                    context("given associated value with its type existing") {
-
-                        it("extracts associated value's type") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
-                            let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
-
-                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar) }")
-                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
-
-                            expect(parsedItem).to(equal(item))
-                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
-                        }
-
-                        it("extracts associated value's optional type") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar?"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
-                            let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
-
-                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar?) }")
-                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
-
-                            expect(parsedItem).to(equal(item))
-                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
-                        }
-
-                        it("extracts associated value's typealias") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Bar2"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
-                            let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
-
-                            let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar2) }")
-                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
-
-                            expect(parsedItem).to(equal(item))
-                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
-                        }
-
-                        it("extracts associated value's same (indirect) enum type") {
-                            let associatedValue = AssociatedValue(typeName: TypeName("Foo"))
-                            let item = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])], modifiers: [
-                                Modifier(name: "indirect")
-                            ])
-                            associatedValue.type = item
-
-                            let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(Foo) }")
-                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
-
-                            expect(parsedItem).to(equal(item))
-                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
-                        }
-
                     }
                 }
 
@@ -982,7 +863,7 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("does consider type variables as computed when they are, even if they adhere to protocol") {
-                        expect(parse("protocol Foo { var some: Int { get }\nvar some2: Int { get } }\nclass Bar: Foo { var some: Int { return 2 }\nvar some2: Int { get { return 2 } } }").first)
+                        expect(parse("protocol Foo { var some: Int { get }\nvar some2: Int { get } }\nclass Bar: Foo { var some: Int { return 2 }\nvar some2: Int { get { return 2 } } }").first(where: { $0.name == "Bar" }))
                             .to(equal(
                                 Class(name: "Bar", variables: [
                                     Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .none), isComputed: true, definedInTypeName: TypeName("Bar")),
@@ -992,72 +873,10 @@ class FileParserSpec: QuickSpec {
                     }
 
                     it("does not consider type variables as computed when they aren't, even if they adhere to protocol and have didSet blocks") {
-                        expect(parse("protocol Foo { var some: Int { get } }\nclass Bar: Foo { var some: Int { didSet { } }").first)
+                        expect(parse("protocol Foo { var some: Int { get } }\nclass Bar: Foo { var some: Int { didSet { } }").first(where: { $0.name == "Bar" }))
                           .to(equal(
                             Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName("Int"), accessLevel: (.internal, .internal), isComputed: false, definedInTypeName: TypeName("Bar"))], inheritedTypes: ["Foo"])
                           ))
-                    }
-
-                    describe("when dealing with protocol inheritance") {
-                        it("flattens protocol with default implementation as expected") {
-                            let parsed = parse(
-                                """
-                                protocol UrlOpening {
-                                  func open(
-                                    _ url: URL,
-                                    options: [UIApplication.OpenExternalURLOptionsKey: Any],
-                                    completionHandler completion: ((Bool) -> Void)?
-                                  )
-                                  func open(_ url: URL)
-                                }
-
-                                extension UrlOpening {
-                                    func open(_ url: URL) {
-                                        open(url, options: [:], completionHandler: nil)
-                                    }
-
-                                    func anotherFunction(key: String) {
-                                    }
-                                }
-                                """
-                            )
-
-                            expect(parsed).to(haveCount(1))
-
-                            let childProtocol = parsed.last
-                            expect(childProtocol?.name).to(equal("UrlOpening"))
-                            expect(childProtocol?.allMethods.map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)", "anotherFunction(key:)"]))
-                        }
-
-                        it("flattens inherited protocols with default implementation as expected") {
-                            let parsed = parse(
-                                """
-                                protocol RemoteUrlOpening {
-                                  func open(_ url: URL)
-                                }
-
-                                protocol UrlOpening: RemoteUrlOpening {
-                                  func open(
-                                    _ url: URL,
-                                    options: [UIApplication.OpenExternalURLOptionsKey: Any],
-                                    completionHandler completion: ((Bool) -> Void)?
-                                  )
-                                }
-
-                                extension UrlOpening {
-                                  func open(_ url: URL) {
-                                    open(url, options: [:], completionHandler: nil)
-                                  }
-                                }
-                                """
-                            )
-
-                            expect(parsed).to(haveCount(2))
-
-                            let childProtocol = parsed.last
-                            expect(childProtocol?.name).to(equal("UrlOpening"))
-                            expect(childProtocol?.allMethods.filter({ $0.definedInType?.isExtension == false }).map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)"]))
-                        }
                     }
                 }
             }

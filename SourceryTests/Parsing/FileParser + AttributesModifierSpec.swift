@@ -10,7 +10,7 @@ class FileParserAttributesSpec: QuickSpec {
         describe("FileParser") {
             func parse(_ code: String) -> [Type] {
                 guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
-                return Composer.uniqueTypesAndFunctions(parserResult).types
+                return parserResult.types
             }
 
             it("extracts type attribute and modifiers") {

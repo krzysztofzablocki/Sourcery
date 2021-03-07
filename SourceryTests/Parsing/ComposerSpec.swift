@@ -83,6 +83,161 @@ class ParserComposerSpec: QuickSpec {
                         expect(bazType.allVariables[1].definedInType).to(equal(barType))
                         expect(bazType.allVariables[2].definedInType).to(equal(fooType))
                     }
+
+                    context("given method with return type") {
+                        it("finds actual return type") {
+                            let types = parse("class Foo { func foo() -> Bar { } }; class Bar {}")
+                            let method = types.last?.methods.first
+
+                            expect(method?.returnType)
+                              .to(equal(Class(name: "Bar")))
+                        }
+                    }
+
+                    context("given generic method") {
+                        func assertMethods(_ types: [Type]) {
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let foo = fooType?.methods.first
+                            let fooBar = fooType?.methods.last
+
+                            expect(foo?.name).to(equal("foo<T: Equatable>()"))
+                            expect(foo?.selectorName).to(equal("foo"))
+                            expect(foo?.shortName).to(equal("foo<T: Equatable>"))
+                            expect(foo?.callName).to(equal("foo"))
+                            expect(foo?.returnTypeName).to(equal(TypeName("Bar? where \nT: Equatable")))
+                            expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
+                            expect(foo?.returnType).to(equal(Class(name: "Bar")))
+                            expect(foo?.definedInType).to(equal(types.last))
+                            expect(foo?.definedInTypeName).to(equal(TypeName("Foo")))
+
+                            expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                            expect(fooBar?.selectorName).to(equal("fooBar(bar:)"))
+                            expect(fooBar?.shortName).to(equal("fooBar<T>"))
+                            expect(fooBar?.callName).to(equal("fooBar"))
+                            expect(fooBar?.returnTypeName).to(equal(TypeName("Void where T: Equatable")))
+                            expect(fooBar?.unwrappedReturnTypeName).to(equal("Void"))
+                            expect(fooBar?.returnType).to(beNil())
+                            expect(fooBar?.definedInType).to(equal(types.last))
+                            expect(fooBar?.definedInTypeName).to(equal(TypeName("Foo")))
+                        }
+
+                        it("extracts class method properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                  func foo<T: Equatable>() -> Bar?\n where \nT: Equatable {
+                                                  };  /// Asks a Duck to quack
+                                                      ///
+                                                      /// - Parameter times: How many times the Duck will quack
+                                                  func fooBar<T>(bar: T) where T: Equatable { }
+                                              };
+                                              class Bar {}
+                                              """)
+                            assertMethods(types)
+                        }
+
+                        it("extracts protocol method properly") {
+                            let types = parse("""
+                                              protocol Foo {
+                                                  func foo<T: Equatable>() -> Bar?\n where \nT: Equatable  /// Asks a Duck to quack
+                                                      ///
+                                                      /// - Parameter times: How many times the Duck will quack
+                                                  func fooBar<T>(bar: T) where T: Equatable
+                                              };
+                                              class Bar {}
+                                              """)
+                            assertMethods(types)
+                        }
+                    }
+
+                    context("given initializer") {
+                        it("extracts initializer properly") {
+                            let fooType = Class(name: "Foo")
+                            let expectedInitializer = Method(name: "init()", selectorName: "init", returnTypeName: TypeName("Foo"), isStatic: true, definedInTypeName: TypeName("Foo"))
+                            expectedInitializer.returnType = fooType
+                            fooType.rawMethods = [Method(name: "foo()", selectorName: "foo", definedInTypeName: TypeName("Foo")), expectedInitializer]
+
+                            let type = parse("class Foo { func foo() {}; init() {} }").first
+                            let initializer = type?.initializers.first
+
+                            expect(initializer).to(equal(expectedInitializer))
+                            expect(initializer?.returnType).to(equal(fooType))
+                        }
+
+                        it("extracts failable initializer properly") {
+                            let fooType = Class(name: "Foo")
+                            let expectedInitializer = Method(name: "init?()", selectorName: "init", returnTypeName: TypeName("Foo?"), isStatic: true, isFailableInitializer: true, definedInTypeName: TypeName("Foo"))
+                            expectedInitializer.returnType = fooType
+                            fooType.rawMethods = [Method(name: "foo()", selectorName: "foo", definedInTypeName: TypeName("Foo")), expectedInitializer]
+
+                            let type = parse("class Foo { func foo() {}; init?() {} }").first
+                            let initializer = type?.initializers.first
+
+                            expect(initializer).to(equal(expectedInitializer))
+                            expect(initializer?.returnType).to(equal(fooType))
+                        }
+                    }
+                }
+
+                context("given protocol inheritance") {
+                    it("flattens protocol with default implementation as expected") {
+                        let parsed = parse(
+                          """
+                          protocol UrlOpening {
+                            func open(
+                              _ url: URL,
+                              options: [UIApplication.OpenExternalURLOptionsKey: Any],
+                              completionHandler completion: ((Bool) -> Void)?
+                            )
+                            func open(_ url: URL)
+                          }
+
+                          extension UrlOpening {
+                              func open(_ url: URL) {
+                                  open(url, options: [:], completionHandler: nil)
+                              }
+
+                              func anotherFunction(key: String) {
+                              }
+                          }
+                          """
+                        )
+
+                        expect(parsed).to(haveCount(1))
+
+                        let childProtocol = parsed.last
+                        expect(childProtocol?.name).to(equal("UrlOpening"))
+                        expect(childProtocol?.allMethods.map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)", "anotherFunction(key:)"]))
+                    }
+
+                    it("flattens inherited protocols with default implementation as expected") {
+                        let parsed = parse(
+                          """
+                          protocol RemoteUrlOpening {
+                            func open(_ url: URL)
+                          }
+
+                          protocol UrlOpening: RemoteUrlOpening {
+                            func open(
+                              _ url: URL,
+                              options: [UIApplication.OpenExternalURLOptionsKey: Any],
+                              completionHandler completion: ((Bool) -> Void)?
+                            )
+                          }
+
+                          extension UrlOpening {
+                            func open(_ url: URL) {
+                              open(url, options: [:], completionHandler: nil)
+                            }
+                          }
+                          """
+                        )
+
+                        expect(parsed).to(haveCount(2))
+
+                        let childProtocol = parsed.last
+                        expect(childProtocol?.name).to(equal("UrlOpening"))
+                        expect(childProtocol?.allMethods.filter({ $0.definedInType?.isExtension == false }).map { $0.selectorName }).to(equal(["open(_:options:completionHandler:)", "open(_:)"]))
+                    }
                 }
 
                 context("given overlapping protocol inheritance") {
@@ -137,82 +292,147 @@ class ParserComposerSpec: QuickSpec {
 
                 }
 
-                context("given extension") {
-                    var input: String!
-                    var method: SourceryRuntime.Method!
-                    var defaultedMethod: SourceryRuntime.Method!
-                    var parsedResult: Type!
-                    var originalType: Type!
-                    var typeExtension: Type!
+                context("given extension of same type") {
 
-                    beforeEach {
-                        method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
-                                        parameters: [MethodParameter(name: "bar",
-                                                                     typeName: TypeName("String"))],
-                                        returnTypeName: TypeName("Void"),
-                                        definedInTypeName: TypeName("Foo"))
-                        defaultedMethod = Method(name: "fooMethod(bar: String = \"Baz\")", selectorName: "fooMethod(bar:)",
-                                                 parameters: [MethodParameter(name: "bar",
-                                                                              typeName: TypeName("String"),
-                                                                              defaultValue: "\"Baz\"")],
-                                                 returnTypeName: TypeName("Void"),
-                                                 accessLevel: .internal,
-                                                 definedInTypeName: TypeName("Foo"))
+                    it("combines nested types correctly") {
+                        let innerType = Struct(name: "Bar", accessLevel: .internal, isExtension: false, variables: [])
+
+                        expect(parse("struct Foo {}  extension Foo { struct Bar { } }"))
+                          .to(equal([
+                                        Struct(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], containedTypes: [innerType]),
+                                        innerType
+                                    ]))
                     }
 
-                    context("for enum") {
-                        beforeEach {
-                            input = "enum Foo { case A; func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
-                            parsedResult = parse(input).first
-                            originalType = Enum(name: "Foo", cases: [EnumCase(name: "A")], methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
-                        }
-
-                        it("resolves methods definedInType") {
-                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
-                        }
+                    it("combines methods correctly") {
+                        expect(parse("class Baz {}; extension Baz { func foo() {} }"))
+                          .to(equal([
+                                        Class(name: "Baz", methods: [
+                                            Method(name: "foo()", selectorName: "foo", accessLevel: .internal, definedInTypeName: TypeName("Baz"))
+                                        ])
+                                    ]))
                     }
 
-                    context("for protocol") {
-                        beforeEach {
-                            input = "protocol Foo { func \(method.name) }; extension Foo { func \(defaultedMethod.name) {} }"
-                            parsedResult = parse(input).first
-                            originalType = Protocol(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
-                        }
-
-                        it("resolves methods definedInType") {
-                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
-                        }
+                    it("combines variables correctly") {
+                        expect(parse("class Baz {}; extension Baz { var foo: Int }"))
+                          .to(equal([
+                                        Class(name: "Baz", variables: [
+                                            .init(name: "foo", typeName: .Int, definedInTypeName: TypeName("Baz"))
+                                        ])
+                                    ]))
                     }
 
-                    context("for class") {
-                        beforeEach {
-                            input = "class Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
-                            parsedResult = parse(input).first
-                            originalType = Class(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
-                        }
+                    it("combines variables and methods with access information from the extension") {
+                        let foo = Struct(name: "Foo", accessLevel: .public, isExtension: false, variables: [.init(name: "boo", typeName: .Int, accessLevel: (.public, .none), isComputed: true, definedInTypeName: TypeName("Foo"))], methods: [.init(name: "foo()", selectorName: "foo", accessLevel: .public, definedInTypeName: TypeName("Foo"))], modifiers: [.init(name: "public")])
 
-                        it("resolves methods definedInType") {
-                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
-                        }
+                        expect(parse(
+                          """
+                          public struct Foo { }
+                          public extension Foo {
+                              func foo() { }
+                              var boo: Int { 0 }
+                          }
+                          """
+                        ).last)
+                          .to(equal(
+                            foo
+                          ))
                     }
 
-                    context("for struct") {
+                    it("combines inherited types") {
+                        expect(parse("class Foo: TestProtocol { }; extension Foo: AnotherProtocol {}"))
+                          .to(equal([
+                                        Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol", "AnotherProtocol"])
+                                    ]))
+                    }
+
+                    it("does not use extension to infer enum rawType") {
+                        expect(parse("enum Foo { case one }; extension Foo: Equatable {}"))
+                          .to(equal([
+                                        Enum(name: "Foo",
+                                             inheritedTypes: ["Equatable"],
+                                             cases: [EnumCase(name: "one")]
+                                        )
+                                    ]))
+                    }
+
+                    describe("remembers original definition type") {
+                        var input: String!
+                        var method: SourceryRuntime.Method!
+                        var defaultedMethod: SourceryRuntime.Method!
+                        var parsedResult: Type!
+                        var originalType: Type!
+                        var typeExtension: Type!
+
                         beforeEach {
-                            input = "struct Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
-                            parsedResult = parse(input).first
-                            originalType = Struct(name: "Foo", methods: [method, defaultedMethod])
-                            typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
+                                            parameters: [MethodParameter(name: "bar",
+                                                                         typeName: TypeName("String"))],
+                                            returnTypeName: TypeName("Void"),
+                                            definedInTypeName: TypeName("Foo"))
+                            defaultedMethod = Method(name: "fooMethod(bar: String = \"Baz\")", selectorName: "fooMethod(bar:)",
+                                                     parameters: [MethodParameter(name: "bar",
+                                                                                  typeName: TypeName("String"),
+                                                                                  defaultValue: "\"Baz\"")],
+                                                     returnTypeName: TypeName("Void"),
+                                                     accessLevel: .internal,
+                                                     definedInTypeName: TypeName("Foo"))
                         }
 
-                        it("resolves methods definedInType") {
-                            expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
-                            expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                        context("for enum") {
+                            beforeEach {
+                                input = "enum Foo { case A; func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
+                                parsedResult = parse(input).first
+                                originalType = Enum(name: "Foo", cases: [EnumCase(name: "A")], methods: [method, defaultedMethod])
+                                typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            }
+
+                            it("resolves methods definedInType") {
+                                expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                                expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                            }
+                        }
+
+                        context("for protocol") {
+                            beforeEach {
+                                input = "protocol Foo { func \(method.name) }; extension Foo { func \(defaultedMethod.name) {} }"
+                                parsedResult = parse(input).first
+                                originalType = Protocol(name: "Foo", methods: [method, defaultedMethod])
+                                typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            }
+
+                            it("resolves methods definedInType") {
+                                expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                                expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                            }
+                        }
+
+                        context("for class") {
+                            beforeEach {
+                                input = "class Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
+                                parsedResult = parse(input).first
+                                originalType = Class(name: "Foo", methods: [method, defaultedMethod])
+                                typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            }
+
+                            it("resolves methods definedInType") {
+                                expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                                expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                            }
+                        }
+
+                        context("for struct") {
+                            beforeEach {
+                                input = "struct Foo { func \(method.name) {} }; extension Foo { func \(defaultedMethod.name) {} }"
+                                parsedResult = parse(input).first
+                                originalType = Struct(name: "Foo", methods: [method, defaultedMethod])
+                                typeExtension = Type(name: "Foo", accessLevel: .internal, isExtension: true, methods: [defaultedMethod])
+                            }
+
+                            it("resolves methods definedInType") {
+                                expect(parsedResult.methods.first?.definedInType).to(equal(originalType))
+                                expect(parsedResult.methods.last?.definedInType).to(equal(typeExtension))
+                            }
                         }
                     }
                 }
@@ -479,6 +699,7 @@ class ParserComposerSpec: QuickSpec {
                         expect(variables[4].type?.implements["Bar"]).to(equal(bar))
                     }
                 }
+
                 context("given literal dictionary type") {
                     it("extracts key type properly") {
                         let types = parse("struct Foo { var dictionary: [Int: String]; var dictionaryOfArrays: [[Int]: [String]]; var dicitonaryOfDictionaries: [Int: [Int: String]]; var dictionaryOfTuples: [Int: (String, String)]; var dictionaryOfClojures: [Int: () -> ()] }")
@@ -591,7 +812,7 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
-                describe("when using Self instead of type name") {
+                context("given Self instead of type name") {
                     it("replaces variable types with actual types") {
 
                         let expectedVariable = Variable(
@@ -1215,6 +1436,82 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given associated type") {
+                    context("given value with its type known") {
+
+                        it("extracts associated value's type") {
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
+                            let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
+
+                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar) }")
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                        it("extracts associated value's optional type") {
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar?"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
+                            let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
+
+                            let parsed = parse("protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar?) }")
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                        it("extracts associated value's typealias") {
+                            let associatedValue = AssociatedValue(typeName: TypeName("Bar2"), type: Class(name: "Bar", inheritedTypes: ["Baz"]))
+                            let item = Enum(name: "Foo", cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])])
+
+                            let parsed = parse("typealias Bar2 = Bar; protocol Baz {}; class Bar: Baz {}; enum Foo { case optionA(Bar2) }")
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                        it("extracts associated value's same (indirect) enum type") {
+                            let associatedValue = AssociatedValue(typeName: TypeName("Foo"))
+                            let item = Enum(name: "Foo", inheritedTypes: ["Baz"], cases: [EnumCase(name: "optionA", associatedValues: [associatedValue])], modifiers: [
+                                Modifier(name: "indirect")
+                            ])
+                            associatedValue.type = item
+
+                            let parsed = parse("protocol Baz {}; indirect enum Foo: Baz { case optionA(Foo) }")
+                            let parsedItem = parsed.compactMap { $0 as? Enum }.first
+
+                            expect(parsedItem).to(equal(item))
+                            expect(associatedValue.type).to(equal(parsedItem?.cases.first?.associatedValues.first?.type))
+                        }
+
+                    }
+
+                    it("extracts associated type properly when constrained to a typealias") {
+                        let code = """
+                                       protocol Foo {
+                                           typealias AEncodable = Encodable
+                                           associatedtype Bar: AEncodable
+                                       }
+                                   """
+                        let givenTypealias = Typealias(aliasName: "AEncodable", typeName: TypeName("Encodable"))
+                        let expectedProtocol = Protocol(name: "Foo", typealiases: [givenTypealias])
+                        givenTypealias.parent = expectedProtocol
+                        expectedProtocol.associatedTypes["Bar"] = AssociatedType(
+                          name: "Bar",
+                          typeName: TypeName(
+                            givenTypealias.aliasName,
+                            actualTypeName: givenTypealias.typeName
+                          )
+                        )
+                        let actualProtocol = parse(code).first
+                        expect(actualProtocol).to(equal(expectedProtocol))
+                        let actualTypeName = (actualProtocol as? SourceryProtocol)?.associatedTypes.first?.value.typeName?.actualTypeName
+                        expect(actualTypeName).to(equal(givenTypealias.actualTypeName))
+                    }
+                }
+
                 context("given nested type") {
                     it("extracts method's defined in properly") {
                         let expectedMethod = Method(name: "some()", selectorName: "some", definedInTypeName: TypeName("Foo.Bar"))
@@ -1679,6 +1976,7 @@ class ParserComposerSpec: QuickSpec {
                             definedInTypeName: nil)))
                     }
                 }
+
                 context("given protocols of the same name in different modules") {
                     func parseModules(_ modules: (name: String?, contents: String)...) -> [Type] {
                         let moduleResults = modules.compactMap {

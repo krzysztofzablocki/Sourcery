@@ -104,7 +104,6 @@ class SyntaxTreeCollector: SyntaxVisitor {
         return .skipChildren
     }
 
-    /// Called when visiting an `ExtensionDeclSyntax` node
     public override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         startVisitingType(node) { parent in
             let modifiers = node.modifiers?.map(Modifier.init) ?? []

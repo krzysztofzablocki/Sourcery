@@ -12,12 +12,12 @@ class FileParserMethodsSpec: QuickSpec {
             describe("parseMethod") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypesAndFunctions(parserResult).types
+                    return parserResult.types
                 }
 
                 func parseFunctions(_ code: String) -> [SourceryMethod] {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypesAndFunctions(parserResult).functions
+                    return parserResult.functions
                 }
 
                 it("extracts methods with inout properties") {
@@ -109,14 +109,6 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(parse("struct Baz { func foo() {} }")).to(equal([
                         Struct(name: "Baz", methods: [
                             Method(name: "foo()", selectorName: "foo", parameters: [], definedInTypeName: TypeName("Baz"))
-                            ])
-                        ]))
-                }
-
-                it("extracts extension method properly") {
-                    expect(parse("class Baz {}; extension Baz { func foo() {} }")).to(equal([
-                        Class(name: "Baz", methods: [
-                            Method(name: "foo()", selectorName: "foo", accessLevel: .internal, definedInTypeName: TypeName("Baz"))
                             ])
                         ]))
                 }
@@ -282,8 +274,9 @@ class FileParserMethodsSpec: QuickSpec {
 
                 context("given generic method") {
                     func assertMethods(_ types: [Type]) {
-                        let foo = types.last?.methods.first
-                        let fooBar = types.last?.methods.last
+                        let fooType = types.first(where: { $0.name == "Foo" })
+                        let foo = fooType?.methods.first
+                        let fooBar = fooType?.methods.last
 
                         expect(foo?.name).to(equal("foo<T: Equatable>()"))
                         expect(foo?.selectorName).to(equal("foo"))
@@ -291,8 +284,6 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(foo?.callName).to(equal("foo"))
                         expect(foo?.returnTypeName).to(equal(TypeName("Bar? where \nT: Equatable")))
                         expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
-                        expect(foo?.returnType).to(equal(Class(name: "Bar")))
-                        expect(foo?.definedInType).to(equal(types.last))
                         expect(foo?.definedInTypeName).to(equal(TypeName("Foo")))
 
                         expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
@@ -301,8 +292,6 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(fooBar?.callName).to(equal("fooBar"))
                         expect(fooBar?.returnTypeName).to(equal(TypeName("Void where T: Equatable")))
                         expect(fooBar?.unwrappedReturnTypeName).to(equal("Void"))
-                        expect(fooBar?.returnType).to(beNil())
-                        expect(fooBar?.definedInType).to(equal(types.last))
                         expect(fooBar?.definedInTypeName).to(equal(TypeName("Foo")))
                     }
 
@@ -335,13 +324,6 @@ class FileParserMethodsSpec: QuickSpec {
                 }
 
                 context("given method with return type") {
-                    it("finds actual return type") {
-                        let types = parse("class Foo { func foo() -> Bar { } }; class Bar {}")
-                        let method = types.last?.methods.first
-
-                        expect(method?.returnType).to(equal(Class(name: "Bar")))
-                    }
-
                     it("extracts tuple return type correctly") {
                         let expectedTypeName = TypeName("(Bar, Int)", tuple: TupleType(name: "(Bar, Int)", elements: [
                             TupleElement(name: "0", typeName: TypeName("Bar"), type: Class(name: "Bar")),
@@ -349,7 +331,7 @@ class FileParserMethodsSpec: QuickSpec {
                             ]))
 
                         let types = parse("class Foo { func foo() -> (Bar, Int) { } }; class Bar {}")
-                        let method = types.last?.methods.first
+                        let method = types.first(where: { $0.name == "Foo" })?.methods.first
 
                         expect(method?.returnTypeName).to(equal(expectedTypeName))
                     }
@@ -392,7 +374,6 @@ class FileParserMethodsSpec: QuickSpec {
                         let initializer = type?.initializers.first
 
                         expect(initializer).to(equal(expectedInitializer))
-                        expect(initializer?.returnType).to(equal(fooType))
                     }
 
                     it("extracts failable initializer properly") {
@@ -405,7 +386,6 @@ class FileParserMethodsSpec: QuickSpec {
                         let initializer = type?.initializers.first
 
                         expect(initializer).to(equal(expectedInitializer))
-                        expect(initializer?.returnType).to(equal(fooType))
                     }
                 }
 

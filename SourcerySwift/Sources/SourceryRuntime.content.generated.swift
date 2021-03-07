@@ -6103,6 +6103,11 @@ public typealias SourceryVariable = Variable
     /// For immutable variables this value is empty string
     public let writeAccess: String
 
+    /// composed access level
+    public var accessLevel: (read: AccessLevel, write: AccessLevel) {
+        (read: AccessLevel(rawValue: readAccess) ?? .none, AccessLevel(rawValue: writeAccess) ?? .none)
+    }
+
     /// Whether variable is mutable or not
     public var isMutable: Bool {
         return writeAccess != AccessLevel.none.rawValue

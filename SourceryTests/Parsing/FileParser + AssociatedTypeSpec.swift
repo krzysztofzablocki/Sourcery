@@ -9,9 +9,15 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
     override func spec() {
         describe("Parser") {
             describe("parse associated type") {
-                func parse(_ code: String) -> [Type] {
+                func associatedType(_ code: String, protocolName: String? = nil) -> [AssociatedType] {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypesAndFunctions(parserResult).types
+
+                    return parserResult.types
+                      .compactMap({ type in
+                          type as? SourceryProtocol
+                      })
+                      .first(where: { protocolName != nil ? $0.name == protocolName : true })?
+                      .associatedTypes.values.map { $0 } ?? []
                 }
 
                 context("given protocol") {
@@ -22,9 +28,7 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                                     associatedtype Bar
                                 }
                             """
-                            let expectedProtocol = Protocol(name: "Foo")
-                            expectedProtocol.associatedTypes["Bar"] = AssociatedType(name: "Bar")
-                            expect(parse(code)).to(equal([expectedProtocol]))
+                            expect(associatedType(code)).to(equal([AssociatedType(name: "Bar")]))
                         }
                     }
 
@@ -36,10 +40,7 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                                     associatedtype Baz
                                 }
                             """
-                            let expectedProtocol = Protocol(name: "Foo")
-                            expectedProtocol.associatedTypes["Bar"] = AssociatedType(name: "Bar")
-                            expectedProtocol.associatedTypes["Baz"] = AssociatedType(name: "Baz")
-                            expect(parse(code)).to(equal([expectedProtocol]))
+                            expect(associatedType(code)).to(equal([AssociatedType(name: "Bar"), AssociatedType(name: "Baz")]))
                         }
                     }
 
@@ -50,12 +51,10 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                                     associatedtype Bar: Codable
                                 }
                             """
-                            let expectedProtocol = Protocol(name: "Foo")
-                            expectedProtocol.associatedTypes["Bar"] = AssociatedType(
-                                name: "Bar",
-                                typeName: TypeName("Codable")
-                            )
-                            expect(parse(code)).to(equal([expectedProtocol]))
+                            expect(associatedType(code)).to(equal([AssociatedType(
+                              name: "Bar",
+                              typeName: TypeName("Codable")
+                            )]))
                         }
                     }
 
@@ -67,64 +66,30 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                                     associatedtype Bar: A
                                 }
                             """
-                            let protocolA = Protocol(name: "A")
-                            let protocolFoo = Protocol(name: "Foo")
-                            protocolFoo.associatedTypes["Bar"] = AssociatedType(
-                                name: "Bar",
-                                typeName: TypeName("A"),
-                                type: protocolA
-                            )
-                            expect(parse(code)).to(equal([protocolA, protocolFoo]))
+                            expect(associatedType(code, protocolName: "Foo")).to(equal([AssociatedType(
+                              name: "Bar",
+                              typeName: TypeName("A")
+                            )]))
                         }
                     }
 
                     context("with associated type constrained to a composite type") {
-                        it("extracts associated type properly") {
-                            let code = """
+                        it("extracts associated type properly and creates a protocol composition") {
+                            let parsed = associatedType("""
                                 protocol Foo {
                                     associatedtype Bar: Encodable & Decodable
                                 }
-                            """
-                            let expectedType = ProtocolComposition(
-                                inheritedTypes: ["Encodable", "Decodable"],
-                                composedTypeNames: [TypeName("Encodable"), TypeName("Decodable")]
-                            )
-                            let expectedProtocol = Protocol(name: "Foo")
-                            expectedType.parent = expectedProtocol
-                            expectedProtocol.associatedTypes["Bar"] = AssociatedType(
-                                name: "Bar",
-                                typeName: TypeName("Encodable & Decodable"),
-                                type: expectedType
-                            )
-                            let actualProtocol = parse(code).first
-                            expect(actualProtocol).to(equal(expectedProtocol))
-                            let actualType = (actualProtocol as? SourceryProtocol)?.associatedTypes.first?.value.type
-                            expect(actualType).to(equal(expectedType))
-                        }
-                    }
+                            """).first
 
-                    context("with associated type constrained to a typealias") {
-                        it("extracts associated type properly") {
-                            let code = """
-                                protocol Foo {
-                                    typealias AEncodable = Encodable
-                                    associatedtype Bar: AEncodable
-                                }
-                            """
-                            let givenTypealias = Typealias(aliasName: "AEncodable", typeName: TypeName("Encodable"))
-                            let expectedProtocol = Protocol(name: "Foo", typealiases: [givenTypealias])
-                            givenTypealias.parent = expectedProtocol
-                            expectedProtocol.associatedTypes["Bar"] = AssociatedType(
-                                name: "Bar",
-                                typeName: TypeName(
-                                    givenTypealias.aliasName,
-                                    actualTypeName: givenTypealias.typeName
-                                )
-                            )
-                            let actualProtocol = parse(code).first
-                            expect(actualProtocol).to(equal(expectedProtocol))
-                            let actualTypeName = (actualProtocol as? SourceryProtocol)?.associatedTypes.first?.value.typeName?.actualTypeName
-                            expect(actualTypeName).to(equal(givenTypealias.actualTypeName))
+                            expect(parsed).to(equal(AssociatedType(
+                              name: "Bar",
+                              typeName: TypeName("Encodable & Decodable")
+                            )))
+                            expect(parsed?.type).to(equal(ProtocolComposition(
+                              parent: SourceryProtocol(name: "Foo"),
+                              inheritedTypes: ["Encodable", "Decodable"],
+                              composedTypeNames: [TypeName("Encodable"), TypeName("Decodable")]
+                            )))
                         }
                     }
                 }

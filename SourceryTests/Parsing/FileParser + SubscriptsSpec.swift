@@ -12,7 +12,7 @@ class FileParserSubscriptsSpec: QuickSpec {
             describe("parseSubscript") {
                 func parse(_ code: String) -> [Type] {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
-                    return Composer.uniqueTypesAndFunctions(parserResult).types
+                    return parserResult.types
                 }
 
                 it("extracts subscripts properly") {
