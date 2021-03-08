@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+
+## Master
+## Fixes
+- Fixes information being lost when extending unknown type more than once
+
 ## 1.3.2
 ## New Features
 - Configuration file now supports multiple configurations at once
