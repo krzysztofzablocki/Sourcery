@@ -1687,6 +1687,33 @@ class ParserComposerSpec: QuickSpec {
                         expect(types.first?.globalName).to(equal("AnyPublisher"))
                     }
 
+                    it("combines unknown extensions from different files correctly") {
+                        let extensionType = Type(name: "AnyPublisher", isExtension: true, variables: [
+                        .init(name: "property1", typeName: .Int, accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName(name: "AnyPublisher")),
+                        .init(name: "property2", typeName: .String, accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName(name: "AnyPublisher"))
+                        ])
+                        extensionType.isUnknownExtension = true
+                        extensionType.module = "MyModule"
+
+                        let types = parseModules(
+                          (name: "MyModule", contents:
+                          """
+                          extension AnyPublisher {
+                            var property1: Int { 0 }
+                          }
+                          """),
+                          (name: "MyModule", contents:
+                          """
+                          extension AnyPublisher {
+                            var property2: String { "" }
+                          }
+                          """)
+                        ).types
+
+                        expect(types).to(equal([extensionType]))
+                        expect(types.first?.globalName).to(equal("AnyPublisher"))
+                    }
+
                     it("combines known types with extensions correctly") {
                         let fooType = Struct(name: "Foo", variables: [
                             .init(name: "property1", typeName: .Int, accessLevel: (read: .internal, write: .none), isComputed: true, definedInTypeName: TypeName(name: "Foo")),

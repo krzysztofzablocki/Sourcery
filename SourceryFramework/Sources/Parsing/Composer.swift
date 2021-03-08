@@ -22,8 +22,8 @@ public enum Composer {
 
 
         // TODO: This logic should really be more complicated
-        // For any resolution we need to be looking at accesssLevel and module boundries
-        // e.g. there might be a typealias `private typealias Something = MyType` in one module and same name in another with public modifier, one could be acccesed and the other could not
+        // For any resolution we need to be looking at accessLevel and module boundaries
+        // e.g. there might be a typealias `private typealias Something = MyType` in one module and same name in another with public modifier, one could be accessed and the other could not
 
 
         var typeMap = [String: Type]()
@@ -104,7 +104,12 @@ public enum Composer {
 
                 // for unknown types we still store their extensions but mark them as unknown
                 type.isUnknownExtension = true
-                typeMap[type.globalName] = type
+                if let existingType = typeMap[type.globalName] {
+                    existingType.extend(type)
+                    typeMap[type.globalName] = existingType
+                } else {
+                    typeMap[type.globalName] = type
+                }
 
                 let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
                     ": \(type.inheritedTypes.joined(separator: ", "))"
