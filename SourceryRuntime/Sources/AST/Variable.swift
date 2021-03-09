@@ -35,6 +35,7 @@ public typealias SourceryVariable = Variable
     public let writeAccess: String
 
     /// composed access level
+    /// sourcery: skipJSExport
     public var accessLevel: (read: AccessLevel, write: AccessLevel) {
         (read: AccessLevel(rawValue: readAccess) ?? .none, AccessLevel(rawValue: writeAccess) ?? .none)
     }

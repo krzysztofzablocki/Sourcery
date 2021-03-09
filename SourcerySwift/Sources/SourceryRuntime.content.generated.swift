@@ -984,6 +984,7 @@ extension Variable {
         string += "isStatic = \\(String(describing: self.isStatic)), "
         string += "readAccess = \\(String(describing: self.readAccess)), "
         string += "writeAccess = \\(String(describing: self.writeAccess)), "
+        string += "accessLevel = \\(String(describing: self.accessLevel)), "
         string += "isMutable = \\(String(describing: self.isMutable)), "
         string += "defaultValue = \\(String(describing: self.defaultValue)), "
         string += "annotations = \\(String(describing: self.annotations)), "
@@ -6104,6 +6105,7 @@ public typealias SourceryVariable = Variable
     public let writeAccess: String
 
     /// composed access level
+    /// sourcery: skipJSExport
     public var accessLevel: (read: AccessLevel, write: AccessLevel) {
         (read: AccessLevel(rawValue: readAccess) ?? .none, AccessLevel(rawValue: writeAccess) ?? .none)
     }

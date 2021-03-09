@@ -337,6 +337,7 @@ extension Variable {
         string += "isStatic = \(String(describing: self.isStatic)), "
         string += "readAccess = \(String(describing: self.readAccess)), "
         string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "isMutable = \(String(describing: self.isMutable)), "
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations)), "
