@@ -214,7 +214,7 @@
 <li><code>--args</code> - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit <code>true</code> value. Arguments should be separated with <code>,</code> without spaces (i.e. <code>--args arg1=value,arg2</code>) or should be passed one by one (i.e <code>--args arg1=value --args arg2</code>). Arguments are accessible in templates via <code>argument.name</code>. To pass in string you should use escaped quotes (<code>\&quot;</code>) .</li>
 <li><code>--watch</code> [default: false] - Watch both code and template folders for changes and regenerate automatically.</li>
 <li><code>--verbose</code> [default: false] - Turn on verbose logging</li>
-<li><code>--quiet</code> [default: false] - Turn off any logging, only emmit errors</li>
+<li><code>--quiet</code> [default: false] - Turn off any logging, only emit errors</li>
 <li><code>--disableCache</code> [default: false] - Turn off caching of parsed data</li>
 <li><code>--prune</code> [default: false] - Prune empty generated files</li>
 <li><code>--version</code> - Display the current version of Sourcery</li>
@@ -242,8 +242,10 @@ a path to config file itself. By default Sourcery will search for <code>.sourcer
 <span class="s">args</span><span class="pi">:</span>
   <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
+<h4 id='multiple-configurations' class='heading'>Multiple configurations</h4>
 
-<p>Single configuration file can contain multiple configurations under root <code>configurations</code> key:</p>
+<p>You can pass multiple paths to configuration files using multiple <code>--config</code> command line options.
+Single configuration file can contain multiple configurations under root <code>configurations</code> key:</p>
 <pre class="highlight yaml"><code><span class="s">configurations</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="s">sources</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
@@ -283,7 +285,7 @@ a path to config file itself. By default Sourcery will search for <code>.sourcer
 </code></pre>
 <h4 id='excluding-sources-or-templates' class='heading'>Excluding sources or templates</h4>
 
-<p>You can specifiy paths to sources files that should be scanned using <code>include</code> key and paths that should be excluded using <code>exclude</code> key. These can be directory or file paths.</p>
+<p>You can specify paths to sources files that should be scanned using <code>include</code> key and paths that should be excluded using <code>exclude</code> key. These can be directory or file paths.</p>
 <pre class="highlight yaml"><code><span class="s">sources</span><span class="pi">:</span>
   <span class="s">include</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="s">&lt;sources path to include&gt;</span>
