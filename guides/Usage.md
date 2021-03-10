@@ -17,7 +17,7 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--args` - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit `true` value. Arguments should be separated with `,` without spaces (i.e. `--args arg1=value,arg2`) or should be passed one by one (i.e `--args arg1=value --args arg2`). Arguments are accessible in templates via `argument.name`. To pass in string you should use escaped quotes (`\"`) .
 - `--watch` [default: false] - Watch both code and template folders for changes and regenerate automatically.
 - `--verbose` [default: false] - Turn on verbose logging
-- `--quiet` [default: false] - Turn off any logging, only emmit errors
+- `--quiet` [default: false] - Turn off any logging, only emit errors
 - `--disableCache` [default: false] - Turn off caching of parsed data
 - `--prune` [default: false] - Prune empty generated files
 - `--version` - Display the current version of Sourcery
@@ -48,6 +48,9 @@ args:
   <name>: <value>
 ```
 
+#### Multiple configurations
+
+You can pass multiple paths to configuration files using multiple `--config` command line options.
 Single configuration file can contain multiple configurations under root `configurations` key:
 
 ```yaml
@@ -96,7 +99,7 @@ project:
 
 #### Excluding sources or templates
 
-You can specifiy paths to sources files that should be scanned using `include` key and paths that should be excluded using `exclude` key. These can be directory or file paths.
+You can specify paths to sources files that should be scanned using `include` key and paths that should be excluded using `exclude` key. These can be directory or file paths.
 
 ```yaml
 sources:
