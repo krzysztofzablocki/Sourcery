@@ -7,6 +7,8 @@
 - Fixes information being lost when extending unknown type more than once
 - Multiple configuration files can be now passed through command line arguments
 
+## Templates
+- AutoEquatable will use type.accessLevel for it's function, closes #675
 ## Internal changes
 - If you are using `.swifttemplate` in your configuration you might notice performance degradation, this is due to new composer added in `1.3.2` that can create memory graph cycles between AST with which our current persistence doesn't deal properly, to workaround this we need to perform additional work for storing copy of parsed AST and compose it later on when running SwiftTemplates. This will be fixed in future release when AST changes are brought in, if you notice too much of a performance drop you can just switch to `1.3.1`.  
 
