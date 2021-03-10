@@ -17,7 +17,7 @@ class StencilTemplateSpec: QuickSpec {
                 arrayAnnotations.annotations = ["Foo": ["Hello", "beautiful", "World"] as NSArray]
                 let singleAnnotation = Variable(name: "annotated2", typeName: TypeName("MyClass"))
                 singleAnnotation.annotations = ["Foo": "HelloWorld" as NSString]
-                return (try? Generator.generate(Types(types: [
+                return (try? Generator.generate(nil, types: Types(types: [
                     Class(name: "MyClass", variables: [
                         Variable(name: "lowerFirstLetter", typeName: TypeName("myClass")),
                         Variable(name: "upperFirstLetter", typeName: TypeName("MyClass")),
@@ -30,6 +30,7 @@ class StencilTemplateSpec: QuickSpec {
             describe("json") {
                 context("given dictionary") {
                     let context = TemplateContext(
+                        parserResult: nil,
                         types: Types(types: []),
                         functions: [],
                         arguments: ["json": ["Version": 1] as NSDictionary]
@@ -46,6 +47,7 @@ class StencilTemplateSpec: QuickSpec {
                 }
                 context("given array") {
                     let context = TemplateContext(
+                        parserResult: nil,
                         types: Types(types: []),
                         functions: [],
                         arguments: ["json": ["a", "b"] as NSArray]
@@ -237,7 +239,7 @@ class StencilTemplateSpec: QuickSpec {
 
             it("rethrows template parsing errors") {
                 expect {
-                    try Generator.generate(Types(types: []), functions: [], template: StencilTemplate(templateString: "{% tag %}"))
+                    try Generator.generate(nil, types: Types(types: []), functions: [], template: StencilTemplate(templateString: "{% tag %}"))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal(": Unknown template tag 'tag'"))

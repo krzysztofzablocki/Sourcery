@@ -82,8 +82,6 @@ extension Modifier: NSCoding {}
 
 extension Subscript: NSCoding {}
 
-extension TemplateContext: NSCoding {}
-
 extension TupleElement: NSCoding {}
 
 extension TupleType: NSCoding {}

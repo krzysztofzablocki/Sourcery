@@ -64,7 +64,6 @@
 		B5BCFA1421D1623D009DF652 /* Verifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0C21D1623D009DF652 /* Verifier.swift */; };
 		B5BCFA1621D1623D009DF652 /* InlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0E21D1623D009DF652 /* InlineParser.swift */; };
 		B5BCFA1721D1623D009DF652 /* AnnotationsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */; };
-		B5BCFA1821D1623D009DF652 /* Composer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA1021D1623D009DF652 /* Composer.swift */; };
 		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
 		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
@@ -84,8 +83,10 @@
 		CDAB713125E2405E0027D85A /* FileParserSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB713025E2405E0027D85A /* FileParserSyntax.swift */; };
 		CDAB714125E241900027D85A /* FileParserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB714025E241900027D85A /* FileParserType.swift */; };
 		CDAB7CFC231E412C00ED8A32 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB7CFB231E412C00ED8A32 /* Time.swift */; };
+		CDB75ED725F89BA500EF855A /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = CD9713CD25EFA02900E69E69 /* SwiftSyntax */; };
+		CDB75EDE25F89CAD00EF855A /* Composer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA1021D1623D009DF652 /* Composer.swift */; };
+		CDB75EE525F8A39F00EF855A /* Array+Parallel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D6548CB0B086F0574D1B /* Array+Parallel.swift */; };
 		CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBEC15B1E242B9E0090E881 /* StencilTemplate.swift */; };
-		CDDF5BF82572697200F494EA /* Array+Parallel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D6548CB0B086F0574D1B /* Array+Parallel.swift */; };
 		CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE812EC1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift */; };
 		CDE812EF1E112CC700F1FF97 /* Performance-Code in Resources */ = {isa = PBXBuildFile; fileRef = CDE812EE1E112CC700F1FF97 /* Performance-Code */; };
 		CDF5E71D1E671B8500664763 /* TypedSpec.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF5E71C1E671B8500664763 /* TypedSpec.generated.swift */; };
@@ -486,6 +487,7 @@
 			files = (
 				47635CB021DA342600B2D5A1 /* SourceryUtils.framework in Frameworks */,
 				B5BCFA0021D161BF009DF652 /* SourceryRuntime.framework in Frameworks */,
+				CDB75ED725F89BA500EF855A /* SwiftSyntax in Frameworks */,
 				CD4B38F125EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */,
 				60CC7E378065D25B8D555BCF /* Pods_SourceryFramework.framework in Frameworks */,
 			);
@@ -559,6 +561,8 @@
 				E291D6D2B241639C79016C53 /* Generated */,
 				E291DCDA7452B092FA5D6CE5 /* Log.swift */,
 				E291DDEE868C8FEA1ED8B0E5 /* TemplateContext.swift */,
+				B5BCFA1021D1623D009DF652 /* Composer.swift */,
+				E291D6548CB0B086F0574D1B /* Array+Parallel.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -593,7 +597,6 @@
 		47635CA521DA338200B2D5A1 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				E291D6548CB0B086F0574D1B /* Array+Parallel.swift */,
 				47635CA621DA338200B2D5A1 /* Path+Extensions.swift */,
 				47635CA721DA338200B2D5A1 /* Version.swift */,
 				47635CA821DA338200B2D5A1 /* Sha.swift */,
@@ -690,7 +693,6 @@
 				B5BCFA0B21D1623D009DF652 /* Utils */,
 				CDF80D9625E50E4900443FA1 /* SwiftSyntax */,
 				CDAB714025E241900027D85A /* FileParserType.swift */,
-				B5BCFA1021D1623D009DF652 /* Composer.swift */,
 				E291D57796261B72161F2329 /* String+TypeInference.swift */,
 			);
 			path = Parsing;
@@ -1197,7 +1199,7 @@
 			);
 			name = SourceryFramework;
 			packageProductDependencies = (
-				CD9713CD25EFA02900E69E69,
+				CD9713CD25EFA02900E69E69 /* SwiftSyntax */,
 			);
 			productName = SourceryFramework;
 			productReference = B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */;
@@ -1309,7 +1311,7 @@
 			);
 			mainGroup = CD754C821D853F000082B512;
 			packageReferences = (
-				CD9713CC25EFA02900E69E69,
+				CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */,
 			);
 			productRefGroup = CD754C8C1D853F000082B512 /* Products */;
 			projectDirPath = "";
@@ -1649,7 +1651,6 @@
 			files = (
 				47635CAA21DA338200B2D5A1 /* Version.swift in Sources */,
 				47635CA921DA338200B2D5A1 /* Path+Extensions.swift in Sources */,
-				CDDF5BF82572697200F494EA /* Array+Parallel.swift in Sources */,
 				47635CAB21DA338200B2D5A1 /* Sha.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1680,6 +1681,7 @@
 				E291D0E91B7E7A3AD050BA9D /* Typed.swift in Sources */,
 				E291D5D2750127B3ABD00B4B /* Closure.swift in Sources */,
 				E291DD3C78304354DC3D9D5F /* Generic.swift in Sources */,
+				CDB75EDE25F89CAD00EF855A /* Composer.swift in Sources */,
 				E291D013079D50FD36C3BB0A /* TypeName.swift in Sources */,
 				E291DD53058D8CC6F041660E /* Dictionary.swift in Sources */,
 				E291D68F7EE6EEC13315D2D2 /* Type.swift in Sources */,
@@ -1704,6 +1706,7 @@
 				E291D56BA2B72E33EFF93947 /* Extensions.swift in Sources */,
 				E291DBF67BA9D6D96281D18C /* FileParserResult.swift in Sources */,
 				E291D863EE4DB0D5F51105BE /* Typed.generated.swift in Sources */,
+				CDB75EE525F8A39F00EF855A /* Array+Parallel.swift in Sources */,
 				E291D86BE4FF40036E790826 /* Coding.generated.swift in Sources */,
 				E291DC4DDA51A5D39F293094 /* Diffable.generated.swift in Sources */,
 				E291DBD9122CC4B0083D948B /* Equality.generated.swift in Sources */,
@@ -1725,7 +1728,6 @@
 				B5BCFA1721D1623D009DF652 /* AnnotationsParser.swift in Sources */,
 				CDAB713125E2405E0027D85A /* FileParserSyntax.swift in Sources */,
 				CDF80E4225E62E3C00443FA1 /* Variable+SwiftSyntax.swift in Sources */,
-				B5BCFA1821D1623D009DF652 /* Composer.swift in Sources */,
 				B5BCFA1121D1623D009DF652 /* Generator.swift in Sources */,
 				CDF80DAC25E50EA500443FA1 /* Signature.swift in Sources */,
 				CDF80E2825E62BD900443FA1 /* SyntaxTreeCollector.swift in Sources */,
@@ -2577,7 +2579,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CD9713CC25EFA02900E69E69 = {
+		CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-syntax";
 			requirement = {
@@ -2588,9 +2590,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CD9713CD25EFA02900E69E69 = {
+		CD9713CD25EFA02900E69E69 /* SwiftSyntax */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CD9713CC25EFA02900E69E69;
+			package = CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */;
 			productName = SwiftSyntax;
 		};
 /* End XCSwiftPackageProductDependency section */

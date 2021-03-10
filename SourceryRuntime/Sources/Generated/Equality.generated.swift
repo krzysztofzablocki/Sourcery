@@ -262,6 +262,7 @@ extension TemplateContext {
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? TemplateContext else { return false }
+        if self.parserResult != rhs.parserResult { return false }
         if self.functions != rhs.functions { return false }
         if self.types != rhs.types { return false }
         if self.argument != rhs.argument { return false }
@@ -632,6 +633,7 @@ extension Subscript {
 extension TemplateContext {
     public override var hash: Int {
         var hasher = Hasher()
+        hasher.combine(self.parserResult)
         hasher.combine(self.functions)
         hasher.combine(self.types)
         hasher.combine(self.argument)

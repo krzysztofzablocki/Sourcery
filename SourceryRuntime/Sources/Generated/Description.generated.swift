@@ -244,6 +244,7 @@ extension TemplateContext {
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
+        string += "parserResult = \(String(describing: self.parserResult)), "
         string += "functions = \(String(describing: self.functions)), "
         string += "types = \(String(describing: self.types)), "
         string += "argument = \(String(describing: self.argument)), "

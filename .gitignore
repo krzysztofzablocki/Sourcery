@@ -88,3 +88,6 @@ docs/undocumented.json
 
 # IDEA based IDEs (AppCode, CLion) configuration
 .idea
+
+# Local binary distributions downloads
+distributions/

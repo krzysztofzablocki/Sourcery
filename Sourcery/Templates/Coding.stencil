@@ -39,7 +39,7 @@ extension NSCoder {
 
 }
 
-{% for type in types.implementing.AutoCoding|class %}
+{% for type in types.implementing.AutoCoding|class|!annotated:"skipCoding" %}
 {% if not type.supertype.implements.AutoCoding %}extension {{ type.name }}: NSCoding {}{% endif %}
     // sourcery:inline:{{ type.name }}.AutoCoding
 

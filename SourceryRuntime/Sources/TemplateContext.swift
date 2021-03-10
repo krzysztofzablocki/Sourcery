@@ -6,7 +6,10 @@
 import Foundation
 
 /// :nodoc:
-@objcMembers public final class TemplateContext: NSObject, SourceryModel {
+// sourcery: skipCoding
+@objcMembers public final class TemplateContext: NSObject, SourceryModel, NSCoding {
+    // sourcery: skipJSExport
+    public let parserResult: FileParserResult?
     public let functions: [SourceryMethod]
     public let types: Types
     public let argument: [String: NSObject]
@@ -16,28 +19,35 @@ import Foundation
         return types.typesByName
     }
 
-    public init(types: Types, functions: [SourceryMethod], arguments: [String: NSObject]) {
+    public init(parserResult: FileParserResult?, types: Types, functions: [SourceryMethod], arguments: [String: NSObject]) {
+        self.parserResult = parserResult
         self.types = types
         self.functions = functions
         self.argument = arguments
     }
 
-// sourcery:inline:TemplateContext.AutoCoding
+    /// :nodoc:
+    required public init?(coder aDecoder: NSCoder) {
+        guard let parserResult: FileParserResult = aDecoder.decode(forKey: "parserResult") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found. FileParserResults are required for template context that needs persisting.", arguments: getVaList(["parserResult"])); fatalError() }
+        guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argument"])); fatalError() }
 
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let functions: [SourceryMethod] = aDecoder.decode(forKey: "functions") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["functions"])); fatalError() }; self.functions = functions
-            guard let types: Types = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
-            guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argument"])); fatalError() }; self.argument = argument
-        }
+        // if we want to support multiple cycles of encode / decode we need deep copy because composer changes reference types
+        let fileParserResultCopy: FileParserResult? = nil
+//      fileParserResultCopy = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(NSKeyedArchiver.archivedData(withRootObject: parserResult)) as? FileParserResult
 
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.functions, forKey: "functions")
-            aCoder.encode(self.types, forKey: "types")
-            aCoder.encode(self.argument, forKey: "argument")
-        }
-// sourcery:end
+        let composed = Composer.uniqueTypesAndFunctions(parserResult)
+        self.types = .init(types: composed.types, typealiases: composed.typealiases)
+        self.functions = composed.functions
+
+        self.parserResult = fileParserResultCopy
+        self.argument = argument
+    }
+
+    /// :nodoc:
+    public func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.parserResult, forKey: "parserResult")
+        aCoder.encode(self.argument, forKey: "argument")
+    }
 
     public var stencilContext: [String: Any] {
         return [
@@ -103,21 +113,6 @@ extension ProcessInfo {
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
-            // TODO: remove once AST is redesigned
-            // until we redesign AST we need to reset this data so that we don't create un-persistable cycle
-            typealiases.forEach { alias in
-                alias.typeName.generic = nil
-                alias.typeName.array = nil
-                alias.typeName.tuple = nil
-                alias.typeName.dictionary = nil
-                alias.typeName.closure = nil
-                alias.typeName.actualTypeName?.generic = nil
-                alias.typeName.actualTypeName?.array = nil
-                alias.typeName.actualTypeName?.tuple = nil
-                alias.typeName.actualTypeName?.dictionary = nil
-                alias.typeName.actualTypeName?.closure = nil
-            }
-
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typealiases, forKey: "typealiases")
         }

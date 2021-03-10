@@ -4,8 +4,10 @@
 //
 
 import Foundation
-import SourceryRuntime
-import SourceryUtils
+
+private func currentTimestamp() -> TimeInterval {
+    return CFAbsoluteTimeGetCurrent()
+}
 
 /// Responsible for composing results of `FileParser`.
 public enum Composer {
@@ -152,7 +154,6 @@ public enum Composer {
 
             return (resolved: typealiasesByNames, unresolved: unresolved)
         }
-
 
         /// Resolves type identifier for name
         func resolveGlobalName(for type: String,
@@ -319,7 +320,7 @@ public enum Composer {
             resolveMethodTypes(function, of: nil, resolve: resolveType)
         }
 
-        Log.benchmark("\tresolution took \(currentTimestamp() - resolutionStart)")
+        Log.benchmark("resolution took \(currentTimestamp() - resolutionStart)")
 
         updateTypeRelationships(types: types)
 

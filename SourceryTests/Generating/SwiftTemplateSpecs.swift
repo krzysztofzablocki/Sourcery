@@ -30,8 +30,10 @@ class SwiftTemplateTests: QuickSpec {
             it("creates persistable data") {
                 func templateContextData(_ code: String) -> TemplateContext? {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return nil }
+                    let data = NSKeyedArchiver.archivedData(withRootObject: parserResult)
+
                     let result = Composer.uniqueTypesAndFunctions(parserResult)
-                    return TemplateContext(types: .init(types: result.types, typealiases: result.typealiases), functions: result.functions, arguments: [:])
+                    return TemplateContext(parserResult: try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? FileParserResult, types: .init(types: result.types, typealiases: result.typealiases), functions: result.functions, arguments: [:])
                 }
 
                 let maybeContext = templateContextData(
@@ -52,7 +54,7 @@ class SwiftTemplateTests: QuickSpec {
                 let data = NSKeyedArchiver.archivedData(withRootObject: context)
                 let unarchived = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? TemplateContext
 
-                expect(context).to(equal(unarchived))
+                expect(context.types).to(equal(unarchived?.types))
             }
 
             it("generates correct output") {
@@ -157,7 +159,7 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows template parsing errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), functions: [], template: SwiftTemplate(path: templatePath, version: "version"))
+                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath, version: "version"))
                     }
                     .to(throwError(closure: { (error) in
                         let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
@@ -168,7 +170,7 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows template runtime errors") {
                 let templatePath = Stubs.swiftTemplates + Path("Runtime.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
+                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal("\(templatePath): Unknown type Some, should be used with `based`"))
@@ -178,7 +180,7 @@ class SwiftTemplateTests: QuickSpec {
             it("rethrows errors thrown in template") {
                 let templatePath = Stubs.swiftTemplates + Path("Throws.swifttemplate")
                 expect {
-                    try Generator.generate(Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
+                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(contain("\(templatePath): Fatal error: Index out of range"))
