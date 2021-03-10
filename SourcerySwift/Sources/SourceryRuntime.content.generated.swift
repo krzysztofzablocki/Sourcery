@@ -4798,6 +4798,21 @@ extension ProcessInfo {
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
+            // TODO: remove once AST is redesigned
+            // until we redesign AST we need to reset this data so that we don't create un-persistable cycle
+            typealiases.forEach { alias in
+                alias.typeName.generic = nil
+                alias.typeName.array = nil
+                alias.typeName.tuple = nil
+                alias.typeName.dictionary = nil
+                alias.typeName.closure = nil
+                alias.typeName.actualTypeName?.generic = nil
+                alias.typeName.actualTypeName?.array = nil
+                alias.typeName.actualTypeName?.tuple = nil
+                alias.typeName.actualTypeName?.dictionary = nil
+                alias.typeName.actualTypeName?.closure = nil
+            }
+
             aCoder.encode(self.types, forKey: "types")
             aCoder.encode(self.typealiases, forKey: "typealiases")
         }

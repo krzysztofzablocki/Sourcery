@@ -6,6 +6,9 @@
 ## Fixes
 - Fixes information being lost when extending unknown type more than once
 
+## Internal changes
+- for SwiftTemplates typealiases `typeName` generic/tuple information will not be provided until AST redesign
+
 ## 1.3.2
 ## New Features
 - Configuration file now supports multiple configurations at once

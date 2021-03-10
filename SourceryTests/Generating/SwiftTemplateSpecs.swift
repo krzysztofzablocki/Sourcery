@@ -27,6 +27,34 @@ class SwiftTemplateTests: QuickSpec {
             let templatePath = Stubs.swiftTemplates + Path("Equality.swifttemplate")
             let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
+            it("creates persistable data") {
+                func templateContextData(_ code: String) -> TemplateContext? {
+                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return nil }
+                    let result = Composer.uniqueTypesAndFunctions(parserResult)
+                    return TemplateContext(types: .init(types: result.types, typealiases: result.typealiases), functions: result.functions, arguments: [:])
+                }
+
+                let maybeContext = templateContextData(
+                  """
+                  public struct Periodization {
+                      public typealias Action = Identified<UUID, ActionType>
+                      public struct ActionType {
+                          public static let prototypes: [Action] = []
+                      }
+                  }
+                  """
+                )
+
+                guard let context = maybeContext else {
+                    return fail()
+                }
+
+                let data = NSKeyedArchiver.archivedData(withRootObject: context)
+                let unarchived = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? TemplateContext
+
+                expect(context).to(equal(unarchived))
+            }
+
             it("generates correct output") {
                 expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
 
