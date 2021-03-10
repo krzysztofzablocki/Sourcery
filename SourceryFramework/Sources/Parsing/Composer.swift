@@ -9,6 +9,262 @@ import SourceryUtils
 
 /// Responsible for composing results of `FileParser`.
 public enum Composer {
+    internal final class State {
+        private(set) var typeMap = [String: Type]()
+        private(set) var modules = [String: [String: Type]]()
+        let parsedTypes: [Type]
+        let functions: [SourceryMethod]
+        let resolvedTypealiases: [String: Typealias]
+        let unresolvedTypealiases: [String: Typealias]
+
+        init(parserResult: FileParserResult) {
+            // TODO: This logic should really be more complicated
+            // For any resolution we need to be looking at accessLevel and module boundaries
+            // e.g. there might be a typealias `private typealias Something = MyType` in one module and same name in another with public modifier, one could be accessed and the other could not
+            self.functions = parserResult.functions
+            let aliases = Self.typealiases(parserResult)
+            resolvedTypealiases = aliases.resolved
+            unresolvedTypealiases = aliases.unresolved
+            parsedTypes = parserResult.types
+
+            // set definedInType for all methods and variables
+            parsedTypes
+              .forEach { type in
+                type.variables.forEach { $0.definedInType = type }
+                type.methods.forEach { $0.definedInType = type }
+                type.subscripts.forEach { $0.definedInType = type }
+            }
+
+            // map all known types to their names
+            parsedTypes
+              .filter { $0.isExtension == false }
+              .forEach {
+                  typeMap[$0.globalName] = $0
+                  if let module = $0.module {
+                      var typesByModules = modules[module, default: [:]]
+                      typesByModules[$0.name] = $0
+                      modules[module] = typesByModules
+                  }
+              }
+        }
+
+        func unifyTypes() -> [Type] {
+            /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
+            parsedTypes
+              .filter { $0.isExtension == true }
+              .forEach {
+                  let oldName = $0.globalName
+
+                  if let resolved = resolveGlobalName(for: oldName, containingType: $0.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                      $0.localName = resolved.replacingOccurrences(of: "\($0.module != nil ? "\($0.module!)." : "")", with: "")
+                  } else {
+                      return
+                  }
+
+                  // nothing left to do
+                  guard oldName != $0.globalName else {
+                      return
+                  }
+
+                  // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
+                  func rewriteChildren(of type: Type) {
+                      // child is never an extension so no need to check
+                      for child in type.containedTypes {
+                          typeMap[child.globalName] = child
+                          rewriteChildren(of: child)
+                      }
+                  }
+                  rewriteChildren(of: $0)
+              }
+
+            // extend all types with their extensions
+            parsedTypes.forEach { type in
+                type.inheritedTypes = type.inheritedTypes.map { inheritedName in
+                    resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name ?? inheritedName
+                }
+
+                let uniqueType = typeMap[type.globalName] ?? // this check will only fail on an extension?
+                  typeFromComposedName(type.name, modules: modules) ?? // this can happen for an extension on unknown type, this case should probably be handled by the inferTypeNameFromModules
+                  (inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] })
+
+                guard let current = uniqueType else {
+                    assert(type.isExtension)
+
+                    // for unknown types we still store their extensions but mark them as unknown
+                    type.isUnknownExtension = true
+                    if let existingType = typeMap[type.globalName] {
+                        existingType.extend(type)
+                        typeMap[type.globalName] = existingType
+                    } else {
+                        typeMap[type.globalName] = type
+                    }
+
+                    let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
+                      ": \(type.inheritedTypes.joined(separator: ", "))"
+
+                    Log.astWarning("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
+                    return
+                }
+
+                if current == type { return }
+
+                current.extend(type)
+                typeMap[current.globalName] = current
+            }
+
+            let values = typeMap.values
+            var processed = Set<String>(minimumCapacity: values.count)
+            return typeMap.values.filter({
+                let name = $0.globalName
+                let wasProcessed = processed.contains(name)
+                processed.insert(name)
+                return !wasProcessed
+            })
+        }
+
+        /// returns typealiases map to their full names, with `resolved` removing intermediate
+        /// typealises and `unresolved` including typealiases that reference other typealiases.
+        private static func typealiases(_ parserResult: FileParserResult) -> (resolved: [String: Typealias], unresolved: [String: Typealias]) {
+            var typealiasesByNames = [String: Typealias]()
+            parserResult.typealiases.forEach { typealiasesByNames[$0.name] = $0 }
+            parserResult.types.forEach { type in
+                type.typealiases.forEach({ (_, alias) in
+                    // TODO: should I deal with the fact that alias.name depends on type name but typenames might be updated later on
+                    // maybe just handle non extension case here and extension aliases after resolving them?
+                    typealiasesByNames[alias.name] = alias
+                })
+            }
+
+            let unresolved = typealiasesByNames
+
+            //! if a typealias leads to another typealias, follow through and replace with final type
+            typealiasesByNames.forEach { _, alias in
+                var aliasNamesToReplace = [alias.name]
+                var finalAlias = alias
+                while let targetAlias = typealiasesByNames[finalAlias.typeName.name] {
+                    aliasNamesToReplace.append(targetAlias.name)
+                    finalAlias = targetAlias
+                }
+
+                //! replace all keys
+                aliasNamesToReplace.forEach { typealiasesByNames[$0] = finalAlias }
+            }
+
+            return (resolved: typealiasesByNames, unresolved: unresolved)
+        }
+
+
+        /// Resolves type identifier for name
+        func resolveGlobalName(for type: String,
+                                              containingType: Type? = nil,
+                                              unique: [String: Type]? = nil,
+                                              modules: [String: [String: Type]],
+                                              typealiases: [String: Typealias]) -> (name: String, typealias: Typealias?)? {
+            // if the type exists for this name and isn't an extension just return it's name
+            // if it's extension we need to check if there aren't other options TODO: verify
+            if let realType = unique?[type], realType.isExtension == false {
+                return (name: realType.globalName, typealias: nil)
+            }
+
+            if let alias = typealiases[type] {
+                return (name: alias.type?.globalName ?? alias.typeName.name, typealias: alias)
+            }
+
+            if let containingType = containingType {
+                if type == "Self" {
+                    return (name: containingType.globalName, typealias: nil)
+                }
+
+                var currentContainer: Type? = containingType
+                while currentContainer != nil, let parentName = currentContainer?.globalName {
+                    /// TODO: no parent for sure?
+                    /// manually walk the containment tree
+                    if let name = resolveGlobalName(for: "\(parentName).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
+                        return name
+                    }
+
+                    currentContainer = currentContainer?.parent
+                }
+
+//            if let name = resolveGlobalName(for: "\(containingType.globalName).\(type)", containingType: containingType.parent, unique: unique, modules: modules, typealiases: typealiases) {
+//                return name
+//            }
+
+//             last check it's via module
+//            if let module = containingType.module, let name = resolveGlobalName(for: "\(module).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
+//                return name
+//            }
+            }
+
+            // TODO: is this needed?
+            if let inferred = inferTypeNameFromModules(from: type, containedInType: containingType, uniqueTypes: unique ?? [:], modules: modules) {
+                return (name: inferred, typealias: nil)
+            }
+
+            return typeFromComposedName(type, modules: modules).map { (name: $0.globalName, typealias: nil) }
+        }
+
+        private func inferTypeNameFromModules(from typeIdentifier: String, containedInType: Type?, uniqueTypes: [String: Type], modules: [String: [String: Type]]) -> String? {
+            func fullName(for module: String) -> String {
+                "\(module).\(typeIdentifier)"
+            }
+
+            func type(for module: String) -> Type? {
+                return modules[module]?[typeIdentifier]
+            }
+
+            func ambiguousErrorMessage(from types: [Type]) -> String? {
+                Log.astWarning("Ambiguous type \(typeIdentifier), found \(types.map { $0.globalName }.joined(separator: ", ")). Specify module name at declaration site to disambiguate.")
+                return nil
+            }
+
+            let explicitModulesAtDeclarationSite: [String] = [
+                containedInType?.module.map { [$0] } ?? [],    // main module for this typename
+                containedInType?.imports.map { $0.moduleName } ?? []    // imported modules
+            ]
+              .flatMap { $0 }
+
+            let remainingModules = Set(modules.keys).subtracting(explicitModulesAtDeclarationSite)
+
+            /// We need to check whether we can find type in one of the modules but we need to be careful to avoid amibiguity
+            /// First checking explicit modules available at declaration site (so source module + all imported ones)
+            /// If there is no ambigiuity there we can assume that module will be resolved by the compiler
+            /// If that's not the case we look after remaining modules in the application and if the typename has no ambigiuity we use that
+            /// But if there is more than 1 typename duplication across modules we have no way to resolve what is the compiler going to use so we fail
+            let moduleSetsToCheck: [Array<String>] = [
+                explicitModulesAtDeclarationSite,
+                Array(remainingModules)
+            ]
+
+            for modules in moduleSetsToCheck {
+                let possibleTypes = modules
+                  .compactMap { type(for: $0) }
+
+                if possibleTypes.count > 1 {
+                    return ambiguousErrorMessage(from: possibleTypes)
+                }
+
+                if let type = possibleTypes.first {
+                    return type.globalName
+                }
+            }
+
+            // as last result for unknown types / extensions
+            // try extracting type from unique array
+            if let module = containedInType?.module {
+                return uniqueTypes[fullName(for: module)]?.globalName
+            }
+            return nil
+        }
+
+        func typeFromComposedName(_ name: String, modules: [String: [String: Type]]) -> Type? {
+            guard name.contains(".") else { return nil }
+            let nameComponents = name.components(separatedBy: ".")
+            let moduleName = nameComponents[0]
+            let typeName = nameComponents.suffix(from: 1).joined(separator: ".")
+            return modules[moduleName]?[typeName]
+        }
+    }
 
     /// Performs final processing of discovered types:
     /// - extends types with their corresponding extensions;
@@ -19,121 +275,22 @@ public enum Composer {
     /// - Parameter parserResult: Result of parsing source code.
     /// - Returns: Final types and extensions of unknown types.
     public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
+        let state = State(parserResult: parserResult)
 
-
-        // TODO: This logic should really be more complicated
-        // For any resolution we need to be looking at accessLevel and module boundaries
-        // e.g. there might be a typealias `private typealias Something = MyType` in one module and same name in another with public modifier, one could be accessed and the other could not
-
-
-        var typeMap = [String: Type]()
-        var modules = [String: [String: Type]]()
-        let parsedTypes = parserResult.types
-        let functions = parserResult.functions
-        let (resolvedTypealiases, unresolvedTypealiases) = self.typealiases(parserResult)
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)
+            return self.resolveType(typeName: typeName, containingType: containingType, state: state)
         }
 
-        // set definedInType for all methods and variables
-        parsedTypes
-            .forEach { type in
-                type.variables.forEach { $0.definedInType = type }
-                type.methods.forEach { $0.definedInType = type }
-                type.subscripts.forEach { $0.definedInType = type }
-            }
-
-        // map all known types to their names
-        parsedTypes
-            .filter { $0.isExtension == false }
-            .forEach {
-                typeMap[$0.globalName] = $0
-                if let module = $0.module {
-                    var typesByModules = modules[module, default: [:]]
-                    typesByModules[$0.name] = $0
-                    modules[module] = typesByModules
-                }
-            }
-
         /// Resolve typealiases
-        let typealiases = Array(unresolvedTypealiases.values)
+        let typealiases = Array(state.unresolvedTypealiases.values)
         typealiases.parallelPerform { alias in
             alias.type = resolveType(alias.typeName, alias.parent)
         }
 
-        /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
-        parsedTypes
-            .filter { $0.isExtension == true }
-            .forEach {
-                let oldName = $0.globalName
-
-                if let resolved = resolveGlobalName(for: oldName, containingType: $0.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
-                    $0.localName = resolved.replacingOccurrences(of: "\($0.module != nil ? "\($0.module!)." : "")", with: "")
-                } else {
-                    return
-                }
-
-                // nothing left to do
-                guard oldName != $0.globalName else {
-                    return
-                }
-
-                // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
-                func rewriteChildren(of type: Type) {
-                    // child is never an extension so no need to check
-                    for child in type.containedTypes {
-                        typeMap[child.globalName] = child
-                        rewriteChildren(of: child)
-                    }
-                }
-                rewriteChildren(of: $0)
-            }
-
-        // extend all types with their extensions
-        parsedTypes.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { inheritedName in
-                resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name ?? inheritedName
-            }
-
-            let uniqueType = typeMap[type.globalName] ?? // this check will only fail on an extension?
-                fakeTypeFromComposedName(type.name, modules: modules) ?? // this can happen for an extension on unknown type, this case should probably be handled by the inferTypeNameFromModules
-              (inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] })
-
-            guard let current = uniqueType else {
-                assert(type.isExtension)
-
-                // for unknown types we still store their extensions but mark them as unknown
-                type.isUnknownExtension = true
-                if let existingType = typeMap[type.globalName] {
-                    existingType.extend(type)
-                    typeMap[type.globalName] = existingType
-                } else {
-                    typeMap[type.globalName] = type
-                }
-
-                let inheritanceClause = type.inheritedTypes.isEmpty ? "" :
-                    ": \(type.inheritedTypes.joined(separator: ", "))"
-
-                Log.astWarning("Found \"extension \(type.name)\(inheritanceClause)\" of type for which there is no original type declaration information.")
-                return
-            }
-
-            if current == type { return }
-
-            current.extend(type)
-            typeMap[current.globalName] = current
-        }
+        let types = state.unifyTypes()
 
         let resolutionStart = currentTimestamp()
 
-        let values = typeMap.values
-        var processed = Set<String>(minimumCapacity: values.count)
-        let types = typeMap.values.filter({
-            let name = $0.globalName
-            let wasProcessed = processed.contains(name)
-            processed.insert(name)
-            return !wasProcessed
-        })
         types.parallelPerform { type in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
@@ -146,7 +303,7 @@ public enum Composer {
             }
 
             if let enumeration = type as? Enum {
-                resolveEnumTypes(enumeration, types: typeMap, resolve: resolveType)
+                resolveEnumTypes(enumeration, types: state.typeMap, resolve: resolveType)
             }
 
             if let composition = type as? ProtocolComposition {
@@ -158,31 +315,36 @@ public enum Composer {
             }
         }
 
-        functions.parallelPerform { function in
+        state.functions.parallelPerform { function in
             resolveMethodTypes(function, of: nil, resolve: resolveType)
         }
 
         Log.benchmark("\tresolution took \(currentTimestamp() - resolutionStart)")
 
         updateTypeRelationships(types: types)
+
         return (
             types: types.sorted { $0.globalName < $1.globalName },
-            functions: functions.sorted { $0.name < $1.name },
+            functions: state.functions.sorted { $0.name < $1.name },
             typealiases: typealiases.sorted(by: { $0.name < $1.name })
         )
     }
 
-    private static func resolveType(typeName: TypeName, containingType: Type?, unique: [String: Type], modules: [String: [String: Type]], typealiases: [String: Typealias]) -> Type? {
+    private static func resolveType(typeName: TypeName, containingType: Type?, state: State) -> Type? {
         let resolveTypeWithName = { (typeName: TypeName) -> Type? in
-            return self.resolveType(typeName: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+            return self.resolveType(typeName: typeName, containingType: containingType, state: state)
         }
+
+        let unique = state.typeMap
+        let modules = state.modules
+        let typealiases = state.resolvedTypealiases
 
         if let name = typeName.actualTypeName {
             let resolvedIdentifier = name.generic?.name ?? name.unwrappedTypeName
             return unique[resolvedIdentifier]
         }
 
-        let retrievedName = self.actualTypeName(for: typeName, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases)
+        let retrievedName = self.actualTypeName(for: typeName, containingType: containingType, state: state)
         let lookupName = retrievedName ?? typeName
 
         if let tuple = lookupName.tuple {
@@ -234,7 +396,7 @@ public enum Composer {
                                                    array: array,
                                                    dictionary: lookupName.dictionary,
                                                    closure: lookupName.closure,
-                                                   generic: array.asGeneric
+                                                   generic: typeName.generic
                 )
             }
         } else
@@ -438,100 +600,19 @@ public enum Composer {
         }
     }
 
-    /// returns typealiases map to their full names, with `resolved` removing intermediate
-    /// typealises and `unresolved` including typealiases that reference other typealiases.
-    private static func typealiases(_ parserResult: FileParserResult) -> (resolved: [String: Typealias], unresolved: [String: Typealias]) {
-        var typealiasesByNames = [String: Typealias]()
-        parserResult.typealiases.forEach { typealiasesByNames[$0.name] = $0 }
-        parserResult.types.forEach { type in
-            type.typealiases.forEach({ (_, alias) in
-                // TODO: should I deal with the fact that alias.name depends on type name but typenames might be updated later on
-                // maybe just handle non extension case here and extension aliases after resolving them?
-                typealiasesByNames[alias.name] = alias
-            })
-        }
-
-        let unresolved = typealiasesByNames
-
-        //! if a typealias leads to another typealias, follow through and replace with final type
-        typealiasesByNames.forEach { _, alias in
-            var aliasNamesToReplace = [alias.name]
-            var finalAlias = alias
-            while let targetAlias = typealiasesByNames[finalAlias.typeName.name] {
-                aliasNamesToReplace.append(targetAlias.name)
-                finalAlias = targetAlias
-            }
-
-            //! replace all keys
-            aliasNamesToReplace.forEach { typealiasesByNames[$0] = finalAlias }
-        }
-
-        return (resolved: typealiasesByNames, unresolved: unresolved)
-    }
-
-
-    /// Resolves type identifier for name
-    private static func resolveGlobalName(for type: String,
-                                          containingType: Type? = nil,
-                                          unique: [String: Type]? = nil,
-                                          modules: [String: [String: Type]],
-                                          typealiases: [String: Typealias]) -> (name: String, typealias: Typealias?)? {
-        // if the type exists for this name and isn't an extension just return it's name
-        // if it's extension we need to check if there aren't other options TODO: verify
-        if let realType = unique?[type], realType.isExtension == false {
-            return (name: realType.globalName, typealias: nil)
-        }
-
-        if let alias = typealiases[type] {
-            return (name: alias.type?.globalName ?? alias.typeName.name, typealias: alias)
-        }
-
-        if let containingType = containingType {
-            if type == "Self" {
-                return (name: containingType.globalName, typealias: nil)
-            }
-
-            var currentContainer: Type? = containingType
-            while currentContainer != nil, let parentName = currentContainer?.globalName {
-                /// TODO: no parent for sure?
-                /// manually walk the containment tree
-                if let name = resolveGlobalName(for: "\(parentName).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
-                    return name
-                }
-
-                currentContainer = currentContainer?.parent
-            }
-
-//            if let name = resolveGlobalName(for: "\(containingType.globalName).\(type)", containingType: containingType.parent, unique: unique, modules: modules, typealiases: typealiases) {
-//                return name
-//            }
-
-//             last check it's via module
-//            if let module = containingType.module, let name = resolveGlobalName(for: "\(module).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
-//                return name
-//            }
-        }
-
-        // TODO: is this needed?
-        if let inferred = inferTypeNameFromModules(from: type, containedInType: containingType, uniqueTypes: unique ?? [:], modules: modules) {
-            return (name: inferred, typealias: nil)
-        }
-
-        return typeFromComposedName(type, modules: modules).map { (name: $0.globalName, typealias: nil) }
-    }
-
     private static func actualTypeName(for typeName: TypeName,
                                        containingType: Type? = nil,
-                                       unique: [String: Type]? = nil,
-                                       modules: [String: [String: Type]],
-                                       typealiases: [String: Typealias]) -> TypeName? {
+                                       state: State) -> TypeName? {
+        let unique = state.typeMap
+        let modules = state.modules
+        let typealiases = state.resolvedTypealiases
 
         var unwrapped = typeName.unwrappedTypeName
         if let generic = typeName.generic {
             unwrapped = generic.name
         }
 
-        guard let aliased = resolveGlobalName(for: unwrapped, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) else {
+        guard let aliased = state.resolveGlobalName(for: unwrapped, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) else {
             return nil
         }
 
@@ -552,59 +633,6 @@ public enum Composer {
                         closure: aliased.typealias?.typeName.closure ?? typeName.closure,
                         generic: aliased.typealias?.typeName.generic ?? generic
         )
-    }
-
-    private static func inferTypeNameFromModules(from typeIdentifier: String, containedInType: Type?, uniqueTypes: [String: Type], modules: [String: [String: Type]]) -> String? {
-        func fullName(for module: String) -> String {
-            "\(module).\(typeIdentifier)"
-        }
-
-        func type(for module: String) -> Type? {
-            return modules[module]?[typeIdentifier]
-        }
-
-        func ambiguousErrorMessage(from types: [Type]) -> String? {
-            Log.astWarning("Ambiguous type \(typeIdentifier), found \(types.map { $0.globalName }.joined(separator: ", ")). Specify module name at declaration site to disambiguate.")
-            return nil
-        }
-
-        let explicitModulesAtDeclarationSite: [String] = [
-            containedInType?.module.map { [$0] } ?? [],    // main module for this typename
-            containedInType?.imports.map { $0.moduleName } ?? []    // imported modules
-        ]
-        .flatMap { $0 }
-
-        let remainingModules = Set(modules.keys).subtracting(explicitModulesAtDeclarationSite)
-
-        /// We need to check whether we can find type in one of the modules but we need to be careful to avoid amibiguity
-        /// First checking explicit modules available at declaration site (so source module + all imported ones)
-        /// If there is no ambigiuity there we can assume that module will be resolved by the compiler
-        /// If that's not the case we look after remaining modules in the application and if the typename has no ambigiuity we use that
-        /// But if there is more than 1 typename duplication across modules we have no way to resolve what is the compiler going to use so we fail
-        let moduleSetsToCheck: [Array<String>] = [
-            explicitModulesAtDeclarationSite,
-            Array(remainingModules)
-        ]
-
-        for modules in moduleSetsToCheck {
-            let possibleTypes = modules
-                .compactMap { type(for: $0) }
-
-            if possibleTypes.count > 1 {
-                return ambiguousErrorMessage(from: possibleTypes)
-            }
-
-            if let type = possibleTypes.first {
-                return type.globalName
-            }
-        }
-
-        // as last result for unknown types / extensions
-        // try extracting type from unique array
-        if let module = containedInType?.module {
-            return uniqueTypes[fullName(for: module)]?.globalName
-        }
-        return nil
     }
 
     private static func updateTypeRelationships(types: [Type]) {
@@ -665,33 +693,5 @@ public enum Composer {
                 type.implements[globalName] = baseType
             }
         }
-    }
-
-    static func fakeTypeFromComposedName(_ name: String, modules: [String: [String: Type]]) -> Type? {
-        return typeFromComposedName(name, modules: modules)
-    }
-
-    static func typeFromComposedName(_ name: String, modules: [String: [String: Type]]) -> Type? {
-        guard name.contains(".") else { return nil }
-        let nameComponents = name.components(separatedBy: ".")
-        let moduleName = nameComponents[0]
-        let typeName = nameComponents.suffix(from: 1).joined(separator: ".")
-        return modules[moduleName]?[typeName]
-    }
-
-    /// Extracts list of type names from composition e.g. `ProtocolA & ProtocolB`
-    internal static func extractComposedTypeNames(from value: String, trimmingCharacterSet: CharacterSet? = nil) -> [TypeName]? {
-        guard case let components = value.components(separatedBy: CharacterSet(charactersIn: "&")),
-              components.count > 1 else { return nil }
-
-        var characterSet: CharacterSet = .whitespacesAndNewlines
-        if let trimmingCharacterSet = trimmingCharacterSet {
-            characterSet = characterSet.union(trimmingCharacterSet)
-        }
-
-        let suffixes = components.map { source in
-            source.trimmingCharacters(in: characterSet)
-        }
-        return suffixes.map { TypeName($0) }
     }
 }

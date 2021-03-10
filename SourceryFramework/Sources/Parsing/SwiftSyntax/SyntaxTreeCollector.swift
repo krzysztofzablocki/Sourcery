@@ -248,7 +248,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
     }
 
     private func processPossibleProtocolComposition(for typeName: String, localName: String, accessLevel: AccessLevel = .internal) -> Type? {
-        if let composedTypeNames = Composer.extractComposedTypeNames(from: typeName, trimmingCharacterSet: .whitespaces), composedTypeNames.count > 1 {
+        if let composedTypeNames = extractComposedTypeNames(from: typeName, trimmingCharacterSet: .whitespaces), composedTypeNames.count > 1 {
             let inheritedTypes = composedTypeNames.map { $0.name }
             let composition = ProtocolComposition(
                 name: localName,
@@ -261,6 +261,22 @@ class SyntaxTreeCollector: SyntaxVisitor {
         }
 
         return nil
+    }
+
+    /// Extracts list of type names from composition e.g. `ProtocolA & ProtocolB`
+    internal func extractComposedTypeNames(from value: String, trimmingCharacterSet: CharacterSet? = nil) -> [TypeName]? {
+        guard case let components = value.components(separatedBy: CharacterSet(charactersIn: "&")),
+              components.count > 1 else { return nil }
+
+        var characterSet: CharacterSet = .whitespacesAndNewlines
+        if let trimmingCharacterSet = trimmingCharacterSet {
+            characterSet = characterSet.union(trimmingCharacterSet)
+        }
+
+        let suffixes = components.map { source in
+            source.trimmingCharacters(in: characterSet)
+        }
+        return suffixes.map { TypeName($0) }
     }
 
     private func logError(_ message: Any) {
