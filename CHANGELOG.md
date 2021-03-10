@@ -2,7 +2,7 @@
 
 ---
 
-## Master
+## 1.3.3
 ## Fixes
 - Fixes information being lost when extending unknown type more than once
 - Multiple configuration files can be now passed through command line arguments
