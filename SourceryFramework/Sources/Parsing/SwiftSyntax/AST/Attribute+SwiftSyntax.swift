@@ -21,7 +21,7 @@ extension Attribute {
               }
           }
 
-        self.init(name: attribute.attributeName.text.trimmed, arguments: arguments, description: attribute.description.trimmed)
+        self.init(name: attribute.attributeName.text.trimmed, arguments: arguments, description: attribute.withoutTrivia().description.trimmed)
     }
 
     static func from(_ attributes: AttributeListSyntax?) -> AttributeList {

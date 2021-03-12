@@ -4,6 +4,7 @@
 ## Master
 ## Fixes
 - `isClosure` / `isArray` / `isTuple` / `isDictionary` should now consistently report correct values, this code broke in few cases in 1.3.2
+- Trivia (comments etc) will be ignored when parsing attribute description
 
 ## 1.3.3
 ## Fixes

@@ -14,6 +14,18 @@ class FileParserAttributesSpec: QuickSpec {
             }
 
             it("extracts type attribute and modifiers") {
+                expect(parse("""
+                             /*
+                               docs
+                             */
+                             @objc(WAGiveRecognitionCoordinator)
+                             // sourcery: AutoProtocol, AutoMockable
+                             class GiveRecognitionCoordinator: NSObject {
+                             }
+                             """).first?.attributes).to(
+                  equal(["objc": [Attribute(name: "objc", arguments: ["0": "WAGiveRecognitionCoordinator" as NSString], description: "@objc(WAGiveRecognitionCoordinator)")]])
+                )
+
                 expect(parse("class Foo { func some(param: @convention(swift) @escaping ()->()) {} }").first?.methods.first?.parameters.first?.typeAttributes).to(equal([
                     "escaping": [Attribute(name: "escaping")],
                     "convention": [Attribute(name: "convention", arguments: ["0": "swift" as NSString], description: "@convention(swift)")]
