@@ -334,6 +334,7 @@ class FileParserMethodsSpec: QuickSpec {
                         let method = types.first(where: { $0.name == "Foo" })?.methods.first
 
                         expect(method?.returnTypeName).to(equal(expectedTypeName))
+                        expect(method?.returnTypeName.isTuple).to(beTrue())
                     }
 
                     it("extracts closure return type correcty") {
@@ -344,6 +345,7 @@ class FileParserMethodsSpec: QuickSpec {
                             ClosureParameter(typeName: TypeName("Int")),
                             ClosureParameter(typeName: TypeName("Int"))
                             ], returnTypeName: TypeName("()")))))
+                        expect(method?.returnTypeName.isClosure).to(beTrue())
                     }
 
                     it("extracts optional closure return type correctly") {
@@ -352,6 +354,7 @@ class FileParserMethodsSpec: QuickSpec {
 
                         expect(method?.returnTypeName).to(equal(TypeName(name: "(() -> Void)?", closure: ClosureType(name: "() -> Void", parameters: [
                         ], returnTypeName: TypeName(name: "Void")))))
+                        expect(method?.returnTypeName.isClosure).to(beTrue())
                     }
 
                     it("extracts optional closure return type correctly") {
@@ -360,6 +363,7 @@ class FileParserMethodsSpec: QuickSpec {
 
                         expect(method?.returnTypeName).to(equal(TypeName(name: "(() -> Void)?", closure: ClosureType(name: "() -> Void", parameters: [
                         ], returnTypeName: TypeName(name: "Void")))))
+                        expect(method?.returnTypeName.isClosure).to(beTrue())
                     }
                 }
 

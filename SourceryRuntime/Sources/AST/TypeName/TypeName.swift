@@ -174,11 +174,7 @@ import Foundation
 
     /// Whether type is a tuple
     public var isTuple: Bool {
-        if let actualTypeName = actualTypeName?.unwrappedTypeName {
-            return actualTypeName.isValidTupleName()
-        } else {
-            return unwrappedTypeName.isValidTupleName()
-        }
+        actualTypeName?.tuple != nil || tuple != nil
     }
 
     /// Tuple type data
@@ -186,11 +182,7 @@ import Foundation
 
     /// Whether type is an array
     public var isArray: Bool {
-        if let actualTypeName = actualTypeName?.unwrappedTypeName {
-            return actualTypeName.isValidArrayName()
-        } else {
-            return unwrappedTypeName.isValidArrayName()
-        }
+        actualTypeName?.array != nil || array != nil
     }
 
     /// Array type data
@@ -198,11 +190,7 @@ import Foundation
 
     /// Whether type is a dictionary
     public var isDictionary: Bool {
-        if let actualTypeName = actualTypeName?.unwrappedTypeName {
-            return actualTypeName.isValidDictionaryName()
-        } else {
-            return unwrappedTypeName.isValidDictionaryName()
-        }
+        actualTypeName?.dictionary != nil || dictionary != nil
     }
 
     /// Dictionary type data
@@ -210,11 +198,7 @@ import Foundation
 
     /// Whether type is a closure
     public var isClosure: Bool {
-        if let actualTypeName = actualTypeName?.unwrappedTypeName {
-            return actualTypeName.isValidClosureName()
-        } else {
-            return unwrappedTypeName.isValidClosureName()
-        }
+        actualTypeName?.closure != nil || closure != nil
     }
 
     /// Closure type data

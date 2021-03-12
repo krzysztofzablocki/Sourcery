@@ -20,7 +20,6 @@
 		097E11F01E05E78600FEB751 /* TypealiasSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */; };
 		097E11F71E0EF63100FEB751 /* MethodSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11F61E0EF63100FEB751 /* MethodSpec.swift */; };
 		098442731E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098442721E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift */; };
-		09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */; };
 		09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */; };
 		09B1DD3F1E21ADD8009228EE /* GeneratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DF28602426F7A4C8D737 /* GeneratorSpec.swift */; };
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
@@ -83,7 +82,6 @@
 		CDAB713125E2405E0027D85A /* FileParserSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB713025E2405E0027D85A /* FileParserSyntax.swift */; };
 		CDAB714125E241900027D85A /* FileParserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB714025E241900027D85A /* FileParserType.swift */; };
 		CDAB7CFC231E412C00ED8A32 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAB7CFB231E412C00ED8A32 /* Time.swift */; };
-		CDB75ED725F89BA500EF855A /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = CD9713CD25EFA02900E69E69 /* SwiftSyntax */; };
 		CDB75EDE25F89CAD00EF855A /* Composer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA1021D1623D009DF652 /* Composer.swift */; };
 		CDB75EE525F8A39F00EF855A /* Array+Parallel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D6548CB0B086F0574D1B /* Array+Parallel.swift */; };
 		CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDBEC15B1E242B9E0090E881 /* StencilTemplate.swift */; };
@@ -142,6 +140,7 @@
 		E291D8DB06EC63770326562B /* Type+Stencil.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D04C9425FA502B37895D /* Type+Stencil.swift */; };
 		E291D90EC943AC5CBA99899A /* ComposerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */; };
 		E291D9C03E8707C86E6019AD /* AssociatedType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D3534413F99AABE72211 /* AssociatedType.swift */; };
+		E291D9CCA347508DCBBF9E0C /* FileParser + TypeNameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D85908C0467EFC20EB04 /* FileParser + TypeNameSpec.swift */; };
 		E291DA3352C0EDD1EB8DDCB3 /* FileParser + VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D37EF6AA39833209828F /* FileParser + VariableSpec.swift */; };
 		E291DB1AEFBDBE1DDF47A31C /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291D2A61ED04066ABC7D2B5 /* Protocol.swift */; };
 		E291DB865998EC6310ED9C68 /* TemplateContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291DDEE868C8FEA1ED8B0E5 /* TemplateContext.swift */; };
@@ -269,7 +268,6 @@
 		0054C50722496806007F9AA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0772F2F8CC5F4619DDE07101 /* Pods-SourceryJS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryJS.debug.xcconfig"; path = "Target Support Files/Pods-SourceryJS/Pods-SourceryJS.debug.xcconfig"; sourceTree = "<group>"; };
 		0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + MethodsSpec.swift"; sourceTree = "<group>"; };
-		0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameSpec.swift; sourceTree = "<group>"; };
 		09334E501EB914510092806F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		09334E511EB914510092806F /* SourceryRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceryRuntime.h; sourceTree = "<group>"; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
@@ -396,6 +394,7 @@
 		E291D6E6BC975B97EED3AE01 /* Modifier+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Modifier+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291D754B5416F3B4595691B /* Attribute+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attribute+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291D82A5CCF24A6321DFB96 /* Diffable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diffable.swift; sourceTree = "<group>"; };
+		E291D85908C0467EFC20EB04 /* FileParser + TypeNameSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + TypeNameSpec.swift"; sourceTree = "<group>"; };
 		E291D8D53A557DA9E6D27C3C /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
 		E291D92392DCC9E4DEA4358C /* JSExport.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSExport.generated.swift; sourceTree = "<group>"; };
 		E291D92D0BF7CCE52D0DA9D2 /* Subscript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscript.swift; sourceTree = "<group>"; };
@@ -487,7 +486,6 @@
 			files = (
 				47635CB021DA342600B2D5A1 /* SourceryUtils.framework in Frameworks */,
 				B5BCFA0021D161BF009DF652 /* SourceryRuntime.framework in Frameworks */,
-				CDB75ED725F89BA500EF855A /* SwiftSyntax in Frameworks */,
 				CD4B38F125EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */,
 				60CC7E378065D25B8D555BCF /* Pods_SourceryFramework.framework in Frameworks */,
 			);
@@ -875,6 +873,7 @@
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
 				6359E6641FE409250015AF8F /* FileParser + SubscriptsSpec.swift */,
 				E291DF77496B276002A43110 /* Helpers */,
+				E291D85908C0467EFC20EB04 /* FileParser + TypeNameSpec.swift */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -948,7 +947,6 @@
 				097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */,
 				E291D30C065089B348EE7C42 /* DiffableSpec.swift */,
 				097E11F61E0EF63100FEB751 /* MethodSpec.swift */,
-				0911DAF31E2141B7001FF3EB /* TypeNameSpec.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1199,7 +1197,7 @@
 			);
 			name = SourceryFramework;
 			packageProductDependencies = (
-				CD9713CD25EFA02900E69E69 /* SwiftSyntax */,
+				CD9713CD25EFA02900E69E69,
 			);
 			productName = SourceryFramework;
 			productReference = B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */;
@@ -1311,7 +1309,7 @@
 			);
 			mainGroup = CD754C821D853F000082B512;
 			packageReferences = (
-				CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */,
+				CD9713CC25EFA02900E69E69,
 			);
 			productRefGroup = CD754C8C1D853F000082B512 /* Products */;
 			projectDirPath = "";
@@ -1781,7 +1779,6 @@
 				CDF5E71D1E671B8500664763 /* TypedSpec.generated.swift in Sources */,
 				CDE812ED1E1127FF00F1FF97 /* Sourcery+PerformanceSpec.swift in Sources */,
 				E291D8BB621560C275813B1F /* SourcerySpec.swift in Sources */,
-				09B1DD321E2147C4009228EE /* TypeNameSpec.swift in Sources */,
 				09346DC81E02195300D6358C /* StructSpec.swift in Sources */,
 				E291D4E250805568DBC33F7E /* TypeSpec.swift in Sources */,
 				E291D48FD07450FD0A09D92E /* EnumSpec.swift in Sources */,
@@ -1807,6 +1804,7 @@
 				E291D5D22DA204FF2ABADC17 /* VerifierSpec.swift in Sources */,
 				E291D790FFB0FB5068D1923D /* TemplateAnnotationsParserSpec.swift in Sources */,
 				E291DD150E255AF7C4D9E0E6 /* AnnotationsParserSpec.swift in Sources */,
+				E291D9CCA347508DCBBF9E0C /* FileParser + TypeNameSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2579,7 +2577,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
+		CD9713CC25EFA02900E69E69 = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-syntax";
 			requirement = {
@@ -2590,9 +2588,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CD9713CD25EFA02900E69E69 /* SwiftSyntax */ = {
+		CD9713CD25EFA02900E69E69 = {
 			isa = XCSwiftPackageProductDependency;
-			package = CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */;
+			package = CD9713CC25EFA02900E69E69;
 			productName = SwiftSyntax;
 		};
 /* End XCSwiftPackageProductDependency section */

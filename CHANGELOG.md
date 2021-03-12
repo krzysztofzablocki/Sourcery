@@ -1,6 +1,9 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+## Fixes
+- `isClosure` / `isArray` / `isTuple` / `isDictionary` should now consistently report correct values, this code broke in few cases in 1.3.2
 
 ## 1.3.3
 ## Fixes
