@@ -5883,6 +5883,20 @@ public typealias AttributeList = [String: [Attribute]]
     /// Imports that existed in the file that contained this type declaration
     public var imports: [Import] = []
 
+    // sourcery: skipEquality
+    /// Imports existed in all files containing this type and all its super classes/protocols
+    public var allImports: [Import] {
+        return Array(Set(Type.gatherAllImports(for: self)))
+    }
+
+    private static func gatherAllImports(for type: Type) -> [Import] {
+        var allImports: [Import] = Array(type.imports)
+        type.implements.values.forEach { (inheritedType) in
+            allImports.append(contentsOf: Type.gatherAllImports(for: inheritedType))
+        }
+        return allImports
+    }
+
     // All local typealiases
     // sourcery: skipJSExport
     /// :nodoc:

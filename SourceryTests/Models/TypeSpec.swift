@@ -176,6 +176,21 @@ class TypeSpec: QuickSpec {
                 }
             }
 
+            describe("When accessing allImports property") {
+                it("returns correct imports after removing duplicates for type with a super type") {
+                    let superType = Type(name: "Bar")
+                    let superTypeImports = [Import(path: "cModule"), Import(path: "aModule")]
+                    superType.imports = superTypeImports
+                    let type = Type(name: "Foo", inheritedTypes: [superType.name])
+                    let typeImports = [Import(path: "aModule"), Import(path: "bModule")]
+                    type.imports = typeImports
+                    type.implements[superType.name] = superType
+                    let expectedImports = [Import(path: "aModule"), Import(path: "bModule"), Import(path: "cModule")]
+
+                    expect(type.allImports.sortedByPath()).to(equal(expectedImports))
+                }
+            }
+
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {
@@ -197,5 +212,11 @@ class TypeSpec: QuickSpec {
                 }
             }
         }
+    }
+}
+
+private extension Sequence where Element == Import {
+    func sortedByPath() -> [Import] {
+        return sorted { $0.path < $1.path }
     }
 }
