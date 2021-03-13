@@ -51,14 +51,14 @@ Sourcery can be applied to arbitrary problems across your codebase, if you can d
 
 Most common uses are:
 
-- Equality & Hashing
-- Enum cases & Counts
-- Lenses
-- Mocks & Stubs
-- LinuxMain
-- Decorators
-- JSON coding
-- NSCoding and Codable
+- [Equality](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/equatable.html) & [Hashing](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/hashable.html)
+- [Enum cases & Counts](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/enum-cases.html)
+- [Lenses](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/lenses.html)
+- [Mocks & Stubs](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/mocks.html)
+- [LinuxMain](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/linuxmain.html)
+- [Decorators](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/decorator.html)
+- [Persistence and advanced Codable](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/codable.html)
+- [Property level diffing](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/diffable.html)
 
 But how about more specific use-cases, like automatically generating all the UI for your app `BetaSetting`? [you can use Sourcery for that too](https://github.com/krzysztofzablocki/AutomaticSettings)
 
