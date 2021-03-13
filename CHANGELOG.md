@@ -1,5 +1,7 @@
 # Sourcery CHANGELOG
 
+- Added `allImports` property to `Type`, which returns all imports exited in all files containing this type and all its super classes/protocols.
+
 ---
 ## 1.3.4
 ## Fixes
