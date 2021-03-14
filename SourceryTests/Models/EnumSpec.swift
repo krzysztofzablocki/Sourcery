@@ -7,7 +7,7 @@ class EnumSpec: QuickSpec {
     override func spec() {
         describe ("Enum") {
             var sut: Enum?
-            let variable = Variable(name: "variable", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))
+            let variable = Variable(name: "variable", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .internal), isComputed: false, definedInTypeName: TypeName(name: "Foo"))
 
             beforeEach {
                 sut = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA"), EnumCase(name: "CaseB")])
@@ -28,7 +28,7 @@ class EnumSpec: QuickSpec {
             context("given associated values") {
 
                 it("hasAssociatedValues") {
-                    let sut = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA", associatedValues: [AssociatedValue(name: nil, typeName: TypeName("Int"))]), EnumCase(name: "CaseB")])
+                    let sut = Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA", associatedValues: [AssociatedValue(name: nil, typeName: TypeName(name: "Int"))]), EnumCase(name: "CaseB")])
 
                     expect(sut.hasAssociatedValues).to(beTrue())
                 }
@@ -49,7 +49,7 @@ class EnumSpec: QuickSpec {
                         expect(sut).toNot(equal(Enum(name: "Foo", accessLevel: .internal, isExtension: true, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA"), EnumCase(name: "CaseB")])))
                         expect(sut).toNot(equal(Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases: [EnumCase(name: "CaseA"), EnumCase(name: "CaseB")])))
                         expect(sut).toNot(equal(Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseB")])))
-                        expect(sut).toNot(equal(Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseB", associatedValues: [AssociatedValue(name: nil, typeName: TypeName("Int"))])])))
+                        expect(sut).toNot(equal(Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseB", associatedValues: [AssociatedValue(name: nil, typeName: TypeName(name: "Int"))])])))
                         expect(sut).toNot(equal(Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseB")])))
                     }
                 }

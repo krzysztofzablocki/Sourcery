@@ -9,7 +9,7 @@ class TypealiasSpec: QuickSpec {
             var sut: Typealias?
 
             beforeEach {
-                sut = Typealias(aliasName: "Foo", typeName: TypeName("Bar"))
+                sut = Typealias(aliasName: "Foo", typeName: TypeName(name: "Bar"))
             }
 
             afterEach {
@@ -34,15 +34,15 @@ class TypealiasSpec: QuickSpec {
 
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Typealias(aliasName: "Foo", typeName: TypeName("Bar"))))
+                        expect(sut).to(equal(Typealias(aliasName: "Foo", typeName: TypeName(name: "Bar"))))
                     }
                 }
 
                 context("given different items") {
                     it("is not equal") {
-                        expect(sut).toNot(equal(Typealias(aliasName: "Foo", typeName: TypeName("Foo"))))
-                        expect(sut).toNot(equal(Typealias(aliasName: "Bar", typeName: TypeName("Bar"))))
-                        expect(sut).toNot(equal(Typealias(aliasName: "Bar", typeName: TypeName("Bar"), parent: Type(name: "Parent"))))
+                        expect(sut).toNot(equal(Typealias(aliasName: "Foo", typeName: TypeName(name: "Foo"))))
+                        expect(sut).toNot(equal(Typealias(aliasName: "Bar", typeName: TypeName(name: "Bar"))))
+                        expect(sut).toNot(equal(Typealias(aliasName: "Bar", typeName: TypeName(name: "Bar"), parent: Type(name: "Parent"))))
                     }
                 }
 

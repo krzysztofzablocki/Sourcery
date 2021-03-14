@@ -13,51 +13,51 @@ class GeneratorSpec: QuickSpec {
             var types: [Type] = []
             var arguments: [String: NSObject] = [:]
             let beforeEachGenerate: () -> Void = {
-                let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName("Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
+                let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName(name: "Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
                 let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
                 let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
 
                 let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
-                let fooVar = Variable(name: "foo", typeName: TypeName("Foo"), accessLevel: (read: .public, write: .private), isComputed: false, definedInTypeName: TypeName("Complex"))
+                let fooVar = Variable(name: "foo", typeName: TypeName(name: "Foo"), accessLevel: (read: .public, write: .private), isComputed: false, definedInTypeName: TypeName(name: "Complex"))
                 fooVar.type = fooType
-                let barVar = Variable(name: "bar", typeName: TypeName("Bar"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Complex"))
+                let barVar = Variable(name: "bar", typeName: TypeName(name: "Bar"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName(name: "Complex"))
                 barVar.type = barType
 
                 complexType.rawVariables = [
                     fooVar,
                     barVar,
-                    Variable(name: "fooBar", typeName: TypeName("Int?"), isComputed: true, definedInTypeName: TypeName("Complex")),
-                    Variable(name: "tuple", typeName: .buildTuple(.Int, TypeName(name: "Bar")), definedInTypeName: TypeName("Complex"))
+                    Variable(name: "fooBar", typeName: TypeName(name: "Int", isOptional: true), isComputed: true, definedInTypeName: TypeName(name: "Complex")),
+                    Variable(name: "tuple", typeName: .buildTuple(.Int, TypeName(name: "Bar")), definedInTypeName: TypeName(name: "Complex"))
                 ]
 
                 complexType.rawMethods = [
-                    Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], accessLevel: .public, definedInTypeName: TypeName("Complex")),
-                    Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], isStatic: true, definedInTypeName: TypeName("Complex")),
-                    Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], isClass: true, definedInTypeName: TypeName("Complex"))
+                    Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Int"))], accessLevel: .public, definedInTypeName: TypeName(name: "Complex")),
+                    Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Float"))], isStatic: true, definedInTypeName: TypeName(name: "Complex")),
+                    Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Int"))], isClass: true, definedInTypeName: TypeName(name: "Complex"))
                 ]
 
                 let complexTypeExtension = Type(name: "Complex", isExtension: true, variables: [])
                 complexTypeExtension.rawVariables = [
-                    Variable(name: "fooBarFromExtension", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("Complex")),
-                    Variable(name: "tupleFromExtension", typeName: .buildTuple(.Int, TypeName(name: "Bar")), isComputed: true, definedInTypeName: TypeName("Complex"))
+                    Variable(name: "fooBarFromExtension", typeName: TypeName(name: "Int"), isComputed: true, definedInTypeName: TypeName(name: "Complex")),
+                    Variable(name: "tupleFromExtension", typeName: .buildTuple(.Int, TypeName(name: "Bar")), isComputed: true, definedInTypeName: TypeName(name: "Complex"))
                 ]
                 complexTypeExtension.rawMethods = [
-                    Method(name: "fooFromExtension(some: Int)", selectorName: "fooFromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Int"))], definedInTypeName: TypeName("Complex")),
-                    Method(name: "foo2FromExtension(some: Int)", selectorName: "foo2FromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("Float"))], definedInTypeName: TypeName("Complex"))
+                    Method(name: "fooFromExtension(some: Int)", selectorName: "fooFromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Int"))], definedInTypeName: TypeName(name: "Complex")),
+                    Method(name: "foo2FromExtension(some: Int)", selectorName: "foo2FromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Float"))], definedInTypeName: TypeName(name: "Complex"))
                 ]
 
                 let knownProtocol = Protocol(name: "KnownProtocol", variables: [
-                    Variable(name: "protocolVariable", typeName: TypeName("Int"), isComputed: true, definedInTypeName: TypeName("KnownProtocol"))
+                    Variable(name: "protocolVariable", typeName: TypeName(name: "Int"), isComputed: true, definedInTypeName: TypeName(name: "KnownProtocol"))
                     ], methods: [
-                        Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName("String"))], accessLevel: .public, definedInTypeName: TypeName("KnownProtocol"))
+                        Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "String"))], accessLevel: .public, definedInTypeName: TypeName(name: "KnownProtocol"))
                     ])
 
                 let innerOptionsType = Type(name: "InnerOptions", accessLevel: .public, variables: [
-                    Variable(name: "fooInnerOptions", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("InnerOptions"))
+                    Variable(name: "fooInnerOptions", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName(name: "InnerOptions"))
                     ])
                 innerOptionsType.variables.forEach { $0.definedInType = innerOptionsType }
                 let optionsType = Enum(name: "Options", accessLevel: .public, inheritedTypes: ["KnownProtocol"], cases: [EnumCase(name: "optionA"), EnumCase(name: "optionB")], variables: [
-                    Variable(name: "optionVar", typeName: TypeName("String"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName("Options"))
+                    Variable(name: "optionVar", typeName: TypeName(name: "String"), accessLevel: (read: .public, write: .public), isComputed: false, definedInTypeName: TypeName(name: "Options"))
                     ], containedTypes: [innerOptionsType])
 
                 types = [
@@ -67,7 +67,7 @@ class GeneratorSpec: QuickSpec {
                     complexTypeExtension,
                     barType,
                     optionsType,
-                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName("Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
+                    Enum(name: "FooOptions", accessLevel: .public, inheritedTypes: ["Foo", "KnownProtocol"], rawTypeName: TypeName(name: "Foo"), cases: [EnumCase(name: "fooA"), EnumCase(name: "fooB")]),
                     Type(name: "NSObject", accessLevel: .none, isExtension: true, inheritedTypes: ["KnownProtocol"]),
                     Class(name: "ProjectClass", accessLevel: .open),
                     Class(name: "ProjectFooSubclass", inheritedTypes: ["FooSubclass"]),

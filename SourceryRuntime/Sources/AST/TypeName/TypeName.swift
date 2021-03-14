@@ -8,86 +8,8 @@ import Foundation
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
 @objcMembers public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
     /// :nodoc:
-    public init(_ name: String,
-                actualTypeName: TypeName? = nil,
-                attributes: AttributeList = [:],
-                modifiers: [SourceryModifier] = [],
-                tuple: TupleType? = nil,
-                array: ArrayType? = nil,
-                dictionary: DictionaryType? = nil,
-                closure: ClosureType? = nil,
-                generic: GenericType? = nil,
-                isProtocolComposition: Bool = false) {
-
-        self.name = name
-        self.actualTypeName = actualTypeName
-        self.attributes = attributes
-        self.modifiers = modifiers
-        self.tuple = tuple
-        self.array = array
-        self.dictionary = dictionary
-        self.closure = closure
-        self.generic = generic
-        self.isProtocolComposition = isProtocolComposition
-
-        var name = name
-        attributes.forEach { _, value in
-            value.forEach { value in
-                name = name
-                  .trimmingPrefix(value.description)
-                  .trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-        }
-
-        if let genericConstraint = name.range(of: "where") {
-            name = String(name.prefix(upTo: genericConstraint.lowerBound))
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-
-        if name.isEmpty {
-            self.unwrappedTypeName = "Void"
-            self.isImplicitlyUnwrappedOptional = false
-            self.isOptional = false
-            self.isGeneric = false
-        } else {
-            name = name.bracketsBalancing()
-            name = name.trimmingPrefix("inout ").trimmingCharacters(in: .whitespacesAndNewlines)
-
-            if name.isValidClosureName() {
-                let isImplicitlyUnwrappedOptional = name.hasPrefix("ImplicitlyUnwrappedOptional<") && name.hasSuffix(">")
-                self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
-                self.isOptional = (name.hasPrefix("Optional<")  && name.hasSuffix(">")) || isImplicitlyUnwrappedOptional
-            } else {
-                let isImplicitlyUnwrappedOptional = name.hasSuffix("!") || name.hasPrefix("ImplicitlyUnwrappedOptional<")
-                self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
-                self.isOptional = name.hasSuffix("?") || name.hasPrefix("Optional<") || isImplicitlyUnwrappedOptional
-            }
-
-            var unwrappedTypeName: String
-
-            if isOptional {
-                if name.hasSuffix("?") || name.hasSuffix("!") {
-                    unwrappedTypeName = String(name.dropLast())
-                } else if name.hasPrefix("Optional<") {
-                    unwrappedTypeName = name.drop(first: "Optional<".count, last: 1)
-                } else {
-                    unwrappedTypeName = name.drop(first: "ImplicitlyUnwrappedOptional<".count, last: 1)
-                }
-                unwrappedTypeName = unwrappedTypeName.bracketsBalancing()
-            } else {
-                unwrappedTypeName = name
-            }
-
-            self.unwrappedTypeName = unwrappedTypeName
-            self.isGeneric =
-              (unwrappedTypeName.contains("<") && unwrappedTypeName.last == ">")
-                || unwrappedTypeName.isValidArrayName()
-                || unwrappedTypeName.isValidDictionaryName()
-        }
-    }
-
-    /// :nodoc:
     public init(name: String,
+                actualTypeName: TypeName? = nil,
                 unwrappedTypeName: String? = nil,
                 attributes: AttributeList = [:],
                 isOptional: Bool = false,
@@ -113,10 +35,9 @@ import Foundation
             optionalSuffix = ""
         }
 
-        // TODO: TBRs
-        let trimmedName = name.trimmingPrefix("inout ").trimmed
-        self.name = trimmedName + optionalSuffix
-        self.unwrappedTypeName = unwrappedTypeName ?? trimmedName
+        self.name = name + optionalSuffix
+        self.actualTypeName = actualTypeName
+        self.unwrappedTypeName = unwrappedTypeName ?? name
         self.tuple = tuple
         self.array = array
         self.dictionary = dictionary
@@ -124,7 +45,6 @@ import Foundation
         self.generic = generic
         self.isOptional = isOptional || isImplicitlyUnwrappedOptional
         self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
-        self.isGeneric = generic != nil
         self.isProtocolComposition = isProtocolComposition
 
         self.attributes = attributes
@@ -139,7 +59,9 @@ import Foundation
     public var generic: GenericType?
 
     /// Whether this TypeName is generic
-    public var isGeneric: Bool
+    public var isGeneric: Bool {
+        actualTypeName?.generic != nil || generic != nil
+    }
 
     /// Whether this TypeName is protocol composition
     public var isProtocolComposition: Bool
@@ -250,7 +172,6 @@ import Foundation
         required public init?(coder aDecoder: NSCoder) {
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             self.generic = aDecoder.decode(forKey: "generic")
-            self.isGeneric = aDecoder.decode(forKey: "isGeneric")
             self.isProtocolComposition = aDecoder.decode(forKey: "isProtocolComposition")
             self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -268,7 +189,6 @@ import Foundation
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.generic, forKey: "generic")
-            aCoder.encode(self.isGeneric, forKey: "isGeneric")
             aCoder.encode(self.isProtocolComposition, forKey: "isProtocolComposition")
             aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
             aCoder.encode(self.attributes, forKey: "attributes")
@@ -290,7 +210,7 @@ import Foundation
     }
 
     public convenience init(_ description: String) {
-        self.init(description, actualTypeName: nil)
+        self.init(name: description, actualTypeName: nil)
     }
 }
 
@@ -301,6 +221,6 @@ extension TypeName {
         } else {
             Log.astWarning("Unknown type, please add type attribution")
         }
-        return TypeName("UnknownTypeSoAddTypeAttributionToVariable", attributes: attributes)
+        return TypeName(name: "UnknownTypeSoAddTypeAttributionToVariable", attributes: attributes)
     }
 }

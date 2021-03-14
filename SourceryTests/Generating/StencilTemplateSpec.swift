@@ -13,14 +13,14 @@ class StencilTemplateSpec: QuickSpec {
         describe("StencilTemplate") {
 
             func generate(_ template: String) -> String {
-                let arrayAnnotations = Variable(name: "annotated1", typeName: TypeName("MyClass"))
+                let arrayAnnotations = Variable(name: "annotated1", typeName: TypeName(name: "MyClass"))
                 arrayAnnotations.annotations = ["Foo": ["Hello", "beautiful", "World"] as NSArray]
-                let singleAnnotation = Variable(name: "annotated2", typeName: TypeName("MyClass"))
+                let singleAnnotation = Variable(name: "annotated2", typeName: TypeName(name: "MyClass"))
                 singleAnnotation.annotations = ["Foo": "HelloWorld" as NSString]
                 return (try? Generator.generate(nil, types: Types(types: [
                     Class(name: "MyClass", variables: [
-                        Variable(name: "lowerFirstLetter", typeName: TypeName("myClass")),
-                        Variable(name: "upperFirstLetter", typeName: TypeName("MyClass")),
+                        Variable(name: "lowerFirstLetter", typeName: TypeName(name: "myClass")),
+                        Variable(name: "upperFirstLetter", typeName: TypeName(name: "MyClass")),
                         arrayAnnotations,
                         singleAnnotation
                         ])

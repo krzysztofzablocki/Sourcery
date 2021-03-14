@@ -318,7 +318,6 @@ extension TypeName {
         guard let rhs = object as? TypeName else { return false }
         if self.name != rhs.name { return false }
         if self.generic != rhs.generic { return false }
-        if self.isGeneric != rhs.isGeneric { return false }
         if self.isProtocolComposition != rhs.isProtocolComposition { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
@@ -689,7 +688,6 @@ extension TypeName {
         var hasher = Hasher()
         hasher.combine(self.name)
         hasher.combine(self.generic)
-        hasher.combine(self.isGeneric)
         hasher.combine(self.isProtocolComposition)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)

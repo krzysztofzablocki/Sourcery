@@ -53,7 +53,7 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                             """
                             expect(associatedType(code)).to(equal([AssociatedType(
                               name: "Bar",
-                              typeName: TypeName("Codable")
+                              typeName: TypeName(name: "Codable")
                             )]))
                         }
                     }
@@ -68,7 +68,7 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                             """
                             expect(associatedType(code, protocolName: "Foo")).to(equal([AssociatedType(
                               name: "Bar",
-                              typeName: TypeName("A")
+                              typeName: TypeName(name: "A")
                             )]))
                         }
                     }
@@ -83,12 +83,12 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
 
                             expect(parsed).to(equal(AssociatedType(
                               name: "Bar",
-                              typeName: TypeName("Encodable & Decodable")
+                              typeName: TypeName(name: "Encodable & Decodable")
                             )))
                             expect(parsed?.type).to(equal(ProtocolComposition(
                               parent: SourceryProtocol(name: "Foo"),
                               inheritedTypes: ["Encodable", "Decodable"],
-                              composedTypeNames: [TypeName("Encodable"), TypeName("Decodable")]
+                              composedTypeNames: [TypeName(name: "Encodable"), TypeName(name: "Decodable")]
                             )))
                         }
                     }

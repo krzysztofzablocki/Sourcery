@@ -353,7 +353,7 @@ extension Array where Element == ClosureParameter {
     public init(name: String,
                 selectorName: String? = nil,
                 parameters: [MethodParameter] = [],
-                returnTypeName: TypeName = TypeName("Void"),
+                returnTypeName: TypeName = TypeName(name: "Void"),
                 throws: Bool = false,
                 rethrows: Bool = false,
                 accessLevel: AccessLevel = .internal,

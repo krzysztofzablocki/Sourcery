@@ -14,10 +14,10 @@ class TypeNameSpec: QuickSpec {
                       var myFoo: \(code)
                   }
                   """
-                guard let parser = try? makeParser(for: wrappedCode) else { fail(); return TypeName("") }
+                guard let parser = try? makeParser(for: wrappedCode) else { fail(); return TypeName(name: "") }
                 let result = try? parser.parse()
                 let variable = result?.types.first?.variables.first
-                return variable?.typeName ?? TypeName("")
+                return variable?.typeName ?? TypeName(name: "")
             }
 
             context("given optional type with short syntax") {

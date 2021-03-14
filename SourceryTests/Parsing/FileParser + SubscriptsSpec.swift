@@ -32,33 +32,33 @@ class FileParserSubscriptsSpec: QuickSpec {
                     expect(subscripts?.first).to(equal(
                         Subscript(
                             parameters: [
-                                MethodParameter(argumentLabel: nil, name: "index", typeName: TypeName("Int")),
-                                MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName("String"))
+                                MethodParameter(argumentLabel: nil, name: "index", typeName: TypeName(name: "Int")),
+                                MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName(name: "String"))
                             ],
-                            returnTypeName: TypeName("Int"),
+                            returnTypeName: TypeName(name: "Int"),
                             accessLevel: (.private, .private),
                             modifiers: [
                                 Modifier(name: "final"),
                                 Modifier(name: "private")
                             ],
                             annotations: [:],
-                            definedInTypeName: TypeName("Foo")
+                            definedInTypeName: TypeName(name: "Foo")
                         )
                     ))
 
                     expect(subscripts?.last).to(equal(
                         Subscript(
                             parameters: [
-                                MethodParameter(argumentLabel: "b", name: "b", typeName: TypeName("Int"))
+                                MethodParameter(argumentLabel: "b", name: "b", typeName: TypeName(name: "Int"))
                             ],
-                            returnTypeName: TypeName("String"),
+                            returnTypeName: TypeName(name: "String"),
                             accessLevel: (.public, .private),
                             modifiers: [
                                 Modifier(name: "public"),
                                 Modifier(name: "private", detail: "set")
                             ],
                             annotations: [:],
-                            definedInTypeName: TypeName("Foo")
+                            definedInTypeName: TypeName(name: "Foo")
                         )
                     ))
                 }

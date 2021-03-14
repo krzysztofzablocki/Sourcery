@@ -73,7 +73,7 @@ extension SourceryMethod {
                 returnTypeName = typeName
             }
         } else {
-            returnTypeName = signature.output ?? TypeName("Void")
+            returnTypeName = signature.output ?? TypeName(name: "Void")
         }
 
         let funcName = identifier.last == "?" ? String(identifier.dropLast()) : identifier

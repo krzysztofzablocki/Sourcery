@@ -55,9 +55,9 @@ extension String {
         } else if Bool(string) != nil {
             return TypeName(name: "Bool")
         } else if Int(string) != nil {
-            return TypeName("Int")
+            return TypeName(name: "Int")
         } else if Double(string) != nil {
-            return TypeName("Double")
+            return TypeName(name: "Double")
         } else if string.isValidTupleName() {
             //tuple
             let string = string.dropFirstAndLast()

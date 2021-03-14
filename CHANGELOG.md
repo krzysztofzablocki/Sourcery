@@ -1,6 +1,10 @@
 # Sourcery CHANGELOG
 
 ---
+## Master
+## Internal changes
+- Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
+
 ## 1.3.4
 ## Fixes
 - `isClosure` / `isArray` / `isTuple` / `isDictionary` should now consistently report correct values, this code broke in few cases in 1.3.2

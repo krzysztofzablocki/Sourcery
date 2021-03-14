@@ -9,7 +9,7 @@ class VariableSpec: QuickSpec {
             var sut: Variable?
 
             beforeEach {
-                sut = Variable(name: "variable", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName("Foo"))
+                sut = Variable(name: "variable", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName(name: "Foo"))
             }
 
             afterEach {
@@ -17,7 +17,7 @@ class VariableSpec: QuickSpec {
             }
 
             it("has proper defined in type name") {
-                expect(sut?.definedInTypeName).to(equal(TypeName("Foo")))
+                expect(sut?.definedInTypeName).to(equal(TypeName(name: "Foo")))
             }
 
             it("has proper read access") {
@@ -31,18 +31,18 @@ class VariableSpec: QuickSpec {
             describe("When testing equality") {
                 context("given same items") {
                     it("is equal") {
-                        expect(sut).to(equal(Variable(name: "variable", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName("Foo"))))
+                        expect(sut).to(equal(Variable(name: "variable", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName(name: "Foo"))))
                     }
                 }
 
                 context("given different items") {
                     it("is not equal") {
-                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName("Foo"))))
-                        expect(sut).toNot(equal(Variable(name: "variable", typeName: TypeName("Float"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName("Foo"))))
-                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName("Int"), accessLevel: (read: .internal, write: .internal), isComputed: true, definedInTypeName: TypeName("Foo"))))
-                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName("Int"), accessLevel: (read: .public, write: .public), isComputed: true, definedInTypeName: TypeName("Foo"))))
-                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: false, definedInTypeName: TypeName("Foo"))))
-                        expect(sut).toNot(equal(Variable(name: "variable", typeName: TypeName("Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName("Bar"))))
+                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName(name: "Foo"))))
+                        expect(sut).toNot(equal(Variable(name: "variable", typeName: TypeName(name: "Float"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName(name: "Foo"))))
+                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: true, definedInTypeName: TypeName(name: "Foo"))))
+                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .public), isComputed: true, definedInTypeName: TypeName(name: "Foo"))))
+                        expect(sut).toNot(equal(Variable(name: "other", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .internal), isComputed: false, definedInTypeName: TypeName(name: "Foo"))))
+                        expect(sut).toNot(equal(Variable(name: "variable", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .internal), isComputed: true, definedInTypeName: TypeName(name: "Bar"))))
                     }
                 }
             }
