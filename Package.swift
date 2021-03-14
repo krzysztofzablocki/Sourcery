@@ -9,6 +9,7 @@ let package = Package(
     ],
     products: [
         .executable(name: "sourcery", targets: ["Sourcery"]),
+        .library(name: "SourceryParser", targets: ["SourceryParser"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
@@ -28,6 +29,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "Sourcery", dependencies: [
+            "SourceryParser",
             "SourceryFramework",
             "SourceryRuntime",
             "SourceryStencil",
@@ -38,6 +40,12 @@ let package = Package(
             "Yams",
             "StencilSwiftKit",
             "SwiftSyntax",
+        ]),
+        .target(name: "SourceryParser", dependencies: [
+            "SourceryFramework",
+            "SourceryRuntime",
+            "PathKit",
+            "Yams",
             "XcodeProj",
             "TryCatch",
         ]),

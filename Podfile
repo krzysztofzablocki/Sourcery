@@ -62,3 +62,7 @@ end
 target 'SourceryFramework' do
   pathkit
 end
+
+target 'SourceryParser' do
+  pathkit
+end

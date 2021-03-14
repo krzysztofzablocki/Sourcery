@@ -2,17 +2,16 @@ import Foundation
 import XcodeProj
 import PathKit
 import Yams
-import SourceryRuntime
 
-struct Project {
-    let file: XcodeProj
-    let root: Path
-    let targets: [Target]
-    let exclude: [Path]
+public struct Project {
+    public let file: XcodeProj
+    public let root: Path
+    public let targets: [Target]
+    public let exclude: [Path]
 
-    struct Target {
-        let name: String
-        let module: String
+    public struct Target {
+        public let name: String
+        public let module: String
 
         init(dict: [String: String]) throws {
             guard let name = dict["name"] else {
@@ -23,7 +22,7 @@ struct Project {
         }
     }
 
-    init(dict: [String: Any], relativePath: Path) throws {
+    public init(dict: [String: Any], relativePath: Path) throws {
         guard let file = dict["file"] as? String else {
             throw Configuration.Error.invalidSources(message: "Project file path is not provided. Expected string.")
         }
@@ -51,12 +50,12 @@ struct Project {
 
 }
 
-struct Paths {
-    let include: [Path]
-    let exclude: [Path]
-    let allPaths: [Path]
+public struct Paths {
+    public let include: [Path]
+    public let exclude: [Path]
+    public let allPaths: [Path]
 
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         return allPaths.isEmpty
     }
 
@@ -78,7 +77,7 @@ struct Paths {
         }
     }
 
-    init(include: [Path], exclude: [Path] = []) {
+    public init(include: [Path], exclude: [Path] = []) {
         self.include = include
         self.exclude = exclude
 
@@ -90,7 +89,7 @@ struct Paths {
 
 }
 
-enum Source {
+public enum Source {
     case projects([Project])
     case sources(Paths)
 
@@ -109,7 +108,7 @@ enum Source {
         }
     }
 
-    var isEmpty: Bool {
+    public var isEmpty: Bool {
         switch self {
         case let .sources(paths):
             return paths.allPaths.isEmpty
@@ -119,14 +118,14 @@ enum Source {
     }
 }
 
-struct Output {
-    struct LinkTo {
-        let project: XcodeProj
-        let projectPath: Path
-        let target: String
-        let group: String?
+public struct Output {
+    public struct LinkTo {
+        public let project: XcodeProj
+        public let projectPath: Path
+        public let target: String
+        public let group: String?
 
-        init(dict: [String: Any], relativePath: Path) throws {
+        public init(dict: [String: Any], relativePath: Path) throws {
             guard let project = dict["project"] as? String else {
                 throw Configuration.Error.invalidOutput(message: "No project file path provided.")
             }
@@ -141,17 +140,17 @@ struct Output {
         }
     }
 
-    let path: Path
-    let linkTo: LinkTo?
+    public let path: Path
+    public let linkTo: LinkTo?
 
-    var isDirectory: Bool {
+    public var isDirectory: Bool {
         guard path.exists else {
             return path.lastComponentWithoutExtension == path.lastComponent || path.string.hasSuffix("/")
         }
         return path.isDirectory
     }
 
-    init(dict: [String: Any], relativePath: Path) throws {
+    public init(dict: [String: Any], relativePath: Path) throws {
         guard let path = dict["path"] as? String else {
             throw Configuration.Error.invalidOutput(message: "No path provided.")
         }
@@ -165,16 +164,16 @@ struct Output {
         }
     }
 
-    init(_ path: Path, linkTo: LinkTo? = nil) {
+    public init(_ path: Path, linkTo: LinkTo? = nil) {
         self.path = path
         self.linkTo = linkTo
     }
 
 }
 
-struct Configuration {
+public struct Configuration {
 
-    enum Error: Swift.Error, CustomStringConvertible {
+    public enum Error: Swift.Error, CustomStringConvertible {
         case invalidFormat(message: String)
         case invalidSources(message: String)
         case invalidTemplates(message: String)
@@ -182,7 +181,7 @@ struct Configuration {
         case invalidCacheBasePath(message: String)
         case invalidPaths(message: String)
 
-        var description: String {
+        public var description: String {
             switch self {
             case .invalidFormat(let message):
                 return "Invalid config file format. \(message)"
@@ -200,14 +199,14 @@ struct Configuration {
         }
     }
 
-    let source: Source
-    let templates: Paths
-    let output: Output
-    let cacheBasePath: Path
-    let forceParse: [String]
-    let args: [String: NSObject]
+    public let source: Source
+    public let templates: Paths
+    public let output: Output
+    public let cacheBasePath: Path
+    public let forceParse: [String]
+    public let args: [String: NSObject]
 
-    init(
+    public init(
         path: Path,
         relativePath: Path,
         env: [String: String] = [:]
@@ -219,7 +218,7 @@ struct Configuration {
         try self.init(dict: dict, relativePath: relativePath)
     }
 
-    init(dict: [String: Any], relativePath: Path) throws {
+    public init(dict: [String: Any], relativePath: Path) throws {
         let source = try Source(dict: dict, relativePath: relativePath)
         guard !source.isEmpty else {
             throw Configuration.Error.invalidSources(message: "No sources provided.")
@@ -261,7 +260,7 @@ struct Configuration {
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 
-    init(sources: Paths, templates: Paths, output: Path, cacheBasePath: Path, forceParse: [String], args: [String: NSObject]) {
+    public init(sources: Paths, templates: Paths, output: Path, cacheBasePath: Path, forceParse: [String], args: [String: NSObject]) {
         self.source = .sources(sources)
         self.templates = templates
         self.output = Output(output, linkTo: nil)
@@ -272,35 +271,15 @@ struct Configuration {
 
 }
 
-enum Configurations {
-    static func make(
-        path: Path,
-        relativePath: Path,
-        env: [String: String] = [:]
-    ) throws -> [Configuration] {
-        guard let dict = try Yams.load(yaml: path.read(), .default, Constructor.sourceryContructor(env: env)) as? [String: Any] else {
-            throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
-        }
-
-        if let configurations = dict["configurations"] as? [[String: Any]] {
-            return try configurations.map { dict in
-                try Configuration(dict: dict, relativePath: relativePath)
-            }
-        } else {
-            return try [Configuration(dict: dict, relativePath: relativePath)]
-        }
-    }
-}
-
 // Copied from https://github.com/realm/SwiftLint/blob/0.29.2/Source/SwiftLintFramework/Models/YamlParser.swift
 // and https://github.com/SwiftGen/SwiftGen/blob/6.1.0/Sources/SwiftGenKit/Utils/YAML.swift
 
-private extension Constructor {
-    static func sourceryContructor(env: [String: String]) -> Constructor {
+extension Constructor {
+    public static func sourceryContructor(env: [String: String]) -> Constructor {
         return Constructor(customScalarMap(env: env))
     }
 
-    static func customScalarMap(env: [String: String]) -> ScalarMap {
+    private static func customScalarMap(env: [String: String]) -> ScalarMap {
         var map = defaultScalarMap
         map[.str] = String.constructExpandingEnvVars(env: env)
         return map
