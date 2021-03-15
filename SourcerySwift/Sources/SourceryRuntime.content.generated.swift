@@ -1277,6 +1277,12 @@ public enum Composer {
             enumeration.rawTypeName = rawValueVariable.actualTypeName
             enumeration.rawType = rawValueVariable.type
         } else if let rawTypeName = enumeration.inheritedTypes.first {
+            // enums with no cases or enums with cases that contain associated values can't have raw type
+            guard !enumeration.cases.isEmpty,
+                  !enumeration.hasAssociatedValues else {
+                return enumeration.rawTypeName = nil
+            }
+
             if let rawTypeCandidate = types[rawTypeName] {
                 if !((rawTypeCandidate is SourceryProtocol) || (rawTypeCandidate is ProtocolComposition)) {
                     enumeration.rawTypeName = TypeName(rawTypeName)
@@ -2650,7 +2656,12 @@ import Foundation
     /// Enum cases
     public var cases: [EnumCase]
 
-    /// Enum raw value type name, if any
+    /**
+     Enum raw value type name, if any. This type is removed from enum's `based` and `inherited` types collections.
+
+        - important: Unless raw type is specified explicitly via type alias RawValue it will be set to the first type in the inheritance chain.
+     So if your enum does not have raw value but implements protocols you'll have to specify conformance to these protocols via extension to get enum with nil raw value type and all based and inherited types.
+     */
     public var rawTypeName: TypeName? {
         didSet {
             if let rawTypeName = rawTypeName {
@@ -2661,6 +2672,8 @@ import Foundation
                 if based[rawTypeName.name] != nil {
                     based[rawTypeName.name] = nil
                 }
+            } else {
+                hasRawType = false
             }
         }
     }

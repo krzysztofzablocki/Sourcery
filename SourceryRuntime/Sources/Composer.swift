@@ -576,6 +576,12 @@ public enum Composer {
             enumeration.rawTypeName = rawValueVariable.actualTypeName
             enumeration.rawType = rawValueVariable.type
         } else if let rawTypeName = enumeration.inheritedTypes.first {
+            // enums with no cases or enums with cases that contain associated values can't have raw type
+            guard !enumeration.cases.isEmpty,
+                  !enumeration.hasAssociatedValues else {
+                return enumeration.rawTypeName = nil
+            }
+
             if let rawTypeCandidate = types[rawTypeName] {
                 if !((rawTypeCandidate is SourceryProtocol) || (rawTypeCandidate is ProtocolComposition)) {
                     enumeration.rawTypeName = TypeName(rawTypeName)
