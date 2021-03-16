@@ -2,6 +2,10 @@
 
 ---
 ## Master
+
+## Fixes
+- Fixed inferring raw value type from inherited types for enums with no cases or with associated values
+
 ## Internal changes
 - Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
 

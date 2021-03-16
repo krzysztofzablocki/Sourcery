@@ -283,7 +283,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enum raw value type name, if any</p>
+                        <p>Enum raw value type name, if any. This type is removed from enum&rsquo;s <code><a href="../Classes/Enum.html#/c:@M@SourceryRuntime@objc(cs)Enum(py)based">based</a></code> and <code>inherited</code> types collections.</p>
+<div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    Unless raw type is specified explicitly via type alias RawValue it will be set to the first type in the inheritance chain.
+So if your enum does not have raw value but implements protocols you&rsquo;ll have to specify conformance to these protocols via extension to get enum with nil raw value type and all based and inherited types.
+
+</div>
 
                       </div>
                       <div class="declaration">

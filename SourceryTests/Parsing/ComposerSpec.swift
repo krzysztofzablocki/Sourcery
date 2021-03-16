@@ -561,6 +561,33 @@ class ParserComposerSpec: QuickSpec {
 
                 }
 
+                context("given enum without raw type with inheriting type") {
+                    it("does not set inherited type to raw value type for enum cases") {
+                        expect(parse("enum Enum: SomeProtocol { case optionA }").first(where: { $0.name == "Enum" }))
+                            .to(equal(
+                                // ATM it is expected that we assume that first inherited type is a raw value type. To avoid that client code should specify inherited type via extension
+                                Enum(name: "Enum", inheritedTypes: ["SomeProtocol"], rawTypeName: TypeName(name: "SomeProtocol"), cases: [EnumCase(name: "optionA")])
+                            ))
+                    }
+
+                    it("does not set inherited type to raw value type for enum cases with associated values ") {
+                        expect(parse("enum Enum: SomeProtocol { case optionA(Int); case optionB;  }").first(where: { $0.name == "Enum" }))
+                            .to(equal(
+                                Enum(name: "Enum", inheritedTypes: ["SomeProtocol"], cases: [
+                                    EnumCase(name: "optionA", associatedValues: [AssociatedValue(typeName: TypeName(name: "Int"))]),
+                                    EnumCase(name: "optionB")
+                                ])
+                            ))
+                    }
+
+                    it("does not set inherited type to raw value type for enum with no cases") {
+                        expect(parse("enum Enum: SomeProtocol { }").first(where: { $0.name == "Enum" }))
+                            .to(equal(
+                                Enum(name: "Enum", inheritedTypes: ["SomeProtocol"])
+                            ))
+                    }
+                }
+
                 context("given enum inheriting protocol composition") {
                     it("extracts the protocol composition as the inherited type") {
                         expect(parse("enum Enum: Composition { }; typealias Composition = Foo & Bar; protocol Foo {}; protocol Bar {}").first(where: { $0.name == "Enum" }))
