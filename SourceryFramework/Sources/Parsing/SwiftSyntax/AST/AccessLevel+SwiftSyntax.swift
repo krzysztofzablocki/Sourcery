@@ -19,7 +19,7 @@ extension AccessLevel {
 
     static func `default`(for parent: Type?) -> AccessLevel {
         var defaultAccess = AccessLevel.internal
-        if let type = parent, type.isExtension {
+        if let type = parent, type.isExtension || type is SourceryProtocol {
             defaultAccess = AccessLevel(rawValue: type.accessLevel) ?? defaultAccess
         }
 

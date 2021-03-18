@@ -878,6 +878,19 @@ class FileParserSpec: QuickSpec {
                             Class(name: "Bar", variables: [Variable(name: "some", typeName: TypeName(name: "Int"), accessLevel: (.internal, .internal), isComputed: false, definedInTypeName: TypeName(name: "Bar"))], inheritedTypes: ["Foo"])
                           ))
                     }
+
+                    it("sets members access level to protocol access level") {
+                        func assert(_ accessLevel: AccessLevel, line: UInt = #line) {
+                            expect(line: line, parse("\(accessLevel) protocol Foo { var some: Int { get }; func foo() -> Void }"))
+                                .to(equal([
+                                    Protocol(name: "Foo", accessLevel: accessLevel, variables: [Variable(name: "some", typeName: TypeName(name: "Int"), accessLevel: (accessLevel, .none), isComputed: false, definedInTypeName: TypeName(name: "Foo"))], methods: [Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName(name: "Void"), throws: false, rethrows: false, accessLevel: accessLevel, definedInTypeName: TypeName(name: "Foo"))], modifiers: [Modifier(name: "\(accessLevel)")])
+                                    ]))
+                        }
+
+                        assert(.private)
+                        assert(.internal)
+                        assert(.private)
+                    }
                 }
             }
         }
