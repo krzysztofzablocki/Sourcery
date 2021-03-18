@@ -1376,6 +1376,7 @@ public enum Composer {
             }
 
             baseType.based.keys.forEach { type.based[$0] = $0 }
+            baseType.basedWithTypes.forEach { type.basedWithTypes[$0.key] = $0.value }
             baseType.inherits.forEach { type.inherits[$0.key] = $0.value }
             baseType.implements.forEach { type.implements[$0.key] = $0.value }
 
@@ -1394,6 +1395,8 @@ public enum Composer {
                 // TODO: associated types?
                 type.implements[globalName] = baseType
             }
+
+            type.basedWithTypes[globalName] = baseType
         }
     }
 }
@@ -5886,13 +5889,17 @@ public typealias AttributeList = [String: [Attribute]]
     // sourcery: skipEquality
     /// Imports existed in all files containing this type and all its super classes/protocols
     public var allImports: [Import] {
-        return Array(Set(Type.gatherAllImports(for: self)))
+        return Type.gatherAllImports(for: self).removingDuplicates()
     }
 
     private static func gatherAllImports(for type: Type) -> [Import] {
         var allImports: [Import] = Array(type.imports)
-        type.implements.values.forEach { (inheritedType) in
-            allImports.append(contentsOf: Type.gatherAllImports(for: inheritedType))
+        let typesToScan = Array(type.implements.values)
+            + Array(type.inherits.values)
+            + Array(type.basedWithTypes.values)
+
+        typesToScan.forEach { (typeToScan) in
+            allImports.append(contentsOf: Type.gatherAllImports(for: typeToScan))
         }
         return allImports
     }
@@ -6136,7 +6143,9 @@ public typealias AttributeList = [String: [Attribute]]
     public var based = [String: String]()
 
     // sourcery: skipEquality, skipDescription
-    /// Types this type inherits from
+    /// Types this type inherits from or implements, including unknown (not scanned) types with extensions defined
+    public var basedWithTypes = [String: Type]()
+
     public var inherits = [String: Type]()
 
     // sourcery: skipEquality, skipDescription
@@ -6270,6 +6279,7 @@ public typealias AttributeList = [String: [Attribute]]
             guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
+            guard let basedWithTypes: [String: Type] = aDecoder.decode(forKey: "basedWithTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["basedWithTypes"])); fatalError() }; self.basedWithTypes = basedWithTypes
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
             guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["implements"])); fatalError() }; self.implements = implements
             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedTypes"])); fatalError() }; self.containedTypes = containedTypes
@@ -6298,6 +6308,7 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
             aCoder.encode(self.based, forKey: "based")
+            aCoder.encode(self.basedWithTypes, forKey: "basedWithTypes")
             aCoder.encode(self.inherits, forKey: "inherits")
             aCoder.encode(self.implements, forKey: "implements")
             aCoder.encode(self.containedTypes, forKey: "containedTypes")
@@ -6319,6 +6330,12 @@ extension Type {
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol
         return !isNotClass && !isExtension
+    }
+}
+
+private extension Sequence where Element == Import {
+    func removingDuplicates() -> [Import] {
+        return Array(Set(self))
     }
 }
 
