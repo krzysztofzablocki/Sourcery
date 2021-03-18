@@ -5,6 +5,7 @@
 
 import Foundation
 
+/// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
@@ -60,8 +61,8 @@ public typealias AttributeList = [String: [Attribute]]
         return "\(parentName).\(localName)"
     }
 
-    /// Whether the type has been resolved as unknown extension
     // sourcery: skipCoding
+    /// Whether the type has been resolved as unknown extension
     public var isUnknownExtension: Bool = false
 
     // sourcery: skipDescription
