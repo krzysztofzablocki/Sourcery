@@ -277,6 +277,7 @@ public typealias AttributeList = [String: [Attribute]]
     /// Types this type inherits from or implements, including unknown (not scanned) types with extensions defined
     public var basedWithTypes = [String: Type]()
 
+    /// Types this type inherits from
     public var inherits = [String: Type]()
 
     // sourcery: skipEquality, skipDescription
