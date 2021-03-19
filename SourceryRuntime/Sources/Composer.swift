@@ -675,7 +675,7 @@ public enum Composer {
             }
 
             baseType.based.keys.forEach { type.based[$0] = $0 }
-            baseType.basedWithTypes.forEach { type.basedWithTypes[$0.key] = $0.value }
+            baseType.basedTypes.forEach { type.basedTypes[$0.key] = $0.value }
             baseType.inherits.forEach { type.inherits[$0.key] = $0.value }
             baseType.implements.forEach { type.implements[$0.key] = $0.value }
 
@@ -695,7 +695,7 @@ public enum Composer {
                 type.implements[globalName] = baseType
             }
 
-            type.basedWithTypes[globalName] = baseType
+            type.basedTypes[globalName] = baseType
         }
     }
 }

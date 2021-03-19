@@ -184,10 +184,10 @@ class TypeSpec: QuickSpec {
                     let type = Type(name: "Foo", inheritedTypes: [superType.name])
                     let typeImports = [Import(path: "aModule"), Import(path: "bModule")]
                     type.imports = typeImports
-                    type.implements[superType.name] = superType
+                    type.basedTypes[superType.name] = superType
                     let expectedImports = [Import(path: "aModule"), Import(path: "bModule"), Import(path: "cModule")]
 
-                    expect(type.allImports.sortedByPath()).to(equal(expectedImports))
+                    expect(type.allImports.sorted { $0.path < $1.path }).to(equal(expectedImports))
                 }
             }
 
@@ -212,11 +212,5 @@ class TypeSpec: QuickSpec {
                 }
             }
         }
-    }
-}
-
-private extension Sequence where Element == Import {
-    func sortedByPath() -> [Import] {
-        return sorted { $0.path < $1.path }
     }
 }
