@@ -23,6 +23,8 @@ public enum AccessLevel: String {
 """
 import Foundation
 
+public typealias Annotations = [String: NSObject]
+
 /// Describes annotated declaration, i.e. type, method, variable, enum case
 public protocol Annotated {
     /**
@@ -43,7 +45,7 @@ public protocol Annotated {
      ]
      ```
     */
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
 }
 
 """),
@@ -2546,7 +2548,7 @@ import Foundation
     public let defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: [String: NSObject] = [:]
+    public var annotations: Annotations = [:]
 
     /// :nodoc:
     public init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
@@ -2571,7 +2573,7 @@ import Foundation
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
         /// :nodoc:
@@ -2600,7 +2602,7 @@ import Foundation
     public let associatedValues: [AssociatedValue]
 
     /// Enum case annotations
-    public var annotations: [String: NSObject] = [:]
+    public var annotations: Annotations = [:]
 
     /// Whether enum case is indirect
     public let indirect: Bool
@@ -2631,7 +2633,7 @@ import Foundation
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             self.rawValue = aDecoder.decode(forKey: "rawValue")
             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             self.indirect = aDecoder.decode(forKey: "indirect")
         }
 
@@ -4037,7 +4039,7 @@ extension AssociatedType: AssociatedTypeAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -4082,7 +4084,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4113,7 +4115,7 @@ extension Class: ClassAutoJSExport {}
     var type: Type? { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var asSource: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -4176,7 +4178,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4202,7 +4204,7 @@ extension Enum: EnumAutoJSExport {}
     var name: String { get }
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
 }
@@ -4270,7 +4272,7 @@ extension Import: ImportAutoJSExport {}
     var isMutating: Bool { get }
     var isGeneric: Bool { get }
     var isOptional: Bool { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -4288,7 +4290,7 @@ extension Method: MethodAutoJSExport {}
     var type: Type? { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var asSource: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -4327,7 +4329,7 @@ extension Modifier: ModifierAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4373,7 +4375,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4408,7 +4410,7 @@ extension Struct: StructAutoJSExport {}
     var readAccess: String { get }
     var writeAccess: String { get }
     var isMutable: Bool { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -4468,7 +4470,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4535,7 +4537,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var writeAccess: String { get }
     var isMutable: Bool { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var isFinal: Bool { get }
@@ -4653,7 +4655,7 @@ public typealias SourceryMethod = Method
     public var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: [String: NSObject] = [:]
+    public var annotations: Annotations = [:]
 
     /// :nodoc:
     public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
@@ -4700,7 +4702,7 @@ public typealias SourceryMethod = Method
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
         }
 
         /// :nodoc:
@@ -4749,7 +4751,7 @@ extension Array where Element == MethodParameter {
     public var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: [String: NSObject] = [:]
+    public var annotations: Annotations = [:]
 
     /// :nodoc:
     public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
@@ -4791,7 +4793,7 @@ extension Array where Element == MethodParameter {
                 self.`inout` = aDecoder.decode(forKey: "`inout`")
                 self.type = aDecoder.decode(forKey: "type")
                 self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-                guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+                guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             }
 
             /// :nodoc:
@@ -4942,7 +4944,7 @@ extension Array where Element == ClosureParameter {
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public let annotations: [String: NSObject]
+    public let annotations: Annotations
 
     /// Reference to type name where the method is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
@@ -5017,7 +5019,7 @@ extension Array where Element == ClosureParameter {
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             self.isClass = aDecoder.decode(forKey: "isClass")
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -5411,7 +5413,7 @@ import Foundation
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public let annotations: [String: NSObject]
+    public let annotations: Annotations
 
     /// Reference to type name where the method is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
@@ -5466,7 +5468,7 @@ import Foundation
             self.returnType = aDecoder.decode(forKey: "returnType")
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -6090,7 +6092,7 @@ public typealias AttributeList = [String: [Attribute]]
     }
 
     /// All annotations for this type
-    public var annotations: [String: NSObject] = [:]
+    public var annotations: Annotations = [:]
 
     /// Static variables defined in this type
     public var staticVariables: [Variable] {
@@ -6273,7 +6275,7 @@ public typealias AttributeList = [String: [Attribute]]
             guard let rawMethods: [Method] = aDecoder.decode(forKey: "rawMethods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawMethods"])); fatalError() }; self.rawMethods = rawMethods
             guard let rawSubscripts: [Subscript] = aDecoder.decode(forKey: "rawSubscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawSubscripts"])); fatalError() }; self.rawSubscripts = rawSubscripts
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
@@ -6325,6 +6327,18 @@ extension Type {
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol
         return !isNotClass && !isExtension
+    }
+}
+
+/// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
+extension Type {
+    /// :nodoc:
+    override public func value(forUndefinedKey key: String) -> Any? {
+        if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
+            return innerType
+        }
+
+        return super.value(forUndefinedKey: key)
     }
 }
 
@@ -6833,7 +6847,7 @@ public typealias SourceryVariable = Variable
     public var defaultValue: String?
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: [String: NSObject] = [:]
+    public var annotations: Annotations = [:]
 
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
     public var attributes: AttributeList
@@ -6904,7 +6918,7 @@ public typealias SourceryVariable = Variable
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")

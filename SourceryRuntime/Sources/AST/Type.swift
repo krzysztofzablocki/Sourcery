@@ -203,7 +203,7 @@ public typealias AttributeList = [String: [Attribute]]
     }
 
     /// All annotations for this type
-    public var annotations: [String: NSObject] = [:]
+    public var annotations: Annotations = [:]
 
     /// Static variables defined in this type
     public var staticVariables: [Variable] {
@@ -386,7 +386,7 @@ public typealias AttributeList = [String: [Attribute]]
             guard let rawMethods: [Method] = aDecoder.decode(forKey: "rawMethods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawMethods"])); fatalError() }; self.rawMethods = rawMethods
             guard let rawSubscripts: [Subscript] = aDecoder.decode(forKey: "rawSubscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawSubscripts"])); fatalError() }; self.rawSubscripts = rawSubscripts
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
-            guard let annotations: [String: NSObject] = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
@@ -438,5 +438,17 @@ extension Type {
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol
         return !isNotClass && !isExtension
+    }
+}
+
+/// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
+extension Type {
+    /// :nodoc:
+    override public func value(forUndefinedKey key: String) -> Any? {
+        if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
+            return innerType
+        }
+
+        return super.value(forUndefinedKey: key)
     }
 }

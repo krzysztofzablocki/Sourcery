@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias Annotations = [String: NSObject]
+
 /// Describes annotated declaration, i.e. type, method, variable, enum case
 public protocol Annotated {
     /**
@@ -20,5 +22,5 @@ public protocol Annotated {
      ]
      ```
     */
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
 }

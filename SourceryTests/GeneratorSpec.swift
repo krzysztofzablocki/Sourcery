@@ -1,6 +1,6 @@
 import Quick
 import Nimble
-import Stencil
+import SourceryStencil
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime

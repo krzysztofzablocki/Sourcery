@@ -5,8 +5,7 @@
 
 import Foundation
 import SwiftSyntax
-
-public typealias Annotations = [String: NSObject]
+import SourceryRuntime
 
 /// Parser for annotations
 public struct AnnotationsParser {

@@ -28,7 +28,7 @@ extension AssociatedType: AssociatedTypeAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -73,7 +73,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -104,7 +104,7 @@ extension Class: ClassAutoJSExport {}
     var type: Type? { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var asSource: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -167,7 +167,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -193,7 +193,7 @@ extension Enum: EnumAutoJSExport {}
     var name: String { get }
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
 }
@@ -261,7 +261,7 @@ extension Import: ImportAutoJSExport {}
     var isMutating: Bool { get }
     var isGeneric: Bool { get }
     var isOptional: Bool { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -279,7 +279,7 @@ extension Method: MethodAutoJSExport {}
     var type: Type? { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var asSource: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -318,7 +318,7 @@ extension Modifier: ModifierAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -364,7 +364,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -399,7 +399,7 @@ extension Struct: StructAutoJSExport {}
     var readAccess: String { get }
     var writeAccess: String { get }
     var isMutable: Bool { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -459,7 +459,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var rawSubscripts: [Subscript] { get }
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -526,7 +526,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var writeAccess: String { get }
     var isMutable: Bool { get }
     var defaultValue: String? { get }
-    var annotations: [String: NSObject] { get }
+    var annotations: Annotations { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var isFinal: Bool { get }

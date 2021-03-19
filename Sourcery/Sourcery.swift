@@ -10,6 +10,7 @@ import SourceryUtils
 import SourceryRuntime
 import SourceryJS
 import SourcerySwift
+import SourceryStencil
 import TryCatch
 import XcodeProj
 
