@@ -766,6 +766,24 @@ class FileParserSpec: QuickSpec {
                                             EnumCase(name: "optionC", associatedValues: [AssociatedValue(typeName: TypeName(name: "Foo"))], indirect: true)
                                         ])
                                 ]))
+                        expect(parse("""
+                                     enum Foo {
+                                         /// Option A
+                                         case optionA
+                                         /// Option B
+                                         case optionB
+                                         /// Option C
+                                         indirect case optionC(Foo)
+                                     }
+                                     """))
+                                .to(equal([
+                                    Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
+                                        [
+                                            EnumCase(name: "optionA", indirect: false),
+                                            EnumCase(name: "optionB"),
+                                            EnumCase(name: "optionC", associatedValues: [AssociatedValue(typeName: TypeName(name: "Foo"))], indirect: true)
+                                        ])
+                                ]))
                     }
 
                     it("extracts enums with Void associated type") {

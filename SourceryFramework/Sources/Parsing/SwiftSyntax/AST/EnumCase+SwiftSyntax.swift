@@ -52,11 +52,7 @@ extension EnumCase {
         let indirect = parent
           .modifiers?
           .contains { modifier in
-              if modifier.description.trimmed == "indirect" {
-                  return true
-              }
-
-              return false
+              modifier.description.trimmed.hasSuffix("indirect")
           } ?? false
 
         self.init(
