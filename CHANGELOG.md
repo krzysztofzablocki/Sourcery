@@ -5,6 +5,7 @@
 
 ## Fixes
 - Fixed inferring raw value type from inherited types for enums with no cases or with associated values
+- Fixed access level of protocol members
 
 ## Internal changes
 - Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
