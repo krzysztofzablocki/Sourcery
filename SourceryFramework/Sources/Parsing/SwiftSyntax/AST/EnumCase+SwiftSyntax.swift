@@ -49,15 +49,10 @@ extension EnumCase {
               .first
         }()
 
-        let indirect = parent
-          .modifiers?
-          .contains { modifier in
-              if modifier.description.trimmed == "indirect" {
-                  return true
-              }
-
-              return false
-          } ?? false
+        let modifiers = parent.modifiers?.map(Modifier.init) ?? []
+        let indirect = modifiers.contains(where: {
+            $0.tokenKind == TokenKind.identifier("indirect")
+        })
 
         self.init(
           name: node.identifier.text.trimmed,
