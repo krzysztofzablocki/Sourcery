@@ -5,6 +5,7 @@
 
 import Foundation
 
+/// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
@@ -15,6 +16,21 @@ public typealias AttributeList = [String: [Attribute]]
 
     /// Imports that existed in the file that contained this type declaration
     public var imports: [Import] = []
+
+    // sourcery: skipEquality
+    /// Imports existed in all files containing this type and all its super classes/protocols
+    public var allImports: [Import] {
+        return self.unique({ $0.gatherAllImports() }, filter: { $0 == $1 })
+    }
+
+    private func gatherAllImports() -> [Import] {
+        var allImports: [Import] = Array(self.imports)
+
+        self.basedTypes.values.forEach { (basedType) in
+            allImports.append(contentsOf: basedType.imports)
+        }
+        return allImports
+    }
 
     // All local typealiases
     // sourcery: skipJSExport
@@ -42,8 +58,8 @@ public typealias AttributeList = [String: [Attribute]]
         return "\(parentName).\(localName)"
     }
 
-    /// Whether the type has been resolved as unknown extension
     // sourcery: skipCoding
+    /// Whether the type has been resolved as unknown extension
     public var isUnknownExtension: Bool = false
 
     // sourcery: skipDescription
@@ -255,6 +271,9 @@ public typealias AttributeList = [String: [Attribute]]
     public var based = [String: String]()
 
     // sourcery: skipEquality, skipDescription
+    /// Types this type inherits from or implements, including unknown (not scanned) types with extensions defined
+    public var basedTypes = [String: Type]()
+
     /// Types this type inherits from
     public var inherits = [String: Type]()
 
@@ -389,6 +408,7 @@ public typealias AttributeList = [String: [Attribute]]
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
+            guard let basedTypes: [String: Type] = aDecoder.decode(forKey: "basedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["basedTypes"])); fatalError() }; self.basedTypes = basedTypes
             guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inherits"])); fatalError() }; self.inherits = inherits
             guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["implements"])); fatalError() }; self.implements = implements
             guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["containedTypes"])); fatalError() }; self.containedTypes = containedTypes
@@ -417,6 +437,7 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
             aCoder.encode(self.based, forKey: "based")
+            aCoder.encode(self.basedTypes, forKey: "basedTypes")
             aCoder.encode(self.inherits, forKey: "inherits")
             aCoder.encode(self.implements, forKey: "implements")
             aCoder.encode(self.containedTypes, forKey: "containedTypes")
