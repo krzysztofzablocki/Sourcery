@@ -1328,8 +1328,12 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("updates inheritedTypes with real type name") {
+                        let expectedFoo = Class(name: "Foo")
+                        let expectedClass = Class(name: "Bar", inheritedTypes: ["Foo"])
+                        expectedClass.inherits = ["Foo": expectedFoo]
+
                         expect(parse("typealias GlobalAliasFoo = Foo; class Foo { }; class Bar: GlobalAliasFoo {}"))
-                                .to(contain([Class(name: "Bar", inheritedTypes: ["Foo"])]))
+                                .to(contain([expectedClass]))
                     }
 
                     context("given global protocol composition") {
@@ -1363,6 +1367,7 @@ class ParserComposerSpec: QuickSpec {
                             let expectedProtocol = Protocol(name: "Foo")
                             let expectedClass = Class(name: "Bar")
                             let expectedProtocolComposition = ProtocolComposition(name: "GlobalComposition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName(name: "Foo"), TypeName(name: "Bar")])
+                            expectedProtocolComposition.inherits = ["Bar": expectedClass]
 
                             let type = parse("typealias GlobalComposition = Foo & Bar; protocol Foo {}; class Bar {}; class Implements: GlobalComposition {}").last as? Class
 

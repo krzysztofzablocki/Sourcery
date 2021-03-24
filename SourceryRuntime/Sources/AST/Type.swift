@@ -161,6 +161,10 @@ public typealias AttributeList = [String: [Attribute]]
     /// Bytes position of the body of this type in its declaration file if available.
     public var bodyBytesRange: BytesRange?
 
+    // sourcery: skipEquality, skipDescription, skipJSExport
+    /// Bytes position of the whole declaration of this type in its declaration file if available.
+    public var completeDeclarationRange: BytesRange?
+
     private func flattenAll<T>(_ extraction: @escaping (Type) -> [T], isExtension: (T) -> Bool, filter: ([T], T) -> Bool) -> [T] {
         let all = NSMutableOrderedSet()
         let allObjects = extraction(self)
@@ -405,6 +409,7 @@ public typealias AttributeList = [String: [Attribute]]
             guard let rawMethods: [Method] = aDecoder.decode(forKey: "rawMethods") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawMethods"])); fatalError() }; self.rawMethods = rawMethods
             guard let rawSubscripts: [Subscript] = aDecoder.decode(forKey: "rawSubscripts") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["rawSubscripts"])); fatalError() }; self.rawSubscripts = rawSubscripts
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
+            self.completeDeclarationRange = aDecoder.decode(forKey: "completeDeclarationRange")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
@@ -434,6 +439,7 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.rawMethods, forKey: "rawMethods")
             aCoder.encode(self.rawSubscripts, forKey: "rawSubscripts")
             aCoder.encode(self.bodyBytesRange, forKey: "bodyBytesRange")
+            aCoder.encode(self.completeDeclarationRange, forKey: "completeDeclarationRange")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
             aCoder.encode(self.based, forKey: "based")

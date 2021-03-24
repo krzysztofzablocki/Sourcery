@@ -36,6 +36,10 @@ class SyntaxTreeCollector: SyntaxVisitor {
             logError("Unable to find bodyRange for \(type.name)")
         }
 
+        let startLocation = node.startLocation(converter: sourceLocationConverter, afterLeadingTrivia: true)
+        let endLocation = node.endLocation(converter: sourceLocationConverter, afterTrailingTrivia: false)
+        type.completeDeclarationRange = SourceryRuntime.BytesRange(offset: Int64(startLocation.offset), length: Int64(endLocation.offset - startLocation.offset))
+
         visitingType?.containedTypes.append(type)
         visitingType = type
         types.append(type)

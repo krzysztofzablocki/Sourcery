@@ -304,6 +304,7 @@ extension Type {
         if self.rawSubscripts != rhs.rawSubscripts { return false }
         if self.annotations != rhs.annotations { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
+        if self.inherits != rhs.inherits { return false }
         if self.containedTypes != rhs.containedTypes { return false }
         if self.parentName != rhs.parentName { return false }
         if self.attributes != rhs.attributes { return false }
@@ -674,6 +675,7 @@ extension Type {
         hasher.combine(self.rawSubscripts)
         hasher.combine(self.annotations)
         hasher.combine(self.inheritedTypes)
+        hasher.combine(self.inherits)
         hasher.combine(self.containedTypes)
         hasher.combine(self.parentName)
         hasher.combine(self.attributes)
