@@ -25,7 +25,7 @@ public enum TemplateAnnotationsParser {
         rangesToReplace
             .sorted(by: { $0.location > $1.location })
             .forEach {
-                bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
+                bridged = bridged.replacingCharacters(in: $0, with: String(repeating: " ", count: $0.length)) as NSString
         }
         return (bridged as String, annotatedRanges)
     }
