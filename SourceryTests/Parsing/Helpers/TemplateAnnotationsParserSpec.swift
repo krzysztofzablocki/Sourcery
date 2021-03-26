@@ -14,10 +14,9 @@ class TemplateAnnotationsParserSpec: QuickSpec {
     override func spec() {
         describe("InlineParser") {
             context("without indentation") {
-                let content = "var something: Int\n"
                 let source =
                         "// sourcery:inline:Type.AutoCoding\n" +
-                        content +
+                        "var something: Int\n" +
                         "// sourcery:end\n"
 
                 let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
@@ -31,17 +30,16 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                 it("removes content between the markup") {
                     expect(result.contents).to(equal(
                         "// sourcery:inline:Type.AutoCoding\n" +
-                        String(repeating: " ", count: content.length) +
+                        String(repeating: " ", count: 19) +
                         "// sourcery:end\n"
                     ))
                 }
             }
 
             context("with indentation") {
-                let content = "    var something: Int\n"
                 let source =
                         "    // sourcery:inline:Type.AutoCoding\n" +
-                        content +
+                        "    var something: Int\n" +
                         "    // sourcery:end\n"
 
                 let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
@@ -55,7 +53,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                 it("removes content between the markup") {
                     expect(result.contents).to(equal(
                         "    // sourcery:inline:Type.AutoCoding\n" +
-                        String(repeating: " ", count: content.length) +
+                        String(repeating: " ", count: 23) +
                         "    // sourcery:end\n"
                     ))
                 }
