@@ -13,6 +13,7 @@
 
 ## Internal changes
 - Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
+- Moved `Sources` processing to new SourceryParser framework target
 
 ## 1.3.4
 ## Fixes
