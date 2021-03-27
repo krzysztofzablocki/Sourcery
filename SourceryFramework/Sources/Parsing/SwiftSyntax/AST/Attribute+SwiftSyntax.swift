@@ -31,9 +31,10 @@ extension CustomAttributeSyntax: AttributeSyntaxType {
 
     var nameText: String {
         tokens.first(where: { syntax in
-            if case .identifier = syntax.tokenKind {
+            switch syntax.tokenKind {
+            case .identifier:
                 return true
-            } else {
+            default:
                 return false
             }
         })?.text.trimmed ?? ""
