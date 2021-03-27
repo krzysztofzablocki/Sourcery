@@ -2,10 +2,48 @@ import Foundation
 import SourceryRuntime
 import SwiftSyntax
 
+protocol AttributeSyntaxType {
+    var argumentDescription: String? { get }
+    var nameText: String { get }
+    var descriptionWithoutTrivia: String { get }
+}
+
+extension AttributeSyntaxType where Self: SyntaxProtocol {
+    var descriptionWithoutTrivia: String {
+        withoutTrivia().description.trimmed
+    }
+}
+
+extension AttributeSyntax: AttributeSyntaxType {
+    var argumentDescription: String? {
+        argument?.description
+    }
+
+    var nameText: String {
+        attributeName.text.trimmed
+    }
+}
+
+extension CustomAttributeSyntax: AttributeSyntaxType {
+    var argumentDescription: String? {
+        argumentList?.description
+    }
+
+    var nameText: String {
+        tokens.first(where: { syntax in
+            if case .identifier = syntax.tokenKind {
+                return true
+            } else {
+                return false
+            }
+        })?.text.trimmed ?? ""
+    }
+}
+
 extension Attribute {
-    convenience init(_ attribute: AttributeSyntax) {
+    convenience init(_ attribute: AttributeSyntaxType) {
         var arguments = [String: NSObject]()
-        attribute.argument?.description
+        attribute.argumentDescription?
           .split(separator: ",")
           .enumerated()
           .forEach { (idx, part) in
@@ -16,17 +54,19 @@ extension Attribute {
               case 1:
                   arguments["\(idx)"] = components[0].replacingOccurrences(of: "\"", with: "").trimmed as NSString
               default:
-                  Log.astError("Unrecognized attribute format \(attribute.argument?.description ?? "")")
+                  Log.astError("Unrecognized attribute format \(attribute.argumentDescription ?? "")")
                   return
               }
           }
 
-        self.init(name: attribute.attributeName.text.trimmed, arguments: arguments, description: attribute.withoutTrivia().description.trimmed)
+        self.init(name: attribute.nameText, arguments: arguments, description: attribute.descriptionWithoutTrivia)
     }
 
     static func from(_ attributes: AttributeListSyntax?) -> AttributeList {
         let array = attributes?
-          .compactMap { $0.as(AttributeSyntax.self) }
+          .compactMap { syntax -> AttributeSyntaxType? in
+            syntax.as(AttributeSyntax.self) ?? syntax.as(CustomAttributeSyntax.self)
+          }
           .map(Attribute.init) ?? []
 
         var final = AttributeList()
