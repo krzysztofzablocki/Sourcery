@@ -1,7 +1,11 @@
+#if SWIFT_PACKAGE
+import Foundation
+#endif
 import Quick
 import Nimble
 @testable import Sourcery
 @testable import SourceryRuntime
+
 
 class MethodSpec: QuickSpec {
     override func spec() {

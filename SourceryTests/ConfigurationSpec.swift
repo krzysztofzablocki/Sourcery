@@ -1,3 +1,4 @@
+#if DISABLE
 import Quick
 import Nimble
 import PathKit
@@ -284,3 +285,4 @@ extension Paths: Equatable {
             && lhs.allPaths == rhs.allPaths
     }
 }
+#endif

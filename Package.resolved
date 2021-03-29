@@ -20,12 +20,39 @@
         }
       },
       {
+        "package": "CwlCatchException",
+        "repositoryURL": "https://github.com/mattgallagher/CwlCatchException.git",
+        "state": {
+          "branch": null,
+          "revision": "f809deb30dc5c9d9b78c872e553261a61177721a",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "package": "CwlPreconditionTesting",
+        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+        "state": {
+          "branch": null,
+          "revision": "02b7a39a99c4da27abe03cab2053a9034379639f",
+          "version": "2.0.0"
+        }
+      },
+      {
         "package": "Komondor",
         "repositoryURL": "https://github.com/shibapm/Komondor.git",
         "state": {
           "branch": null,
           "revision": "855c74f395a4dc9e02828f58d931be6920bcbf6f",
           "version": "1.0.6"
+        }
+      },
+      {
+        "package": "Nimble",
+        "repositoryURL": "https://github.com/HeMet/Nimble.git",
+        "state": {
+          "branch": "win-support",
+          "revision": "ec4f22089a2a1c6ab4f9d418eea44f06c2164684",
+          "version": null
         }
       },
       {
@@ -44,6 +71,15 @@
           "branch": null,
           "revision": "73f8e9dca9b7a3078cb79128217dc8f2e585a511",
           "version": "1.0.0"
+        }
+      },
+      {
+        "package": "Quick",
+        "repositoryURL": "https://github.com/Quick/Quick.git",
+        "state": {
+          "branch": null,
+          "revision": "8cce6acd38f965f5baa3167b939f86500314022b",
+          "version": "3.1.2"
         }
       },
       {

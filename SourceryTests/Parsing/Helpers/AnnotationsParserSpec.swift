@@ -3,6 +3,9 @@
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
 
+#if SWIFT_PACKAGE
+import Foundation
+#endif
 import Quick
 import Nimble
 import PathKit

@@ -24,7 +24,9 @@ let package = Package(
         .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .exact("7.18.0")),
         .package(name: "SwiftSyntax",
                  url: "https://github.com/apple/swift-syntax.git",
-                 .exact("0.50300.0"))
+                 .exact("0.50300.0")),
+        .package(url: "https://github.com/Quick/Quick.git", from: "3.1.2"),
+        .package(url: "https://github.com/HeMet/Nimble.git", .branch("win-support"))
     ],
     targets: [
         .target(name: "Sourcery", dependencies: [
@@ -65,5 +67,23 @@ let package = Package(
           "SourceryUtils"
         ]),
         .target(name: "TryCatch", path: "TryCatch"),
+        .testTarget(
+            name: "SourceryTests",
+            dependencies: [
+                "Sourcery",
+                "Quick",
+                "Nimble"
+            ],
+            resources: [
+                .copy("Stub/Configs"),
+                .copy("Stub/Errors"),
+                .copy("Stub/JavaScriptTemplates"),
+                .copy("Stub/SwiftTemplates"),
+                .copy("Stub/Performance-Code"),
+                .copy("Stub/Result"),
+                .copy("Stub/Templates"),
+                .copy("Stub/Source")
+            ]
+        )
     ]
 )

@@ -1,3 +1,4 @@
+#if DISABLE
 import Quick
 import Nimble
 @testable import Sourcery
@@ -38,3 +39,4 @@ class VerifierSpec: QuickSpec {
         }
     }
 }
+#endif
