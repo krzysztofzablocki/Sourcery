@@ -1,4 +1,3 @@
-#if DISABLE
 import Foundation
 import Quick
 import Nimble
@@ -12,6 +11,7 @@ import PathKit
 @testable import SourceryRuntime
 @testable import SourceryJS
 
+#if EJS
 class JavaScriptTemplateTests: QuickSpec {
     override func spec() {
         describe("JavaScriptTemplate") {

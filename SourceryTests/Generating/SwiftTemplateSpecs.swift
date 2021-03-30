@@ -6,8 +6,6 @@
 //  Copyright © 2016 Pixle. All rights reserved.
 //
 
-#if DISABLE
-
 import Foundation
 import Quick
 import Nimble
@@ -284,5 +282,3 @@ class SwiftTemplateTests: QuickSpec {
         }
     }
 }
-
-#endif

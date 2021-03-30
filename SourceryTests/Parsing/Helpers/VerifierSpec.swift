@@ -1,4 +1,3 @@
-#if DISABLE
 import Quick
 import Nimble
 #if IMPORT_AS_LIB
@@ -43,4 +42,3 @@ class VerifierSpec: QuickSpec {
         }
     }
 }
-#endif

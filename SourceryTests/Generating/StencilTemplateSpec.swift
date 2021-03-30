@@ -1,5 +1,3 @@
-#if DISABLE
-
 #if SWIFT_PACKAGE
 import Foundation
 #endif
@@ -273,5 +271,3 @@ class StencilTemplateSpec: QuickSpec {
         }
     }
 }
-
-#endif
