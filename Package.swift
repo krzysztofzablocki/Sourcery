@@ -65,7 +65,7 @@ let package = Package(
         ]),
         .target(name: "SourceryJS", dependencies: [
           "PathKit"
-        ]),
+        ], resources: [.copy("Resources/ejs.js")]),
         .target(name: "SourcerySwift", dependencies: [
           "PathKit",
           "SourceryRuntime",
