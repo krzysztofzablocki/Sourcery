@@ -1,7 +1,11 @@
 #if DISABLE
 import Quick
 import Nimble
+#if IMPORT_AS_LIB
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
 import SourceryUtils

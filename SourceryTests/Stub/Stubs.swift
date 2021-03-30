@@ -7,7 +7,11 @@ import Foundation
 import PathKit
 import Quick
 
+#if IMPORT_AS_LIB
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 
 private class Reference {}
 

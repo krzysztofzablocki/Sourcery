@@ -3,7 +3,11 @@ import Foundation
 #endif
 import Quick
 import Nimble
+#if IMPORT_AS_LIB
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 @testable import SourceryRuntime
 
 class TypeSpec: QuickSpec {

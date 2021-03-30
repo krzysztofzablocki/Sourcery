@@ -1,7 +1,11 @@
 import Quick
 import Nimble
 import PathKit
+#if IMPORT_AS_LIB
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
 

@@ -3,7 +3,11 @@
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
 
+#if IMPORT_AS_LIB
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 @testable import SourceryRuntime
 
 import Nimble

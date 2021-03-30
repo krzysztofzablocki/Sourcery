@@ -4,7 +4,11 @@
 //
 
 import Foundation
+#if IMPORT_AS_LIB
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 @testable import SourceryRuntime
 
 extension String {
