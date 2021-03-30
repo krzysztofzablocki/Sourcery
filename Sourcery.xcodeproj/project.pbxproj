@@ -43,10 +43,10 @@
 		6393BC6D2019F58D0044E8CC /* SourceryJS.h in Headers */ = {isa = PBXBuildFile; fileRef = 6393BC6B2019F58D0044E8CC /* SourceryJS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6393BC792019F5C90044E8CC /* EJSTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */; };
 		6393BC92201B50910044E8CC /* JavaScriptTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */; };
-		6393BC93201B55230044E8CC /* ejs.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejs.js */; };
 		6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393BC97201B57620044E8CC /* JavaScriptTemplate.swift */; };
 		63CC359520246CCB0017D839 /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		63E1AD0E1F4093EB00D01FED /* Configs in Resources */ = {isa = PBXBuildFile; fileRef = 63E1AD0D1F4093EB00D01FED /* Configs */; };
+		84AB2FD82613CBE700E5CC39 /* ejs.js in Resources */ = {isa = PBXBuildFile; fileRef = 84AB2FD72613CBE700E5CC39 /* ejs.js */; };
 		990B63465A767D7147E0B29B /* Pods_SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C82AE0D8342A0606F1E8CE /* Pods_SourceryJS.framework */; };
 		B4E02BEC53C447247C765980 /* Pods_SourceryStencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C8BF671DB1330E3E4951214 /* Pods_SourceryStencil.framework */; };
 		B5089B5221D1817F007A001C /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
@@ -294,7 +294,6 @@
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
 		094415C71E78A46A00ABE04A /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EJSTemplate.swift; sourceTree = "<group>"; };
-		09618B411E620D8600B49D5F /* ejs.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejs.js; sourceTree = "<group>"; };
 		09618B431E620E3200B49D5F /* JSExport.ejs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = JSExport.ejs; sourceTree = "<group>"; };
 		09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JavaScriptTemplateSpecs.swift; sourceTree = "<group>"; };
 		09618B4E1E662B0A00B49D5F /* JavaScriptTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JavaScriptTemplates; sourceTree = "<group>"; };
@@ -333,6 +332,7 @@
 		6A1278DE322EEEC30934B058 /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C8BF671DB1330E3E4951214 /* Pods_SourceryStencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryStencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79EDC093C51A602ADB2AAE88 /* Pods-SourceryFramework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.debug.xcconfig"; path = "Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.debug.xcconfig"; sourceTree = "<group>"; };
+		84AB2FD72613CBE700E5CC39 /* ejs.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejs.js; sourceTree = "<group>"; };
 		8A7B2DB2F4780241A50AF3A3 /* Pods-SourceryStencil.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryStencil.debug.xcconfig"; path = "Target Support Files/Pods-SourceryStencil/Pods-SourceryStencil.debug.xcconfig"; sourceTree = "<group>"; };
 		AC5C7A379558EBA48F09B22E /* Pods-SourcerySwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourcerySwift.debug.xcconfig"; path = "Target Support Files/Pods-SourcerySwift/Pods-SourcerySwift.debug.xcconfig"; sourceTree = "<group>"; };
 		B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -663,6 +663,7 @@
 		6393BC6A2019F58D0044E8CC /* SourceryJS */ = {
 			isa = PBXGroup;
 			children = (
+				84AB2FD62613CBAF00E5CC39 /* Resources */,
 				6393BC8E201B4DCE0044E8CC /* Sources */,
 				6393BC6B2019F58D0044E8CC /* SourceryJS.h */,
 				6393BC6C2019F58D0044E8CC /* Info.plist */,
@@ -674,7 +675,6 @@
 			isa = PBXGroup;
 			children = (
 				09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */,
-				09618B411E620D8600B49D5F /* ejs.js */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -694,6 +694,14 @@
 				09334E191EB914420092806F /* Sources */,
 			);
 			path = SourceryRuntime;
+			sourceTree = "<group>";
+		};
+		84AB2FD62613CBAF00E5CC39 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				84AB2FD72613CBE700E5CC39 /* ejs.js */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		B5BCF9F421D161B5009DF652 /* SourceryFramework */ = {
@@ -1439,7 +1447,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6393BC93201B55230044E8CC /* ejs.js in Resources */,
+				84AB2FD82613CBE700E5CC39 /* ejs.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2235,6 +2243,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryJS;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -2269,6 +2278,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryJS;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -2679,6 +2689,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sourcery.app/Contents/MacOS/Sourcery";
@@ -2702,6 +2713,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sourcery.app/Contents/MacOS/Sourcery";
