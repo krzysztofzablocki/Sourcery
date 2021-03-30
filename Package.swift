@@ -2,13 +2,30 @@
 
 import PackageDescription
 
+let sourceryDependencies: [Target.Dependency] = [
+    "SourceryFramework",
+    "SourceryRuntime",
+    "SourceryStencil",
+    "SourceryJS",
+    "SourcerySwift",
+    "Commander",
+    "PathKit",
+    "Yams",
+    "StencilSwiftKit",
+    "SwiftSyntax",
+    "XcodeProj",
+    "TryCatch"
+]
+
 let package = Package(
     name: "Sourcery",
     platforms: [
        .macOS(.v10_12),
     ],
     products: [
-        .executable(name: "sourcery", targets: ["Sourcery"]),
+        .executable(name: "Sourcery", targets: ["Sourcery"]),
+        // For testing purpose. The linker has problems linking against executable.
+        .library(name: "SourceryLib", targets: ["SourceryLib"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
@@ -29,20 +46,8 @@ let package = Package(
         .package(url: "https://github.com/HeMet/Nimble.git", .branch("win-support"))
     ],
     targets: [
-        .target(name: "Sourcery", dependencies: [
-            "SourceryFramework",
-            "SourceryRuntime",
-            "SourceryStencil",
-            "SourceryJS",
-            "SourcerySwift",
-            "Commander",
-            "PathKit",
-            "Yams",
-            "StencilSwiftKit",
-            "SwiftSyntax",
-            "XcodeProj",
-            "TryCatch",
-        ]),
+        .target(name: "Sourcery", dependencies: sourceryDependencies),
+        .target(name: "SourceryLib", dependencies: sourceryDependencies, path: "Sourcery", exclude: ["main.swift"]),
         .target(name: "SourceryRuntime"),
         .target(name: "SourceryUtils", dependencies: [
           "PathKit"
@@ -68,9 +73,9 @@ let package = Package(
         ]),
         .target(name: "TryCatch", path: "TryCatch"),
         .testTarget(
-            name: "SourceryTests",
+            name: "SourceryLibTests",
             dependencies: [
-                "Sourcery",
+                "SourceryLib",
                 "Quick",
                 "Nimble"
             ],
@@ -83,6 +88,9 @@ let package = Package(
                 .copy("Stub/Result"),
                 .copy("Stub/Templates"),
                 .copy("Stub/Source")
+            ],
+            swiftSettings: [
+                .define("IMPORT_AS_LIB")
             ]
         )
     ]
