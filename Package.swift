@@ -92,6 +92,9 @@ let package = Package(
             swiftSettings: [
                 .define("IMPORT_AS_LIB")
             ]
+            // If you want to run tests from Xcode by double clicking on Package.swift,
+            // copy lib_InternalSwiftSyntaxParser.dylib into build output directory next to Sourcery binary.
+            // This looks like Xcode SPM integration issue, since SPM alone has no such issue.
         )
     ]
 )
