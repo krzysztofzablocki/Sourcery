@@ -20,6 +20,13 @@ class TypeNameSpec: QuickSpec {
                 return variable?.typeName ?? TypeName(name: "")
             }
 
+            func typeNameFromTypealias(_ code: String) -> TypeName {
+                let wrappedCode = "typealias Wrapper = \(code)"
+                guard let parser = try? makeParser(for: wrappedCode) else { fail(); return TypeName(name: "") }
+                let result = try? parser.parse()
+                return result?.typealiases.first?.typeName ?? TypeName(name: "")
+            }
+
             context("given optional type with short syntax") {
                 it("reports optional true") {
                     expect(typeName("Int?").isOptional).to(beTrue())
@@ -120,6 +127,8 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("(Int) -> Foo<Bool>").isClosure).to(beTrue())
                     expect(typeName("(Foo<String>) -> Foo<Bool>").isClosure).to(beTrue())
                     expect(typeName("((Int, Int) -> (), Int)").isClosure).to(beFalse())
+                    expect(typeNameFromTypealias("(Foo) -> Bar").isClosure).to(beTrue())
+                    expect(typeNameFromTypealias("(Foo) -> Bar & Baz").isClosure).to(beTrue())
                 }
 
                 it("reports optional status correctly") {
