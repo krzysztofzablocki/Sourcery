@@ -270,6 +270,8 @@ class SyntaxTreeCollector: SyntaxVisitor {
 
     /// Extracts list of type names from composition e.g. `ProtocolA & ProtocolB`
     internal func extractComposedTypeNames(from value: String, trimmingCharacterSet: CharacterSet? = nil) -> [TypeName]? {
+        guard case let closureComponents = value.components(separatedBy: "->"),
+              closureComponents.count <= 1 else { return nil }
         guard case let components = value.components(separatedBy: CharacterSet(charactersIn: "&")),
               components.count > 1 else { return nil }
 
