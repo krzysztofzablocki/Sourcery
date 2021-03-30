@@ -12,7 +12,12 @@ import Quick
 private class Reference {}
 
 enum Stubs {
-    private static let basePath = Bundle(for: Reference.self).resourcePath.flatMap { Path($0) }!
+    #if XCODE_BUILD
+    static let bundle = Bundle(for: Reference.self)
+    #else
+    static let bundle = Bundle.module
+    #endif
+    private static let basePath = bundle.resourcePath.flatMap { Path($0) }!
     static let swiftTemplates = basePath + Path("SwiftTemplates/")
     static let jsTemplates = basePath + Path("JavaScriptTemplates/")
     static let sourceDirectory = basePath + Path("Source/")
