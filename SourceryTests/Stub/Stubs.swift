@@ -7,7 +7,7 @@ import Foundation
 import PathKit
 import Quick
 
-#if IMPORT_AS_LIB
+#if SPM
 @testable import SourceryLib
 #else
 @testable import Sourcery
@@ -16,10 +16,10 @@ import Quick
 private class Reference {}
 
 enum Stubs {
-    #if XCODE_BUILD
-    static let bundle = Bundle(for: Reference.self)
-    #else
+    #if SPM
     static let bundle = Bundle.module
+    #else
+    static let bundle = Bundle(for: Reference.self)
     #endif
     private static let basePath = bundle.resourcePath.flatMap { Path($0) }!
     static let swiftTemplates = basePath + Path("SwiftTemplates/")

@@ -4,7 +4,7 @@
 //
 
 import Foundation
-#if IMPORT_AS_LIB
+#if SPM
 @testable import SourceryLib
 #else
 @testable import Sourcery

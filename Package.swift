@@ -63,9 +63,18 @@ let package = Package(
           "SourceryRuntime",
           "StencilSwiftKit",
         ]),
-        .target(name: "SourceryJS", dependencies: [
-          "PathKit"
-        ], resources: [.copy("Resources/ejs.js")]),
+        .target(
+            name: "SourceryJS",
+            dependencies: [
+                "PathKit"
+            ],
+            resources: [
+                .copy("Resources/ejs.js")
+            ],
+            swiftSettings: [
+                .define("SPM")
+            ]
+        ),
         .target(name: "SourcerySwift", dependencies: [
           "PathKit",
           "SourceryRuntime",
@@ -90,7 +99,7 @@ let package = Package(
                 .copy("Stub/Source")
             ],
             swiftSettings: [
-                .define("IMPORT_AS_LIB")
+                .define("SPM")
             ]
             // If you want to run tests from Xcode by double clicking on Package.swift,
             // copy lib_InternalSwiftSyntaxParser.dylib into build output directory next to Sourcery binary.

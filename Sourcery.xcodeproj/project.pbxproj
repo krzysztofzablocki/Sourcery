@@ -2243,7 +2243,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryJS;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -2278,7 +2277,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryJS;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -2689,7 +2687,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sourcery.app/Contents/MacOS/Sourcery";
@@ -2713,7 +2710,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D XCODE_BUILD";
 				PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sourcery.app/Contents/MacOS/Sourcery";

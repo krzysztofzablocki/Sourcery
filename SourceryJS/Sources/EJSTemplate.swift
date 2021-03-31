@@ -12,10 +12,10 @@ open class EJSTemplate {
 
     /// Should be set to the path of EJS before rendering any template.
     /// By default reads ejs.js from framework bundle.
-    #if XCODE_BUILD
-    static let bundle = Bundle(for: EJSTemplate.self)
-    #else
+    #if SPM
     static let bundle = Bundle.module
+    #else
+    static let bundle = Bundle(for: EJSTemplate.self)
     #endif
     public static var ejsPath: Path! = bundle.path(forResource: "ejs", ofType: "js").map({ Path($0) })
 

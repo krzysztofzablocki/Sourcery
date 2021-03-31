@@ -5,7 +5,7 @@ import Quick
 import Nimble
 import PathKit
 import SourceryStencil
-#if IMPORT_AS_LIB
+#if SPM
 @testable import SourceryLib
 #else
 @testable import Sourcery
