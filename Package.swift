@@ -80,6 +80,14 @@ let package = Package(
           "SourceryRuntime",
           "SourceryUtils"
         ]),
+        .target(
+            name: "CodableContext",
+            path: "Templates/Tests",
+            sources: [
+                "Context/AutoCodable.swift",
+                "Generated/AutoCodable.generated.swift"
+            ]
+        ),
         .target(name: "TryCatch", path: "TryCatch"),
         .testTarget(
             name: "SourceryLibTests",
@@ -104,6 +112,15 @@ let package = Package(
             // If you want to run tests from Xcode by double clicking on Package.swift,
             // copy lib_InternalSwiftSyntaxParser.dylib into build output directory next to Sourcery binary.
             // This looks like Xcode SPM integration issue, since SPM alone has no such issue.
+        ),
+        .testTarget(
+            name: "CodableContextTests",
+            dependencies: [
+                "CodableContext",
+                "Quick",
+                "Nimble"
+            ],
+            path: "Templates/CodableContextTests"
         )
     ]
 )
