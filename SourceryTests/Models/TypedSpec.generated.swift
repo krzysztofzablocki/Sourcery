@@ -2,7 +2,11 @@
 // DO NOT EDIT
 import Quick
 import Nimble
+#if SPM
+import SourceryLib
+#else
 import Sourcery
+#endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
 
