@@ -121,6 +121,25 @@ let package = Package(
                 "Nimble"
             ],
             path: "Templates/CodableContextTests"
+        ),
+        .testTarget(
+            name: "TemplatesTests",
+            dependencies: [
+                "Quick",
+                "Nimble"
+            ],
+            path: "Templates",
+            sources: [
+                "Tests/TemplatesTests.swift"
+            ],
+            resources: [
+                .copy("Templates"),
+                .copy("Tests/Context"),
+                .copy("Tests/Expected")
+            ],
+            swiftSettings: [
+                .define("SPM")
+            ]
         )
     ]
 )
