@@ -131,6 +131,8 @@ let package = Package(
             ],
             path: "Templates",
             sources: [
+                // LinuxMain is not compiled as part of the target
+                // since there is no way atm to run custom script before compilation step.
                 "Tests/TemplatesTests.swift"
             ],
             resources: [
