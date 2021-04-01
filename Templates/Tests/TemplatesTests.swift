@@ -6,6 +6,58 @@ import PathKit
 #endif
 
 class TemplatesTests: QuickSpec {
+    #if SPM
+    override class func setUp() {
+        super.setUp()
+
+        print("Generating sources...", terminator: " ")
+
+        let buildDir: Path
+        // Xcode + SPM
+        if let xcTestBundlePath = ProcessInfo.processInfo.environment["XCTestBundlePath"] {
+            buildDir = Path(xcTestBundlePath).parent()
+        } else {
+            // SPM only
+            buildDir = Path(Bundle.module.bundlePath).parent()
+        }
+        let sourcery = buildDir + "sourcery"
+
+        let resources = Bundle.module.resourcePath!
+
+        let outputDirectory = Path(resources) + "Generated"
+        if outputDirectory.exists {
+            do {
+                try outputDirectory.delete()
+            } catch {
+                print(error)
+            }
+        }
+
+        var output: String?
+        buildDir.chdir {
+            output = launch(
+                sourceryPath: sourcery,
+                args: [
+                    "--sources",
+                    "\(resources)/Context",
+                    "--templates",
+                    "\(resources)/Templates",
+                    "--output",
+                    "\(resources)/Generated",
+                    "--disableCache",
+                    "--verbose"
+                ]
+            )
+        }
+
+        if let output = output {
+            print(output)
+        } else {
+            print("Done!")
+        }
+    }
+    #endif
+
     override func spec() {
         func check(template name: String) {
             guard let generatedFilePath = path(forResource: "\(name).generated", ofType: "swift", in: "Generated") else {
@@ -29,38 +81,6 @@ class TemplatesTests: QuickSpec {
             let expectedFileFilteredLines = expectedFileLines.filter(emptyLinesFilter).filter(commentLinesFilter)
             expect(generatedFileFilteredLines).to(equal(expectedFileFilteredLines))
         }
-
-        #if SPM
-        beforeSuite {
-            let buildDir: String
-            if let xcTestBundlePath = ProcessInfo.processInfo.environment["XCTestBundlePath"] {
-                buildDir = xcTestBundlePath + "/.."
-            } else {
-                buildDir = Bundle.module.bundlePath + "/.."
-            }
-            let sourcery = buildDir + "/Sourcery"
-
-            let resources = Bundle.module.resourcePath!
-
-            var output: String?
-            Path(buildDir).chdir {
-                output = self.launch(
-                    sourceryPath: sourcery,
-                    args: [
-                        "--sources",
-                        "\(resources)/Context",
-                        "--templates",
-                        "\(resources)/Templates",
-                        "--output",
-                        "\(resources)/Generated",
-                        "--disableCache",
-                        "--verbose"
-                    ]
-                )
-            }
-            print("!!! \(output?.prefix(1000))")
-        }
-        #endif
 
         describe("AutoCases template") {
             it("generates expected code") {
@@ -117,20 +137,24 @@ class TemplatesTests: QuickSpec {
         #endif
     }
 
-    private func launch(sourceryPath: String, args: [String]) -> String? {
+    private static func launch(sourceryPath: Path, args: [String]) -> String? {
         let process = Process()
         let output = Pipe()
 
-        process.launchPath = sourceryPath
+        process.launchPath = sourceryPath.string
         process.arguments = args
         process.standardOutput = output
         do {
             try process.run()
             process.waitUntilExit()
 
+            if process.terminationStatus == 0 {
+                return nil
+            }
+
             return String(data: output.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
         } catch {
-            return nil
+            return "error: can't run Sourcery from the \(sourceryPath.parent().string)?"
         }
     }
 }

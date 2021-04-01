@@ -126,7 +126,8 @@ let package = Package(
             name: "TemplatesTests",
             dependencies: [
                 "Quick",
-                "Nimble"
+                "Nimble",
+                "PathKit"
             ],
             path: "Templates",
             sources: [
