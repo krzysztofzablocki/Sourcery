@@ -50,9 +50,9 @@
         "package": "Nimble",
         "repositoryURL": "https://github.com/HeMet/Nimble.git",
         "state": {
-          "branch": "win-support",
-          "revision": "ec4f22089a2a1c6ab4f9d418eea44f06c2164684",
-          "version": null
+          "branch": null,
+          "revision": "e491a6731307bb23783bf664d003be9b2fa59ab5",
+          "version": "9.0.0"
         }
       },
       {
