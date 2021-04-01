@@ -155,7 +155,7 @@ class TemplatesTests: QuickSpec {
 
             return String(data: output.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
         } catch {
-            return "error: can't run Sourcery from the \(sourceryPath.parent().string)?"
+            return "error: can't run Sourcery from the \(sourceryPath.parent().string)"
         }
     }
     #endif
