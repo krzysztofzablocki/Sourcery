@@ -133,10 +133,11 @@ class TemplatesTests: QuickSpec {
         return nil
         #else
         let bundle = Bundle.init(for: type(of: self))
-        bundle.path(forResource: name, ofType: ext)
+        return bundle.path(forResource: name, ofType: ext)
         #endif
     }
 
+    #if SPM
     private static func launch(sourceryPath: Path, args: [String]) -> String? {
         let process = Process()
         let output = Pipe()
@@ -157,4 +158,5 @@ class TemplatesTests: QuickSpec {
             return "error: can't run Sourcery from the \(sourceryPath.parent().string)?"
         }
     }
+    #endif
 }
