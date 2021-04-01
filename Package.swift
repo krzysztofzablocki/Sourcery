@@ -46,8 +46,24 @@ let package = Package(
         .package(url: "https://github.com/HeMet/Nimble.git", from: "9.0.0")
     ],
     targets: [
-        .target(name: "Sourcery", dependencies: sourceryDependencies),
-        .target(name: "SourceryLib", dependencies: sourceryDependencies, path: "Sourcery", exclude: ["main.swift"]),
+        .target(
+            name: "Sourcery",
+            dependencies: sourceryDependencies,
+            exclude: [
+                "Templates",
+                "Info.plist"
+            ]
+        ),
+        .target(
+            name: "SourceryLib",
+            dependencies: sourceryDependencies,
+            path: "Sourcery",
+            exclude: [
+                "main.swift",
+                "Templates",
+                "Info.plist"
+            ]
+        ),
         .target(name: "SourceryRuntime"),
         .target(name: "SourceryUtils", dependencies: [
           "PathKit"
@@ -68,6 +84,9 @@ let package = Package(
             dependencies: [
                 "PathKit"
             ],
+            exclude: [
+                "Info.plist"
+            ],
             resources: [
                 .copy("Resources/ejs.js")
             ]
@@ -80,18 +99,38 @@ let package = Package(
         .target(
             name: "CodableContext",
             path: "Templates/Tests",
+            exclude: [
+                "Context/AutoCases.swift",
+                "Context/AutoEquatable.swift",
+                "Context/AutoHashable.swift",
+                "Context/AutoLenses.swift",
+                "Context/AutoMockable.swift",
+                "Context/LinuxMain.swift",
+                "Generated/AutoCases.generated.swift",
+                "Generated/AutoEquatable.generated.swift",
+                "Generated/AutoHashable.generated.swift",
+                "Generated/AutoLenses.generated.swift",
+                "Generated/AutoMockable.generated.swift",
+                "Generated/LinuxMain.generated.swift",
+                "Expected",
+                "Info.plist",
+                "TemplatesTests.swift"
+            ],
             sources: [
                 "Context/AutoCodable.swift",
                 "Generated/AutoCodable.generated.swift"
             ]
         ),
-        .target(name: "TryCatch", path: "TryCatch"),
+        .target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]),
         .testTarget(
             name: "SourceryLibTests",
             dependencies: [
                 "SourceryLib",
                 "Quick",
                 "Nimble"
+            ],
+            exclude: [
+                "Info.plist"
             ],
             resources: [
                 .copy("Stub/Configs"),
@@ -114,7 +153,10 @@ let package = Package(
                 "Quick",
                 "Nimble"
             ],
-            path: "Templates/CodableContextTests"
+            path: "Templates/CodableContextTests",
+            exclude: [
+                "Info.plist"
+            ]
         ),
         .testTarget(
             name: "TemplatesTests",
@@ -124,6 +166,13 @@ let package = Package(
                 "PathKit"
             ],
             path: "Templates",
+            exclude: [
+                "CodableContext",
+                "CodableContextTests",
+                "Tests/Generated",
+                "Tests/Info.plist",
+                "default.profraw"
+            ],
             sources: [
                 // LinuxMain is not compiled as part of the target
                 // since there is no way atm to run custom script before compilation step.
