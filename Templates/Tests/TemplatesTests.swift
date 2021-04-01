@@ -1,12 +1,12 @@
 import Foundation
 import Quick
 import Nimble
-#if SPM
+#if SWIFT_PACKAGE
 import PathKit
 #endif
 
 class TemplatesTests: QuickSpec {
-    #if SPM
+    #if SWIFT_PACKAGE
     override class func setUp() {
         super.setUp()
 
@@ -126,7 +126,7 @@ class TemplatesTests: QuickSpec {
     }
 
     private func path(forResource name: String, ofType ext: String, in dirName: String) -> String? {
-        #if SPM
+        #if SWIFT_PACKAGE
         if let resources = Bundle.module.resourcePath {
             return resources + "/\(dirName)/\(name).\(ext)"
         }
@@ -137,7 +137,7 @@ class TemplatesTests: QuickSpec {
         #endif
     }
 
-    #if SPM
+    #if SWIFT_PACKAGE
     private static func launch(sourceryPath: Path, args: [String]) -> String? {
         let process = Process()
         let output = Pipe()

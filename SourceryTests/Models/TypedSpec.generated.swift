@@ -2,7 +2,7 @@
 // DO NOT EDIT
 import Quick
 import Nimble
-#if SPM
+#if SWIFT_PACKAGE
 import SourceryLib
 #else
 import Sourcery

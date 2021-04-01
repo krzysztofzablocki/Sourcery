@@ -7,7 +7,7 @@ import Foundation
 import PathKit
 import Quick
 
-#if SPM
+#if SWIFT_PACKAGE
 @testable import SourceryLib
 #else
 @testable import Sourcery
@@ -16,7 +16,7 @@ import Quick
 private class Reference {}
 
 enum Stubs {
-    #if SPM
+    #if SWIFT_PACKAGE
     static let bundle = Bundle.module
     #else
     static let bundle = Bundle(for: Reference.self)

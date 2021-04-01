@@ -3,7 +3,7 @@
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
 
-#if SPM
+#if SWIFT_PACKAGE
 @testable import SourceryLib
 #else
 @testable import Sourcery

@@ -4,7 +4,7 @@ import Foundation
 import Quick
 import Nimble
 import SourceryStencil
-#if SPM
+#if SWIFT_PACKAGE
 @testable import SourceryLib
 #else
 @testable import Sourcery

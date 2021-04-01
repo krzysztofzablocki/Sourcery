@@ -3,7 +3,7 @@ import Foundation
 #endif
 import Quick
 import Nimble
-#if SPM
+#if SWIFT_PACKAGE
 @testable import SourceryLib
 #else
 @testable import Sourcery

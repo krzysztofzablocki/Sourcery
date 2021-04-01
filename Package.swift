@@ -70,9 +70,6 @@ let package = Package(
             ],
             resources: [
                 .copy("Resources/ejs.js")
-            ],
-            swiftSettings: [
-                .define("SPM")
             ]
         ),
         .target(name: "SourcerySwift", dependencies: [
@@ -105,9 +102,6 @@ let package = Package(
                 .copy("Stub/Result"),
                 .copy("Stub/Templates"),
                 .copy("Stub/Source")
-            ],
-            swiftSettings: [
-                .define("SPM")
             ]
             // If you want to run tests from Xcode by double clicking on Package.swift,
             // copy lib_InternalSwiftSyntaxParser.dylib into build output directory next to Sourcery binary.
@@ -139,9 +133,6 @@ let package = Package(
                 .copy("Templates"),
                 .copy("Tests/Context"),
                 .copy("Tests/Expected")
-            ],
-            swiftSettings: [
-                .define("SPM")
             ]
         )
     ]

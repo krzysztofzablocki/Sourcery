@@ -5,7 +5,7 @@ import Quick
 import Nimble
 import PathKit
 import SourceryStencil
-#if SPM
+#if SWIFT_PACKAGE
 @testable import SourceryLib
 #else
 @testable import Sourcery
