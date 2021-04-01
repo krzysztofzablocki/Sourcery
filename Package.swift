@@ -23,7 +23,7 @@ let package = Package(
        .macOS(.v10_12),
     ],
     products: [
-        .executable(name: "Sourcery", targets: ["Sourcery"]),
+        .executable(name: "sourcery", targets: ["Sourcery"]),
         // For testing purpose. The linker has problems linking against executable.
         .library(name: "SourceryLib", targets: ["SourceryLib"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
