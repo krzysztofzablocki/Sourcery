@@ -75,7 +75,7 @@ task :build do
   # print_info "swift at #{swift_path}"
   # `cp "$(dirname #{swift_path})/../lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib" "build/lib/lib_InternalSwiftSyntaxParser.dylib"`
   sh %Q(cp lib_InternalSwiftSyntaxParser.dylib #{CLI_DIR}lib)
-  sh %Q(cp SourceryJS/Sources/Resources/ejs.js #{CLI_DIR}bin)
+  sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
   `mv #{BUILD_DIR}release/sourcery #{CLI_DIR}bin/`
   `install_name_tool -delete_rpath @loader_path #{CLI_DIR}bin/sourcery`
   `install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx #{CLI_DIR}bin/sourcery`
