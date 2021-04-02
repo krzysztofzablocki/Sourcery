@@ -2,49 +2,10 @@ import Foundation
 import SourceryRuntime
 import SwiftSyntax
 
-protocol AttributeSyntaxType {
-    var argumentDescription: String? { get }
-    var nameText: String { get }
-    var descriptionWithoutTrivia: String { get }
-}
-
-extension AttributeSyntaxType where Self: SyntaxProtocol {
-    var descriptionWithoutTrivia: String {
-        withoutTrivia().description.trimmed
-    }
-}
-
-extension AttributeSyntax: AttributeSyntaxType {
-    var argumentDescription: String? {
-        argument?.description
-    }
-
-    var nameText: String {
-        attributeName.text.trimmed
-    }
-}
-
-extension CustomAttributeSyntax: AttributeSyntaxType {
-    var argumentDescription: String? {
-        argumentList?.description
-    }
-
-    var nameText: String {
-        tokens.first(where: { syntax in
-            switch syntax.tokenKind {
-            case .identifier:
-                return true
-            default:
-                return false
-            }
-        })?.text.trimmed ?? ""
-    }
-}
-
 extension Attribute {
-    convenience init(_ attribute: AttributeSyntaxType) {
+    convenience init(_ attribute: AttributeSyntax) {
         var arguments = [String: NSObject]()
-        attribute.argumentDescription?
+        attribute.argument?.description
           .split(separator: ",")
           .enumerated()
           .forEach { (idx, part) in
@@ -55,20 +16,48 @@ extension Attribute {
               case 1:
                   arguments["\(idx)"] = components[0].replacingOccurrences(of: "\"", with: "").trimmed as NSString
               default:
-                  Log.astError("Unrecognized attribute format \(attribute.argumentDescription ?? "")")
+                  Log.astError("Unrecognized attribute format \(attribute.argument?.description ?? "")")
                   return
               }
           }
 
-        self.init(name: attribute.nameText, arguments: arguments, description: attribute.descriptionWithoutTrivia)
+        self.init(name: attribute.attributeName.text.trimmed, arguments: arguments, description: attribute.withoutTrivia().description.trimmed)
+    }
+
+    convenience init(_ attribute: CustomAttributeSyntax) {
+        let nameText = attribute.tokens
+            .first(where: \.tokenKind.isIdentifier)?
+            .text
+            .trimmed ?? ""
+
+        let arguments = attribute.argumentList?
+            .reduce(into: [String: NSObject]()) { arguments, syntax in
+                var iterator = syntax.tokens.makeIterator()
+                guard let argumentLabelToken = iterator.next(),
+                      let colonToken = iterator.next(),
+                      case let .identifier(argumentLabel) = argumentLabelToken.tokenKind,
+                      colonToken.tokenKind == .colon
+                else { return }
+
+                var valueText = ""
+                while let nextToken = iterator.next() { valueText += nextToken.text.trimmed }
+                arguments[argumentLabel.trimmed] = valueText.replacingOccurrences(of: "\"", with: "").trimmed as NSString
+            } ?? [:]
+
+        self.init(name: nameText, arguments: arguments, description: attribute.withoutTrivia().description.trimmed)
     }
 
     static func from(_ attributes: AttributeListSyntax?) -> AttributeList {
         let array = attributes?
-          .compactMap { syntax -> AttributeSyntaxType? in
-            syntax.as(AttributeSyntax.self) ?? syntax.as(CustomAttributeSyntax.self)
-          }
-          .map(Attribute.init) ?? []
+          .compactMap { syntax -> Attribute? in
+            if let syntax = syntax.as(AttributeSyntax.self) {
+                return Attribute(syntax)
+            } else if let syntax = syntax.as(CustomAttributeSyntax.self) {
+                return Attribute(syntax)
+            } else {
+                return nil
+            }
+          } ?? []
 
         var final = AttributeList()
         array.forEach { attribute in
@@ -78,5 +67,16 @@ extension Attribute {
         }
 
         return final
+    }
+}
+
+private extension TokenKind {
+    var isIdentifier: Bool {
+        switch self {
+        case .identifier:
+            return true
+        default:
+            return false
+        }
     }
 }
