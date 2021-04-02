@@ -1,6 +1,7 @@
 // swift-tools-version:5.3
 
 import PackageDescription
+import Foundation
 
 let sourceryDependencies: [Target.Dependency] = [
     "SourceryFramework",
@@ -142,9 +143,6 @@ let package = Package(
                 .copy("Stub/Templates"),
                 .copy("Stub/Source")
             ]
-            // To run test from Xcode copy lib_InternalSwiftSyntaxParser.dylib into build output directory
-            // next to `sourcery` binary.
-            // This looks like Xcode SPM integration issue, since SPM alone has no such issue.
         ),
         .testTarget(
             name: "CodableContextTests",
@@ -186,3 +184,72 @@ let package = Package(
         )
     ]
 )
+
+hookInternalSwiftSyntaxParser()
+
+/// We need to manually add an -rpath to the project so the tests can run via Xcode
+/// If we are running from console (swift build & friend) we don't need to do it
+func hookInternalSwiftSyntaxParser() {
+    let isFromTerminal = ProcessInfo.processInfo.environment.values.contains("/usr/bin/swift")
+    if !isFromTerminal {
+        package
+            .targets
+            .filter(\.isTest)
+            .forEach { $0.installSwiftSyntaxParser() }
+    }
+}
+
+extension PackageDescription.Target {
+    func installSwiftSyntaxParser() {
+        linkerSettings = [linkerSetting]
+    }
+
+    private var linkerSetting: LinkerSetting {
+        guard let xcodeFolder = Executable("/usr/bin/xcode-select")("-p") else {
+            fatalError("Could not run `xcode-select -p`")
+        }
+
+        let toolchainFolder = "\(xcodeFolder.trimmed)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx"
+
+        return .unsafeFlags(["-rpath", toolchainFolder])
+    }
+}
+
+extension String {
+    var trimmed: String { trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) }
+}
+
+private struct Executable {
+    private let url: URL
+
+    init(_ filePath: String) {
+        url = URL(fileURLWithPath: filePath)
+    }
+
+    func callAsFunction(_ arguments: String...) -> String? {
+        let process = Process()
+        process.executableURL = url
+        process.arguments = arguments
+
+        let stdout = Pipe()
+        process.standardOutput = stdout
+
+        process.launch()
+        process.waitUntilExit()
+
+        return stdout.readStringToEndOfFile()
+    }
+}
+
+extension Pipe {
+    func readStringToEndOfFile() -> String? {
+        let data: Data
+        if #available(OSX 10.15.4, *) {
+            data = (try? fileHandleForReading.readToEnd()) ?? Data()
+        } else {
+            data = fileHandleForReading.readDataToEndOfFile()
+        }
+
+        return String(data: data, encoding: .utf8)
+    }
+}
