@@ -142,8 +142,8 @@ let package = Package(
                 .copy("Stub/Templates"),
                 .copy("Stub/Source")
             ]
-            // If you want to run tests from Xcode by double clicking on Package.swift,
-            // copy lib_InternalSwiftSyntaxParser.dylib into build output directory next to Sourcery binary.
+            // To run test from Xcode copy lib_InternalSwiftSyntaxParser.dylib into build output directory
+            // next to `sourcery` binary.
             // This looks like Xcode SPM integration issue, since SPM alone has no such issue.
         ),
         .testTarget(
@@ -175,7 +175,7 @@ let package = Package(
             ],
             sources: [
                 // LinuxMain is not compiled as part of the target
-                // since there is no way atm to run custom script before compilation step.
+                // since there is no way to run script before compilation begins.
                 "Tests/TemplatesTests.swift"
             ],
             resources: [
