@@ -13,6 +13,8 @@
 
 ## Internal changes
 - Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
+- Add support for testing via `SPM`
+
 
 ## 1.3.4
 ## Fixes
