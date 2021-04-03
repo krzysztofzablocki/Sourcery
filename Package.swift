@@ -44,7 +44,7 @@ let package = Package(
                  url: "https://github.com/apple/swift-syntax.git",
                  .exact("0.50300.0")),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
-        .package(url: "https://github.com/HeMet/Nimble.git", from: "9.0.0")
+        .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
     ],
     targets: [
         .target(
