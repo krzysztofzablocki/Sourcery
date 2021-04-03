@@ -194,7 +194,7 @@ func hookInternalSwiftSyntaxParser() {
     if !isFromTerminal {
         package
             .targets
-            .filter(\.isTest)
+            .filter { $0.isTest || $0.name == "Sourcery" }
             .forEach { $0.installSwiftSyntaxParser() }
     }
 }
