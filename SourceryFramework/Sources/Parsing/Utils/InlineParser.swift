@@ -21,11 +21,12 @@ public enum TemplateAnnotationsParser {
     public static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false) -> (contents: String, annotatedRanges: AnnotatedRanges) {
         let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate)
 
+        let strigView = StringView(contents)
         var bridged = contents.bridge()
         rangesToReplace
             .sorted(by: { $0.location > $1.location })
             .forEach {
-                bridged = bridged.replacingCharacters(in: $0, with: String(repeating: " ", count: $0.length)) as NSString
+                bridged = bridged.replacingCharacters(in: $0, with: String(repeating: " ", count: strigView.NSRangeToByteRange($0)!.length.value)) as NSString
         }
         return (bridged as String, annotatedRanges)
     }
