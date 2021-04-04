@@ -369,7 +369,7 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
-                    
+
                     it("handles UTF16 characters") {
                         update(code: """
                             class A {
@@ -387,9 +387,9 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:end
                             {% endfor %}
                             """, in: templatePath)
-                        
+
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
-                        
+
                         let expectedResult = """
                             class A {
                                 let 👩‍🚀: String
@@ -401,11 +401,11 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:end
                             }
                             """
-                        
+
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
-                    
+
                     it("handles previously generated code with UTF16 characters") {
                         update(code: """
                             class A {
@@ -433,9 +433,9 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:end
                             {% endfor %}
                             """, in: templatePath)
-                        
+
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
-                        
+
                         let expectedResult = """
                             class A {
                                 let 👩‍🚀: String
@@ -457,7 +457,7 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:end
                             }
                             """
-                        
+
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
