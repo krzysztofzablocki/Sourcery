@@ -369,6 +369,98 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? sourcePath.read(.utf8)
                         expect(result).to(equal(expectedResult))
                     }
+                    
+                    it("handles UTF16 characters") {
+                        update(code: """
+                            class A {
+                                let 👩‍🚀: String
+                            }
+                            """, in: sourcePath)
+                        update(code: """
+                            {% for type in types.all %}
+                            // sourcery:inline:auto:{{ type.name }}.init
+                            init({% for variable in type.storedVariables %}{{variable.name}}: {{variable.typeName}}{% ifnot forloop.last %}, {% endif %}{% endfor %}) {
+                            {% for variable in type.storedVariables %}
+                                self.{{variable.name}} = {{variable.name}}
+                            {% endfor %}
+                            }
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
+                        
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                        
+                        let expectedResult = """
+                            class A {
+                                let 👩‍🚀: String
+
+                            // sourcery:inline:auto:A.init
+                            init(👩‍🚀: String) {
+                                self.👩‍🚀 = 👩‍🚀
+                            }
+                            // sourcery:end
+                            }
+                            """
+                        
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+                    
+                    it("handles previously generated code with UTF16 characters") {
+                        update(code: """
+                            class A {
+                                let 👩‍🚀: String
+
+                                // sourcery:inline:auto:A.init
+                                init(👩‍🚀: String) {
+                                    self.👩‍🚀 = 👩‍🚀
+                                }
+                                // sourcery:end
+                            }
+
+                            class B {
+                                let 👩‍🚀: String
+                            }
+                            """, in: sourcePath)
+                        update(code: """
+                            {% for type in types.all %}
+                            // sourcery:inline:auto:{{ type.name }}.init
+                            init({% for variable in type.storedVariables %}{{variable.name}}: {{variable.typeName}}{% ifnot forloop.last %}, {% endif %}{% endfor %}) {
+                            {% for variable in type.storedVariables %}
+                                self.{{variable.name}} = {{variable.name}}
+                            {% endfor %}
+                            }
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
+                        
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                        
+                        let expectedResult = """
+                            class A {
+                                let 👩‍🚀: String
+
+                                // sourcery:inline:auto:A.init
+                                init(👩‍🚀: String) {
+                                    self.👩‍🚀 = 👩‍🚀
+                                }
+                                // sourcery:end
+                            }
+
+                            class B {
+                                let 👩‍🚀: String
+
+                            // sourcery:inline:auto:B.init
+                            init(👩‍🚀: String) {
+                                self.👩‍🚀 = 👩‍🚀
+                            }
+                            // sourcery:end
+                            }
+                            """
+                        
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
 
                     it("insert generated code in multiple types") {
                         update(code: """
