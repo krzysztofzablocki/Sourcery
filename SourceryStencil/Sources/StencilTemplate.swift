@@ -16,7 +16,7 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment())
     }
 
-    private static func sourceryEnvironment(templatePath: Path? = nil) -> Stencil.Environment {
+    public static func sourceryEnvironment(templatePath: Path? = nil) -> Stencil.Environment {
         let ext = Stencil.Extension()
 
         ext.registerFilter("json") { (value, arguments) -> Any? in
