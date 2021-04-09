@@ -14,6 +14,7 @@
 
 ## Internal changes
 - Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
+- Updted SwiftLint, Quick and Nible to latest versions
 
 ## 1.3.4
 ## Fixes

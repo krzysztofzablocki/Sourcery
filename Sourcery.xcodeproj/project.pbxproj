@@ -78,7 +78,7 @@
 		CD548AF525EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AF425EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift */; };
 		CD548AFD25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AFC25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift */; };
 		CD548B0B25EA80D30081BB66 /* GenericType+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548B0A25EA80D30081BB66 /* GenericType+SwiftSyntax.swift */; };
-		CD67C8D726046F1400CC74E5 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = CD9713CD25EFA02900E69E69 /* SwiftSyntax */; };
+		CD67C8D726046F1400CC74E5 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = CD9713CD25EFA02900E69E69 /* SwiftPackageProductDependency */; };
 		CD67C8E126046F3B00CC74E5 /* SourceryStencil.h in Headers */ = {isa = PBXBuildFile; fileRef = CD67C8DF26046F3B00CC74E5 /* SourceryStencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD67C8E426046F3B00CC74E5 /* SourceryStencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD67C8DD26046F3B00CC74E5 /* SourceryStencil.framework */; };
 		CD67C8E526046F3B00CC74E5 /* SourceryStencil.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CD67C8DD26046F3B00CC74E5 /* SourceryStencil.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -513,7 +513,7 @@
 			files = (
 				47635CB021DA342600B2D5A1 /* SourceryUtils.framework in Frameworks */,
 				B5BCFA0021D161BF009DF652 /* SourceryRuntime.framework in Frameworks */,
-				CD67C8D726046F1400CC74E5 /* SwiftSyntax in Frameworks */,
+				CD67C8D726046F1400CC74E5 /* BuildFile in Frameworks */,
 				CD4B38F125EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */,
 				60CC7E378065D25B8D555BCF /* Pods_SourceryFramework.framework in Frameworks */,
 			);
@@ -1257,7 +1257,7 @@
 			);
 			name = SourceryFramework;
 			packageProductDependencies = (
-				CD9713CD25EFA02900E69E69 /* SwiftSyntax */,
+				CD9713CD25EFA02900E69E69 /* SwiftPackageProductDependency */,
 			);
 			productName = SourceryFramework;
 			productReference = B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */;
@@ -1394,7 +1394,7 @@
 			);
 			mainGroup = CD754C821D853F000082B512;
 			packageReferences = (
-				CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */,
+				CD9713CC25EFA02900E69E69 /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = CD754C8C1D853F000082B512 /* Products */;
 			projectDirPath = "";
@@ -1575,12 +1575,25 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework",
+				"${BUILT_PRODUCTS_DIR}/Commander/Commander.framework",
+				"${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Yams/Yams.framework",
+				"${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework",
+				"${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework",
+				"${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AEXML.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Commander.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PathKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Yams.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XcodeProj.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stencil.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StencilSwiftKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1699,12 +1712,15 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2796,7 +2812,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
+		CD9713CC25EFA02900E69E69 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-syntax";
 			requirement = {
@@ -2807,9 +2823,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CD9713CD25EFA02900E69E69 /* SwiftSyntax */ = {
+		CD9713CD25EFA02900E69E69 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CD9713CC25EFA02900E69E69 /* XCRemoteSwiftPackageReference "swift-syntax" */;
+			package = CD9713CC25EFA02900E69E69 /* RemoteSwiftPackageReference */;
 			productName = SwiftSyntax;
 		};
 /* End XCSwiftPackageProductDependency section */
