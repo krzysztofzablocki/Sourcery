@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import PathKit
 @testable import Sourcery
+@testable import SourceryParser
 @testable import SourceryRuntime
 import XcodeProj
 

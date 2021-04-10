@@ -12,6 +12,7 @@ import Nimble
 import PathKit
 @testable import Sourcery
 import SourceryFramework
+import SourceryParser
 @testable import SourceryRuntime
 @testable import SourcerySwift
 

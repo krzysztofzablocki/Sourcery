@@ -2,6 +2,7 @@ import Foundation
 import Quick
 import Nimble
 import PathKit
+import SourceryParser
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime

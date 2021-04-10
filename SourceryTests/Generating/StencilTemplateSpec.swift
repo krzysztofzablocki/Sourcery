@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import PathKit
 import SourceryStencil
+import SourceryParser
 @testable import Sourcery
 @testable import SourceryFramework
 @testable import SourceryRuntime

@@ -1,0 +1,6 @@
+framework module Pods_SourceryParser {
+  umbrella header "Pods-SourceryParser-umbrella.h"
+
+  export *
+  module * { export * }
+}

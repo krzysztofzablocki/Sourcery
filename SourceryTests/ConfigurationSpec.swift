@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import PathKit
+import SourceryParser
 @testable import Sourcery
 
 class ConfigurationSpec: QuickSpec {

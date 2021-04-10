@@ -14,7 +14,6 @@
 		0906124D1E2BC43500BA0937 /* FileParser + MethodsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */; };
 		09334E531EB914510092806F /* SourceryRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 09334E511EB914510092806F /* SourceryRuntime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		09346DC81E02195300D6358C /* StructSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09346DC71E02195300D6358C /* StructSpec.swift */; };
-		094415C81E78A46A00ABE04A /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094415C71E78A46A00ABE04A /* Configuration.swift */; };
 		09618B4F1E662B0A00B49D5F /* JavaScriptTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 09618B4E1E662B0A00B49D5F /* JavaScriptTemplates */; };
 		0967DA611E0341400084F702 /* ProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0967DA601E0341400084F702 /* ProtocolSpec.swift */; };
 		097E11F01E05E78600FEB751 /* TypealiasSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097E11EF1E05E78600FEB751 /* TypealiasSpec.swift */; };
@@ -25,6 +24,7 @@
 		09C6B0D41E11C1C500246CDF /* ClassSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C6B0D31E11C1C500246CDF /* ClassSpec.swift */; };
 		185DAA6CDB46FC4502766F3A /* Pods_SourceryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1278DE322EEEC30934B058 /* Pods_SourceryTests.framework */; };
 		369A5F6281FBAB7834582E3F /* Pods_SourcerySwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F81A4FAFF66C386F53742B5F /* Pods_SourcerySwift.framework */; };
+		397D71567E29E23C8A7EF459 /* Pods_SourceryParser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A0474125FE684C00C0C118 /* Pods_SourceryParser.framework */; };
 		47379D2B215962BF002C1DAA /* SourceryRuntime.content.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */; };
 		47635C9C21DA32E900B2D5A1 /* SourceryUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 47635C9A21DA32E800B2D5A1 /* SourceryUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47635C9F21DA32E900B2D5A1 /* SourceryUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47635C9821DA32E800B2D5A1 /* SourceryUtils.framework */; };
@@ -34,8 +34,8 @@
 		47635CAB21DA338200B2D5A1 /* Sha.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47635CA821DA338200B2D5A1 /* Sha.swift */; };
 		47635CB021DA342600B2D5A1 /* SourceryUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47635C9821DA32E800B2D5A1 /* SourceryUtils.framework */; };
 		47635CB121DA348000B2D5A1 /* SourceryUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47635C9821DA32E800B2D5A1 /* SourceryUtils.framework */; };
+		4A5EACA0DCE75622AAC1950F /* Pods_SourceryParser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE2317CB20326E16C2D2A5D /* Pods_SourceryParser.framework */; };
 		52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F79EA01EE9F017006D3546 /* ConfigurationSpec.swift */; };
-		60CC7E378065D25B8D555BCF /* Pods_SourceryFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB592E6C7511363520AB29E8 /* Pods_SourceryFramework.framework */; };
 		6359E6651FE409250015AF8F /* FileParser + SubscriptsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359E6641FE409250015AF8F /* FileParser + SubscriptsSpec.swift */; };
 		635AB26E201F2E5300342C13 /* SourcerySwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 635AB26C201F2E5300342C13 /* SourcerySwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		635AB279201F2E8700342C13 /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635AB278201F2E8700342C13 /* SwiftTemplate.swift */; };
@@ -45,8 +45,8 @@
 		6393BC92201B50910044E8CC /* JavaScriptTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09618B491E6626EA00B49D5F /* JavaScriptTemplateSpecs.swift */; };
 		6393BC93201B55230044E8CC /* ejs.js in Resources */ = {isa = PBXBuildFile; fileRef = 09618B411E620D8600B49D5F /* ejs.js */; };
 		6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393BC97201B57620044E8CC /* JavaScriptTemplate.swift */; };
-		63CC359520246CCB0017D839 /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		63E1AD0E1F4093EB00D01FED /* Configs in Resources */ = {isa = PBXBuildFile; fileRef = 63E1AD0D1F4093EB00D01FED /* Configs */; };
+		787DA9A17D7F7FCAA5FE118D /* Pods_SourceryFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69A4FE26A81003F5AEC9C7F9 /* Pods_SourceryFramework.framework */; };
 		990B63465A767D7147E0B29B /* Pods_SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C82AE0D8342A0606F1E8CE /* Pods_SourceryJS.framework */; };
 		B4E02BEC53C447247C765980 /* Pods_SourceryStencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C8BF671DB1330E3E4951214 /* Pods_SourceryStencil.framework */; };
 		B5089B5221D1817F007A001C /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
@@ -64,6 +64,22 @@
 		B5BCFA1421D1623D009DF652 /* Verifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0C21D1623D009DF652 /* Verifier.swift */; };
 		B5BCFA1621D1623D009DF652 /* InlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0E21D1623D009DF652 /* InlineParser.swift */; };
 		B5BCFA1721D1623D009DF652 /* AnnotationsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */; };
+		C439010A25FE71B300621FAC /* TryCatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0054C50422496806007F9AA7 /* TryCatch.framework */; };
+		C439010B25FE71B300621FAC /* TryCatch.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0054C50422496806007F9AA7 /* TryCatch.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C439011425FE723900621FAC /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A046F725FE635D00C0C118 /* Xcode+Extensions.swift */; };
+		C439013225FE73A700621FAC /* Configurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C439013125FE73A700621FAC /* Configurations.swift */; };
+		C439014025FE73B600621FAC /* Xcode+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C439013F25FE73B600621FAC /* Xcode+Additions.swift */; };
+		C439014725FE757C00621FAC /* SourceryParser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A046E325FE603A00C0C118 /* SourceryParser.framework */; };
+		C439014825FE757C00621FAC /* SourceryParser.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C4A046E325FE603A00C0C118 /* SourceryParser.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C4A0469525FE5FCF00C0C118 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = CD9713CD25EFA02900E69E69 /* SwiftPackageProductDependency */; };
+		C4A046BA25FE603A00C0C118 /* lib_InternalSwiftSyntaxParser.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C4A046DA25FE603A00C0C118 /* SourceryUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47635C9821DA32E800B2D5A1 /* SourceryUtils.framework */; };
+		C4A046DB25FE603A00C0C118 /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
+		C4A046DD25FE603A00C0C118 /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */; };
+		C4A046FB25FE635D00C0C118 /* SourceParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A046F525FE635D00C0C118 /* SourceParser.swift */; };
+		C4A046FD25FE635D00C0C118 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A046F825FE635D00C0C118 /* Configuration.swift */; };
+		C4A046FE25FE635D00C0C118 /* SourceryParser.h in Headers */ = {isa = PBXBuildFile; fileRef = C4A046F925FE635D00C0C118 /* SourceryParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C4A0472425FE64F600C0C118 /* SourceryFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */; };
 		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
 		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
@@ -234,6 +250,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = CD67C8DC26046F3B00CC74E5;
 			remoteInfo = SourceryStencil;
+        };
+		C439010C25FE71B300621FAC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD754C831D853F000082B512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0054C50322496806007F9AA7;
+			remoteInfo = TryCatch;
+		};
+		C439014925FE757C00621FAC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD754C831D853F000082B512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C4A046B125FE603A00C0C118;
+			remoteInfo = SourceryParser;
+		};
+		C4A046B325FE603A00C0C118 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CD754C831D853F000082B512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 47635C9721DA32E800B2D5A1;
+			remoteInfo = SourceryUtils;
 		};
 		CD754C9B1D853F000082B512 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -259,6 +296,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				0054C50C22496806007F9AA7 /* TryCatch.framework in Embed Frameworks */,
+				C439014825FE757C00621FAC /* SourceryParser.framework in Embed Frameworks */,
 				B5089B5321D1817F007A001C /* SourceryRuntime.framework in Embed Frameworks */,
 				B5089B5921D1817F007A001C /* SourceryFramework.framework in Embed Frameworks */,
 				B5089B5721D1817F007A001C /* SourcerySwift.framework in Embed Frameworks */,
@@ -267,6 +305,17 @@
 				47635CA021DA32E900B2D5A1 /* SourceryUtils.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C4A046B925FE603A00C0C118 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C439010B25FE71B300621FAC /* TryCatch.framework in CopyFiles */,
+				C4A046BA25FE603A00C0C118 /* lib_InternalSwiftSyntaxParser.dylib in CopyFiles */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CD6008F325E248600025EB14 /* CopyFiles */ = {
@@ -292,7 +341,6 @@
 		09334E501EB914510092806F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		09334E511EB914510092806F /* SourceryRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceryRuntime.h; sourceTree = "<group>"; };
 		09346DC71E02195300D6358C /* StructSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructSpec.swift; sourceTree = "<group>"; };
-		094415C71E78A46A00ABE04A /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		09618B3B1E61EEE100B49D5F /* EJSTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EJSTemplate.swift; sourceTree = "<group>"; };
 		09618B411E620D8600B49D5F /* ejs.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejs.js; sourceTree = "<group>"; };
 		09618B431E620E3200B49D5F /* JSExport.ejs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = JSExport.ejs; sourceTree = "<group>"; };
@@ -305,9 +353,10 @@
 		098442721E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileParser + AttributesModifierSpec.swift"; sourceTree = "<group>"; };
 		09B1DD381E219D95009228EE /* TypedSpec.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TypedSpec.stencil; sourceTree = "<group>"; };
 		09C61FA31E760FF2005EA58A /* Xcode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Xcode.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Sourcery-gbqvopozrlnehjdzvxfvrvqwyvsg/Build/Products/Debug/Xcode.framework"; sourceTree = "<group>"; };
-		09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Xcode+Extensions.swift"; sourceTree = "<group>"; };
 		09C6B0D31E11C1C500246CDF /* ClassSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassSpec.swift; sourceTree = "<group>"; };
 		1212A564CA8698529C0ACC6B /* Pods-SourceryUtils.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryUtils.release.xcconfig"; path = "Target Support Files/Pods-SourceryUtils/Pods-SourceryUtils.release.xcconfig"; sourceTree = "<group>"; };
+		2697A7A84737F4AEE6A6121F /* Pods-SourceryParser.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryParser.release.xcconfig"; path = "Target Support Files/Pods-SourceryParser/Pods-SourceryParser.release.xcconfig"; sourceTree = "<group>"; };
+		2CE2317CB20326E16C2D2A5D /* Pods_SourceryParser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryParser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E4BBC6C7A5FE28E65D2364 /* Pods_Sourcery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sourcery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E5DF8CD329EF871DC097F0 /* Pods-SourceryStencil.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryStencil.release.xcconfig"; path = "Target Support Files/Pods-SourceryStencil/Pods-SourceryStencil.release.xcconfig"; sourceTree = "<group>"; };
 		4710194E2150509C00F50715 /* SourceryRuntime.content.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceryRuntime.content.generated.swift; sourceTree = "<group>"; };
@@ -330,6 +379,7 @@
 		6393BC97201B57620044E8CC /* JavaScriptTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaScriptTemplate.swift; sourceTree = "<group>"; };
 		63E1AD0D1F4093EB00D01FED /* Configs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Configs; sourceTree = "<group>"; };
 		64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryRuntime.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		69A4FE26A81003F5AEC9C7F9 /* Pods_SourceryFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A1278DE322EEEC30934B058 /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C8BF671DB1330E3E4951214 /* Pods_SourceryStencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryStencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79EDC093C51A602ADB2AAE88 /* Pods-SourceryFramework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.debug.xcconfig"; path = "Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.debug.xcconfig"; sourceTree = "<group>"; };
@@ -347,12 +397,20 @@
 		BA47DD78C936DFCD07EEA8DD /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
 		C017E18E57FF994A543041B9 /* Pods-SourcerySwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourcerySwift.release.xcconfig"; path = "Target Support Files/Pods-SourcerySwift/Pods-SourcerySwift.release.xcconfig"; sourceTree = "<group>"; };
 		C2C7B220D0DEFB33385F995E /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C439013125FE73A700621FAC /* Configurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configurations.swift; sourceTree = "<group>"; };
+		C439013F25FE73B600621FAC /* Xcode+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Xcode+Additions.swift"; sourceTree = "<group>"; };
+		C4A046E325FE603A00C0C118 /* SourceryParser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryParser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4A046F525FE635D00C0C118 /* SourceParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceParser.swift; sourceTree = "<group>"; };
+		C4A046F725FE635D00C0C118 /* Xcode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Xcode+Extensions.swift"; sourceTree = "<group>"; };
+		C4A046F825FE635D00C0C118 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		C4A046F925FE635D00C0C118 /* SourceryParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceryParser.h; sourceTree = "<group>"; };
+		C4A046FA25FE635D00C0C118 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C4A0474125FE684C00C0C118 /* Pods_SourceryParser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SourceryParser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5B9C02D428F3FEC20C3D943 /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
 		C894A1AE1E19326C0098327C /* SwiftTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplate.swift; sourceTree = "<group>"; };
 		C894A1B21E19328E0098327C /* SwiftTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SwiftTemplates; sourceTree = "<group>"; };
 		C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTemplateSpecs.swift; sourceTree = "<group>"; };
 		C894A1B61E19381A0098327C /* Coding.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Coding.stencil; sourceTree = "<group>"; };
-		CB592E6C7511363520AB29E8 /* Pods_SourceryFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC54F603FD22AD275A3E7B3F /* Pods_SourceryUtils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryUtils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD0E9A5825E95B4A0055EE8F /* Bridges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridges.swift; sourceTree = "<group>"; };
 		CD0E9A6025E95BA40055EE8F /* StringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringView.swift; sourceTree = "<group>"; };
@@ -459,6 +517,7 @@
 		E291DFAA0880E1A20FD859E5 /* Enum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
 		E291DFB06CF9491CF04C6125 /* Enum+SwiftSyntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Enum+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposerSpec.swift; sourceTree = "<group>"; };
+		EB38100123CB710D54E3AAF1 /* Pods-SourceryParser.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryParser.debug.xcconfig"; path = "Target Support Files/Pods-SourceryParser/Pods-SourceryParser.debug.xcconfig"; sourceTree = "<group>"; };
 		F1A3DAD7FDF3830E52EF0509 /* Pods-SourceryFramework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.release.xcconfig"; path = "Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.release.xcconfig"; sourceTree = "<group>"; };
 		F3C3A7B6CE0BCA036E0835CE /* Pods-Sourcery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.release.xcconfig"; path = "Target Support Files/Pods-Sourcery/Pods-Sourcery.release.xcconfig"; sourceTree = "<group>"; };
 		F63E602724BCF57E00715CD1 /* FileParser + AssociatedTypeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileParser + AssociatedTypeSpec.swift"; sourceTree = "<group>"; };
@@ -514,8 +573,23 @@
 				47635CB021DA342600B2D5A1 /* SourceryUtils.framework in Frameworks */,
 				B5BCFA0021D161BF009DF652 /* SourceryRuntime.framework in Frameworks */,
 				CD67C8D726046F1400CC74E5 /* SwiftSyntax in Frameworks */,
+				C4A0469525FE5FCF00C0C118 /* BuildFile in Frameworks */,
 				CD4B38F125EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */,
-				60CC7E378065D25B8D555BCF /* Pods_SourceryFramework.framework in Frameworks */,
+				787DA9A17D7F7FCAA5FE118D /* Pods_SourceryFramework.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C4A046D925FE603A00C0C118 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C439010A25FE71B300621FAC /* TryCatch.framework in Frameworks */,
+				C4A0472425FE64F600C0C118 /* SourceryFramework.framework in Frameworks */,
+				C4A046DA25FE603A00C0C118 /* SourceryUtils.framework in Frameworks */,
+				C4A046DB25FE603A00C0C118 /* SourceryRuntime.framework in Frameworks */,
+				C4A046DD25FE603A00C0C118 /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */,
+				4A5EACA0DCE75622AAC1950F /* Pods_SourceryParser.framework in Frameworks */,
+				397D71567E29E23C8A7EF459 /* Pods_SourceryParser.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,6 +612,7 @@
 				CD67C8E426046F3B00CC74E5 /* SourceryStencil.framework in Frameworks */,
 				47635C9F21DA32E900B2D5A1 /* SourceryUtils.framework in Frameworks */,
 				B5089B5221D1817F007A001C /* SourceryRuntime.framework in Frameworks */,
+				C439014725FE757C00621FAC /* SourceryParser.framework in Frameworks */,
 				B5089B5821D1817F007A001C /* SourceryFramework.framework in Frameworks */,
 				B5089B5421D1817F007A001C /* SourceryJS.framework in Frameworks */,
 			);
@@ -557,14 +632,16 @@
 		003958827841F12BBF99EB67 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C4A0474125FE684C00C0C118 /* Pods_SourceryParser.framework */,
 				09C61FA31E760FF2005EA58A /* Xcode.framework */,
 				39E4BBC6C7A5FE28E65D2364 /* Pods_Sourcery.framework */,
-				CB592E6C7511363520AB29E8 /* Pods_SourceryFramework.framework */,
 				D0C82AE0D8342A0606F1E8CE /* Pods_SourceryJS.framework */,
 				F81A4FAFF66C386F53742B5F /* Pods_SourcerySwift.framework */,
 				6A1278DE322EEEC30934B058 /* Pods_SourceryTests.framework */,
 				CC54F603FD22AD275A3E7B3F /* Pods_SourceryUtils.framework */,
 				6C8BF671DB1330E3E4951214 /* Pods_SourceryStencil.framework */,
+				2CE2317CB20326E16C2D2A5D /* Pods_SourceryParser.framework */,
+				69A4FE26A81003F5AEC9C7F9 /* Pods_SourceryFramework.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -765,8 +842,38 @@
 				F3C3A7B6CE0BCA036E0835CE /* Pods-Sourcery.release.xcconfig */,
 				8A7B2DB2F4780241A50AF3A3 /* Pods-SourceryStencil.debug.xcconfig */,
 				39E5DF8CD329EF871DC097F0 /* Pods-SourceryStencil.release.xcconfig */,
+				EB38100123CB710D54E3AAF1 /* Pods-SourceryParser.debug.xcconfig */,
+				2697A7A84737F4AEE6A6121F /* Pods-SourceryParser.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		C4A046F325FE635D00C0C118 /* SourceryParser */ = {
+			isa = PBXGroup;
+			children = (
+				C4A046F425FE635D00C0C118 /* Sources */,
+				C4A046F925FE635D00C0C118 /* SourceryParser.h */,
+				C4A046FA25FE635D00C0C118 /* Info.plist */,
+			);
+			path = SourceryParser;
+			sourceTree = "<group>";
+		};
+		C4A046F425FE635D00C0C118 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				C4A046F525FE635D00C0C118 /* SourceParser.swift */,
+				C4A046F625FE635D00C0C118 /* Utils */,
+				C4A046F825FE635D00C0C118 /* Configuration.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		C4A046F625FE635D00C0C118 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C4A046F725FE635D00C0C118 /* Xcode+Extensions.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		C894A1AB1E1931500098327C /* Swift */ = {
@@ -806,6 +913,7 @@
 				CD67C8DE26046F3B00CC74E5 /* SourceryStencil */,
 				6393BC6A2019F58D0044E8CC /* SourceryJS */,
 				635AB26B201F2E5300342C13 /* SourcerySwift */,
+				C4A046F325FE635D00C0C118 /* SourceryParser */,
 				B5BCF9F421D161B5009DF652 /* SourceryFramework */,
 				47635C9921DA32E800B2D5A1 /* SourceryUtils */,
 				0054C4F622496460007F9AA7 /* TryCatch */,
@@ -830,6 +938,7 @@
 				47635C9821DA32E800B2D5A1 /* SourceryUtils.framework */,
 				0054C50422496806007F9AA7 /* TryCatch.framework */,
 				CD67C8DD26046F3B00CC74E5 /* SourceryStencil.framework */,
+				C4A046E325FE603A00C0C118 /* SourceryParser.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -841,7 +950,7 @@
 				CD812F631DFDCED40088B2F6 /* Templates */,
 				E291DB64F90A7CCCD66B3801 /* Generating */,
 				E291DB6A95BAECDB6E978A76 /* Sourcery.swift */,
-				094415C71E78A46A00ABE04A /* Configuration.swift */,
+				C439013125FE73A700621FAC /* Configurations.swift */,
 				CD9C459C1DFAF76D00161C2C /* main.swift */,
 				CD754C951D853F000082B512 /* Info.plist */,
 			);
@@ -1038,7 +1147,7 @@
 			isa = PBXGroup;
 			children = (
 				E291DBAA16ABFED8C04CB42A /* FolderWatcher.swift */,
-				09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */,
+				C439013F25FE73B600621FAC /* Xcode+Additions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1137,6 +1246,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD67C8E126046F3B00CC74E5 /* SourceryStencil.h in Headers */,
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+		C4A046B725FE603A00C0C118 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4A046FE25FE635D00C0C118 /* SourceryParser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1283,6 +1400,28 @@
 			productReference = CD67C8DD26046F3B00CC74E5 /* SourceryStencil.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+        C4A046B125FE603A00C0C118 /* SourceryParser */ = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = C4A046E025FE603A00C0C118 /* Build configuration list for PBXNativeTarget "SourceryParser" */;
+            buildPhases = (
+                C4A046B625FE603A00C0C118 /* [CP] Check Pods Manifest.lock */,
+                C4A046B725FE603A00C0C118 /* Headers */,
+                C4A046B925FE603A00C0C118 /* CopyFiles */,
+                C4A046BB25FE603A00C0C118 /* Sources */,
+                C4A046D925FE603A00C0C118 /* Frameworks */,
+                C4A046DF25FE603A00C0C118 /* Resources */,
+            );
+            buildRules = (
+            );
+            dependencies = (
+                C4A046B225FE603A00C0C118 /* PBXTargetDependency */,
+                C439010D25FE71B300621FAC /* PBXTargetDependency */,
+            );
+            name = SourceryParser;
+            productName = SourceryFramework;
+            productReference = C4A046E325FE603A00C0C118 /* SourceryParser.framework */;
+            productType = "com.apple.product-type.framework";
+        };
 		CD754C8A1D853F000082B512 /* Sourcery */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD754CA31D853F000082B512 /* Build configuration list for PBXNativeTarget "Sourcery" */;
@@ -1306,6 +1445,7 @@
 				47635C9E21DA32E900B2D5A1 /* PBXTargetDependency */,
 				0054C50A22496806007F9AA7 /* PBXTargetDependency */,
 				CD67C8E326046F3B00CC74E5 /* PBXTargetDependency */,
+				C439014A25FE757C00621FAC /* PBXTargetDependency */,
 			);
 			name = Sourcery;
 			productName = Sourcery;
@@ -1406,6 +1546,7 @@
 				CD67C8DC26046F3B00CC74E5 /* SourceryStencil */,
 				6393BC682019F58D0044E8CC /* SourceryJS */,
 				635AB269201F2E5300342C13 /* SourcerySwift */,
+				C4A046B125FE603A00C0C118 /* SourceryParser */,
 				B5BCF9F221D161B5009DF652 /* SourceryFramework */,
 				47635C9721DA32E800B2D5A1 /* SourceryUtils */,
 				0054C50322496806007F9AA7 /* TryCatch */,
@@ -1464,6 +1605,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+        C4A046DF25FE603A00C0C118 /* Resources */ = {
+            isa = PBXResourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
 		CD754C891D853F000082B512 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1733,6 +1881,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+        C4A046B625FE603A00C0C118 /* [CP] Check Pods Manifest.lock */ = {
+            isa = PBXShellScriptBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+            );
+            inputFileListPaths = (
+            );
+            inputPaths = (
+                "${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+                "${PODS_ROOT}/Manifest.lock",
+            );
+            name = "[CP] Check Pods Manifest.lock";
+            outputFileListPaths = (
+            );
+            outputPaths = (
+                "$(DERIVED_FILE_DIR)/Pods-SourceryParser-checkManifestLockResult.txt",
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+            shellPath = /bin/sh;
+            shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+            showEnvVarsInLog = 0;
+        };
 		CDBFAC0F1D85441A006D5982 /* Run SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1873,6 +2043,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDB078DE2604710A00B3D76A /* StencilTemplate.swift in Sources */,
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+		C4A046BB25FE603A00C0C118 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4A046FD25FE635D00C0C118 /* Configuration.swift in Sources */,
+				C439011425FE723900621FAC /* Xcode+Extensions.swift in Sources */,
+				C4A046FB25FE635D00C0C118 /* SourceParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1881,10 +2061,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD9C459D1DFAF76D00161C2C /* main.swift in Sources */,
-				094415C81E78A46A00ABE04A /* Configuration.swift in Sources */,
 				E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */,
 				C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */,
 				63CC359520246CCB0017D839 /* Xcode+Extensions.swift in Sources */,
+				C439014025FE73B600621FAC /* Xcode+Additions.swift in Sources */,
+				E291D8DB06EC63770326562B /* Type+Stencil.swift in Sources */,
+				C439013225FE73A700621FAC /* Configurations.swift in Sources */,
 				CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */,
 				6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */,
 				E291D33EA3BB6FC777B3950E /* FolderWatcher.swift in Sources */,
@@ -1977,6 +2159,21 @@
 			isa = PBXTargetDependency;
 			target = CD67C8DC26046F3B00CC74E5 /* SourceryStencil */;
 			targetProxy = CD67C8E226046F3B00CC74E5 /* PBXContainerItemProxy */;
+        };
+		C439010D25FE71B300621FAC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0054C50322496806007F9AA7 /* TryCatch */;
+			targetProxy = C439010C25FE71B300621FAC /* PBXContainerItemProxy */;
+		};
+		C439014A25FE757C00621FAC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C4A046B125FE603A00C0C118 /* SourceryParser */;
+			targetProxy = C439014925FE757C00621FAC /* PBXContainerItemProxy */;
+		};
+		C4A046B225FE603A00C0C118 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 47635C9721DA32E800B2D5A1 /* SourceryUtils */;
+			targetProxy = C4A046B325FE603A00C0C118 /* PBXContainerItemProxy */;
 		};
 		CD754C9C1D853F000082B512 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2457,6 +2654,76 @@
 			};
 			name = Debug;
 		};
+        C4A046E125FE603A00C0C118 /* Debug */ = {
+            isa = XCBuildConfiguration;
+            baseConfigurationReference = EB38100123CB710D54E3AAF1 /* Pods-SourceryParser.debug.xcconfig */;
+            buildSettings = {
+                CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+                CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+                CLANG_ENABLE_OBJC_WEAK = YES;
+                CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+                CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+                CODE_SIGN_IDENTITY = "";
+                CODE_SIGN_STYLE = Automatic;
+                COMBINE_HIDPI_IMAGES = YES;
+                CURRENT_PROJECT_VERSION = 1;
+                DEFINES_MODULE = YES;
+                DYLIB_COMPATIBILITY_VERSION = 1;
+                DYLIB_CURRENT_VERSION = 1;
+                DYLIB_INSTALL_NAME_BASE = "@rpath";
+                FRAMEWORK_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/XcodeProj\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/Yams\"",
+                );
+                FRAMEWORK_VERSION = A;
+                GCC_C_LANGUAGE_STANDARD = gnu11;
+                GCC_DYNAMIC_NO_PIC = NO;
+                HEADER_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/Yams/Yams.framework/Headers\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/xcodeproj/XcodeProj.framework/Headers\"",
+                );
+                INFOPLIST_FILE = SourceryParser/Info.plist;
+                INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+                LD_RUNPATH_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "@executable_path/../Frameworks",
+                    "@loader_path/Frameworks",
+                );
+                MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+                MTL_FAST_MATH = YES;
+                OTHER_CFLAGS = (
+                    "$(inherited)",
+                    "-isystem",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers\"",
+                    "-iframework",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit\"",
+                    "-iframework",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/Yams\"",
+                    "-iframework",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/xcodeproj\"",
+                );
+                OTHER_LDFLAGS = (
+                    "$(inherited)",
+                    "-framework",
+                    "\"PathKit\"",
+                    "-framework",
+                    "\"XcodeProj\"",
+                    "-framework",
+                    "\"Yams\"",
+                );
+                PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryParser;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SKIP_INSTALL = YES;
+                SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+                VERSIONING_SYSTEM = "apple-generic";
+                VERSION_INFO_PREFIX = "";
+            };
+            name = Debug;
+        };
 		CD67C8E726046F3C00CC74E5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 39E5DF8CD329EF871DC097F0 /* Pods-SourceryStencil.release.xcconfig */;
@@ -2494,6 +2761,73 @@
 			};
 			name = Release;
 		};
+        C4A046E225FE603A00C0C118 /* Release */ = {
+            isa = XCBuildConfiguration;
+            baseConfigurationReference = 2697A7A84737F4AEE6A6121F /* Pods-SourceryParser.release.xcconfig */;
+            buildSettings = {
+                CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+                CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+                CLANG_ENABLE_OBJC_WEAK = YES;
+                CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+                CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+                CODE_SIGN_IDENTITY = "";
+                CODE_SIGN_STYLE = Automatic;
+                COMBINE_HIDPI_IMAGES = YES;
+                CURRENT_PROJECT_VERSION = 1;
+                DEFINES_MODULE = YES;
+                DYLIB_COMPATIBILITY_VERSION = 1;
+                DYLIB_CURRENT_VERSION = 1;
+                DYLIB_INSTALL_NAME_BASE = "@rpath";
+                FRAMEWORK_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/XcodeProj\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/Yams\"",
+                );
+                FRAMEWORK_VERSION = A;
+                GCC_C_LANGUAGE_STANDARD = gnu11;
+                HEADER_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/Yams/Yams.framework/Headers\"",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/xcodeproj/XcodeProj.framework/Headers\"",
+                );
+                INFOPLIST_FILE = SourceryParser/Info.plist;
+                INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+                LD_RUNPATH_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "@executable_path/../Frameworks",
+                    "@loader_path/Frameworks",
+                );
+                MTL_FAST_MATH = YES;
+                OTHER_CFLAGS = (
+                    "$(inherited)",
+                    "-isystem",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit/PathKit.framework/Headers\"",
+                    "-iframework",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/PathKit\"",
+                    "-iframework",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/Yams\"",
+                    "-iframework",
+                    "\"${PODS_CONFIGURATION_BUILD_DIR}/xcodeproj\"",
+                );
+                OTHER_LDFLAGS = (
+                    "$(inherited)",
+                    "-framework",
+                    "\"PathKit\"",
+                    "-framework",
+                    "\"XcodeProj\"",
+                    "-framework",
+                    "\"Yams\"",
+                );
+                PRODUCT_BUNDLE_IDENTIFIER = Pixle.SourceryParser;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SKIP_INSTALL = YES;
+                VERSIONING_SYSTEM = "apple-generic";
+                VERSION_INFO_PREFIX = "";
+            };
+            name = Release;
+        };
 		CD754CA11D853F000082B512 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2762,6 +3096,15 @@
 			buildConfigurations = (
 				CD67C8E626046F3C00CC74E5 /* Debug */,
 				CD67C8E726046F3C00CC74E5 /* Release */,
+            );
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
+		C4A046E025FE603A00C0C118 /* Build configuration list for PBXNativeTarget "SourceryParser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4A046E125FE603A00C0C118 /* Debug */,
+				C4A046E225FE603A00C0C118 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
