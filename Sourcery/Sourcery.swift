@@ -330,7 +330,7 @@ extension Sourcery {
 
         let uniqueTypeStart = currentTimestamp()
 
-        //! All files have been scanned, time to join extensions with base class
+        // ! All files have been scanned, time to join extensions with base class
         let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
 
         Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")

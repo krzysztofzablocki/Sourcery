@@ -64,6 +64,7 @@
 		B5BCFA1421D1623D009DF652 /* Verifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0C21D1623D009DF652 /* Verifier.swift */; };
 		B5BCFA1621D1623D009DF652 /* InlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0E21D1623D009DF652 /* InlineParser.swift */; };
 		B5BCFA1721D1623D009DF652 /* AnnotationsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */; };
+		BE172E052624DF5F00DDF61C /* FileParser + ProtocolComposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE172E042624DF5F00DDF61C /* FileParser + ProtocolComposition.swift */; };
 		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
 		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
@@ -345,6 +346,7 @@
 		B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationsParser.swift; sourceTree = "<group>"; };
 		B5BCFA1021D1623D009DF652 /* Composer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Composer.swift; sourceTree = "<group>"; };
 		BA47DD78C936DFCD07EEA8DD /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
+		BE172E042624DF5F00DDF61C /* FileParser + ProtocolComposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileParser + ProtocolComposition.swift"; sourceTree = "<group>"; };
 		C017E18E57FF994A543041B9 /* Pods-SourcerySwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourcerySwift.release.xcconfig"; path = "Target Support Files/Pods-SourcerySwift/Pods-SourcerySwift.release.xcconfig"; sourceTree = "<group>"; };
 		C2C7B220D0DEFB33385F995E /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C5B9C02D428F3FEC20C3D943 /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
@@ -933,6 +935,7 @@
 				098442721E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift */,
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
 				6359E6641FE409250015AF8F /* FileParser + SubscriptsSpec.swift */,
+				BE172E042624DF5F00DDF61C /* FileParser + ProtocolComposition.swift */,
 				E291DF77496B276002A43110 /* Helpers */,
 				E291D85908C0467EFC20EB04 /* FileParser + TypeNameSpec.swift */,
 			);
@@ -1575,12 +1578,25 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework",
+				"${BUILT_PRODUCTS_DIR}/Commander/Commander.framework",
+				"${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Yams/Yams.framework",
+				"${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework",
+				"${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework",
+				"${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AEXML.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Commander.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PathKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Yams.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XcodeProj.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stencil.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StencilSwiftKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1699,12 +1715,15 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1917,6 +1936,7 @@
 				E291D7114BA1479EC337A070 /* FileParserSpec.swift in Sources */,
 				09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */,
 				E291DA3352C0EDD1EB8DDCB3 /* FileParser + VariableSpec.swift in Sources */,
+				BE172E052624DF5F00DDF61C /* FileParser + ProtocolComposition.swift in Sources */,
 				E291DE1CB3B72BAA22DEDEDA /* StencilTemplateSpec.swift in Sources */,
 				E291D00F3B27A346A9ACCDA4 /* Extensions.swift in Sources */,
 				52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */,

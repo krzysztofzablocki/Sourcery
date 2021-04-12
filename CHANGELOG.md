@@ -11,9 +11,11 @@
 - Fixed access level of protocol members
 - Fixes parsing indirect enum cases correctly even when inline documentation is used
 - Fixes TypeName.isClosure to handle composed types correctly
+- Fixes issue where Annotations for Protocol Composition types are empty
 
 ## Internal changes
 - Removes manual parsing of `TypeName`, only explicit parser / configuration is now used
+- Updted SwiftLint, Quick and Nible to latest versions
 
 ## 1.3.4
 ## Fixes

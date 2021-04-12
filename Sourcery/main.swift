@@ -214,7 +214,7 @@ import AppKit
 if !inUnitTests {
     runCLI()
 } else {
-    //! Need to run something for tests to work
+    // ! Need to run something for tests to work
     final class TestApplicationController: NSObject, NSApplicationDelegate {
         let window =   NSWindow()
 
