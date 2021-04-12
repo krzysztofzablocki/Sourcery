@@ -97,7 +97,7 @@ class Sourcery {
                         }
                     }
                 }
-                result = try self.parse(from: paths, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
+                result = try self.parse(from: paths, forceParse: forceParse, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
             try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: result)
@@ -330,7 +330,7 @@ extension Sourcery {
 
         let uniqueTypeStart = currentTimestamp()
 
-        //! All files have been scanned, time to join extensions with base class
+        // ! All files have been scanned, time to join extensions with base class
         let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
 
         Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")

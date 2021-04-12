@@ -11,7 +11,7 @@ import Nimble
 
 class DiffableSpec: QuickSpec {
     override func spec() {
-        describe ("DiffableResults") {
+        describe("DiffableResults") {
             var sut = DiffableResult()
 
             beforeEach {

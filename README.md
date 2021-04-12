@@ -5,6 +5,12 @@
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 
+**There is now a new powerful way to both write and integrate Sourcery functionality: Sourcery Pro provides powerful Stencil editor and extends Xcode with ability to handle live AST templates: [available on Mac App Store](https://apps.apple.com/us/app/sourcery-pro/id1561780836?mt=12)**
+
+[Learn more about Sourcery Pro](http://merowing.info/sourcery-pro/)
+
+[![](https://user-images.githubusercontent.com/1468993/114271090-f6c19200-9a0f-11eb-9bd8-d7bb15129eb2.mp4)](https://apps.apple.com/us/app/sourcery-pro/id1561780836?mt=12)
+
 <img src="Resources/icon-128.png">
 
 **Sourcery** is a code generator for Swift language, built on top of Apple's own SwiftSyntax. It extends the language abstractions to allow you to generate boilerplate code automatically.

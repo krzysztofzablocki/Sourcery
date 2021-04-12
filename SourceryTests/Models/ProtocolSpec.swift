@@ -5,7 +5,7 @@ import Nimble
 
 class ProtocolSpec: QuickSpec {
     override func spec() {
-        describe ("Protocol") {
+        describe("Protocol") {
             var sut: Type?
 
             beforeEach {
