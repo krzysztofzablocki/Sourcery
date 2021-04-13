@@ -597,6 +597,32 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given generic custom type") {
+                    it("extracts genericTypeName correctly") {
+                        let types = parse(
+                        """
+                        struct GenericArgumentStruct<T> {
+                            let value: T
+                        }
+
+                        struct Foo {
+                            var value: GenericArgumentStruct<Bool>
+                        }
+                        """)
+
+                        let foo = types.first(where: { $0.name == "Foo" })
+                        let generic = types.first(where: { $0.name == "GenericArgumentStruct" })
+
+                        expect(foo).toNot(beNil())
+                        expect(generic).toNot(beNil())
+
+                        expect(foo?.instanceVariables.first?.typeName.generic).toNot(beNil())
+                        expect(foo?.instanceVariables.first?.typeName.generic?.typeParameters).to(haveCount(1))
+                        expect(foo?.instanceVariables.first?.typeName.generic?.typeParameters.first?.typeName.name).to(equal("Bool"))
+
+                    }
+                }
+
                 context("given tuple type") {
                     it("extracts elements properly") {
                         let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int) -> Int, tuple: (Int, Int))}")
