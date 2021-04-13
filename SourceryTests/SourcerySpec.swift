@@ -18,7 +18,7 @@ class SourcerySpecTests: QuickSpec {
     override func spec() {
         func update(code: String, in path: Path) { guard (try? path.write(code)) != nil else { fatalError() } }
 
-        describe ("Sourcery") {
+        describe("Sourcery") {
             var outputDir = Path("/tmp")
             var output: Output { return Output(outputDir) }
 
@@ -52,7 +52,7 @@ class SourcerySpecTests: QuickSpec {
                     it("doesn't update existing files") {
                         let generatedFilePath = outputDir + Sourcery().generatedPath(for: templatePath)
                         generatedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
-                        DispatchQueue.main.asyncAfter ( deadline: DispatchTime.now() + Double(Int64(0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+                        DispatchQueue.main.asyncAfter( deadline: DispatchTime.now() + Double(Int64(0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
                             _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output)
                             newGeneratedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
                         }
@@ -73,7 +73,7 @@ class SourcerySpecTests: QuickSpec {
                     it("updates existing files") {
                         let generatedFilePath = outputDir + Sourcery().generatedPath(for: templatePath)
                         generatedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
-                        DispatchQueue.main.asyncAfter ( deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+                        DispatchQueue.main.asyncAfter( deadline: DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
                             _ = try? Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath, anotherSourcePath])), usingTemplates: Paths(include: [templatePath]), output: output)
                             newGeneratedFileModificationDate = fileModificationDate(url: generatedFilePath.url)
                         }
@@ -367,6 +367,98 @@ class SourcerySpecTests: QuickSpec {
                             // sourcery:inline:auto:Bar.Inlined
                                 var property = 2
                             // Line Three
+                            // sourcery:end
+                            }
+                            """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
+                    it("handles UTF16 characters") {
+                        update(code: """
+                            class A {
+                                let 👩‍🚀: String
+                            }
+                            """, in: sourcePath)
+                        update(code: """
+                            {% for type in types.all %}
+                            // sourcery:inline:auto:{{ type.name }}.init
+                            init({% for variable in type.storedVariables %}{{variable.name}}: {{variable.typeName}}{% ifnot forloop.last %}, {% endif %}{% endfor %}) {
+                            {% for variable in type.storedVariables %}
+                                self.{{variable.name}} = {{variable.name}}
+                            {% endfor %}
+                            }
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let expectedResult = """
+                            class A {
+                                let 👩‍🚀: String
+
+                            // sourcery:inline:auto:A.init
+                            init(👩‍🚀: String) {
+                                self.👩‍🚀 = 👩‍🚀
+                            }
+                            // sourcery:end
+                            }
+                            """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
+                    it("handles previously generated code with UTF16 characters") {
+                        update(code: """
+                            class A {
+                                let 👩‍🚀: String
+
+                                // sourcery:inline:auto:A.init
+                                init(👩‍🚀: String) {
+                                    self.👩‍🚀 = 👩‍🚀
+                                }
+                                // sourcery:end
+                            }
+
+                            class B {
+                                let 👩‍🚀: String
+                            }
+                            """, in: sourcePath)
+                        update(code: """
+                            {% for type in types.all %}
+                            // sourcery:inline:auto:{{ type.name }}.init
+                            init({% for variable in type.storedVariables %}{{variable.name}}: {{variable.typeName}}{% ifnot forloop.last %}, {% endif %}{% endfor %}) {
+                            {% for variable in type.storedVariables %}
+                                self.{{variable.name}} = {{variable.name}}
+                            {% endfor %}
+                            }
+                            // sourcery:end
+                            {% endfor %}
+                            """, in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let expectedResult = """
+                            class A {
+                                let 👩‍🚀: String
+
+                                // sourcery:inline:auto:A.init
+                                init(👩‍🚀: String) {
+                                    self.👩‍🚀 = 👩‍🚀
+                                }
+                                // sourcery:end
+                            }
+
+                            class B {
+                                let 👩‍🚀: String
+
+                            // sourcery:inline:auto:B.init
+                            init(👩‍🚀: String) {
+                                self.👩‍🚀 = 👩‍🚀
+                            }
                             // sourcery:end
                             }
                             """
@@ -860,7 +952,7 @@ class SourcerySpecTests: QuickSpec {
 
                         expect { watcher = try Sourcery(watcherEnabled: true, cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [tmpTemplate]), output: output) }.toNot(throwError())
 
-                        //! Change the template
+                        // ! Change the template
                         updateTemplate(code: "Found {{ types.all.count }} Types")
 
                         let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate)).read(.utf8)) }

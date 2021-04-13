@@ -9,7 +9,7 @@ import Nimble
 
 class ClassSpec: QuickSpec {
     override func spec() {
-        describe ("Class") {
+        describe("Class") {
             var sut: Type?
 
             beforeEach {

@@ -9,7 +9,7 @@ import Nimble
 
 class EnumSpec: QuickSpec {
     override func spec() {
-        describe ("Enum") {
+        describe("Enum") {
             var sut: Enum?
             let variable = Variable(name: "variable", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .internal), isComputed: false, definedInTypeName: TypeName(name: "Foo"))
 

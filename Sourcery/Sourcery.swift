@@ -97,7 +97,7 @@ class Sourcery {
                         }
                     }
                 }
-                result = try self.parse(from: paths, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
+                result = try self.parse(from: paths, forceParse: forceParse, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
             try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: result)
@@ -330,7 +330,7 @@ extension Sourcery {
 
         let uniqueTypeStart = currentTimestamp()
 
-        //! All files have been scanned, time to join extensions with base class
+        // ! All files have been scanned, time to join extensions with base class
         let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
 
         Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
@@ -533,8 +533,6 @@ extension Sourcery {
             indentation: String
         )
 
-        let contentsView = StringView(contents)
-
         try annotatedRanges
             .map { (key: $0, range: $1[0].range) }
             .compactMap { (key, range) -> MappedInlineAnnotations? in
@@ -555,7 +553,7 @@ extension Sourcery {
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
                     let path = definition.path.map({ Path($0) }),
                     let contents = try? path.read(.utf8),
-                    let bodyRange = bodyRange(for: definition, contentsView: contentsView) else {
+                    let bodyRange = bodyRange(for: definition, contentsView: StringView(contents)) else {
                         rangesToReplace.remove(range)
                         return nil
                 }

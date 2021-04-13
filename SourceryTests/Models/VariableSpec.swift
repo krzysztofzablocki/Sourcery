@@ -9,7 +9,7 @@ import Nimble
 
 class VariableSpec: QuickSpec {
     override func spec() {
-        describe ("Variable") {
+        describe("Variable") {
             var sut: Variable?
 
             beforeEach {

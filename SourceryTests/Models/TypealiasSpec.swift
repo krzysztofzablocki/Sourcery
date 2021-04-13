@@ -9,7 +9,7 @@ import Nimble
 
 class TypealiasSpec: QuickSpec {
     override func spec() {
-        describe ("Typealias") {
+        describe("Typealias") {
             var sut: Typealias?
 
             beforeEach {
