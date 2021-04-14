@@ -1,5 +1,10 @@
 # Sourcery CHANGELOG
 
+## Master
+
+## Fixes
+-Adds trim option for Stencil template leading / trailing whitespace and replaces newline tag markers with normal newline after that
+
 ---
 ## 1.4.0
 

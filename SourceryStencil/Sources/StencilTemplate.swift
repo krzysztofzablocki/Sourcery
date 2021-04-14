@@ -6,6 +6,9 @@ import SourceryRuntime
 
 public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
     private(set) public var sourcePath: Path = ""
+    
+    /// Trim leading / trailing whitespaces until content or newline tag appears
+    public var trimEnabled: Bool = false
 
     public convenience init(path: Path) throws {
         self.init(templateString: try path.read(), environment: StencilTemplate.sourceryEnvironment(templatePath: path))
@@ -14,6 +17,16 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
 
     public convenience init(templateString: String) {
         self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment())
+    }
+    
+    // swiftlint:disable:next discouraged_optional_collection
+    override public func render(_ dictionary: [String: Any]? = nil) throws -> String {
+        var result = try super.render(dictionary)
+        if trimEnabled {
+            result = result.trimmed
+        }
+        
+        return result.replacingOccurrences(of: NewLineNode.marker, with: "\n")
     }
 
     public static func sourceryEnvironment(templatePath: Path? = nil) -> Stencil.Environment {
