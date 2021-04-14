@@ -107,6 +107,23 @@ public struct ByteRange: Equatable {
         return ByteRange(location: minLocation, length: maxUpperBound - minLocation)
     }
 
+    /*
+     Returns a new range which is the receiver after inserting or removing some content
+     before, within or after the receiver.
+     change.length is amount of content inserted or removed.
+    */
+    public func editingContent(_ change: ByteRange) -> ByteRange {
+        // bytes inserted after type definition
+        if change.location > upperBound {
+            return self
+        }
+        // bytes inserted within type definition
+        if change.location >= location {
+            return ByteRange(location: location, length: length + change.length)
+        }
+        // bytes inserted before type definition
+        return ByteRange(location: location + change.length, length: length)
+    }
 }
 
 /// Representation of a single line in a larger String.

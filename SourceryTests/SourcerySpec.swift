@@ -660,7 +660,7 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(equal(expectedResult))
                     }
 
-                    it("inserts generated code from different templates") {
+                    it("inserts generated code from different templates (both inline:auto)") {
                         update(code: "class Foo {}", in: sourcePath)
 
                         update(code: """
@@ -688,13 +688,13 @@ class SourcerySpecTests: QuickSpec {
 
                         let expectedResult = """
                             class Foo {
-                            // sourcery:inline:auto:Foo.otherFake
-                            // Line Four
-                            // sourcery:end
-
                             // sourcery:inline:auto:Foo.fake
                             var property = 2
                             // Line Three
+                            // sourcery:end
+
+                            // sourcery:inline:auto:Foo.otherFake
+                            // Line Four
                             // sourcery:end
                             }
                             """
@@ -712,6 +712,128 @@ class SourcerySpecTests: QuickSpec {
 
                         let newResult = try? sourcePath.read(.utf8)
                         expect(newResult).to(equal(expectedResult))
+                    }
+
+                    it("inserts generated code from different templates (inline and inline:auto)") {
+                        let templatePathA = outputDir + Path("InlineTemplateA.stencil")
+                        let templatePathB = outputDir + Path("InlineTemplateB.stencil")
+                        let sourcePath = outputDir + Path("ClassWithMultipleInlineAnnotations.swift")
+
+                        update(code: """
+                                     class ClassWithMultipleInlineAnnotations {
+                                     // sourcery:inline:ClassWithMultipleInlineAnnotations.A
+                                     var a0: Int
+                                     // sourcery:end
+
+                                     // sourcery:inline:ClassWithMultipleInlineAnnotations.B
+                                     var b0: String
+                                     // sourcery:end
+                                     }
+                                     """, in: sourcePath)
+
+                        update(code: """
+                                     {% for type in types.all %}
+                                     // sourcery:inline:{{ type.name }}.A
+                                     var a0: Int
+                                     var a1: Int
+                                     var a2: Int
+                                     // sourcery:end
+                                     {% endfor %}
+                                     """, in: templatePathA)
+
+                        update(code: """
+                                     {% for type in types.all %}
+                                     // sourcery:inline:{{ type.name }}.B
+                                     var b0: Int
+                                     var b1: Int
+                                     var b2: Int
+                                     // sourcery:end
+                                     {% endfor %}
+                                     """, in: templatePathB)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true)
+                            .processFiles(.sources(Paths(include: [sourcePath])),
+                                usingTemplates: Paths(include: [templatePathA, templatePathB]),
+                                output: output)
+                        }.toNot(throwError())
+
+                        let expectedResult = """
+                                             class ClassWithMultipleInlineAnnotations {
+                                             // sourcery:inline:ClassWithMultipleInlineAnnotations.A
+                                             var a0: Int
+                                             var a1: Int
+                                             var a2: Int
+                                             // sourcery:end
+
+                                             // sourcery:inline:ClassWithMultipleInlineAnnotations.B
+                                             var b0: Int
+                                             var b1: Int
+                                             var b2: Int
+                                             // sourcery:end
+                                             }
+                                             """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
+                    it("inserts generated code from different templates (both inline)") {
+                        let templatePathA = outputDir + Path("InlineTemplateA.stencil")
+                        let templatePathB = outputDir + Path("InlineTemplateB.stencil")
+                        let sourcePath = outputDir + Path("ClassWithMultipleInlineAnnotations.swift")
+
+                        update(code: """
+                                     class ClassWithMultipleInlineAnnotations {
+                                     // sourcery:inline:ClassWithMultipleInlineAnnotations.A
+                                     var a0: Int
+                                     // sourcery:end
+                                     }
+                                     """, in: sourcePath)
+
+                        update(code: """
+                                     {% for type in types.all %}
+                                     // sourcery:inline:{{ type.name }}.A
+                                     var a0: Int
+                                     var a1: Int
+                                     var a2: Int
+                                     // sourcery:end
+                                     {% endfor %}
+                                     """, in: templatePathA)
+
+                        update(code: """
+                                     {% for type in types.all %}
+                                     // sourcery:inline:auto:{{ type.name }}.B
+                                     var b0: Int
+                                     var b1: Int
+                                     var b2: Int
+                                     // sourcery:end
+                                     {% endfor %}
+                                     """, in: templatePathB)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true)
+                            .processFiles(.sources(Paths(include: [sourcePath])),
+                                usingTemplates: Paths(include: [templatePathA, templatePathB]),
+                                output: output)
+                        }.toNot(throwError())
+
+                        let expectedResult = """
+                                             class ClassWithMultipleInlineAnnotations {
+                                             // sourcery:inline:ClassWithMultipleInlineAnnotations.A
+                                             var a0: Int
+                                             var a1: Int
+                                             var a2: Int
+                                             // sourcery:end
+
+                                             // sourcery:inline:auto:ClassWithMultipleInlineAnnotations.B
+                                             var b0: Int
+                                             var b1: Int
+                                             var b2: Int
+                                             // sourcery:end
+                                             }
+                                             """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
                     }
 
                     context("with cache of already inserted code") {
