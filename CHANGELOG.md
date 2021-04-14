@@ -7,6 +7,7 @@
 - Added `allImports` property to `Type`, which returns all imports existed in all files containing this type and all its super classes/protocols.
 - Added `basedTypes` property to `Type`, which contains all Types this type inherits from or implements, including unknown (not scanned) types with extensions defined.
 - Added inference logic for basic generics from variable initialization block
+- Added `newline` and `typed` stencil tags from [Sourcery Pro](https://merowing.info/sourcery-pro/)
 
 ## Fixes
 - Fixed inferring raw value type from inherited types for enums with no cases or with associated values

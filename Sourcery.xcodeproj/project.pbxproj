@@ -72,6 +72,8 @@
 		CD0E9A5925E95B4A0055EE8F /* Bridges.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E9A5825E95B4A0055EE8F /* Bridges.swift */; };
 		CD0E9A6125E95BA40055EE8F /* StringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E9A6025E95BA40055EE8F /* StringView.swift */; };
 		CD475D6F1DE9B98B009AD8B0 /* Result in Resources */ = {isa = PBXBuildFile; fileRef = CD475D6E1DE9B98B009AD8B0 /* Result */; };
+		CD48A1E5262751EE004C1BB1 /* TypedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD48A1E3262751EE004C1BB1 /* TypedNode.swift */; };
+		CD48A1E6262751EE004C1BB1 /* NewLineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD48A1E4262751EE004C1BB1 /* NewLineNode.swift */; };
 		CD4B38F125EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */; };
 		CD4B38F825EF8E77007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CD53EE661D897C1F00F5886C /* Source in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE651D897C1F00F5886C /* Source */; };
@@ -359,6 +361,8 @@
 		CD0E9A5825E95B4A0055EE8F /* Bridges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridges.swift; sourceTree = "<group>"; };
 		CD0E9A6025E95BA40055EE8F /* StringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringView.swift; sourceTree = "<group>"; };
 		CD475D6E1DE9B98B009AD8B0 /* Result */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Result; sourceTree = "<group>"; };
+		CD48A1E3262751EE004C1BB1 /* TypedNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedNode.swift; sourceTree = "<group>"; };
+		CD48A1E4262751EE004C1BB1 /* NewLineNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewLineNode.swift; sourceTree = "<group>"; };
 		CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = lib_InternalSwiftSyntaxParser.dylib; sourceTree = "<group>"; };
 		CD53EE651D897C1F00F5886C /* Source */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Source; sourceTree = "<group>"; };
 		CD53EE671D897D2900F5886C /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
@@ -792,6 +796,8 @@
 		CD67C8F726046F5200CC74E5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				CD48A1E4262751EE004C1BB1 /* NewLineNode.swift */,
+				CD48A1E3262751EE004C1BB1 /* TypedNode.swift */,
 				CDB078DD2604710A00B3D76A /* StencilTemplate.swift */,
 			);
 			path = Sources;
@@ -1891,7 +1897,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD48A1E5262751EE004C1BB1 /* TypedNode.swift in Sources */,
 				CDB078DE2604710A00B3D76A /* StencilTemplate.swift in Sources */,
+				CD48A1E6262751EE004C1BB1 /* NewLineNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

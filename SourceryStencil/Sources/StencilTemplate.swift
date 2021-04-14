@@ -102,6 +102,8 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
                                  other: { (m: SourceryMethod) in !(m.isStatic || m.isClass) })
 
         ext.registerBoolFilterWithArguments("annotated", filter: { (a: Annotated, annotation) in a.isAnnotated(with: annotation) })
+        ext.registerTag("newline", parser: NewLineNode.parse)
+        ext.registerTag("typed", parser: TypedNode.parse)
 
         var extensions = stencilSwiftEnvironment().extensions
         extensions.append(ext)
