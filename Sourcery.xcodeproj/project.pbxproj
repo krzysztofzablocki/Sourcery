@@ -928,6 +928,7 @@
 		E291D114F84B90258AD76A35 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
+				E291DF77496B276002A43110 /* Helpers */,
 				E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */,
 				E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */,
 				E291D37EF6AA39833209828F /* FileParser + VariableSpec.swift */,
@@ -936,7 +937,6 @@
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
 				6359E6641FE409250015AF8F /* FileParser + SubscriptsSpec.swift */,
 				BE172E042624DF5F00DDF61C /* FileParser + ProtocolComposition.swift */,
-				E291DF77496B276002A43110 /* Helpers */,
 				E291D85908C0467EFC20EB04 /* FileParser + TypeNameSpec.swift */,
 			);
 			path = Parsing;
