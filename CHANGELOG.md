@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.4.0
 
 ## Features
 - Added `allImports` property to `Type`, which returns all imports existed in all files containing this type and all its super classes/protocols.
