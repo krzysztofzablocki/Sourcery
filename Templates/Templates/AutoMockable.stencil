@@ -8,11 +8,11 @@ import UIKit
 import AppKit
 #endif
 
-{% for import in argument.imports %}
+{% for import in argument.autoMockableImports %}
 import {{ import }}
 {% endfor %}
 
-{% for import in argument.testableimports %}
+{% for import in argument.autoMockableTestableImports %}
 @testable import {{ import }}
 {% endfor %}
 
