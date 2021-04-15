@@ -8,6 +8,14 @@ import UIKit
 import AppKit
 #endif
 
+{% for import in argument.autoMockableImports %}
+import {{ import }}
+{% endfor %}
+
+{% for import in argument.autoMockableTestableImports %}
+@testable import {{ import }}
+{% endfor %}
+
 {% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}

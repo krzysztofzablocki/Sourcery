@@ -1,5 +1,8 @@
 # Sourcery CHANGELOG
 
+## New Feature
+- Extending AutoMockable template by adding handling of "autoMockableImports" and "autoMockableTestableImports" args.
+
 ## Master
 
 ## Fixes
