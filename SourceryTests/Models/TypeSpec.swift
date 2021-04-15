@@ -5,7 +5,7 @@ import Nimble
 
 class TypeSpec: QuickSpec {
     override func spec() {
-        describe ("Type") {
+        describe("Type") {
             var sut: Type?
             let staticVariable = Variable(name: "staticVar", typeName: TypeName(name: "Int"), isStatic: true)
             let computedVariable = Variable(name: "variable", typeName: TypeName(name: "Int"), isComputed: true)

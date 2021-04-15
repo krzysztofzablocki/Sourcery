@@ -193,8 +193,9 @@ class SyntaxTreeCollector: SyntaxVisitor {
         let typeName = node.initializer.map { TypeName($0.value) } ?? TypeName.unknown(description: node.description.trimmed)
         let modifiers = node.modifiers?.map(Modifier.init) ?? []
         let baseModifiers = modifiers.baseModifiers(parent: visitingType)
+        let annotations = annotationsParser.annotations(from: node)
 
-        if let composition = processPossibleProtocolComposition(for: typeName.name, localName: localName, accessLevel: baseModifiers.readAccess) {
+        if let composition = processPossibleProtocolComposition(for: typeName.name, localName: localName, annotations: annotations, accessLevel: baseModifiers.readAccess) {
             if let visitingType = visitingType {
                 visitingType.containedTypes.append(composition)
             } else {
@@ -252,7 +253,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
         return .visitChildren
     }
 
-    private func processPossibleProtocolComposition(for typeName: String, localName: String, accessLevel: AccessLevel = .internal) -> Type? {
+    private func processPossibleProtocolComposition(for typeName: String, localName: String, annotations: [String: NSObject] = [:], accessLevel: AccessLevel = .internal) -> Type? {
         if let composedTypeNames = extractComposedTypeNames(from: typeName, trimmingCharacterSet: .whitespaces), composedTypeNames.count > 1 {
             let inheritedTypes = composedTypeNames.map { $0.name }
             let composition = ProtocolComposition(
@@ -260,6 +261,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
                 parent: visitingType,
                 accessLevel: accessLevel,
                 inheritedTypes: inheritedTypes,
+                annotations: annotations,
                 composedTypeNames: composedTypeNames
             )
             return composition

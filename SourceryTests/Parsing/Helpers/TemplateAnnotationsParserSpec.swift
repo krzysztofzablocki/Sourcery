@@ -30,6 +30,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                 it("removes content between the markup") {
                     expect(result.contents).to(equal(
                         "// sourcery:inline:Type.AutoCoding\n" +
+                        String(repeating: " ", count: 19) +
                         "// sourcery:end\n"
                     ))
                 }
@@ -52,6 +53,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                 it("removes content between the markup") {
                     expect(result.contents).to(equal(
                         "    // sourcery:inline:Type.AutoCoding\n" +
+                        String(repeating: " ", count: 23) +
                         "    // sourcery:end\n"
                     ))
                 }

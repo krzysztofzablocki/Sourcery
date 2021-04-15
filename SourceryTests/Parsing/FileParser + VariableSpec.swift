@@ -25,8 +25,15 @@ class FileParserVariableSpec: QuickSpec {
                     return variable
                 }
 
-                it("infers types for variables when it's easy") {
-                    expect(variable("static let redirectButtonDefaultURL = URL(string: \"https://www.nytimes.com\")!")?.typeName).to(equal(TypeName(name: "URL!")))
+                it("infers generic type initializer correctly") {
+                    func verify(_ type: String) {
+                        let parsedTypeName = variable("static let generic: \(type)")?.typeName
+                        expect(variable("static let generic = \(type)(value: true)")?.typeName).to(equal(parsedTypeName))
+                    }
+
+                    verify("GenericType<Bool>")
+                    verify("GenericType<Optional<Int>>")
+                    verify("GenericType<Whatever, Int, [Float]>")
 
                     expect(variable(
                     """
@@ -34,7 +41,11 @@ class FileParserVariableSpec: QuickSpec {
                         ReusableItemPool<Point>(something: "cool")
                     }()
                     """
-                    )?.typeName).to(equal(TypeName(name: "ReusableItemPool<Point>")))
+                    )?.typeName).to(equal(variable("static let generic: ReusableItemPool<Point>")?.typeName))
+                }
+
+                it("infers types for variables when it's easy") {
+                    expect(variable("static let redirectButtonDefaultURL = URL(string: \"https://www.nytimes.com\")!")?.typeName).to(equal(TypeName(name: "URL!")))
                 }
 
                 it("reports variable mutability") {

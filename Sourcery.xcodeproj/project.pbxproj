@@ -64,6 +64,7 @@
 		B5BCFA1421D1623D009DF652 /* Verifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0C21D1623D009DF652 /* Verifier.swift */; };
 		B5BCFA1621D1623D009DF652 /* InlineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0E21D1623D009DF652 /* InlineParser.swift */; };
 		B5BCFA1721D1623D009DF652 /* AnnotationsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */; };
+		BE172E052624DF5F00DDF61C /* FileParser + ProtocolComposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE172E042624DF5F00DDF61C /* FileParser + ProtocolComposition.swift */; };
 		C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1AE1E19326C0098327C /* SwiftTemplate.swift */; };
 		C894A1B31E19328E0098327C /* SwiftTemplates in Resources */ = {isa = PBXBuildFile; fileRef = C894A1B21E19328E0098327C /* SwiftTemplates */; };
 		C894A1B51E1932E90098327C /* SwiftTemplateSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894A1B41E1932E90098327C /* SwiftTemplateSpecs.swift */; };
@@ -71,6 +72,8 @@
 		CD0E9A5925E95B4A0055EE8F /* Bridges.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E9A5825E95B4A0055EE8F /* Bridges.swift */; };
 		CD0E9A6125E95BA40055EE8F /* StringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0E9A6025E95BA40055EE8F /* StringView.swift */; };
 		CD475D6F1DE9B98B009AD8B0 /* Result in Resources */ = {isa = PBXBuildFile; fileRef = CD475D6E1DE9B98B009AD8B0 /* Result */; };
+		CD48A1E5262751EE004C1BB1 /* TypedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD48A1E3262751EE004C1BB1 /* TypedNode.swift */; };
+		CD48A1E6262751EE004C1BB1 /* NewLineNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD48A1E4262751EE004C1BB1 /* NewLineNode.swift */; };
 		CD4B38F125EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */; };
 		CD4B38F825EF8E77007EDF7F /* lib_InternalSwiftSyntaxParser.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CD53EE661D897C1F00F5886C /* Source in Resources */ = {isa = PBXBuildFile; fileRef = CD53EE651D897C1F00F5886C /* Source */; };
@@ -345,6 +348,7 @@
 		B5BCFA0F21D1623D009DF652 /* AnnotationsParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationsParser.swift; sourceTree = "<group>"; };
 		B5BCFA1021D1623D009DF652 /* Composer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Composer.swift; sourceTree = "<group>"; };
 		BA47DD78C936DFCD07EEA8DD /* Pods-SourceryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.release.xcconfig"; path = "Target Support Files/Pods-SourceryTests/Pods-SourceryTests.release.xcconfig"; sourceTree = "<group>"; };
+		BE172E042624DF5F00DDF61C /* FileParser + ProtocolComposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileParser + ProtocolComposition.swift"; sourceTree = "<group>"; };
 		C017E18E57FF994A543041B9 /* Pods-SourcerySwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourcerySwift.release.xcconfig"; path = "Target Support Files/Pods-SourcerySwift/Pods-SourcerySwift.release.xcconfig"; sourceTree = "<group>"; };
 		C2C7B220D0DEFB33385F995E /* Pods-SourceryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryTests.debug.xcconfig"; path = "Target Support Files/Pods-SourceryTests/Pods-SourceryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C5B9C02D428F3FEC20C3D943 /* Pods-Sourcery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sourcery.debug.xcconfig"; path = "Target Support Files/Pods-Sourcery/Pods-Sourcery.debug.xcconfig"; sourceTree = "<group>"; };
@@ -357,6 +361,8 @@
 		CD0E9A5825E95B4A0055EE8F /* Bridges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bridges.swift; sourceTree = "<group>"; };
 		CD0E9A6025E95BA40055EE8F /* StringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringView.swift; sourceTree = "<group>"; };
 		CD475D6E1DE9B98B009AD8B0 /* Result */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Result; sourceTree = "<group>"; };
+		CD48A1E3262751EE004C1BB1 /* TypedNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedNode.swift; sourceTree = "<group>"; };
+		CD48A1E4262751EE004C1BB1 /* NewLineNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewLineNode.swift; sourceTree = "<group>"; };
 		CD4B38F025EF8E27007EDF7F /* lib_InternalSwiftSyntaxParser.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = lib_InternalSwiftSyntaxParser.dylib; sourceTree = "<group>"; };
 		CD53EE651D897C1F00F5886C /* Source */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Source; sourceTree = "<group>"; };
 		CD53EE671D897D2900F5886C /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
@@ -790,6 +796,8 @@
 		CD67C8F726046F5200CC74E5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				CD48A1E4262751EE004C1BB1 /* NewLineNode.swift */,
+				CD48A1E3262751EE004C1BB1 /* TypedNode.swift */,
 				CDB078DD2604710A00B3D76A /* StencilTemplate.swift */,
 			);
 			path = Sources;
@@ -926,6 +934,7 @@
 		E291D114F84B90258AD76A35 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
+				E291DF77496B276002A43110 /* Helpers */,
 				E291DFE1A3D6905537EE86D9 /* ComposerSpec.swift */,
 				E291DD46F8BC3AA0E7E5FB4D /* FileParserSpec.swift */,
 				E291D37EF6AA39833209828F /* FileParser + VariableSpec.swift */,
@@ -933,7 +942,7 @@
 				098442721E21BF850051E1A1 /* FileParser + AttributesModifierSpec.swift */,
 				0906124C1E2BC43500BA0937 /* FileParser + MethodsSpec.swift */,
 				6359E6641FE409250015AF8F /* FileParser + SubscriptsSpec.swift */,
-				E291DF77496B276002A43110 /* Helpers */,
+				BE172E042624DF5F00DDF61C /* FileParser + ProtocolComposition.swift */,
 				E291D85908C0467EFC20EB04 /* FileParser + TypeNameSpec.swift */,
 			);
 			path = Parsing;
@@ -1575,12 +1584,25 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework",
+				"${BUILT_PRODUCTS_DIR}/Commander/Commander.framework",
+				"${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Yams/Yams.framework",
+				"${BUILT_PRODUCTS_DIR}/xcodeproj/XcodeProj.framework",
+				"${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework",
+				"${BUILT_PRODUCTS_DIR}/StencilSwiftKit/StencilSwiftKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Sourcery/Pods-Sourcery-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AEXML.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Commander.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PathKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Yams.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XcodeProj.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stencil.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/StencilSwiftKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1699,12 +1721,15 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SourceryTests/Pods-SourceryTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nimble.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Quick.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1872,7 +1897,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD48A1E5262751EE004C1BB1 /* TypedNode.swift in Sources */,
 				CDB078DE2604710A00B3D76A /* StencilTemplate.swift in Sources */,
+				CD48A1E6262751EE004C1BB1 /* NewLineNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1917,6 +1944,7 @@
 				E291D7114BA1479EC337A070 /* FileParserSpec.swift in Sources */,
 				09B1DD3E1E21ADD2009228EE /* VariableSpec.swift in Sources */,
 				E291DA3352C0EDD1EB8DDCB3 /* FileParser + VariableSpec.swift in Sources */,
+				BE172E052624DF5F00DDF61C /* FileParser + ProtocolComposition.swift in Sources */,
 				E291DE1CB3B72BAA22DEDEDA /* StencilTemplateSpec.swift in Sources */,
 				E291D00F3B27A346A9ACCDA4 /* Extensions.swift in Sources */,
 				52F79EA11EE9F017006D3546 /* ConfigurationSpec.swift in Sources */,
@@ -2618,7 +2646,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.3.4;
+				CURRENT_PROJECT_VERSION = 1.4.0;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2643,7 +2671,7 @@
 				CLANG_ENABLE_CODE_COVERAGE = NO;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.3.4;
+				CURRENT_PROJECT_VERSION = 1.4.0;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

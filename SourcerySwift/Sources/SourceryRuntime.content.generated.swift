@@ -599,7 +599,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -842,7 +842,7 @@ public enum Composer {
 
             let unresolved = typealiasesByNames
 
-            //! if a typealias leads to another typealias, follow through and replace with final type
+            // ! if a typealias leads to another typealias, follow through and replace with final type
             typealiasesByNames.forEach { _, alias in
                 var aliasNamesToReplace = [alias.name]
                 var finalAlias = alias
@@ -851,7 +851,7 @@ public enum Composer {
                     finalAlias = targetAlias
                 }
 
-                //! replace all keys
+                // ! replace all keys
                 aliasNamesToReplace.forEach { typealiasesByNames[$0] = finalAlias }
             }
 
@@ -935,7 +935,7 @@ public enum Composer {
             /// If there is no ambigiuity there we can assume that module will be resolved by the compiler
             /// If that's not the case we look after remaining modules in the application and if the typename has no ambigiuity we use that
             /// But if there is more than 1 typename duplication across modules we have no way to resolve what is the compiler going to use so we fail
-            let moduleSetsToCheck: [Array<String>] = [
+            let moduleSetsToCheck: [[String]] = [
                 explicitModulesAtDeclarationSite,
                 Array(remainingModules)
             ]
@@ -1442,7 +1442,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1868,7 +1868,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -2762,7 +2762,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -4017,7 +4017,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -6695,7 +6695,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.3.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
