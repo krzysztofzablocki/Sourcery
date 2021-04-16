@@ -4,6 +4,7 @@
 
 ## Fixes
 -Adds trim option for Stencil template leading / trailing whitespace and replaces newline tag markers with normal newline after that
+- Fixes broken output for files with inline annotations from multiple templates
 
 ---
 ## 1.4.0
