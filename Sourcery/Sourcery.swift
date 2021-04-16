@@ -413,7 +413,6 @@ extension Sourcery {
                 }
             }
         } else {
-            typealias State = (contents: String, ParsingResult)
             let result = try allTemplates.reduce((contents: "", parsingResult: parsingResult)) { state, template in
                 var (result, parsingResult) = state
                 let (generatedCode, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path)
