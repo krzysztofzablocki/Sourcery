@@ -462,21 +462,18 @@ extension Sourcery {
                 guard
                     type.path == path,
                     let bytesRange = type.bodyBytesRange,
+                    let completeDeclarationRange = type.completeDeclarationRange,
                     let content = try? Path(path).read(.utf8),
                     let change = StringView(content).NSRangeToByteRange(newRangeInFile)
                 else {
                     continue
                 }
 
-                let byteRange = ByteRange(location: ByteCount(bytesRange.offset), length: ByteCount(bytesRange.length))
                 // bytesRange calculated on file with annotation's bodies stripped
-                // hence amount of content edited is newByteRangeInFile.length,
-                // not newByteRangeInFile.length - rangeInFile.length
-                let newBodyByteRange = byteRange.editingContent(change)
-                type.bodyBytesRange = BytesRange(
-                    offset: Int64(newBodyByteRange.location.value),
-                    length: Int64(newBodyByteRange.length.value)
-                )
+                // hence amount of content edited is newRangeInFile.length,
+                // not newRangeInFile.length - rangeInFile.length
+                type.bodyBytesRange = bytesRange.changingContent(change)
+                type.completeDeclarationRange = completeDeclarationRange.changingContent(change)
             }
         }
     }
