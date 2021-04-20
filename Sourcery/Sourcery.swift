@@ -100,7 +100,7 @@ class Sourcery {
                 result = try self.parse(from: paths, forceParse: forceParse, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
-            try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: result)
+            try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result)
             return result
         }
 
@@ -155,7 +155,7 @@ class Sourcery {
                         } else {
                             Log.info("Templates changed: ")
                         }
-                        try self.generate(source: source, templatePaths: Paths(include: [templatesPath]), output: output, parsingResult: result)
+                        try self.generate(source: source, templatePaths: Paths(include: [templatesPath]), output: output, parsingResult: &result)
                     } catch {
                         Log.error(error)
                     }
@@ -387,8 +387,10 @@ extension Sourcery {
 
 // MARK: - Generation
 extension Sourcery {
+    private typealias SourceChange = (path: String, rangeInFile: NSRange, newRangeInFile: NSRange)
+    private typealias GenerationResult = (String, [SourceChange])
 
-    fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: ParsingResult) throws {
+    fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: inout ParsingResult) throws {
         let generationStart = currentTimestamp()
 
         Log.info("Loading templates...")
@@ -401,7 +403,8 @@ extension Sourcery {
 
         if output.isDirectory {
             try allTemplates.forEach { template in
-                let result = try generate(template, forParsingResult: parsingResult, outputPath: output.path)
+                let (result, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path)
+                updateRanges(in: &parsingResult, sourceChanges: sourceChanges)
                 let outputPath = output.path + generatedPath(for: template.sourcePath)
                 try self.output(result: result, to: outputPath)
 
@@ -410,10 +413,15 @@ extension Sourcery {
                 }
             }
         } else {
-            let result = try allTemplates.reduce("") { result, template in
-                return result + "\n" + (try generate(template, forParsingResult: parsingResult, outputPath: output.path))
+            let result = try allTemplates.reduce((contents: "", parsingResult: parsingResult)) { state, template in
+                var (result, parsingResult) = state
+                let (generatedCode, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path)
+                result += "\n" + generatedCode
+                updateRanges(in: &parsingResult, sourceChanges: sourceChanges)
+                return (result, parsingResult)
             }
-            try self.output(result: result, to: output.path)
+            parsingResult = result.parsingResult
+            try self.output(result: result.contents, to: output.path)
 
             if let linkTo = output.linkTo {
                 link(output.path, to: linkTo)
@@ -434,6 +442,40 @@ extension Sourcery {
 
         Log.benchmark("\tGeneration took \(currentTimestamp() - generationStart)")
         Log.info("Finished.")
+    }
+
+    private func updateRanges(in parsingResult: inout ParsingResult, sourceChanges: [SourceChange]) {
+        for (path, rangeInFile, newRangeInFile) in sourceChanges {
+            if let inlineRangesIndex = parsingResult.inlineRanges.firstIndex(where: { $0.file == path }) {
+                let inlineRanges = parsingResult.inlineRanges[inlineRangesIndex].ranges
+                    .mapValues { inlineRange -> NSRange in
+                        let change = NSRange(
+                            location: newRangeInFile.location,
+                            length: newRangeInFile.length - rangeInFile.length
+                        )
+                        return inlineRange.changingContent(change)
+                    }
+                parsingResult.inlineRanges[inlineRangesIndex].ranges = inlineRanges
+            }
+
+            for type in parsingResult.types.types {
+                guard
+                    type.path == path,
+                    let bytesRange = type.bodyBytesRange,
+                    let completeDeclarationRange = type.completeDeclarationRange,
+                    let content = try? Path(path).read(.utf8),
+                    let change = StringView(content).NSRangeToByteRange(newRangeInFile)
+                else {
+                    continue
+                }
+
+                // bytesRange calculated on file with annotation's bodies stripped
+                // hence amount of content edited is newRangeInFile.length,
+                // not newRangeInFile.length - rangeInFile.length
+                type.bodyBytesRange = bytesRange.changingContent(change)
+                type.completeDeclarationRange = completeDeclarationRange.changingContent(change)
+            }
+        }
     }
 
     private func link(_ output: Path, to linkTo: Output.LinkTo) {
@@ -488,7 +530,7 @@ extension Sourcery {
         }
     }
 
-    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path) throws -> String {
+    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path) throws -> GenerationResult {
         guard watcherEnabled else {
             let generationStart = currentTimestamp()
             let result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
@@ -511,27 +553,30 @@ extension Sourcery {
         return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
     }
 
-    private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path) throws -> String {
+    private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path) throws -> GenerationResult {
         let start = currentTimestamp()
         defer {
             Log.benchmark("\t\tProcessing Ranges took \(currentTimestamp() - start)")
         }
         var result = result
         result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath)
-        result = try processInlineRanges(for: parsingResult, in: result)
-        return TemplateAnnotationsParser.removingEmptyAnnotations(from: result)
+        let sourceChanges: [SourceChange]
+        (result, sourceChanges) = try processInlineRanges(for: parsingResult, in: result)
+        return (TemplateAnnotationsParser.removingEmptyAnnotations(from: result), sourceChanges)
     }
 
-    private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> String {
+    private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> GenerationResult {
         var (annotatedRanges, rangesToReplace) = TemplateAnnotationsParser.annotationRanges("inline", contents: contents)
 
         typealias MappedInlineAnnotations = (
             range: NSRange,
-            filePath: Path,
+            filePath: String,
             rangeInFile: NSRange,
             toInsert: String,
             indentation: String
         )
+
+        var sourceChanges: [SourceChange] = []
 
         try annotatedRanges
             .map { (key: $0, range: $1[0].range) }
@@ -540,7 +585,7 @@ extension Sourcery {
 
                 if let (filePath, inlineRanges, inlineIndentations) = parsingResult.inlineRanges.first(where: { $0.ranges[key] != nil }) {
                     // swiftlint:disable:next force_unwrapping
-                    return MappedInlineAnnotations(range, Path(filePath), inlineRanges[key]!, generatedBody, inlineIndentations[key] ?? "")
+                    return MappedInlineAnnotations(range, filePath, inlineRanges[key]!, generatedBody, inlineIndentations[key] ?? "")
                 }
 
                 guard key.hasPrefix("auto:") else {
@@ -551,6 +596,7 @@ extension Sourcery {
                 let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
 
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
+                    let filePath = definition.path,
                     let path = definition.path.map({ Path($0) }),
                     let contents = try? path.read(.utf8),
                     let bodyRange = bodyRange(for: definition, contentsView: StringView(contents)) else {
@@ -560,15 +606,25 @@ extension Sourcery {
                 let bodyEndRange = NSRange(location: NSMaxRange(bodyRange), length: 0)
                 let bodyEndLineRange = contents.bridge().lineRange(for: bodyEndRange)
                 let rangeInFile = NSRange(location: max(bodyRange.location, bodyEndLineRange.location), length: 0)
-                return MappedInlineAnnotations(range, path, rangeInFile, toInsert, "")
+                return MappedInlineAnnotations(range, filePath, rangeInFile, toInsert, "")
             }
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location
             }.forEach { (arg) in
-                let (_, path, rangeInFile, toInsert, indentation) = arg
+                let (_, filePath, rangeInFile, toInsert, indentation) = arg
+                let path = Path(filePath)
                 let content = try path.read(.utf8)
-                let updated = content.bridge().replacingCharacters(in: rangeInFile, with: indent(toInsert: toInsert, indentation: indentation))
+                let newContent = indent(toInsert: toInsert, indentation: indentation)
+                let updated = content.bridge().replacingCharacters(in: rangeInFile, with: newContent)
                 try writeIfChanged(updated, to: path)
+
+                let newLength = newContent.bridge().length
+
+                sourceChanges.append((
+                    path: filePath,
+                    rangeInFile: rangeInFile,
+                    newRangeInFile: NSRange(location: rangeInFile.location, length: newLength)
+                ))
         }
 
         var bridged = contents.bridge()
@@ -577,7 +633,7 @@ extension Sourcery {
             .forEach {
                 bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
         }
-        return bridged as String
+        return (bridged as String, sourceChanges)
     }
 
     private func bodyRange(for type: Type, contentsView: StringView) -> NSRange? {

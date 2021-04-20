@@ -47,6 +47,9 @@
 		6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6393BC97201B57620044E8CC /* JavaScriptTemplate.swift */; };
 		63CC359520246CCB0017D839 /* Xcode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */; };
 		63E1AD0E1F4093EB00D01FED /* Configs in Resources */ = {isa = PBXBuildFile; fileRef = 63E1AD0D1F4093EB00D01FED /* Configs */; };
+		8419C2F126278FBC006149A1 /* NSRange + Editing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419C2F026278FBC006149A1 /* NSRange + Editing.swift */; };
+		8471FB12262A0FCF00F8943B /* ByteRangeConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8471FB11262A0FCF00F8943B /* ByteRangeConversion.swift */; };
+		8471FB1B262A11D400F8943B /* BytesRange + Editing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8471FB1A262A11D400F8943B /* BytesRange + Editing.swift */; };
 		990B63465A767D7147E0B29B /* Pods_SourceryJS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C82AE0D8342A0606F1E8CE /* Pods_SourceryJS.framework */; };
 		B4E02BEC53C447247C765980 /* Pods_SourceryStencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C8BF671DB1330E3E4951214 /* Pods_SourceryStencil.framework */; };
 		B5089B5221D1817F007A001C /* SourceryRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64E201A31EAE8FBF00EAD8A2 /* SourceryRuntime.framework */; };
@@ -336,6 +339,9 @@
 		6A1278DE322EEEC30934B058 /* Pods_SourceryTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C8BF671DB1330E3E4951214 /* Pods_SourceryStencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SourceryStencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79EDC093C51A602ADB2AAE88 /* Pods-SourceryFramework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryFramework.debug.xcconfig"; path = "Target Support Files/Pods-SourceryFramework/Pods-SourceryFramework.debug.xcconfig"; sourceTree = "<group>"; };
+		8419C2F026278FBC006149A1 /* NSRange + Editing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRange + Editing.swift"; sourceTree = "<group>"; };
+		8471FB11262A0FCF00F8943B /* ByteRangeConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteRangeConversion.swift; sourceTree = "<group>"; };
+		8471FB1A262A11D400F8943B /* BytesRange + Editing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BytesRange + Editing.swift"; sourceTree = "<group>"; };
 		8A7B2DB2F4780241A50AF3A3 /* Pods-SourceryStencil.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourceryStencil.debug.xcconfig"; path = "Target Support Files/Pods-SourceryStencil/Pods-SourceryStencil.debug.xcconfig"; sourceTree = "<group>"; };
 		AC5C7A379558EBA48F09B22E /* Pods-SourcerySwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SourcerySwift.debug.xcconfig"; path = "Target Support Files/Pods-SourcerySwift/Pods-SourcerySwift.debug.xcconfig"; sourceTree = "<group>"; };
 		B5BCF9F321D161B5009DF652 /* SourceryFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1046,8 +1052,11 @@
 		E291DB36A516C712B48D88D4 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				8419C2F026278FBC006149A1 /* NSRange + Editing.swift */,
 				E291DBAA16ABFED8C04CB42A /* FolderWatcher.swift */,
 				09C61FA51E76109E005EA58A /* Xcode+Extensions.swift */,
+				8471FB11262A0FCF00F8943B /* ByteRangeConversion.swift */,
+				8471FB1A262A11D400F8943B /* BytesRange + Editing.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1911,10 +1920,13 @@
 				094415C81E78A46A00ABE04A /* Configuration.swift in Sources */,
 				E291DCA363FD8EBF0455C712 /* Sourcery.swift in Sources */,
 				C894A1B01E19326C0098327C /* SwiftTemplate.swift in Sources */,
+				8471FB1B262A11D400F8943B /* BytesRange + Editing.swift in Sources */,
 				63CC359520246CCB0017D839 /* Xcode+Extensions.swift in Sources */,
+				8471FB12262A0FCF00F8943B /* ByteRangeConversion.swift in Sources */,
 				CDBEC15C1E242B9E0090E881 /* StencilTemplate.swift in Sources */,
 				6393BC98201B57620044E8CC /* JavaScriptTemplate.swift in Sources */,
 				E291D33EA3BB6FC777B3950E /* FolderWatcher.swift in Sources */,
+				8419C2F126278FBC006149A1 /* NSRange + Editing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
