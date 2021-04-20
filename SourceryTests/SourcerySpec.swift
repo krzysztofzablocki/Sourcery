@@ -1084,13 +1084,18 @@ class SourcerySpecTests: QuickSpec {
 
                 context("given a single file output") {
                     let outputFile = outputDir + "Composed.swift"
-                    let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8).withoutWhitespaces
+                    let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other+SourceryTemplates.swift")).read(.utf8).withoutWhitespaces
 
                     it("joins generated code into single file") {
                         expect {
                             try Sourcery(cacheDisabled: true)
                                 .processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [Stubs.templateDirectory + "Basic.stencil", Stubs.templateDirectory + "Other.stencil"]),
+                                              usingTemplates: Paths(include: [
+                                                Stubs.templateDirectory + "Basic.stencil",
+                                                Stubs.templateDirectory + "Other.stencil",
+                                                Stubs.templateDirectory + "SourceryTemplateStencil.sourcerytemplate",
+                                                Stubs.templateDirectory + "SourceryTemplateEJS.sourcerytemplate"
+                                              ]),
                                               output: Output(outputFile))
                             }.toNot(throwError())
 

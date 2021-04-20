@@ -11,7 +11,11 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
     public var trimEnabled: Bool = false
 
     public convenience init(path: Path) throws {
-        self.init(templateString: try path.read(), environment: StencilTemplate.sourceryEnvironment(templatePath: path))
+        try self.init(path: path, templateString: try path.read())
+    }
+    
+    public convenience init(path: Path, templateString: String) throws {
+        self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment(templatePath: path))
         sourcePath = path
     }
 

@@ -35,12 +35,16 @@ open class EJSTemplate {
         }
     }
 
-    public init(path: Path, ejsPath: Path = EJSTemplate.ejsPath) throws {
-        templateString = try path.read()
+    public convenience init(path: Path, ejsPath: Path = EJSTemplate.ejsPath) throws {
+        try self.init(path: path, templateString: try path.read(), ejsPath: ejsPath)
+    }
+
+    public init(path: Path, templateString: String, ejsPath: Path = EJSTemplate.ejsPath) throws {
+        self.templateString = templateString
         sourcePath = path
         self.ejs = try ejsPath.read(.utf8)
     }
-
+    
     public init(templateString: String, ejsPath: Path = EJSTemplate.ejsPath) throws {
         self.templateString = templateString
         sourcePath = ""

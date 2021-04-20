@@ -84,6 +84,7 @@
 		CD548AF525EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AF425EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift */; };
 		CD548AFD25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548AFC25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift */; };
 		CD548B0B25EA80D30081BB66 /* GenericType+SwiftSyntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD548B0A25EA80D30081BB66 /* GenericType+SwiftSyntax.swift */; };
+		CD5A3E17262F064D0033631D /* SourceryTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5A3E16262F064D0033631D /* SourceryTemplate.swift */; };
 		CD67C8D726046F1400CC74E5 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = CD9713CD25EFA02900E69E69 /* SwiftSyntax */; };
 		CD67C8E126046F3B00CC74E5 /* SourceryStencil.h in Headers */ = {isa = PBXBuildFile; fileRef = CD67C8DF26046F3B00CC74E5 /* SourceryStencil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD67C8E426046F3B00CC74E5 /* SourceryStencil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD67C8DD26046F3B00CC74E5 /* SourceryStencil.framework */; };
@@ -375,6 +376,7 @@
 		CD548AF425EA33060081BB66 /* GenericRequirement+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericRequirement+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		CD548AFC25EA7ECF0081BB66 /* TypeName+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TypeName+SwiftSyntax.swift"; sourceTree = "<group>"; };
 		CD548B0A25EA80D30081BB66 /* GenericType+SwiftSyntax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GenericType+SwiftSyntax.swift"; sourceTree = "<group>"; };
+		CD5A3E16262F064D0033631D /* SourceryTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceryTemplate.swift; sourceTree = "<group>"; };
 		CD67C8DD26046F3B00CC74E5 /* SourceryStencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SourceryStencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD67C8DF26046F3B00CC74E5 /* SourceryStencil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SourceryStencil.h; sourceTree = "<group>"; };
 		CD67C8E026046F3B00CC74E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -732,6 +734,7 @@
 			children = (
 				B5BCFA0721D1623D009DF652 /* Generator.swift */,
 				B5BCFA0821D1623D009DF652 /* Template.swift */,
+				CD5A3E16262F064D0033631D /* SourceryTemplate.swift */,
 			);
 			path = Generating;
 			sourceTree = "<group>";
@@ -1888,6 +1891,7 @@
 				CD548B0B25EA80D30081BB66 /* GenericType+SwiftSyntax.swift in Sources */,
 				B5BCFA1221D1623D009DF652 /* Template.swift in Sources */,
 				CDF80DC825E50F0A00443FA1 /* AccessLevel+SwiftSyntax.swift in Sources */,
+				CD5A3E17262F064D0033631D /* SourceryTemplate.swift in Sources */,
 				CDF80DA425E50E5800443FA1 /* Method+SwiftSyntax.swift in Sources */,
 				CD0E9A6125E95BA40055EE8F /* StringView.swift in Sources */,
 				E291D249CFE8AAA6926B2796 /* Struct+SwiftSyntax.swift in Sources */,

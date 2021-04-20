@@ -8,9 +8,9 @@ public typealias SourceryMethod = Method
     /// Parameter external name
     public var argumentLabel: String?
 
-    /// Parameter internal name
     // Note: although method parameter can have no name, this property is not optional,
     // this is so to maintain compatibility with existing templates.
+    /// Parameter internal name
     public let name: String
 
     /// Parameter type name
