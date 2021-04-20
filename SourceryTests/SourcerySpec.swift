@@ -1149,7 +1149,12 @@ class SourcerySpecTests: QuickSpec {
                             try Sourcery(cacheDisabled: true)
                                 .processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [Stubs.templateDirectory],
-                                                                    exclude: [Stubs.templateDirectory + "Include.stencil", Stubs.templateDirectory + "Partial.stencil"]),
+                                                                    exclude: [
+                                                                        Stubs.templateDirectory + "Include.stencil",
+                                                                        Stubs.templateDirectory + "Partial.stencil",
+                                                                        Stubs.templateDirectory + "SourceryTemplateStencil.sourcerytemplate",
+                                                                        Stubs.templateDirectory + "SourceryTemplateEJS.sourcerytemplate"
+                                                                    ]),
                                               output: Output(outputFile))
                             }.toNot(throwError())
 
