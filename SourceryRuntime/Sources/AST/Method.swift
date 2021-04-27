@@ -299,7 +299,7 @@ extension Array where Element == ClosureParameter {
     // sourcery: skipEquality, skipDescription
     /// Whether method is final
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        return modifiers.first { $0.name == "final" } != nil
     }
 
     // sourcery: skipEquality, skipDescription

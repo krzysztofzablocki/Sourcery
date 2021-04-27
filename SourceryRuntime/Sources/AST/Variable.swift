@@ -59,7 +59,7 @@ public typealias SourceryVariable = Variable
 
     /// Whether variable is final or not
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        return modifiers.first { $0.name == "final" } != nil
     }
 
     /// Whether variable is lazy or not
