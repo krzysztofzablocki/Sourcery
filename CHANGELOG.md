@@ -1,6 +1,11 @@
 # Sourcery CHANGELOG
 
 ---
+## 1.4.2
+### Internal changes
+- Supports Swift5.4
+
+---
 ## 1.4.1
 
 ## New Feature
