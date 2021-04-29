@@ -122,7 +122,7 @@ Full documentation for the latest release is available [here](https://cdn.rawgit
 Sourcery is a command line tool; you can either run it manually or in a custom build phase using the following command:
 
 ```
-$ ./sourcery --sources <sources path> --templates <templates path> --output <output path>
+$ ./bin/sourcery --sources <sources path> --templates <templates path> --output <output path>
 ```
 
 > Note: this command differs depending on how you installed Sourcery (see [Installing](#installing))
