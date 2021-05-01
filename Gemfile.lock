@@ -136,7 +136,7 @@ GEM
       ffi (~> 1.0)
     rchardet (1.8.0)
     redcarpet (3.5.1)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rouge (1.11.1)
     ruby-macho (1.4.0)
     ruby2_keywords (0.0.2)
