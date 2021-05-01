@@ -1,6 +1,10 @@
 import Quick
 import Nimble
+#if SWIFT_PACKAGE
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 @testable import SourceryRuntime
 
 class ClassSpec: QuickSpec {

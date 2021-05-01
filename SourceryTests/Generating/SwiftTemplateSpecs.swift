@@ -10,7 +10,11 @@ import Foundation
 import Quick
 import Nimble
 import PathKit
+#if SWIFT_PACKAGE
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 import SourceryFramework
 @testable import SourceryRuntime
 @testable import SourcerySwift

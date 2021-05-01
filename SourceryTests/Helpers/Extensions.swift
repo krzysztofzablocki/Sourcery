@@ -4,7 +4,11 @@
 //
 
 import Foundation
+#if SWIFT_PACKAGE
+@testable import SourceryLib
+#else
 @testable import Sourcery
+#endif
 @testable import SourceryRuntime
 
 extension String {
