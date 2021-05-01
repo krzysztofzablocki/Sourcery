@@ -2845,7 +2845,7 @@
 			repositoryURL = "https://github.com/apple/swift-syntax";
 			requirement = {
 				kind = exactVersion;
-				version = 0.50300.0;
+				version = 0.50400.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
