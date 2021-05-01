@@ -24,7 +24,7 @@ let package = Package(
         .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .exact("7.18.0")),
         .package(name: "SwiftSyntax",
                  url: "https://github.com/apple/swift-syntax.git",
-                 .exact("0.50300.0"))
+                 .exact("0.50400.0"))
     ],
     targets: [
         .target(name: "Sourcery", dependencies: [
