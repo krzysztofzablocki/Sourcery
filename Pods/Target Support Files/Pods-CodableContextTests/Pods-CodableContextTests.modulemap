@@ -1,6 +1,0 @@
-framework module Pods_CodableContextTests {
-  umbrella header "Pods-CodableContextTests-umbrella.h"
-
-  export *
-  module * { export * }
-}

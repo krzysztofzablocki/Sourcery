@@ -12,7 +12,6 @@ CLI_DIR = 'cli/'
 VERSION_FILE = 'SourceryUtils/Sources/Version.swift'
 
 ## [ Utils ] ##################################################################
-
 def version_select
   latest_xcode_version = `xcode-select -p`.chomp
   %Q(DEVELOPER_DIR="#{latest_xcode_version}" TOOLCHAINS=com.apple.dt.toolchain.XcodeDefault.xctoolchain)
@@ -24,10 +23,6 @@ def xcpretty(cmd)
   else
     sh cmd
   end
-end
-
-def xcrun(cmd)
-  xcpretty "#{version_select} xcrun #{cmd}"
 end
 
 def print_info(str)
@@ -45,18 +40,13 @@ end
 
 ## [ Tests & Clean ] ##########################################################
 
-desc "Run the Unit Tests on Templates project"
-task :test_templates do
-  print_info "Running Sourcery Templates Tests"
-  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx)
-  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme TemplatesTests -sdk macosx test)
-end
-
 desc "Run the Unit Tests on all projects"
 task :tests do
   print_info "Running Unit Tests"
-  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx)
-  xcrun %Q(xcodebuild -workspace Sourcery.xcworkspace -scheme Sourcery -sdk macosx test)
+  # we can't use SPM directly because it doesn't link rpath and thus often uses wrong dylib
+  # sh %Q(swift test)
+  xcpretty %Q(xcodebuild -scheme sourcery)
+  xcpretty %Q(xcodebuild -scheme Sourcery-Package test)
 end
 
 desc "Delete the build/ directory"
@@ -67,13 +57,10 @@ end
 
 task :build do
   print_info "Building project"
-  xcrun %Q(swift build -c release --disable-sandbox --build-path #{BUILD_DIR})
+  sh %Q(swift build -c release --disable-sandbox --build-path #{BUILD_DIR})
   sh %Q(rm -fr #{CLI_DIR})
   sh %Q(mkdir -p "#{CLI_DIR}bin")
   sh %Q(mkdir -p "#{CLI_DIR}lib")
-  # swift_path = `xcrun --find swift`
-  # print_info "swift at #{swift_path}"
-  # `cp "$(dirname #{swift_path})/../lib/swift/macosx/lib_InternalSwiftSyntaxParser.dylib" "build/lib/lib_InternalSwiftSyntaxParser.dylib"`
   sh %Q(cp lib_InternalSwiftSyntaxParser.dylib #{CLI_DIR}lib)
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
   `mv #{BUILD_DIR}release/sourcery #{CLI_DIR}bin/`

@@ -42,7 +42,7 @@ let package = Package(
         .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .exact("7.18.0")),
         .package(name: "SwiftSyntax",
                  url: "https://github.com/apple/swift-syntax.git",
-                 .exact("0.50300.0")),
+                 .exact("0.50400.0")),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
     ],
@@ -196,7 +196,7 @@ func hookInternalSwiftSyntaxParser() {
             .targets
             .filter { $0.isTest || $0.name == "Sourcery" }
             .forEach { $0.installSwiftSyntaxParser() }
-    }
+     }
 }
 
 extension PackageDescription.Target {
