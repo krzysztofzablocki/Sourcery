@@ -30,12 +30,11 @@ def print_info(str)
   puts red, "== #{str.chomp} ==", clr
 end
 
-## [ Bundler & CocoaPods ] ####################################################
+## [ Bundler ] ####################################################
 
 desc "Install dependencies"
 task :install_dependencies do
   sh %Q(bundle install)
-  sh %Q(bundle exec pod install)
 end
 
 ## [ Tests & Clean ] ##########################################################
@@ -93,7 +92,7 @@ desc "Update docs"
 task :docs do
   print_info "Updating docs"
   temp_build_dir = "#{BUILD_DIR}tmp/"
-  sh "sourcekitten doc --module-name SourceryRuntime -- -workspace Sourcery.xcworkspace -scheme Sourcery-Release -derivedDataPath #{temp_build_dir} > docs.json && bundle exec jazzy --clean --skip-undocumented --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
+  sh "sourcekitten doc --spm --module-name SourceryRuntim > docs.json && bundle exec jazzy --clean --skip-undocumented --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
   sh "rm -fr #{temp_build_dir}"
 end
 
@@ -101,7 +100,7 @@ desc "Validate docs"
 task :validate_docs do
   print_info "Checking docs are up to date"
   temp_build_dir = "#{BUILD_DIR}tmp/"
-  sh "sourcekitten doc --module-name SourceryRuntime -- -workspace Sourcery.xcworkspace -scheme Sourcery-Release -derivedDataPath #{temp_build_dir} > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
+  sh "sourcekitten doc --spm --module-name SourceryRuntime > docs.json && bundle exec jazzy --skip-undocumented --no-download-badge --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
   sh "rm -fr #{temp_build_dir}"
 end
 
@@ -130,14 +129,6 @@ namespace :release do
 
   def podspec_version(file = 'Sourcery')
     JSON.parse(`bundle exec pod ipc spec #{file}.podspec`)["version"]
-  end
-
-  def project_update_version(version, project = 'Sourcery')
-    `sed -i '' -e 's/CURRENT_PROJECT_VERSION = #{project_version(project)};/CURRENT_PROJECT_VERSION = #{version};/g' #{project}.xcodeproj/project.pbxproj`
-  end
-
-  def project_version(workspace = 'Sourcery', scheme = "Sourcery")
-    `xcodebuild -showBuildSettings -workspace #{workspace}.xcworkspace -scheme #{scheme} | grep CURRENT_PROJECT_VERSION | sed -E  's/(.*) = (.*)/\\2/'`.strip
   end
 
   VERSION_REGEX = /(?<begin>public static let current\s*=\s*SourceryVersion\(value:\s*.*")(?<value>(?<major>[0-9]+)(\.(?<minor>[0-9]+))?(\.(?<patch>[0-9]+))?)(?<end>"\))/i.freeze
@@ -284,9 +275,6 @@ namespace :release do
     changelog_master = system(%q{grep -qi '^## Master' CHANGELOG.md})
     results << log_result(!changelog_master, "CHANGELOG, No master", 'Please remove entry for master in CHANGELOG')
 
-    # Check if Current Project Version from build settings match podspec version
-    results << log_result(version == project_version, "Project version correct", "Please update Current Project Version in Build Settings to #{version}")
-
     # Check if Command Line Tool version match podspec version
     results << log_result(version == command_line_tool_version, "Command line tool version correct", "Please update current version in #{VERSION_FILE} to #{version}")
 
@@ -316,9 +304,6 @@ namespace :release do
     podspec_update_version(new_version, 'SourceryRuntime.podspec')
     podspec_update_version(new_version, 'SourceryUtils.podspec')
 
-    # Update project version
-    project_update_version(new_version)
-
     # Update command line tool version
     command_line_tool_update_version(new_version)
 
@@ -328,7 +313,7 @@ namespace :release do
   desc 'Create a tag for the project version and push to remote'
   task :tag_release do
     print_info "Tagging the release"
-    git_tag(project_version)
+    git_tag(podspec_version)
   end
 
 
@@ -383,7 +368,7 @@ namespace :release do
     print_info "Releasing to homebrew"
     formulas_dir = `brew --repository homebrew/core`.chomp
     formula_file = "./Formula/sourcery.rb"
-    version = project_version
+    version = podspec_version
     branch = "sourcery-#{version}"
 
     Dir.chdir(formulas_dir) do
