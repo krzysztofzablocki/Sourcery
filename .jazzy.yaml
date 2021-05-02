@@ -2,7 +2,6 @@ author: Krzysztof Zabłocki
 author_url: https://twitter.com/merowing_
 module: Sourcery
 sourcekitten_sourcefile: docs.json 
-module_version: 0.6.0
 github_url: https://github.com/krzysztofzablocki/Sourcery
 copyright: 'Copyright © 2016-2021 Pixle. All rights reserved.'
 readme: About.md
@@ -37,6 +36,7 @@ custom_categories:
       - Enum
       - EnumCase
       - AssociatedValue
+      - AssociatedType
       - Variable 
       - Method
       - MethodParameter
