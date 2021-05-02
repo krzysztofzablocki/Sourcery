@@ -8,13 +8,21 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a title="Codable  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery Docs</a> (91% documented)</p>
+        <p><a href="index.html">Sourcery 1.4.1 Docs</a> (91% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -101,6 +109,9 @@
                 <a href="Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/AssociatedType.html">AssociatedType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
@@ -145,11 +156,8 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Classes.html">Other Classes</a>
+            <a href="Other%20Classes.html">Other Classes</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/AssociatedType.html">AssociatedType</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
@@ -162,7 +170,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Enums.html">Other Enums</a>
+            <a href="Other%20Enums.html">Other Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/Composer.html">Composer</a>
@@ -170,7 +178,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Extensions.html">Other Extensions</a>
+            <a href="Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Extensions/Array.html">Array</a>
@@ -184,7 +192,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Protocols.html">Other Protocols</a>
+            <a href="Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Protocols/Annotated.html">Annotated</a>
@@ -372,8 +380,8 @@
 
 <p>For such enum template will generate code that will successfully decode from/encode to JSON of following form:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w">
-  </span><span class="s2">"anotherValue"</span><span class="err">:</span><span class="w"> </span><span class="s2">"anotherCase"</span><span class="w">
+  </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w">
+  </span><span class="s2">"anotherValue"</span><span class="p">:</span><span class="w"> </span><span class="s2">"anotherCase"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -399,9 +407,9 @@
 
 <p>If you define a coding key named <code>enumCaseKey</code> then the template will generate code that will encode/decode enum in/from following format:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">enum</span><span class="w"> </span><span class="err">case</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">encoded</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">special</span><span class="w"> </span><span class="err">key</span><span class="w">
-  </span><span class="s2">"id"</span><span class="err">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
+  </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">enum</span><span class="w"> </span><span class="err">case</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">encoded</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">special</span><span class="w"> </span><span class="err">key</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -409,9 +417,9 @@
 
 <p>If you don&rsquo;t define <code>enumCaseKey</code> then the template will generate code that will encode/decode enum in/from following format:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
+  </span><span class="s2">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
@@ -419,7 +427,7 @@
 <p>Associated values of each enum case must be either all named or all unnamed.
 For cases with unnamed associated values JSON format will use array instead of dictionary for associated values, in the same order in which they are defined:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="s2">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="mi">1</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Jhon"</span><span class="w">
   </span><span class="p">]</span><span class="w">
@@ -432,7 +440,7 @@ For cases with unnamed associated values JSON format will use array instead of d
         </section>
         <section id="footer">
           <p>Copyright © 2016-2021 Pixle. All rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

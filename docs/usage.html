@@ -8,13 +8,21 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a title="Usage  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery Docs</a> (91% documented)</p>
+        <p><a href="index.html">Sourcery 1.4.1 Docs</a> (91% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -101,6 +109,9 @@
                 <a href="Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/AssociatedType.html">AssociatedType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
@@ -145,11 +156,8 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Classes.html">Other Classes</a>
+            <a href="Other%20Classes.html">Other Classes</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/AssociatedType.html">AssociatedType</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
@@ -162,7 +170,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Enums.html">Other Enums</a>
+            <a href="Other%20Enums.html">Other Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/Composer.html">Composer</a>
@@ -170,7 +178,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Extensions.html">Other Extensions</a>
+            <a href="Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Extensions/Array.html">Array</a>
@@ -184,7 +192,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Protocols.html">Other Protocols</a>
+            <a href="Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Protocols/Annotated.html">Annotated</a>
@@ -239,38 +247,38 @@ If you provide a path to a directory Sourcery will search for a file <code>.sour
 a path to config file itself. By default Sourcery will search for <code>.sourcery.yml</code> in your current path.</p>
 
 <p>Configuration file should be a valid Yaml file, like this:</p>
-<pre class="highlight yaml"><code><span class="s">sources</span><span class="pi">:</span>
+<pre class="highlight yaml"><code><span class="na">sources</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span> <span class="c1"># you can provide either single path or several paths using `-`</span>
   <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
-<span class="s">templates</span><span class="pi">:</span>
+<span class="na">templates</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span> <span class="c1"># as well as for templates</span>
   <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
-<span class="s">output</span><span class="pi">:</span>
+<span class="na">output</span><span class="pi">:</span>
   <span class="s">&lt;output path&gt;</span> <span class="c1"># note that there is no `-` here as only single output path is supported</span>
-<span class="s">args</span><span class="pi">:</span>
+<span class="na">args</span><span class="pi">:</span>
   <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
 <h4 id='multiple-configurations' class='heading'>Multiple configurations</h4>
 
 <p>You can pass multiple paths to configuration files using multiple <code>--config</code> command line options.
 Single configuration file can contain multiple configurations under root <code>configurations</code> key:</p>
-<pre class="highlight yaml"><code><span class="s">configurations</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">sources</span><span class="pi">:</span>
+<pre class="highlight yaml"><code><span class="na">configurations</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">sources</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
         <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
-      <span class="s">templates</span><span class="pi">:</span>
+      <span class="na">templates</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
-      <span class="s">output</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
-      <span class="s">args</span><span class="pi">:</span>
+      <span class="na">output</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
+      <span class="na">args</span><span class="pi">:</span>
         <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
         <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
-    <span class="pi">-</span> <span class="s">sources</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">sources</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
         <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
-      <span class="s">templates</span><span class="pi">:</span>
+      <span class="na">templates</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
-      <span class="s">output</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
-      <span class="s">args</span><span class="pi">:</span>
+      <span class="na">output</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
+      <span class="na">args</span><span class="pi">:</span>
         <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
         <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
@@ -279,58 +287,58 @@ Single configuration file can contain multiple configurations under root <code>c
 <h4 id='sources' class='heading'>Sources</h4>
 
 <p>You can provide sources using paths to directories or specific files.</p>
-<pre class="highlight yaml"><code><span class="s">sources</span><span class="pi">:</span>
+<pre class="highlight yaml"><code><span class="na">sources</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">&lt;sources dir path&gt;</span>
   <span class="pi">-</span> <span class="s">&lt;source file path&gt;</span>
 </code></pre>
 
 <p>Or you can provide project which will be scanned and which source files will be processed. You can use several <code>project</code> or <code>target</code> objects to scan multiple targets from one project or to scan multiple projects.</p>
-<pre class="highlight yaml"><code><span class="s">project</span><span class="pi">:</span>
-  <span class="s">file</span><span class="pi">:</span> <span class="s">&lt;path to xcodeproj file&gt;</span>
-  <span class="s">target</span><span class="pi">:</span>
-    <span class="s">name</span><span class="pi">:</span> <span class="s">&lt;target name&gt;</span>
-    <span class="s">module</span><span class="pi">:</span> <span class="s">&lt;module name&gt; //required if different from target name</span>
+<pre class="highlight yaml"><code><span class="na">project</span><span class="pi">:</span>
+  <span class="na">file</span><span class="pi">:</span> <span class="s">&lt;path to xcodeproj file&gt;</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;target name&gt;</span>
+    <span class="na">module</span><span class="pi">:</span> <span class="s">&lt;module name&gt; //required if different from target name</span>
 </code></pre>
 <h4 id='excluding-sources-or-templates' class='heading'>Excluding sources or templates</h4>
 
 <p>You can specify paths to sources files that should be scanned using <code>include</code> key and paths that should be excluded using <code>exclude</code> key. These can be directory or file paths.</p>
-<pre class="highlight yaml"><code><span class="s">sources</span><span class="pi">:</span>
-  <span class="s">include</span><span class="pi">:</span>
+<pre class="highlight yaml"><code><span class="na">sources</span><span class="pi">:</span>
+  <span class="na">include</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="s">&lt;sources path to include&gt;</span>
     <span class="pi">-</span> <span class="s">&lt;sources path to include&gt;</span>
-  <span class="s">exclude</span><span class="pi">:</span>
+  <span class="na">exclude</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="s">&lt;sources path to exclude&gt;</span>
     <span class="pi">-</span> <span class="s">&lt;sources path to exclude&gt;</span>
 </code></pre>
 
 <p>You can also specify path to include and exclude for templates.
 When source is a project you can use <code>exclude</code> key to exclude some of its source files.</p>
-<pre class="highlight yaml"><code><span class="s">project</span><span class="pi">:</span>
-  <span class="s">file</span><span class="pi">:</span> <span class="s">...</span>
-  <span class="s">target</span><span class="pi">:</span> <span class="s">...</span>
-  <span class="s">exclude</span><span class="pi">:</span>
+<pre class="highlight yaml"><code><span class="na">project</span><span class="pi">:</span>
+  <span class="na">file</span><span class="pi">:</span> <span class="s">...</span>
+  <span class="na">target</span><span class="pi">:</span> <span class="s">...</span>
+  <span class="na">exclude</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
     <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
 </code></pre>
 <h4 id='output' class='heading'>Output</h4>
 
 <p>You can specify the output file using <code>output</code> key. This can be a directory path or a file path. If it&rsquo;s a file path, all generated content will be written into this file. If it&rsquo;s a directory path, for each template a separate file will be created with <code>TemplateName.generated.swift</code> name.</p>
-<pre class="highlight yaml"><code><span class="s">output</span><span class="pi">:</span>
+<pre class="highlight yaml"><code><span class="na">output</span><span class="pi">:</span>
   <span class="s">&lt;output path&gt;</span>
 </code></pre>
 
 <p>Alternatively you can use <code>path</code> key to specify output path.</p>
-<pre class="highlight yaml"><code><span class="s">output</span><span class="pi">:</span>
-  <span class="s">path</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
+<pre class="highlight yaml"><code><span class="na">output</span><span class="pi">:</span>
+  <span class="na">path</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
 </code></pre>
 
 <p>You can use optional <code>link</code> key to automatically link generated files to some target.</p>
-<pre class="highlight yaml"><code><span class="s">output</span><span class="pi">:</span>
-  <span class="s">path</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
-  <span class="s">link</span><span class="pi">:</span>
-    <span class="s">project</span><span class="pi">:</span> <span class="s">&lt;path to the xcodeproj to link to&gt;</span>
-    <span class="s">target</span><span class="pi">:</span> <span class="s">&lt;name of the target to link to&gt;</span>
-    <span class="s">group</span><span class="pi">:</span> <span class="s">&lt;group in the project to add files to&gt; // by default files are added to project's root group</span>
+<pre class="highlight yaml"><code><span class="na">output</span><span class="pi">:</span>
+  <span class="na">path</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
+  <span class="na">link</span><span class="pi">:</span>
+    <span class="na">project</span><span class="pi">:</span> <span class="s">&lt;path to the xcodeproj to link to&gt;</span>
+    <span class="na">target</span><span class="pi">:</span> <span class="s">&lt;name of the target to link to&gt;</span>
+    <span class="na">group</span><span class="pi">:</span> <span class="s">&lt;group in the project to add files to&gt; // by default files are added to project's root group</span>
 </code></pre>
 
 <blockquote>
@@ -341,7 +349,7 @@ When source is a project you can use <code>exclude</code> key to exclude some of
         </section>
         <section id="footer">
           <p>Copyright © 2016-2021 Pixle. All rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

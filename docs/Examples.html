@@ -8,13 +8,22 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
+    <a name="//apple_ref/swift/Section/Examples" class="dashAnchor"></a>
     <a title="Examples  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery Docs</a> (91% documented)</p>
+        <p><a href="index.html">Sourcery 1.4.1 Docs</a> (91% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -101,6 +110,9 @@
                 <a href="Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/AssociatedType.html">AssociatedType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
@@ -145,11 +157,8 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Classes.html">Other Classes</a>
+            <a href="Other%20Classes.html">Other Classes</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/AssociatedType.html">AssociatedType</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
@@ -162,7 +171,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Enums.html">Other Enums</a>
+            <a href="Other%20Enums.html">Other Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/Composer.html">Composer</a>
@@ -170,7 +179,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Extensions.html">Other Extensions</a>
+            <a href="Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Extensions/Array.html">Array</a>
@@ -184,7 +193,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Protocols.html">Other Protocols</a>
+            <a href="Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Protocols/Annotated.html">Annotated</a>
@@ -206,11 +215,96 @@
             
           </section>
           <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Equatable"></a>
+                    <a name="//apple_ref/swift/Guide/Equatable" class="dashAnchor"></a>
+                    <a class="direct-link" href="equatable.html">Equatable</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Hashable"></a>
+                    <a name="//apple_ref/swift/Guide/Hashable" class="dashAnchor"></a>
+                    <a class="direct-link" href="hashable.html">Hashable</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Enum cases"></a>
+                    <a name="//apple_ref/swift/Guide/Enum cases" class="dashAnchor"></a>
+                    <a class="direct-link" href="enum-cases.html">Enum cases</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Lenses"></a>
+                    <a name="//apple_ref/swift/Guide/Lenses" class="dashAnchor"></a>
+                    <a class="direct-link" href="lenses.html">Lenses</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Mocks"></a>
+                    <a name="//apple_ref/swift/Guide/Mocks" class="dashAnchor"></a>
+                    <a class="direct-link" href="mocks.html">Mocks</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Codable"></a>
+                    <a name="//apple_ref/swift/Guide/Codable" class="dashAnchor"></a>
+                    <a class="direct-link" href="codable.html">Codable</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Diffable"></a>
+                    <a name="//apple_ref/swift/Guide/Diffable" class="dashAnchor"></a>
+                    <a class="direct-link" href="diffable.html">Diffable</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.LinuxMain"></a>
+                    <a name="//apple_ref/swift/Guide/LinuxMain" class="dashAnchor"></a>
+                    <a class="direct-link" href="linuxmain.html">LinuxMain</a>
+                    </code>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/documentation.Decorator"></a>
+                    <a name="//apple_ref/swift/Guide/Decorator" class="dashAnchor"></a>
+                    <a class="direct-link" href="decorator.html">Decorator</a>
+                    </code>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
           <p>Copyright © 2016-2021 Pixle. All rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

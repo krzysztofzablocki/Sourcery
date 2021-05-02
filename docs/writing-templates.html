@@ -8,13 +8,21 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a title="Writing templates  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery Docs</a> (91% documented)</p>
+        <p><a href="index.html">Sourcery 1.4.1 Docs</a> (91% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -101,6 +109,9 @@
                 <a href="Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/AssociatedType.html">AssociatedType</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
@@ -145,11 +156,8 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Classes.html">Other Classes</a>
+            <a href="Other%20Classes.html">Other Classes</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/AssociatedType.html">AssociatedType</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
@@ -162,7 +170,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Enums.html">Other Enums</a>
+            <a href="Other%20Enums.html">Other Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/Composer.html">Composer</a>
@@ -170,7 +178,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Extensions.html">Other Extensions</a>
+            <a href="Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Extensions/Array.html">Array</a>
@@ -184,7 +192,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other Protocols.html">Other Protocols</a>
+            <a href="Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Protocols/Annotated.html">Annotated</a>
@@ -221,11 +229,11 @@ you can open template side-by-side with generated code and see it change live.</
 </blockquote>
 <h2 id='what-are-em-known-em-and-em-unknown-em-types' class='heading'>What are <em>known</em> and <em>unknown</em> types</h2>
 
-<p>Currently Sourcery only scans files from paths or targets that you tell it to scan. This way it can get full information about types <em>defined</em> in these sources. These types are considered <em>known</em> types. For each of known types Sourcery provides <code>Type</code> object. You can get it for example by its name from <code>types</code> collection. <code>Type</code> object contains information about whether type that it describes is a struct, enum, class or a protocol, what are its properties and methods, what protocols it implements and so on. This is done recursively, so if you have a class that inherits from another class (or struct that implements a protocol) and they are both known types you will have information about both of them and you will be able to access parent type&rsquo;s <code>Type</code> object using <code>type.inherits.TypeName</code> (or <code>type.implements.ProtocolName</code>).</p>
+<p>Currently Sourcery only scans files from paths or targets that you tell it to scan. This way it can get full information about types <em>defined</em> in these sources. These types are considered <em>known</em> types. For each of known types Sourcery provides <code><a href="Classes/Type.html">Type</a></code> object. You can get it for example by its name from <code>types</code> collection. <code><a href="Classes/Type.html">Type</a></code> object contains information about whether type that it describes is a struct, enum, class or a protocol, what are its properties and methods, what protocols it implements and so on. This is done recursively, so if you have a class that inherits from another class (or struct that implements a protocol) and they are both known types you will have information about both of them and you will be able to access parent type&rsquo;s <code><a href="Classes/Type.html">Type</a></code> object using <code>type.inherits.TypeName</code> (or <code>type.implements.ProtocolName</code>).</p>
 
-<p>Everything <em>defined</em> outside of scanned sources is considered as <em>unknown</em> types. For such types Sourcery doesn&rsquo;t provide <code>Type</code> object. For that reason variables (and other <q>typed</q> types, like method parameters etc.) of such types will only contain <code>typeName</code> property, but their <code>type</code> property will be <code>nil</code>.</p>
+<p>Everything <em>defined</em> outside of scanned sources is considered as <em>unknown</em> types. For such types Sourcery doesn&rsquo;t provide <code><a href="Classes/Type.html">Type</a></code> object. For that reason variables (and other &ldquo;typed&rdquo; types, like method parameters etc.) of such types will only contain <code>typeName</code> property, but their <code>type</code> property will be <code>nil</code>.</p>
 
-<p>If you have an extension of unknown type defined in scanned sources Sourcery will create <code>Type</code> for it (it&rsquo;s <code>kind</code> property will be <code>extension</code>). But this object will contain only declarations defined in this extension. Several extensions of unknown type will be merged into one <code>Type</code> object the same way as extensions of known types.</p>
+<p>If you have an extension of unknown type defined in scanned sources Sourcery will create <code><a href="Classes/Type.html">Type</a></code> for it (it&rsquo;s <code>kind</code> property will be <code>extension</code>). But this object will contain only declarations defined in this extension. Several extensions of unknown type will be merged into one <code><a href="Classes/Type.html">Type</a></code> object the same way as extensions of known types.</p>
 
 <p>See <a href="https://github.com/krzysztofzablocki/Sourcery/issues/87">#87</a> for details.</p>
 <h2 id='stencil-templates' class='heading'>Stencil templates</h2>
@@ -415,7 +423,7 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
         </section>
         <section id="footer">
           <p>Copyright © 2016-2021 Pixle. All rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
