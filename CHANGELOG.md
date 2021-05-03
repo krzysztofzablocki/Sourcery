@@ -5,6 +5,7 @@
 
 ## Fixes
 - Fix a test failing on macOS 11.3
+- Fix generation of inline:auto annotations in files with other inline annotations.
 
 ---
 ## 1.4.1

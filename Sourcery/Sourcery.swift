@@ -471,20 +471,30 @@ extension Sourcery {
                 parsingResult.inlineRanges[inlineRangesIndex].ranges = inlineRanges
             }
 
+            func stringViewForContent(at path: String) -> StringView? {
+                do {
+                    return StringView(try Path(path).read(.utf8))
+                } catch {
+                    return nil
+                }
+            }
+
             for type in parsingResult.types.types {
                 guard
                     type.path == path,
                     let bytesRange = type.bodyBytesRange,
                     let completeDeclarationRange = type.completeDeclarationRange,
-                    let content = try? Path(path).read(.utf8),
-                    let change = StringView(content).NSRangeToByteRange(newRangeInFile)
+                    let content = stringViewForContent(at: path),
+                    let byteRangeInFile = content.NSRangeToByteRange(rangeInFile),
+                    let newByteRangeInFile = content.NSRangeToByteRange(newRangeInFile)
                 else {
                     continue
                 }
 
-                // bytesRange calculated on file with annotation's bodies stripped
-                // hence amount of content edited is newRangeInFile.length,
-                // not newRangeInFile.length - rangeInFile.length
+                let change = ByteRange(
+                    location: newByteRangeInFile.location,
+                    length: newByteRangeInFile.length - byteRangeInFile.length
+                )
                 type.bodyBytesRange = bytesRange.changingContent(change)
                 type.completeDeclarationRange = completeDeclarationRange.changingContent(change)
             }
