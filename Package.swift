@@ -61,21 +61,48 @@ let package = Package(
                 "Templates",
             ]
         ),
-        .target(name: "SourceryRuntime", path: "SourceryRuntime"),
-        .target(name: "SourceryUtils", dependencies: [
-          "PathKit"
-        ], path: "SourceryUtils"),
-        .target(name: "SourceryFramework", dependencies: [
-          "PathKit",
-          "SwiftSyntax",
-          "SourceryUtils",
-          "SourceryRuntime"
-        ], path: "SourceryFramework"),
-        .target(name: "SourceryStencil", dependencies: [
-          "PathKit",
-          "SourceryRuntime",
-          "StencilSwiftKit",
-        ], path: "SourceryStencil"),
+        .target(
+            name: "SourceryRuntime",
+            path: "SourceryRuntime",
+            exclude: [
+                "Supporting Files/Info.plist"
+            ]
+        ),
+        .target(
+            name: "SourceryUtils",
+            dependencies: [
+                "PathKit"
+            ],
+            path: "SourceryUtils",
+            exclude: [
+                "Supporting Files/Info.plist"
+            ]
+        ),
+        .target(
+            name: "SourceryFramework",
+            dependencies: [
+              "PathKit",
+              "SwiftSyntax",
+              "SourceryUtils",
+              "SourceryRuntime"
+            ],
+            path: "SourceryFramework",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
+        .target(
+            name: "SourceryStencil",
+            dependencies: [
+              "PathKit",
+              "SourceryRuntime",
+              "StencilSwiftKit",
+            ],
+            path: "SourceryStencil",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
         .target(
             name: "SourceryJS",
             dependencies: [
@@ -89,11 +116,18 @@ let package = Package(
                 .copy("Resources/ejs.js")
             ]
         ),
-        .target(name: "SourcerySwift", dependencies: [
-          "PathKit",
-          "SourceryRuntime",
-          "SourceryUtils"
-        ], path: "SourcerySwift"),
+        .target(
+            name: "SourcerySwift",
+            dependencies: [
+              "PathKit",
+              "SourceryRuntime",
+              "SourceryUtils"
+            ],
+            path: "SourcerySwift",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
         .target(
             name: "CodableContext",
             path: "Templates/Tests",
