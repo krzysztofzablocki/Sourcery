@@ -1,5 +1,6 @@
 import Quick
 import Nimble
+import XCTest
 #if SWIFT_PACKAGE
 import Foundation
 @testable import SourceryLib
@@ -156,26 +157,32 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("class Foo { lazy var name: String = \"Hello\" }").first?.variables.first?.isLazy).to(beTrue())
 
                 func assertSetterAccess(_ access: String, line: UInt = #line) {
-                    expect(line: line, parse("public class Foo { \(access)(set) var some: Int }").first?.variables.first?.modifiers).to(equal([
+                    let variable = parse("public class Foo { \(access)(set) var some: Int }").first?.variables.first
+                    expect(line: line, variable?.modifiers).to(equal([
                        Modifier(name: access, detail: "set")
                     ]))
+                    expect(variable?.writeAccess).to(equal(access))
                 }
 
                 assertSetterAccess("private")
                 assertSetterAccess("fileprivate")
                 assertSetterAccess("internal")
                 assertSetterAccess("public")
+                assertSetterAccess("open")
 
                 func assertGetterAccess(_ access: String, line: UInt = #line) {
-                    expect(line: line, parse("public class Foo { \(access) var some: Int }").first?.variables.first?.modifiers).to(equal([
+                    let variable = parse("public class Foo { \(access) var some: Int }").first?.variables.first
+                    expect(line: line, variable?.modifiers).to(equal([
                         Modifier(name: access)
                     ]))
+                    expect(variable?.readAccess).to(equal(access))
                 }
 
                 assertGetterAccess("private")
                 assertGetterAccess("fileprivate")
                 assertGetterAccess("internal")
                 assertGetterAccess("public")
+                assertGetterAccess("open")
 
             }
 

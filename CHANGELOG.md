@@ -8,6 +8,7 @@
 - Fix generation of inline:auto annotations in files with other inline annotations.
 - Fixes modifier access for things like `isLazy`, `isOptional`, `isConvienceInitializer`, `isFinal`
 - Fixes `isMutable` on subscripts
+- Fixes `open` access parsing
 
 ---
 ## 1.4.1
