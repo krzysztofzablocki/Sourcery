@@ -68,6 +68,18 @@ class FileParserSubscriptsSpec: QuickSpec {
                     ))
                 }
 
+                it("extracts subscript isMutable state properly") {
+                    let subscripts = parse("""
+                                           protocol Subscript: AnyObject {
+                                             subscript(arg1: String, arg2: Int) -> Bool { get set }
+                                             subscript(with arg1: String, and arg2: Int) -> String { get }
+                                           }
+                                           """).first?.subscripts
+
+                    expect(subscripts?.first?.isMutable).to(beTrue())
+                    expect(subscripts?.last?.isMutable).to(beFalse())
+                }
+
                 it("extracts subscript annotations") {
                     let subscripts = parse("//sourcery: thisIsClass\nclass Foo {\n // sourcery: thisIsSubscript\nsubscript(\n\n/* sourcery: thisIsSubscriptParam */a: Int) -> Int { return 0 } }").first?.subscripts
 
