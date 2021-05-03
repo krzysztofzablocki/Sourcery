@@ -1,6 +1,12 @@
 # Sourcery CHANGELOG
 
 ---
+## 1.4.2
+
+## Fixes
+- Fix a test failing on macOS 11.3
+
+---
 ## 1.4.1
 
 ## New Feature
