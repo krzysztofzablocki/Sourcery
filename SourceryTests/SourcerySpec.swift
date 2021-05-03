@@ -719,7 +719,7 @@ class SourcerySpecTests: QuickSpec {
                         expect(newResult).to(equal(expectedResult))
                     }
 
-                    it("inserts generated code from different templates (inline and inline:auto)") {
+                    it("inserts generated code from different templates (both inline)") {
                         let templatePathA = outputDir + Path("InlineTemplateA.stencil")
                         let templatePathB = outputDir + Path("InlineTemplateB.stencil")
                         let sourcePath = outputDir + Path("ClassWithMultipleInlineAnnotations.swift")
@@ -782,10 +782,19 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(equal(expectedResult))
                     }
 
-                    it("inserts generated code from different templates (both inline)") {
+                    it("inserts generated code from different templates (inline and inline:auto)") {
                         let templatePathA = outputDir + Path("InlineTemplateA.stencil")
                         let templatePathB = outputDir + Path("InlineTemplateB.stencil")
                         let sourcePath = outputDir + Path("ClassWithMultipleInlineAnnotations.swift")
+
+                        /*
+                         inline:auto annotations are inserted at the beginning of the last line of a declaration,
+                         OR at the beginning of the last line of the containing file,
+                         if proposed location out of bounds, which should not be.
+
+                         To differentiate such cases the last line of a declaration
+                         shall not be the last line of the file.
+                         */
 
                         update(code: """
                                      class ClassWithMultipleInlineAnnotations {
@@ -793,6 +802,7 @@ class SourcerySpecTests: QuickSpec {
                                      var a0: Int
                                      // sourcery:end
                                      }
+                                     // the last line of the file
                                      """, in: sourcePath)
 
                         update(code: """
@@ -835,6 +845,7 @@ class SourcerySpecTests: QuickSpec {
                                              var b2: Int
                                              // sourcery:end
                                              }
+                                             // the last line of the file
                                              """
 
                         let result = try? sourcePath.read(.utf8)
