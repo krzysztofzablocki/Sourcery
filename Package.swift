@@ -24,9 +24,7 @@ let package = Package(
        .macOS(.v10_12),
     ],
     products: [
-        .executable(name: "sourcery", targets: ["Sourcery"]),
-        // For testing purpose. The linker has problems linking against executable.
-        .library(name: "SourceryLib", targets: ["SourceryLib"]),
+        .executable(name: "sourcery", targets: ["SourceryExecutable"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
@@ -48,10 +46,10 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Sourcery",
-            dependencies: sourceryDependencies,
+            name: "SourceryExecutable",
+            dependencies: ["SourceryLib"],
+            path: "SourceryExecutable",
             exclude: [
-                "Templates",
                 "Info.plist"
             ]
         ),
@@ -60,31 +58,30 @@ let package = Package(
             dependencies: sourceryDependencies,
             path: "Sourcery",
             exclude: [
-                "main.swift",
                 "Templates",
-                "Info.plist"
             ]
         ),
-        .target(name: "SourceryRuntime"),
+        .target(name: "SourceryRuntime", path: "SourceryRuntime"),
         .target(name: "SourceryUtils", dependencies: [
           "PathKit"
-        ]),
+        ], path: "SourceryUtils"),
         .target(name: "SourceryFramework", dependencies: [
           "PathKit",
           "SwiftSyntax",
           "SourceryUtils",
           "SourceryRuntime"
-        ]),
+        ], path: "SourceryFramework"),
         .target(name: "SourceryStencil", dependencies: [
           "PathKit",
           "SourceryRuntime",
           "StencilSwiftKit",
-        ]),
+        ], path: "SourceryStencil"),
         .target(
             name: "SourceryJS",
             dependencies: [
                 "PathKit"
             ],
+            path: "SourceryJS",
             exclude: [
                 "Info.plist"
             ],
@@ -96,7 +93,7 @@ let package = Package(
           "PathKit",
           "SourceryRuntime",
           "SourceryUtils"
-        ]),
+        ], path: "SourcerySwift"),
         .target(
             name: "CodableContext",
             path: "Templates/Tests",
@@ -194,7 +191,7 @@ func hookInternalSwiftSyntaxParser() {
     if !isFromTerminal {
         package
             .targets
-            .filter { $0.isTest || $0.name == "Sourcery" }
+            .filter { $0.isTest || $0.name == "SourceryLib" }
             .forEach { $0.installSwiftSyntaxParser() }
      }
 }
