@@ -38,7 +38,7 @@ import Foundation
 
     /// Whether method is final
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        modifiers.contains { $0.name == "final" }
     }
 
     /// Variable read access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`

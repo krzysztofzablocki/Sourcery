@@ -40,6 +40,8 @@ class FileParserAttributesSpec: QuickSpec {
                     Modifier(name: "final")
                 ]))
 
+                expect((parse("final class Foo { }").first as? Class)?.isFinal).to(beTrue())
+
                 expect(parse("@objc class Foo {}").first?.attributes).to(equal([
                     "objc": [Attribute(name: "objc", arguments: [:], description: "@objc")]
                 ]))
@@ -97,22 +99,33 @@ class FileParserAttributesSpec: QuickSpec {
                     "nonobjc": [Attribute(name: "nonobjc")]
                 ]))
 
-                expect(parse("class Foo { @nonobjc convenience required init() {} }").first?.initializers.first?.modifiers).to(equal([
+                let initializer = parse("class Foo { @nonobjc convenience required init() {} }").first?.initializers.first
+
+                expect(initializer?.modifiers).to(equal([
                     Modifier(name: "convenience"),
                     Modifier(name: "required")
                 ]))
+
+                expect(initializer?.isConvenienceInitializer).to(beTrue())
+                expect(initializer?.isRequired).to(beTrue())
 
                 expect(parse("struct Foo { mutating func some() {} }").first?.methods.first?.modifiers).to(equal([
                     Modifier(name: "mutating")
                 ]))
 
+                expect(parse("struct Foo { mutating func some() {} }").first?.methods.first?.isMutating).to(beTrue())
+
                 expect(parse("class Foo { final func some() {} }").first?.methods.first?.modifiers).to(equal([
                     Modifier(name: "final")
                 ]))
 
+                expect(parse("class Foo { final func some() {} }").first?.methods.first?.isFinal).to(beTrue())
+
                 expect(parse("@objc protocol Foo { @objc optional func some() }").first?.methods.first?.modifiers).to(equal([
                     Modifier(name: "optional")
                 ]))
+
+                expect(parse("@objc protocol Foo { @objc optional func some() }").first?.methods.first?.isOptional).to(beTrue())
             }
 
             it("extracts method parameter attributes") {
@@ -134,10 +147,13 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("class Foo { final var some: Int }").first?.variables.first?.modifiers).to(equal([
                     Modifier(name: "final")
                 ]))
+                expect(parse("class Foo { final var some: Int }").first?.variables.first?.isFinal).to(beTrue())
 
                 expect(parse("class Foo { lazy var name: String = \"Hello\" }").first?.variables.first?.modifiers).to(equal([
                     Modifier(name: "lazy")
                 ]))
+
+                expect(parse("class Foo { lazy var name: String = \"Hello\" }").first?.variables.first?.isLazy).to(beTrue())
 
                 func assertSetterAccess(_ access: String, line: UInt = #line) {
                     expect(line: line, parse("public class Foo { \(access)(set) var some: Int }").first?.variables.first?.modifiers).to(equal([

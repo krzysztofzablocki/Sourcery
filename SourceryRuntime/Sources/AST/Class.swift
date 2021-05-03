@@ -8,7 +8,7 @@ import Foundation
 
     /// Whether type is final 
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        return modifiers.contains { $0.name == "final" }
     }
 
     /// :nodoc:

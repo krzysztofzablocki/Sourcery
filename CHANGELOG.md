@@ -1,11 +1,12 @@
 # Sourcery CHANGELOG
 
 ---
-## 1.4.2
+## Master
 
 ## Fixes
 - Fix a test failing on macOS 11.3
 - Fix generation of inline:auto annotations in files with other inline annotations.
+- Fixes modifier access for things like `isLazy`, `isOptional`, `isConvienceInitializer`, `isFinal`
 
 ---
 ## 1.4.1
