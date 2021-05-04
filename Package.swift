@@ -3,27 +3,14 @@
 import PackageDescription
 import Foundation
 
-let sourceryDependencies: [Target.Dependency] = [
-    "SourceryFramework",
-    "SourceryRuntime",
-    "SourceryStencil",
-    "SourceryJS",
-    "SourcerySwift",
-    "Commander",
-    "PathKit",
-    "Yams",
-    "StencilSwiftKit",
-    "SwiftSyntax",
-    "XcodeProj",
-    "TryCatch"
-]
-
 let package = Package(
     name: "Sourcery",
     platforms: [
        .macOS(.v10_12),
     ],
     products: [
+        // SPM won't generate .swiftmodule for a target directly used by a product,
+        // hence it can't be imported by tests. Executable target can't be imported too.
         .executable(name: "sourcery", targets: ["SourceryExecutable"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
@@ -54,8 +41,22 @@ let package = Package(
             ]
         ),
         .target(
+            // Xcode doesn't like when a target has the same name as a product but in different case.
             name: "SourceryLib",
-            dependencies: sourceryDependencies,
+            dependencies: [
+                "SourceryFramework",
+                "SourceryRuntime",
+                "SourceryStencil",
+                "SourceryJS",
+                "SourcerySwift",
+                "Commander",
+                "PathKit",
+                "Yams",
+                "StencilSwiftKit",
+                "SwiftSyntax",
+                "XcodeProj",
+                "TryCatch"
+            ],
             path: "Sourcery",
             exclude: [
                 "Templates",
