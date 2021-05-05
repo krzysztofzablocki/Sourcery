@@ -3,30 +3,15 @@
 import PackageDescription
 import Foundation
 
-let sourceryDependencies: [Target.Dependency] = [
-    "SourceryFramework",
-    "SourceryRuntime",
-    "SourceryStencil",
-    "SourceryJS",
-    "SourcerySwift",
-    "Commander",
-    "PathKit",
-    "Yams",
-    "StencilSwiftKit",
-    "SwiftSyntax",
-    "XcodeProj",
-    "TryCatch"
-]
-
 let package = Package(
     name: "Sourcery",
     platforms: [
        .macOS(.v10_12),
     ],
     products: [
-        .executable(name: "sourcery", targets: ["Sourcery"]),
-        // For testing purpose. The linker has problems linking against executable.
-        .library(name: "SourceryLib", targets: ["SourceryLib"]),
+        // SPM won't generate .swiftmodule for a target directly used by a product,
+        // hence it can't be imported by tests. Executable target can't be imported too.
+        .executable(name: "sourcery", targets: ["SourceryExecutable"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
@@ -48,43 +33,83 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Sourcery",
-            dependencies: sourceryDependencies,
+            name: "SourceryExecutable",
+            dependencies: ["SourceryLib"],
+            path: "SourceryExecutable",
             exclude: [
-                "Templates",
                 "Info.plist"
             ]
         ),
         .target(
+            // Xcode doesn't like when a target has the same name as a product but in different case.
             name: "SourceryLib",
-            dependencies: sourceryDependencies,
+            dependencies: [
+                "SourceryFramework",
+                "SourceryRuntime",
+                "SourceryStencil",
+                "SourceryJS",
+                "SourcerySwift",
+                "Commander",
+                "PathKit",
+                "Yams",
+                "StencilSwiftKit",
+                "SwiftSyntax",
+                "XcodeProj",
+                "TryCatch"
+            ],
             path: "Sourcery",
             exclude: [
-                "main.swift",
                 "Templates",
+            ]
+        ),
+        .target(
+            name: "SourceryRuntime",
+            path: "SourceryRuntime",
+            exclude: [
+                "Supporting Files/Info.plist"
+            ]
+        ),
+        .target(
+            name: "SourceryUtils",
+            dependencies: [
+                "PathKit"
+            ],
+            path: "SourceryUtils",
+            exclude: [
+                "Supporting Files/Info.plist"
+            ]
+        ),
+        .target(
+            name: "SourceryFramework",
+            dependencies: [
+              "PathKit",
+              "SwiftSyntax",
+              "SourceryUtils",
+              "SourceryRuntime"
+            ],
+            path: "SourceryFramework",
+            exclude: [
                 "Info.plist"
             ]
         ),
-        .target(name: "SourceryRuntime"),
-        .target(name: "SourceryUtils", dependencies: [
-          "PathKit"
-        ]),
-        .target(name: "SourceryFramework", dependencies: [
-          "PathKit",
-          "SwiftSyntax",
-          "SourceryUtils",
-          "SourceryRuntime"
-        ]),
-        .target(name: "SourceryStencil", dependencies: [
-          "PathKit",
-          "SourceryRuntime",
-          "StencilSwiftKit",
-        ]),
+        .target(
+            name: "SourceryStencil",
+            dependencies: [
+              "PathKit",
+              "SourceryRuntime",
+              "StencilSwiftKit",
+            ],
+            path: "SourceryStencil",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
         .target(
             name: "SourceryJS",
             dependencies: [
                 "PathKit"
             ],
+            path: "SourceryJS",
             exclude: [
                 "Info.plist"
             ],
@@ -92,11 +117,18 @@ let package = Package(
                 .copy("Resources/ejs.js")
             ]
         ),
-        .target(name: "SourcerySwift", dependencies: [
-          "PathKit",
-          "SourceryRuntime",
-          "SourceryUtils"
-        ]),
+        .target(
+            name: "SourcerySwift",
+            dependencies: [
+              "PathKit",
+              "SourceryRuntime",
+              "SourceryUtils"
+            ],
+            path: "SourcerySwift",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
         .target(
             name: "CodableContext",
             path: "Templates/Tests",
@@ -194,7 +226,7 @@ func hookInternalSwiftSyntaxParser() {
     if !isFromTerminal {
         package
             .targets
-            .filter { $0.isTest || $0.name == "Sourcery" }
+            .filter { $0.isTest || $0.name == "SourceryLib" }
             .forEach { $0.installSwiftSyntaxParser() }
      }
 }

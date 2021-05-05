@@ -9,6 +9,7 @@
 - Fixes modifier access for things like `isLazy`, `isOptional`, `isConvienceInitializer`, `isFinal`
 - Fixes `isMutable` on subscripts
 - Fixes `open` access parsing
+- Removes symlinks in project, since these can confuse Xcode
 
 ---
 ## 1.4.1
