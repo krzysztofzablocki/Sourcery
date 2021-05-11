@@ -18,7 +18,7 @@ public enum TemplateAnnotationsParser {
         return regex
     }
 
-    public static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false) -> (contents: String, annotatedRanges: AnnotatedRanges) {
+    public static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false, forceParse: [String] = []) -> (contents: String, annotatedRanges: AnnotatedRanges) {
         let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate)
 
         let strigView = StringView(contents)
