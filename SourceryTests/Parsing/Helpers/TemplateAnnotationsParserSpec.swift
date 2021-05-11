@@ -24,7 +24,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                         "var something: Int\n" +
                         "// sourcery:end\n"
 
-                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
+                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source, forceParse: [])
 
                 it("tracks it") {
                     let annotatedRanges = result.annotatedRanges["Type.AutoCoding"]
@@ -47,7 +47,7 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                         "    var something: Int\n" +
                         "    // sourcery:end\n"
 
-                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source)
+                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source, forceParse: [])
 
                 it("tracks it") {
                     let annotatedRanges = result.annotatedRanges["Type.AutoCoding"]

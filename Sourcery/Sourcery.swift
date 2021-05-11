@@ -582,7 +582,7 @@ extension Sourcery {
             Log.benchmark("\t\tProcessing Ranges took \(currentTimestamp() - start)")
         }
         var result = result
-        result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath)
+        result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath, forceParse: forceParse)
         let sourceChanges: [SourceChange]
         (result, sourceChanges) = try processInlineRanges(for: parsingResult, in: result, forceParse: forceParse)
         return (TemplateAnnotationsParser.removingEmptyAnnotations(from: result), sourceChanges)
@@ -664,8 +664,8 @@ extension Sourcery {
         return contentsView.byteRangeToNSRange(ByteRange(location: ByteCount(bytesRange.offset), length: ByteCount(bytesRange.length)))
     }
 
-    private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path) -> String {
-        let files = TemplateAnnotationsParser.parseAnnotations("file", contents: contents, aggregate: true)
+    private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path, forceParse: [String]) -> String {
+        let files = TemplateAnnotationsParser.parseAnnotations("file", contents: contents, aggregate: true, forceParse: forceParse)
 
         files
             .annotatedRanges

@@ -14,7 +14,7 @@ public protocol FileParserType {
     ///   - contents: Contents to parse.
     ///   - path: Path to file.
     /// - Throws: parsing errors.
-    init(contents: String, path: Path?, module: String?) throws
+    init(contents: String, path: Path?, module: String?, forceParse: [String]) throws
 
     /// Parses given file context.
     ///
