@@ -60,6 +60,10 @@ extension TypeName {
         )
     }
 
+    static var Void: TypeName {
+        TypeName(name: "Void")
+    }
+    
     static var `Any`: TypeName {
         TypeName(name: "Any")
     }

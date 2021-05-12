@@ -278,12 +278,6 @@ extension Array where Element == ClosureParameter {
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    @available(*, deprecated, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
-        isConvenienceInitialiser
-    }
-
     // sourcery: skipEquality, skipDescription
     /// Whether method is a convenience initializer
     public var isConvenienceInitializer: Bool {

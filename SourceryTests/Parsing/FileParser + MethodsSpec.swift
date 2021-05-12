@@ -37,6 +37,21 @@ class FileParserMethodsSpec: QuickSpec {
                         MethodParameter(name: "anotherSome", typeName: TypeName(name: "inout String"), isInout: true)
                     ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))
                 }
+                
+                it("extracts methods with inout closure") {
+                    let method = parse(
+                    """
+                    class Foo {
+                        func fooInOut(some: Int, anotherSome: (inout String) -> Void)
+                    }
+                    """
+                    )[0].methods.first
+                    
+                    expect(method).to(equal(Method(name: "fooInOut(some: Int, anotherSome: (inout String) -> Void)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
+                        MethodParameter(name: "some", typeName: TypeName(name: "Int")),
+                        MethodParameter(name: "anotherSome", typeName: TypeName.buildClosure(ClosureParameter(typeName: TypeName.String, isInout: true), returnTypeName: .Void))
+                    ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
+                }
 
                 it("extracts methods with attributes") {
                     let methods = parse("""
