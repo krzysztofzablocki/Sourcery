@@ -507,23 +507,11 @@ extension Sourcery {
             return
         }
 
-        guard let rootGroup = linkTo.project.rootGroup else {
-            Log.warning("Unable to find rootGroup for the project")
-            return
-        }
-
         let sourceRoot = linkTo.projectPath.parent()
-        var fileGroup: PBXGroup = rootGroup
-        if let group = linkTo.group {
-            do {
-                if let addedGroup = linkTo.project.addGroup(named: group, to: rootGroup, options: []),
-                   let groupPath = linkTo.project.fullPath(fileElement: addedGroup, sourceRoot: sourceRoot) {
-                    fileGroup = addedGroup
-                    try groupPath.mkpath()
-                }
-            } catch {
-                Log.warning("Failed to create a folder for group '\(fileGroup.name ?? "")'. \(error)")
-            }
+
+        guard let fileGroup = linkTo.project.createGroupIfNeeded(named: linkTo.group, sourceRoot: sourceRoot) else {
+            Log.warning("Unable to create group \(linkTo.group)")
+            return
         }
 
         do {

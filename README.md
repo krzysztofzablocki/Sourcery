@@ -111,6 +111,8 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 
     - _Building with Xcode_
 
+        Generate xcodeproj with `swift package generate-xcodeproj`
+
         Open `Sourcery.xcworkspace` and build with `Sourcery-Release` scheme. This will create `Sourcery.app` in the Derived Data folder. You can copy it to your desired destination and run with `path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery`
 
 ## Documentation
