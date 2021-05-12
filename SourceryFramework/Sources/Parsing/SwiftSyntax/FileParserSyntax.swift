@@ -14,6 +14,7 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
  
     fileprivate var inlineRanges: [String: NSRange]!
     fileprivate var inlineIndentations: [String: String]!
+    fileprivate var forceParse: [String] = []
 
     /// Parses given contents.
     ///
@@ -22,11 +23,12 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
     ///   - contents: Contents to parse.
     ///   - path: Path to file.
     /// - Throws: parsing errors.
-    public init(contents: String, path: Path? = nil, module: String? = nil) throws {
+    public init(contents: String, path: Path? = nil, module: String? = nil, forceParse: [String] = []) throws {
         self.path = path?.string
         self.modifiedDate = path.flatMap({ (try? FileManager.default.attributesOfItem(atPath: $0.string)[.modificationDate]) as? Date })
         self.module = module
         self.initialContents = contents
+        self.forceParse = forceParse
     }
 
     /// Parses given file context.
@@ -34,7 +36,7 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
     /// - Returns: All types we could find.
     public func parse() throws -> FileParserResult {
         // Inline handling
-        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents)
+        let inline = TemplateAnnotationsParser.parseAnnotations("inline", contents: initialContents, forceParse: self.forceParse)
         let contents = inline.contents
         inlineRanges = inline.annotatedRanges.mapValues { $0[0].range }
         inlineIndentations = inline.annotatedRanges.mapValues { $0[0].indentation }

@@ -1,6 +1,9 @@
 //
-// Created by Krzysztof Zablocki on 16/01/2017.
-// Copyright (c) 2017 Pixle. All rights reserved.
+//  TemplatesAnnotationParser+ForceParseInlineCodeSpec.swift
+//  SourceryTests
+//
+//  Created by Ranvir Prasad on 07/04/20.
+//  Copyright © 2020 Pixle. All rights reserved.
 //
 
 import Quick
@@ -15,16 +18,16 @@ import Foundation
 @testable import SourceryFramework
 @testable import SourceryRuntime
 
-class TemplateAnnotationsParserSpec: QuickSpec {
+class TemplatesAnnotationParserPassInlineCodeSpec: QuickSpec {
     override func spec() {
         describe("InlineParser") {
             context("without indentation") {
                 let source =
-                        "// sourcery:inline:Type.AutoCoding\n" +
+                    "// sourcery:inline:Type.AutoCoding\n" +
                         "var something: Int\n" +
-                        "// sourcery:end\n"
+                "// sourcery:end\n"
 
-                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source, forceParse: [])
+                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source, aggregate: false, forceParse: ["AutoCoding"])
 
                 it("tracks it") {
                     let annotatedRanges = result.annotatedRanges["Type.AutoCoding"]
@@ -32,10 +35,9 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                     expect(annotatedRanges?.map { $0.indentation }).to(equal([""]))
                 }
 
-                it("removes content between the markup") {
-                    expect(result.contents).to(equal(
-                        "// sourcery:inline:Type.AutoCoding\n" +
-                        String(repeating: " ", count: 19) +
+                it("does not remove content between the markup when force parse parameter is set to template name") {
+                    expect(result.contents).to(equal("// sourcery:inline:Type.AutoCoding\n" +
+                        "var something: Int\n" +
                         "// sourcery:end\n"
                     ))
                 }
@@ -43,11 +45,11 @@ class TemplateAnnotationsParserSpec: QuickSpec {
 
             context("with indentation") {
                 let source =
-                        "    // sourcery:inline:Type.AutoCoding\n" +
+                    "    // sourcery:inline:Type.AutoCoding\n" +
                         "    var something: Int\n" +
-                        "    // sourcery:end\n"
+                "    // sourcery:end\n"
 
-                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source, forceParse: [])
+                let result = TemplateAnnotationsParser.parseAnnotations("inline", contents: source, aggregate: false, forceParse: ["AutoCoding"])
 
                 it("tracks it") {
                     let annotatedRanges = result.annotatedRanges["Type.AutoCoding"]
@@ -55,12 +57,11 @@ class TemplateAnnotationsParserSpec: QuickSpec {
                     expect(annotatedRanges?.map { $0.indentation }).to(equal(["    "]))
                 }
 
-                it("removes content between the markup") {
-                    expect(result.contents).to(equal(
-                        "    // sourcery:inline:Type.AutoCoding\n" +
-                        String(repeating: " ", count: 23) +
+                it("does not remove the content between the markup when force parse parameter is set to template name") {
+                    expect(result.contents).to(equal( "    // sourcery:inline:Type.AutoCoding\n" +
+                        "    var something: Int\n" +
                         "    // sourcery:end\n"
-                    ))
+))
                 }
             }
         }
