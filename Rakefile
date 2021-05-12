@@ -308,7 +308,7 @@ namespace :release do
     # Update command line tool version
     command_line_tool_update_version(new_version)
 
-    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "SourceryFramework.podspec", "SourceryRuntime.podspec", "SourceryUtils.podspec", "Sourcery.xcodeproj/project.pbxproj", VERSION_FILE], "docs: update metadata for #{new_version} release")
+    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "SourceryFramework.podspec", "SourceryRuntime.podspec", "SourceryUtils.podspec", VERSION_FILE], "docs: update metadata for #{new_version} release")
   end
 
   desc 'Create a tag for the project version and push to remote'
