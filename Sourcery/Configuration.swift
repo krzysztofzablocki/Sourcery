@@ -162,12 +162,7 @@ public struct Output {
         self.path = Path(path, relativeTo: relativePath)
 
         if let linkToDict = dict["link"] as? [String: Any] {
-            do {
-                self.linkTo = try LinkTo(dict: linkToDict, relativePath: relativePath)
-            } catch {
-                self.linkTo = nil
-                Log.warning("Can't create linkTo \(error)")
-            }
+            self.linkTo = try? LinkTo(dict: linkToDict, relativePath: relativePath)
         } else {
             self.linkTo = nil
         }
