@@ -146,7 +146,7 @@ output:
   path: <output path>
   link:
     project: <path to the xcodeproj to link to>
-    target: <name of the target to link to>
+    target: <name of the target to link to> // or targets: [target1, target2, ...]
     group: <group in the project to add files to> // by default files are added to project's root group
 ```
 
