@@ -457,7 +457,7 @@ import Foundation
 
     /// Whether type is final 
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        return modifiers.contains { $0.name == "final" }
     }
 
     /// :nodoc:
@@ -4919,46 +4919,40 @@ extension Array where Element == ClosureParameter {
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    @available(*, deprecated, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
-        return attributes[Attribute.Identifier.convenience.name] != nil
-    }
-
     // sourcery: skipEquality, skipDescription
     /// Whether method is a convenience initializer
     public var isConvenienceInitializer: Bool {
-        return attributes[Attribute.Identifier.convenience.name] != nil
+        modifiers.contains { $0.name == "convenience" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is required
     public var isRequired: Bool {
-        return attributes[Attribute.Identifier.required.name] != nil
+        modifiers.contains { $0.name == "required" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is final
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        modifiers.contains { $0.name == "final" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is mutating
     public var isMutating: Bool {
-        return attributes[Attribute.Identifier.mutating.name] != nil
+        modifiers.contains { $0.name == "mutating" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is generic
     public var isGeneric: Bool {
-        return shortName.hasSuffix(">")
+        shortName.hasSuffix(">")
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is optional (in an Objective-C protocol)
     public var isOptional: Bool {
-        return attributes[Attribute.Identifier.optional.name] != nil
+        modifiers.contains { $0.name == "optional" }
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
@@ -5415,7 +5409,7 @@ import Foundation
 
     /// Whether method is final
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        modifiers.contains { $0.name == "final" }
     }
 
     /// Variable read access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
@@ -6902,12 +6896,12 @@ public typealias SourceryVariable = Variable
 
     /// Whether variable is final or not
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        return modifiers.contains { $0.name == "final" }
     }
 
     /// Whether variable is lazy or not
     public var isLazy: Bool {
-        return attributes[Attribute.Identifier.lazy.name] != nil
+        return modifiers.contains { $0.name == "lazy" }
     }
 
     /// Reference to type name where the variable is defined,
