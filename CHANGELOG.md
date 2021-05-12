@@ -1,7 +1,7 @@
 # Sourcery CHANGELOG
 
 ---
-## Master
+## 1.4.2
 
 ## Fixes
 - Fix a test failing on macOS 11.3
