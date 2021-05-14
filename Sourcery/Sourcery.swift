@@ -510,7 +510,7 @@ extension Sourcery {
         let sourceRoot = linkTo.projectPath.parent()
 
         guard let fileGroup = linkTo.project.createGroupIfNeeded(named: linkTo.group, sourceRoot: sourceRoot) else {
-            Log.warning("Unable to create group \(linkTo.group)")
+            Log.warning("Unable to create group \(String(describing: linkTo.group))")
             return
         }
 
