@@ -59,6 +59,13 @@ class FileParserVariableSpec: QuickSpec {
                     expect(variable("private(set) var name: String")?.isMutable).to(beTrue())
                     expect(variable("var name: String { return \"\" }")?.isMutable).to(beFalse())
                 }
+                
+                it("reports variable has a setter") {
+                    expect(variable("var name: String { get { return \"Test\" } set { newValue } }")?.hasSetter).to(beTrue())
+                    expect(variable("var name: String { get { return \"Test\" } }")?.hasSetter).to(beFalse())
+                    expect(variable("var name: String = \"\"")?.hasSetter).to(beFalse())
+                    expect(variable("var name: String")?.hasSetter).to(beFalse())
+                }
 
                 it("extracts standard property correctly") {
                     expect(variable("var name: String")).to(equal(Variable(name: "name", typeName: TypeName(name: "String"), accessLevel: (read: .internal, write: .internal), isComputed: false)))

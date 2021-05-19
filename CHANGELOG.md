@@ -1,6 +1,14 @@
 # Sourcery CHANGELOG
 
 ---
+## 1.4.3
+
+## Fixes
+
+## New Feature
+- Added new `hasSetter` property to `Variable`.
+
+---
 ## 1.4.2
 
 ## Fixes
