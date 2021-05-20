@@ -240,7 +240,7 @@ public struct Configuration {
         }
         self.templates = templates
 
-        self.forceParse = dict["force-parse"] as? [String] ?? []
+        self.forceParse = dict["forceParse"] as? [String] ?? []
 
         if let output = dict["output"] as? String {
             self.output = Output(Path(output, relativeTo: relativePath))

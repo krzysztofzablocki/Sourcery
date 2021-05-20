@@ -8,13 +8,8 @@ public protocol FileParserType {
     var modifiedDate: Date? { get }
 
     /// Creates parser for a given contents and path.
-    ///
-    /// - Parameters:
-    ///   - verbose: Whether it should log verbose
-    ///   - contents: Contents to parse.
-    ///   - path: Path to file.
     /// - Throws: parsing errors.
-    init(contents: String, path: Path?, module: String?, forceParse: [String]) throws
+    init(contents: String, forceParse: [String], path: Path?, module: String?) throws
 
     /// Parses given file context.
     ///
@@ -28,9 +23,9 @@ public enum ParserEngine {
 
 public var parserEngine: ParserEngine = .swiftSyntax
 
-public func makeParser(for contents: String, path: Path? = nil, module: String? = nil) throws -> FileParserType {
+public func makeParser(for contents: String, forceParse: [String] = [], path: Path? = nil, module: String? = nil) throws -> FileParserType {
     switch parserEngine {
     case .swiftSyntax:
-        return try FileParserSyntax(contents: contents, path: path, module: module)
+        return try FileParserSyntax(contents: contents, forceParse: forceParse, path: path, module: module)
     }
 }

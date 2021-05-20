@@ -61,7 +61,7 @@ public enum TemplateAnnotationsParser {
             } else {
                 annotatedRanges[name] = [(range: range, indentation: indentation)]
             }
-            let rangeToBeRemoved = !forceParse.contains(where: { name.hasSuffix("." + $0) })
+            let rangeToBeRemoved = !forceParse.contains(where: { name.hasSuffix("." + $0) || name == $0 })
             if rangeToBeRemoved {
                 rangesToReplace.insert(range)
             }

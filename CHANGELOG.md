@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## Master
+## Fixes
+- correct passing `force-parse` argument to specific file parsers and renames it to `forceParse` to align with other naming
+
 ---
 ## 1.4.2
 

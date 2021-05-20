@@ -17,13 +17,8 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
     fileprivate var forceParse: [String] = []
 
     /// Parses given contents.
-    ///
-    /// - Parameters:
-    ///   - verbose: Whether it should log verbose
-    ///   - contents: Contents to parse.
-    ///   - path: Path to file.
     /// - Throws: parsing errors.
-    public init(contents: String, path: Path? = nil, module: String? = nil, forceParse: [String] = []) throws {
+    public init(contents: String, forceParse: [String] = [], path: Path? = nil, module: String? = nil) throws {
         self.path = path?.string
         self.modifiedDate = path.flatMap({ (try? FileManager.default.attributesOfItem(atPath: $0.string)[.modificationDate]) as? Date })
         self.module = module

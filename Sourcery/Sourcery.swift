@@ -297,7 +297,7 @@ extension Sourcery {
                         case .isCodeGenerated:
                             return FileParserResult(path: path.string, module: module, types: [], functions: [])
                         case .approved:
-                            return try makeParser(for: content, path: path, module: module).parse()
+                            return try makeParser(for: content, forceParse: forceParse, path: path, module: module).parse()
                         }
                     })
                 }
