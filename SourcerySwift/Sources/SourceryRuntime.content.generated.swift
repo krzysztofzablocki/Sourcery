@@ -1628,6 +1628,7 @@ extension MethodParameter {
         string += "name = \\(String(describing: self.name)), "
         string += "typeName = \\(String(describing: self.typeName)), "
         string += "`inout` = \\(String(describing: self.`inout`)), "
+        string += "isVariadic = \\(String(describing: self.isVariadic)), "
         string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
         string += "defaultValue = \\(String(describing: self.defaultValue)), "
         string += "annotations = \\(String(describing: self.annotations)), "
@@ -2106,6 +2107,7 @@ extension MethodParameter: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
+        results.append(contentsOf: DiffableResult(identifier: "isVariadic").trackDifference(actual: self.isVariadic, expected: castObject.isVariadic))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         return results
@@ -2969,6 +2971,7 @@ extension MethodParameter {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
+        if self.isVariadic != rhs.isVariadic { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         return true
@@ -3337,6 +3340,7 @@ extension MethodParameter {
         hasher.combine(self.name)
         hasher.combine(self.typeName)
         hasher.combine(self.`inout`)
+        hasher.combine(self.isVariadic)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
         return hasher.finalize()
@@ -4299,6 +4303,7 @@ extension Method: MethodAutoJSExport {}
     var name: String { get }
     var typeName: TypeName { get }
     var `inout`: Bool { get }
+    var isVariadic: Bool { get }
     var type: Type? { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
@@ -4659,6 +4664,9 @@ public typealias SourceryMethod = Method
 
     /// Parameter flag whether it's inout or not
     public let `inout`: Bool
+    
+    /// Is this variadic parameter?
+    public let isVariadic: Bool
 
     // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
@@ -4676,7 +4684,7 @@ public typealias SourceryMethod = Method
     public var annotations: Annotations = [:]
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -4684,10 +4692,11 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.isVariadic = isVariadic
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -4695,6 +4704,7 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.isVariadic = isVariadic
     }
 
     public var asSource: String {
@@ -4718,6 +4728,7 @@ public typealias SourceryMethod = Method
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.`inout` = aDecoder.decode(forKey: "`inout`")
+            self.isVariadic = aDecoder.decode(forKey: "isVariadic")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
@@ -4729,6 +4740,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.`inout`, forKey: "`inout`")
+            aCoder.encode(self.isVariadic, forKey: "isVariadic")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")

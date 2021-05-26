@@ -168,6 +168,15 @@ class FileParserMethodsSpec: QuickSpec {
                                 ])
                             ]))
                     }
+                    
+                    it("extracts method with variadic parameter properly") {
+                        expect(parse("class Foo { func foo(bar: Int...) {} }")).to(equal([
+                            Class(name: "Foo", methods: [
+                                Method(name: "foo(bar: Int...)", selectorName: "foo(bar:)", parameters: [
+                                        MethodParameter(name: "bar", typeName: TypeName(name: "Int"), isVariadic: true)], definedInTypeName: TypeName(name: "Foo"))
+                                ])
+                            ]))
+                    }
 
                     it("extracts method with single set parameter properly") {
                         let type = parse("protocol Foo { func someMethod(aValue: Set<Int>) }").first

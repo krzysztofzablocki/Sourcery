@@ -18,6 +18,9 @@ public typealias SourceryMethod = Method
 
     /// Parameter flag whether it's inout or not
     public let `inout`: Bool
+    
+    /// Is this variadic parameter?
+    public let isVariadic: Bool
 
     // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
@@ -35,7 +38,7 @@ public typealias SourceryMethod = Method
     public var annotations: Annotations = [:]
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -43,10 +46,11 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.isVariadic = isVariadic
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -54,10 +58,11 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.isVariadic = isVariadic
     }
 
     public var asSource: String {
-        let typeSuffix = ": \(`inout` ? "inout " : "")\(typeName.asSource)\(defaultValue.map { " = \($0)" } ?? "")"
+        let typeSuffix = ": \(`inout` ? "inout " : "")\(typeName.asSource)\(defaultValue.map { " = \($0)" } ?? "")" + (isVariadic ? "..." : "")
         guard argumentLabel != name else {
             return name + typeSuffix
         }
@@ -77,6 +82,7 @@ public typealias SourceryMethod = Method
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.`inout` = aDecoder.decode(forKey: "`inout`")
+            self.isVariadic = aDecoder.decode(forKey: "isVariadic")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
@@ -88,6 +94,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.`inout`, forKey: "`inout`")
+            aCoder.encode(self.isVariadic, forKey: "isVariadic")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")

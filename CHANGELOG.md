@@ -1,6 +1,9 @@
 # Sourcery CHANGELOG
 
 ## Master
+## Features
+- adds support for variadic parameters in functions
+
 ## Fixes
 - correct passing `force-parse` argument to specific file parsers and renames it to `forceParse` to align with other naming
 - corrects `isMutable` regression on protocol variables #964

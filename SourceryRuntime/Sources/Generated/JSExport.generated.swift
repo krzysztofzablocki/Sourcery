@@ -280,6 +280,7 @@ extension Method: MethodAutoJSExport {}
     var name: String { get }
     var typeName: TypeName { get }
     var `inout`: Bool { get }
+    var isVariadic: Bool { get }
     var type: Type? { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }

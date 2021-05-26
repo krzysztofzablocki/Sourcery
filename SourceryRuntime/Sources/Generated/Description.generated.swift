@@ -184,6 +184,7 @@ extension MethodParameter {
         string += "name = \(String(describing: self.name)), "
         string += "typeName = \(String(describing: self.typeName)), "
         string += "`inout` = \(String(describing: self.`inout`)), "
+        string += "isVariadic = \(String(describing: self.isVariadic)), "
         string += "typeAttributes = \(String(describing: self.typeAttributes)), "
         string += "defaultValue = \(String(describing: self.defaultValue)), "
         string += "annotations = \(String(describing: self.annotations)), "

@@ -20,7 +20,8 @@ extension MethodParameter {
           type: nil,
           defaultValue: node.defaultArgument?.value.description.trimmed,
           annotations: node.firstToken.map { annotationsParser.annotations(fromToken: $0) } ?? [:],
-          isInout: specifiers.isInOut
+          isInout: specifiers.isInOut,
+          isVariadic: node.ellipsis != nil
         )
     }
 }
