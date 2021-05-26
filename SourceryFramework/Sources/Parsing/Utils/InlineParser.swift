@@ -18,8 +18,8 @@ public enum TemplateAnnotationsParser {
         return regex
     }
 
-    public static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false) -> (contents: String, annotatedRanges: AnnotatedRanges) {
-        let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate)
+    public static func parseAnnotations(_ annotation: String, contents: String, aggregate: Bool = false, forceParse: [String]) -> (contents: String, annotatedRanges: AnnotatedRanges) {
+        let (annotatedRanges, rangesToReplace) = annotationRanges(annotation, contents: contents, aggregate: aggregate, forceParse: forceParse)
 
         let strigView = StringView(contents)
         var bridged = contents.bridge()
@@ -31,7 +31,7 @@ public enum TemplateAnnotationsParser {
         return (bridged as String, annotatedRanges)
     }
 
-    public static func annotationRanges(_ annotation: String, contents: String, aggregate: Bool = false) -> (annotatedRanges: AnnotatedRanges, rangesToReplace: Set<NSRange>) {
+    public static func annotationRanges(_ annotation: String, contents: String, aggregate: Bool = false, forceParse: [String]) -> (annotatedRanges: AnnotatedRanges, rangesToReplace: Set<NSRange>) {
         let bridged = contents.bridge()
         let regex = try? self.regex(annotation: annotation)
 
@@ -61,9 +61,11 @@ public enum TemplateAnnotationsParser {
             } else {
                 annotatedRanges[name] = [(range: range, indentation: indentation)]
             }
-            rangesToReplace.insert(range)
+            let rangeToBeRemoved = !forceParse.contains(where: { name.hasSuffix("." + $0) || name == $0 })
+            if rangeToBeRemoved {
+                rangesToReplace.insert(range)
+            }
         }
-
         return (annotatedRanges, rangesToReplace)
     }
 

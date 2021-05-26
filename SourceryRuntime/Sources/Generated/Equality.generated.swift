@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.4.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -205,6 +205,7 @@ extension MethodParameter {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
+        if self.isVariadic != rhs.isVariadic { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         return true
@@ -573,6 +574,7 @@ extension MethodParameter {
         hasher.combine(self.name)
         hasher.combine(self.typeName)
         hasher.combine(self.`inout`)
+        hasher.combine(self.isVariadic)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
         return hasher.finalize()

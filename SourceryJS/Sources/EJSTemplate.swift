@@ -1,6 +1,33 @@
 import JavaScriptCore
 import PathKit
 
+private extension Foundation.Bundle {
+    /// Returns the resource bundle associated with the current Swift module.
+    static var jsModule: Bundle = {
+        let bundleName = "Sourcery_SourceryJS"
+
+        let candidates = [
+            // Bundle should be present here when the package is linked into an App.
+            Bundle.main.resourceURL,
+
+            // Bundle should be present here when the package is linked into a framework.
+            Bundle(for: EJSTemplate.self).resourceURL,
+
+            // For command-line tools.
+            Bundle.main.bundleURL,
+        ]
+
+        for candidate in candidates {
+            let bundlePath = candidate?.appendingPathComponent(bundleName + ".bundle")
+            if let bundle = bundlePath.flatMap(Bundle.init(url:)) {
+                return bundle
+            }
+        }
+
+        return Bundle(for: EJSTemplate.self)
+    }()
+}
+
 open class EJSTemplate {
 
     public struct Error: Swift.Error, CustomStringConvertible {
@@ -13,7 +40,7 @@ open class EJSTemplate {
     /// Should be set to the path of EJS before rendering any template.
     /// By default reads ejs.js from framework bundle.
     #if SWIFT_PACKAGE
-    static let bundle = Bundle.module
+    static let bundle = Bundle.jsModule
     #else
     static let bundle = Bundle(for: EJSTemplate.self)
     #endif

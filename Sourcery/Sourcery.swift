@@ -100,7 +100,7 @@ public class Sourcery {
                 result = try self.parse(from: paths, forceParse: forceParse, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
-            try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result)
+            try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result, forceParse: forceParse)
             return result
         }
 
@@ -155,7 +155,7 @@ public class Sourcery {
                         } else {
                             Log.info("Templates changed: ")
                         }
-                        try self.generate(source: source, templatePaths: Paths(include: [templatesPath]), output: output, parsingResult: &result)
+                        try self.generate(source: source, templatePaths: Paths(include: [templatesPath]), output: output, parsingResult: &result, forceParse: forceParse)
                     } catch {
                         Log.error(error)
                     }
@@ -297,7 +297,7 @@ extension Sourcery {
                         case .isCodeGenerated:
                             return FileParserResult(path: path.string, module: module, types: [], functions: [])
                         case .approved:
-                            return try makeParser(for: content, path: path, module: module).parse()
+                            return try makeParser(for: content, forceParse: forceParse, path: path, module: module).parse()
                         }
                     })
                 }
@@ -403,7 +403,7 @@ extension Sourcery {
     private typealias SourceChange = (path: String, rangeInFile: NSRange, newRangeInFile: NSRange)
     private typealias GenerationResult = (String, [SourceChange])
 
-    fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: inout ParsingResult) throws {
+    fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: inout ParsingResult, forceParse: [String]) throws {
         let generationStart = currentTimestamp()
 
         Log.info("Loading templates...")
@@ -416,7 +416,7 @@ extension Sourcery {
 
         if output.isDirectory {
             try allTemplates.forEach { template in
-                let (result, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path)
+                let (result, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path, forceParse: forceParse)
                 updateRanges(in: &parsingResult, sourceChanges: sourceChanges)
                 let outputPath = output.path + generatedPath(for: template.sourcePath)
                 try self.output(result: result, to: outputPath)
@@ -430,7 +430,7 @@ extension Sourcery {
         } else {
             let result = try allTemplates.reduce((contents: "", parsingResult: parsingResult)) { state, template in
                 var (result, parsingResult) = state
-                let (generatedCode, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path)
+                let (generatedCode, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path, forceParse: forceParse)
                 result += "\n" + generatedCode
                 updateRanges(in: &parsingResult, sourceChanges: sourceChanges)
                 return (result, parsingResult)
@@ -513,23 +513,11 @@ extension Sourcery {
             return
         }
 
-        guard let rootGroup = linkTo.project.rootGroup else {
-            Log.warning("Unable to find rootGroup for the project")
-            return
-        }
-
         let sourceRoot = linkTo.projectPath.parent()
-        var fileGroup: PBXGroup = rootGroup
-        if let group = linkTo.group {
-            do {
-                if let addedGroup = linkTo.project.addGroup(named: group, to: rootGroup, options: []),
-                   let groupPath = linkTo.project.fullPath(fileElement: addedGroup, sourceRoot: sourceRoot) {
-                    fileGroup = addedGroup
-                    try groupPath.mkpath()
-                }
-            } catch {
-                Log.warning("Failed to create a folder for group '\(fileGroup.name ?? "")'. \(error)")
-            }
+
+        guard let fileGroup = linkTo.project.createGroupIfNeeded(named: linkTo.group, sourceRoot: sourceRoot) else {
+            Log.warning("Unable to create group \(String(describing: linkTo.group))")
+            return
         }
 
         do {
@@ -559,13 +547,13 @@ extension Sourcery {
         }
     }
 
-    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path) throws -> GenerationResult {
+    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path, forceParse: [String]) throws -> GenerationResult {
         guard watcherEnabled else {
             let generationStart = currentTimestamp()
             let result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
             Log.benchmark("\tGenerating \(template.sourcePath.lastComponent) took \(currentTimestamp() - generationStart)")
 
-            return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
+            return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse)
         }
 
         var result: String = ""
@@ -579,23 +567,23 @@ extension Sourcery {
             result = error?.description ?? ""
         }, finallyBlock: {})
 
-        return try processRanges(in: parsingResult, result: result, outputPath: outputPath)
+        return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse)
     }
 
-    private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path) throws -> GenerationResult {
+    private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path, forceParse: [String]) throws -> GenerationResult {
         let start = currentTimestamp()
         defer {
             Log.benchmark("\t\tProcessing Ranges took \(currentTimestamp() - start)")
         }
         var result = result
-        result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath)
+        result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath, forceParse: forceParse)
         let sourceChanges: [SourceChange]
-        (result, sourceChanges) = try processInlineRanges(for: parsingResult, in: result)
+        (result, sourceChanges) = try processInlineRanges(for: parsingResult, in: result, forceParse: forceParse)
         return (TemplateAnnotationsParser.removingEmptyAnnotations(from: result), sourceChanges)
     }
 
-    private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String) throws -> GenerationResult {
-        var (annotatedRanges, rangesToReplace) = TemplateAnnotationsParser.annotationRanges("inline", contents: contents)
+    private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String, forceParse: [String]) throws -> GenerationResult {
+        var (annotatedRanges, rangesToReplace) = TemplateAnnotationsParser.annotationRanges("inline", contents: contents, forceParse: forceParse)
 
         typealias MappedInlineAnnotations = (
             range: NSRange,
@@ -670,8 +658,8 @@ extension Sourcery {
         return contentsView.byteRangeToNSRange(ByteRange(location: ByteCount(bytesRange.offset), length: ByteCount(bytesRange.length)))
     }
 
-    private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path) -> String {
-        let files = TemplateAnnotationsParser.parseAnnotations("file", contents: contents, aggregate: true)
+    private func processFileRanges(`for` parsingResult: ParsingResult, in contents: String, outputPath: Path, forceParse: [String]) -> String {
+        let files = TemplateAnnotationsParser.parseAnnotations("file", contents: contents, aggregate: true, forceParse: forceParse)
 
         files
             .annotatedRanges

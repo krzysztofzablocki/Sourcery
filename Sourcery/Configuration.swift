@@ -162,7 +162,12 @@ public struct Output {
         self.path = Path(path, relativeTo: relativePath)
 
         if let linkToDict = dict["link"] as? [String: Any] {
-            self.linkTo = try? LinkTo(dict: linkToDict, relativePath: relativePath)
+            do {
+                self.linkTo = try LinkTo(dict: linkToDict, relativePath: relativePath)
+            } catch {
+                self.linkTo = nil
+                Log.warning(error)
+            }
         } else {
             self.linkTo = nil
         }
@@ -243,7 +248,7 @@ public struct Configuration {
         }
         self.templates = templates
 
-        self.forceParse = dict["force-parse"] as? [String] ?? []
+        self.forceParse = dict["forceParse"] as? [String] ?? []
 
         if let output = dict["output"] as? String {
             self.output = Output(Path(output, relativeTo: relativePath))

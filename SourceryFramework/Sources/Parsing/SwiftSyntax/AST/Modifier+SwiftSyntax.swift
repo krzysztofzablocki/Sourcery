@@ -64,7 +64,7 @@ extension Array where Element == Modifier {
         if readAccess == .none {
             readAccess = .default(for: parent)
         }
-        if writeAccess == .none && !(parent is SourceryProtocol) {
+        if writeAccess == .none {
             writeAccess = readAccess
         }
 

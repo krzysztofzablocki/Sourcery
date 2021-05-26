@@ -63,6 +63,7 @@ task :build do
   sh %Q(cp lib_InternalSwiftSyntaxParser.dylib #{CLI_DIR}lib)
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
   `mv #{BUILD_DIR}release/sourcery #{CLI_DIR}bin/`
+  #`mv #{BUILD_DIR}release/Sourcery_SourceryJS.bundle #{CLI_DIR}lib/`
   `install_name_tool -delete_rpath @loader_path #{CLI_DIR}bin/sourcery`
   `install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx #{CLI_DIR}bin/sourcery`
   `install_name_tool -add_rpath "@executable_path/../lib" "#{CLI_DIR}bin/sourcery"`
@@ -307,7 +308,7 @@ namespace :release do
     # Update command line tool version
     command_line_tool_update_version(new_version)
 
-    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "SourceryFramework.podspec", "SourceryRuntime.podspec", "SourceryUtils.podspec", "Sourcery.xcodeproj/project.pbxproj", VERSION_FILE], "docs: update metadata for #{new_version} release")
+    manual_commit(["CHANGELOG.md", "Sourcery.podspec", "SourceryFramework.podspec", "SourceryRuntime.podspec", "SourceryUtils.podspec", VERSION_FILE], "docs: update metadata for #{new_version} release")
   end
 
   desc 'Create a tag for the project version and push to remote'

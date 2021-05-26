@@ -457,7 +457,7 @@ import Foundation
 
     /// Whether type is final 
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        return modifiers.contains { $0.name == "final" }
     }
 
     /// :nodoc:
@@ -599,7 +599,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.4.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -1442,7 +1442,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.4.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1628,6 +1628,7 @@ extension MethodParameter {
         string += "name = \\(String(describing: self.name)), "
         string += "typeName = \\(String(describing: self.typeName)), "
         string += "`inout` = \\(String(describing: self.`inout`)), "
+        string += "isVariadic = \\(String(describing: self.isVariadic)), "
         string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
         string += "defaultValue = \\(String(describing: self.defaultValue)), "
         string += "annotations = \\(String(describing: self.annotations)), "
@@ -1868,7 +1869,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.4.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -2106,6 +2107,7 @@ extension MethodParameter: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
+        results.append(contentsOf: DiffableResult(identifier: "isVariadic").trackDifference(actual: self.isVariadic, expected: castObject.isVariadic))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         return results
@@ -2762,7 +2764,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.4.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -2969,6 +2971,7 @@ extension MethodParameter {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
+        if self.isVariadic != rhs.isVariadic { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         return true
@@ -3337,6 +3340,7 @@ extension MethodParameter {
         hasher.combine(self.name)
         hasher.combine(self.typeName)
         hasher.combine(self.`inout`)
+        hasher.combine(self.isVariadic)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
         return hasher.finalize()
@@ -4017,7 +4021,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.4.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -4299,6 +4303,7 @@ extension Method: MethodAutoJSExport {}
     var name: String { get }
     var typeName: TypeName { get }
     var `inout`: Bool { get }
+    var isVariadic: Bool { get }
     var type: Type? { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
@@ -4659,6 +4664,9 @@ public typealias SourceryMethod = Method
 
     /// Parameter flag whether it's inout or not
     public let `inout`: Bool
+    
+    /// Is this variadic parameter?
+    public let isVariadic: Bool
 
     // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
@@ -4676,7 +4684,7 @@ public typealias SourceryMethod = Method
     public var annotations: Annotations = [:]
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -4684,10 +4692,11 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.isVariadic = isVariadic
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
@@ -4695,6 +4704,7 @@ public typealias SourceryMethod = Method
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.isVariadic = isVariadic
     }
 
     public var asSource: String {
@@ -4718,6 +4728,7 @@ public typealias SourceryMethod = Method
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.`inout` = aDecoder.decode(forKey: "`inout`")
+            self.isVariadic = aDecoder.decode(forKey: "isVariadic")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
@@ -4729,6 +4740,7 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.`inout`, forKey: "`inout`")
+            aCoder.encode(self.isVariadic, forKey: "isVariadic")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
@@ -4919,46 +4931,40 @@ extension Array where Element == ClosureParameter {
     /// Whether method is a failable initializer
     public let isFailableInitializer: Bool
 
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    @available(*, deprecated, message: "Use isConvenienceInitializer instead") public var isConvenienceInitialiser: Bool {
-        return attributes[Attribute.Identifier.convenience.name] != nil
-    }
-
     // sourcery: skipEquality, skipDescription
     /// Whether method is a convenience initializer
     public var isConvenienceInitializer: Bool {
-        return attributes[Attribute.Identifier.convenience.name] != nil
+        modifiers.contains { $0.name == "convenience" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is required
     public var isRequired: Bool {
-        return attributes[Attribute.Identifier.required.name] != nil
+        modifiers.contains { $0.name == "required" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is final
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        modifiers.contains { $0.name == "final" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is mutating
     public var isMutating: Bool {
-        return attributes[Attribute.Identifier.mutating.name] != nil
+        modifiers.contains { $0.name == "mutating" }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is generic
     public var isGeneric: Bool {
-        return shortName.hasSuffix(">")
+        shortName.hasSuffix(">")
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is optional (in an Objective-C protocol)
     public var isOptional: Bool {
-        return attributes[Attribute.Identifier.optional.name] != nil
+        modifiers.contains { $0.name == "optional" }
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
@@ -5415,7 +5421,7 @@ import Foundation
 
     /// Whether method is final
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        modifiers.contains { $0.name == "final" }
     }
 
     /// Variable read access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
@@ -6695,7 +6701,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.4.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -6902,12 +6908,12 @@ public typealias SourceryVariable = Variable
 
     /// Whether variable is final or not
     public var isFinal: Bool {
-        return attributes[Attribute.Identifier.final.name] != nil
+        return modifiers.contains { $0.name == "final" }
     }
 
     /// Whether variable is lazy or not
     public var isLazy: Bool {
-        return attributes[Attribute.Identifier.lazy.name] != nil
+        return modifiers.contains { $0.name == "lazy" }
     }
 
     /// Reference to type name where the variable is defined,
