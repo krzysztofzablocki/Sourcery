@@ -123,20 +123,23 @@ public struct Output {
     public struct LinkTo {
         public let project: XcodeProj
         public let projectPath: Path
-        public let target: String
+        public let targets: [String]
         public let group: String?
 
         public init(dict: [String: Any], relativePath: Path) throws {
             guard let project = dict["project"] as? String else {
                 throw Configuration.Error.invalidOutput(message: "No project file path provided.")
             }
-            guard let target = dict["target"] as? String else {
-                throw Configuration.Error.invalidOutput(message: "No target name provided.")
+            if let target = dict["target"] as? String {
+                self.targets = [target]
+            } else if let targets = dict["targets"] as? [String] {
+                self.targets = targets
+            } else {
+                throw Configuration.Error.invalidOutput(message: "No target(s) provided.")
             }
             let projectPath = Path(project, relativeTo: relativePath)
             self.projectPath = projectPath
             self.project = try XcodeProj(path: projectPath)
-            self.target = target
             self.group = dict["group"] as? String
         }
     }

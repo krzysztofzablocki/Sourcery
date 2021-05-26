@@ -7,12 +7,13 @@
 ## Fixes
 - correct passing `force-parse` argument to specific file parsers and renames it to `forceParse` to align with other naming
 - corrects `isMutable` regression on protocol variables #964
+- Added multiple targets to link
+- Fix groups creation
 
 ---
 ## 1.4.2
 
 ## Fixes
-- Fix groups creation
 - Fix a test failing on macOS 11.3
 - Fix generation of inline:auto annotations in files with other inline annotations.
 - Fixes modifier access for things like `isLazy`, `isOptional`, `isConvienceInitializer`, `isFinal`

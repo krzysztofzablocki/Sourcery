@@ -422,7 +422,9 @@ extension Sourcery {
                 try self.output(result: result, to: outputPath)
 
                 if let linkTo = output.linkTo {
-                    link(outputPath, to: linkTo)
+                    linkTo.targets.forEach { target in
+                        link(outputPath, to: linkTo, target: target)
+                    }
                 }
             }
         } else {
@@ -437,7 +439,9 @@ extension Sourcery {
             try self.output(result: result.contents, to: output.path)
 
             if let linkTo = output.linkTo {
-                link(output.path, to: linkTo)
+                linkTo.targets.forEach { target in
+                    link(output.path, to: linkTo, target: target)
+                }
             }
         }
 
@@ -445,7 +449,9 @@ extension Sourcery {
             try self.output(result: contents.joined(separator: "\n"), to: path)
 
             if let linkTo = output.linkTo {
-                link(path, to: linkTo)
+                linkTo.targets.forEach { target in
+                    link(path, to: linkTo, target: target)
+                }
             }
         }
 
@@ -501,9 +507,9 @@ extension Sourcery {
         }
     }
 
-    private func link(_ output: Path, to linkTo: Output.LinkTo) {
-        guard let target = linkTo.project.target(named: linkTo.target) else {
-            Log.warning("Unable to find target \(linkTo.target)")
+    private func link(_ output: Path, to linkTo: Output.LinkTo, target: String) {
+        guard let target = linkTo.project.target(named: target) else {
+            Log.warning("Unable to find target \(target)")
             return
         }
 
