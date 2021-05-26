@@ -159,7 +159,12 @@ public struct Output {
         self.path = Path(path, relativeTo: relativePath)
 
         if let linkToDict = dict["link"] as? [String: Any] {
-            self.linkTo = try? LinkTo(dict: linkToDict, relativePath: relativePath)
+            do {
+                self.linkTo = try LinkTo(dict: linkToDict, relativePath: relativePath)
+            } catch {
+                self.linkTo = nil
+                Log.warning(error)
+            }
         } else {
             self.linkTo = nil
         }

@@ -91,3 +91,5 @@ docs/undocumented.json
 
 # Local binary distributions downloads
 distributions/
+
+Sourcery.xcodeproj
