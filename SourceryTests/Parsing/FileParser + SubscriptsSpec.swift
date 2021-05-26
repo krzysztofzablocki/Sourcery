@@ -78,6 +78,12 @@ class FileParserSubscriptsSpec: QuickSpec {
 
                     expect(subscripts?.first?.isMutable).to(beTrue())
                     expect(subscripts?.last?.isMutable).to(beFalse())
+                    
+                    expect(subscripts?.first?.readAccess).to(equal("internal"))
+                    expect(subscripts?.first?.writeAccess).to(equal("internal"))
+
+                    expect(subscripts?.last?.readAccess).to(equal("internal"))
+                    expect(subscripts?.last?.writeAccess).to(equal(""))
                 }
 
                 it("extracts subscript annotations") {

@@ -102,6 +102,36 @@ class FileParserVariableSpec: QuickSpec {
                                 )
                         ))
                 }
+                
+                context("given variable defined in protocol") {
+                    func variable(_ code: String) -> Variable? {
+                        let wrappedCode =
+                            """
+                            protocol Wrapper {
+                                \(code)
+                            }
+                            """
+                        guard let parser = try? makeParser(for: wrappedCode) else { fail(); return nil }
+                        let result = try? parser.parse()
+                        let variable = result?.types.first?.variables.first
+                        variable?.definedInType = nil
+                        variable?.definedInTypeName = nil
+                        return variable
+                    }
+                    
+                    it("reports variable mutability") {
+                        expect(variable("var name: String { get } ")?.isMutable).to(beFalse())
+                        expect(variable("var name: String { get set }")?.isMutable).to(beTrue())
+                        
+                        let internalVariable = variable("var name: String { get set }")
+                        expect(internalVariable?.writeAccess).to(equal("internal"))
+                        expect(internalVariable?.readAccess).to(equal("internal"))
+
+                        let publicVariable = variable("public var name: String { get set }")
+                        expect(publicVariable?.writeAccess).to(equal("public"))
+                        expect(publicVariable?.readAccess).to(equal("public"))
+                    }
+                }
 
                 context("given variable with initial value") {
                     it("extracts default value") {
