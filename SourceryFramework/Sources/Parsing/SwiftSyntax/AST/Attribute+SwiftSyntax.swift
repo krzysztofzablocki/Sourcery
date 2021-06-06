@@ -31,17 +31,11 @@ extension Attribute {
             .trimmed ?? ""
 
         let arguments = attribute.argumentList?
-            .reduce(into: [String: NSObject]()) { arguments, syntax in
-                var iterator = syntax.tokens.makeIterator()
-                guard let argumentLabelToken = iterator.next(),
-                      let colonToken = iterator.next(),
-                      case let .identifier(argumentLabel) = argumentLabelToken.tokenKind,
-                      colonToken.tokenKind == .colon
-                else { return }
-
-                var valueText = ""
-                while let nextToken = iterator.next() { valueText += nextToken.text.trimmed }
-                arguments[argumentLabel.trimmed] = valueText.replacingOccurrences(of: "\"", with: "").trimmed as NSString
+            .enumerated()
+            .reduce(into: [String: NSObject]()) { arguments, indexAndSyntax in
+                let (index, syntax) = indexAndSyntax
+                let (key, value) = syntax.keyAndValue
+                arguments[key ?? "\(index)"] = value as NSString
             } ?? [:]
 
         self.init(name: nameText, arguments: arguments, description: attribute.withoutTrivia().description.trimmed)
@@ -78,5 +72,50 @@ private extension TokenKind {
         default:
             return false
         }
+    }
+
+    var isComma: Bool {
+        switch self {
+        case .comma:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+private extension TupleExprElementSyntax {
+    /// Returns key and value strings for a tuple element. If the tuple does not have an argument label,
+    /// `nil` will be returned for the key.
+    var keyAndValue: (key: String?, value: String) {
+        var iterator = tokens.makeIterator()
+        if let argumentLabelToken = iterator.next(),
+           let colonToken = iterator.next(),
+           case let .identifier(argumentLabel) = argumentLabelToken.tokenKind,
+           colonToken.tokenKind == .colon {
+            // This argument has a label
+            let valueText = getConcatenatedTokenText(iterator: &iterator)
+            return (argumentLabel.trimmed, valueText)
+        } else {
+            // This argument does not have a label
+            iterator = tokens.makeIterator()
+            let valueText = getConcatenatedTokenText(iterator: &iterator)
+            return (nil, valueText)
+        }
+    }
+
+    private func getConcatenatedTokenText(iterator: inout TokenSequence.Iterator) -> String {
+        var valueText = ""
+        var lastTokenWasComma = false
+        while let nextToken = iterator.next() {
+            lastTokenWasComma = nextToken.tokenKind.isComma
+            valueText += nextToken.text.trimmed
+        }
+
+        valueText = valueText.replacingOccurrences(of: "\"", with: "").trimmed
+        if lastTokenWasComma && valueText.hasSuffix(",") {
+            valueText.remove(at: valueText.index(before: valueText.endIndex))
+        }
+        return valueText
     }
 }
