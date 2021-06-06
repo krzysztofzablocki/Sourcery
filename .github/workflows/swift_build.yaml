@@ -1,0 +1,13 @@
+name: Swift build
+
+on: push
+
+jobs:
+  swift-build:
+    runs-on: macos-latest
+    steps:
+    - name: Build sourcery
+      uses: Cyberbeni/install-swift-tool@v2
+      with:
+        url: https://github.com/Cyberbeni/Sourcery
+        branch: testing
