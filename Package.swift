@@ -219,8 +219,9 @@ let package = Package(
 
 hookInternalSwiftSyntaxParser()
 
-/// We need to manually add an -rpath to the project so the tests can run via Xcode
-/// If we are running from console (swift build & friend) we don't need to do it
+/// We need to manually add an -rpath to the project so the tests can run via Xcode/xcodebuild
+/// If we are using the swift CLI then the Swift version should match with SwiftSyntax's version
+/// or we have to manually fix the rpath (see the build task in the Rakefile)
 func hookInternalSwiftSyntaxParser() {
     let pathRegex = try! NSRegularExpression(pattern: "^\\/Applications\\/Xcode[^:\\/]*\\.app\\/Contents\\/Developer\\/usr\\/bin:")
     let path = ProcessInfo.processInfo.environment["PATH"] ?? ""
@@ -230,7 +231,7 @@ func hookInternalSwiftSyntaxParser() {
             .targets
             .filter { $0.isTest || $0.name == "SourceryLib" }
             .forEach { $0.installSwiftSyntaxParser() }
-     }
+    }
 }
 
 extension PackageDescription.Target {
