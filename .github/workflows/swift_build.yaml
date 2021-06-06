@@ -11,3 +11,10 @@ jobs:
       with:
         url: https://github.com/Cyberbeni/Sourcery
         branch: testing
+    - name: Test tool in path
+      run: |
+        echo "class TestInput {}" > ./input.swift
+        echo "{% for type in types.all %}{{ type.name }}{% endfor %}" > ./template.stencil
+        sourcery --disableCache --sources ./input.swift --templates ./template.stencil --output ./result.swift
+        test -f ./result.swift
+        test -n "$(grep "TestInput" < ./result.swift)"
