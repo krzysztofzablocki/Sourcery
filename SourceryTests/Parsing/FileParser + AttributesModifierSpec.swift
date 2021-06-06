@@ -192,6 +192,22 @@ class FileParserAttributesSpec: QuickSpec {
                 ]))
             }
 
+            it("extracts property wrapper attributes") {
+                expect(parse("""
+                    class Foo {
+                        @UserDefaults(key: "user_name", 123)
+                        var name: String = "abc"
+                    }
+                """).first?.variables.first?.attributes).to(equal([
+                    "UserDefaults": [
+                        Attribute(
+                            name: "UserDefaults",
+                            arguments: ["key": "user_name" as NSString, "1": "123" as NSString],
+                            description: "@UserDefaults(key: \"user_name\", 123)"
+                        )
+                    ]
+                ]))
+            }
         }
     }
 }
