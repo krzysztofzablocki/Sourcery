@@ -222,6 +222,18 @@ hookInternalSwiftSyntaxParser()
 /// We need to manually add an -rpath to the project so the tests can run via Xcode
 /// If we are running from console (swift build & friend) we don't need to do it
 func hookInternalSwiftSyntaxParser() {
+    print("""
+    
+    --------------------
+    PROCESS ARGUMENTS:
+    \(ProcessInfo.processInfo.arguments.joined(separator: "\n"))
+    --------------------
+    """)
+    print("""
+    PROCESS ENVIRONMENT:
+    \(ProcessInfo.processInfo.environment.map { "\"\($0.key)\": \"\($0.value)\"" }.joined(separator: "\n"))
+    --------------------
+    """)
     let isFromTerminal = ProcessInfo.processInfo.environment.values.contains("/usr/bin/swift") || ProcessInfo.processInfo.environment.values.contains(where: { $0.contains("sourcekitten") || $0.contains("rake") || $0.contains("bin/bundle") })
     if !isFromTerminal {
         package
