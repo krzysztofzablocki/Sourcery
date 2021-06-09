@@ -58,6 +58,7 @@ extension Variable {
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
           isComputed: isComputed,
           isStatic: isStatic,
+          hasSetter: hadSetter,
           defaultValue: node.initializer?.value.description.trimmingCharacters(in: .whitespacesAndNewlines),
           attributes: Attribute.from(variableNode.attributes),
           modifiers: modifiers.map(SourceryModifier.init),

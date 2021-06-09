@@ -44,6 +44,9 @@ public typealias SourceryVariable = Variable
     public var isMutable: Bool {
         return writeAccess != AccessLevel.none.rawValue
     }
+    
+    /// Whether variable has both a setter and getter
+    public var hasSetter: Bool
 
     /// Variable default value expression
     public var defaultValue: String?
@@ -88,6 +91,7 @@ public typealias SourceryVariable = Variable
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
                 isComputed: Bool = false,
                 isStatic: Bool = false,
+                hasSetter: Bool = false,
                 defaultValue: String? = nil,
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
@@ -99,6 +103,7 @@ public typealias SourceryVariable = Variable
         self.type = type
         self.isComputed = isComputed
         self.isStatic = isStatic
+        self.hasSetter = hasSetter
         self.defaultValue = defaultValue
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
@@ -119,6 +124,7 @@ public typealias SourceryVariable = Variable
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
+            self.hasSetter = aDecoder.decode(forKey: "hasSetter")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -136,6 +142,7 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
+            aCoder.encode(self.hasSetter, forKey: "hasSetter")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.attributes, forKey: "attributes")
