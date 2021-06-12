@@ -101,6 +101,13 @@ Sourcery supports annotating your classes and variables with special annotations
 var precomputedHash: Int
 ```
 
+You can also add attributes to the end of a line of code:
+
+```swift
+var firstVariable: Int // default = 1
+var secondVariable: Int // default = 2
+```
+
 If you want to attribute multiple items with same attributes, you can use section annotations `sourcery:begin` and `sourcery:end`:
 
 ```swift
@@ -132,7 +139,8 @@ This will effectively annotate with `decoding.key` and `decoding.default` annota
 - Multiple annotations values with the same key are merged into array
 - You can interleave annotations with documentation
 - Sourcery scans all `sourcery:` annotations in the given comment block above the source until first non-comment/doc line
-- Using `/*` and `*/` for annotation comment you can put it on the same line with your code. This is useful for annotating methods parameters and enum case associated values. All such annotations should be placed in one comment block. Do not mix inline and regular annotations for the same declaration (using inline and block annotations is fine)!
+- Annotations at the end of a line will be applied to all declarations on the same line
+- Using `/*` and `*/` for annotation comment you can put annotations on the same line preceding your declaration. This is useful for annotating methods parameters and enum case associated values. All such annotations should be placed in one comment block. Do not mix inline and regular annotations for the same declaration (using inline and block annotations is fine)!
 
 #### Format:
 

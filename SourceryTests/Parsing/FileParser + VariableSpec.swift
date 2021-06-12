@@ -295,6 +295,14 @@ class FileParserVariableSpec: QuickSpec {
                                                            "var name: Int { return 2 }")
                         expect(result).to(equal(expectedVariable))
                     }
+                    
+                    it("extracts trailing annotations") {
+                        let expectedVariable = Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
+                        expectedVariable.annotations["jsonKey"] = "json_key" as NSString
+                        expectedVariable.annotations["skipEquability"] = NSNumber(value: true)
+
+                        expect(variable("// sourcery: jsonKey = \"json_key\"\nvar name: Int { return 2 } // sourcery: skipEquability")).to(equal(expectedVariable))
+                    }
                 }
             }
         }

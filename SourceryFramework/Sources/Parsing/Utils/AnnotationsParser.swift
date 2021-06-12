@@ -95,6 +95,10 @@ public struct AnnotationsParser {
             }
         }
 
+        lines[lineNumber-1].annotations.forEach { annotation in
+            AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
+        }
+
         return annotations
     }
 
@@ -182,6 +186,9 @@ public struct AnnotationsParser {
                                 fileAnnotationsBlock[$0.key] = $0.value
                             }
                         }
+                    } else {
+                        searchForTrailingAnnotations(codeLine: content)
+                            .forEach { annotations[$0.key] = $0.value }
                     }
 
                     annotationsBlock?.forEach { annotation in
@@ -197,6 +204,30 @@ public struct AnnotationsParser {
                                 annotations: annotations,
                                 blockAnnotations: annotationsBlock ?? [:])
                 }
+    }
+
+    private static func searchForTrailingAnnotations(codeLine: String) -> Annotations {
+        let blockComponents = codeLine.components(separatedBy: "/*", excludingDelimiterBetween: ("", ""))
+        if blockComponents.count > 1,
+           let lastBlockComponent = blockComponents.last,
+           let endBlockRange = lastBlockComponent.range(of: "*/"),
+           let lowerBound = lastBlockComponent.range(of: "sourcery:")?.upperBound {
+            let trailingStart = endBlockRange.upperBound
+            let trailing = String(lastBlockComponent[trailingStart...])
+            if trailing.components(separatedBy: "//", excludingDelimiterBetween: ("", "")).first?.trimmed.count == 0 {
+                let upperBound = endBlockRange.lowerBound
+                return AnnotationsParser.parse(line: String(lastBlockComponent[lowerBound..<upperBound]))
+            }
+        }
+
+        let components = codeLine.components(separatedBy: "//", excludingDelimiterBetween: ("", ""))
+        if components.count > 1,
+           let trailingComment = components.last?.stripped(),
+           let lowerBound = trailingComment.range(of: "sourcery:")?.upperBound {
+            return AnnotationsParser.parse(line: String(trailingComment[lowerBound...]))
+        }
+
+        return [:]
     }
 
     private static func searchForAnnotations(commentLine: String) -> AnnotationType {

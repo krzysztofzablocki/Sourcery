@@ -92,6 +92,21 @@ class AnnotationsParserSpec: QuickSpec {
                     expect(result).to(equal(annotations))
                 }
 
+                it("extracts end of line annotations") {
+                    let result = parse("// sourcery: first = 1 \n let property: Int // sourcery: second = 2, third = \"three\"")
+                    expect(result).to(equal(["first": NSNumber(value: 1), "second": NSNumber(value: 2), "third": "three" as NSString]))
+                }
+
+                it("extracts end of line block comment annotations") {
+                    let result = parse("// sourcery: first = 1 \n let property: Int /* sourcery: second = 2, third = \"three\" */ // comment")
+                    expect(result).to(equal(["first": NSNumber(value: 1), "second": NSNumber(value: 2), "third": "three" as NSString]))
+                }
+
+                it ("ignores annotations in string literals") {
+                    let result = parse("// sourcery: first = 1 \n let property = \"// sourcery: second = 2\" // sourcery: third = 3")
+                    expect(result).to(equal(["first": NSNumber(value: 1), "third": NSNumber(value: 3)]))
+                }
+
                 it("extracts file annotations") {
                     let annotations = ["isSet": NSNumber(value: true)]
 
