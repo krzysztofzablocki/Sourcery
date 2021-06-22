@@ -9,7 +9,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
+@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {
     /// Variable name
     public let name: String
 
@@ -50,6 +50,8 @@ public typealias SourceryVariable = Variable
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: Annotations = [:]
+
+    public var documentation: Documentation = []
 
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
     public var attributes: AttributeList
@@ -92,6 +94,7 @@ public typealias SourceryVariable = Variable
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 definedInTypeName: TypeName? = nil) {
 
         self.name = name
@@ -105,6 +108,7 @@ public typealias SourceryVariable = Variable
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
+        self.documentation = documentation
         self.definedInTypeName = definedInTypeName
     }
 
@@ -121,6 +125,7 @@ public typealias SourceryVariable = Variable
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
@@ -138,6 +143,7 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")

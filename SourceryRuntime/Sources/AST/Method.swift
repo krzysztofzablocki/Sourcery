@@ -201,7 +201,7 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Definition {
+@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -324,6 +324,8 @@ extension Array where Element == ClosureParameter {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: Annotations
 
+    public let documentation: Documentation
+
     /// Reference to type name where the method is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
@@ -364,6 +366,7 @@ extension Array where Element == ClosureParameter {
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 definedInTypeName: TypeName? = nil) {
 
         self.name = name
@@ -379,6 +382,7 @@ extension Array where Element == ClosureParameter {
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
+        self.documentation = documentation
         self.definedInTypeName = definedInTypeName
     }
 
@@ -398,6 +402,7 @@ extension Array where Element == ClosureParameter {
             self.isClass = aDecoder.decode(forKey: "isClass")
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -418,6 +423,7 @@ extension Array where Element == ClosureParameter {
             aCoder.encode(self.isClass, forKey: "isClass")
             aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")

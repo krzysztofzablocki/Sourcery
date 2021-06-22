@@ -127,7 +127,8 @@ class SyntaxTreeCollector: SyntaxVisitor {
               typealiases: [],
               attributes: Attribute.from(node.attributes),
               modifiers: modifiers.map(SourceryModifier.init),
-              annotations: annotationsParser.annotations(fromToken: node.extensionKeyword), 
+              annotations: annotationsParser.annotations(fromToken: node.extensionKeyword),
+              documentation: annotationsParser.documentation(fromToken: node.extensionKeyword),
               isGeneric: false
             )
         }

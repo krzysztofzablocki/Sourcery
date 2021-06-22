@@ -119,6 +119,7 @@ extension EnumCase {
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.indirect != rhs.indirect { return false }
         return true
     }
@@ -191,6 +192,7 @@ extension Method {
         if self.isClass != rhs.isClass { return false }
         if self.isFailableInitializer != rhs.isFailableInitializer { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
@@ -253,6 +255,7 @@ extension Subscript {
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
@@ -304,6 +307,7 @@ extension Type {
         if self.rawMethods != rhs.rawMethods { return false }
         if self.rawSubscripts != rhs.rawSubscripts { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.inherits != rhs.inherits { return false }
         if self.containedTypes != rhs.containedTypes { return false }
@@ -363,6 +367,7 @@ extension Variable {
         if self.writeAccess != rhs.writeAccess { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
@@ -488,6 +493,7 @@ extension EnumCase {
         hasher.combine(self.rawValue)
         hasher.combine(self.associatedValues)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.indirect)
         return hasher.finalize()
     }
@@ -560,6 +566,7 @@ extension Method {
         hasher.combine(self.isClass)
         hasher.combine(self.isFailableInitializer)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
@@ -625,6 +632,7 @@ extension Subscript {
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
@@ -676,6 +684,7 @@ extension Type {
         hasher.combine(self.rawMethods)
         hasher.combine(self.rawSubscripts)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.inheritedTypes)
         hasher.combine(self.inherits)
         hasher.combine(self.containedTypes)
@@ -735,6 +744,7 @@ extension Variable {
         hasher.combine(self.writeAccess)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         hasher.combine(self.definedInTypeName)

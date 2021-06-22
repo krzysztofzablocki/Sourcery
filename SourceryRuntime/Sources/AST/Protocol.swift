@@ -46,7 +46,8 @@ public typealias SourceryProtocol = Protocol
                 genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
-                annotations: [String: NSObject] = [:]) {
+                annotations: [String: NSObject] = [:],
+                documentation: [String] = []) {
         self.genericRequirements = genericRequirements
         self.associatedTypes = associatedTypes
         super.init(
@@ -63,6 +64,7 @@ public typealias SourceryProtocol = Protocol
             attributes: attributes,
             modifiers: modifiers,
             annotations: annotations,
+            documentation: documentation,
             isGeneric: !associatedTypes.isEmpty || !genericRequirements.isEmpty
         )
     }

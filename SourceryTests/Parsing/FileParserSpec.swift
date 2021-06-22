@@ -311,6 +311,7 @@ class FileParserSpec: QuickSpec {
                         let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
                         expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
+                        expectedType.documentation = ["comment"]
 
                         expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\nclass Foo: TestProtocol { }"))
                                 .to(equal([expectedType]))
@@ -784,9 +785,9 @@ class FileParserSpec: QuickSpec {
                                 .to(equal([
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [
-                                            EnumCase(name: "optionA", indirect: false),
-                                            EnumCase(name: "optionB"),
-                                            EnumCase(name: "optionC", associatedValues: [AssociatedValue(typeName: TypeName(name: "Foo"))], indirect: true)
+                                            EnumCase(name: "optionA", documentation: ["Option A"], indirect: false),
+                                            EnumCase(name: "optionB", documentation: ["Option B"]),
+                                            EnumCase(name: "optionC", associatedValues: [AssociatedValue(typeName: TypeName(name: "Foo"))], documentation: ["Option C"], indirect: true)
                                         ])
                                 ]))
                     }

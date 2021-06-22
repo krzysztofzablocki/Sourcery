@@ -277,6 +277,7 @@ class FileParserVariableSpec: QuickSpec {
                         let expectedVariable = Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["isSet"] = NSNumber(value: true)
                         expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
+                        expectedVariable.documentation = ["isSet is used for something useful"]
 
                         let result = variable(        "// sourcery: isSet\n" +
                                                            "/// isSet is used for something useful\n" +

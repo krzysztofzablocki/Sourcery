@@ -75,6 +75,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -171,6 +172,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -198,6 +200,7 @@ extension Enum: EnumAutoJSExport {}
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
 }
@@ -266,6 +269,7 @@ extension Import: ImportAutoJSExport {}
     var isGeneric: Bool { get }
     var isOptional: Bool { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -325,6 +329,7 @@ extension Modifier: ModifierAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -373,6 +378,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -409,6 +415,7 @@ extension Struct: StructAutoJSExport {}
     var writeAccess: String { get }
     var isMutable: Bool { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -470,6 +477,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -538,6 +546,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var isMutable: Bool { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var isFinal: Bool { get }

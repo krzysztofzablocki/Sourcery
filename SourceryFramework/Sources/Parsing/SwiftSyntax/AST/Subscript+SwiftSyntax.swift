@@ -56,6 +56,7 @@ extension Subscript {
           attributes: Attribute.from(node.attributes),
           modifiers: modifiers.map(SourceryModifier.init),
           annotations: node.firstToken.map { annotationsParser.annotations(fromToken: $0) } ?? [:],
+          documentation: node.firstToken.map { annotationsParser.documentation(fromToken: $0) } ?? [],
           definedInTypeName: TypeName(parent.name)
         )
     }
