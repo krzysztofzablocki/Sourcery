@@ -3,6 +3,7 @@
 ## Master
 ## Features
 - adds support for variadic parameters in functions
+- Adds support for parsing property wrappers
 
 ## Fixes
 - correct passing `force-parse` argument to specific file parsers and renames it to `forceParse` to align with other naming
