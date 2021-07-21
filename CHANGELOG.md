@@ -2,8 +2,9 @@
 
 ## Master
 ## Features
-- adds support for variadic parameters in functions
+- Adds support for variadic parameters in functions
 - Adds support for parsing property wrappers
+- Added `titleCase` filter that turns `somethingNamedLikeThis` into `Something Named Like This`
 
 ## Fixes
 - correct passing `force-parse` argument to specific file parsers and renames it to `forceParse` to align with other naming

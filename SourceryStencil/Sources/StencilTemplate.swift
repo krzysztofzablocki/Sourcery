@@ -165,6 +165,9 @@ public extension Stencil.Extension {
 
         let capitalise = FilterOr<String, TypeName>.make({ $0.capitalized }, other: { $0.name.capitalized })
         registerFilter("capitalise", filter: capitalise)
+
+        let titleCase = FilterOr<String, TypeName>.make({ $0.titleCase }, other: { $0.name.titleCase })
+        registerFilter("titleCase", filter: titleCase)
     }
 
     func registerFilterWithTwoArguments<T, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?) {
@@ -383,5 +386,23 @@ private struct FilterOr<T, Y> {
                 return any
             }
         }
+    }
+}
+
+fileprivate extension String {
+    /// Returns string with uppercased first character
+    var uppercasedFirst: String {
+        return first
+            .map { String($0).uppercased() + dropFirst() }
+            ?? ""
+    }
+
+    /// Changes `somethingNamedLikeThis` into `Something Named Like This`
+    var titleCase: String {
+        replacingOccurrences(of: "([a-z])([A-Z](?=[A-Z])[a-z]*)", with: "$1 $2", options: .regularExpression)
+            .replacingOccurrences(of: "([A-Z])([A-Z][a-z])", with: "$1 $2", options: .regularExpression)
+            .replacingOccurrences(of: "([a-z]vis)([A-Z][a-z])", with: "$1 $2", options: .regularExpression)
+            .replacingOccurrences(of: "([a-z])([A-Z][a-z])", with: "$1 $2", options: .regularExpression)
+            .uppercasedFirst
     }
 }
