@@ -31,9 +31,9 @@ extension TypeName {
         return TypeName(name: name, tuple: tuple)
     }
 
-    static func buildClosure(_ returnTypeName: TypeName, attributes: AttributeList = [:]) -> TypeName {
+    static func buildClosure(_ returnTypeName: TypeName, attributes: AttributeList = [:], isInout: Bool = false) -> TypeName {
         let closure = ClosureType(name: "() -> \(returnTypeName)", parameters: [], returnTypeName: returnTypeName)
-        return TypeName(name: closure.name, attributes: attributes, closure: closure)
+        return TypeName(name: closure.name, attributes: attributes, isInout: isInout, closure: closure)
     }
 
     static func buildClosure(_ parameters: ClosureParameter..., returnTypeName: TypeName) -> TypeName {

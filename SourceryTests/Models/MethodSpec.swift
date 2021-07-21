@@ -133,7 +133,7 @@ class MethodSpec: QuickSpec {
 
             context("when inout") {
                 beforeEach {
-                    sut = MethodParameter(typeName: TypeName(name: "Bar"), isInout: true)
+                    sut = MethodParameter(typeName: TypeName(name: "Bar", isInout: true))
                 }
 
                 it("is inout") {
@@ -157,7 +157,7 @@ class MethodSpec: QuickSpec {
                         expect(sut).toNot(equal(MethodParameter(name: "bar", typeName: TypeName(name: "Int"))))
                         expect(sut).toNot(equal(MethodParameter(argumentLabel: "bar", name: "foo", typeName: TypeName(name: "Int"))))
                         expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName(name: "String"))))
-                        expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName(name: "String"), isInout: true)))
+                        expect(sut).toNot(equal(MethodParameter(name: "foo", typeName: TypeName(name: "String", isInout: true))))
                     }
                 }
 
