@@ -79,6 +79,18 @@ blockquote {
   padding: 0 10px;
   border-left: 4px solid #ccc; }
 
+hr {
+  height: 1px;
+  border: none;
+  background-color: #e2e2e2; }
+
+.footnote-ref {
+  display: inline-block;
+  scroll-margin-top: 70px; }
+
+.footnote-def {
+  scroll-margin-top: 70px; }
+
 .content-wrapper {
   margin: 0 auto;
   width: 980px; }

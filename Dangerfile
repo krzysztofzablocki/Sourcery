@@ -26,5 +26,3 @@ has_new_template_test = !git.added_files.grep(/Templates\/Tests\/Generated/).emp
 if has_new_stencil_template && !has_new_template_test
   fail("Any new stencil template must be covered with test.")
 end
-
-jazzy.check fail: :modified
