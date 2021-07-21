@@ -71,6 +71,10 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("((Int, Int))").unwrappedTypeName).to(equal("(Int, Int)"))
                     expect(typeName("((Int, Int) -> ())").unwrappedTypeName).to(equal("(Int, Int) -> ()"))
                 }
+                
+                it("keeps wrapped closure's attributes") {
+                    expect(typeName("(@convention(c) () -> ())?").unwrappedTypeName).to(equal("(@convention(c) () -> ())"))
+                }
             }
 
             context("given tuple type") {
