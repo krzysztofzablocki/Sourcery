@@ -1,6 +1,6 @@
 # Sourcery CHANGELOG
 
-## Master
+## 1.5.0
 ## Features
 - Adds support for variadic parameters in functions
 - Adds support for parsing property wrappers
