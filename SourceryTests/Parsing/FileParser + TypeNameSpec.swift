@@ -72,8 +72,10 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("((Int, Int) -> ())").unwrappedTypeName).to(equal("(Int, Int) -> ()"))
                 }
                 
-                it("keeps wrapped closure's attributes") {
+                it("deals with wrapped closure's attributes correctly") {
                     expect(typeName("(@convention(c) () -> ())?").unwrappedTypeName).to(equal("(@convention(c) () -> ())"))
+                    expect(typeName("((@convention(c) () -> ()))?").unwrappedTypeName).to(equal("(@convention(c) () -> ())"))
+                    expect(typeName("(((@convention(c) () -> ())))?").unwrappedTypeName).to(equal("(@convention(c) () -> ())"))
                 }
             }
 
@@ -165,6 +167,9 @@ class TypeNameSpec: QuickSpec {
 
             it("removes attributes in unwrappedTypeName") {
                 expect(typeName("@escaping (@escaping ()->())->()").unwrappedTypeName).to(equal("(@escaping () -> ()) -> ()"))
+                expect(typeName("(@escaping (@escaping ()->())->())").unwrappedTypeName).to(equal("(@escaping () -> ()) -> ()"))
+                expect(typeName("((@escaping (@escaping ()->())->()))").unwrappedTypeName).to(equal("(@escaping () -> ()) -> ()"))
+                expect(typeName("(((@escaping (@escaping ()->())->())))").unwrappedTypeName).to(equal("(@escaping () -> ()) -> ()"))
             }
         }
     }
