@@ -599,7 +599,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -1442,7 +1442,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1869,7 +1869,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -2764,7 +2764,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -4021,7 +4021,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -4708,7 +4708,7 @@ public typealias SourceryMethod = Method
     }
 
     public var asSource: String {
-        let typeSuffix = ": \\(`inout` ? "inout " : "")\\(typeName.asSource)\\(defaultValue.map { " = \\($0)" } ?? "")"
+        let typeSuffix = ": \\(`inout` ? "inout " : "")\\(typeName.asSource)\\(defaultValue.map { " = \\($0)" } ?? "")" + (isVariadic ? "..." : "")
         guard argumentLabel != name else {
             return name + typeSuffix
         }
@@ -6701,7 +6701,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.4.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
