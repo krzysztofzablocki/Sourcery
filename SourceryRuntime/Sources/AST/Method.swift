@@ -118,7 +118,9 @@ extension Array where Element == MethodParameter {
     public let typeName: TypeName
 
     /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
+    public var `inout`: Bool {
+        typeName.inout
+    }
 
     // sourcery: skipEquality, skipDescription
     /// Parameter type, if known
@@ -137,18 +139,17 @@ extension Array where Element == MethodParameter {
 
     /// :nodoc:
     public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
-                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+                defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
-        self.`inout` = isInout
     }
 
     public var asSource: String {
-        let typeInfo = "\(`inout` ? "inout " : "")\(typeName.asSource)"
+        let typeInfo = typeName.asSource
         if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
             return typeInfo
         }
@@ -172,7 +173,6 @@ extension Array where Element == MethodParameter {
                 self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
                 self.name = aDecoder.decode(forKey: "name")
                 guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-                self.`inout` = aDecoder.decode(forKey: "`inout`")
                 self.type = aDecoder.decode(forKey: "type")
                 self.defaultValue = aDecoder.decode(forKey: "defaultValue")
                 guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
@@ -183,7 +183,6 @@ extension Array where Element == MethodParameter {
                 aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
                 aCoder.encode(self.name, forKey: "name")
                 aCoder.encode(self.typeName, forKey: "typeName")
-                aCoder.encode(self.`inout`, forKey: "`inout`")
                 aCoder.encode(self.type, forKey: "type")
                 aCoder.encode(self.defaultValue, forKey: "defaultValue")
                 aCoder.encode(self.annotations, forKey: "annotations")

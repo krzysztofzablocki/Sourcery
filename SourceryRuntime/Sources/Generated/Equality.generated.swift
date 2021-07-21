@@ -66,7 +66,6 @@ extension ClosureParameter {
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
-        if self.`inout` != rhs.`inout` { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         return true
@@ -434,7 +433,6 @@ extension ClosureParameter {
         hasher.combine(self.argumentLabel)
         hasher.combine(self.name)
         hasher.combine(self.typeName)
-        hasher.combine(self.`inout`)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
         return hasher.finalize()

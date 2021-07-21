@@ -136,13 +136,11 @@ extension TypeName {
             let elements = typeIdentifier.arguments.map { node -> ClosureParameter in
                 let firstName = node.name?.text.trimmed.nilIfNotValidParameterName
                 let typeName = TypeName(node.type)
-                let specifiers = TypeName.specifiers(from: node.type)
                 
                 return ClosureParameter(
                   argumentLabel: firstName,
                   name: node.secondName?.text.trimmed ?? firstName,
-                  typeName: typeName,
-                  isInout: specifiers.isInOut
+                  typeName: typeName
                 )
             }
             let returnTypeName = TypeName(typeIdentifier.returnType)
