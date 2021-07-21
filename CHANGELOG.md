@@ -11,6 +11,7 @@
 - corrects `isMutable` regression on protocol variables #964
 - Added multiple targets to link
 - Fix groups creation
+- Fix unintentionally losing attributes of closures inside extra optional closure #974
 
 ---
 ## 1.4.2
