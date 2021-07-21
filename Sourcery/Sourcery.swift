@@ -507,9 +507,9 @@ extension Sourcery {
         }
     }
 
-    private func link(_ output: Path, to linkTo: Output.LinkTo, target: String) {
-        guard let target = linkTo.project.target(named: target) else {
-            Log.warning("Unable to find target \(target)")
+    private func link(_ output: Path, to linkTo: Output.LinkTo, target targetName: String) {
+        guard let target = linkTo.project.target(named: targetName) else {
+            Log.warning("Unable to find target \(targetName)")
             return
         }
 
