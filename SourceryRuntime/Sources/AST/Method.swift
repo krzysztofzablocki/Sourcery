@@ -17,7 +17,9 @@ public typealias SourceryMethod = Method
     public let typeName: TypeName
 
     /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
+    public var `inout`: Bool {
+        typeName.inout
+    }
     
     /// Is this variadic parameter?
     public let isVariadic: Bool
@@ -38,26 +40,24 @@ public typealias SourceryMethod = Method
     public var annotations: Annotations = [:]
 
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
-        self.`inout` = isInout
         self.isVariadic = isVariadic
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
-        self.`inout` = isInout
         self.isVariadic = isVariadic
     }
 
@@ -81,7 +81,6 @@ public typealias SourceryMethod = Method
             self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
             guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
-            self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.isVariadic = aDecoder.decode(forKey: "isVariadic")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
@@ -93,7 +92,6 @@ public typealias SourceryMethod = Method
             aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
             aCoder.encode(self.name, forKey: "name")
             aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.`inout`, forKey: "`inout`")
             aCoder.encode(self.isVariadic, forKey: "isVariadic")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")

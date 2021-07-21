@@ -66,6 +66,7 @@ extension TypeName {
             let type = TypeName(typeIdentifier.wrappedType)
             let needsWrapping = type.isClosure || type.isProtocolComposition
             self.init(name: needsWrapping ? "(\(type.name))" : type.name,
+                      unwrappedTypeName: type.name,
                       isOptional: true,
                       isImplicitlyUnwrappedOptional: false,
                       tuple: type.tuple,
@@ -79,6 +80,7 @@ extension TypeName {
             let type = TypeName(typeIdentifier.wrappedType)
             let needsWrapping = type.isClosure || type.isProtocolComposition
             self.init(name: needsWrapping ? "(\(type.name))" : type.name,
+                      unwrappedTypeName: type.name,
                       isOptional: false,
                       isImplicitlyUnwrappedOptional: true,
                       tuple: type.tuple,
@@ -150,11 +152,14 @@ extension TypeName {
         } else if let typeIdentifier = node.as(AttributedTypeSyntax.self) {
             let type = TypeName(typeIdentifier.baseType) // TODO: add test for nested type with attributes at multiple level?
             let attributes = Attribute.from(typeIdentifier.attributes)
+            let specifiers = TypeName.specifiers(from: node)
 
-            self.init(name: type.name,
+            self.init(name: typeIdentifier.sourcerySafeTypeIdentifier,
+                      unwrappedTypeName: type.name,
                       attributes: attributes,
                       isOptional: type.isOptional,
                       isImplicitlyUnwrappedOptional: type.isImplicitlyUnwrappedOptional,
+                      isInout: specifiers.isInOut,
                       tuple: type.tuple,
                       array: type.array,
                       dictionary: type.dictionary,

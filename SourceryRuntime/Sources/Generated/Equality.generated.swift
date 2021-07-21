@@ -204,7 +204,6 @@ extension MethodParameter {
         if self.argumentLabel != rhs.argumentLabel { return false }
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
-        if self.`inout` != rhs.`inout` { return false }
         if self.isVariadic != rhs.isVariadic { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
@@ -327,6 +326,7 @@ extension TypeName {
         if self.array != rhs.array { return false }
         if self.dictionary != rhs.dictionary { return false }
         if self.closure != rhs.closure { return false }
+        if self.`inout` != rhs.`inout` { return false }
         return true
     }
 }
@@ -573,7 +573,6 @@ extension MethodParameter {
         hasher.combine(self.argumentLabel)
         hasher.combine(self.name)
         hasher.combine(self.typeName)
-        hasher.combine(self.`inout`)
         hasher.combine(self.isVariadic)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
@@ -699,6 +698,7 @@ extension TypeName {
         hasher.combine(self.array)
         hasher.combine(self.dictionary)
         hasher.combine(self.closure)
+        hasher.combine(self.`inout`)
         return hasher.finalize()
     }
 }

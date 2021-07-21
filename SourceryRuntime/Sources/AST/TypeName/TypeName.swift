@@ -47,7 +47,7 @@ import Foundation
         self.isOptional = isOptional || isImplicitlyUnwrappedOptional
         self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
         self.isProtocolComposition = isProtocolComposition
-        self.isInout = isInout
+        self.`inout` = isInout
 
         self.attributes = attributes
         self.modifiers = []
@@ -129,7 +129,7 @@ import Foundation
     public var closure: ClosureType?
     
     /// Whether or not this type is an inout parameter.
-    public var isInout: Bool
+    public var `inout`: Bool
 
     /// Prints typename as it would appear on definition
     public var asSource: String {
@@ -188,7 +188,7 @@ import Foundation
             self.array = aDecoder.decode(forKey: "array")
             self.dictionary = aDecoder.decode(forKey: "dictionary")
             self.closure = aDecoder.decode(forKey: "closure")
-            self.isInout = aDecoder.decode(forKey: "isInout")
+            self.`inout` = aDecoder.decode(forKey: "`inout`")
         }
 
         /// :nodoc:
@@ -206,7 +206,7 @@ import Foundation
             aCoder.encode(self.array, forKey: "array")
             aCoder.encode(self.dictionary, forKey: "dictionary")
             aCoder.encode(self.closure, forKey: "closure")
-            aCoder.encode(self.isInout, forKey: "isInout")
+            aCoder.encode(self.`inout`, forKey: "`inout`")
         }
 // sourcery:end
 

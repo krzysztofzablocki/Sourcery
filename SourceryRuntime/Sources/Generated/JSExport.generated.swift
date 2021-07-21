@@ -513,6 +513,7 @@ extension Type: TypeAutoJSExport {}
     var dictionary: DictionaryType? { get }
     var isClosure: Bool { get }
     var closure: ClosureType? { get }
+    var `inout`: Bool { get }
     var asSource: String { get }
     var description: String { get }
     var debugDescription: String { get }
