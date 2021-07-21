@@ -14,6 +14,7 @@ import Foundation
                 attributes: AttributeList = [:],
                 isOptional: Bool = false,
                 isImplicitlyUnwrappedOptional: Bool = false,
+                isInout: Bool = false,
                 tuple: TupleType? = nil,
                 array: ArrayType? = nil,
                 dictionary: DictionaryType? = nil,
@@ -46,6 +47,7 @@ import Foundation
         self.isOptional = isOptional || isImplicitlyUnwrappedOptional
         self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
         self.isProtocolComposition = isProtocolComposition
+        self.isInout = isInout
 
         self.attributes = attributes
         self.modifiers = []
@@ -125,6 +127,9 @@ import Foundation
 
     /// Closure type data
     public var closure: ClosureType?
+    
+    /// Whether or not this type is an inout parameter.
+    public var isInout: Bool
 
     /// Prints typename as it would appear on definition
     public var asSource: String {
@@ -183,6 +188,7 @@ import Foundation
             self.array = aDecoder.decode(forKey: "array")
             self.dictionary = aDecoder.decode(forKey: "dictionary")
             self.closure = aDecoder.decode(forKey: "closure")
+            self.isInout = aDecoder.decode(forKey: "isInout")
         }
 
         /// :nodoc:
@@ -200,6 +206,7 @@ import Foundation
             aCoder.encode(self.array, forKey: "array")
             aCoder.encode(self.dictionary, forKey: "dictionary")
             aCoder.encode(self.closure, forKey: "closure")
+            aCoder.encode(self.isInout, forKey: "isInout")
         }
 // sourcery:end
 
