@@ -62,7 +62,7 @@ public typealias SourceryMethod = Method
     }
 
     public var asSource: String {
-        let typeSuffix = ": \(`inout` ? "inout " : "")\(typeName.asSource)\(defaultValue.map { " = \($0)" } ?? "")" + (isVariadic ? "..." : "")
+        let typeSuffix = ": \(typeName.asSource)\(defaultValue.map { " = \($0)" } ?? "")" + (isVariadic ? "..." : "")
         guard argumentLabel != name else {
             return name + typeSuffix
         }
