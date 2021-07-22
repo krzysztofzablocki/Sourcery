@@ -49,6 +49,30 @@ class TypeNameSpec: QuickSpec {
                 it("reports correct unwrappedTypeName") {
                     expect(typeName("inout String").unwrappedTypeName).to(equal("String"))
                 }
+                
+                it("reports correct name") {
+                    expect(typeName("inout String").name).to(equal("inout String"))
+                }
+            }
+            
+            context("given attributed type") {
+                it("reports correct unwrappedTypeName") {
+                    expect(typeName("@escaping () -> Void").unwrappedTypeName).to(equal("() -> Void"))
+                }
+                
+                it("reports correct name") {
+                    expect(typeName("@escaping () -> Void").name).to(equal("@escaping () -> Void"))
+                }
+            }
+            
+            context("given inout attributed type") {
+                it("reports correct unwrappedTypeName") {
+                    expect(typeName("inout @convention(c) () -> Void").unwrappedTypeName).to(equal("() -> Void"))
+                }
+                
+                it("reports correct name") {
+                    expect(typeName("inout @convention(c) () -> Void").name).to(equal("inout @convention(c) () -> Void"))
+                }
             }
 
             context("given optional type with long generic syntax") {
@@ -59,6 +83,14 @@ class TypeNameSpec: QuickSpec {
 
                 it("reports non-optional type for unwrappedTypeName") {
                     expect(typeName("Optional<Int>").unwrappedTypeName).to(equal("Int"))
+                }
+                
+                it("removes closure attributes in unwrappedTypeName") {
+                    expect(typeName("Optional<@convention(c) () -> Void>").unwrappedTypeName).to(equal("() -> Void"))
+                }
+                
+                it("keeps all attributes in name") {
+                    expect(typeName("Optional<@convention(c) () -> Void>").unwrappedTypeName).to(equal("Optional<@convention(c) () -> Void>"))
                 }
             }
 
