@@ -235,15 +235,3 @@ extension TypeName {
         return description
     }
 }
-
-public extension AttributeList {
-    var asSource: String {
-        flatMap(\.value).map(\.asSource).sorted().joined(separator: " ")
-    }
-}
-
-public extension Array where Element == SourceryModifier {
-    var asSource: String {
-        map(\.asSource).sorted().joined(separator: " ")
-    }
-}

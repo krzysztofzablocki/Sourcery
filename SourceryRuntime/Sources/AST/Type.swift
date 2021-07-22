@@ -8,6 +8,12 @@ import Foundation
 /// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
 
+public extension AttributeList {
+    var asSource: String {
+        flatMap(\.value).map(\.asSource).sorted().joined(separator: " ")
+    }
+}
+
 /// Defines Swift type
 @objcMembers public class Type: NSObject, SourceryModel, Annotated {
 
