@@ -130,7 +130,15 @@ import Foundation
     
     /// Whether or not this type is an inout parameter.
     public var `inout`: Bool
-
+    
+    /// Indicating whether or not this type would need to be wrapped inside parentheses
+    /// in order to have proper type resolution precedence.
+    ///
+    /// For example, `@escaping () -> Void` needs to be wrapped in order to become optional `(@escaping () -> Void)?`
+    public var needsPrecedenceWrapping: Bool {
+        return isClosure || isProtocolComposition
+    }
+    
     /// Prints typename as it would appear on definition
     public var asSource: String {
         let result = TypeName.asSource(
@@ -140,17 +148,14 @@ import Foundation
             isImplicitlyUnwrappedOptional: isImplicitlyUnwrappedOptional,
             `inout`: `inout`,
             attributes: attributes,
-            modifiers: modifiers)
+            modifiers: modifiers,
+            needsPrecedenceWrapping: needsPrecedenceWrapping)
         
         return result
     }
 
     public override var description: String {
-       (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }) +
-          modifiers.map({ $0.asSource }) +
-          [name]
-        ).joined(separator: " ")
+       asSource
     }
 
 // sourcery:inline:TypeName.AutoCoding
@@ -213,7 +218,7 @@ extension TypeName {
         return TypeName(name: "UnknownTypeSoAddTypeAttributionToVariable", attributes: attributes)
     }
     
-    public static func asSource(name: String, unwrappedTypeName: String, isOptional: Bool, isImplicitlyUnwrappedOptional: Bool, `inout`: Bool, attributes: AttributeList, modifiers: [SourceryModifier]) -> String {
+    public static func asSource(name: String, unwrappedTypeName: String, isOptional: Bool, isImplicitlyUnwrappedOptional: Bool, `inout`: Bool, attributes: AttributeList, modifiers: [SourceryModifier], needsPrecedenceWrapping: Bool) -> String {
         // TODO: TBR special treatment
         let specialTreatment = isOptional && name.hasPrefix("Optional<")
 
@@ -225,6 +230,10 @@ extension TypeName {
         ].filter { !$0.isEmpty }.joined(separator: " ")
 
         if !specialTreatment {
+            if isOptional && needsPrecedenceWrapping {
+                description = "(\(description))"
+            }
+            
             if isImplicitlyUnwrappedOptional {
                 description.append("!")
             } else if isOptional {

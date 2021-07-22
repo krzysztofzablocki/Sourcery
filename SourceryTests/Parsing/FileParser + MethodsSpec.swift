@@ -334,7 +334,66 @@ class FileParserMethodsSpec: QuickSpec {
                         }
                     }
                 }
-
+                
+                context("given parameters with attributes") {
+                    it("extracts attributes in implicitly unwrapped closure parameters correctly") {
+                        let method = parse(
+                        """
+                        class Foo {
+                            func fooInOut(anotherSome: (@convention(c) () -> Void)!)
+                        }
+                        """
+                        )[0].methods.first
+                        
+                        expect(method).to(equal(Method(name: "fooInOut(anotherSome: (@convention(c) () -> Void)!)", selectorName: "fooInOut(anotherSome:)", parameters: [
+                            MethodParameter(
+                                name: "anotherSome",
+                                typeName: TypeName.buildClosure(.Void, attributes: [
+                                    "convention": [Attribute(name: "convention", arguments: ["0": "c" as NSString], description: "@convention(c)")]
+                                ], isImplicitlyUnwrappedOptional: true)
+                            )
+                        ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
+                    }
+                    
+                    it("extracts attributes in optional closure parameters correctly") {
+                        let method = parse(
+                        """
+                        class Foo {
+                            func fooInOut(anotherSome: (@convention(c) () -> Void)?)
+                        }
+                        """
+                        )[0].methods.first
+                        
+                        expect(method).to(equal(Method(name: "fooInOut(anotherSome: (@convention(c) () -> Void)?)", selectorName: "fooInOut(anotherSome:)", parameters: [
+                            MethodParameter(
+                                name: "anotherSome",
+                                typeName: TypeName.buildClosure(.Void, attributes: [
+                                    "convention": [Attribute(name: "convention", arguments: ["0": "c" as NSString], description: "@convention(c)")]
+                                ], isOptional: true)
+                            )
+                        ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
+                    }
+                    
+                    it("extracts attributes in non-optional closure parameters correctly") {
+                        let method = parse(
+                        """
+                        class Foo {
+                            func fooInOut(anotherSome: @convention(c) () -> Void)
+                        }
+                        """
+                        )[0].methods.first
+                        
+                        expect(method).to(equal(Method(name: "fooInOut(anotherSome: @convention(c) () -> Void)", selectorName: "fooInOut(anotherSome:)", parameters: [
+                            MethodParameter(
+                                name: "anotherSome",
+                                typeName: TypeName.buildClosure(.Void, attributes: [
+                                    "convention": [Attribute(name: "convention", arguments: ["0": "c" as NSString], description: "@convention(c)")]
+                                ])
+                            )
+                        ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
+                    }
+                }
+                
                 context("given generic method") {
                     func assertMethods(_ types: [Type]) {
                         let fooType = types.first(where: { $0.name == "Foo" })

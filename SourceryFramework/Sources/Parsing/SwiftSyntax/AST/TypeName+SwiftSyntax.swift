@@ -34,6 +34,7 @@ extension TypeName {
                 self.init(
                     name: typeIdentifier.sourcerySafeTypeIdentifier,
                     unwrappedTypeName: wrappedTypeName.unwrappedTypeName,
+                    attributes: wrappedTypeName.attributes,
                     isOptional: true,
                     generic: nil
                 )
@@ -68,9 +69,9 @@ extension TypeName {
             self.init(name: name, isProtocolComposition: true)
         } else if let typeIdentifier = node.as(OptionalTypeSyntax.self) {
             let type = TypeName(typeIdentifier.wrappedType)
-            let needsWrapping = type.isClosure || type.isProtocolComposition
-            self.init(name: needsWrapping ? "(\(type.name))" : type.name,
+            self.init(name: type.needsPrecedenceWrapping ? "(\(type.name))" : type.name,
                       unwrappedTypeName: type.unwrappedTypeName,
+                      attributes: type.attributes,
                       isOptional: true,
                       isImplicitlyUnwrappedOptional: false,
                       tuple: type.tuple,
@@ -82,9 +83,9 @@ extension TypeName {
             )
         } else if let typeIdentifier = node.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
             let type = TypeName(typeIdentifier.wrappedType)
-            let needsWrapping = type.isClosure || type.isProtocolComposition
-            self.init(name: needsWrapping ? "(\(type.name))" : type.name,
+            self.init(name: type.needsPrecedenceWrapping ? "(\(type.name))" : type.name,
                       unwrappedTypeName: type.unwrappedTypeName,
+                      attributes: type.attributes,
                       isOptional: false,
                       isImplicitlyUnwrappedOptional: true,
                       tuple: type.tuple,

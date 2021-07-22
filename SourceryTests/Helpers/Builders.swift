@@ -31,16 +31,17 @@ extension TypeName {
         return TypeName(name: name, tuple: tuple)
     }
 
-    static func buildClosure(_ returnTypeName: TypeName, attributes: AttributeList = [:], isInout: Bool = false) -> TypeName {
+    static func buildClosure(_ returnTypeName: TypeName, attributes: AttributeList = [:], isOptional: Bool = false, isImplicitlyUnwrappedOptional: Bool = false, isInout: Bool = false) -> TypeName {
         let closureName = "() -> \(returnTypeName)"
         let fullName = TypeName.asSource(
             name: "Explicitly Ignored",
             unwrappedTypeName: closureName,
-            isOptional: false,
-            isImplicitlyUnwrappedOptional: false,
+            isOptional: isOptional || isImplicitlyUnwrappedOptional,
+            isImplicitlyUnwrappedOptional: isImplicitlyUnwrappedOptional,
             `inout`: isInout,
             attributes: attributes,
-            modifiers: [])
+            modifiers: [],
+            needsPrecedenceWrapping: true)
         let closure = ClosureType(name: closureName, parameters: [], returnTypeName: returnTypeName)
         return TypeName(name: fullName, unwrappedTypeName: closure.name, attributes: attributes, isInout: isInout, closure: closure)
     }
