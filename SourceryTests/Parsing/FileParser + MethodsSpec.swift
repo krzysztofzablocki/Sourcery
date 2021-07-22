@@ -83,6 +83,40 @@ class FileParserMethodsSpec: QuickSpec {
                     )
                 }
 
+                it("extracts methods with attribute and inout correctly") {
+                    let methods = parse("""
+                                        protocol ClosureProtocol {
+                                            func setClosure(_ closure: inout @convention(c) () -> Void)
+                                        }
+                                        """)[0].methods
+                    
+                    expect(methods[0])
+                    .to(equal(
+                            Method(name: "setClosure(_ closure: inout @convention(c) () -> Void)",
+                                   selectorName: "setClosure(_:)",
+                                   parameters: [
+                                    MethodParameter(
+                                        argumentLabel: nil,
+                                        name: "closure",
+                                        typeName: .buildClosure(
+                                            TypeName(name: "Void"),
+                                            attributes: [
+                                                "convention": [
+                                                    Attribute(name: "convention", arguments: ["0": "c" as NSString], description: "@convention(c)")
+                                                ]
+                                            ],
+                                            isInout: true
+                                        ), type: nil,
+                                        defaultValue: nil,
+                                        annotations: [:]
+                                    )
+                                   ],
+                                   returnTypeName: TypeName(name: "Void"),
+                                   attributes: [:],
+                                   definedInTypeName: TypeName(name: "ClosureProtocol")))
+                    )
+                }
+                
                 it("extracts protocol methods properly") {
                     let methods = parse("""
                     protocol Foo {
