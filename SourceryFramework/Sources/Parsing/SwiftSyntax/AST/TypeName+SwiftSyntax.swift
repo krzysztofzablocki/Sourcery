@@ -66,7 +66,7 @@ extension TypeName {
             let type = TypeName(typeIdentifier.wrappedType)
             let needsWrapping = type.isClosure || type.isProtocolComposition
             self.init(name: needsWrapping ? "(\(type.name))" : type.name,
-                      unwrappedTypeName: type.name,
+                      unwrappedTypeName: type.unwrappedTypeName,
                       isOptional: true,
                       isImplicitlyUnwrappedOptional: false,
                       tuple: type.tuple,
@@ -80,7 +80,7 @@ extension TypeName {
             let type = TypeName(typeIdentifier.wrappedType)
             let needsWrapping = type.isClosure || type.isProtocolComposition
             self.init(name: needsWrapping ? "(\(type.name))" : type.name,
-                      unwrappedTypeName: type.name,
+                      unwrappedTypeName: type.unwrappedTypeName,
                       isOptional: false,
                       isImplicitlyUnwrappedOptional: true,
                       tuple: type.tuple,
@@ -117,6 +117,7 @@ extension TypeName {
             // TODO: TBR
             if elements.count == 1, let type = elements.first?.typeName {
                 self.init(name: type.name,
+                          unwrappedTypeName: type.unwrappedTypeName,
                           attributes: type.attributes,
                           isOptional: type.isOptional,
                           isImplicitlyUnwrappedOptional: type.isImplicitlyUnwrappedOptional,

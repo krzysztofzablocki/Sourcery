@@ -66,10 +66,21 @@ class TypeNameSpec: QuickSpec {
                 it("unwraps it completely") {
                     expect(typeName("(Int)").unwrappedTypeName).to(equal("Int"))
                     expect(typeName("(Int)?").unwrappedTypeName).to(equal("Int"))
+                    expect(typeName("(Int)!").unwrappedTypeName).to(equal("Int"))
                     expect(typeName("(Int, Int)").unwrappedTypeName).to(equal("(Int, Int)"))
                     expect(typeName("(Int)").unwrappedTypeName).to(equal("Int"))
                     expect(typeName("((Int, Int))").unwrappedTypeName).to(equal("(Int, Int)"))
                     expect(typeName("((Int, Int) -> ())").unwrappedTypeName).to(equal("(Int, Int) -> ()"))
+                }
+                
+                it("removes attributes correctly") {
+                    expect(typeName("(@convention(c) () -> ())?").unwrappedTypeName).to(equal("() -> ()"))
+                    expect(typeName("((@convention(c) () -> ()))?").unwrappedTypeName).to(equal("() -> ()"))
+                    expect(typeName("(((@convention(c) () -> ())))?").unwrappedTypeName).to(equal("() -> ()"))
+
+                    expect(typeName("(@convention(c) () -> ())!").unwrappedTypeName).to(equal("() -> ()"))
+                    expect(typeName("((@convention(c) () -> ()))!").unwrappedTypeName).to(equal("() -> ()"))
+                    expect(typeName("(((@convention(c) () -> ())))!").unwrappedTypeName).to(equal("() -> ()"))
                 }
             }
 
