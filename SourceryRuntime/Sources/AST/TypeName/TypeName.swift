@@ -133,34 +133,16 @@ import Foundation
 
     /// Prints typename as it would appear on definition
     public var asSource: String {
-        // TODO: TBR special treatment
-        let specialTreatment = isOptional && name.hasPrefix("Optional<")
-
-        var description = (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }) +
-          modifiers.map({ $0.asSource }) +
-          [specialTreatment ? name : unwrappedTypeName]
-        ).joined(separator: " ")
-
-        if let _ = self.dictionary { // array and dictionary cases are covered by the unwrapped type name
-//            description.append(dictionary.asSource)
-        } else if let _ = self.array {
-//            description.append(array.asSource)
-        } else if let _ = self.generic {
-//            let arguments = generic.typeParameters
-//              .map({ $0.typeName.asSource })
-//              .joined(separator: ", ")
-//            description.append("<\(arguments)>")
-        }
-        if !specialTreatment {
-            if isImplicitlyUnwrappedOptional {
-                description.append("!")
-            } else if isOptional {
-                description.append("?")
-            }
-        }
-
-        return description
+        let result = TypeName.asSource(
+            name: name,
+            unwrappedTypeName: unwrappedTypeName,
+            isOptional: isOptional,
+            isImplicitlyUnwrappedOptional: isImplicitlyUnwrappedOptional,
+            `inout`: `inout`,
+            attributes: attributes,
+            modifiers: modifiers)
+        
+        return result
     }
 
     public override var description: String {
@@ -229,5 +211,39 @@ extension TypeName {
             Log.astWarning("Unknown type, please add type attribution")
         }
         return TypeName(name: "UnknownTypeSoAddTypeAttributionToVariable", attributes: attributes)
+    }
+    
+    public static func asSource(name: String, unwrappedTypeName: String, isOptional: Bool, isImplicitlyUnwrappedOptional: Bool, `inout`: Bool, attributes: AttributeList, modifiers: [SourceryModifier]) -> String {
+        // TODO: TBR special treatment
+        let specialTreatment = isOptional && name.hasPrefix("Optional<")
+
+        var description = [
+            `inout` ? "inout" : "",
+            attributes.asSource,
+            modifiers.asSource,
+            specialTreatment ? name : unwrappedTypeName
+        ].filter { !$0.isEmpty }.joined(separator: " ")
+
+        if !specialTreatment {
+            if isImplicitlyUnwrappedOptional {
+                description.append("!")
+            } else if isOptional {
+                description.append("?")
+            }
+        }
+
+        return description
+    }
+}
+
+public extension AttributeList {
+    var asSource: String {
+        flatMap(\.value).map(\.asSource).sorted().joined(separator: " ")
+    }
+}
+
+public extension Array where Element == SourceryModifier {
+    var asSource: String {
+        map(\.asSource).sorted().joined(separator: " ")
     }
 }

@@ -32,8 +32,17 @@ extension TypeName {
     }
 
     static func buildClosure(_ returnTypeName: TypeName, attributes: AttributeList = [:], isInout: Bool = false) -> TypeName {
-        let closure = ClosureType(name: "() -> \(returnTypeName)", parameters: [], returnTypeName: returnTypeName)
-        return TypeName(name: closure.name, attributes: attributes, isInout: isInout, closure: closure)
+        let closureName = "() -> \(returnTypeName)"
+        let fullName = TypeName.asSource(
+            name: "Explicitly Ignored",
+            unwrappedTypeName: closureName,
+            isOptional: false,
+            isImplicitlyUnwrappedOptional: false,
+            `inout`: isInout,
+            attributes: attributes,
+            modifiers: [])
+        let closure = ClosureType(name: closureName, parameters: [], returnTypeName: returnTypeName)
+        return TypeName(name: fullName, unwrappedTypeName: closure.name, attributes: attributes, isInout: isInout, closure: closure)
     }
 
     static func buildClosure(_ parameters: ClosureParameter..., returnTypeName: TypeName) -> TypeName {
