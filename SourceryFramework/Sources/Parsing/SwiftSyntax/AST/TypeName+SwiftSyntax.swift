@@ -29,10 +29,14 @@ extension TypeName {
             let generic = typeIdentifier.genericArgumentClause.map { GenericType(name: typeIdentifier.name.text, node: $0) }
 
             // optional gets special treatment
-            if name == "Optional", let unwrappedTypeName = generic?.typeParameters.first?.typeName.name, generic?.typeParameters.count == 1 {
+            if name == "Optional", let wrappedTypeName = generic?.typeParameters.first?.typeName, generic?.typeParameters.count == 1 {
                 // TODO: TBR
-                self.init(name: typeIdentifier.sourcerySafeTypeIdentifier, isOptional: true, generic: nil)
-                self.unwrappedTypeName = unwrappedTypeName
+                self.init(
+                    name: typeIdentifier.sourcerySafeTypeIdentifier,
+                    unwrappedTypeName: wrappedTypeName.unwrappedTypeName,
+                    isOptional: true,
+                    generic: nil
+                )
             } else {
                 // special treatment for spelled out literals
                 switch (name, generic?.typeParameters.count) {

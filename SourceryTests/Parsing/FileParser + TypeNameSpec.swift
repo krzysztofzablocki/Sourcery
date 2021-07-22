@@ -90,7 +90,7 @@ class TypeNameSpec: QuickSpec {
                 }
                 
                 it("keeps all attributes in name") {
-                    expect(typeName("Optional<@convention(c) () -> Void>").unwrappedTypeName).to(equal("Optional<@convention(c) () -> Void>"))
+                    expect(typeName("Optional<@convention(c) () -> Void>").name).to(equal("Optional<@convention(c) () -> Void>"))
                 }
             }
 
