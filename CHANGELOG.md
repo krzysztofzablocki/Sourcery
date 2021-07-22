@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## Master
+## Fixes
+- Improve consistency of `TypeName.name`  by preserving attributes, specifiers and optional info
+
 ## 1.5.0
 ## Features
 - Adds support for variadic parameters in functions
