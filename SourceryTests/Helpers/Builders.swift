@@ -70,6 +70,21 @@ extension TypeName {
         )
     }
 
+    var asInOut: TypeName {
+        let type = self
+        return TypeName(name: "inout \(type.name)",
+                        unwrappedTypeName: type.name,
+                        isOptional: type.isOptional,
+                        isImplicitlyUnwrappedOptional: type.isImplicitlyUnwrappedOptional,
+                        isInout: true,
+                        tuple: type.tuple,
+                        array: type.array,
+                        dictionary: type.dictionary,
+                        closure: type.closure,
+                        generic: type.generic
+        )
+    }
+    
     static var Void: TypeName {
         TypeName(name: "Void")
     }
