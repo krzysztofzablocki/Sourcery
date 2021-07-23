@@ -42,7 +42,9 @@ import {{ import }}
 
 {% macro methodClosureName method %}{% call swiftifyMethodName method.selectorName %}Closure{% endmacro %}
 
-{% macro closureReturnTypeName method %}{% if method.isOptionalReturnType %}{{ method.unwrappedReturnTypeName }}?{% else %}{{ method.returnTypeName }}{% endif %}{% endmacro %}
+{% macro rewrapTypeNameIfNeeded unwrappedTypeName needsWrapping %}{% if needsWrapping %}({% endif %}{{ unwrappedTypeName }}{% if needsWrapping %}){% endif %}{% endmacro %}
+
+{% macro closureReturnTypeName method %}{% if method.isImplicitlyUnwrappedOptionalReturnType %}{% call rewrapTypeNameIfNeeded method.unwrappedReturnTypeName method.returnTypeName.needsPrecedenceWrapping %}?{% else %}{{ method.returnTypeName }}{% endif %}{% endmacro %}
 
 {% macro methodClosureDeclaration method %}
     var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call closureReturnTypeName method %}{% endif %})?

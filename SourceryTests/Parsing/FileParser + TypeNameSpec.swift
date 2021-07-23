@@ -93,6 +93,13 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("Optional<@convention(c) () -> Void>").name).to(equal("Optional<@convention(c) () -> Void>"))
                 }
             }
+            
+            context("given nested optional types") {
+                it("preserves optionals on closures") {
+                    expect(typeName("(() -> (() -> Void)?)?").name).to(equal("(() -> (() -> Void)?)?"))
+                    expect(typeName("(() -> (() -> Void)?)?").unwrappedTypeName).to(equal("() -> (() -> Void)?"))
+                }
+            }
 
             context("given type wrapped with extra closures") {
                 it("unwraps it completely") {
@@ -189,6 +196,10 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("(() -> ())?").isOptional).to(beTrue())
                     expect(typeName("(() -> ())!").isImplicitlyUnwrappedOptional).to(beTrue())
                     expect(typeName("Optional<() -> ()>").isOptional).to(beTrue())
+                }
+                
+                it("keeps correct name") {
+                    expect(typeName("(() -> ())!").name).to(equal("(() -> ())!"))
                 }
             }
 

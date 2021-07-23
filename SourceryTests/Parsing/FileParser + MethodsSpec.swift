@@ -487,6 +487,24 @@ class FileParserMethodsSpec: QuickSpec {
                         ], returnTypeName: TypeName(name: "Void")))))
                         expect(method?.returnTypeName.isClosure).to(beTrue())
                     }
+                    
+                    context("which is optional") {
+                        it("reports isOptional correctly") {
+                            let types = parse("protocol Foo { func foo() -> String? }")
+                            let method = types.last?.methods.first
+                            
+                            expect(method?.isImplicitlyUnwrappedOptionalReturnType).to(beFalse())
+                            expect(method?.isOptionalReturnType).to(beTrue())
+                        }
+                        
+                        it("reports isImplicitlyUnwrappedOptionalReturnType correctly") {
+                            let types = parse("protocol Foo { func foo() -> String! }")
+                            let method = types.last?.methods.first
+                            
+                            expect(method?.isImplicitlyUnwrappedOptionalReturnType).to(beTrue())
+                            expect(method?.isOptionalReturnType).to(beTrue())
+                        }
+                    }
                 }
 
                 context("given initializer") {
