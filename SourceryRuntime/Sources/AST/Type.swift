@@ -128,7 +128,7 @@ public typealias AttributeList = [String: [Attribute]]
     }
 
     private static func uniqueMethodFilter(_ lhs: Method, rhs: Method) -> Bool {
-        return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.isClass == rhs.isClass
+        return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.isClass == rhs.isClass && lhs.actualReturnTypeName == rhs.actualReturnTypeName
     }
 
     // sourcery: skipEquality, skipDescription
