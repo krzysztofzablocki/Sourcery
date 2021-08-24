@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## 1.5.2
+## Fixes
+- Fixes unstable ordering of `TypeName.attributes` 
+
 ## 1.5.1
 ## Fixes
 - Fixing `Type.uniqueMethodFilter(_:_:)` so it compares return types of methods as well.
