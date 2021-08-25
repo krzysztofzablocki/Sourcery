@@ -159,8 +159,15 @@ class TypeNameSpec: QuickSpec {
                 }
             }
 
-            it("removes attributes in unwrappedTypeName") {
-                expect(typeName("@escaping (@escaping ()->())->()").unwrappedTypeName).to(equal("(@escaping () -> ()) -> ()"))
+            context("given closure type with attributes") {
+                it("removes attributes in unwrappedTypeName") {
+                    expect(typeName("@escaping (@escaping ()->())->()").unwrappedTypeName).to(equal("(@escaping () -> ()) -> ()"))
+                }
+
+                it("orders attributes alphabetically") {
+                    expect(typeName("@escaping @autoclosure () -> String").asSource).to(equal("@autoclosure @escaping () -> String"))
+                    expect(typeName("@escaping @autoclosure () -> String").description).to(equal("@autoclosure @escaping () -> String"))
+                }
             }
         }
     }

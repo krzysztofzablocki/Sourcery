@@ -132,7 +132,7 @@ import Foundation
         let specialTreatment = isOptional && name.hasPrefix("Optional<")
 
         var description = (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }) +
+          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
           modifiers.map({ $0.asSource }) +
           [specialTreatment ? name : unwrappedTypeName]
         ).joined(separator: " ")
@@ -160,7 +160,7 @@ import Foundation
 
     public override var description: String {
        (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }) +
+          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
           modifiers.map({ $0.asSource }) +
           [name]
         ).joined(separator: " ")
