@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## Master
+## Fixes
+- Update dependencies to fix build on Xcode 13 and support Swift 5.5 [#989](https://github.com/krzysztofzablocki/Sourcery/issues/989)
+
 ## 1.5.2
 ## Fixes
 - Fixes unstable ordering of `TypeName.attributes` 
