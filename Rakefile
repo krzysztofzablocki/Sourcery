@@ -44,8 +44,8 @@ task :tests do
   print_info "Running Unit Tests"
   # we can't use SPM directly because it doesn't link rpath and thus often uses wrong dylib
   # sh %Q(swift test)
-  xcpretty %Q(xcodebuild -scheme sourcery)
-  xcpretty %Q(xcodebuild -scheme Sourcery-Package test)
+  xcpretty %Q(xcodebuild -scheme sourcery -destination platform=macOS,arch=x86_64)
+  xcpretty %Q(xcodebuild -scheme Sourcery-Package -destination platform=macOS,arch=x86_64 test)
 end
 
 desc "Delete the build/ directory"
