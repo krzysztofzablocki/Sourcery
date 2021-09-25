@@ -3,11 +3,8 @@ version: 2
 jobs:
   test:
     macos:
-      xcode: "12.4.0"
+      xcode: "13.0.0"
     environment:
-      - XCODE_WORKSPACE: Sourcery.xcworkspace
-      - XCODE_PROJECT: Sourcery.xcodeproj
-      - XCODE_SCHEME: Sourcery
       - BUNDLE_JOBS: 3
       - BUNDLE_RETRY: 3
       - BUNDLE_PATH: vendor/bundle
@@ -20,6 +17,7 @@ jobs:
       - run: for ip in $(dig @8.8.8.8 github.com +short); do ssh-keyscan github.com,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts || true
       - run: brew update 1> /dev/null 2> /dev/null
       - run: brew install sourcekitten
+      - run: brew install coreutils
       - run: echo "ruby-3.0.0" > ~/.ruby-version
       - run: bundle install
       - run: bundle exec rake validate_docs
@@ -27,8 +25,6 @@ jobs:
       - run: set -o pipefail
       - run: bundle exec rake build
       - run: bundle exec rake tests
-#      - run: bundle exec slather coverage --scheme "$XCODE_SCHEME" --workspace "$XCODE_WORKSPACE" --output-directory $CIRCLE_ARTIFACTS --binary-basename SourceryRuntime --binary-basename Sourcery --cobertura-xml Sourcery.xcodeproj || true
-#      - run: bash <(curl -s https://codecov.io/bash) -f $CIRCLE_ARTIFACTS/cobertura.xml -X coveragepy -X gcov -X xcode
 
 workflows:
   version: 2

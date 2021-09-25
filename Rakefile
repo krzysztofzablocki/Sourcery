@@ -44,8 +44,8 @@ task :tests do
   print_info "Running Unit Tests"
   # we can't use SPM directly because it doesn't link rpath and thus often uses wrong dylib
   # sh %Q(swift test)
-  xcpretty %Q(xcodebuild -scheme sourcery)
-  xcpretty %Q(xcodebuild -scheme Sourcery-Package test)
+  xcpretty %Q(xcodebuild -scheme sourcery -destination platform=macOS,arch=x86_64)
+  xcpretty %Q(xcodebuild -scheme Sourcery-Package -destination platform=macOS,arch=x86_64 test)
 end
 
 desc "Delete the build/ directory"
@@ -100,12 +100,18 @@ task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
 end
 
 ## [ Docs ] ##########################################################
+def clean_jazzy
+  # jazzy divs are broken, so we need to fix them
+  sh "find docs -type f -name '*.html' -print0 | xargs -0 -I % sh -c \"tac '%' | sed '2d' | tac > tmp && mv tmp '%';\""
+end
 
 desc "Update docs"
 task :docs do
   print_info "Updating docs"
   temp_build_dir = "#{BUILD_DIR}tmp/"
+  # tac Enum.html | sed '2d' | tac > Enum.html
   sh "sourcekitten doc --spm --module-name SourceryRuntime > docs.json && bundle exec jazzy --clean --skip-undocumented --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
+  clean_jazzy
   sh "rm -fr #{temp_build_dir}"
 end
 
@@ -114,6 +120,7 @@ task :validate_docs do
   print_info "Checking docs are up to date"
   temp_build_dir = "#{BUILD_DIR}tmp/"
   sh "sourcekitten doc --spm --module-name SourceryRuntime > docs.json && bundle exec jazzy --skip-undocumented --exclude=/*/*.generated.swift,/*/BytesRange.swift,/*/Typealias.swift,/*/FileParserResult.swift && rm docs.json"
+  clean_jazzy
   sh "rm -fr #{temp_build_dir}"
 end
 

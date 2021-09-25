@@ -106,11 +106,12 @@ GEM
     httpclient (2.8.3)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    jazzy (0.13.7)
+    jazzy (0.14.0)
       cocoapods (~> 1.5)
       mustache (~> 1.1)
-      open4
+      open4 (~> 1.3)
       redcarpet (~> 3.4)
+      rexml (~> 3.2)
       rouge (>= 2.0.6, < 4.0)
       sassc (~> 2.1)
       sqlite3 (~> 1.3)
@@ -185,7 +186,7 @@ DEPENDENCIES
   cocoapods-update-if-you-dare
   danger
   ffi (= 1.15.3)
-  jazzy (= 0.13.7)
+  jazzy (= 0.14.0)
   json (= 2.5.1)
   rake
   slather
