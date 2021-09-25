@@ -35,7 +35,7 @@ extension XcodeProj {
 
     func addGroup(named groupName: String, to toGroup: PBXGroup, options: GroupAddingOptions = []) -> PBXGroup? {
         do {
-            return try toGroup.addGroupFixed(named: groupName, options: options).last
+            return try toGroup.addGroup(named: groupName, options: options).last
         } catch {
             Log.error("Can't add group \(groupName) to group (uuid: \(toGroup.uuid), name: \(String(describing: toGroup.name))")
             return nil
@@ -106,19 +106,5 @@ extension XcodeProj {
             }
         }
         return fileGroup
-    }
-}
-
-fileprivate extension PBXGroup {
-    // FIXME: Replace with XcodeProj's method when it's fixed
-    // addGroup from XcodeProj has a bug, see: https://github.com/tuist/XcodeProj/issues/613
-    // This is workaround to add groups one by one
-    func addGroupFixed(named groupName: String, options: GroupAddingOptions = []) throws -> [PBXGroup] {
-        return try groupName.components(separatedBy: "/").reduce(into: [PBXGroup]()) { groups, name in
-            let group = groups.last ?? self
-            if let newGroup = (try group.addGroup(named: name, options: options)).last {
-                groups.append(newGroup)
-            }
-        }
     }
 }
