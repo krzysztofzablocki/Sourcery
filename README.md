@@ -117,7 +117,7 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 
 ## Documentation
 
-Full documentation for the latest release is available [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html).
+Full documentation for the latest release is available [here](http://merowing.info/Sourcery/).
 
 ## Usage
 
