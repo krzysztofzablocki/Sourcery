@@ -301,11 +301,19 @@ private extension String {
 }
 
 private extension Process {
-    static func runCommand(path: String, arguments: [String], environment: [String: String] = [:], currentDirectoryPath: Path? = nil) throws -> ProcessResult {
+    static func runCommand(path: String, arguments: [String], currentDirectoryPath: Path? = nil) throws -> ProcessResult {
         let task = Process()
+        var environment = ProcessInfo.processInfo.environment
+
+        // https://stackoverflow.com/questions/67595371/swift-package-calling-usr-bin-swift-errors-with-failed-to-open-macho-file-to
+        if ProcessInfo.processInfo.environment.keys.contains("OS_ACTIVITY_DT_MODE") {
+            environment = ProcessInfo.processInfo.environment
+            environment["OS_ACTIVITY_DT_MODE"] = nil
+        }
+
         task.launchPath = path
-        task.arguments = arguments
         task.environment = environment
+        task.arguments = arguments
         if let currentDirectoryPath = currentDirectoryPath {
             if #available(OSX 10.13, *) {
                 task.currentDirectoryURL = currentDirectoryPath.url
@@ -313,7 +321,6 @@ private extension Process {
                 task.currentDirectoryPath = currentDirectoryPath.description
             }
         }
-        task.environment = ProcessInfo.processInfo.environment
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
