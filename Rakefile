@@ -60,7 +60,8 @@ task :build do
   sh %Q(rm -fr #{CLI_DIR})
   sh %Q(mkdir -p "#{CLI_DIR}bin")
   sh %Q(mkdir -p "#{CLI_DIR}lib")
-  sh %Q(cp lib_InternalSwiftSyntaxParser.dylib #{CLI_DIR}lib)
+  ARCH = `uname -m`.chomp
+  sh %Q(lipo -thin #{ARCH} lib_InternalSwiftSyntaxParser.dylib -output #{CLI_DIR}lib/lib_InternalSwiftSyntaxParser.dylib)
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
   `mv #{BUILD_DIR}release/sourcery #{CLI_DIR}bin/`
   #`mv #{BUILD_DIR}release/Sourcery_SourceryJS.bundle #{CLI_DIR}lib/`
