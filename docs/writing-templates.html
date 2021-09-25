@@ -16,7 +16,7 @@
     <a title="Writing templates  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 1.4.2 Docs</a> (91% documented)</p>
+        <p><a href="index.html">Sourcery 1.5.0 Docs</a> (91% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -220,13 +220,14 @@
 <ul>
 <li><code>types: Types</code> - access collections of types, i.e. <code>types.implementing.AutoCoding</code> (<code>types.implementing[&quot;AutoCoding&quot;]</code> in swift templates). See <a href="https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/Classes/Types.html">Types</a>.</li>
 <li><code>type: [String: Type]</code> - access types by their names, i.e. <code>type.MyType</code> (<code>type[&quot;MyType&quot;]</code> in swift templates)</li>
-<li><code>argument: [String: NSObject]</code> - access additional parameters passed with <code>--args</code> command line flag or set in <code>.sourcery.yml</code> file</li>
+<li><code>arguments: [String: NSObject]</code> - access additional parameters passed with <code>--args</code> command line flag or set in <code>.sourcery.yml</code> file</li>
 </ul>
-
-<blockquote>
-<p>Tip: Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
+<div class="aside aside-tip">
+    <p class="aside-title">Tip</p>
+    <p>Make sure you leverage Sourcery built-in daemon to make writing templates a pleasure:
 you can open template side-by-side with generated code and see it change live.</p>
-</blockquote>
+
+</div>
 <h2 id='what-are-em-known-em-and-em-unknown-em-types' class='heading'>What are <em>known</em> and <em>unknown</em> types</h2>
 
 <p>Currently Sourcery only scans files from paths or targets that you tell it to scan. This way it can get full information about types <em>defined</em> in these sources. These types are considered <em>known</em> types. For each of known types Sourcery provides <code><a href="Classes/Type.html">Type</a></code> object. You can get it for example by its name from <code>types</code> collection. <code><a href="Classes/Type.html">Type</a></code> object contains information about whether type that it describes is a struct, enum, class or a protocol, what are its properties and methods, what protocols it implements and so on. This is done recursively, so if you have a class that inherits from another class (or struct that implements a protocol) and they are both known types you will have information about both of them and you will be able to access parent type&rsquo;s <code><a href="Classes/Type.html">Type</a></code> object using <code>type.inherits.TypeName</code> (or <code>type.implements.ProtocolName</code>).</p>
@@ -262,10 +263,11 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 </ul>
 
 <p>You can also use partial templates using <code>include</code> tag. Partial template is loaded from the path of a template that includes it. <code>include</code> tags also supports loading templates from relative path, i.e. <code>{% include &quot;partials/MyPartial.stencil&quot;%}</code> used in the template located in <code>templates</code> directory will load template from <code>templates/partials</code> directory.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>You can only load partial templates from child directories of the including template directory, so <code>{% include &quot;../MyPartial.stencil&quot;%}</code> is not supported.</p>
 
-<blockquote>
-<p>Note: You can only load partial templates from child directories of the including template directory, so <code>{% include &quot;../MyPartial.stencil&quot;%}</code> is not supported.</p>
-</blockquote>
+</div>
 
 <p>Sourcery treats all the templates as independent and so will generate files based on partial templates too. To avoid that use <code>exclude</code> in <a href="usage.html#configuration-file">configuration file</a>.</p>
 <h2 id='swift-templates' class='heading'>Swift templates</h2>
@@ -299,10 +301,11 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <p>JavaScript templates are powered by <a href="http://ejs.co">EJS</a> and support all the features available in this template engine.</p>
 
 <p><strong>Example</strong>: <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/Sourcery/Templates/JSExport.ejs">JSExport.ejs</a></p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>when using JavaScript templates with Sourcery built using Swift Package Manager you must provide path to EJS source code using <code>--ejsPath</code> command line argument. Download EJS source code <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryJS/Sources/ejs.js">here</a>, put it in some path and pass it when running Sourcery. Otherwise JavaScript templates will be ignored (you will see a warning in the console output).</p>
 
-<blockquote>
-<p>Note: when using JavaScript templates with Sourcery built using Swift Package Manager you must provide path to EJS source code using <code>--ejsPath</code> command line argument. Download EJS source code <a href="https://github.com/krzysztofzablocki/Sourcery/blob/master/SourceryJS/Sources/ejs.js">here</a>, put it in some path and pass it when running Sourcery. Otherwise JavaScript templates will be ignored (you will see a warning in the console output).</p>
-</blockquote>
+</div>
 
 <p>You can also use <code>SourceryJS</code> framework independently of Sourcery. You can add it as a Carthage or SPM dependency.</p>
 <h2 id='using-source-annotations' class='heading'>Using Source Annotations</h2>
@@ -429,10 +432,9 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
         </section>
         <section id="footer">
           <p>Copyright © 2016-2021 Pixle. All rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.7</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="noopener" rel="external">jazzy ♪♫ v0.14.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="noopener" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
   </body>
-</div>
 </html>
