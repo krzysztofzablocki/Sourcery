@@ -6,13 +6,7 @@
 - Improves performance
 - Skips hidden files / directories and doesn't step into packages
 - added `after-auto:` generation mode to inline codegen
-
-## 1.5.2
-## Fixes
 - Fixes unstable ordering of `TypeName.attributes` 
-
-## 1.5.1
-## Fixes
 - Fixing `Type.uniqueMethodFilter(_:_:)` so it compares return types of methods as well.
 
 ## 1.5.0
