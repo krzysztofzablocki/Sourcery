@@ -327,6 +327,29 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(equal(expectedResult))
                     }
 
+                    it("insert generated code after the end of type body when using after-auto") {
+                        update(code: "class Foo {}\nstruct Boo {}", in: sourcePath)
+
+                        update(code: """
+                            // sourcery:inline:after-auto:Foo.Inlined
+                            var property = 2
+                            // sourcery:end
+                            """, in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let expectedResult = """
+                            class Foo {}
+                            // sourcery:inline:after-auto:Foo.Inlined
+                            var property = 2
+                            // sourcery:end
+                            struct Boo {}
+                            """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
                     it("insert generated code line before the end of type body") {
                         update(code: """
                         class Foo {

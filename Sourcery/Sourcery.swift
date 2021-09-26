@@ -606,12 +606,22 @@ extension Sourcery {
                     return MappedInlineAnnotations(range, filePath, inlineRanges[key]!, generatedBody, inlineIndentations[key] ?? "")
                 }
 
-                guard key.hasPrefix("auto:") else {
+
+                guard let autoRange = key.range(of: "auto:") else {
                     rangesToReplace.remove(range)
                     return nil
                 }
-                let autoTypeName = key.trimmingPrefix("auto:").components(separatedBy: ".").dropLast().joined(separator: ".")
-                let toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end\n"
+
+                enum AutoType: String {
+                    case after = "after-"
+                    case normal = ""
+                }
+
+                let autoKey = key[..<autoRange.lowerBound]
+                let autoType = AutoType(rawValue: String(autoKey)) ?? .normal
+
+                let autoTypeName = key[autoRange.upperBound..<key.endIndex].components(separatedBy: ".").dropLast().joined(separator: ".")
+                var toInsert = "\n// sourcery:inline:\(key)\n\(generatedBody)// sourcery:end"
 
                 guard let definition = parsingResult.types.types.first(where: { $0.name == autoTypeName }),
                     let filePath = definition.path,
@@ -623,7 +633,16 @@ extension Sourcery {
                 }
                 let bodyEndRange = NSRange(location: NSMaxRange(bodyRange), length: 0)
                 let bodyEndLineRange = contents.bridge().lineRange(for: bodyEndRange)
-                let rangeInFile = NSRange(location: max(bodyRange.location, bodyEndLineRange.location), length: 0)
+                let rangeInFile: NSRange
+
+                switch autoType {
+                case .after:
+                    rangeInFile = NSRange(location: max(bodyRange.location, bodyEndLineRange.location) + 1, length: 0)
+                case .normal:
+                    rangeInFile = NSRange(location: max(bodyRange.location, bodyEndLineRange.location), length: 0)
+                    toInsert += "\n"
+                }
+
                 return MappedInlineAnnotations(range, filePath, rangeInFile, toInsert, "")
             }
             .sorted { lhs, rhs in
