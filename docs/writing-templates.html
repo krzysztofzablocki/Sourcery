@@ -16,7 +16,7 @@
     <a title="Writing templates  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 1.5.0 Docs</a> (91% documented)</p>
+        <p><a href="index.html">Sourcery 1.5.0 Docs</a> (90% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -180,9 +180,6 @@
           <li class="nav-group-name">
             <a href="Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Extensions/Array.html">Array</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Extensions/String.html">String</a>
               </li>
@@ -394,7 +391,8 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 <p>Sourcery will generate the template code and then perform replacement in your source file by matching annotation comments. Inlined generated code is not parsed to avoid chicken-egg problem.</p>
 <h4 id='automatic-inline-code-generation' class='heading'>Automatic inline code generation</h4>
 
-<p>To avoid having to place the markup in your source files, you can use <code>inline:auto:{{ type.name }}.TemplateName</code>:</p>
+<p>To avoid having to place the markup in your source files, you can use automatic generation e.g. 
+<code>inline:auto:{{ type.name }}.TemplateName</code>:</p>
 <pre class="highlight swift"><code><span class="c1">// in template:</span>
 
 <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">type</span> <span class="k">in</span> <span class="n">types</span><span class="o">.</span><span class="n">all</span> <span class="o">%</span><span class="p">}</span>
@@ -415,6 +413,8 @@ Sourcery also uses its extension <a href="https://github.com/SwiftGen/StencilSwi
 </code></pre>
 
 <p>The needed markup will be automatically added at the end of the type declaration body. After first parse Sourcery will work with generated code annotated with <code>inline:auto</code> the same way as annotated with <code>inline</code>, so you can even move these blocks of code anywhere in the same file.</p>
+
+<p>If you want to insert code after the type declaration, use <code>after-auto:</code> instead of <code>auto:</code></p>
 <h2 id='per-file-code-generation' class='heading'>Per file code generation</h2>
 
 <p>Sourcery supports generating code in a separate file per type, you just need to put <code>file</code> annotation in a template, e.g.</p>
