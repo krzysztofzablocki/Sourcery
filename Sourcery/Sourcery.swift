@@ -304,13 +304,19 @@ extension Sourcery {
 
             numberOfFilesThatHadToBeParsed = 0
 
+            var lastError: Swift.Error?
             let results = parserGenerator.parallelCompactMap { parser -> FileParserResult? in
                 do {
                     return try self.loadOrParse(parser: parser, cachesPath: cachesDir(sourcePath: from))
                 } catch {
+                    lastError = error
                     Log.error("Unable to parse \(parser.path), error \(error)")
                     return nil
                 }
+            }
+
+            if let error = lastError {
+                throw error
             }
 
             if !results.isEmpty {
