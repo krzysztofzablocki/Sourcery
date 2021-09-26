@@ -3,6 +3,7 @@ import XcodeProj
 import PathKit
 import Yams
 import SourceryRuntime
+import QuartzCore
 
 public struct Project {
     public let file: XcodeProj
@@ -82,10 +83,14 @@ public struct Paths {
         self.include = include
         self.exclude = exclude
 
-        let include = self.include.flatMap { $0.allPaths }
-        let exclude = self.exclude.flatMap { $0.allPaths }
+        let start = CFAbsoluteTimeGetCurrent()
+
+        let include = self.include.parallelFlatMap { $0.allPaths }
+        let exclude = self.exclude.parallelFlatMap { $0.allPaths }
 
         self.allPaths = Array(Set(include).subtracting(Set(exclude))).sorted()
+
+        Log.benchmark("Resolving Paths took \(CFAbsoluteTimeGetCurrent() - start)")
     }
 
 }

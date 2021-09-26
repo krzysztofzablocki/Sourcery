@@ -302,21 +302,16 @@ extension Sourcery {
                     })
                 }
 
-            var previousUpdate = 0
-            var accumulator = 0
-            let step = parserGenerator.count / 10 // every 10%
             numberOfFilesThatHadToBeParsed = 0
 
-            let results = try parserGenerator.parallelMap({
-                try self.loadOrParse(parser: $0, cachesPath: cachesDir(sourcePath: from))
-            }, progress: !(verbose || watcherEnabled) ? nil : { _ in
-                if accumulator > previousUpdate + step {
-                    previousUpdate = accumulator
-                    let percentage = accumulator * 100 / parserGenerator.count
-                    Log.info("Scanning sources... \(percentage)% (\(parserGenerator.count) files)")
+            let results = parserGenerator.parallelCompactMap { parser -> FileParserResult? in
+                do {
+                    return try self.loadOrParse(parser: parser, cachesPath: cachesDir(sourcePath: from))
+                } catch {
+                    Log.error("Unable to parse \(parser.path), error \(error)")
+                    return nil
                 }
-                accumulator += 1
-                })
+            }
 
             if !results.isEmpty {
                 allResults.append(contentsOf: results)
