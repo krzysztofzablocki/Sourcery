@@ -58,69 +58,29 @@ public protocol Annotated {
 
 import Foundation
 
-private let disableParallelProcessingForEasierDebugging = false
-
 public extension Array {
-    @inline(__always)
-    func parallelPerform(transform: (Element) -> Void) {
-        guard !disableParallelProcessingForEasierDebugging else {
-            return forEach(transform)
-        }
-
-        DispatchQueue.concurrentPerform(iterations: count) { idx in
-            let item = self[idx]
-            transform(item)
-        }
+    func parallelFlatMap<T>(transform: (Element) -> [T]) -> [T] {
+        return parallelMap(transform: transform).flatMap { $0 }
     }
 
-    @inline(__always)
-    func parallelFlatMap<T>(transform: (Element) throws -> [T]) throws -> [T] {
-        return try parallelMap(transform).flatMap { $0 }
+    func parallelCompactMap<T>(transform: (Element) -> T?) -> [T] {
+        return parallelMap(transform: transform).compactMap { $0 }
     }
 
-    /// We have to roll our own solution because concurrentPerform will use slowPath if no NSApplication is available
-    func parallelMap<T>(_ transform: (Element) throws -> T, progress: ((Int) -> Void)? = nil) throws -> [T] {
-        let count = self.count
-        let maxConcurrentJobs = ProcessInfo.processInfo.activeProcessorCount
-
-        guard !disableParallelProcessingForEasierDebugging && count > 1 && maxConcurrentJobs > 1 else {
-            // skip GCD overhead if we'd only run one at a time anyway
-            return try map(transform)
-        }
-
-        var result = [(Int, [T])]()
-        result.reserveCapacity(count)
-        let group = DispatchGroup()
-        let uuid = NSUUID().uuidString
-        let jobCount = Int(ceil(Double(count) / Double(maxConcurrentJobs)))
-
-        let queueLabelPrefix = "io.pixle.Sourcery.map.\\(uuid)"
-        let resultAccumulatorQueue = DispatchQueue(label: "\\(queueLabelPrefix).resultAccumulator")
-
-        var mapError: Error?
-        withoutActuallyEscaping(transform) { escapingtransform in
-            for jobIndex in stride(from: 0, to: count, by: jobCount) {
-                let queue = DispatchQueue(label: "\\(queueLabelPrefix).\\(jobIndex / jobCount)")
-                queue.async(group: group) {
-                    let jobElements = self[jobIndex..<Swift.min(count, jobIndex + jobCount)]
-                    do {
-                        let jobIndexAndResults = try (jobIndex, jobElements.map(escapingtransform))
-                        resultAccumulatorQueue.sync {
-                            result.append(jobIndexAndResults)
-                        }
-                    } catch {
-                        resultAccumulatorQueue.sync {
-                            mapError = error
-                        }
-                    }
-                }
+    func parallelMap<T>(transform: (Element) -> T) -> [T] {
+        var result = ContiguousArray<T?>(repeating: nil, count: count)
+        return result.withUnsafeMutableBufferPointer { buffer in
+            DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
+                buffer[idx] = transform(self[idx])
             }
-            group.wait()
+            return buffer.map { $0! }
         }
-        if let mapError = mapError {
-            throw mapError
+    }
+
+    func parallelPerform(transform: (Element) -> Void) {
+        DispatchQueue.concurrentPerform(iterations: count) { idx in
+            transform(self[idx])
         }
-        return result.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
     }
 }
 
@@ -599,7 +559,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -1442,7 +1402,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1869,7 +1829,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -2764,7 +2724,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -4021,7 +3981,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -6041,7 +6001,7 @@ public typealias AttributeList = [String: [Attribute]]
     }
 
     private static func uniqueMethodFilter(_ lhs: Method, rhs: Method) -> Bool {
-        return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.isClass == rhs.isClass
+        return lhs.name == rhs.name && lhs.isStatic == rhs.isStatic && lhs.isClass == rhs.isClass && lhs.actualReturnTypeName == rhs.actualReturnTypeName
     }
 
     // sourcery: skipEquality, skipDescription
@@ -6530,7 +6490,7 @@ import Foundation
         let specialTreatment = isOptional && name.hasPrefix("Optional<")
 
         var description = (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }) +
+          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
           modifiers.map({ $0.asSource }) +
           [specialTreatment ? name : unwrappedTypeName]
         ).joined(separator: " ")
@@ -6558,7 +6518,7 @@ import Foundation
 
     public override var description: String {
        (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }) +
+          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
           modifiers.map({ $0.asSource }) +
           [name]
         ).joined(separator: " ")
@@ -6701,7 +6661,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.5.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
