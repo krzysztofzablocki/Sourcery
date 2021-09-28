@@ -97,7 +97,7 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 
 - _[Mint](https://github.com/yonaskolb/Mint)_
 
-    Run `mint run krzysztofzablocki/Sourcery`. 
+    Mint is no longer recommended, due to how SwiftSyntax dylib linking and lack of SPM support for changing r-path, you can't just build sourcery with plain SPM and expect it to work with different Xcode versions across your team. 
     
 - _Building from source_
 
