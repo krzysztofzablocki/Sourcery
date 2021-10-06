@@ -1,5 +1,11 @@
 # Sourcery CHANGELOG
 
+## Master
+## New Features
+- Added `CLI-Only` subspec to `Sourcery.podspec` [#997](https://github.com/krzysztofzablocki/Sourcery/pull/997)
+
+---
+
 ## 1.6.0
 ## Fixes
 - Update dependencies to fix build on Xcode 13 and support Swift 5.5 [#989](https://github.com/krzysztofzablocki/Sourcery/issues/989)
