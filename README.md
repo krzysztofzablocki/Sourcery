@@ -94,6 +94,7 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 
     Add `pod 'Sourcery'` to your `Podfile` and run `pod update Sourcery`. This will download the latest release binary and will put it in your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
+    If you only want to install the `sourcery` binary and its `lib_InternalSwiftSyntaxParser.dylib` dependency, you may want to use the `CLI-Only` subspec: `pod 'Sourcery', :subspecs => ['CLI-Only']`.
 
 - _[Mint](https://github.com/yonaskolb/Mint)_
 
