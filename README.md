@@ -1,6 +1,6 @@
 [![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=shield)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
 <!-- [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery) -->
-[![docs](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/badge.svg)](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html)
+[![docs](https://merowing.info/Sourcery/badge.svg)](https://merowing.info/Sourcery/index.html)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
@@ -57,14 +57,14 @@ Sourcery can be applied to arbitrary problems across your codebase, if you can d
 
 Most common uses are:
 
-- [Equality](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/equatable.html) & [Hashing](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/hashable.html)
-- [Enum cases & Counts](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/enum-cases.html)
-- [Lenses](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/lenses.html)
-- [Mocks & Stubs](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/mocks.html)
-- [LinuxMain](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/linuxmain.html)
-- [Decorators](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/decorator.html)
-- [Persistence and advanced Codable](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/codable.html)
-- [Property level diffing](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/diffable.html)
+- [Equality](https://merowing.info/Sourcery/equatable.html) & [Hashing](https://merowing.info/Sourcery/hashable.html)
+- [Enum cases & Counts](https://merowing.info/Sourcery/enum-cases.html)
+- [Lenses](https://merowing.info/Sourcery/lenses.html)
+- [Mocks & Stubs](https://merowing.info/Sourcery/mocks.html)
+- [LinuxMain](https://merowing.info/Sourcery/linuxmain.html)
+- [Decorators](https://merowing.info/Sourcery/decorator.html)
+- [Persistence and advanced Codable](https://merowing.info/Sourcery/codable.html)
+- [Property level diffing](https://merowing.info/Sourcery/diffable.html)
 
 But how about more specific use-cases, like automatically generating all the UI for your app `BetaSetting`? [you can use Sourcery for that too](https://github.com/krzysztofzablocki/AutomaticSettings)
 
@@ -166,7 +166,7 @@ args:
   <name>: <value>
 ```
 
-Read more about this configuration file [here](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/usage.html#configuration-file).
+Read more about this configuration file [here](https://merowing.info/Sourcery/usage.html#configuration-file).
 
 ## Issues
 If you get unverified developer warning when using binary zip distribution try:
