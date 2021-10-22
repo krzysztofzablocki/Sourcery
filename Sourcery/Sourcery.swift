@@ -62,7 +62,7 @@ public class Sourcery {
     ///   - forceParse: extensions of generated sourcery file that can be parsed
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Output, forceParse: [String] = []) throws -> [FolderWatcher.Local]? {
+    public func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Output, forceParse: [String] = [], parseDocumentation: Bool = false) throws -> [FolderWatcher.Local]? {
         self.templatesPaths = templatesPaths
         self.outputPath = output
 
@@ -81,7 +81,7 @@ public class Sourcery {
             var result: ParsingResult
             switch source {
             case let .sources(paths):
-                result = try self.parse(from: paths.include, exclude: paths.exclude, forceParse: forceParse, modules: nil, requiresFileParserCopy: hasSwiftTemplates)
+                result = try self.parse(from: paths.include, exclude: paths.exclude, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: nil, requiresFileParserCopy: hasSwiftTemplates)
             case let .projects(projects):
                 var paths: [Path] = []
                 var modules = [String]()
@@ -97,7 +97,7 @@ public class Sourcery {
                         }
                     }
                 }
-                result = try self.parse(from: paths, forceParse: forceParse, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
+                result = try self.parse(from: paths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
             try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result, forceParse: forceParse)
@@ -259,7 +259,7 @@ extension Sourcery {
 
     typealias ParserWrapper = (path: Path, parse: () throws -> FileParserResult)
 
-    fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], modules: [String]?, requiresFileParserCopy: Bool) throws -> ParsingResult {
+    fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], parseDocumentation: Bool, modules: [String]?, requiresFileParserCopy: Bool) throws -> ParsingResult {
         if let modules = modules {
             precondition(from.count == modules.count, "There should be module for each file to parse")
         }
@@ -297,7 +297,7 @@ extension Sourcery {
                         case .isCodeGenerated:
                             return FileParserResult(path: path.string, module: module, types: [], functions: [])
                         case .approved:
-                            return try makeParser(for: content, forceParse: forceParse, path: path, module: module).parse()
+                            return try makeParser(for: content, forceParse: forceParse, parseDocumentation: parseDocumentation, path: path, module: module).parse()
                         }
                     })
                 }

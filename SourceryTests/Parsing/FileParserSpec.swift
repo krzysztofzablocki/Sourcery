@@ -15,8 +15,8 @@ class FileParserSpec: QuickSpec {
     override func spec() {
         describe("Parser") {
             describe("parse") {
-                func parse(_ code: String) -> [Type] {
-                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
+                func parse(_ code: String, parseDocumentation: Bool = false) -> [Type] {
+                    guard let parserResult = try? makeParser(for: code, parseDocumentation: parseDocumentation).parse() else { fail(); return [] }
                     return parserResult.types
                 }
 
@@ -311,9 +311,17 @@ class FileParserSpec: QuickSpec {
                         let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
                         expectedType.annotations["firstLine"] = NSNumber(value: true)
                         expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
-                        expectedType.documentation = ["comment"]
 
                         expect(parse("// sourcery: thirdLine = 4543\n/// comment\n// sourcery: firstLine\nclass Foo: TestProtocol { }"))
+                                .to(equal([expectedType]))
+                    }
+
+                    it("extracts documentation correctly") {
+                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"])
+                        expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
+                        expectedType.documentation = ["doc", "comment", "baz"]
+
+                        expect(parse("/// doc\n// sourcery: thirdLine = 4543\n/// comment\n// firstLine\n///baz\nclass Foo: TestProtocol { }", parseDocumentation: true))
                                 .to(equal([expectedType]))
                     }
                 }
@@ -781,7 +789,7 @@ class FileParserSpec: QuickSpec {
                                          /// Option C
                                          indirect case optionC(Foo)
                                      }
-                                     """))
+                                     """, parseDocumentation: true))
                                 .to(equal([
                                     Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: [], cases:
                                         [

@@ -37,12 +37,14 @@ public struct AnnotationsParser {
 
     private let lines: [Line]
     private let contents: String
+    private var parseDocumentation: Bool
     internal var sourceLocationConverter: SourceLocationConverter?
 
     /// Initializes parser
     ///
     /// - Parameter contents: Contents to parse
-    init(contents: String, sourceLocationConverter: SourceLocationConverter? = nil) {
+    init(contents: String, parseDocumentation: Bool = false, sourceLocationConverter: SourceLocationConverter? = nil) {
+        self.parseDocumentation = parseDocumentation
         self.lines = AnnotationsParser.parse(contents: contents)
         self.sourceLocationConverter = sourceLocationConverter
         self.contents = contents
@@ -74,14 +76,20 @@ public struct AnnotationsParser {
     }
 
     func documentation(from node: IdentifierSyntax) -> Documentation {
-        documentationFrom(
+        guard parseDocumentation else {
+            return  []
+        }
+        return documentationFrom(
           location: findLocation(syntax: node.identifier),
           precedingComments: node.leadingTrivia?.compactMap({ $0.comment }) ?? []
         )
     }
 
     func documentation(fromToken token: SyntaxProtocol) -> Documentation {
-        documentationFrom(
+        guard parseDocumentation else {
+            return  []
+        }
+        return documentationFrom(
           location: findLocation(syntax: token),
           precedingComments: token.leadingTrivia?.compactMap({ $0.comment }) ?? []
         )
@@ -118,7 +126,8 @@ public struct AnnotationsParser {
     }
 
     private func documentationFrom(location: SwiftSyntax.SourceLocation, precedingComments: [String]) -> Documentation {
-        guard let lineNumber = location.line, let column = location.column else {
+        guard parseDocumentation,
+            let lineNumber = location.line, let column = location.column else {
             return []
         }
 

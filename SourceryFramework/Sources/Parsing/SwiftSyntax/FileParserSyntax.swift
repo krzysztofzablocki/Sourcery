@@ -15,15 +15,17 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
     fileprivate var inlineRanges: [String: NSRange]!
     fileprivate var inlineIndentations: [String: String]!
     fileprivate var forceParse: [String] = []
+    fileprivate var parseDocumentation: Bool = false
 
     /// Parses given contents.
     /// - Throws: parsing errors.
-    public init(contents: String, forceParse: [String] = [], path: Path? = nil, module: String? = nil) throws {
+    public init(contents: String, forceParse: [String] = [], parseDocumentation: Bool, path: Path? = nil, module: String? = nil) throws {
         self.path = path?.string
         self.modifiedDate = path.flatMap({ (try? FileManager.default.attributesOfItem(atPath: $0.string)[.modificationDate]) as? Date })
         self.module = module
         self.initialContents = contents
         self.forceParse = forceParse
+        self.parseDocumentation = parseDocumentation
     }
 
     /// Parses given file context.
@@ -43,7 +45,7 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
         let collector = SyntaxTreeCollector(
           file: fileName,
           module: module,
-          annotations: AnnotationsParser(contents: contents, sourceLocationConverter: sourceLocationConverter),
+          annotations: AnnotationsParser(contents: contents, parseDocumentation: parseDocumentation, sourceLocationConverter: sourceLocationConverter),
           sourceLocationConverter: sourceLocationConverter)
         collector.walk(tree)
 
