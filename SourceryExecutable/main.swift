@@ -107,7 +107,7 @@ func runCLI() {
         	Additional arguments to pass to templates. Each argument can have an explicit value or will have \
         	an implicit `true` value. Arguments should be comma-separated without spaces (e.g. --args arg1=value,arg2) \
         	or should be passed one by one (e.g. --args arg1=value --args arg2). Arguments are accessible in templates \
-        	via `argument.<name>`. To pass in string you should use escaped quotes (\").
+        	via `argument.<name>`. To pass in string you should use escaped quotes (\\").
         	"""),
         Option<Path>("ejsPath", default: "", description: "Path to EJS file for JavaScript templates.")
     ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, quiet, prune, sources, excludeSources, templates, excludeTemplates, output, configPaths, forceParse, args, ejsPath in
