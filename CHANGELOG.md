@@ -3,6 +3,7 @@
 ## Master
 ## New Features
 - Added `CLI-Only` subspec to `Sourcery.podspec` [#997](https://github.com/krzysztofzablocki/Sourcery/pull/997)
+- Updates Yams to 4.0.6
 
 ---
 

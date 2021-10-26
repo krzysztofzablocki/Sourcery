@@ -19,7 +19,7 @@ let package = Package(
         .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
     ],
     dependencies: [
-        .package(name: "Yams", url: "https://github.com/jpsim/Yams.git", .exact("4.0.0")),
+        .package(name: "Yams", url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
         .package(name: "Commander", url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
         .package(name: "PathKit", url: "https://github.com/kylef/PathKit.git", .exact("1.0.1")),
