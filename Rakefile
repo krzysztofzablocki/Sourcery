@@ -57,7 +57,7 @@ end
 task :build, [:build_fat] do |t, args|
   args.with_defaults(:build_fat => false)
   print_info "Building project (fat: #{args[:build_fat]})"
-  sh %Q(swift build -c release --disable-sandbox --build-path #{BUILD_DIR})
+  sh %Q(swift build -c release --arch x86_64 --disable-sandbox --build-path #{BUILD_DIR})
   sh %Q(rm -fr #{CLI_DIR})
   sh %Q(mkdir -p "#{CLI_DIR}bin")
   sh %Q(mkdir -p "#{CLI_DIR}lib")
