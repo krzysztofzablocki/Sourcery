@@ -25,6 +25,7 @@ import Foundation
                          attributes: AttributeList = [:],
                          modifiers: [SourceryModifier] = [],
                          annotations: [String: NSObject] = [:],
+                         documentation: [String] = [],
                          isGeneric: Bool = false) {
         super.init(
             name: name,
@@ -40,6 +41,7 @@ import Foundation
             attributes: attributes,
             modifiers: modifiers,
             annotations: annotations,
+            documentation: documentation,
             isGeneric: isGeneric
         )
     }

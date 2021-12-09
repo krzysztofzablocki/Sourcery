@@ -259,6 +259,26 @@ class ConfigurationSpec: QuickSpec {
                 }
             }
         }
+
+        describe("Parse Documentation") {
+            context("when parseDocumentation is true") {
+                it("has the correct parseDocumentation") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."], "output": ".", "parseDocumentation": true]
+                    let parseDocumentation = try? Configuration(dict: config, relativePath: relativePath).parseDocumentation
+                    let expected = true
+                    expect(parseDocumentation).to(equal(expected))
+                }
+            }
+
+            context("when parseDocumentation is unset") {
+                it("defaults to false") {
+                    let config: [String: Any] = ["sources": ["."], "templates": ["."], "output": "."]
+                    let parseDocumentation = try? Configuration(dict: config, relativePath: relativePath).parseDocumentation
+                    let expected = false
+                    expect(parseDocumentation).to(equal(expected))
+                }
+            }
+        }
     }
 }
 

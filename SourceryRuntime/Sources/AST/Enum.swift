@@ -69,7 +69,7 @@ import Foundation
 }
 
 /// Defines enum case
-@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
+@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented {
 
     /// Enum case name
     public let name: String
@@ -82,6 +82,8 @@ import Foundation
 
     /// Enum case annotations
     public var annotations: Annotations = [:]
+
+    public var documentation: Documentation = []
 
     /// Whether enum case is indirect
     public let indirect: Bool
@@ -97,11 +99,12 @@ import Foundation
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], indirect: Bool = false) {
+    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], documentation: [String] = [], indirect: Bool = false) {
         self.name = name
         self.rawValue = rawValue
         self.associatedValues = associatedValues
         self.annotations = annotations
+        self.documentation = documentation
         self.indirect = indirect
     }
 
@@ -113,6 +116,7 @@ import Foundation
             self.rawValue = aDecoder.decode(forKey: "rawValue")
             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             self.indirect = aDecoder.decode(forKey: "indirect")
         }
 
@@ -122,6 +126,7 @@ import Foundation
             aCoder.encode(self.rawValue, forKey: "rawValue")
             aCoder.encode(self.associatedValues, forKey: "associatedValues")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.indirect, forKey: "indirect")
         }
 // sourcery:end
@@ -197,13 +202,14 @@ import Foundation
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 isGeneric: Bool = false) {
 
         self.cases = cases
         self.rawTypeName = rawTypeName
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, isGeneric: isGeneric)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric)
 
         if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)

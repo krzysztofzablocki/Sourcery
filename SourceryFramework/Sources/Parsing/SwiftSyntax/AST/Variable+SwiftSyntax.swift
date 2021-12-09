@@ -62,6 +62,7 @@ extension Variable {
           attributes: Attribute.from(variableNode.attributes),
           modifiers: modifiers.map(SourceryModifier.init),
           annotations: annotationParser.annotations(fromToken: variableNode.letOrVarKeyword),
+          documentation: annotationParser.documentation(fromToken: variableNode.letOrVarKeyword),
           definedInTypeName: visitingType.map { TypeName($0.name) }
         )
     }

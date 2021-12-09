@@ -102,10 +102,13 @@ extension SourceryMethod {
         let selectorName = signature.selector(with: funcName)
 
         let annotations: Annotations
+        let documentation: Documentation
         if let function = node as? FunctionDeclSyntax {
             annotations = annotationsParser.annotations(from: function)
+            documentation = annotationsParser.documentation(from: function)
         } else {
             annotations = annotationsParser.annotations(fromToken: node)
+            documentation = annotationsParser.documentation(fromToken: node)
         }
 
         self.init(
@@ -122,6 +125,7 @@ extension SourceryMethod {
           attributes: Attribute.from(attributes),
           modifiers: modifiers.map(SourceryModifier.init),
           annotations: annotations,
+          documentation: documentation,
           definedInTypeName: typeName
         )
     }

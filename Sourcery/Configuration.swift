@@ -237,6 +237,7 @@ public struct Configuration {
     public let output: Output
     public let cacheBasePath: Path
     public let forceParse: [String]
+    public let parseDocumentation: Bool
     public let args: [String: NSObject]
 
     public init(
@@ -274,6 +275,8 @@ public struct Configuration {
 
         self.forceParse = dict["forceParse"] as? [String] ?? []
 
+        self.parseDocumentation = dict["parseDocumentation"] as? Bool ?? false
+
         if let output = dict["output"] as? String {
             self.output = Output(Path(output, relativeTo: relativePath))
         } else if let output = dict["output"] as? [String: Any] {
@@ -293,12 +296,13 @@ public struct Configuration {
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 
-    public init(sources: Paths, templates: Paths, output: Path, cacheBasePath: Path, forceParse: [String], args: [String: NSObject]) {
+    public init(sources: Paths, templates: Paths, output: Path, cacheBasePath: Path, forceParse: [String], parseDocumentation: Bool, args: [String: NSObject]) {
         self.source = .sources(sources)
         self.templates = templates
         self.output = Output(output, linkTo: nil)
         self.cacheBasePath = cacheBasePath
         self.forceParse = forceParse
+        self.parseDocumentation = parseDocumentation
         self.args = args
     }
 

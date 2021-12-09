@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes subscript
-@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
+@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition {
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -56,6 +56,8 @@ import Foundation
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: Annotations
 
+    public let documentation: Documentation
+
     /// Reference to type name where the method is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
@@ -88,6 +90,7 @@ import Foundation
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 definedInTypeName: TypeName? = nil) {
 
         self.parameters = parameters
@@ -97,6 +100,7 @@ import Foundation
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
+        self.documentation = documentation
         self.definedInTypeName = definedInTypeName
     }
 
@@ -110,6 +114,7 @@ import Foundation
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -124,6 +129,7 @@ import Foundation
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")

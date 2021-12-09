@@ -53,6 +53,7 @@ extension EnumCase {
           rawValue: rawValue,
           associatedValues: associatedValues,
           annotations: annotationsParser.annotations(from: node),
+          documentation: annotationsParser.documentation(from: node),
           indirect: indirect
         )
     }

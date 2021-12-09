@@ -15,14 +15,14 @@ class FileParserVariableSpec: QuickSpec {
     override func spec() {
         describe("Parser") {
             describe("parseVariable") {
-                func variable(_ code: String) -> Variable? {
+                func variable(_ code: String, parseDocumentation: Bool = false) -> Variable? {
                     let wrappedCode =
                         """
                         struct Wrapper {
                             \(code)
                         }
                         """
-                    guard let parser = try? makeParser(for: wrappedCode) else { fail(); return nil }
+                    guard let parser = try? makeParser(for: wrappedCode, parseDocumentation: parseDocumentation) else { fail(); return nil }
                     let result = try? parser.parse()
                     let variable = result?.types.first?.variables.first
                     variable?.definedInType = nil
@@ -277,11 +277,13 @@ class FileParserVariableSpec: QuickSpec {
                         let expectedVariable = Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
                         expectedVariable.annotations["isSet"] = NSNumber(value: true)
                         expectedVariable.annotations["numberOfIterations"] = NSNumber(value: 2)
+                        expectedVariable.documentation = ["isSet is used for something useful"]
 
                         let result = variable(        "// sourcery: isSet\n" +
                                                            "/// isSet is used for something useful\n" +
                                                            "// sourcery: numberOfIterations = 2\n" +
-                                                           "var name: Int { return 2 }")
+                                                           "var name: Int { return 2 }",
+                                                      parseDocumentation: true)
                         expect(result).to(equal(expectedVariable))
                     }
 

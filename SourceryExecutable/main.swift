@@ -93,6 +93,7 @@ func runCLI() {
         Flag("verbose", flag: "v", description: "Turn on verbose logging, this causes to log everything we can."),
         Flag("logAST", description: "Log AST messages"),
         Flag("logBenchmarks", description: "Log time benchmark info"),
+        Flag("parseDocumentation", description: "Include documentation comments for all declarations."),
         Flag("quiet", flag: "q", description: "Turn off any logging, only emmit errors."),
         Flag("prune", flag: "p", description: "Remove empty generated files"),
         VariadicOption<Path>("sources", description: "Path to a source swift files. File or Directory."),
@@ -110,7 +111,7 @@ func runCLI() {
         	via `argument.<name>`. To pass in string you should use escaped quotes (\\").
         	"""),
         Option<Path>("ejsPath", default: "", description: "Path to EJS file for JavaScript templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, quiet, prune, sources, excludeSources, templates, excludeTemplates, output, configPaths, forceParse, args, ejsPath in
+    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, sources, excludeSources, templates, excludeTemplates, output, configPaths, forceParse, args, ejsPath in
         do {
             switch (quiet, verboseLogging) {
             case (true, _):
@@ -140,6 +141,7 @@ func runCLI() {
                             output: output.string.isEmpty ? "." : output,
                             cacheBasePath: Path.defaultBaseCachePath,
                             forceParse: forceParse,
+                            parseDocumentation: parseDocumentation,
                             args: arguments
                         )
                     ]
@@ -196,7 +198,8 @@ func runCLI() {
                     configuration.source,
                     usingTemplates: configuration.templates,
                     output: configuration.output,
-                    forceParse: configuration.forceParse
+                    forceParse: configuration.forceParse,
+                    parseDocumentation: configuration.parseDocumentation
                 ) ?? []
             }
 

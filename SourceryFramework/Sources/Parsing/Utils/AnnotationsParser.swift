@@ -7,7 +7,7 @@ import Foundation
 import SwiftSyntax
 import SourceryRuntime
 
-/// Parser for annotations
+/// Parser for annotations, and also documentation
 public struct AnnotationsParser {
 
     private enum AnnotationType {
@@ -21,6 +21,7 @@ public struct AnnotationsParser {
     private struct Line {
         enum LineType {
             case comment
+            case documentationComment
             case blockStart
             case blockEnd
             case other
@@ -36,12 +37,14 @@ public struct AnnotationsParser {
 
     private let lines: [Line]
     private let contents: String
+    private var parseDocumentation: Bool
     internal var sourceLocationConverter: SourceLocationConverter?
 
     /// Initializes parser
     ///
     /// - Parameter contents: Contents to parse
-    init(contents: String, sourceLocationConverter: SourceLocationConverter? = nil) {
+    init(contents: String, parseDocumentation: Bool = false, sourceLocationConverter: SourceLocationConverter? = nil) {
+        self.parseDocumentation = parseDocumentation
         self.lines = AnnotationsParser.parse(contents: contents)
         self.sourceLocationConverter = sourceLocationConverter
         self.contents = contents
@@ -72,6 +75,26 @@ public struct AnnotationsParser {
         )
     }
 
+    func documentation(from node: IdentifierSyntax) -> Documentation {
+        guard parseDocumentation else {
+            return  []
+        }
+        return documentationFrom(
+          location: findLocation(syntax: node.identifier),
+          precedingComments: node.leadingTrivia?.compactMap({ $0.comment }) ?? []
+        )
+    }
+
+    func documentation(fromToken token: SyntaxProtocol) -> Documentation {
+        guard parseDocumentation else {
+            return  []
+        }
+        return documentationFrom(
+          location: findLocation(syntax: token),
+          precedingComments: token.leadingTrivia?.compactMap({ $0.comment }) ?? []
+        )
+    }
+
     // TODO: once removing SourceKitten just kill this optionality
     private func findLocation(syntax: SyntaxProtocol) -> SwiftSyntax.SourceLocation {
         return sourceLocationConverter!.location(for: syntax.positionAfterSkippingLeadingTrivia)
@@ -90,7 +113,7 @@ public struct AnnotationsParser {
             line.annotations.forEach { annotation in
                 AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
             }
-            if line.type != .comment {
+            if line.type != .comment && line.type != .documentationComment {
                 break
             }
         }
@@ -101,6 +124,34 @@ public struct AnnotationsParser {
 
         return annotations
     }
+
+    private func documentationFrom(location: SwiftSyntax.SourceLocation, precedingComments: [String]) -> Documentation {
+        guard parseDocumentation,
+            let lineNumber = location.line, let column = location.column else {
+            return []
+        }
+
+        // Inline documentation not currently supported
+        _ = column
+
+        // var stop = false
+        // var documentation = inlineDocumentationFrom(line: (lineNumber, column), stop: &stop)
+        // guard !stop else { return annotations }
+
+        var documentation: Documentation = []
+
+        for line in lines[0..<lineNumber-1].reversed() {
+            if line.type == .documentationComment {
+                documentation.append(line.content.trimmingCharacters(in: .whitespaces).trimmingPrefix("///").trimmingPrefix("/**").trimmingPrefix(" "))
+            }
+            if line.type != .comment && line.type != .documentationComment {
+                break
+            }
+        }
+
+        return documentation.reversed()
+    }
+
 
     func inlineFrom(line lineInfo: (line: Int, character: Int), stop: inout Bool) -> Annotations {
         let sourceLine = lines[lineInfo.line - 1]
@@ -145,7 +196,7 @@ public struct AnnotationsParser {
             let previousLine = lines[lineInfo.line - 2]
             let content = previousLine.content.trimmingCharacters(in: .whitespaces)
 
-            guard previousLine.type == .comment, content.hasPrefix("//") || content.hasSuffix("*/") else {
+            guard previousLine.type == .comment || previousLine.type == .documentationComment, content.hasPrefix("//") || content.hasSuffix("*/") else {
                 stop = true
                 return annotations
             }
@@ -162,7 +213,13 @@ public struct AnnotationsParser {
                     let content = line.content.trimmingCharacters(in: .whitespaces)
                     var annotations = Annotations()
                     let isComment = content.hasPrefix("//") || content.hasPrefix("/*") || content.hasPrefix("*")
-                    var type: Line.LineType = isComment ? .comment : .other
+                    let isDocumentationComment = content.hasPrefix("///") || content.hasPrefix("/**")
+                    var type = Line.LineType.other
+                    if isDocumentationComment {
+                        type = .documentationComment
+                    } else if isComment {
+                        type = .comment
+                    }
                     if isComment {
                         switch searchForAnnotations(commentLine: content) {
                         case let .begin(items):

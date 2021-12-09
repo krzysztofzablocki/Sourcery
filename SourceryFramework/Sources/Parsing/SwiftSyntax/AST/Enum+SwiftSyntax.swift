@@ -22,6 +22,7 @@ extension Enum {
           attributes: Attribute.from(node.attributes),
           modifiers: modifiers.map(SourceryModifier.init),
           annotations: annotationsParser.annotations(from: node),
+          documentation: annotationsParser.documentation(from: node),
           isGeneric: node.genericParameters?.genericParameterList.isEmpty == false
         )
     }
