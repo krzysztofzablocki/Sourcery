@@ -57,7 +57,7 @@ end
 task :build, [:build_fat] do |t, args|
   args.with_defaults(:build_fat => false)
   print_info "Building project (fat: #{args[:build_fat]})"
-  sh %Q(swift build -c release --disable-sandbox --build-path #{BUILD_DIR})
+  sh %Q(swift build -c release --arch x86_64 --arch arm64 --disable-sandbox --build-path #{BUILD_DIR})
   sh %Q(rm -fr #{CLI_DIR})
   sh %Q(mkdir -p "#{CLI_DIR}bin")
   sh %Q(mkdir -p "#{CLI_DIR}lib")
@@ -70,7 +70,7 @@ else
 end
 
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
-  `mv #{BUILD_DIR}release/sourcery #{CLI_DIR}bin/`
+  `mv #{BUILD_DIR}apple/Products/Release/sourcery #{CLI_DIR}bin/`
   #`mv #{BUILD_DIR}release/Sourcery_SourceryJS.bundle #{CLI_DIR}lib/`
   `install_name_tool -delete_rpath @loader_path #{CLI_DIR}bin/sourcery`
   `install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx #{CLI_DIR}bin/sourcery`
