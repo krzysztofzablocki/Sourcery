@@ -719,16 +719,34 @@ class FileParserSpec: QuickSpec {
                                      """))
                             .to(equal([
                                 Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "optionA", rawValue: "Value")])
-                                ]))
+                            ]))
 
                         expect(parse("""
                                      enum Foo: Int {
                                        case optionA = 2
                                      }
                                      """))
-                          .to(equal([
-                                        Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["Int"], cases: [EnumCase(name: "optionA", rawValue: "2")])
-                                    ]))
+                            .to(equal([
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["Int"], cases: [EnumCase(name: "optionA", rawValue: "2")])
+                            ]))
+
+                        expect(parse("""
+                                     enum Foo: Int {
+                                       case optionA = -1
+                                       case optionB = 0
+                                     }
+                                     """))
+                            .to(equal([
+                                Enum(
+                                    name: "Foo",
+                                    accessLevel: .internal,
+                                    isExtension: false,
+                                    inheritedTypes: ["Int"],
+                                    cases: [
+                                        EnumCase(name: "optionA", rawValue: "-1"),
+                                        EnumCase(name: "optionB", rawValue: "0")
+                                    ])
+                            ]))
                     }
 
                     it("extracts enums without rawType") {

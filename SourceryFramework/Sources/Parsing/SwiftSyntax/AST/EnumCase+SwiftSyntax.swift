@@ -36,17 +36,11 @@ extension EnumCase {
         }
 
         let rawValue: String? = {
-            node.rawValue?.tokens.lazy
-              .dropFirst()
-              .compactMap { token in
-                  switch token.tokenKind {
-                  case .stringQuote, .singleQuote:
-                      return nil
-                  default:
-                      return token.description.trimmed
-                  }
-              }
-              .first
+            var value = node.rawValue?.withEqual(nil).description.trimmed
+            if let unwrapped = value, unwrapped.hasPrefix("\""), unwrapped.hasSuffix("\""), unwrapped.count > 2 {
+                value = unwrapped.substring(with: unwrapped.index(after: unwrapped.startIndex) ..< unwrapped.index(before: unwrapped.endIndex))
+            }
+            return value
         }()
 
         let modifiers = parent.modifiers?.map(Modifier.init) ?? []
