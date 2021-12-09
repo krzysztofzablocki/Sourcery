@@ -1,6 +1,6 @@
 # Sourcery CHANGELOG
 
-## Master
+## 1.6.1
 
 ## Fixes
 - correct parsing of rawValue initializer in enum cases, fixes #1010
