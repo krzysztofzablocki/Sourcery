@@ -16,7 +16,7 @@
     <a title="Usage  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 1.5.0 Docs</a> (90% documented)</p>
+        <p><a href="index.html">Sourcery 1.6.0 Docs</a> (88% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -198,6 +198,9 @@
                 <a href="Protocols/Definition.html">Definition</a>
               </li>
               <li class="nav-group-task">
+                <a href="Other%20Protocols.html#/s:15SourceryRuntime10DocumentedP">Documented</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/Typed.html">Typed</a>
               </li>
             </ul>
@@ -225,7 +228,7 @@
 <li><code>--templates</code> - Path to templates. File or Directory. You can provide multiple paths using multiple <code>--templates</code> options.</li>
 <li><code>--output</code> [default: current path] - Path to output. File or Directory.</li>
 <li><code>--config</code> [default: current path] - Path to config file. File or Directory. See <a href="usage.html#configuration-file">Configuration file</a>.</li>
-<li><code>--args</code> - Additional arguments to pass to templates. Each argument can have an explicit value or will have an implicit <code>true</code> value. Arguments should be comma-separated without spaces (e.g. <code>--args arg1=value,arg2</code>) or should be passed one by one (e.g. <code>--args arg1=value --args arg2</code>). Arguments are accessible in templates via <code>argument.&lt;name&gt;</code>. To pass in string you should use escaped quotes (<code>\&quot;</code>).</li>
+<li><code>--args</code> - Additional arguments to pass to templates. Each argument can have explicit value or will have implicit <code>true</code> value. Arguments should be separated with <code>,</code> without spaces (i.e. <code>--args arg1=value,arg2</code>) or should be passed one by one (i.e <code>--args arg1=value --args arg2</code>). Arguments are accessible in templates via <code>argument.name</code>. To pass in string you should use escaped quotes (<code>\&quot;</code>) .</li>
 <li><code>--watch</code> [default: false] - Watch both code and template folders for changes and regenerate automatically.</li>
 <li><code>--verbose</code> [default: false] - Turn on verbose logging</li>
 <li><code>--quiet</code> [default: false] - Turn off any logging, only emit errors</li>
