@@ -434,6 +434,7 @@ import Foundation
                          attributes: AttributeList = [:],
                          modifiers: [SourceryModifier] = [],
                          annotations: [String: NSObject] = [:],
+                         documentation: [String] = [],
                          isGeneric: Bool = false) {
         super.init(
             name: name,
@@ -449,6 +450,7 @@ import Foundation
             attributes: attributes,
             modifiers: modifiers,
             annotations: annotations,
+            documentation: documentation,
             isGeneric: isGeneric
         )
     }
@@ -559,7 +561,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -1402,7 +1404,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1518,6 +1520,7 @@ extension EnumCase {
         string += "rawValue = \\(String(describing: self.rawValue)), "
         string += "associatedValues = \\(String(describing: self.associatedValues)), "
         string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
         string += "indirect = \\(String(describing: self.indirect)), "
         string += "hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))"
         return string
@@ -1574,6 +1577,7 @@ extension Method {
         string += "isClass = \\(String(describing: self.isClass)), "
         string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
         string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
         string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
         string += "attributes = \\(String(describing: self.attributes)), "
         string += "modifiers = \\(String(describing: self.modifiers))"
@@ -1638,6 +1642,7 @@ extension Subscript {
         string += "writeAccess = \\(String(describing: self.writeAccess)), "
         string += "isMutable = \\(String(describing: self.isMutable)), "
         string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
         string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
         string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName)), "
         string += "attributes = \\(String(describing: self.attributes)), "
@@ -1696,6 +1701,7 @@ extension Type {
         string += "rawSubscripts = \\(String(describing: self.rawSubscripts)), "
         string += "initializers = \\(String(describing: self.initializers)), "
         string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
         string += "staticVariables = \\(String(describing: self.staticVariables)), "
         string += "staticMethods = \\(String(describing: self.staticMethods)), "
         string += "classMethods = \\(String(describing: self.classMethods)), "
@@ -1749,6 +1755,7 @@ extension Variable {
         string += "isMutable = \\(String(describing: self.isMutable)), "
         string += "defaultValue = \\(String(describing: self.defaultValue)), "
         string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
         string += "attributes = \\(String(describing: self.attributes)), "
         string += "modifiers = \\(String(describing: self.modifiers)), "
         string += "isFinal = \\(String(describing: self.isFinal)), "
@@ -1829,7 +1836,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -1960,6 +1967,7 @@ extension EnumCase: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: castObject.rawValue))
         results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: castObject.associatedValues))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
         return results
     }
@@ -2050,6 +2058,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: castObject.isClass))
         results.append(contentsOf: DiffableResult(identifier: "isFailableInitializer").trackDifference(actual: self.isFailableInitializer, expected: castObject.isFailableInitializer))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
@@ -2133,6 +2142,7 @@ extension Subscript: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
@@ -2196,6 +2206,7 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "rawMethods").trackDifference(actual: self.rawMethods, expected: castObject.rawMethods))
         results.append(contentsOf: DiffableResult(identifier: "rawSubscripts").trackDifference(actual: self.rawSubscripts, expected: castObject.rawSubscripts))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "inheritedTypes").trackDifference(actual: self.inheritedTypes, expected: castObject.inheritedTypes))
         results.append(contentsOf: DiffableResult(identifier: "inherits").trackDifference(actual: self.inherits, expected: castObject.inherits))
         results.append(contentsOf: DiffableResult(identifier: "containedTypes").trackDifference(actual: self.containedTypes, expected: castObject.containedTypes))
@@ -2266,6 +2277,7 @@ extension Variable: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
@@ -2485,6 +2497,18 @@ public extension DiffableResult {
 }
 
 """),
+    .init(name: "Documentation.swift", content:
+"""
+import Foundation
+
+public typealias Documentation = [String]
+
+/// Describes a declaration with documentation, i.e. type, method, variable, enum case
+public protocol Documented {
+    var documentation: Documentation { get }
+}
+
+"""),
     .init(name: "Enum.swift", content:
 """
 //
@@ -2558,7 +2582,7 @@ import Foundation
 }
 
 /// Defines enum case
-@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated {
+@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented {
 
     /// Enum case name
     public let name: String
@@ -2571,6 +2595,8 @@ import Foundation
 
     /// Enum case annotations
     public var annotations: Annotations = [:]
+
+    public var documentation: Documentation = []
 
     /// Whether enum case is indirect
     public let indirect: Bool
@@ -2586,11 +2612,12 @@ import Foundation
     public var __parserData: Any?
 
     /// :nodoc:
-    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], indirect: Bool = false) {
+    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], documentation: [String] = [], indirect: Bool = false) {
         self.name = name
         self.rawValue = rawValue
         self.associatedValues = associatedValues
         self.annotations = annotations
+        self.documentation = documentation
         self.indirect = indirect
     }
 
@@ -2602,6 +2629,7 @@ import Foundation
             self.rawValue = aDecoder.decode(forKey: "rawValue")
             guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["associatedValues"])); fatalError() }; self.associatedValues = associatedValues
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             self.indirect = aDecoder.decode(forKey: "indirect")
         }
 
@@ -2611,6 +2639,7 @@ import Foundation
             aCoder.encode(self.rawValue, forKey: "rawValue")
             aCoder.encode(self.associatedValues, forKey: "associatedValues")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.indirect, forKey: "indirect")
         }
 // sourcery:end
@@ -2686,13 +2715,14 @@ import Foundation
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 isGeneric: Bool = false) {
 
         self.cases = cases
         self.rawTypeName = rawTypeName
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, isGeneric: isGeneric)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric)
 
         if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
@@ -2724,7 +2754,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -2845,6 +2875,7 @@ extension EnumCase {
         if self.rawValue != rhs.rawValue { return false }
         if self.associatedValues != rhs.associatedValues { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.indirect != rhs.indirect { return false }
         return true
     }
@@ -2917,6 +2948,7 @@ extension Method {
         if self.isClass != rhs.isClass { return false }
         if self.isFailableInitializer != rhs.isFailableInitializer { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
@@ -2979,6 +3011,7 @@ extension Subscript {
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
@@ -3030,6 +3063,7 @@ extension Type {
         if self.rawMethods != rhs.rawMethods { return false }
         if self.rawSubscripts != rhs.rawSubscripts { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.inheritedTypes != rhs.inheritedTypes { return false }
         if self.inherits != rhs.inherits { return false }
         if self.containedTypes != rhs.containedTypes { return false }
@@ -3089,6 +3123,7 @@ extension Variable {
         if self.writeAccess != rhs.writeAccess { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
@@ -3214,6 +3249,7 @@ extension EnumCase {
         hasher.combine(self.rawValue)
         hasher.combine(self.associatedValues)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.indirect)
         return hasher.finalize()
     }
@@ -3286,6 +3322,7 @@ extension Method {
         hasher.combine(self.isClass)
         hasher.combine(self.isFailableInitializer)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
@@ -3351,6 +3388,7 @@ extension Subscript {
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
@@ -3402,6 +3440,7 @@ extension Type {
         hasher.combine(self.rawMethods)
         hasher.combine(self.rawSubscripts)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.inheritedTypes)
         hasher.combine(self.inherits)
         hasher.combine(self.containedTypes)
@@ -3461,6 +3500,7 @@ extension Variable {
         hasher.combine(self.writeAccess)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         hasher.combine(self.definedInTypeName)
@@ -3981,7 +4021,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -4058,6 +4098,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4154,6 +4195,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4181,6 +4223,7 @@ extension Enum: EnumAutoJSExport {}
     var rawValue: String? { get }
     var associatedValues: [AssociatedValue] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
 }
@@ -4249,6 +4292,7 @@ extension Import: ImportAutoJSExport {}
     var isGeneric: Bool { get }
     var isOptional: Bool { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -4308,6 +4352,7 @@ extension Modifier: ModifierAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4356,6 +4401,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4392,6 +4438,7 @@ extension Struct: StructAutoJSExport {}
     var writeAccess: String { get }
     var isMutable: Bool { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -4453,6 +4500,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var allSubscripts: [Subscript] { get }
     var initializers: [Method] { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var staticVariables: [Variable] { get }
     var staticMethods: [Method] { get }
     var classMethods: [Method] { get }
@@ -4521,6 +4569,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var isMutable: Bool { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var isFinal: Bool { get }
@@ -4807,7 +4856,7 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Definition {
+@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -4930,6 +4979,8 @@ extension Array where Element == ClosureParameter {
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: Annotations
 
+    public let documentation: Documentation
+
     /// Reference to type name where the method is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
@@ -4970,6 +5021,7 @@ extension Array where Element == ClosureParameter {
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 definedInTypeName: TypeName? = nil) {
 
         self.name = name
@@ -4985,6 +5037,7 @@ extension Array where Element == ClosureParameter {
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
+        self.documentation = documentation
         self.definedInTypeName = definedInTypeName
     }
 
@@ -5004,6 +5057,7 @@ extension Array where Element == ClosureParameter {
             self.isClass = aDecoder.decode(forKey: "isClass")
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -5024,6 +5078,7 @@ extension Array where Element == ClosureParameter {
             aCoder.encode(self.isClass, forKey: "isClass")
             aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
@@ -5157,7 +5212,8 @@ public typealias SourceryProtocol = Protocol
                 genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
-                annotations: [String: NSObject] = [:]) {
+                annotations: [String: NSObject] = [:],
+                documentation: [String] = []) {
         self.genericRequirements = genericRequirements
         self.associatedTypes = associatedTypes
         super.init(
@@ -5174,6 +5230,7 @@ public typealias SourceryProtocol = Protocol
             attributes: attributes,
             modifiers: modifiers,
             annotations: annotations,
+            documentation: documentation,
             isGeneric: !associatedTypes.isEmpty || !genericRequirements.isEmpty
         )
     }
@@ -5305,6 +5362,7 @@ import Foundation
                          attributes: AttributeList = [:],
                          modifiers: [SourceryModifier] = [],
                          annotations: [String: NSObject] = [:],
+                         documentation: [String] = [],
                          isGeneric: Bool = false) {
         super.init(
             name: name,
@@ -5320,6 +5378,7 @@ import Foundation
             attributes: attributes,
             modifiers: modifiers,
             annotations: annotations,
+            documentation: documentation,
             isGeneric: isGeneric
         )
     }
@@ -5344,7 +5403,7 @@ import Foundation
 import Foundation
 
 /// Describes subscript
-@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Definition {
+@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition {
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -5399,6 +5458,8 @@ import Foundation
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: Annotations
 
+    public let documentation: Documentation
+
     /// Reference to type name where the method is defined,
     /// nil if defined outside of any `enum`, `struct`, `class` etc
     public let definedInTypeName: TypeName?
@@ -5431,6 +5492,7 @@ import Foundation
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 definedInTypeName: TypeName? = nil) {
 
         self.parameters = parameters
@@ -5440,6 +5502,7 @@ import Foundation
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
+        self.documentation = documentation
         self.definedInTypeName = definedInTypeName
     }
 
@@ -5453,6 +5516,7 @@ import Foundation
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
@@ -5467,6 +5531,7 @@ import Foundation
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
@@ -5882,7 +5947,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-@objcMembers public class Type: NSObject, SourceryModel, Annotated {
+@objcMembers public class Type: NSObject, SourceryModel, Annotated, Documented {
 
     /// :nodoc:
     public var module: String?
@@ -6098,6 +6163,8 @@ public typealias AttributeList = [String: [Attribute]]
     /// All annotations for this type
     public var annotations: Annotations = [:]
 
+    public var documentation: Documentation = []
+
     /// Static variables defined in this type
     public var staticVariables: [Variable] {
         return variables.filter { $0.isStatic }
@@ -6222,6 +6289,7 @@ public typealias AttributeList = [String: [Attribute]]
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 isGeneric: Bool = false) {
 
         self.localName = name
@@ -6238,6 +6306,7 @@ public typealias AttributeList = [String: [Attribute]]
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
+        self.documentation = documentation
         self.isGeneric = isGeneric
 
         super.init()
@@ -6284,6 +6353,7 @@ public typealias AttributeList = [String: [Attribute]]
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
             self.completeDeclarationRange = aDecoder.decode(forKey: "completeDeclarationRange")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inheritedTypes"])); fatalError() }; self.inheritedTypes = inheritedTypes
             guard let based: [String: String] = aDecoder.decode(forKey: "based") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["based"])); fatalError() }; self.based = based
             guard let basedTypes: [String: Type] = aDecoder.decode(forKey: "basedTypes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["basedTypes"])); fatalError() }; self.basedTypes = basedTypes
@@ -6314,6 +6384,7 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.bodyBytesRange, forKey: "bodyBytesRange")
             aCoder.encode(self.completeDeclarationRange, forKey: "completeDeclarationRange")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.inheritedTypes, forKey: "inheritedTypes")
             aCoder.encode(self.based, forKey: "based")
             aCoder.encode(self.basedTypes, forKey: "basedTypes")
@@ -6661,7 +6732,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.6.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -6818,7 +6889,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Definition {
+@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {
     /// Variable name
     public let name: String
 
@@ -6859,6 +6930,8 @@ public typealias SourceryVariable = Variable
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: Annotations = [:]
+
+    public var documentation: Documentation = []
 
     /// Variable attributes, i.e. `@IBOutlet`, `@IBInspectable`
     public var attributes: AttributeList
@@ -6901,6 +6974,7 @@ public typealias SourceryVariable = Variable
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
                 definedInTypeName: TypeName? = nil) {
 
         self.name = name
@@ -6914,6 +6988,7 @@ public typealias SourceryVariable = Variable
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
+        self.documentation = documentation
         self.definedInTypeName = definedInTypeName
     }
 
@@ -6930,6 +7005,7 @@ public typealias SourceryVariable = Variable
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["annotations"])); fatalError() }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["documentation"])); fatalError() }; self.documentation = documentation
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
@@ -6947,6 +7023,7 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
