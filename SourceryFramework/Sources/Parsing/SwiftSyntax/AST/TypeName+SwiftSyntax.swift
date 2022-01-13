@@ -144,9 +144,10 @@ extension TypeName {
                 )
             }
             let returnTypeName = TypeName(typeIdentifier.returnType)
+            let asyncKeyword = typeIdentifier.asyncKeyword.map { $0.text.trimmed }
             let throwsOrRethrows = typeIdentifier.throwsOrRethrowsKeyword.map { $0.text.trimmed }
-            let name = "\(elements.asSource)\(throwsOrRethrows != nil ? " \(throwsOrRethrows!)" : "") -> \(returnTypeName.asSource)"
-            self.init(name: name, closure: ClosureType(name: name, parameters: elements, returnTypeName: returnTypeName, throwsOrRethrowsKeyword: throwsOrRethrows))
+            let name = "\(elements.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrows != nil ? " \(throwsOrRethrows!)" : "") -> \(returnTypeName.asSource)"
+            self.init(name: name, closure: ClosureType(name: name, parameters: elements, returnTypeName: returnTypeName, asyncKeyword: asyncKeyword, throwsOrRethrowsKeyword: throwsOrRethrows))
         } else if let typeIdentifier = node.as(AttributedTypeSyntax.self) {
             let type = TypeName(typeIdentifier.baseType) // TODO: add test for nested type with attributes at multiple level?
             let attributes = Attribute.from(typeIdentifier.attributes)

@@ -1570,6 +1570,7 @@ extension Method {
         string += "selectorName = \\(String(describing: self.selectorName)), "
         string += "parameters = \\(String(describing: self.parameters)), "
         string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
+        string += "isAsync = \\(String(describing: self.isAsync)), "
         string += "`throws` = \\(String(describing: self.`throws`)), "
         string += "`rethrows` = \\(String(describing: self.`rethrows`)), "
         string += "accessLevel = \\(String(describing: self.accessLevel)), "
@@ -1748,6 +1749,8 @@ extension Variable {
         string += "name = \\(String(describing: self.name)), "
         string += "typeName = \\(String(describing: self.typeName)), "
         string += "isComputed = \\(String(describing: self.isComputed)), "
+        string += "isAsync = \\(String(describing: self.isAsync)), "
+        string += "throws = \\(String(describing: self.`throws`)), "
         string += "isStatic = \\(String(describing: self.isStatic)), "
         string += "readAccess = \\(String(describing: self.readAccess)), "
         string += "writeAccess = \\(String(describing: self.writeAccess)), "
@@ -2051,6 +2054,7 @@ extension Method: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: castObject.selectorName))
         results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
         results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
@@ -2272,6 +2276,8 @@ extension Variable: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
+        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
+        results.append(contentsOf: DiffableResult(identifier: "throws").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
@@ -2941,6 +2947,7 @@ extension Method {
         if self.selectorName != rhs.selectorName { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.`rethrows` != rhs.`rethrows` { return false }
         if self.accessLevel != rhs.accessLevel { return false }
@@ -3118,6 +3125,8 @@ extension Variable {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.isComputed != rhs.isComputed { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.`throws` != rhs.`throws` { return false }
         if self.isStatic != rhs.isStatic { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
@@ -3315,6 +3324,7 @@ extension Method {
         hasher.combine(self.selectorName)
         hasher.combine(self.parameters)
         hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
         hasher.combine(self.`throws`)
         hasher.combine(self.`rethrows`)
         hasher.combine(self.accessLevel)
@@ -3495,6 +3505,8 @@ extension Variable {
         hasher.combine(self.name)
         hasher.combine(self.typeName)
         hasher.combine(self.isComputed)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.`throws`)
         hasher.combine(self.isStatic)
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)
@@ -4277,6 +4289,7 @@ extension Import: ImportAutoJSExport {}
     var isOptionalReturnType: Bool { get }
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
     var unwrappedReturnTypeName: String { get }
+    var isAsync: Bool { get }
     var `throws`: Bool { get }
     var `rethrows`: Bool { get }
     var accessLevel: String { get }
@@ -4910,6 +4923,9 @@ extension Array where Element == ClosureParameter {
         return returnTypeName.unwrappedTypeName
     }
 
+    /// Whether method is async method
+    public let isAsync: Bool
+
     /// Whether method throws
     public let `throws`: Bool
 
@@ -5012,6 +5028,7 @@ extension Array where Element == ClosureParameter {
                 selectorName: String? = nil,
                 parameters: [MethodParameter] = [],
                 returnTypeName: TypeName = TypeName(name: "Void"),
+                isAsync: Bool = false,
                 throws: Bool = false,
                 rethrows: Bool = false,
                 accessLevel: AccessLevel = .internal,
@@ -5028,6 +5045,7 @@ extension Array where Element == ClosureParameter {
         self.selectorName = selectorName ?? name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
+        self.isAsync = isAsync
         self.throws = `throws`
         self.rethrows = `rethrows`
         self.accessLevel = accessLevel.rawValue
@@ -5050,6 +5068,7 @@ extension Array where Element == ClosureParameter {
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
@@ -5071,6 +5090,7 @@ extension Array where Element == ClosureParameter {
             aCoder.encode(self.parameters, forKey: "parameters")
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
             aCoder.encode(self.returnType, forKey: "returnType")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.`rethrows`, forKey: "`rethrows`")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")

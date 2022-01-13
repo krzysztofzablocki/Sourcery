@@ -79,6 +79,8 @@ extension ClosureType {
         if self.name != rhs.name { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.asyncKeyword != rhs.asyncKeyword { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
         return true
@@ -185,6 +187,7 @@ extension Method {
         if self.selectorName != rhs.selectorName { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.`rethrows` != rhs.`rethrows` { return false }
         if self.accessLevel != rhs.accessLevel { return false }
@@ -362,6 +365,8 @@ extension Variable {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.isComputed != rhs.isComputed { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.`throws` != rhs.`throws` { return false }
         if self.isStatic != rhs.isStatic { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
@@ -452,6 +457,8 @@ extension ClosureType {
         hasher.combine(self.name)
         hasher.combine(self.parameters)
         hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.asyncKeyword)
         hasher.combine(self.`throws`)
         hasher.combine(self.throwsOrRethrowsKeyword)
         return hasher.finalize()
@@ -559,6 +566,7 @@ extension Method {
         hasher.combine(self.selectorName)
         hasher.combine(self.parameters)
         hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
         hasher.combine(self.`throws`)
         hasher.combine(self.`rethrows`)
         hasher.combine(self.accessLevel)
@@ -739,6 +747,8 @@ extension Variable {
         hasher.combine(self.name)
         hasher.combine(self.typeName)
         hasher.combine(self.isComputed)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.`throws`)
         hasher.combine(self.isStatic)
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)

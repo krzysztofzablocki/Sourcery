@@ -52,6 +52,21 @@ class FileParserMethodsSpec: QuickSpec {
                         MethodParameter(name: "anotherSome", typeName: TypeName.buildClosure(ClosureParameter(typeName: TypeName.String, isInout: true), returnTypeName: .Void))
                     ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
                 }
+                
+                it("extracts methods with async closure") {
+                    let method = parse(
+                    """
+                    class Foo {
+                        func fooAsync(some: Int, anotherSome: (String) async -> Void)
+                    }
+                    """
+                    )[0].methods.first
+                    
+                    expect(method).to(equal(Method(name: "fooAsync(some: Int, anotherSome: (String) async -> Void)", selectorName: "fooAsync(some:anotherSome:)", parameters: [
+                        MethodParameter(name: "some", typeName: TypeName(name: "Int")),
+                        MethodParameter(name: "anotherSome", typeName: TypeName(name: "(String) async -> Void", closure: ClosureType(name: "(String) async -> Void", parameters: [ClosureParameter(typeName: TypeName(name: "String"))], returnTypeName: .Void, asyncKeyword: "async")))
+                    ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
+                }
 
                 it("extracts methods with attributes") {
                     let methods = parse("""
@@ -90,6 +105,7 @@ class FileParserMethodsSpec: QuickSpec {
                         @discardableResult func foo() ->
                                                     Foo
                         func fooBar() rethrows ; func fooVoid();
+                        func fooAsync() async; func barAsync() async throws;
                         func fooInOut(some: Int, anotherSome: inout String) }
                     """)[0].methods
                     expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName(name: "Foo"), throws: true, isStatic: true, definedInTypeName: TypeName(name: "Foo"))))
@@ -99,7 +115,9 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(methods[2]).to(equal(Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName(name: "Foo"), attributes: ["discardableResult": [Attribute(name: "discardableResult")]], definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[3]).to(equal(Method(name: "fooBar()", selectorName: "fooBar", returnTypeName: TypeName(name: "Void"), throws: false, rethrows: true, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[4]).to(equal(Method(name: "fooVoid()", selectorName: "fooVoid", returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))
-                    expect(methods[5]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
+                    expect(methods[5]).to(equal(Method(name: "fooAsync()", selectorName: "fooAsync", returnTypeName: TypeName(name: "Void"), isAsync: true, definedInTypeName: TypeName(name: "Foo"))))
+                    expect(methods[6]).to(equal(Method(name: "barAsync()", selectorName: "barAsync", returnTypeName: TypeName(name: "Void"), isAsync: true, throws: true, definedInTypeName: TypeName(name: "Foo"))))
+                    expect(methods[7]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
                         MethodParameter(name: "some", typeName: TypeName(name: "Int")),
                         MethodParameter(name: "anotherSome", typeName: TypeName(name: "inout String"), isInout: true)
                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))

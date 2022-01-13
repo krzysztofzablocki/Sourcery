@@ -16,17 +16,28 @@ extension Variable {
         var writeAccess = writeAccess
         var hadGetter = false
         var hadSetter = false
+        var hadAsync = false
+        var hadThrowable = false
 
         if let block = node
           .accessor?
           .as(AccessorBlockSyntax.self) {
-            enum Kind: String {
-                case get
+            enum Kind: Hashable {
+                case get(isAsync: Bool, throws: Bool)
                 case set
             }
 
-            let computeAccessors = Set(block.accessors.compactMap { accessor in
-                Kind(rawValue: accessor.accessorKind.text.trimmed)
+            let computeAccessors = Set(block.accessors.compactMap { accessor -> Kind? in
+                let kindRaw = accessor.accessorKind.text.trimmed
+                if kindRaw == "get" {
+                    return Kind.get(isAsync: accessor.asyncKeyword != nil, throws: accessor.throwsKeyword != nil)
+                }
+                
+                if kindRaw == "set" {
+                    return Kind.set
+                }
+                
+                return nil
             })
 
             if !computeAccessors.isEmpty {
@@ -35,10 +46,14 @@ extension Variable {
                 } else {
                     hadSetter = true
                 }
-
-                if !computeAccessors.contains(Kind.get) {
-                } else {
-                    hadGetter = true
+                
+                for accessor in computeAccessors {
+                    if case let .get(isAsync: isAsync, throws: `throws`) = accessor {
+                        hadGetter = true
+                        hadAsync = isAsync
+                        hadThrowable = `throws`
+                        break
+                    }
                 }
             }
         } else if node.accessor != nil {
@@ -46,6 +61,8 @@ extension Variable {
         }
 
         let isComputed = node.initializer == nil && hadGetter && !(visitingType is SourceryProtocol)
+        let isAsync = hadAsync
+        let `throws` = hadThrowable
         let isWritable = variableNode.letOrVarKeyword.tokens.contains { $0.tokenKind == .varKeyword } && (!isComputed || hadSetter)
 
         let typeName = node.typeAnnotation.map { TypeName($0.type) } ??
@@ -57,6 +74,8 @@ extension Variable {
           type: nil,
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
           isComputed: isComputed,
+          isAsync: isAsync,
+          throws: `throws`,
           isStatic: isStatic,
           defaultValue: node.initializer?.value.description.trimmingCharacters(in: .whitespacesAndNewlines),
           attributes: Attribute.from(variableNode.attributes),

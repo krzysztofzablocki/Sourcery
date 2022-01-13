@@ -38,6 +38,12 @@ import Foundation
     public var unwrappedReturnTypeName: String {
         return returnTypeName.unwrappedTypeName
     }
+    
+    /// Whether method is async method
+    public let isAsync: Bool
+
+    /// async keyword
+    public let asyncKeyword: String?
 
     /// Whether closure throws
     public let `throws`: Bool
@@ -46,17 +52,19 @@ import Foundation
     public let throwsOrRethrowsKeyword: String?
 
     /// :nodoc:
-    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, throwsOrRethrowsKeyword: String? = nil) {
+    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil) {
         self.name = name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
         self.returnType = returnType
+        self.asyncKeyword = asyncKeyword
+        self.isAsync = asyncKeyword != nil
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
         self.`throws` = throwsOrRethrowsKeyword != nil
     }
 
     public var asSource: String {
-        "\(parameters.asSource)\(throwsOrRethrowsKeyword != nil ? " \(throwsOrRethrowsKeyword!)" : "") -> \(returnTypeName.asSource)"
+        "\(parameters.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrowsKeyword != nil ? " \(throwsOrRethrowsKeyword!)" : "") -> \(returnTypeName.asSource)"
     }
 
 // sourcery:inline:ClosureType.AutoCoding
@@ -67,6 +75,8 @@ import Foundation
             guard let parameters: [ClosureParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.asyncKeyword = aDecoder.decode(forKey: "asyncKeyword")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.throwsOrRethrowsKeyword = aDecoder.decode(forKey: "throwsOrRethrowsKeyword")
         }
@@ -77,6 +87,8 @@ import Foundation
             aCoder.encode(self.parameters, forKey: "parameters")
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
             aCoder.encode(self.returnType, forKey: "returnType")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.asyncKeyword, forKey: "asyncKeyword")
             aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.throwsOrRethrowsKeyword, forKey: "throwsOrRethrowsKeyword")
         }
