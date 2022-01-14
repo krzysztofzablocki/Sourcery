@@ -89,3 +89,25 @@ protocol FunctionWithMultilineDeclaration: AutoMockable {
     func start(car: String,
                of model: String)
 }
+
+protocol AsyncProtocol: AutoMockable {
+    @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+    func callAsync(parameter: Int) async -> String
+    func callAsyncAndThrow(parameter: Int) async throws -> String
+    func callAsyncVoid(parameter: Int) async -> Void
+    func callAsyncAndThrowVoid(parameter: Int) async throws -> Void
+}
+
+protocol FunctionWithAttributes: AutoMockable {
+    @discardableResult
+    func callOneAttribute() -> String
+    
+    @discardableResult
+    @available(macOS 10.15, *)
+    func callTwoAttributes() -> Int
+    
+    @discardableResult
+    @available(iOS 13.0, *)
+    @available(macOS 10.15, *)
+    func callRepeatedAttributes() -> Bool
+}
