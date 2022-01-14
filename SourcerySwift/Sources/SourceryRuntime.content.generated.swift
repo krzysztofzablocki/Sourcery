@@ -512,6 +512,12 @@ import Foundation
     public var unwrappedReturnTypeName: String {
         return returnTypeName.unwrappedTypeName
     }
+    
+    /// Whether method is async method
+    public let isAsync: Bool
+
+    /// async keyword
+    public let asyncKeyword: String?
 
     /// Whether closure throws
     public let `throws`: Bool
@@ -520,17 +526,19 @@ import Foundation
     public let throwsOrRethrowsKeyword: String?
 
     /// :nodoc:
-    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, throwsOrRethrowsKeyword: String? = nil) {
+    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil) {
         self.name = name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
         self.returnType = returnType
+        self.asyncKeyword = asyncKeyword
+        self.isAsync = asyncKeyword != nil
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
         self.`throws` = throwsOrRethrowsKeyword != nil
     }
 
     public var asSource: String {
-        "\\(parameters.asSource)\\(throwsOrRethrowsKeyword != nil ? " \\(throwsOrRethrowsKeyword!)" : "") -> \\(returnTypeName.asSource)"
+        "\\(parameters.asSource)\\(asyncKeyword != nil ? " \\(asyncKeyword!)" : "")\\(throwsOrRethrowsKeyword != nil ? " \\(throwsOrRethrowsKeyword!)" : "") -> \\(returnTypeName.asSource)"
     }
 
 // sourcery:inline:ClosureType.AutoCoding
@@ -541,6 +549,8 @@ import Foundation
             guard let parameters: [ClosureParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.asyncKeyword = aDecoder.decode(forKey: "asyncKeyword")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.throwsOrRethrowsKeyword = aDecoder.decode(forKey: "throwsOrRethrowsKeyword")
         }
@@ -551,6 +561,8 @@ import Foundation
             aCoder.encode(self.parameters, forKey: "parameters")
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
             aCoder.encode(self.returnType, forKey: "returnType")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.asyncKeyword, forKey: "asyncKeyword")
             aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.throwsOrRethrowsKeyword, forKey: "throwsOrRethrowsKeyword")
         }
@@ -1483,6 +1495,8 @@ extension ClosureType {
         string += "parameters = \\(String(describing: self.parameters)), "
         string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
         string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
+        string += "isAsync = \\(String(describing: self.isAsync)), "
+        string += "asyncKeyword = \\(String(describing: self.asyncKeyword)), "
         string += "`throws` = \\(String(describing: self.`throws`)), "
         string += "throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), "
         string += "asSource = \\(String(describing: self.asSource))"
@@ -1750,7 +1764,7 @@ extension Variable {
         string += "typeName = \\(String(describing: self.typeName)), "
         string += "isComputed = \\(String(describing: self.isComputed)), "
         string += "isAsync = \\(String(describing: self.isAsync)), "
-        string += "throws = \\(String(describing: self.`throws`)), "
+        string += "`throws` = \\(String(describing: self.`throws`)), "
         string += "isStatic = \\(String(describing: self.isStatic)), "
         string += "readAccess = \\(String(describing: self.readAccess)), "
         string += "writeAccess = \\(String(describing: self.writeAccess)), "
@@ -1928,6 +1942,8 @@ extension ClosureType: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
+        results.append(contentsOf: DiffableResult(identifier: "asyncKeyword").trackDifference(actual: self.asyncKeyword, expected: castObject.asyncKeyword))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
         results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
         return results
@@ -2277,7 +2293,7 @@ extension Variable: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
         results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
-        results.append(contentsOf: DiffableResult(identifier: "throws").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
@@ -2841,6 +2857,8 @@ extension ClosureType {
         if self.name != rhs.name { return false }
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.asyncKeyword != rhs.asyncKeyword { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
         return true
@@ -3217,6 +3235,8 @@ extension ClosureType {
         hasher.combine(self.name)
         hasher.combine(self.parameters)
         hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.asyncKeyword)
         hasher.combine(self.`throws`)
         hasher.combine(self.throwsOrRethrowsKeyword)
         return hasher.finalize()
@@ -4160,6 +4180,8 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var isOptionalReturnType: Bool { get }
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
     var unwrappedReturnTypeName: String { get }
+    var isAsync: Bool { get }
+    var asyncKeyword: String? { get }
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
     var asSource: String { get }
@@ -4576,6 +4598,8 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var isComputed: Bool { get }
+    var isAsync: Bool { get }
+    var `throws`: Bool { get }
     var isStatic: Bool { get }
     var readAccess: String { get }
     var writeAccess: String { get }
@@ -6923,6 +6947,12 @@ public typealias SourceryVariable = Variable
 
     /// Whether variable is computed and not stored
     public let isComputed: Bool
+    
+    /// Whether variable is async
+    public let isAsync: Bool
+    
+    /// Whether variable throws
+    public let `throws`: Bool
 
     /// Whether variable is static
     public let isStatic: Bool
@@ -6989,6 +7019,8 @@ public typealias SourceryVariable = Variable
                 type: Type? = nil,
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
                 isComputed: Bool = false,
+                isAsync: Bool = false,
+                `throws`: Bool = false,
                 isStatic: Bool = false,
                 defaultValue: String? = nil,
                 attributes: AttributeList = [:],
@@ -7001,6 +7033,8 @@ public typealias SourceryVariable = Variable
         self.typeName = typeName
         self.type = type
         self.isComputed = isComputed
+        self.isAsync = isAsync
+        self.`throws` = `throws`
         self.isStatic = isStatic
         self.defaultValue = defaultValue
         self.readAccess = accessLevel.read.rawValue
@@ -7020,6 +7054,8 @@ public typealias SourceryVariable = Variable
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.isComputed = aDecoder.decode(forKey: "isComputed")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
@@ -7038,6 +7074,8 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.isComputed, forKey: "isComputed")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
