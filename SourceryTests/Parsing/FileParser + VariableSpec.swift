@@ -131,6 +131,16 @@ class FileParserVariableSpec: QuickSpec {
                         expect(publicVariable?.writeAccess).to(equal("public"))
                         expect(publicVariable?.readAccess).to(equal("public"))
                     }
+                    
+                    it("reports variable concurrency") {
+                        expect(variable("var name: String { get } ")?.isAsync).to(beFalse())
+                        expect(variable("var name: String { get async }")?.isAsync).to(beTrue())
+                    }
+                    
+                    it("reports variable throwability") {
+                        expect(variable("var name: String { get } ")?.throws).to(beFalse())
+                        expect(variable("var name: String { get throws }")?.throws).to(beTrue())
+                    }
                 }
 
                 context("given variable with initial value") {
@@ -228,6 +238,10 @@ class FileParserVariableSpec: QuickSpec {
                     expect(variable("let name: Int")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: false)))
                     expect(variable("var name: Int")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                     expect(variable("var name: Int { \nget { return 0 } \nset {} }")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: true)))
+                    expect(variable("var name: Int { \nget { return 0 } }")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isAsync: false, throws: false)))
+                    expect(variable("var name: Int { \nget async { return 0 } }")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isAsync: true, throws: false)))
+                    expect(variable("var name: Int { \nget throws { return 0 } }")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isAsync: false, throws: true)))
+                    expect(variable("var name: Int { \nget async throws { return 0 } }")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true, isAsync: true, throws: true)))
                     expect(variable("var name: Int \n{ willSet { } }")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                     expect(variable("var name: Int { \ndidSet {} }")).to(equal(Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
                 }

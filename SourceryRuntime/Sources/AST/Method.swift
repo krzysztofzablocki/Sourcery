@@ -255,6 +255,9 @@ extension Array where Element == ClosureParameter {
         return returnTypeName.unwrappedTypeName
     }
 
+    /// Whether method is async method
+    public let isAsync: Bool
+
     /// Whether method throws
     public let `throws`: Bool
 
@@ -357,6 +360,7 @@ extension Array where Element == ClosureParameter {
                 selectorName: String? = nil,
                 parameters: [MethodParameter] = [],
                 returnTypeName: TypeName = TypeName(name: "Void"),
+                isAsync: Bool = false,
                 throws: Bool = false,
                 rethrows: Bool = false,
                 accessLevel: AccessLevel = .internal,
@@ -373,6 +377,7 @@ extension Array where Element == ClosureParameter {
         self.selectorName = selectorName ?? name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
+        self.isAsync = isAsync
         self.throws = `throws`
         self.rethrows = `rethrows`
         self.accessLevel = accessLevel.rawValue
@@ -395,6 +400,7 @@ extension Array where Element == ClosureParameter {
             guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["parameters"])); fatalError() }; self.parameters = parameters
             guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["returnTypeName"])); fatalError() }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
@@ -416,6 +422,7 @@ extension Array where Element == ClosureParameter {
             aCoder.encode(self.parameters, forKey: "parameters")
             aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
             aCoder.encode(self.returnType, forKey: "returnType")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.`rethrows`, forKey: "`rethrows`")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")

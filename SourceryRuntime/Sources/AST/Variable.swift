@@ -23,6 +23,12 @@ public typealias SourceryVariable = Variable
 
     /// Whether variable is computed and not stored
     public let isComputed: Bool
+    
+    /// Whether variable is async
+    public let isAsync: Bool
+    
+    /// Whether variable throws
+    public let `throws`: Bool
 
     /// Whether variable is static
     public let isStatic: Bool
@@ -89,6 +95,8 @@ public typealias SourceryVariable = Variable
                 type: Type? = nil,
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
                 isComputed: Bool = false,
+                isAsync: Bool = false,
+                `throws`: Bool = false,
                 isStatic: Bool = false,
                 defaultValue: String? = nil,
                 attributes: AttributeList = [:],
@@ -101,6 +109,8 @@ public typealias SourceryVariable = Variable
         self.typeName = typeName
         self.type = type
         self.isComputed = isComputed
+        self.isAsync = isAsync
+        self.`throws` = `throws`
         self.isStatic = isStatic
         self.defaultValue = defaultValue
         self.readAccess = accessLevel.read.rawValue
@@ -120,6 +130,8 @@ public typealias SourceryVariable = Variable
             guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.isComputed = aDecoder.decode(forKey: "isComputed")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["readAccess"])); fatalError() }; self.readAccess = readAccess
             guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["writeAccess"])); fatalError() }; self.writeAccess = writeAccess
@@ -138,6 +150,8 @@ public typealias SourceryVariable = Variable
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.isComputed, forKey: "isComputed")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")

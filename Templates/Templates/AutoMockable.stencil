@@ -45,7 +45,7 @@ import {{ import }}
 {% macro closureReturnTypeName method %}{% if method.isOptionalReturnType %}{{ method.unwrappedReturnTypeName }}?{% else %}{{ method.returnTypeName }}{% endif %}{% endmacro %}
 
 {% macro methodClosureDeclaration method %}
-    var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call closureReturnTypeName method %}{% endif %})?
+    var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call closureReturnTypeName method %}{% endif %})?
 {% endmacro %}
 
 {% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
@@ -80,16 +80,25 @@ import {{ import }}
         {% call methodClosureName method %}?({% call methodClosureCallParameters method %})
     }
 {% else %}
-    func {{ method.name }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
+    {% for name, attribute in method.attributes %}
+    {% for value in attribute %}
+    {{ value }}
+    {% endfor %}
+    {% endfor %}
+    func {{ method.name }}{{ ' async' if method.isAsync }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
         {% if method.throws %}
         {% call methodThrowableErrorUsage method %}
         {% endif %}
         {% call swiftifyMethodName method.selectorName %}CallsCount += 1
         {% call methodReceivedParameters method %}
         {% if method.returnTypeName.isVoid %}
-        {% if method.throws %}try {% endif %}{% call methodClosureName method %}?({% call methodClosureCallParameters method %})
+        {% if method.throws %}try {% endif %}{% if method.isAsync %}await {% endif %}{% call methodClosureName method %}?({% call methodClosureCallParameters method %})
         {% else %}
-        return {{ 'try ' if method.throws }}{% call methodClosureName method %}.map({ {{ 'try ' if method.throws }}$0({% call methodClosureCallParameters method %}) }) ?? {% call swiftifyMethodName method.selectorName %}ReturnValue
+        if let {% call methodClosureName method %} = {% call methodClosureName method %} {
+            return {{ 'try ' if method.throws }}{{ 'await ' if method.isAsync }}{% call methodClosureName method %}({% call methodClosureCallParameters method %})
+        } else {
+            return {% call swiftifyMethodName method.selectorName %}ReturnValue
+        }
         {% endif %}
     }
 

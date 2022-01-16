@@ -8,6 +8,7 @@
 - Added `CLI-Only` subspec to `Sourcery.podspec` [#997](https://github.com/krzysztofzablocki/Sourcery/pull/997)
 - Added documentation comment parsing for all declarations [#1002](https://github.com/krzysztofzablocki/Sourcery/pull/1002)
 - Updates Yams to 4.0.6
+- Adds support for parsing async methods, closures and variables
 - Enables universal binary
 
 ---

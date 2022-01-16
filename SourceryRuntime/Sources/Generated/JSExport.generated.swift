@@ -125,6 +125,8 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var isOptionalReturnType: Bool { get }
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
     var unwrappedReturnTypeName: String { get }
+    var isAsync: Bool { get }
+    var asyncKeyword: String? { get }
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
     var asSource: String { get }
@@ -254,6 +256,7 @@ extension Import: ImportAutoJSExport {}
     var isOptionalReturnType: Bool { get }
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
     var unwrappedReturnTypeName: String { get }
+    var isAsync: Bool { get }
     var `throws`: Bool { get }
     var `rethrows`: Bool { get }
     var accessLevel: String { get }
@@ -540,6 +543,8 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var isComputed: Bool { get }
+    var isAsync: Bool { get }
+    var `throws`: Bool { get }
     var isStatic: Bool { get }
     var readAccess: String { get }
     var writeAccess: String { get }
