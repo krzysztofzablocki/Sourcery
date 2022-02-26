@@ -317,6 +317,7 @@ extension Type {
         if self.parentName != rhs.parentName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
+        if self.fileName != rhs.fileName { return false }
         if self.kind != rhs.kind { return false }
         return true
     }
@@ -699,6 +700,7 @@ extension Type {
         hasher.combine(self.parentName)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
+        hasher.combine(self.fileName)
         hasher.combine(kind)
         return hasher.finalize()
     }

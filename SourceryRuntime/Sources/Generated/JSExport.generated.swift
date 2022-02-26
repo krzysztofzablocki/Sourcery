@@ -95,6 +95,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Class: ClassAutoJSExport {}
@@ -193,6 +194,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Enum: EnumAutoJSExport {}
@@ -352,6 +354,7 @@ extension Modifier: ModifierAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Protocol: ProtocolAutoJSExport {}
@@ -401,6 +404,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Struct: StructAutoJSExport {}
@@ -500,6 +504,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Type: TypeAutoJSExport {}

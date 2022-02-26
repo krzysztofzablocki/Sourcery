@@ -332,10 +332,18 @@ public typealias AttributeList = [String: [Attribute]]
     /// Type modifiers, i.e. `private`, `final`
     public var modifiers: [SourceryModifier]
 
-    // Path to file where the type is defined
+    /// Path to file where the type is defined
     // sourcery: skipDescription, skipEquality, skipJSExport
-    /// :nodoc:
-    public var path: String?
+    public var path: String? {
+        didSet {
+            if let path = path {
+                fileName = (path as NSString).lastPathComponent
+            }
+        }
+    }
+
+    /// File name where the type was defined
+    public var fileName: String?
 
     /// :nodoc:
     public init(name: String = "",
@@ -429,6 +437,7 @@ public typealias AttributeList = [String: [Attribute]]
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
             self.path = aDecoder.decode(forKey: "path")
+            self.fileName = aDecoder.decode(forKey: "fileName")
         }
 
         /// :nodoc:
@@ -460,6 +469,7 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.path, forKey: "path")
+            aCoder.encode(self.fileName, forKey: "fileName")
         }
 // sourcery:end
 }

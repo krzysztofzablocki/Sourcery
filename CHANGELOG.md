@@ -1,19 +1,22 @@
 # Sourcery CHANGELOG
 
-## master
+## Main
 
-## Fixes
-- Use name or path parameter to parse groups to avoid duplicated group creation, fixes #904, #906
-
-## 1.6.1
+## New Features
+- Adds `fileName` to `Type` and exposes `path` as well
+- Adds support for parsing async methods, closures and variables
 
 ## Fixes
 - correct parsing of rawValue initializer in enum cases, fixes #1010
+- Use name or path parameter to parse groups to avoid duplicated group creation, fixes #904, #906
+
+---
+
+## 1.6.1
 ## New Features
 - Added `CLI-Only` subspec to `Sourcery.podspec` [#997](https://github.com/krzysztofzablocki/Sourcery/pull/997)
 - Added documentation comment parsing for all declarations [#1002](https://github.com/krzysztofzablocki/Sourcery/pull/1002)
 - Updates Yams to 4.0.6
-- Adds support for parsing async methods, closures and variables
 - Enables universal binary
 
 ---

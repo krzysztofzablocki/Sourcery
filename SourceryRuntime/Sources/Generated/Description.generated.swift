@@ -312,7 +312,8 @@ extension Type {
         string += "parentName = \(String(describing: self.parentName)), "
         string += "parentTypes = \(String(describing: self.parentTypes)), "
         string += "attributes = \(String(describing: self.attributes)), "
-        string += "modifiers = \(String(describing: self.modifiers))"
+        string += "modifiers = \(String(describing: self.modifiers)), "
+        string += "fileName = \(String(describing: self.fileName))"
         return string
     }
 }

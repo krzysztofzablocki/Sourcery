@@ -30,7 +30,7 @@ class TypedNode: NodeType {
         }
 
         let chunks = Array(components.dropFirst()).chunked(into: 3)
-        let bindings: [Binding] = chunks.flatMap { binding in
+        let bindings: [Binding] = chunks.compactMap { binding in
             return (name: binding[0], type: binding[2])
         }
         return TypedNode(bindings: bindings)
