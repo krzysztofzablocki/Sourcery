@@ -16,7 +16,7 @@
     <a title="Usage  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 1.6.0 Docs</a> (88% documented)</p>
+        <p><a href="index.html">Sourcery 1.6.1 Docs</a> (88% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -259,21 +259,6 @@ a path to config file itself. By default Sourcery will search for <code>.sourcer
 <span class="na">args</span><span class="pi">:</span>
   <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
-
-<p>Note that if arguments you would like to have are arrays then you should pass them as an array of strings. For example to pass an array of imports to include in AutoMockable.stencil template you'd need to pass it as:</p>
-<pre class="highlight yaml"><code><span class="na">sources</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span> <span class="c1"># you can provide either single path or several paths using `-`</span>
-  <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
-<span class="na">templates</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span> <span class="c1"># as well as for templates</span>
-  <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
-<span class="na">output</span><span class="pi">:</span>
-  <span class="s">&lt;output path&gt;</span> <span class="c1"># note that there is no `-` here as only single output path is supported</span>
-<span class="na">args</span><span class="pi">:</span>
-  <span class="s">autoMockableTestableImports</span><span class="pi">:</span> <span class="s">["MyiOSTarget"]</span>
-  <span class="s">autoMockableImports</span><span class="pi">:</span> <span class="s">["SomeLibrary1", "SomeFramework2"]</span>
-</code></pre>
-
 <h4 id='multiple-configurations' class='heading'>Multiple configurations</h4>
 
 <p>You can pass multiple paths to configuration files using multiple <code>--config</code> command line options.
