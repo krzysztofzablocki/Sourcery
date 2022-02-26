@@ -991,6 +991,30 @@ class ParserComposerSpec: QuickSpec {
                               }
                         }
 
+                        xit("follows through typealias contained in other types") {
+                            let code =
+                            """
+                            enum Module {
+                                typealias Model = ModuleModel
+                            }
+
+                            struct ModuleModel {
+                                class ModelID {}
+
+                                struct Element {
+                                    let id: ModuleModel.ModelID
+                                    let idUsingTypealias: Module.Model.ModelID
+                                }
+                            }
+                            """
+
+                            let type = parse(code)[2]
+                            expect(type.name).to(equal("ModuleModel.Element"))
+                            type.variables.forEach {
+                                expect($0.type?.name).to(equal("ModuleModel.ModelID"))
+                            }
+                        }
+
                         it("follows through typealias chain contained in different modules to final type") {
                             // TODO: add module inference logic to typealias resolution!
                             let typealiases = parseModules(
