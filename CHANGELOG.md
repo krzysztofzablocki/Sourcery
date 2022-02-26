@@ -1,5 +1,10 @@
 # Sourcery CHANGELOG
 
+## master
+
+## Fixes
+- Use name or path parameter to parse groups to avoid duplicated group creation, fixes #904, #906
+
 ## 1.6.1
 
 ## Fixes
