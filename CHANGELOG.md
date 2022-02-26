@@ -1,6 +1,6 @@
 # Sourcery CHANGELOG
 
-## Main
+## 1.7.0
 
 ## New Features
 - Adds `fileName` to `Type` and exposes `path` as well

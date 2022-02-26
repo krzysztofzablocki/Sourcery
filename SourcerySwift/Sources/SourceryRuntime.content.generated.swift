@@ -573,7 +573,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -1416,7 +1416,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1730,7 +1730,8 @@ extension Type {
         string += "parentName = \\(String(describing: self.parentName)), "
         string += "parentTypes = \\(String(describing: self.parentTypes)), "
         string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
+        string += "modifiers = \\(String(describing: self.modifiers)), "
+        string += "fileName = \\(String(describing: self.fileName))"
         return string
     }
 }
@@ -1853,7 +1854,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -2233,6 +2234,7 @@ extension Type: Diffable {
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        results.append(contentsOf: DiffableResult(identifier: "fileName").trackDifference(actual: self.fileName, expected: castObject.fileName))
         return results
     }
 }
@@ -2776,7 +2778,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -3095,6 +3097,7 @@ extension Type {
         if self.parentName != rhs.parentName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
+        if self.fileName != rhs.fileName { return false }
         if self.kind != rhs.kind { return false }
         return true
     }
@@ -3477,6 +3480,7 @@ extension Type {
         hasher.combine(self.parentName)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
+        hasher.combine(self.fileName)
         hasher.combine(kind)
         return hasher.finalize()
     }
@@ -4053,7 +4057,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -4150,6 +4154,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Class: ClassAutoJSExport {}
@@ -4248,6 +4253,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Enum: EnumAutoJSExport {}
@@ -4407,6 +4413,7 @@ extension Modifier: ModifierAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Protocol: ProtocolAutoJSExport {}
@@ -4456,6 +4463,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Struct: StructAutoJSExport {}
@@ -4555,6 +4563,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
 }
 
 extension Type: TypeAutoJSExport {}
@@ -6314,10 +6323,18 @@ public typealias AttributeList = [String: [Attribute]]
     /// Type modifiers, i.e. `private`, `final`
     public var modifiers: [SourceryModifier]
 
-    // Path to file where the type is defined
+    /// Path to file where the type is defined
     // sourcery: skipDescription, skipEquality, skipJSExport
-    /// :nodoc:
-    public var path: String?
+    public var path: String? {
+        didSet {
+            if let path = path {
+                fileName = (path as NSString).lastPathComponent
+            }
+        }
+    }
+
+    /// File name where the type was defined
+    public var fileName: String?
 
     /// :nodoc:
     public init(name: String = "",
@@ -6411,6 +6428,7 @@ public typealias AttributeList = [String: [Attribute]]
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["attributes"])); fatalError() }; self.attributes = attributes
             guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiers"])); fatalError() }; self.modifiers = modifiers
             self.path = aDecoder.decode(forKey: "path")
+            self.fileName = aDecoder.decode(forKey: "fileName")
         }
 
         /// :nodoc:
@@ -6442,6 +6460,7 @@ public typealias AttributeList = [String: [Attribute]]
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.path, forKey: "path")
+            aCoder.encode(self.fileName, forKey: "fileName")
         }
 // sourcery:end
 }
@@ -6776,7 +6795,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.7.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
