@@ -16,6 +16,7 @@ public struct Project {
         public struct XCFramework {
 
             public let path: Path
+            public let swiftInterfacePath: Path
 
             public init(rawPath: String, relativePath: Path) throws {
                 let frameworkRelativePath = Path(rawPath, relativeTo: relativePath)
@@ -38,7 +39,8 @@ public struct Project {
                 else {
                     throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected to find .swiftinterface.")
                 }
-                self.path = interface
+                self.path = frameworkRelativePath
+                self.swiftInterfacePath = interface
             }
         }
 
