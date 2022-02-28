@@ -12,15 +12,52 @@ public struct Project {
     public let exclude: [Path]
 
     public struct Target {
+
+        public struct XCFramework {
+
+            public let path: Path
+
+            public init(rawPath: String, relativePath: Path) throws {
+                let frameworkRelativePath = Path(rawPath, relativeTo: relativePath)
+                guard let framework = frameworkRelativePath.components.last else {
+                    throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected String.")
+                }
+                let `extension` = Path(framework).`extension`
+                guard `extension` == "xcframework" else {
+                    throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected path to xcframework file.")
+                }
+                let moduleName = Path(framework).lastComponentWithoutExtension
+                guard
+                    let simulatorSlicePath = frameworkRelativePath.glob("*")
+                        .first(where: { $0.lastComponent.contains("simulator") })
+                else {
+                    throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected to find simulator slice.")
+                }
+                let modulePath = simulatorSlicePath + Path("\(moduleName).framework/Modules/\(moduleName).swiftmodule/")
+                guard let interface = modulePath.glob("*.swiftinterface").first(where: { $0.lastComponent.contains("simulator") })
+                else {
+                    throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected to find .swiftinterface.")
+                }
+                self.path = interface
+            }
+        }
+
         public let name: String
         public let module: String
+        public let xcframework: XCFramework?
 
-        public init(dict: [String: String]) throws {
+        public init(dict: [String: String], relativePath: Path) throws {
             guard let name = dict["name"] else {
                 throw Configuration.Error.invalidSources(message: "Target name is not provided. Expected string.")
             }
             self.name = name
             self.module = dict["module"] ?? name
+            do {
+                self.xcframework = try dict["xcframework"].map { try .init(rawPath: $0, relativePath: relativePath) }
+            } catch let error as Configuration.Error {
+                Log.warning(error.description)
+                self.xcframework = nil
+            }
         }
     }
 
@@ -31,9 +68,9 @@ public struct Project {
 
         let targetsArray: [Target]
         if let targets = dict["target"] as? [[String: String]] {
-            targetsArray = try targets.map({ try Target(dict: $0) })
+            targetsArray = try targets.map({ try Target(dict: $0, relativePath: relativePath) })
         } else if let target = dict["target"] as? [String: String] {
-            targetsArray = try [Target(dict: target)]
+            targetsArray = try [Target(dict: target, relativePath: relativePath)]
         } else {
             throw Configuration.Error.invalidSources(message: "'target' key is missing. Expected object or array of objects.")
         }
@@ -209,6 +246,7 @@ public struct Configuration {
     public enum Error: Swift.Error, CustomStringConvertible {
         case invalidFormat(message: String)
         case invalidSources(message: String)
+        case invalidXCFramework(message: String)
         case invalidTemplates(message: String)
         case invalidOutput(message: String)
         case invalidCacheBasePath(message: String)
@@ -220,6 +258,8 @@ public struct Configuration {
                 return "Invalid config file format. \(message)"
             case .invalidSources(let message):
                 return "Invalid sources. \(message)"
+            case .invalidXCFramework(let message):
+                return "Invalid xcframework. \(message)"
             case .invalidTemplates(let message):
                 return "Invalid templates. \(message)"
             case .invalidOutput(let message):

@@ -95,6 +95,10 @@ public class Sourcery {
                             paths.append(file)
                             modules.append(target.module)
                         }
+                        if let xcframework = target.xcframework {
+                            paths.append(xcframework.path)
+                            modules.append(target.module)
+                        }
                     }
                 }
                 result = try self.parse(from: paths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
