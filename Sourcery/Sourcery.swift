@@ -95,8 +95,8 @@ public class Sourcery {
                             paths.append(file)
                             modules.append(target.module)
                         }
-                        if let xcframework = target.xcframework {
-                            paths.append(xcframework.swiftInterfacePath)
+                        for framework in target.xcframeworks {
+                            paths.append(framework.swiftInterfacePath)
                             modules.append(target.module)
                         }
                     }

@@ -35,30 +35,31 @@ public struct Project {
                     throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected to find simulator slice.")
                 }
                 let modulePath = simulatorSlicePath + Path("\(moduleName).framework/Modules/\(moduleName).swiftmodule/")
-                guard let interface = modulePath.glob("*.swiftinterface").first(where: { $0.lastComponent.contains("simulator") })
+                guard let interfacePath = modulePath.glob("*.swiftinterface").first(where: { $0.lastComponent.contains("simulator") })
                 else {
                     throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected to find .swiftinterface.")
                 }
                 self.path = frameworkRelativePath
-                self.swiftInterfacePath = interface
+                self.swiftInterfacePath = interfacePath
             }
         }
 
         public let name: String
         public let module: String
-        public let xcframework: XCFramework?
+        public let xcframeworks: [XCFramework]
 
-        public init(dict: [String: String], relativePath: Path) throws {
-            guard let name = dict["name"] else {
+        public init(dict: [String: Any], relativePath: Path) throws {
+            guard let name = dict["name"] as? String else {
                 throw Configuration.Error.invalidSources(message: "Target name is not provided. Expected string.")
             }
             self.name = name
-            self.module = dict["module"] ?? name
+            self.module = (dict["module"] as? String) ?? name
             do {
-                self.xcframework = try dict["xcframework"].map { try .init(rawPath: $0, relativePath: relativePath) }
+                self.xcframeworks = try (dict["xcframeworks"] as? [String])?
+                    .map { try XCFramework(rawPath: $0, relativePath: relativePath) } ?? []
             } catch let error as Configuration.Error {
                 Log.warning(error.description)
-                self.xcframework = nil
+                self.xcframeworks = []
             }
         }
     }
@@ -69,9 +70,9 @@ public struct Project {
         }
 
         let targetsArray: [Target]
-        if let targets = dict["target"] as? [[String: String]] {
+        if let targets = dict["target"] as? [[String: Any]] {
             targetsArray = try targets.map({ try Target(dict: $0, relativePath: relativePath) })
-        } else if let target = dict["target"] as? [String: String] {
+        } else if let target = dict["target"] as? [String: Any] {
             targetsArray = try [Target(dict: target, relativePath: relativePath)]
         } else {
             throw Configuration.Error.invalidSources(message: "'target' key is missing. Expected object or array of objects.")
