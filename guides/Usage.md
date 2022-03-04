@@ -87,7 +87,7 @@ sources:
   - <source file path>
 ```
 
-Or you can provide project which will be scanned and which source files will be processed. You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects.
+Or you can provide project which will be scanned and which source files will be processed. You can use several `project` or `target` objects to scan multiple targets from one project or to scan multiple projects. You can provide paths to XCFramework files if your target has any and you want to process their `swiftinterface` files.
 
 ```yaml
 project:
@@ -95,6 +95,9 @@ project:
   target:
     name: <target name>
     module: <module name> //required if different from target name
+    xcframeworks:
+        - <path to xcframework file>
+        - <path to xcframework file>
 ```
 
 #### Excluding sources or templates
