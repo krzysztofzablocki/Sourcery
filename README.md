@@ -89,32 +89,29 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 
 	`brew install sourcery`
 
-
 - _[CocoaPods](https://cocoapods.org)_
 
     Add `pod 'Sourcery'` to your `Podfile` and run `pod update Sourcery`. This will download the latest release binary and will put it in your project's CocoaPods path so you will run it with `$PODS_ROOT/Sourcery/bin/sourcery`
 
-    If you only want to install the `sourcery` binary and its `lib_InternalSwiftSyntaxParser.dylib` dependency, you may want to use the `CLI-Only` subspec: `pod 'Sourcery', :subspecs => ['CLI-Only']`.
+    If you only want to install the `sourcery` binary, you may want to use the `CLI-Only` subspec: `pod 'Sourcery', :subspecs => ['CLI-Only']`.
 
 - _[Mint](https://github.com/yonaskolb/Mint)_
 
-    Mint is no longer recommended, due to how SwiftSyntax dylib linking and lack of SPM support for changing r-path, you can't just build sourcery with plain SPM and expect it to work with different Xcode versions across your team. 
-    
-- _Building from source_
+    `mint run krzysztofzablocki/Sourcery`
+
+- _Building from Source_
 
     Download the latest release source code from [the release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest) or clone the repository and build Sourcery manually.
 
     - _Building with Swift Package Manager_
 
-        Run `swift build -c release` in the root folder. This will create a `.build/release` folder and will put the binary there. Move the **whole `.build/release` folder** to your desired destination and run with `path_to_release_folder/sourcery`
+        Run `swift build -c release` in the root folder and then copy `.build/release/sourcery` to your desired destination.
 
         > Note: JS templates are not supported when building with SPM yet.
 
     - _Building with Xcode_
 
-        Generate xcodeproj with `swift package generate-xcodeproj`
-
-        Open `Sourcery.xcworkspace` and build with `Sourcery-Release` scheme. This will create `Sourcery.app` in the Derived Data folder. You can copy it to your desired destination and run with `path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery`
+        Run `xcodebuild -scheme sourcery -destination generic/platform=macOS -archivePath sourcery.xcarchive archive` and export the binary from the archive.
 
 ## Documentation
 
