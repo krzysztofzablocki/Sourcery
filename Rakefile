@@ -60,21 +60,10 @@ task :build, [:build_fat] do |t, args|
   sh %Q(swift build -c release --arch x86_64 --arch arm64 --disable-sandbox --build-path #{BUILD_DIR})
   sh %Q(rm -fr #{CLI_DIR})
   sh %Q(mkdir -p "#{CLI_DIR}bin")
-  sh %Q(mkdir -p "#{CLI_DIR}lib")
-  
-if args[:build_fat] != true  # Build thin Library
-  ARCH = `uname -m`.chomp
-  sh %Q(lipo -thin #{ARCH} lib_InternalSwiftSyntaxParser.dylib -output #{CLI_DIR}lib/lib_InternalSwiftSyntaxParser.dylib)
-else
-  sh %Q(cp lib_InternalSwiftSyntaxParser.dylib #{CLI_DIR}lib)
-end
 
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
   `mv #{BUILD_DIR}apple/Products/Release/sourcery #{CLI_DIR}bin/`
   #`mv #{BUILD_DIR}release/Sourcery_SourceryJS.bundle #{CLI_DIR}lib/`
-  `install_name_tool -delete_rpath @loader_path #{CLI_DIR}bin/sourcery`
-  `install_name_tool -delete_rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx #{CLI_DIR}bin/sourcery`
-  `install_name_tool -add_rpath "@executable_path/../lib" "#{CLI_DIR}bin/sourcery"`
   sh %Q(rm -fr #{BUILD_DIR})
 end
 
