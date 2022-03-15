@@ -54,6 +54,7 @@ let package = Package(
                 "Yams",
                 "StencilSwiftKit",
                 "SwiftSyntax",
+                "lib_InternalSwiftSyntaxParser",
                 "XcodeProj",
                 "TryCatch"
             ],
@@ -84,6 +85,7 @@ let package = Package(
             dependencies: [
               "PathKit",
               "SwiftSyntax",
+              "lib_InternalSwiftSyntaxParser",
               "SourceryUtils",
               "SourceryRuntime"
             ],
@@ -213,33 +215,11 @@ let package = Package(
                 .copy("Tests/Context"),
                 .copy("Tests/Expected")
             ]
+        ),
+        .binaryTarget(
+            name: "lib_InternalSwiftSyntaxParser",
+            url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.5.2/lib_InternalSwiftSyntaxParser.xcframework.zip",
+            checksum: "96bbc9ab4679953eac9ee46778b498cb559b8a7d9ecc658e54d6679acfbb34b8"
         )
     ]
 )
-
-hookInternalSwiftSyntaxParser()
-
-/// We need to manually add an -rpath to the project so the tests can run via Xcode/xcodebuild
-/// If we are using the swift CLI then the Swift version should match with SwiftSyntax's version
-/// or we have to manually fix the rpath (see the build task in the Rakefile)
-func hookInternalSwiftSyntaxParser() {
-    let pathRegex = try! NSRegularExpression(pattern: "^\\/Applications\\/Xcode[^:\\/]*\\.app\\/Contents\\/Developer\\/usr\\/bin:")
-    let path = ProcessInfo.processInfo.environment["PATH"] ?? ""
-    let isXcode = pathRegex.firstMatch(in: path, options: [], range: NSRange(location: 0, length: path.count)) != nil
-    if isXcode {
-        package
-            .targets
-            .filter { $0.isTest || $0.name == "SourceryLib" }
-            .forEach { $0.installSwiftSyntaxParser() }
-    }
-}
-
-extension PackageDescription.Target {
-    func installSwiftSyntaxParser() {
-        linkerSettings = [.unsafeFlags(["-rpath", packageRoot])]
-    }
-
-    var packageRoot: String {
-        return URL(fileURLWithPath: #file).deletingLastPathComponent().path
-    }
-}
