@@ -52,7 +52,7 @@ extension Path {
     }
 
     public var isSwiftSourceFile: Bool {
-        return !self.isDirectory && self.extension == "swift"
+        return !self.isDirectory && (self.extension == "swift" || self.extension == "swiftinterface")
     }
 
     public func hasExtension(as string: String) -> Bool {

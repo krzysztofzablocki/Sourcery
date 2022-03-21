@@ -293,12 +293,15 @@ Single configuration file can contain multiple configurations under root <code>c
   <span class="pi">-</span> <span class="s">&lt;source file path&gt;</span>
 </code></pre>
 
-<p>Or you can provide project which will be scanned and which source files will be processed. You can use several <code>project</code> or <code>target</code> objects to scan multiple targets from one project or to scan multiple projects.</p>
+<p>Or you can provide project which will be scanned and which source files will be processed. You can use several <code>project</code> or <code>target</code> objects to scan multiple targets from one project or to scan multiple projects. You can provide paths to XCFramework files if your target has any and you want to process their <code>swiftinterface</code> files.</p>
 <pre class="highlight yaml"><code><span class="na">project</span><span class="pi">:</span>
   <span class="na">file</span><span class="pi">:</span> <span class="s">&lt;path to xcodeproj file&gt;</span>
   <span class="na">target</span><span class="pi">:</span>
     <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;target name&gt;</span>
     <span class="na">module</span><span class="pi">:</span> <span class="s">&lt;module name&gt; //required if different from target name</span>
+    <span class="na">xcframeworks</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
+    <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
 </code></pre>
 <h4 id='excluding-sources-or-templates' class='heading'>Excluding sources or templates</h4>
 

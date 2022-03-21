@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## Main
+## New Features
+- Adds `xcframework` key to `target` object in configuration file to enable processing of `swiftinterface`
+
 ## 1.7.0
 
 ## New Features
