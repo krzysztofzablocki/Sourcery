@@ -179,7 +179,7 @@ open class SwiftTemplate {
         let binaryPath: Path
 
         if let cachePath = cachePath,
-            let hash = code.sha256(),
+            let hash = cacheKey,
             let hashPath = hash.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics) {
 
             binaryPath = cachePath + hashPath
@@ -269,6 +269,19 @@ open class SwiftTemplate {
             ]
         )
         """
+    }
+
+    var cacheKey: String? {
+        var contents = code
+
+        // For every included file, make sure that the path and modification date are included in the key
+        let files = includedFiles.map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
+        for file in files {
+            let modificationDate = file.modifiedDate?.timeIntervalSinceReferenceDate ?? 0
+            contents += "\n// \(file.string)-\(modificationDate)"
+        }
+
+        return contents.sha256()
     }
 
     private func copyRuntimePackage(to path: Path) throws {
