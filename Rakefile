@@ -71,6 +71,9 @@ task :build, [:build_fat] do |t, args|
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
   sh %Q(mv #{BUILD_DIR}sourcery.xcarchive/Products/usr/local/bin/sourcery #{CLI_DIR}bin/)
   sh %Q(rm -fr #{BUILD_DIR})
+
+  # Remove the unnecessary rpath added by xcodebuild
+  sh %Q(install_name_tool -delete_rpath "@executable_path/../lib" "#{CLI_DIR}bin/sourcery")
 end
 
 task :fat_build do
