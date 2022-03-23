@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.6
 
 import PackageDescription
 import Foundation
@@ -19,20 +19,18 @@ let package = Package(
         .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
     ],
     dependencies: [
-        .package(name: "Yams", url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
-        .package(name: "Commander", url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
+        .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(name: "PathKit", url: "https://github.com/kylef/PathKit.git", .exact("1.0.1")),
-        .package(name: "StencilSwiftKit", url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.8.0")),
-        .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .exact("8.3.1")),
-        .package(name: "SwiftSyntax",
-                 url: "https://github.com/apple/swift-syntax.git",
-                 .exact("0.50500.0")),
+        .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
+        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.8.0"),
+        .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", exact: "0.50500.0"),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
     ],
     targets: [
-        .target(
+        .executableTarget(
             name: "SourceryExecutable",
             dependencies: ["SourceryLib"],
             path: "SourceryExecutable",
@@ -53,7 +51,7 @@ let package = Package(
                 "PathKit",
                 "Yams",
                 "StencilSwiftKit",
-                "SwiftSyntax",
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
                 "lib_InternalSwiftSyntaxParser",
                 "XcodeProj",
                 "TryCatch"
@@ -84,7 +82,7 @@ let package = Package(
             name: "SourceryFramework",
             dependencies: [
               "PathKit",
-              "SwiftSyntax",
+              .product(name: "SwiftSyntax", package: "swift-syntax"),
               "lib_InternalSwiftSyntaxParser",
               "SourceryUtils",
               "SourceryRuntime"
@@ -202,8 +200,7 @@ let package = Package(
                 "CodableContext",
                 "CodableContextTests",
                 "Tests/Generated",
-                "Tests/Info.plist",
-                "default.profraw"
+                "Tests/Info.plist"
             ],
             sources: [
                 // LinuxMain is not compiled as part of the target
