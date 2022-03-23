@@ -59,7 +59,9 @@ task :build, [:build_fat] do |t, args|
   print_info "Building project (fat: #{args[:build_fat]})"
 
   # Use xcodebuild due to https://bugs.swift.org/browse/SR-15802
-  xcpretty %Q(xcodebuild -scheme sourcery -destination generic/platform=macOS -archivePath #{BUILD_DIR}sourcery.xcarchive archive)
+  cmd = %Q(xcodebuild -scheme sourcery -destination generic/platform=macOS -archivePath #{BUILD_DIR}sourcery.xcarchive archive)
+  cmd << " ARCHS=#{`uname -m`.chomp}" unless args[:build_fat]
+  xcpretty cmd
 
   # Prepare the export directory
   sh %Q(rm -fr #{CLI_DIR})
