@@ -4,6 +4,9 @@
 ## New Features
 - Adds `xcframework` key to `target` object in configuration file to enable processing of `swiftinterface`
 
+## Fixes
+- Modifications to included files of Swift Templates now correctly invalidate the cache - [#889](https://github.com/krzysztofzablocki/Sourcery/issues/889)
+
 ## 1.7.0
 
 ## New Features
