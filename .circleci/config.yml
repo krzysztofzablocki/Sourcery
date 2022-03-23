@@ -3,7 +3,7 @@ version: 2
 jobs:
   test:
     macos:
-      xcode: "13.0.0"
+      xcode: "13.3.0"
     environment:
       - BUNDLE_JOBS: 3
       - BUNDLE_RETRY: 3
