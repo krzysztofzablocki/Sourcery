@@ -5,9 +5,9 @@ jobs:
     macos:
       xcode: "13.3.0"
     environment:
-      - BUNDLE_JOBS: 3
-      - BUNDLE_RETRY: 3
-      - BUNDLE_PATH: vendor/bundle
+      BUNDLE_JOBS: 3
+      BUNDLE_RETRY: 3
+      BUNDLE_PATH: vendor/bundle
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
