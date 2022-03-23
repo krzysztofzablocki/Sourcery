@@ -1,1 +1,1 @@
-<% [String]()[1] %>
+<% fatalError("Template not implemented") %>
