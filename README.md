@@ -79,6 +79,13 @@ There are plenty of tutorials for different uses of Sourcery, and you can always
 - [Codable Enums](https://littlebitesofcocoa.com/318-codable-enums) implements Codable support for Enumerations
 - [Sourcery Workshops](https://github.com/krzysztofzablocki/SourceryWorkshops)
 
+### Quick Mocking Intro & Getting Started Video
+
+You can also watch this quick getting started and intro to mocking video by Inside iOS Dev: 
+<br />
+
+[![Watch the video](Resources/Inside-iOS-Dev-Sourcery-Intro-To-Mocking-Video-Thumbnail.png)](https://youtu.be/-ZbBNuttlt4?t=214)
+
 ## Installation
 
 - _Binary form_

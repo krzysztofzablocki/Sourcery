@@ -6,6 +6,7 @@
 
 ## Fixes
 - Fixed issues generating Swift Templates when using Xcode 13.3 [#1040](https://github.com/krzysztofzablocki/Sourcery/issues/1040)
+- Modifications to included files of Swift Templates now correctly invalidate the cache - [#889](https://github.com/krzysztofzablocki/Sourcery/issues/889)
 
 ## Internal Changes
 - Swift 5.6 and Xcode 13.3 is now required to build the project
