@@ -5,7 +5,12 @@
 - Adds `xcframework` key to `target` object in configuration file to enable processing of `swiftinterface`
 
 ## Fixes
+- Fixed issues generating Swift Templates when using Xcode 13.3 [#1040](https://github.com/krzysztofzablocki/Sourcery/issues/1040)
 - Modifications to included files of Swift Templates now correctly invalidate the cache - [#889](https://github.com/krzysztofzablocki/Sourcery/issues/889)
+
+## Internal Changes
+- Swift 5.6 and Xcode 13.3 is now required to build the project
+- `lib_internalSwiftSyntaxParser` is now statically linked enabling better support when installing through SPM and Mint [#1037](https://github.com/krzysztofzablocki/Sourcery/pull/1037)
 
 ## 1.7.0
 

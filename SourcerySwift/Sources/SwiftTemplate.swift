@@ -240,7 +240,7 @@ open class SwiftTemplate {
                                                        arguments: arguments,
                                                        currentDirectoryPath: buildDir)
 
-        if compilationResult.exitCode != 0 || !compilationResult.error.isEmpty {
+        if compilationResult.exitCode != EXIT_SUCCESS {
             throw [compilationResult.output, compilationResult.error]
                 .filter { !$0.isEmpty }
                 .joined(separator: "\n")

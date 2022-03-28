@@ -20,6 +20,6 @@ Pod::Spec.new do |s|
   s.exclude_files = '**/file.zip'
 
   s.subspec 'CLI-Only' do |ss|
-    ss.preserve_paths = 'bin', 'lib'
+    ss.preserve_paths = 'bin'
   end
 end
