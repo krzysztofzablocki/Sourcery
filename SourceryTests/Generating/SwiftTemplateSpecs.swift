@@ -232,6 +232,24 @@ class SwiftTemplateTests: QuickSpec {
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
             }
+
+            it("should change cacheKey based on includeFile modifications") {
+                let templatePath = outputDir + "Template.swifttemplate"
+                try templatePath.write(#"<%- includeFile("Utils.swift") -%>"#)
+
+                let utilsPath = outputDir + "Utils.swift"
+                try utilsPath.write(#"let foo = "bar""#)
+
+                let template = try SwiftTemplate(path: templatePath, cachePath: nil, version: "1.0.0")
+                let originalKey = template.cacheKey
+                let keyBeforeModification = template.cacheKey
+
+                try utilsPath.write(#"let foo = "baz""#)
+
+                let keyAfterModification = template.cacheKey
+                expect(originalKey).to(equal(keyBeforeModification))
+                expect(originalKey).toNot(equal(keyAfterModification))
+            }
         }
 
         describe("FolderSynchronizer") {
