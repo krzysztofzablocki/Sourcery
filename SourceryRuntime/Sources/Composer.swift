@@ -284,7 +284,7 @@ public enum Composer {
 
         /// Resolve typealiases
         let typealiases = Array(state.unresolvedTypealiases.values)
-        typealiases.parallelPerform { alias in
+        typealiases.forEach { alias in
             alias.type = resolveType(alias.typeName, alias.parent)
         }
 
