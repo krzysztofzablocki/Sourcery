@@ -16,7 +16,7 @@
     <a title="Usage  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 1.7.0 Docs</a> (88% documented)</p>
+        <p><a href="index.html">Sourcery 1.8.0 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -69,6 +69,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="codable.html">Codable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Diffable.html">Diffable</a>
               </li>
               <li class="nav-group-task">
                 <a href="diffable.html">Diffable</a>
@@ -159,7 +162,16 @@
             <a href="Other%20Classes.html">Other Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="Classes/ClosureParameter.html">ClosureParameter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/DiffableResult.html">DiffableResult</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/GenericRequirement.html">GenericRequirement</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/GenericRequirement/Relationship.html">– Relationship</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/Import.html">Import</a>
@@ -181,6 +193,9 @@
             <a href="Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
@@ -198,10 +213,24 @@
                 <a href="Protocols/Definition.html">Definition</a>
               </li>
               <li class="nav-group-task">
-                <a href="Other%20Protocols.html#/s:15SourceryRuntime10DocumentedP">Documented</a>
+                <a href="Protocols/Documented.html">Documented</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/Typed.html">Typed</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Other%20Typealiases.html#/s:15SourceryRuntime11Annotationsa">Annotations</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Other%20Typealiases.html#/s:15SourceryRuntime13Documentationa">Documentation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Other%20Typealiases.html#/s:15SourceryRuntime0A8Modifiera">SourceryModifier</a>
               </li>
             </ul>
           </li>
@@ -300,8 +329,8 @@ Single configuration file can contain multiple configurations under root <code>c
     <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;target name&gt;</span>
     <span class="na">module</span><span class="pi">:</span> <span class="s">&lt;module name&gt; //required if different from target name</span>
     <span class="na">xcframeworks</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
-    <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
+        <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
+        <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
 </code></pre>
 <h4 id='excluding-sources-or-templates' class='heading'>Excluding sources or templates</h4>
 

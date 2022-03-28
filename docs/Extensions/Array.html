@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>GenericRequirement Class Reference</title>
+    <title>Array Extension Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/GenericRequirement" class="dashAnchor"></a>
-    <a title="GenericRequirement Class Reference"></a>
+    <a name="//apple_ref/swift/Extension/Array" class="dashAnchor"></a>
+    <a title="Array Extension Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery 1.8.0 Docs</a> (100% documented)</p>
@@ -30,7 +30,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        GenericRequirement Class Reference
+        Array Extension Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -240,18 +240,18 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>GenericRequirement</h1>
+            <h1>Array</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="kt">GenericRequirement</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">extension</span> <span class="kt">Array</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/MethodParameter.html">MethodParameter</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/ClosureParameter.html">ClosureParameter</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/TupleElement.html">TupleElement</a></span></code></pre>
 
                 </div>
               </div>
-            <p>modifier can be thing like <code>private</code>, <code>class</code>, <code>nonmutating</code>
-if a declaration has modifier like <code>private(set)</code> it&rsquo;s name will be <code>private</code> and detail will be <code>set</code></p>
-
+            
           </section>
           <section class="section task-group-section">
             <div class="task-group">
@@ -259,36 +259,9 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15SourceryRuntime18GenericRequirementC12RelationshipO"></a>
-                    <a name="//apple_ref/swift/Enum/Relationship" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime18GenericRequirementC12RelationshipO">Relationship</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                        <a href="../Classes/GenericRequirement/Relationship.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Relationship</span> <span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)leftType"></a>
-                    <a name="//apple_ref/swift/Property/leftType" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)leftType">leftType</a>
+                    <a name="/s:Sa15SourceryRuntimeE15parallelFlatMap9transformSayqd__GADxXE_tlF"></a>
+                    <a name="//apple_ref/swift/Method/parallelFlatMap(transform:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeE15parallelFlatMap9transformSayqd__GADxXE_tlF">parallelFlatMap(transform:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -302,7 +275,7 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">leftType</span><span class="p">:</span> <span class="kt"><a href="../Classes/AssociatedType.html">AssociatedType</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">parallelFlatMap</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">transform</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">T</span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
@@ -312,9 +285,9 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)rightType"></a>
-                    <a name="//apple_ref/swift/Property/rightType" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)rightType">rightType</a>
+                    <a name="/s:Sa15SourceryRuntimeE18parallelCompactMap9transformSayqd__Gqd__SgxXE_tlF"></a>
+                    <a name="//apple_ref/swift/Method/parallelCompactMap(transform:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeE18parallelCompactMap9transformSayqd__Gqd__SgxXE_tlF">parallelCompactMap(transform:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -328,7 +301,7 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">rightType</span><span class="p">:</span> <span class="kt"><a href="../Classes/GenericTypeParameter.html">GenericTypeParameter</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">parallelCompactMap</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">transform</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">T</span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
@@ -338,63 +311,9 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)relationship"></a>
-                    <a name="//apple_ref/swift/Property/relationship" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)relationship">relationship</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>relationship name</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">relationship</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)relationshipSyntax"></a>
-                    <a name="//apple_ref/swift/Property/relationshipSyntax" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericRequirement(py)relationshipSyntax">relationshipSyntax</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Syntax e.g. <code>==</code> or <code>:</code></p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">relationshipSyntax</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15SourceryRuntime18GenericRequirementC8leftType05rightF012relationshipAcA010AssociatedF0C_AA0cF9ParameterCAC12RelationshipOtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(leftType:rightType:relationship:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime18GenericRequirementC8leftType05rightF012relationshipAcA010AssociatedF0C_AA0cF9ParameterCAC12RelationshipOtcfc">init(leftType:<wbr>rightType:<wbr>relationship:<wbr>)</a>
+                    <a name="/s:Sa15SourceryRuntimeE11parallelMap9transformSayqd__Gqd__xXE_tlF"></a>
+                    <a name="//apple_ref/swift/Method/parallelMap(transform:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeE11parallelMap9transformSayqd__Gqd__xXE_tlF">parallelMap(transform:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -408,7 +327,176 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">leftType</span><span class="p">:</span> <span class="kt"><a href="../Classes/AssociatedType.html">AssociatedType</a></span><span class="p">,</span> <span class="nv">rightType</span><span class="p">:</span> <span class="kt"><a href="../Classes/GenericTypeParameter.html">GenericTypeParameter</a></span><span class="p">,</span> <span class="nv">relationship</span><span class="p">:</span> <span class="kt"><a href="../Classes/GenericRequirement/Relationship.html">Relationship</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">parallelMap</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">transform</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">T</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sa15SourceryRuntimeE15parallelPerform9transformyyxXE_tF"></a>
+                    <a name="//apple_ref/swift/Method/parallelPerform(transform:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeE15parallelPerform9transformyyxXE_tF">parallelPerform(transform:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">parallelPerform</span><span class="p">(</span><span class="nv">transform</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Element%60%20%3D%3D%20%60MethodParameter%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Element` == `MethodParameter`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Element%60%20%3D%3D%20%60MethodParameter%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Element</code> == <code><a href="../Classes/MethodParameter.html">MethodParameter</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sa15SourceryRuntimeAA15MethodParameterCRszlE8asSourceSSvp"></a>
+                    <a name="//apple_ref/swift/Property/asSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeAA15MethodParameterCRszlE8asSourceSSvp">asSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asSource</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Element%60%20%3D%3D%20%60ClosureParameter%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Element` == `ClosureParameter`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Element%60%20%3D%3D%20%60ClosureParameter%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Element</code> == <code><a href="../Classes/ClosureParameter.html">ClosureParameter</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sa15SourceryRuntimeAA16ClosureParameterCRszlE8asSourceSSvp"></a>
+                    <a name="//apple_ref/swift/Property/asSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeAA16ClosureParameterCRszlE8asSourceSSvp">asSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asSource</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Element%60%20%3D%3D%20%60TupleElement%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Element` == `TupleElement`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Element%60%20%3D%3D%20%60TupleElement%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Element</code> == <code><a href="../Classes/TupleElement.html">TupleElement</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sa15SourceryRuntimeAA12TupleElementCRszlE8asSourceSSvp"></a>
+                    <a name="//apple_ref/swift/Property/asSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeAA12TupleElementCRszlE8asSourceSSvp">asSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asSource</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sa15SourceryRuntimeAA12TupleElementCRszlE10asTypeNameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/asTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeAA12TupleElementCRszlE10asTypeNameSSvp">asTypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asTypeName</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Installing  Reference</title>
+    <title>Other Type Aliases  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,7 +13,8 @@
     <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a title="Installing  Reference"></a>
+    <a name="//apple_ref/swift/Section/Other Type Aliases" class="dashAnchor"></a>
+    <a title="Other Type Aliases  Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="index.html">Sourcery 1.8.0 Docs</a> (100% documented)</p>
@@ -29,7 +30,7 @@
       <p id="breadcrumbs">
         <a href="index.html">Sourcery Reference</a>
         <img id="carat" src="img/carat.png" />
-        Installing  Reference
+        Other Type Aliases  Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -239,35 +240,93 @@
       <article class="main-content">
         <section>
           <section class="section">
-            
-            <h2 id='installing' class='heading'>Installing</h2>
+            <h1>Other Type Aliases</h1>
+            <p>The following type aliases are available globally.</p>
 
-<ul>
-<li><p><em>Binary form</em></p>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15SourceryRuntime11Annotationsa"></a>
+                    <a name="//apple_ref/swift/Alias/Annotations" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15SourceryRuntime11Annotationsa">Annotations</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Annotations</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">]</span></code></pre>
 
-<p>Download latest release with prebuilt binary from <a href="https://github.com/krzysztofzablocki/Sourcery/releases/latest">release tab</a>. Unzip the archive into desired destination and run <code>bin/sourcery</code></p></li>
-<li><p><em>CocoaPods</em></p>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15SourceryRuntime13Documentationa"></a>
+                    <a name="//apple_ref/swift/Alias/Documentation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15SourceryRuntime13Documentationa">Documentation</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Documentation</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span></code></pre>
 
-<p>Add pod &lsquo;Sourcery&rsquo; to your Podfile and run <code>pod update Sourcery</code>. This will download latest release binary and will put it to your project&rsquo;s CocoaPods path so you will run it with <code>$PODS_ROOT/Sourcery/bin/sourcery</code></p></li>
-<li><p><em>Building from source</em></p>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15SourceryRuntime0A8Modifiera"></a>
+                    <a name="//apple_ref/swift/Alias/SourceryModifier" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15SourceryRuntime0A8Modifiera">SourceryModifier</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">SourceryModifier</span> <span class="o">=</span> <span class="kt"><a href="Classes/Modifier.html">Modifier</a></span></code></pre>
 
-<p>Download latest release source code from <a href="https://github.com/krzysztofzablocki/Sourcery/releases/latest">release tab</a> or clone the repository an build Sourcery manually.</p>
-
-<ul>
-<li><p><em>Building with Swift Package Manager</em></p>
-
-<p>Run <code>swift build -c release</code> in the root folder. This will create a <code>.build/release</code> folder and will put binary there. Move the <strong>whole <code>.build/release</code> folder</strong> to your desired destination and run with <code>path_to_release_folder/sourcery</code></p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <p>JS templates are not supported when building with SPM yet.</p>
-
-</div></li>
-<li><p><em>Building with Xcode</em></p>
-
-<p>Open <code>Sourcery.xcworkspace</code> and build with <code>Sourcery-Release</code> scheme. This will create <code>Sourcery.app</code> in the Derived Data folder. You can copy it to your desired destination and run with <code>path_to_sourcery_app/Sourcery.app/Contents/MacOS/Sourcery</code></p></li>
-</ul></li>
-</ul>
-
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
