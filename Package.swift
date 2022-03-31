@@ -1,12 +1,44 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.5
 
 import PackageDescription
 import Foundation
 
+var dependencies: [Package.Dependency] = [
+    .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
+    .package(url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
+    // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
+    .package(url: "https://github.com/kylef/PathKit.git", .exact("1.0.1")),
+    .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.8.0")),
+    .package(url: "https://github.com/tuist/XcodeProj.git", .exact("8.3.1")),
+    .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
+    .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
+]
+#if swift(>=5.6)
+dependencies.append(
+    .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50600.1"))
+)
+#else
+dependencies.append(
+    .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50500.0"))
+)
+#endif
+
+var sourceryFrameworkDependencies: [PackageDescription.Target.Dependency] = [
+    "PathKit",
+    .product(name: "SwiftSyntax", package: "swift-syntax"),
+    "SourceryUtils",
+    "SourceryRuntime"
+]
+#if swift(>=5.6)
+sourceryFrameworkDependencies.append(
+    .product(name: "SwiftSyntaxParser", package: "swift-syntax")
+)
+#endif
+
 let package = Package(
     name: "Sourcery",
     platforms: [
-       .macOS(.v10_12),
+       .macOS(.v10_11),
     ],
     products: [
         // SPM won't generate .swiftmodule for a target directly used by a product,
@@ -18,17 +50,7 @@ let package = Package(
         .library(name: "SourcerySwift", targets: ["SourcerySwift"]),
         .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
-        .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
-        // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
-        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.8.0"),
-        .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
-        .package(url: "https://github.com/apple/swift-syntax.git", exact: "0.50600.1"),
-        .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
-        .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
-    ],
+    dependencies: dependencies,
     targets: [
         .executableTarget(
             name: "SourceryExecutable",
@@ -52,19 +74,12 @@ let package = Package(
                 "Yams",
                 "StencilSwiftKit",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
-                "lib_InternalSwiftSyntaxParser",
                 "XcodeProj",
                 "TryCatch"
             ],
             path: "Sourcery",
             exclude: [
-                "Templates",
-            ],
-            // Pass `-dead_strip_dylibs` to ignore the dynamic version of `lib_InternalSwiftSyntaxParser`
-            // that ships with SwiftSyntax because we want the static version from
-            // `StaticInternalSwiftSyntaxParser`.
-            linkerSettings: [
-                .unsafeFlags(["-Xlinker", "-dead_strip_dylibs"])
+                "Templates"
             ]
         ),
         .target(
@@ -86,23 +101,10 @@ let package = Package(
         ),
         .target(
             name: "SourceryFramework",
-            dependencies: [
-              "PathKit",
-              .product(name: "SwiftSyntax", package: "swift-syntax"),
-              .product(name: "SwiftSyntaxParser", package: "swift-syntax"),
-              "lib_InternalSwiftSyntaxParser",
-              "SourceryUtils",
-              "SourceryRuntime"
-            ],
+            dependencies: sourceryFrameworkDependencies,
             path: "SourceryFramework",
             exclude: [
                 "Info.plist"
-            ],
-            // Pass `-dead_strip_dylibs` to ignore the dynamic version of `lib_InternalSwiftSyntaxParser`
-            // that ships with SwiftSyntax because we want the static version from
-            // `StaticInternalSwiftSyntaxParser`.
-            linkerSettings: [
-                .unsafeFlags(["-Xlinker", "-dead_strip_dylibs"])
             ]
         ),
         .target(
@@ -225,11 +227,6 @@ let package = Package(
                 .copy("Tests/Context"),
                 .copy("Tests/Expected")
             ]
-        ),
-        .binaryTarget(
-            name: "lib_InternalSwiftSyntaxParser",
-            url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.6/lib_InternalSwiftSyntaxParser.xcframework.zip",
-            checksum: "88d748f76ec45880a8250438bd68e5d6ba716c8042f520998a438db87083ae9d"
         )
     ]
 )

@@ -1,6 +1,8 @@
 import Foundation
 import SwiftSyntax
+#if swift(>=5.6)
 import SwiftSyntaxParser
+#endif
 import PathKit
 import SourceryRuntime
 import SourceryUtils

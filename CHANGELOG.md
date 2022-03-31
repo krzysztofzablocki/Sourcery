@@ -1,5 +1,10 @@
 # Sourcery CHANGELOG
 
+## 1.9.0
+## Internal Changes
+- Swift 5.5 and Xcode 13.0 is now required to build the project
+- `lib_internalSwiftSyntaxParser` has removed
+
 ## 1.8.0
 ## New Features
 - Adds `xcframework` key to `target` object in configuration file to enable processing of `swiftinterface`
