@@ -1,4 +1,4 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.5
 
 import PackageDescription
 import Foundation
@@ -20,12 +20,12 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
-        .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
+        .package(url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
-        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.8.0"),
-        .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
-        .package(url: "https://github.com/apple/swift-syntax.git", exact: "0.50600.1"),
+        .package(url: "https://github.com/kylef/PathKit.git", .exact("1.0.1")),
+        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.8.0")),
+        .package(url: "https://github.com/tuist/XcodeProj.git", .exact("8.3.1")),
+        .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50600.1")),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
     ],
