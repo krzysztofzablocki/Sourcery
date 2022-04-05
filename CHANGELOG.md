@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## 1.8.1
+## Internal Changes
+- Lower project requirements to allow compilation using Swift 5.5/Xcode 13.x [#1049](https://github.com/krzysztofzablocki/Sourcery/pull/1049)
+
 ## 1.8.0
 ## New Features
 - Adds `xcframework` key to `target` object in configuration file to enable processing of `swiftinterface`
