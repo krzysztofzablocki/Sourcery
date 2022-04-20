@@ -102,11 +102,11 @@
       },
       {
         "package": "Stencil",
-        "repositoryURL": "https://github.com/stencilproject/Stencil.git",
+        "repositoryURL": "https://github.com/StencilProject/Stencil.git",
         "state": {
           "branch": null,
-          "revision": "94197b3adbbf926348ad8765476a158aa4e54f8a",
-          "version": "0.14.0"
+          "revision": "ccd9402682f4c07dac9561befd207c8156e80e20",
+          "version": "0.14.2"
         }
       },
       {
@@ -129,7 +129,7 @@
       },
       {
         "package": "XcodeProj",
-        "repositoryURL": "https://github.com/tuist/XcodeProj.git",
+        "repositoryURL": "https://github.com/tuist/xcodeproj",
         "state": {
           "branch": null,
           "revision": "446f3a0db73e141c7f57e26fcdb043096b1db52c",
