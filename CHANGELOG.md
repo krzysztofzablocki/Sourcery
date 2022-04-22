@@ -4,6 +4,7 @@
 ## Internal Changes
 - Lower project requirements to allow compilation using Swift 5.5/Xcode 13.x [#1049](https://github.com/krzysztofzablocki/Sourcery/pull/1049)
 - Update Stencil to 0.14.2
+- Use `swift build` insead of `xcodebuild` when building binary [#1057](https://github.com/krzysztofzablocki/Sourcery/pull/1057)
 
 ## 1.8.0
 ## New Features

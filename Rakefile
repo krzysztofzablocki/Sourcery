@@ -58,22 +58,24 @@ task :build, [:build_fat] do |t, args|
   args.with_defaults(:build_fat => false)
   print_info "Building project (fat: #{args[:build_fat]})"
 
-  # Use xcodebuild due to https://bugs.swift.org/browse/SR-15802
-  cmd = %Q(xcodebuild -scheme sourcery -destination generic/platform=macOS -archivePath #{BUILD_DIR}sourcery.xcarchive archive)
-  cmd << " ARCHS=#{`uname -m`.chomp}" unless args[:build_fat]
-  xcpretty cmd
-
   # Prepare the export directory
   sh %Q(rm -fr #{CLI_DIR})
   sh %Q(mkdir -p "#{CLI_DIR}bin")
+  output_path="#{CLI_DIR}bin/sourcery"
+
+  if args[:build_fat]
+    sh %Q(swift build --disable-sandbox -c release --arch arm64 --build-path #{BUILD_DIR})
+    sh %Q(swift build --disable-sandbox -c release --arch x86_64 --build-path #{BUILD_DIR})
+    sh %Q(lipo -create -output #{output_path} #{BUILD_DIR}arm64-apple-macosx/release/sourcery #{BUILD_DIR}x86_64-apple-macosx/release/sourcery)
+    sh %Q(strip -rSTX #{output_path})
+  else
+    sh %Q(swift build --disable-sandbox -c release --build-path #{BUILD_DIR})
+    sh %Q(cp #{BUILD_DIR}release/sourcery #{output_path})
+  end
 
   # Export the build products and clean up
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
-  sh %Q(mv #{BUILD_DIR}sourcery.xcarchive/Products/usr/local/bin/sourcery #{CLI_DIR}bin/)
   sh %Q(rm -fr #{BUILD_DIR})
-
-  # Remove the unnecessary rpath added by xcodebuild
-  sh %Q(install_name_tool -delete_rpath "@executable_path/../lib" "#{CLI_DIR}bin/sourcery")
 end
 
 task :fat_build do
