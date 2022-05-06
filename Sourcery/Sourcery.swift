@@ -38,9 +38,9 @@ public class Sourcery {
     // content annotated with file annotations per file path to write it to
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
-    private (set) var numberOfFilesThatHadToBeParsed: Int32 = 0
+    private (set) var numberOfFilesThatHadToBeParsed = 0
     func incrementFileParsedCount() {
-        OSAtomicIncrement32(&numberOfFilesThatHadToBeParsed)
+        numberOfFilesThatHadToBeParsed += 1
     }
 
     /// Creates Sourcery processor
@@ -309,7 +309,7 @@ extension Sourcery {
             numberOfFilesThatHadToBeParsed = 0
 
             var lastError: Swift.Error?
-            let results = parserGenerator.parallelCompactMap { parser -> FileParserResult? in
+            let results = parserGenerator.compactMap { parser -> FileParserResult? in
                 do {
                     return try self.loadOrParse(parser: parser, cachesPath: cachesDir(sourcePath: from))
                 } catch {
