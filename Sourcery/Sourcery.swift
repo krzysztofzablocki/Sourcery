@@ -38,9 +38,9 @@ public class Sourcery {
     // content annotated with file annotations per file path to write it to
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
-    private (set) var numberOfFilesThatHadToBeParsed = 0
+    private (set) var numberOfFilesThatHadToBeParsed: Int32 = 0
     func incrementFileParsedCount() {
-        numberOfFilesThatHadToBeParsed += 1
+        OSAtomicIncrement32(&numberOfFilesThatHadToBeParsed)
     }
 
     /// Creates Sourcery processor
