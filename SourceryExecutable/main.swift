@@ -96,6 +96,7 @@ func runCLI() {
         Flag("parseDocumentation", description: "Include documentation comments for all declarations."),
         Flag("quiet", flag: "q", description: "Turn off any logging, only emmit errors."),
         Flag("prune", flag: "p", description: "Remove empty generated files"),
+        Flag("serialParse", description: "Parses the specified sources in serial, rather than in parallel (the default), which can address stability issues in SwiftSyntax."),
         VariadicOption<Path>("sources", description: "Path to a source swift files. File or Directory."),
         VariadicOption<Path>("exclude-sources", description: "Path to a source swift files to exclude. File or Directory."),
         VariadicOption<Path>("templates", description: "Path to templates. File or Directory."),
@@ -111,7 +112,7 @@ func runCLI() {
         	via `argument.<name>`. To pass in string you should use escaped quotes (\\").
         	"""),
         Option<Path>("ejsPath", default: "", description: "Path to EJS file for JavaScript templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, sources, excludeSources, templates, excludeTemplates, output, configPaths, forceParse, args, ejsPath in
+    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, configPaths, forceParse, args, ejsPath in
         do {
             switch (quiet, verboseLogging) {
             case (true, _):
@@ -192,6 +193,7 @@ func runCLI() {
                                         cacheDisabled: disableCache,
                                         cacheBasePath: configuration.cacheBasePath,
                                         prune: prune,
+                                        serialParse: serialParse,
                                         arguments: configuration.args)
 
                 return try sourcery.processFiles(

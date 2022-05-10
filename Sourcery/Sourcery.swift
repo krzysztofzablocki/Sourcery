@@ -30,6 +30,7 @@ public class Sourcery {
     fileprivate let cacheDisabled: Bool
     fileprivate let cacheBasePath: Path?
     fileprivate let prune: Bool
+    fileprivate let serialParse: Bool
 
     fileprivate var status = ""
     fileprivate var templatesPaths = Paths(include: [])
@@ -44,13 +45,14 @@ public class Sourcery {
     }
 
     /// Creates Sourcery processor
-    public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, prune: Bool = false, arguments: [String: NSObject] = [:]) {
+    public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, prune: Bool = false, serialParse: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
         self.cacheDisabled = cacheDisabled
         self.cacheBasePath = cacheBasePath
         self.prune = prune
+        self.serialParse = serialParse
     }
 
     /// Processes source files and generates corresponding code.
@@ -309,14 +311,22 @@ extension Sourcery {
             numberOfFilesThatHadToBeParsed = 0
 
             var lastError: Swift.Error?
-            let results = parserGenerator.compactMap { parser -> FileParserResult? in
+
+            let transform: (ParserWrapper) -> FileParserResult? = { parser in
                 do {
-                    return try self.loadOrParse(parser: parser, cachesPath: cachesDir(sourcePath: from))
+                    return try self.loadOrParse(parser: parser, cachesPath: self.cachesDir(sourcePath: from))
                 } catch {
                     lastError = error
                     Log.error("Unable to parse \(parser.path), error \(error)")
                     return nil
                 }
+            }
+
+            let results: [FileParserResult]
+            if serialParse {
+                results = parserGenerator.compactMap(transform)
+            } else {
+                results = parserGenerator.parallelCompactMap(transform: transform)
             }
 
             if let error = lastError {
