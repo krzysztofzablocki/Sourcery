@@ -1,6 +1,9 @@
 # Sourcery CHANGELOG
 
 ## 1.8.1
+## New Features
+- Added a new flag `--serialParse` to support parsing the sources in serial, rather than in parallel (the default), which can address stability issues in SwiftSyntax [#1063](https://github.com/krzysztofzablocki/Sourcery/pull/1063)
+
 ## Internal Changes
 - Lower project requirements to allow compilation using Swift 5.5/Xcode 13.x [#1049](https://github.com/krzysztofzablocki/Sourcery/pull/1049)
 - Update Stencil to 0.14.2
