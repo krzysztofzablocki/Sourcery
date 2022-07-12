@@ -221,7 +221,7 @@ open class SwiftTemplate {
         try manifestFile.write(manifestCode)
         try mainFile.write(code)
 
-        let binaryFile = buildDir + Path(".build/debug/SwiftTemplate")
+        let binaryFile = buildDir + Path(".build/release/SwiftTemplate")
 
         try includedFiles.forEach { includedFile in
             try includedFile.copy(templateFilesDir + Path(includedFile.lastComponent))
@@ -232,7 +232,7 @@ open class SwiftTemplate {
             "--sdk", "macosx",
             "swift",
             "build",
-            "-Xswiftc", "-Onone",
+            "-c", "release",
             "-Xswiftc", "-suppress-warnings",
             "--disable-sandbox"
         ]
