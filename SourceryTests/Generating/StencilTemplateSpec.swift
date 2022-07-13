@@ -158,6 +158,10 @@ class StencilTemplateSpec: QuickSpec {
                     expect(generate("{{ \"helloWorld\" | capitalise }}")).to(equal("Helloworld"))
                 }
 
+                it("generates deletingLastComponent") {
+                    expect(generate("{{ \"/Path/Class.swift\" | deletingLastComponent }}")).to(equal("/Path"))
+                }
+
                 it("checks for string in name") {
                     expect(generate("{{ \"FooBar\" | contains:\"oo\" }}")).to(equal("true"))
                     expect(generate("{{ \"FooBar\" | contains:\"xx\" }}")).to(equal("false"))
