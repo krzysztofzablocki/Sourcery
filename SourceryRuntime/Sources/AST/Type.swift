@@ -342,6 +342,14 @@ public typealias AttributeList = [String: [Attribute]]
         }
     }
 
+    /// Directory to file where the type is defined
+    // sourcery: skipDescription, skipEquality, skipJSExport
+    public var directory: String? {
+        get {
+            return (path as? NSString)?.deletingLastPathComponent
+        }
+    }
+
     /// File name where the type was defined
     public var fileName: String?
 
