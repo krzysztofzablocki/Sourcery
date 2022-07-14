@@ -1,5 +1,10 @@
 # Sourcery CHANGELOG
 
+## 1.8.2
+## New Features
+- Added `deletingLastComponent` filter to turn `/Path/Class.swift` into `/Path`
+- Added `directory` computed property to `Type`
+
 ## 1.8.1
 ## New Features
 - Added a new flag `--serialParse` to support parsing the sources in serial, rather than in parallel (the default), which can address stability issues in SwiftSyntax [#1063](https://github.com/krzysztofzablocki/Sourcery/pull/1063)

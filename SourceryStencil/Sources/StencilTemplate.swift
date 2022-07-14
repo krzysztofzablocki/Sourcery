@@ -168,6 +168,9 @@ public extension Stencil.Extension {
 
         let titleCase = FilterOr<String, TypeName>.make({ $0.titleCase }, other: { $0.name.titleCase })
         registerFilter("titleCase", filter: titleCase)
+
+        let deletingLastComponent = Filter<String>.make({ ($0 as NSString).deletingLastPathComponent })
+        registerFilter("deletingLastComponent", filter: deletingLastComponent)
     }
 
     func registerFilterWithTwoArguments<T, A, B>(_ name: String, filter: @escaping (T, A, B) throws -> Any?) {
