@@ -57,14 +57,14 @@ Sourcery can be applied to arbitrary problems across your codebase, if you can d
 
 Most common uses are:
 
-- [Equality](https://merowing.info/Sourcery/equatable.html) & [Hashing](https://merowing.info/Sourcery/hashable.html)
-- [Enum cases & Counts](https://merowing.info/Sourcery/enum-cases.html)
-- [Lenses](https://merowing.info/Sourcery/lenses.html)
-- [Mocks & Stubs](https://merowing.info/Sourcery/mocks.html)
-- [LinuxMain](https://merowing.info/Sourcery/linuxmain.html)
-- [Decorators](https://merowing.info/Sourcery/decorator.html)
-- [Persistence and advanced Codable](https://merowing.info/Sourcery/codable.html)
-- [Property level diffing](https://merowing.info/Sourcery/diffable.html)
+- [Equality](https://krzysztofzablocki.github.io/Sourcery/equatable.html) & [Hashing](https://krzysztofzablocki.github.io/Sourcery/hashable.html)
+- [Enum cases & Counts](https://krzysztofzablocki.github.io/enum-cases.html)
+- [Lenses](https://krzysztofzablocki.github.io/lenses.html)
+- [Mocks & Stubs](https://krzysztofzablocki.github.io/Sourcery/mocks.html)
+- [LinuxMain](https://krzysztofzablocki.github.io/Sourcery/linuxmain.html)
+- [Decorators](https://krzysztofzablocki.github.io/Sourcery/decorator.html)
+- [Persistence and advanced Codable](https://krzysztofzablocki.github.io/Sourcery/codable.html)
+- [Property level diffing](https://krzysztofzablocki.github.io/Sourcery/diffable.html)
 
 But how about more specific use-cases, like automatically generating all the UI for your app `BetaSetting`? [you can use Sourcery for that too](https://github.com/krzysztofzablocki/AutomaticSettings)
 
