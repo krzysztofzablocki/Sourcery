@@ -58,8 +58,8 @@ Sourcery can be applied to arbitrary problems across your codebase, if you can d
 Most common uses are:
 
 - [Equality](https://krzysztofzablocki.github.io/Sourcery/equatable.html) & [Hashing](https://krzysztofzablocki.github.io/Sourcery/hashable.html)
-- [Enum cases & Counts](https://krzysztofzablocki.github.io/enum-cases.html)
-- [Lenses](https://krzysztofzablocki.github.io/lenses.html)
+- [Enum cases & Counts](https://krzysztofzablocki.github.io/Sourcery/enum-cases.html)
+- [Lenses](https://krzysztofzablocki.github.io/Sourcery/lenses.html)
 - [Mocks & Stubs](https://krzysztofzablocki.github.io/Sourcery/mocks.html)
 - [LinuxMain](https://krzysztofzablocki.github.io/Sourcery/linuxmain.html)
 - [Decorators](https://krzysztofzablocki.github.io/Sourcery/decorator.html)
