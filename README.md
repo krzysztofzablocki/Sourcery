@@ -1,6 +1,6 @@
 [![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=shield)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
 <!-- [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery) -->
-[![docs](https://merowing.info/Sourcery/badge.svg)](https://krzysztofzablocki.github.io/Sourcery/index.html)
+[![docs](https://krzysztofzablocki.github.io/Sourcery/badge.svg)](https://krzysztofzablocki.github.io/Sourcery/index.html)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
