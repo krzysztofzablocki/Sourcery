@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SourceryUtils"
-  s.version      = "1.8.1"
+  s.version      = "1.8.2"
   s.summary      = "A tool that brings meta-programming to Swift, allowing you to code generate Swift code."
 
   s.description  = <<-DESC
