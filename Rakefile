@@ -54,16 +54,15 @@ task :clean do
   sh %Q(rm -fr build)
 end
 
-task :build, [:build_fat] do |t, args|
-  args.with_defaults(:build_fat => false)
-  print_info "Building project (fat: #{args[:build_fat]})"
+def build_framework(fat_library)
+  print_info "Building project (fat: #{fat_library})"
 
   # Prepare the export directory
   sh %Q(rm -fr #{CLI_DIR})
   sh %Q(mkdir -p "#{CLI_DIR}bin")
   output_path="#{CLI_DIR}bin/sourcery"
 
-  if args[:build_fat]
+  if fat_library
     sh %Q(swift build --disable-sandbox -c release --arch arm64 --build-path #{BUILD_DIR})
     sh %Q(swift build --disable-sandbox -c release --arch x86_64 --build-path #{BUILD_DIR})
     sh %Q(lipo -create -output #{output_path} #{BUILD_DIR}arm64-apple-macosx/release/sourcery #{BUILD_DIR}x86_64-apple-macosx/release/sourcery)
@@ -78,8 +77,12 @@ task :build, [:build_fat] do |t, args|
   sh %Q(rm -fr #{BUILD_DIR})
 end
 
+task :build do
+  build_framework(false)
+end
+
 task :fat_build do
-  Rake::Task[:build].invoke(true)
+  build_framework(true)
 end
 
 ## [ Code Generated ] ################################################
