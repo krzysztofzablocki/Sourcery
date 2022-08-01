@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 
-**There is now a new powerful way to both write and integrate Sourcery functionality: Sourcery Pro provides powerful Stencil editor and extends Xcode with ability to handle live AST templates: [available on Mac App Store](https://apps.apple.com/us/app/sourcery-pro/id1561780836?mt=12)**
+**There is now a new powerful way to both write and integrate Sourcery functionality: Sourcery Pro provides a powerful Stencil editor and extends Xcode with the ability to handle live AST templates: [available on Mac App Store](https://apps.apple.com/us/app/sourcery-pro/id1561780836?mt=12)**
 
 https://user-images.githubusercontent.com/1468993/114271090-f6c19200-9a0f-11eb-9bd8-d7bb15129eb2.mp4
 
@@ -51,7 +51,7 @@ and with Sourcery ?
 extension MyProtocol: AutoMockable {}
 ```
 
-Sourcery removes the need to write any of the mocks code, how many protocol do you have in your project? Imagine how much time you'll save, using Sourcery will also make every single mock consistent and if you refactor or add properties, the mock code will be automatically updated for you, eliminating possible human errors. 
+Sourcery removes the need to write any of the mocks code, how many protocols do you have in your project? Imagine how much time you'll save, using Sourcery will also make every single mock consistent and if you refactor or add properties, the mock code will be automatically updated for you, eliminating possible human errors. 
 
 Sourcery can be applied to arbitrary problems across your codebase, if you can describe an algorithm to another human, you can automate it using Sourcery.
 
@@ -90,7 +90,7 @@ You can also watch this quick getting started and intro to mocking video by Insi
 
 - _Binary form_
 
-    Download the  latest release with the prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into the desired destination and run `bin/sourcery`
+    Download the latest release with the prebuilt binary from [release tab](https://github.com/krzysztofzablocki/Sourcery/releases/latest). Unzip the archive into the desired destination and run `bin/sourcery`
     
 - _[Homebrew](https://brew.sh)_
 
@@ -152,7 +152,7 @@ $ ./bin/sourcery --sources <sources path> --templates <templates path> --output 
 
 ### Configuration file
 
-Instead of CLI arguments you can use a `.sourcery.yml` configuration file:
+Instead of CLI arguments, you can use a `.sourcery.yml` configuration file:
 
 ```yaml
 sources:
@@ -173,7 +173,7 @@ args:
 Read more about this configuration file [here](https://merowing.info/Sourcery/usage.html#configuration-file).
 
 ## Issues
-If you get unverified developer warning when using binary zip distribution try:
+If you get an unverified developer warning when using binary zip distribution try:
 `xattr -dr com.apple.quarantine Sourcery-1.1.1`
 
 ## Contributing
