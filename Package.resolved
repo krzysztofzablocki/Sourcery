@@ -38,12 +38,30 @@
         }
       },
       {
+        "package": "Komondor",
+        "repositoryURL": "https://github.com/shibapm/Komondor.git",
+        "state": {
+          "branch": null,
+          "revision": "90b087b1e39069684b1ff4bf915c2aae594f2d60",
+          "version": "1.1.3"
+        }
+      },
+      {
         "package": "Nimble",
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
           "revision": "e491a6731307bb23783bf664d003be9b2fa59ab5",
           "version": "9.0.0"
+        }
+      },
+      {
+        "package": "PackageConfig",
+        "repositoryURL": "https://github.com/shibapm/PackageConfig.git",
+        "state": {
+          "branch": null,
+          "revision": "58523193c26fb821ed1720dcd8a21009055c7cdb",
+          "version": "1.1.3"
         }
       },
       {
@@ -62,6 +80,15 @@
           "branch": null,
           "revision": "8cce6acd38f965f5baa3167b939f86500314022b",
           "version": "3.1.2"
+        }
+      },
+      {
+        "package": "ShellOut",
+        "repositoryURL": "https://github.com/JohnSundell/ShellOut.git",
+        "state": {
+          "branch": null,
+          "revision": "e1577acf2b6e90086d01a6d5e2b8efdaae033568",
+          "version": "2.3.0"
         }
       },
       {
@@ -86,8 +113,8 @@
         "package": "StencilSwiftKit",
         "repositoryURL": "https://github.com/redryerye/StencilSwiftKit.git",
         "state": {
-          "branch": "redryerye/remove-komondor",
-          "revision": "ac6638e6cb94d78501184e573fedcd095c1a8145",
+          "branch": "redryerye/exact-komondor",
+          "revision": "915bdfb26c84432c41c0a39737918ce97e86c353",
           "version": null
         }
       },
