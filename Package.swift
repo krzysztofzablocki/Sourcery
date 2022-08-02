@@ -53,7 +53,7 @@ let package = Package(
                 "Yams",
                 "StencilSwiftKit",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
-                "lib_InternalSwiftSyntaxParser",
+                "lib_InternalSwiftSyntaxParser_Sourcery",
                 "XcodeProj",
                 "TryCatch"
             ],
@@ -91,7 +91,7 @@ let package = Package(
               "PathKit",
               .product(name: "SwiftSyntax", package: "swift-syntax"),
               .product(name: "SwiftSyntaxParser", package: "swift-syntax"),
-              "lib_InternalSwiftSyntaxParser",
+              "lib_InternalSwiftSyntaxParser_Sourcery",
               "SourceryUtils",
               "SourceryRuntime"
             ],
@@ -228,7 +228,7 @@ let package = Package(
             ]
         ),
         .binaryTarget(
-            name: "lib_InternalSwiftSyntaxParser",
+            name: "lib_InternalSwiftSyntaxParser_Sourcery",
             url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.6/lib_InternalSwiftSyntaxParser.xcframework.zip",
             checksum: "88d748f76ec45880a8250438bd68e5d6ba716c8042f520998a438db87083ae9d"
         )
