@@ -1,5 +1,8 @@
 # Sourcery CHANGELOG
 
+## 1.8.3
+- Update StencilSwiftKit to fix SPM resolving issue when building as a Command Plugin [#1023](https://github.com/krzysztofzablocki/Sourcery/issues/1023)
+
 ## 1.8.2
 ## New Features
 - Added `deletingLastComponent` filter to turn `/Path/Class.swift` into `/Path`
