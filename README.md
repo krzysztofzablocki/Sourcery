@@ -161,7 +161,7 @@ sources:
 templates:
   - <templates path>
   - <templates path>
-force-parse:
+forceParse:
   - <string value>
   - <string value>
 output:
