@@ -2,39 +2,48 @@ import PackagePlugin
 import Foundation
 
 @main
-struct SourceryCommandPlugin: CommandPlugin {
+struct SourceryCommandPlugin {
+    private func run(_ sourcery: String, withConfig configFilePath: String) throws {
+        let sourceryURL = URL(fileURLWithPath: sourcery)
+        
+        let process = Process()
+        process.executableURL = sourceryURL
+        process.arguments = [
+            "--config",
+            configFilePath,
+            "--disableCache"
+        ]
+        
+        try process.run()
+        process.waitUntilExit()
+        
+        let gracefulExit = process.terminationReason == .exit && process.terminationStatus == 0
+        if !gracefulExit {
+            throw "🛑 The plugin execution failed with reason: \(process.terminationReason.rawValue) and status: \(process.terminationStatus)"
+        }
+    }
+}
+
+// MARK: - CommandPlugin
+
+extension SourceryCommandPlugin: CommandPlugin {
     func performCommand(context: PluginContext, arguments: [String]) async throws {
         // Run one per target
         for target in context.package.targets {
             let configFilePath = target.directory.appending(subpath: ".sourcery.yml").string
+            let sourcery = try context.tool(named: "SourceryExecutable").path.string
             
             guard FileManager.default.fileExists(atPath: configFilePath) else {
                 Diagnostics.warning("⚠️ Could not find `.sourcery.yml` for the given target")
                 return
             }
             
-            
-            let sourceryExecutable = try context.tool(named: "SourceryExecutable")
-            let sourceryURL = URL(fileURLWithPath: sourceryExecutable.path.string)
-            
-            let process = Process()
-            process.executableURL = sourceryURL
-            process.arguments = [
-                "--config",
-                configFilePath,
-                "--disableCache"
-            ]
-            
-            try process.run()
-            process.waitUntilExit()
-            
-            let gracefulExit = process.terminationReason == .exit && process.terminationStatus == 0
-            if !gracefulExit {
-                Diagnostics.error("🛑 The plugin execution failed")
-            }
+            try run(sourcery, withConfig: configFilePath)
         }
     }
 }
+
+// MARK: - XcodeProjectPlugin
 
 #if canImport(XcodeProjectPlugin)
 import XcodeProjectPlugin
@@ -51,27 +60,15 @@ extension SourceryCommandPlugin: XcodeCommandPlugin {
                 Diagnostics.warning("⚠️ Could not find `.sourcery.yml` in Xcode's input file list")
                 return
             }
-
-            let sourceryExecutable = try context.tool(named: "SourceryExecutable")
-            let sourceryURL = URL(fileURLWithPath: sourceryExecutable.path.string)
             
-            let process = Process()
-            process.executableURL = sourceryURL
-            process.arguments = [
-                "--config",
-                configFilePath,
-                "--disableCache"
-            ]
+            let sourcery = try context.tool(named: "SourceryExecutable").path.string
             
-            try process.run()
-            process.waitUntilExit()
-            
-            let gracefulExit = process.terminationReason == .exit && process.terminationStatus == 0
-            if !gracefulExit {
-                Diagnostics.error("🛑 The plugin execution failed")
-            }
+            try run(sourcery, withConfig: configFilePath)
         }
-        debugPrint(context)
     }
 }
 #endif
+
+extension String: LocalizedError {
+    public var errorDescription: String? { return self }
+}
