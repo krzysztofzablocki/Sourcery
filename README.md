@@ -120,11 +120,20 @@ You can also watch this quick getting started and intro to mocking video by Insi
 
         Run `xcodebuild -scheme sourcery -destination generic/platform=macOS -archivePath sourcery.xcarchive archive` and export the binary from the archive.
 
+- _SPM (for plugin use only)_
+Add the package dependency to your `Package.swift` manifest from version `1.8.3`.
+
+```
+.package(url: "https://github.com/krzysztofzablocki/Sourcery.git", from: "1.8.3")
+```
+
 ## Documentation
 
 Full documentation for the latest release is available [here](http://merowing.info/Sourcery/).
 
 ## Usage
+
+### Running the executable
 
 Sourcery is a command line tool; you can either run it manually or in a custom build phase using the following command:
 
@@ -133,6 +142,32 @@ $ ./bin/sourcery --sources <sources path> --templates <templates path> --output 
 ```
 
 > Note: this command differs depending on how you installed Sourcery (see [Installing](#installing))
+
+### Swift Package command
+
+Sourcery can now be used as a Swift package command plugin. In order to do this, the package must be added as a dependency to your Swift package or Xcode project (see [Installing](#installing) above).
+
+To provide a configuration for the plugin to use, place a `.sourcery.yml` file at the root of the target's directory (in the sources folder rather than the root of the package).
+
+#### Running from the command line
+
+To verify the plugin can be found by SwiftPM, use:
+
+```
+$ swift package --list
+```
+
+To run the code generator, you need to allow changes to the project with the `--allow-writing-to-package-directory` flag:
+
+```
+$ swift package --allow-writing-to-package-directory sourcery-code-generation
+```
+
+#### Running in Xcode
+
+Inside a project/package that uses this command plugin, right-click the project and select "SourceryCommand" from the "SourceryPlugins" menu group.
+
+> ⚠️ Note that this is only available from Xcode 14 onwards.
 
 ### Command line options
 
