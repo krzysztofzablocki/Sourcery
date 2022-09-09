@@ -17,6 +17,7 @@ let package = Package(
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
         .library(name: "SourcerySwift", targets: ["SourcerySwift"]),
         .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
+        .plugin(name: "SourceryCommandPlugin", targets: ["SourceryCommandPlugin"])
     ],
     dependencies: [
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
