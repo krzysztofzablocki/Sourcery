@@ -11,7 +11,7 @@ struct SourceryCommandPlugin {
         process.arguments = [
             "--config",
             configFilePath,
-            "--cachePath",
+            "--cacheBasePath",
             cachePath
         ]
         
