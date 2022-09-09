@@ -3,7 +3,7 @@ import Foundation
 
 @main
 struct SourceryCommandPlugin {
-    private func run(_ sourcery: String, withConfig configFilePath: String) throws {
+    private func run(_ sourcery: String, withConfig configFilePath: String, cachePath: String) throws {
         let sourceryURL = URL(fileURLWithPath: sourcery)
         
         let process = Process()
@@ -11,7 +11,8 @@ struct SourceryCommandPlugin {
         process.arguments = [
             "--config",
             configFilePath,
-            "--disableCache"
+            "--cachePath",
+            cachePath
         ]
         
         try process.run()
@@ -38,7 +39,7 @@ extension SourceryCommandPlugin: CommandPlugin {
                 return
             }
             
-            try run(sourcery, withConfig: configFilePath)
+            try run(sourcery, withConfig: configFilePath, cachePath: context.pluginWorkDirectory.string)
         }
     }
 }
@@ -62,7 +63,7 @@ extension SourceryCommandPlugin: XcodeCommandPlugin {
             }
             let sourcery = try context.tool(named: "SourceryExecutable").path.string
             
-            try run(sourcery, withConfig: configFilePath)
+            try run(sourcery, withConfig: configFilePath, cachePath: context.pluginWorkDirectory.string)
         }
     }
 }
