@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 
 import PackageDescription
 import Foundation
@@ -231,6 +231,12 @@ let package = Package(
             name: "lib_InternalSwiftSyntaxParser",
             url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.6/lib_InternalSwiftSyntaxParser.xcframework.zip",
             checksum: "88d748f76ec45880a8250438bd68e5d6ba716c8042f520998a438db87083ae9d"
+        ),
+        .plugin(
+            name: "SourceryCommandPlugin",
+            capability: .command(
+                intent: .custom(verb: "sourcery-command", description: "Sourcery command plugin for code generation"),
+                permissions: [.writeToPackageDirectory(reason: "Need permission to write generated files to package directory")]
         )
     ]
 )
