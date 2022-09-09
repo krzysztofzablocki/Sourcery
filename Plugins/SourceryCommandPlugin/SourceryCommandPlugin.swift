@@ -19,7 +19,7 @@ struct SourceryCommandPlugin {
         
         let gracefulExit = process.terminationReason == .exit && process.terminationStatus == 0
         if !gracefulExit {
-            throw "🛑 The plugin execution failed with reason: \(process.terminationReason.rawValue) and status: \(process.terminationStatus)"
+            throw "🛑 The plugin execution failed with reason: \(process.terminationReason.rawValue) and status: \(process.terminationStatus) "
         }
     }
 }
@@ -60,7 +60,6 @@ extension SourceryCommandPlugin: XcodeCommandPlugin {
                 Diagnostics.warning("⚠️ Could not find `.sourcery.yml` in Xcode's input file list")
                 return
             }
-            
             let sourcery = try context.tool(named: "SourceryExecutable").path.string
             
             try run(sourcery, withConfig: configFilePath)
