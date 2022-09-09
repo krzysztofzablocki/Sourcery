@@ -235,8 +235,14 @@ let package = Package(
         .plugin(
             name: "SourceryCommandPlugin",
             capability: .command(
-                intent: .custom(verb: "sourcery-command", description: "Sourcery command plugin for code generation"),
-                permissions: [.writeToPackageDirectory(reason: "Need permission to write generated files to package directory")]
+                intent: .custom(
+                    verb: "sourcery-command",
+                    description: "Sourcery command plugin for code generation"
+                ),
+                permissions: [
+                    .writeToPackageDirectory(reason: "Need permission to write generated files to package directory")
+                ]
+            )
         )
     ]
 )
