@@ -160,7 +160,7 @@ $ swift package --list
 To run the code generator, you need to allow changes to the project with the `--allow-writing-to-package-directory` flag:
 
 ```
-$ swift package --allow-writing-to-package-directory sourcery-code-generation
+$ swift package --allow-writing-to-package-directory sourcery-command
 ```
 
 #### Running in Xcode
