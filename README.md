@@ -154,7 +154,7 @@ To provide a configuration for the plugin to use, place a `.sourcery.yml` file a
 To verify the plugin can be found by SwiftPM, use:
 
 ```
-$ swift package --list
+$ swift package plugin --list
 ```
 
 To run the code generator, you need to allow changes to the project with the `--allow-writing-to-package-directory` flag:
