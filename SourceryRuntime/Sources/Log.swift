@@ -15,6 +15,9 @@ public enum Log {
     public static var logBenchmarks: Bool = false
     public static var logAST: Bool = false
 
+    public static var stackMessages: Bool = false
+    public private(set) static var messagesStack = [String]()
+
     public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
         // to return error when running swift templates which is done in a different process
@@ -47,14 +50,25 @@ public enum Log {
 
     public static func benchmark(_ message: Any) {
         guard logBenchmarks else { return }
-        print(message)
+        if stackMessages {
+            messagesStack.append("\(message)")
+        } else {
+            print(message)
+        }
     }
 
     private static func log(level logLevel: Level, _ message: Any) {
         guard logLevel.rawValue <= Log.level.rawValue else { return }
-        print(message)
+        if stackMessages {
+            messagesStack.append("\(message)")
+        } else {
+            print(message)
+        }
     }
 
+    public static func output(_ message: String) {
+        print(message)
+    }
 }
 
 extension String: Error {}

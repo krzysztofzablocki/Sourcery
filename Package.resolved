@@ -129,7 +129,7 @@
       },
       {
         "package": "XcodeProj",
-        "repositoryURL": "https://github.com/tuist/xcodeproj",
+        "repositoryURL": "https://github.com/tuist/XcodeProj.git",
         "state": {
           "branch": null,
           "revision": "446f3a0db73e141c7f57e26fcdb043096b1db52c",

@@ -185,6 +185,7 @@ let package = Package(
                 .copy("Stub/JavaScriptTemplates"),
                 .copy("Stub/SwiftTemplates"),
                 .copy("Stub/Performance-Code"),
+                .copy("Stub/DryRun-Code"),
                 .copy("Stub/Result"),
                 .copy("Stub/Templates"),
                 .copy("Stub/Source")

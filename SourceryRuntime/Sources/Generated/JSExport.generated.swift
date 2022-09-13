@@ -570,5 +570,3 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
 }
 
 extension Variable: VariableAutoJSExport {}
-
-
