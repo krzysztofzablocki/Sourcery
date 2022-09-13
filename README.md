@@ -184,6 +184,7 @@ Inside a project/package that uses this command plugin, right-click the project 
 - `--prune` [default: false] - Prune empty generated files
 - `--version` - Display the current version of Sourcery
 - `--help` - Display help information
+- `--cacheBasePath` - Base path to the cache directory. Can be overriden by the config file.
 
 ### Configuration file
 
