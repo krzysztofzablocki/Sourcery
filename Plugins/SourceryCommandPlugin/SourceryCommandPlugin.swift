@@ -36,7 +36,7 @@ extension SourceryCommandPlugin: CommandPlugin {
             
             guard FileManager.default.fileExists(atPath: configFilePath) else {
                 Diagnostics.warning("⚠️ Could not find `.sourcery.yml` for target \(target.name)")
-                return
+                continue
             }
             
             try run(sourcery, withConfig: configFilePath, cacheBasePath: context.pluginWorkDirectory.string)
