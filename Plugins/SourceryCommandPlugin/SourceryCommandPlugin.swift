@@ -35,8 +35,8 @@ extension SourceryCommandPlugin: CommandPlugin {
             let sourcery = try context.tool(named: "SourceryExecutable").path.string
             
             guard FileManager.default.fileExists(atPath: configFilePath) else {
-                Diagnostics.warning("⚠️ Could not find `.sourcery.yml` for the given target")
-                return
+                Diagnostics.warning("⚠️ Could not find `.sourcery.yml` for target \(target.name)")
+                continue
             }
             
             try run(sourcery, withConfig: configFilePath, cacheBasePath: context.pluginWorkDirectory.string)
