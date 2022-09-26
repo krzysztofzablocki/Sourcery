@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 
 import PackageDescription
 import Foundation
@@ -17,16 +17,16 @@ let package = Package(
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
         .library(name: "SourcerySwift", targets: ["SourcerySwift"]),
         .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
+        .plugin(name: "SourceryCommandPlugin", targets: ["SourceryCommandPlugin"])
     ],
     dependencies: [
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
-        .package(url: "https://github.com/kylef/Commander.git", .exact("0.9.1")),
+        .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(url: "https://github.com/kylef/PathKit.git", .exact("1.0.1")),
-        .package(url: "https://github.com/StencilProject/Stencil.git", .upToNextMajor(from: "0.14.0")),
-        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", .exact("2.10.1")),
-        .package(url: "https://github.com/tuist/XcodeProj.git", .exact("8.3.1")),
-        .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50600.1")),
+        .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
+        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.10.1"),
+        .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", exact: "0.50600.1"),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
     ],
@@ -232,6 +232,19 @@ let package = Package(
             name: "lib_InternalSwiftSyntaxParser",
             url: "https://github.com/keith/StaticInternalSwiftSyntaxParser/releases/download/5.6/lib_InternalSwiftSyntaxParser.xcframework.zip",
             checksum: "88d748f76ec45880a8250438bd68e5d6ba716c8042f520998a438db87083ae9d"
+        ),
+        .plugin(
+            name: "SourceryCommandPlugin",
+            capability: .command(
+                intent: .custom(
+                    verb: "sourcery-command",
+                    description: "Sourcery command plugin for code generation"
+                ),
+                permissions: [
+                    .writeToPackageDirectory(reason: "Need permission to write generated files to package directory")
+                ]
+            ),
+            dependencies: ["SourceryExecutable"]
         )
     ]
 )

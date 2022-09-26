@@ -113,8 +113,9 @@ func runCLI() {
         	or should be passed one by one (e.g. --args arg1=value --args arg2). Arguments are accessible in templates \
         	via `argument.<name>`. To pass in string you should use escaped quotes (\\").
         	"""),
-        Option<Path>("ejsPath", default: "", description: "Path to EJS file for JavaScript templates.")
-    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, args, ejsPath in
+        Option<Path>("ejsPath", default: "", description: "Path to EJS file for JavaScript templates."),
+        Option<Path>("cacheBasePath", default: "", description: "Base path to Sourcery's cache directory")
+    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, args, ejsPath, cacheBasePath in
         do {
             Log.stackMessages = isDryRun
             switch (quiet, verboseLogging) {
@@ -143,7 +144,7 @@ func runCLI() {
                             sources: Paths(include: sources, exclude: excludeSources) ,
                             templates: Paths(include: templates, exclude: excludeTemplates),
                             output: output.string.isEmpty ? "." : output,
-                            cacheBasePath: Path.defaultBaseCachePath,
+                            cacheBasePath: cacheBasePath.string.isEmpty ? Path.defaultBaseCachePath : cacheBasePath,
                             forceParse: forceParse,
                             parseDocumentation: parseDocumentation,
                             args: arguments
@@ -190,11 +191,13 @@ func runCLI() {
 
             let keepAlive = try configurations.flatMap { configuration -> [FolderWatcher.Local] in
                 configuration.validate()
+                
+                let shouldUseCacheBasePathArg = configuration.cacheBasePath == Path.defaultBaseCachePath && !cacheBasePath.string.isEmpty
 
                 let sourcery = Sourcery(verbose: verboseLogging,
                                         watcherEnabled: watcherEnabled,
                                         cacheDisabled: disableCache,
-                                        cacheBasePath: configuration.cacheBasePath,
+                                        cacheBasePath: shouldUseCacheBasePathArg ? cacheBasePath : configuration.cacheBasePath,
                                         prune: prune,
                                         serialParse: serialParse,
                                         arguments: configuration.args)
