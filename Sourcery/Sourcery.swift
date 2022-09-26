@@ -513,7 +513,6 @@ extension Sourcery {
             }
 
             for type in parsingResult.types.types {
-                print(stringViewForContent(at: type.path!)!, type)
                 guard
                     type.path == path,
                     let bytesRange = type.bodyBytesRange,
