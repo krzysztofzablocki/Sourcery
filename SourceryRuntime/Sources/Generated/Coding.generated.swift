@@ -95,3 +95,4 @@ extension Typealias: NSCoding {}
 extension Types: NSCoding {}
 
 extension Variable: NSCoding {}
+
