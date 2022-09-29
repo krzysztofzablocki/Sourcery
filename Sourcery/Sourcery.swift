@@ -35,6 +35,10 @@ public class Sourcery {
     fileprivate var status = ""
     fileprivate var templatesPaths = Paths(include: [])
     fileprivate var outputPath = Output("", linkTo: nil)
+    fileprivate var isDryRun: Bool = false
+    fileprivate lazy var dryOutputBuffer = [DryOutputValue]()
+
+    internal var dryOutput: (String) -> Void = Log.output(_:)
 
     // content annotated with file annotations per file path to write it to
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
@@ -64,9 +68,10 @@ public class Sourcery {
     ///   - forceParse: extensions of generated sourcery file that can be parsed
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Output, forceParse: [String] = [], parseDocumentation: Bool = false) throws -> [FolderWatcher.Local]? {
+    public func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Output, isDryRun: Bool = false, forceParse: [String] = [], parseDocumentation: Bool = false) throws -> [FolderWatcher.Local]? {
         self.templatesPaths = templatesPaths
         self.outputPath = output
+        self.isDryRun = isDryRun
 
         let hasSwiftTemplates = templatesPaths.allPaths.contains(where: { $0.extension == "swifttemplate" })
 
@@ -111,6 +116,13 @@ public class Sourcery {
         }
 
         var result = try process(source)
+
+        if isDryRun {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let data: Data = try encoder.encode(DryOutputSuccess(outputs: self.dryOutputBuffer))
+            self.dryOutput(String(data: data, encoding: .utf8) ?? "")
+        }
 
         guard watcherEnabled else {
             return nil
@@ -434,9 +446,9 @@ extension Sourcery {
                 let (result, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path, forceParse: forceParse)
                 updateRanges(in: &parsingResult, sourceChanges: sourceChanges)
                 let outputPath = output.path + generatedPath(for: template.sourcePath)
-                try self.output(result: result, to: outputPath)
+                try self.output(type: .template(template.sourcePath.string), result: result, to: outputPath)
 
-                if let linkTo = output.linkTo {
+                if !isDryRun, let linkTo = output.linkTo {
                     linkTo.targets.forEach { target in
                         link(outputPath, to: linkTo, target: target)
                     }
@@ -451,9 +463,9 @@ extension Sourcery {
                 return (result, parsingResult)
             }
             parsingResult = result.parsingResult
-            try self.output(result: result.contents, to: output.path)
+            try self.output(type: .allTemplates, result: result.contents, to: output.path)
 
-            if let linkTo = output.linkTo {
+            if !isDryRun, let linkTo = output.linkTo {
                 linkTo.targets.forEach { target in
                     link(output.path, to: linkTo, target: target)
                 }
@@ -461,16 +473,16 @@ extension Sourcery {
         }
 
         try fileAnnotatedContent.forEach { (path, contents) in
-            try self.output(result: contents.joined(separator: "\n"), to: path)
+            try self.output(type: .path(path.string), result: contents.joined(separator: "\n"), to: path)
 
-            if let linkTo = output.linkTo {
+            if !isDryRun, let linkTo = output.linkTo {
                 linkTo.targets.forEach { target in
                     link(path, to: linkTo, target: target)
                 }
             }
         }
 
-        if let linkTo = output.linkTo {
+        if !isDryRun, let linkTo = output.linkTo {
             try linkTo.project.writePBXProj(path: linkTo.projectPath, outputSettings: .init())
         }
 
@@ -542,12 +554,21 @@ extension Sourcery {
         }
     }
 
-    private func output(result: String, to outputPath: Path) throws {
+    private func output(type: DryOutputType, result: String, to outputPath: Path) throws {
+        let resultIsEmpty = result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         var result = result
-        if !result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            if outputPath.extension == "swift" {
-                result = Sourcery.generationHeader + result
-            }
+        if !resultIsEmpty, outputPath.extension == "swift" {
+            result = Sourcery.generationHeader + result
+        }
+
+        if isDryRun {
+            dryOutputBuffer.append(.init(type: type,
+                                         outputPath: outputPath.string,
+                                         value: result))
+            return
+        }
+
+        if !resultIsEmpty {
             if !outputPath.parent().exists {
                 try outputPath.parent().mkpath()
             }
@@ -560,6 +581,18 @@ extension Sourcery {
                 Log.verbose("Skipping \(outputPath) as it is empty.")
             }
         }
+    }
+    private func output(range: NSRange, in file: String,
+                        insertedContent: String,
+                        updatedContent: @autoclosure () -> String, to path: Path) throws {
+        if isDryRun {
+            dryOutputBuffer.append(.init(type: .range(range, in: file),
+                                         outputPath: path.string,
+                                         value: insertedContent))
+            return
+        }
+
+        try writeIfChanged(updatedContent(), to: path)
     }
 
     private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path, forceParse: [String]) throws -> GenerationResult {
@@ -666,8 +699,12 @@ extension Sourcery {
                 let path = Path(filePath)
                 let content = try path.read(.utf8)
                 let newContent = indent(toInsert: toInsert, indentation: indentation)
-                let updated = content.bridge().replacingCharacters(in: rangeInFile, with: newContent)
-                try writeIfChanged(updated, to: path)
+
+                try output(range: rangeInFile,
+                           in: filePath,
+                           insertedContent: newContent,
+                           updatedContent: content.bridge().replacingCharacters(in: rangeInFile, with: newContent),
+                           to: path)
 
                 let newLength = newContent.bridge().length
 
@@ -678,12 +715,20 @@ extension Sourcery {
                 ))
         }
 
+
         var bridged = contents.bridge()
+        if isDryRun {
+            // fix file ranges, cause they not changed
+            sourceChanges = sourceChanges.map{ (path, rangeInFile, newRangeInFile) in
+                (path, rangeInFile, .init(location: newRangeInFile.location, length: 0))
+            }
+        }
+
         rangesToReplace
             .sorted(by: { $0.location > $1.location })
             .forEach {
                 bridged = bridged.replacingCharacters(in: $0, with: "") as NSString
-        }
+            }
         return (bridged as String, sourceChanges)
     }
 

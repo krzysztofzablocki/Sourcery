@@ -26,6 +26,7 @@ enum Stubs {
     static let jsTemplates = basePath + Path("JavaScriptTemplates/")
     static let sourceDirectory = basePath + Path("Source/")
     static let sourceForPerformance = basePath + Path("Performance-Code/")
+    static let sourceForDryRun = basePath + Path("DryRun-Code/")
     static let resultDirectory = basePath + Path("Result/")
     static let templateDirectory = basePath + Path("Templates")
     static let errorsDirectory = basePath + Path("Errors/")
