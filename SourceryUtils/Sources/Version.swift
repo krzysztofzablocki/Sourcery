@@ -10,7 +10,7 @@ import Foundation
 
 public struct SourceryVersion {
     public let value: String
-    public static let current = SourceryVersion(value: inUnitTests ? "Major.Minor.Patch" : "1.8.2")
+    public static let current = SourceryVersion(value: inUnitTests ? "Major.Minor.Patch" : "1.9.0")
 }
 
 public var inUnitTests = NSClassFromString("XCTest") != nil

@@ -1,6 +1,6 @@
 # Sourcery CHANGELOG
 
-## Master
+## 1.9.0
 - Update StencilSwiftKit to fix SPM resolving issue when building as a Command Plugin [#1023](https://github.com/krzysztofzablocki/Sourcery/issues/1023)
 - Adds new `--cacheBasePath` option to `SourceryExecutable` to allow for plugins setting a default cache [#1093](https://github.com/krzysztofzablocki/Sourcery/pull/1093)
 - Adds new `--dry` option to `SourceryExecutable` to check output without file system modifications [#1097](https://github.com/krzysztofzablocki/Sourcery/pull/1097)
