@@ -3,6 +3,7 @@ Pod::Spec.new do |s|
   s.name         = "SourceryUtils"
   s.version      = "1.9.0"
   s.summary      = "A tool that brings meta-programming to Swift, allowing you to code generate Swift code."
+  s.platform     = :osx, '10.15'
 
   s.description  = <<-DESC
                  A tool that brings meta-programming to Swift, allowing you to code generate Swift code.
@@ -18,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.source_files = "SourceryUtils/Sources/**/*.swift"
   
-  s.osx.deployment_target  = '10.11'
+  s.osx.deployment_target  = '10.15'
   
   s.dependency 'PathKit'
 end
