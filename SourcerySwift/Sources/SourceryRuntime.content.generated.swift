@@ -573,7 +573,7 @@ import Foundation
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -1416,7 +1416,7 @@ public protocol Definition: AnyObject {
 """),
     .init(name: "Description.generated.swift", content:
 """
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -1854,7 +1854,7 @@ import Foundation
 """),
     .init(name: "Diffable.generated.swift", content:
 """
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
@@ -2778,7 +2778,7 @@ import Foundation
 """),
     .init(name: "Equality.generated.swift", content:
 """
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -4057,7 +4057,7 @@ import Foundation
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -4652,6 +4652,9 @@ public enum Log {
     public static var logBenchmarks: Bool = false
     public static var logAST: Bool = false
 
+    public static var stackMessages: Bool = false
+    public private(set) static var messagesStack = [String]()
+
     public static func error(_ message: Any) {
         log(level: .errors, "error: \\(message)")
         // to return error when running swift templates which is done in a different process
@@ -4684,14 +4687,25 @@ public enum Log {
 
     public static func benchmark(_ message: Any) {
         guard logBenchmarks else { return }
-        print(message)
+        if stackMessages {
+            messagesStack.append("\\(message)")
+        } else {
+            print(message)
+        }
     }
 
     private static func log(level logLevel: Level, _ message: Any) {
         guard logLevel.rawValue <= Log.level.rawValue else { return }
-        print(message)
+        if stackMessages {
+            messagesStack.append("\\(message)")
+        } else {
+            print(message)
+        }
     }
 
+    public static func output(_ message: String) {
+        print(message)
+    }
 }
 
 extension String: Error {}
@@ -6803,7 +6817,7 @@ import Foundation
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
