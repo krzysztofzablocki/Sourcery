@@ -18,7 +18,7 @@ struct Modifier {
     public init(_ node: DeclModifierSyntax) {
         name = node.name.text.trimmed
         tokenKind = node.name.tokenKind
-        detail = node.detail?.description.trimmed
+        detail = node.detail?.detail.description.trimmed
     }
 }
 

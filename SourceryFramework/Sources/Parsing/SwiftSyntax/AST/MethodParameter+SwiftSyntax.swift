@@ -21,7 +21,7 @@ extension MethodParameter {
           defaultValue: node.defaultArgument?.value.description.trimmed,
           annotations: node.firstToken.map { annotationsParser.annotations(fromToken: $0) } ?? [:],
           isInout: specifiers.isInOut,
-          isVariadic: node.ellipsis != nil
+          isVariadic: node.type?.as(PackExpansionTypeSyntax.self)?.ellipsis != nil
         )
     }
 }

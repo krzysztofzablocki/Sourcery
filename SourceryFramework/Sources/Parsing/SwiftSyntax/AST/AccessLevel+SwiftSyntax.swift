@@ -12,7 +12,7 @@ extension AccessLevel {
             self = .fileprivate
         case .internalKeyword:
             self = .internal
-        case .identifier("open"):
+        case .contextualKeyword("open"), .identifier("open"):
             self = .open
         default:
             return nil

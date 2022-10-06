@@ -20,13 +20,14 @@ class SyntaxTreeCollector: SyntaxVisitor {
         self.file = file
         self.module = module
         self.sourceLocationConverter = sourceLocationConverter
+        super.init(viewMode: .fixedUp)
     }
 
     private func startVisitingType(_ node: DeclSyntaxProtocol, _ builder: (_ parent: Type?) -> Type) {
         let type = builder(visitingType)
-
-        if let open = node.tokens.first(where: { $0.tokenKind == .leftBrace }),
-           let close = node.tokens
+        let tokens = node.tokens(viewMode: .fixedUp)
+        if let open = tokens.first(where: { $0.tokenKind == .leftBrace }),
+           let close = tokens
              .reversed()
              .first(where: { $0.tokenKind == .rightBrace }) {
             let startLocation = open.endLocation(converter: sourceLocationConverter)
@@ -191,7 +192,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
 
     public override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
         let localName = node.identifier.text.trimmed
-        let typeName = node.initializer.map { TypeName($0.value) } ?? TypeName.unknown(description: node.description.trimmed)
+        let typeName = TypeName(node.initializer.value)
         let modifiers = node.modifiers?.map(Modifier.init) ?? []
         let baseModifiers = modifiers.baseModifiers(parent: visitingType)
         let annotations = annotationsParser.annotations(from: node)

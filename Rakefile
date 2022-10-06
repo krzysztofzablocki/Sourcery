@@ -93,7 +93,7 @@ task :run_sourcery do
 end
 
 desc "Update internal boilerplate code"
-task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
+task :generate_internal_boilerplate_code => [:fat_build, :run_sourcery, :clean] do
   sh "Scripts/package_content \"SourceryRuntime/Sources\"  > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
   generated_files = `git status --porcelain`
                       .split("\n")

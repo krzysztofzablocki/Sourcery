@@ -30,7 +30,7 @@ extension Variable {
             let computeAccessors = Set(block.accessors.compactMap { accessor -> Kind? in
                 let kindRaw = accessor.accessorKind.text.trimmed
                 if kindRaw == "get" {
-                    return Kind.get(isAsync: accessor.asyncKeyword != nil, throws: accessor.throwsKeyword != nil)
+                    return Kind.get(isAsync: accessor.fixedAsyncKeyword != nil, throws: accessor.fixedThrowsKeyword != nil)
                 }
                 
                 if kindRaw == "set" {
@@ -63,7 +63,7 @@ extension Variable {
         let isComputed = node.initializer == nil && hadGetter && !(visitingType is SourceryProtocol)
         let isAsync = hadAsync
         let `throws` = hadThrowable
-        let isWritable = variableNode.letOrVarKeyword.tokens.contains { $0.tokenKind == .varKeyword } && (!isComputed || hadSetter)
+        let isWritable = variableNode.letOrVarKeyword.tokens(viewMode: .fixedUp).contains { $0.tokenKind == .varKeyword } && (!isComputed || hadSetter)
 
         let typeName = node.typeAnnotation.map { TypeName($0.type) } ??
           node.initializer.flatMap { Self.inferType($0.value.description.trimmed) }

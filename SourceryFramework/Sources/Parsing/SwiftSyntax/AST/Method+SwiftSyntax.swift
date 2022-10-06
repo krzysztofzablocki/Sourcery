@@ -19,12 +19,19 @@ extension SourceryMethod {
     }
 
     convenience init(_ node: InitializerDeclSyntax, parent: Type, typeName: TypeName, annotationsParser: AnnotationsParser) {
+        let signature = node.signature
         self.init(
           node: node,
           parent: parent,
           identifier: "init\(node.optionalMark?.text.trimmed ?? "")",
           typeName: typeName,
-          signature: Signature(parameters: node.parameters.parameterList, output: nil, asyncKeyword: nil, throwsOrRethrowsKeyword: node.throwsOrRethrowsKeyword?.description.trimmed, annotationsParser: annotationsParser),
+          signature: Signature(
+            parameters: signature.input.parameterList,
+            output: nil,
+            asyncKeyword: nil,
+            throwsOrRethrowsKeyword: signature.throwsOrRethrowsKeyword?.description.trimmed,
+            annotationsParser: annotationsParser
+          ),
           modifiers: node.modifiers,
           attributes: node.attributes,
           genericParameterClause: node.genericParameterClause,
