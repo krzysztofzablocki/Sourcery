@@ -90,6 +90,21 @@ protocol FunctionWithMultilineDeclaration: AutoMockable {
                of model: String)
 }
 
+protocol ThrowingVariablesProtocol: AutoMockable {
+    var title: String? { get throws }
+    var firstName: String { get throws }
+}
+
+protocol AsyncVariablesProtocol: AutoMockable {
+    var title: String? { get async }
+    var firstName: String { get async }
+}
+
+protocol AsyncThrowingVariablesProtocol: AutoMockable {
+    var title: String? { get async throws }
+    var firstName: String { get async throws }
+}
+
 protocol AsyncProtocol: AutoMockable {
     @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
     func callAsync(parameter: Int) async -> String
