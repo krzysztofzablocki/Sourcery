@@ -158,7 +158,7 @@ import {{ import }}
             }
         }
     }
-    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}!
+    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}{{ '!' if not variable.isOptional }}
     {% if variable.throws %}
         {% call variableThrowableErrorDeclaration variable %}
     {% endif %}

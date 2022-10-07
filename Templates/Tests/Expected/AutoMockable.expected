@@ -164,7 +164,7 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
             }
         }
     }
-    var underlyingTitle: String?!
+    var underlyingTitle: String?
     var titleThrowableError: Error?
     var titleClosure: (() async throws -> String?)?
     var firstNameCallsCount = 0
@@ -206,7 +206,7 @@ class AsyncVariablesProtocolMock: AsyncVariablesProtocol {
             }
         }
     }
-    var underlyingTitle: String?!
+    var underlyingTitle: String?
     var titleClosure: (() async -> String?)?
     var firstNameCallsCount = 0
     var firstNameCalled: Bool {
@@ -656,7 +656,7 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
             }
         }
     }
-    var underlyingTitle: String?!
+    var underlyingTitle: String?
     var titleThrowableError: Error?
     var titleClosure: (() throws -> String?)?
     var firstNameCallsCount = 0
