@@ -4,6 +4,7 @@ Pod::Spec.new do |s|
   s.version      = "1.9.0"
   s.summary      = "A tool that brings meta-programming to Swift, allowing you to code generate Swift code."
   s.platform     = :osx, '10.15'
+  s.platform     = :ios
   s.description  = <<-DESC
                  A tool that brings meta-programming to Swift, allowing you to code generate Swift code.
                    * Featuring daemon mode that allows you to write templates side-by-side with generated code.
