@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## Main
+## New Features
+- Adds support for public protocols in AutoMockable template [#1100](https://github.com/krzysztofzablocki/Sourcery/pull/1100)
+
 ## 1.9.0
 - Update StencilSwiftKit to fix SPM resolving issue when building as a Command Plugin [#1023](https://github.com/krzysztofzablocki/Sourcery/issues/1023)
 - Adds new `--cacheBasePath` option to `SourceryExecutable` to allow for plugins setting a default cache [#1093](https://github.com/krzysztofzablocki/Sourcery/pull/1093)

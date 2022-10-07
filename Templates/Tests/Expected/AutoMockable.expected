@@ -5,7 +5,36 @@ import UIKit
 import AppKit
 #endif
 
+public class AccessLevelProtocolMock: AccessLevelProtocol {
 
+    public init() {}
+
+    public var company: String?
+    public var name: String {
+        get { return underlyingName }
+        set(value) { underlyingName = value }
+    }
+    public var underlyingName: String!
+
+    //MARK: - loadConfiguration
+
+    public var loadConfigurationCallsCount = 0
+    public var loadConfigurationCalled: Bool {
+        return loadConfigurationCallsCount > 0
+    }
+    public var loadConfigurationReturnValue: String?
+    public var loadConfigurationClosure: (() -> String?)?
+
+    public func loadConfiguration() -> String? {
+        loadConfigurationCallsCount += 1
+        if let loadConfigurationClosure = loadConfigurationClosure {
+            return loadConfigurationClosure()
+        } else {
+            return loadConfigurationReturnValue
+        }
+    }
+
+}
 class AnnotatedProtocolMock: AnnotatedProtocol {
 
     //MARK: - sayHelloWith
