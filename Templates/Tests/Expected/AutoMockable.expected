@@ -153,8 +153,8 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
 
     var title: String? {
         get async throws {
-            if let titleThrowableError {
-                throw titleThrowableError
+            if let error = titleThrowableError {
+                throw error
             }
             titleCallsCount += 1
             if let titleClosure = titleClosure {
@@ -174,8 +174,8 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
 
     var firstName: String {
         get async throws {
-            if let firstNameThrowableError {
-                throw firstNameThrowableError
+            if let error = firstNameThrowableError {
+                throw error
             }
             firstNameCallsCount += 1
             if let firstNameClosure = firstNameClosure {
@@ -645,8 +645,8 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
 
     var title: String? {
         get throws {
-            if let titleThrowableError {
-                throw titleThrowableError
+            if let error = titleThrowableError {
+                throw error
             }
             titleCallsCount += 1
             if let titleClosure = titleClosure {
@@ -666,8 +666,8 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
 
     var firstName: String {
         get throws {
-            if let firstNameThrowableError {
-                throw firstNameThrowableError
+            if let error = firstNameThrowableError {
+                throw error
             }
             firstNameCallsCount += 1
             if let firstNameClosure = firstNameClosure {

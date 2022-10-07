@@ -128,8 +128,8 @@ import {{ import }}
 {% endmacro %}
 
 {% macro variableThrowableErrorUsage variable %}
-            if let {% call mockedVariableName variable %}ThrowableError {
-                throw {% call mockedVariableName variable %}ThrowableError
+            if let error = {% call mockedVariableName variable %}ThrowableError {
+                throw error
             }
 {% endmacro %}
 
