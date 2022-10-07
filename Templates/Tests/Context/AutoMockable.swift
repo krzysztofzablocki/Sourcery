@@ -111,3 +111,10 @@ protocol FunctionWithAttributes: AutoMockable {
     @available(macOS 10.15, *)
     func callRepeatedAttributes() -> Bool
 }
+
+public protocol AccessLevelProtocol: AutoMockable {
+    var company: String? { get set }
+    var name: String { get }
+    
+    func loadConfiguration() -> String?
+}
