@@ -145,6 +145,88 @@ class AsyncProtocolMock: AsyncProtocol {
     }
 
 }
+class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
+    var titleCallsCount = 0
+    var titleCalled: Bool {
+        return titleCallsCount > 0
+    }
+
+    var title: String? {
+        get async throws {
+            if let error = titleThrowableError {
+                throw error
+            }
+            titleCallsCount += 1
+            if let titleClosure = titleClosure {
+                return try await titleClosure()
+            } else {
+                return underlyingTitle
+            }
+        }
+    }
+    var underlyingTitle: String?
+    var titleThrowableError: Error?
+    var titleClosure: (() async throws -> String?)?
+    var firstNameCallsCount = 0
+    var firstNameCalled: Bool {
+        return firstNameCallsCount > 0
+    }
+
+    var firstName: String {
+        get async throws {
+            if let error = firstNameThrowableError {
+                throw error
+            }
+            firstNameCallsCount += 1
+            if let firstNameClosure = firstNameClosure {
+                return try await firstNameClosure()
+            } else {
+                return underlyingFirstName
+            }
+        }
+    }
+    var underlyingFirstName: String!
+    var firstNameThrowableError: Error?
+    var firstNameClosure: (() async throws -> String)?
+
+}
+class AsyncVariablesProtocolMock: AsyncVariablesProtocol {
+    var titleCallsCount = 0
+    var titleCalled: Bool {
+        return titleCallsCount > 0
+    }
+
+    var title: String? {
+        get async {
+            titleCallsCount += 1
+            if let titleClosure = titleClosure {
+                return await titleClosure()
+            } else {
+                return underlyingTitle
+            }
+        }
+    }
+    var underlyingTitle: String?
+    var titleClosure: (() async -> String?)?
+    var firstNameCallsCount = 0
+    var firstNameCalled: Bool {
+        return firstNameCallsCount > 0
+    }
+
+    var firstName: String {
+        get async {
+            firstNameCallsCount += 1
+            if let firstNameClosure = firstNameClosure {
+                return await firstNameClosure()
+            } else {
+                return underlyingFirstName
+            }
+        }
+    }
+    var underlyingFirstName: String!
+    var firstNameClosure: (() async -> String)?
+
+}
 class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
@@ -553,6 +635,51 @@ class ThrowableProtocolMock: ThrowableProtocol {
         doOrThrowVoidCallsCount += 1
         try doOrThrowVoidClosure?()
     }
+
+}
+class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
+    var titleCallsCount = 0
+    var titleCalled: Bool {
+        return titleCallsCount > 0
+    }
+
+    var title: String? {
+        get throws {
+            if let error = titleThrowableError {
+                throw error
+            }
+            titleCallsCount += 1
+            if let titleClosure = titleClosure {
+                return try titleClosure()
+            } else {
+                return underlyingTitle
+            }
+        }
+    }
+    var underlyingTitle: String?
+    var titleThrowableError: Error?
+    var titleClosure: (() throws -> String?)?
+    var firstNameCallsCount = 0
+    var firstNameCalled: Bool {
+        return firstNameCallsCount > 0
+    }
+
+    var firstName: String {
+        get throws {
+            if let error = firstNameThrowableError {
+                throw error
+            }
+            firstNameCallsCount += 1
+            if let firstNameClosure = firstNameClosure {
+                return try firstNameClosure()
+            } else {
+                return underlyingFirstName
+            }
+        }
+    }
+    var underlyingFirstName: String!
+    var firstNameThrowableError: Error?
+    var firstNameClosure: (() throws -> String)?
 
 }
 class VariablesProtocolMock: VariablesProtocol {

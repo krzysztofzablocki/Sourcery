@@ -115,18 +115,54 @@ import {{ import }}
     {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {{ variable.typeName }} = {% if variable.isArray %}[]{% elif variable.isDictionary %}[:]{% endif %}
 {% endmacro %}
 
-{% macro variableThrowableErrorUsage variable %}
-            if let {% call mockedVariableName variable %}ThrowableError {
-                throw {% call mockedVariableName variable %}ThrowableError
-            }
-{% endmacro %}
-
 {% macro mockNonOptionalVariable variable %}
     {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {{ variable.typeName }} {
         get { return {% call underlyingMockedVariableName variable %} }
         set(value) { {% call underlyingMockedVariableName variable %} = value }
     }
     {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}!
+{% endmacro %}
+
+{% macro variableThrowableErrorDeclaration variable %}
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}ThrowableError: Error?
+{% endmacro %}
+
+{% macro variableThrowableErrorUsage variable %}
+            if let error = {% call mockedVariableName variable %}ThrowableError {
+                throw error
+            }
+{% endmacro %}
+
+{% macro variableClosureDeclaration variable %}
+    {% call accessLevel variable.readAccess %}var {% call variableClosureName variable %}: (() {% if variable.isAsync %}async {% endif %}{% if variable.throws %}throws {% endif %}-> {{ variable.typeName }})?
+{% endmacro %}
+
+{% macro variableClosureName variable %}{% call mockedVariableName variable %}Closure{% endmacro %}
+
+{% macro mockAsyncOrThrowingVariable variable %}
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}CallsCount = 0
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}Called: Bool {
+        return {% call mockedVariableName variable %}CallsCount > 0
+    }
+
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {{ variable.typeName }} {
+        get {% if variable.isAsync %}async {% endif %}{% if variable.throws %}throws {% endif %}{
+            {% if variable.throws %}
+            {% call variableThrowableErrorUsage variable %}
+            {% endif %}
+            {% call mockedVariableName variable %}CallsCount += 1
+            if let {% call variableClosureName variable %} = {% call variableClosureName variable %} {
+                return {{ 'try ' if variable.throws }}{{ 'await ' if variable.isAsync }}{% call variableClosureName variable %}()
+            } else {
+                return {% call underlyingMockedVariableName variable %}
+            }
+        }
+    }
+    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}{{ '!' if not variable.isOptional }}
+    {% if variable.throws %}
+        {% call variableThrowableErrorDeclaration variable %}
+    {% endif %}
+    {% call variableClosureDeclaration method %}
 {% endmacro %}
 
 {% macro underlyingMockedVariableName variable %}underlying{{ variable.name|upperFirstLetter }}{% endmacro %}
@@ -138,7 +174,7 @@ import {{ import }}
     {% if type.accessLevel == "public" %}public init() {}{% endif %}
 
 {% for variable in type.allVariables|!definedInExtension %}
-    {% if variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}
+    {% if variable.isAsync or variable.throws %}{% call mockAsyncOrThrowingVariable variable %}{% elif variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}
 {% endfor %}
 
 {% for method in type.allMethods|!definedInExtension %}
