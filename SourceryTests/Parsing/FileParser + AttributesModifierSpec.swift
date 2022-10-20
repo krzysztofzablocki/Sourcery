@@ -12,7 +12,6 @@ import SourceryRuntime
 
 class FileParserAttributesSpec: QuickSpec {
     override func spec() {
-
         describe("FileParser") {
             func parse(_ code: String) -> [Type] {
                 guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
@@ -127,6 +126,10 @@ class FileParserAttributesSpec: QuickSpec {
                 ]))
 
                 expect(parse("@objc protocol Foo { @objc optional func some() }").first?.methods.first?.isOptional).to(beTrue())
+
+                expect(parse("actor Foo { nonisolated func bar() {} }").first?.methods.first?.isNonisolated).to(beTrue())
+
+                expect(parse("actor Foo { func bar() {} }").first?.methods.first?.isNonisolated).to(beFalse())
             }
 
             it("extracts method parameter attributes") {
