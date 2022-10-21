@@ -135,7 +135,9 @@ GEM
     nap (1.1.0)
     netrc (0.11.0)
     no_proxy_fix (0.1.2)
-    nokogiri (1.13.3-arm64-darwin)
+    nokogiri (1.13.9-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     octokit (4.22.0)
       faraday (>= 0.9)
@@ -184,6 +186,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   cocoapods (= 1.10.1)
