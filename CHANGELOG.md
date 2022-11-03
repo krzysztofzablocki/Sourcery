@@ -4,6 +4,7 @@
 ## New Features
 - Adds support for public protocols in AutoMockable template [#1100](https://github.com/krzysztofzablocki/Sourcery/pull/1100)
 - Adds support for async and throwing properties to AutoMockable template [#1101](https://github.com/krzysztofzablocki/Sourcery/pull/1101)
+- Adds support for actors and nonisolated methods [#1112](https://github.com/krzysztofzablocki/Sourcery/pull/1112)
 
 ## 1.9.0
 - Update StencilSwiftKit to fix SPM resolving issue when building as a Command Plugin [#1023](https://github.com/krzysztofzablocki/Sourcery/issues/1023)

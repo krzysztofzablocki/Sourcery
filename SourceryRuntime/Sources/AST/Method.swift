@@ -324,6 +324,12 @@ extension Array where Element == ClosureParameter {
         modifiers.contains { $0.name == "optional" }
     }
 
+    // sourcer: skipEquality, skipDescription
+    /// Whether method is nonisolated (this modifier only applies to actor methods)
+    public var isNonisolated: Bool {
+        modifiers.contains { $0.name == "nonisolated" }
+    }
+
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public let annotations: Annotations
 

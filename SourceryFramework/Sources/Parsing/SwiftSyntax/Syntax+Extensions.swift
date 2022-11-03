@@ -83,6 +83,8 @@ protocol IdentifierSyntax: SyntaxProtocol {
     var identifier: TokenSyntax { get }
 }
 
+extension ActorDeclSyntax: IdentifierSyntax {}
+
 extension ClassDeclSyntax: IdentifierSyntax {}
 
 extension StructDeclSyntax: IdentifierSyntax {}

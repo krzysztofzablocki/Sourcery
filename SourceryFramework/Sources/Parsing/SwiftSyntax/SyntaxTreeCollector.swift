@@ -68,6 +68,17 @@ class SyntaxTreeCollector: SyntaxVisitor {
         visitingType = visitingType?.parent
     }
 
+    public override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+        startVisitingType(node) { parent in
+            Actor(node, parent: parent, annotationsParser: annotationsParser)
+        }
+        return .visitChildren
+    }
+
+    public override func visitPost(_ node: ActorDeclSyntax) {
+        visitingType = visitingType?.parent
+    }
+
     public override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
         startVisitingType(node) { parent in
             Enum(node, parent: parent, annotationsParser: annotationsParser)
