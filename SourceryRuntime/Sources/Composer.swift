@@ -39,8 +39,9 @@ public enum Composer {
 
             // map all known types to their names
             parsedTypes
-              .filter { $0.isExtension == false }
               .forEach {
+                  guard !$0.isExtension else { return }
+
                   typeMap[$0.globalName] = $0
                   if let module = $0.module {
                       var typesByModules = modules[module, default: [:]]
@@ -50,17 +51,41 @@ public enum Composer {
               }
         }
 
+        private func resolveExtensionOfNestedType(_ type: Type) {
+            var components = type.localName.components(separatedBy: ".")
+            let rootName = components.removeFirst() // Module/parent name
+            if let moduleTypes = modules[rootName], let baseType = moduleTypes[components.joined(separator: ".")] ?? moduleTypes[type.localName] {
+                type.localName = baseType.localName
+                type.module = baseType.module
+                type.parent = baseType.parent
+            } else {
+                for _import in type.imports {
+                    let parentKey = "\(rootName).\(components.joined(separator: "."))"
+                    let parentKeyFull = "\(_import.moduleName).\(parentKey)"
+                    if let moduleTypes = modules[_import.moduleName], let baseType = moduleTypes[parentKey] ?? moduleTypes[parentKeyFull] {
+                        type.localName = baseType.localName
+                        type.module = baseType.module
+                        type.parent = baseType.parent
+                        return
+                    }
+                }
+            }
+        }
+
         func unifyTypes() -> [Type] {
             /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
             parsedTypes
-              .filter { $0.isExtension == true }
               .forEach {
+                  guard $0.isExtension else { return }
+
                   let oldName = $0.globalName
 
+                  if $0.parent == nil, $0.localName.contains(".") {
+                      resolveExtensionOfNestedType($0)
+                  }
+
                   if let resolved = resolveGlobalName(for: oldName, containingType: $0.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
-                      $0.localName = resolved.replacingOccurrences(of: "\($0.module != nil ? "\($0.module!)." : "")", with: "")
-                  } else {
-                      return
+                      $0.localName = resolved.components(separatedBy: ".").last!
                   }
 
                   // nothing left to do
@@ -90,7 +115,7 @@ public enum Composer {
                   (inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] })
 
                 guard let current = uniqueType else {
-                    assert(type.isExtension)
+                    assert(type.isExtension, "Type \(type.globalName) should be extension")
 
                     // for unknown types we still store their extensions but mark them as unknown
                     type.isUnknownExtension = true
@@ -337,8 +362,6 @@ public enum Composer {
         }
 
         let unique = state.typeMap
-        let modules = state.modules
-        let typealiases = state.resolvedTypealiases
 
         if let name = typeName.actualTypeName {
             let resolvedIdentifier = name.generic?.name ?? name.unwrappedTypeName

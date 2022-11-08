@@ -32,12 +32,12 @@ public struct Project {
                     let simulatorSlicePath = frameworkRelativePath.glob("*")
                         .first(where: { $0.lastComponent.contains("simulator") })
                 else {
-                    throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected to find simulator slice.")
+                    throw Configuration.Error.invalidXCFramework(path: frameworkRelativePath, message: "Framework path invalid. Expected to find simulator slice.")
                 }
                 let modulePath = simulatorSlicePath + Path("\(moduleName).framework/Modules/\(moduleName).swiftmodule/")
                 guard let interfacePath = modulePath.glob("*.swiftinterface").first(where: { $0.lastComponent.contains("simulator") })
                 else {
-                    throw Configuration.Error.invalidXCFramework(message: "Framework path invalid. Expected to find .swiftinterface.")
+                    throw Configuration.Error.invalidXCFramework(path: frameworkRelativePath, message: "Framework path invalid. Expected to find .swiftinterface.")
                 }
                 self.path = frameworkRelativePath
                 self.swiftInterfacePath = interfacePath
@@ -249,7 +249,7 @@ public struct Configuration {
     public enum Error: Swift.Error, CustomStringConvertible {
         case invalidFormat(message: String)
         case invalidSources(message: String)
-        case invalidXCFramework(message: String)
+        case invalidXCFramework(path: Path? = nil, message: String)
         case invalidTemplates(message: String)
         case invalidOutput(message: String)
         case invalidCacheBasePath(message: String)
@@ -261,8 +261,8 @@ public struct Configuration {
                 return "Invalid config file format. \(message)"
             case .invalidSources(let message):
                 return "Invalid sources. \(message)"
-            case .invalidXCFramework(let message):
-                return "Invalid xcframework. \(message)"
+            case .invalidXCFramework(let path, let message):
+                return "Invalid xcframework\(path.map { " at path '\($0)'" } ?? "")'. \(message)"
             case .invalidTemplates(let message):
                 return "Invalid templates. \(message)"
             case .invalidOutput(let message):
