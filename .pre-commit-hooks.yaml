@@ -1,0 +1,9 @@
+- id: sourcery
+  name: Sourcery
+  description: ''
+  language: swift
+  entry: sourcery
+  require_serial: true
+  pass_filenames: false
+  always_run: true
+  args: ["--sources", "<sources path>", "--templates", "<templates path>", "--output", "<output path>"]
