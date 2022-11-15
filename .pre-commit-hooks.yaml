@@ -1,0 +1,8 @@
+- id: sourcery
+  name: Sourcery
+  description: 'Meta-programming for Swift, stop writing boilerplate code.'
+  language: swift
+  entry: sourcery
+  require_serial: true
+  pass_filenames: false
+  always_run: true
