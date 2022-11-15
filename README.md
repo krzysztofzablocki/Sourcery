@@ -127,6 +127,16 @@ Add the package dependency to your `Package.swift` manifest from version `1.8.3`
 .package(url: "https://github.com/krzysztofzablocki/Sourcery.git", from: "1.8.3")
 ```
 
+- _[pre-commit](https://pre-commit.com/)_
+Add the dependency to `.pre-commit-config.yaml`.
+
+```
+- repo: https://github.com/krzysztofzablocki/Sourcery
+  rev: 1.9.1
+  hooks:
+  - id: sourcery
+```
+
 ## Documentation
 
 Full documentation for the latest release is available [here](http://merowing.info/Sourcery/).
