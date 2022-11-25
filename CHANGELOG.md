@@ -6,6 +6,9 @@
 - Adds support for async and throwing properties to AutoMockable template [#1101](https://github.com/krzysztofzablocki/Sourcery/pull/1101)
 - Adds support for actors and nonisolated methods [#1112](https://github.com/krzysztofzablocki/Sourcery/pull/1112)
 
+## Internal Changes
+- Fixed parsing of extensions and nested types in swiftinterface files [#1113](https://github.com/krzysztofzablocki/Sourcery/pull/1113)
+
 ## 1.9.0
 - Update StencilSwiftKit to fix SPM resolving issue when building as a Command Plugin [#1023](https://github.com/krzysztofzablocki/Sourcery/issues/1023)
 - Adds new `--cacheBasePath` option to `SourceryExecutable` to allow for plugins setting a default cache [#1093](https://github.com/krzysztofzablocki/Sourcery/pull/1093)

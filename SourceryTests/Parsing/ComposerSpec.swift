@@ -2089,6 +2089,27 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given nested types") {
+                    it("resolve extensions of nested type properly") {
+                        let types = parseModules(
+                            ("Mod1", "enum NS {}; extension Mod1.NS { struct Foo { func f1() } }"),
+                            ("Mod2", "import Mod1; extension Mod1.NS.Foo { func f2() }"),
+                            ("Mod3", "import Mod1; extension NS.Foo { func f3() }")
+                        ).types
+                        expect(types.map { $0.globalName }).to(equal(["Mod1.NS", "Mod1.NS.Foo"]))
+                        expect(types[1].methods.map { $0.name }).to(equal(["f1()", "f2()", "f3()"]))
+                    }
+
+                    it("resolve extensions with nested types properly") {
+                        let types = parseModules(
+                            ("Mod1", "enum NS {}"),
+                            ("Mod2", "import Mod1; extension Mod1.NS { struct A {} }"),
+                            ("Mod3", "import Mod1; extension NS { struct B {} }")
+                        ).types
+                        expect(types.map { $0.globalName }).to(equal(["Mod1.NS", "Mod2.NS.A", "Mod3.NS.B"]))
+                    }
+                }
+
                 context("given protocols of the same name in different modules") {
                     func parseModules(_ modules: (name: String?, contents: String)...) -> [Type] {
                         let moduleResults = modules.compactMap {
