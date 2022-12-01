@@ -25,7 +25,7 @@ extension Attribute {
     }
 
     convenience init(_ attribute: CustomAttributeSyntax) {
-        let nameText = attribute.tokens
+        let nameText = attribute.tokens(viewMode: .fixedUp)
             .first(where: \.tokenKind.isIdentifier)?
             .text
             .trimmed ?? ""
@@ -88,7 +88,7 @@ private extension TupleExprElementSyntax {
     /// Returns key and value strings for a tuple element. If the tuple does not have an argument label,
     /// `nil` will be returned for the key.
     var keyAndValue: (key: String?, value: String) {
-        var iterator = tokens.makeIterator()
+        var iterator = tokens(viewMode: .fixedUp).makeIterator()
         if let argumentLabelToken = iterator.next(),
            let colonToken = iterator.next(),
            case let .identifier(argumentLabel) = argumentLabelToken.tokenKind,
@@ -98,7 +98,7 @@ private extension TupleExprElementSyntax {
             return (argumentLabel.trimmed, valueText)
         } else {
             // This argument does not have a label
-            iterator = tokens.makeIterator()
+            iterator = tokens(viewMode: .fixedUp).makeIterator()
             let valueText = getConcatenatedTokenText(iterator: &iterator)
             return (nil, valueText)
         }

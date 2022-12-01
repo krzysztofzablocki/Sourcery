@@ -300,7 +300,7 @@ extension Sourcery {
                     return !excludeSet.contains($0)
                 }
                 .map { path in
-                    return (path: path, makeParser: {
+                    return (path: path, parse: {
                         let module = modules?[index]
 
                         guard path.exists else {
