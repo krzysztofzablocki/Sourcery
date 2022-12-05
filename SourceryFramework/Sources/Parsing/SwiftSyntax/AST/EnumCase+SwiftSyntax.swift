@@ -38,7 +38,8 @@ extension EnumCase {
         let rawValue: String? = {
             var value = node.rawValue?.withEqual(nil).description.trimmed
             if let unwrapped = value, unwrapped.hasPrefix("\""), unwrapped.hasSuffix("\""), unwrapped.count > 2 {
-                value = unwrapped.substring(with: unwrapped.index(after: unwrapped.startIndex) ..< unwrapped.index(before: unwrapped.endIndex))
+                let substring = unwrapped[unwrapped.index(after: unwrapped.startIndex) ..< unwrapped.index(before: unwrapped.endIndex)]
+                value = String(substring)
             }
             return value
         }()

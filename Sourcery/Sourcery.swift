@@ -364,7 +364,7 @@ extension Sourcery {
 
         var parserResultCopy: FileParserResult?
         if requiresFileParserCopy {
-            let data = NSKeyedArchiver.archivedData(withRootObject: parserResult)
+            let data = try NSKeyedArchiver.archivedData(withRootObject: parserResult, requiringSecureCoding: false)
             parserResultCopy = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? FileParserResult
         }
 
@@ -398,9 +398,8 @@ extension Sourcery {
 
             incrementFileParsedCount()
 
-
-            let data = NSKeyedArchiver.archivedData(withRootObject: result)
             do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: result, requiringSecureCoding: false)
                 try artifactsPath.write(data)
             } catch {
                 fatalError("Unable to save artifacts for \(path) under \(artifactsPath), error: \(error)")
@@ -416,6 +415,7 @@ extension Sourcery {
         var unarchivedResult: FileParserResult?
         SwiftTryCatch.try({
 
+            // this deprecation can't be removed atm, new API is 10x slower
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
                 if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
                     unarchivedResult = unarchived

@@ -193,7 +193,7 @@ open class SwiftTemplate {
         }
 
         let serializedContextPath = buildDir + "context.bin"
-        let data = NSKeyedArchiver.archivedData(withRootObject: context)
+        let data = try NSKeyedArchiver.archivedData(withRootObject: context, requiringSecureCoding: false)
         if !buildDir.exists {
             try buildDir.mkpath()
         }
