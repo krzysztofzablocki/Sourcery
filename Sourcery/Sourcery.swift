@@ -275,7 +275,7 @@ extension Sourcery {
         functions: [SourceryMethod],
         inlineRanges: [(file: String, ranges: [String: NSRange], indentations: [String: String])])
 
-    typealias ParserWrapper = (path: Path, parse: () throws -> FileParserResult)
+    typealias ParserWrapper = (path: Path, parse: () throws -> FileParserResult?)
 
     fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], parseDocumentation: Bool, modules: [String]?, requiresFileParserCopy: Bool) throws -> ParsingResult {
         if let modules = modules {
@@ -304,7 +304,7 @@ extension Sourcery {
                         let module = modules?[index]
 
                         guard path.exists else {
-                            return FileParserResult(path: path.string, module: module, types: [], functions: [])
+                            return nil
                         }
 
                         let content = try path.read(.utf8)
@@ -313,7 +313,7 @@ extension Sourcery {
                         case .containsConflictMarkers:
                             throw Error.containsMergeConflictMarkers
                         case .isCodeGenerated:
-                            return FileParserResult(path: path.string, module: module, types: [], functions: [])
+                            return nil
                         case .approved:
                             return try makeParser(for: content, forceParse: forceParse, parseDocumentation: parseDocumentation, path: path, module: module).parse()
                         }
@@ -378,7 +378,7 @@ extension Sourcery {
         return (parserResultCopy, Types(types: types, typealiases: typealiases), functions, inlineRanges)
     }
 
-    private func loadOrParse(parser: ParserWrapper, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult {
+    private func loadOrParse(parser: ParserWrapper, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult? {
         guard let cachesPath = cachesPath() else {
             incrementFileParsedCount()
             return try parser.parse()
@@ -392,8 +392,12 @@ extension Sourcery {
             let modifiedDate = path.modifiedDate,
             let unarchived = load(artifacts: artifactsPath.string, modifiedDate: modifiedDate, path: path) else {
 
+            guard let result = try parser.parse() else {
+                return nil
+            }
+
             incrementFileParsedCount()
-            let result = try parser.parse()
+
 
             let data = NSKeyedArchiver.archivedData(withRootObject: result)
             do {
