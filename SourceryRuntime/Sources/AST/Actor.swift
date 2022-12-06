@@ -3,7 +3,7 @@ import Foundation
 // sourcery: skipDescription
 /// Descibes Swift actor
 @objc(SwiftActor) @objcMembers public final class Actor: Type {
-    /// Returns "class"
+    /// Returns "actor"
     public override var kind: String { return "actor" }
 
     /// Whether type is final
@@ -46,7 +46,7 @@ import Foundation
         )
     }
 
-// sourcery:inline:Class.AutoCoding
+// sourcery:inline:Actor.AutoCoding
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
