@@ -1,8 +1,18 @@
-// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
 
+extension Actor {
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "isFinal = \(String(describing: self.isFinal))"
+        return string
+    }
+}
 extension ArrayType {
     /// :nodoc:
     override public var description: String {

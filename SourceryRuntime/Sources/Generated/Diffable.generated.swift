@@ -1,7 +1,18 @@
-// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Foundation
 
+extension Actor {
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Actor else {
+            results.append("Incorrect type <expected: Actor, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+}
 extension ArrayType: Diffable {
     @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()

@@ -1,8 +1,15 @@
-// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
 
+extension Actor {
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Actor else { return false }
+        return super.isEqual(rhs)
+    }
+}
 extension ArrayType {
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
@@ -381,6 +388,14 @@ extension Variable {
     }
 }
 
+// MARK: - Actor AutoHashable
+extension Actor {
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+}
 // MARK: - ArrayType AutoHashable
 extension ArrayType {
     public override var hash: Int {
