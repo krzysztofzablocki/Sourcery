@@ -1,6 +1,6 @@
 # Sourcery CHANGELOG
 
-## Main
+## 1.9.1
 ## New Features
 - Adds support for public protocols in AutoMockable template [#1100](https://github.com/krzysztofzablocki/Sourcery/pull/1100)
 - Adds support for async and throwing properties to AutoMockable template [#1101](https://github.com/krzysztofzablocki/Sourcery/pull/1101)
