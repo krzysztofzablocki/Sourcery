@@ -1,5 +1,4 @@
 import Foundation
-
 // sourcery: skipDescription
 /// Descibes Swift class
 @objc(SwiftClass) @objcMembers public final class Class: Type {

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'cocoapods', '1.10.1'
+gem 'cocoapods', '1.11.3'
 gem 'danger'
 gem 'rake'
 gem 'slather'
