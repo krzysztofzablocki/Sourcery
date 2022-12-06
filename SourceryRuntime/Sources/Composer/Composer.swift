@@ -35,8 +35,6 @@ public enum Composer {
 
         let types = state.unifyTypes()
 
-        let resolutionStart = currentTimestamp()
-
         types.parallelPerform { type in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
@@ -64,8 +62,6 @@ public enum Composer {
         state.functions.parallelPerform { function in
             resolveMethodTypes(function, of: nil, resolve: resolveType)
         }
-
-        Log.benchmark("resolution took \(currentTimestamp() - resolutionStart)")
 
         updateTypeRelationships(types: types)
 

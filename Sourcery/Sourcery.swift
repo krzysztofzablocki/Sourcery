@@ -351,16 +351,22 @@ extension Sourcery {
         }
 
         Log.benchmark("\tloadOrParse: \(currentTimestamp() - startScan)")
+        let reduceStart = currentTimestamp()
 
-        let parserResult = allResults.reduce(FileParserResult(path: nil, module: nil, types: [], functions: [], typealiases: [])) { acc, next in
-            acc.typealiases += next.typealiases
-            acc.types += next.types
-            acc.functions += next.functions
+        var allTypealiases = [Typealias]()
+        var allTypes = [Type]()
+        var allFunctions = [SourceryMethod]()
+
+        for next in allResults {
+            allTypealiases += next.typealiases
+            allTypes += next.types
+            allFunctions += next.functions
 
             // swiftlint:disable:next force_unwrapping
             inlineRanges.append((next.path!, next.inlineRanges, next.inlineIndentations))
-            return acc
         }
+
+        let parserResult = FileParserResult(path: nil, module: nil, types: allTypes, functions: allFunctions, typealiases: allTypealiases)
 
         var parserResultCopy: FileParserResult?
         if requiresFileParserCopy {
@@ -373,7 +379,7 @@ extension Sourcery {
         // ! All files have been scanned, time to join extensions with base class
         let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
 
-        Log.benchmark("\tcombiningTypes: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
+        Log.benchmark("\treduce: \(uniqueTypeStart - reduceStart)\n\tcomposer: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
         Log.info("Found \(types.count) types in \(allResults.count) files, \(numberOfFilesThatHadToBeParsed) changed from last run.")
         return (parserResultCopy, Types(types: types, typealiases: typealiases), functions, inlineRanges)
     }

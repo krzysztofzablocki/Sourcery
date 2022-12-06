@@ -123,14 +123,10 @@ public struct Paths {
         self.include = include
         self.exclude = exclude
 
-        let start = CFAbsoluteTimeGetCurrent()
-
         let include = self.include.parallelFlatMap { $0.processablePaths }
         let exclude = self.exclude.parallelFlatMap { $0.processablePaths }
 
         self.allPaths = Array(Set(include).subtracting(Set(exclude))).sorted()
-
-        Log.benchmark("Resolving Paths took \(CFAbsoluteTimeGetCurrent() - start)")
     }
 
 }
@@ -359,6 +355,11 @@ public enum Configurations {
     ) throws -> [Configuration] {
         guard let dict = try Yams.load(yaml: path.read(), .default, Constructor.sourceryContructor(env: env)) as? [String: Any] else {
             throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
+        }
+
+        let start = CFAbsoluteTimeGetCurrent()
+        defer {
+            Log.benchmark("Resolving configurations took \(CFAbsoluteTimeGetCurrent() - start)")
         }
 
         if let configurations = dict["configurations"] as? [[String: Any]] {
