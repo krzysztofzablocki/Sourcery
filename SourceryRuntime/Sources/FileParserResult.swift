@@ -44,7 +44,11 @@ import Foundation
         self.modifiedDate = modifiedDate
         self.sourceryVersion = sourceryVersion
 
-        types.forEach { type in type.module = module }
+        super.init()
+
+        defer {
+            self.types = types
+        }
     }
 
 // sourcery:inline:FileParserResult.AutoCoding
