@@ -43,11 +43,6 @@ public class Sourcery {
     // content annotated with file annotations per file path to write it to
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
-    private (set) var numberOfFilesThatHadToBeParsed: Int32 = 0
-    func incrementFileParsedCount() {
-        OSAtomicIncrement32(&numberOfFilesThatHadToBeParsed)
-    }
-
     /// Creates Sourcery processor
     public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, prune: Bool = false, serialParse: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
@@ -286,7 +281,7 @@ extension Sourcery {
         Log.info("Scanning sources...")
 
         var inlineRanges = [(file: String, ranges: [String: NSRange], indentations: [String: String])]()
-        var allResults = [FileParserResult]()
+        var allResults = [(changed: Bool, result: FileParserResult)]()
 
         let excludeSet = Set(exclude
             .map { $0.isDirectory ? try? $0.recursiveChildren() : [$0] }
@@ -320,11 +315,9 @@ extension Sourcery {
                     })
                 }
 
-            numberOfFilesThatHadToBeParsed = 0
-
             var lastError: Swift.Error?
 
-            let transform: (ParserWrapper) -> FileParserResult? = { parser in
+            let transform: (ParserWrapper) -> (changed: Bool, result: FileParserResult)? = { parser in
                 do {
                     return try self.loadOrParse(parser: parser, cachesPath: self.cachesDir(sourcePath: from))
                 } catch {
@@ -334,7 +327,7 @@ extension Sourcery {
                 }
             }
 
-            let results: [FileParserResult]
+            let results: [(changed: Bool, result: FileParserResult)]
             if serialParse {
                 results = parserGenerator.compactMap(transform)
             } else {
@@ -357,7 +350,8 @@ extension Sourcery {
         var allTypes = [Type]()
         var allFunctions = [SourceryMethod]()
 
-        for next in allResults {
+        for pair in allResults {
+            let next = pair.result
             allTypealiases += next.typealiases
             allTypes += next.types
             allFunctions += next.functions
@@ -379,15 +373,25 @@ extension Sourcery {
         // ! All files have been scanned, time to join extensions with base class
         let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
 
+
+        let filesThatHadToBeParsed = allResults
+            .filter { $0.changed }
+            .compactMap { $0.result.path }
+
         Log.benchmark("\treduce: \(uniqueTypeStart - reduceStart)\n\tcomposer: \(currentTimestamp() - uniqueTypeStart)\n\ttotal: \(currentTimestamp() - startScan)")
-        Log.info("Found \(types.count) types in \(allResults.count) files, \(numberOfFilesThatHadToBeParsed) changed from last run.")
+        Log.info("Found \(types.count) types in \(allResults.count) files, \(filesThatHadToBeParsed.count) changed from last run.")
+
+        if !filesThatHadToBeParsed.isEmpty, (filesThatHadToBeParsed.count < 50 || Log.level == .verbose) {
+            let files = filesThatHadToBeParsed
+                .joined(separator: "\n")
+            Log.info("Files changed:\n\(files)")
+        }
         return (parserResultCopy, Types(types: types, typealiases: typealiases), functions, inlineRanges)
     }
 
-    private func loadOrParse(parser: ParserWrapper, cachesPath: @autoclosure () -> Path?) throws -> FileParserResult? {
+    private func loadOrParse(parser: ParserWrapper, cachesPath: @autoclosure () -> Path?) throws -> (changed: Bool, result: FileParserResult)? {
         guard let cachesPath = cachesPath() else {
-            incrementFileParsedCount()
-            return try parser.parse()
+            return try parser.parse().map { (changed: true, result: $0) }
         }
 
         let path = parser.path
@@ -402,8 +406,6 @@ extension Sourcery {
                 return nil
             }
 
-            incrementFileParsedCount()
-
             do {
                 let data = try NSKeyedArchiver.archivedData(withRootObject: result, requiringSecureCoding: false)
                 try artifactsPath.write(data)
@@ -411,10 +413,10 @@ extension Sourcery {
                 fatalError("Unable to save artifacts for \(path) under \(artifactsPath), error: \(error)")
             }
 
-            return result
+            return (changed: true, result: result)
         }
 
-        return unarchived
+        return (changed: false, result: unarchived)
     }
 
     private func load(artifacts: String, modifiedDate: Date, path: Path) -> FileParserResult? {

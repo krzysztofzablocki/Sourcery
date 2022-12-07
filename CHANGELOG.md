@@ -3,6 +3,7 @@
 ## 1.9.2
 ## Internal Changes
 - Reverts part of [#1113](https://github.com/krzysztofzablocki/Sourcery/pull/1113) due to incomplete implementation breaking type complex resolution
+- Files that had to be parsed will be logged if their count is less than 50 (or always in verbose mode)
 
 ## 1.9.1
 ## New Features
