@@ -2092,8 +2092,8 @@ class ParserComposerSpec: QuickSpec {
                 context("given nested types") {
                     it("resolve extensions of nested type properly") {
                         let types = parseModules(
-                            ("Mod1", "enum NS {}; extension Mod1.NS { struct Foo { func f1() } }"),
-                            ("Mod2", "import Mod1; extension Mod1.NS.Foo { func f2() }"),
+                            ("Mod1", "enum NS {}; extension NS { struct Foo { func f1() } }"),
+                            ("Mod2", "import Mod1; extension NS.Foo { func f2() }"),
                             ("Mod3", "import Mod1; extension NS.Foo { func f3() }")
                         ).types
                         expect(types.map { $0.globalName }).to(equal(["Mod1.NS", "Mod1.NS.Foo"]))
@@ -2103,7 +2103,7 @@ class ParserComposerSpec: QuickSpec {
                     it("resolve extensions with nested types properly") {
                         let types = parseModules(
                             ("Mod1", "enum NS {}"),
-                            ("Mod2", "import Mod1; extension Mod1.NS { struct A {} }"),
+                            ("Mod2", "import Mod1; extension NS { struct A {} }"),
                             ("Mod3", "import Mod1; extension NS { struct B {} }")
                         ).types
                         expect(types.map { $0.globalName }).to(equal(["Mod1.NS", "Mod2.NS.A", "Mod3.NS.B"]))
@@ -2112,7 +2112,7 @@ class ParserComposerSpec: QuickSpec {
                     it("resolves extensions of nested types properly") {
                         let code =
                         """
-                        "struct Root {
+                        struct Root {
                             struct ViewState {}
                         }
 

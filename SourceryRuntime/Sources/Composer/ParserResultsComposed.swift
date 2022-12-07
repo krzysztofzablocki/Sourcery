@@ -35,9 +35,8 @@ internal struct ParserResultsComposed {
 
         // map all known types to their names
         parsedTypes
+            .filter { !$0.isExtension }
             .forEach {
-                guard !$0.isExtension else { return }
-
                 typeMap[$0.globalName] = $0
                 if let module = $0.module {
                     var typesByModules = modules[module, default: [:]]
@@ -57,7 +56,7 @@ internal struct ParserResultsComposed {
 
     private func resolveExtensionOfNestedType(_ type: Type) {
         var components = type.localName.components(separatedBy: ".")
-        let rootName = components.removeFirst() // Module/parent name
+        let rootName = type.module ?? components.removeFirst() // Module/parent name
         if let moduleTypes = modules[rootName], let baseType = moduleTypes[components.joined(separator: ".")] ?? moduleTypes[type.localName] {
             type.localName = baseType.localName
             type.module = baseType.module
@@ -79,9 +78,8 @@ internal struct ParserResultsComposed {
     private mutating func unifyTypes() -> [Type] {
         /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
         parsedTypes
+            .filter { $0.isExtension }
             .forEach {
-                guard $0.isExtension else { return }
-
                 let oldName = $0.globalName
 
                 if $0.parent == nil, $0.localName.contains(".") {
