@@ -2108,6 +2108,26 @@ class ParserComposerSpec: QuickSpec {
                         ).types
                         expect(types.map { $0.globalName }).to(equal(["Mod1.NS", "Mod2.NS.A", "Mod3.NS.B"]))
                     }
+
+                    it("resolves extensions of nested types properly") {
+                        let code =
+                        """
+                        "struct Root {
+                            struct ViewState {}
+                        }
+
+                        extension Root.ViewState {
+                            struct Item: AutoInitializable {
+                            }
+                        }
+                        """
+
+                        let types = parseModules(
+                            ("Mod1", code)
+                        ).types
+
+                        expect(types.map { $0.globalName }).to(equal(["Mod1.Root", "Mod1.Root.ViewState", "Mod1.Root.ViewState.Item"]))
+                    }
                 }
 
                 context("given protocols of the same name in different modules") {
