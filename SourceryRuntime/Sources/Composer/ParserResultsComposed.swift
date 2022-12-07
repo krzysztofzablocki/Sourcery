@@ -87,7 +87,9 @@ internal struct ParserResultsComposed {
                 }
 
                 if let resolved = resolveGlobalName(for: oldName, containingType: $0.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
-                    $0.localName = resolved.components(separatedBy: ".").last!
+                    $0.localName = resolved.replacingOccurrences(of: "\($0.module != nil ? "\($0.module!)." : "")", with: "")
+                } else {
+                    return
                 }
 
                 // nothing left to do

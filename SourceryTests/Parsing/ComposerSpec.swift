@@ -2120,13 +2120,22 @@ class ParserComposerSpec: QuickSpec {
                             struct Item: AutoInitializable {
                             }
                         }
+
+                        extension Root.ViewState.Item {
+                            struct ChildItem {}
+                        }
                         """
 
                         let types = parseModules(
                             ("Mod1", code)
                         ).types
 
-                        expect(types.map { $0.globalName }).to(equal(["Mod1.Root", "Mod1.Root.ViewState", "Mod1.Root.ViewState.Item"]))
+                        expect(types.map { $0.globalName }).to(equal([
+                            "Mod1.Root",
+                            "Mod1.Root.ViewState",
+                            "Mod1.Root.ViewState.Item",
+                            "Mod1.Root.ViewState.Item.ChildItem"
+                        ]))
                     }
                 }
 
