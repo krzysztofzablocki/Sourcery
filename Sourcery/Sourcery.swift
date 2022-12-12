@@ -692,6 +692,13 @@ extension Sourcery {
                 }
                 let bodyEndRange = NSRange(location: NSMaxRange(bodyRange), length: 0)
                 let bodyEndLineRange = contents.bridge().lineRange(for: bodyEndRange)
+                let bodyEndLine = contents.bridge().substring(with: bodyEndLineRange)
+                let indentRange: NSRange?
+                if !bodyEndLine.contains("{") {
+                    indentRange = (bodyEndLine as NSString).rangeOfCharacter(from: .whitespacesAndNewlines.inverted)
+                } else {
+                    indentRange = nil
+                }
                 let rangeInFile: NSRange
 
                 switch autoType {
@@ -702,7 +709,8 @@ extension Sourcery {
                     toInsert += "\n"
                 }
 
-                return MappedInlineAnnotations(range, filePath, rangeInFile, toInsert, "")
+                let indent = indentRange.map { String(repeating: " ", count: $0.location) } ?? ""
+                return MappedInlineAnnotations(range, filePath, rangeInFile, toInsert, indent)
             }
             .sorted { lhs, rhs in
                 return lhs.rangeInFile.location > rhs.rangeInFile.location

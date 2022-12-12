@@ -327,6 +327,42 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(equal(expectedResult))
                     }
 
+                    it("insert generated code in the end of type body maintaining identation") {
+                        update(code:
+                        """
+                        class Foo {
+                            struct Inner {
+                            }
+                        }
+                        """,
+                        in: sourcePath)
+
+                        update(code: """
+                            // Line One
+                            // sourcery:inline:auto:Foo.Inner.Inlined
+                                var property = 3
+                            // Line Three
+                            // sourcery:end
+                            """, in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+
+                        let expectedResult = """
+                            class Foo {
+                                struct Inner {
+
+                                // sourcery:inline:auto:Foo.Inner.Inlined
+                                    var property = 3
+                                // Line Three
+                                // sourcery:end
+                                }
+                            }
+                            """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
                     it("insert generated code after the end of type body when using after-auto") {
                         update(code: "class Foo {}\nstruct Boo {}", in: sourcePath)
 
@@ -354,21 +390,12 @@ class SourcerySpecTests: QuickSpec {
                         update(code: """
                         class Foo {
                             var property = 1 }
-
-                        class Bar {
-                            var property = 1
-                        }
                         """, in: sourcePath)
 
                         update(code: """
                             // Line One
                             // sourcery:inline:auto:Foo.Inlined
-                                var property = 2
-                            // Line Three
-                            // sourcery:end
-                            // Line One
-                            // sourcery:inline:auto:Bar.Inlined
-                                var property = 2
+                            var property = 2
                             // Line Three
                             // sourcery:end
                             """, in: templatePath)
@@ -378,20 +405,11 @@ class SourcerySpecTests: QuickSpec {
                         let expectedResult = """
                             class Foo {
 
-                            // sourcery:inline:auto:Foo.Inlined
+                                // sourcery:inline:auto:Foo.Inlined
                                 var property = 2
-                            // Line Three
-                            // sourcery:end
+                                // Line Three
+                                // sourcery:end
                                 var property = 1 }
-
-                            class Bar {
-                                var property = 1
-
-                            // sourcery:inline:auto:Bar.Inlined
-                                var property = 2
-                            // Line Three
-                            // sourcery:end
-                            }
                             """
 
                         let result = try? sourcePath.read(.utf8)
