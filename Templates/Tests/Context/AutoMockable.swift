@@ -133,3 +133,7 @@ public protocol AccessLevelProtocol: AutoMockable {
     
     func loadConfiguration() -> String?
 }
+
+protocol StaticMethodProtocol:AutoMockable {
+    static func staticFunction(String) -> String
+}

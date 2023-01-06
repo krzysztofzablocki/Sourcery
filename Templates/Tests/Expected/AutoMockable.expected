@@ -1,3 +1,8 @@
+// Generated using Sourcery 1.9.2 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+// swiftlint:disable line_length
+// swiftlint:disable variable_name
+
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
@@ -592,6 +597,43 @@ class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
         sendMessageReceivedMessage = message
         sendMessageReceivedInvocations.append(message)
         sendMessageClosure?(message)
+    }
+
+}
+class StaticMethodProtocolMock: StaticMethodProtocol {
+
+
+
+    static func reset()
+    {
+         //MARK: - staticFunction
+        staticFunctionCallsCount = 0
+        staticFunctionReceived = nil
+        staticFunctionReceivedInvocations = []
+        staticFunctionClosure = nil
+
+    }
+
+    //MARK: - staticFunction
+
+    static var staticFunctionCallsCount = 0
+    static var staticFunctionCalled: Bool {
+        return staticFunctionCallsCount > 0
+    }
+    static var staticFunctionReceived: String?
+    static var staticFunctionReceivedInvocations: [String] = []
+    static var staticFunctionReturnValue: String!
+    static var staticFunctionClosure: ((String) -> String)?
+
+    static func staticFunction(_: String) -> String {
+        staticFunctionCallsCount += 1
+        staticFunctionReceived = 
+        staticFunctionReceivedInvocations.append()
+        if let staticFunctionClosure = staticFunctionClosure {
+            return staticFunctionClosure()
+        } else {
+            return staticFunctionReturnValue
+        }
     }
 
 }
