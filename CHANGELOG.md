@@ -1,5 +1,8 @@
 # Sourcery CHANGELOG
 
+## New Features
+
+- add support for type methods to AutoMockable
 ## 1.9.2
 ## Internal Changes
 - Reverts part of [#1113](https://github.com/krzysztofzablocki/Sourcery/pull/1113) due to incomplete implementation breaking type complex resolution
