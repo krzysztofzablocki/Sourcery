@@ -518,6 +518,58 @@ class InitializationProtocolMock: InitializationProtocol {
     }
 
 }
+class MultiClosureProtocolMock: MultiClosureProtocol {
+
+    //MARK: - setClosure
+
+    var setClosureNameCallsCount = 0
+    var setClosureNameCalled: Bool {
+        return setClosureNameCallsCount > 0
+    }
+    var setClosureNameReceivedArguments: (name: String, closure: () -> Void)?
+    var setClosureNameReceivedInvocations: [(name: String, closure: () -> Void)] = []
+    var setClosureNameClosure: ((String, @escaping () -> Void) -> Void)?
+
+    func setClosure(name: String, _ closure: @escaping () -> Void) {
+        setClosureNameCallsCount += 1
+        setClosureNameReceivedArguments = (name: name, closure: closure)
+        setClosureNameReceivedInvocations.append((name: name, closure: closure))
+        setClosureNameClosure?(name, closure)
+    }
+
+}
+class MultiNonEscapingClosureProtocolMock: MultiNonEscapingClosureProtocol {
+
+    //MARK: - executeClosure
+
+    var executeClosureNameCallsCount = 0
+    var executeClosureNameCalled: Bool {
+        return executeClosureNameCallsCount > 0
+    }
+    var executeClosureNameClosure: ((String, () -> Void) -> Void)?
+
+    func executeClosure(name: String, _ closure: () -> Void) {
+        executeClosureNameCallsCount += 1
+        executeClosureNameClosure?(name, closure)
+    }
+
+}
+class NonEscapingClosureProtocolMock: NonEscapingClosureProtocol {
+
+    //MARK: - executeClosure
+
+    var executeClosureCallsCount = 0
+    var executeClosureCalled: Bool {
+        return executeClosureCallsCount > 0
+    }
+    var executeClosureClosure: ((() -> Void) -> Void)?
+
+    func executeClosure(_ closure: () -> Void) {
+        executeClosureCallsCount += 1
+        executeClosureClosure?(closure)
+    }
+
+}
 class ReservedWordsProtocolMock: ReservedWordsProtocol {
 
     //MARK: - `continue`

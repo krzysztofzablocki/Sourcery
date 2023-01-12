@@ -71,6 +71,18 @@ protocol ClosureProtocol: AutoMockable {
     func setClosure(_ closure: @escaping () -> Void)
 }
 
+protocol MultiClosureProtocol: AutoMockable {
+    func setClosure(name: String, _ closure: @escaping () -> Void)
+}
+
+protocol NonEscapingClosureProtocol: AutoMockable {
+    func executeClosure(_ closure: () -> Void)
+}
+
+protocol MultiNonEscapingClosureProtocol: AutoMockable {
+    func executeClosure(name: String, _ closure: () -> Void)
+}
+
 /// sourcery: AutoMockable
 protocol AnnotatedProtocol {
     func sayHelloWith(name: String)
