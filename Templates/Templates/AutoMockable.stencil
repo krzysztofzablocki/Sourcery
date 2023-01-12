@@ -33,11 +33,16 @@ import {{ import }}
 {% endmacro %}
 
 {% macro methodReceivedParameters method %}
-    {%if method.parameters.count == 1 %}
+    {% set hasNonEscapingClosures %}
+        {%- for param in method.parameters where param.isClosure and not param.typeAttributes.escaping %}
+            {{ true }}
+        {% endfor -%}
+    {% endset %}
+    {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
         {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
         {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append({% for param in method.parameters %}{{ param.name }}){% endfor %}
     {% else %}
-    {% if not method.parameters.count == 0 %}
+    {% if not method.parameters.count == 0 and not hasNonEscapingClosures %}
         {% call swiftifyMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
         {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append(({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %}))
     {% endif %}
@@ -66,10 +71,15 @@ import {{ import }}
         return {% call swiftifyMethodName method.selectorName %}CallsCount > 0
     }
     {% endif %}
-    {% if method.parameters.count == 1 %}
+    {% set hasNonEscapingClosures %}
+        {%- for param in method.parameters where param.isClosure and not param.typeAttributes.escaping %}
+            {{ true }}
+        {% endfor -%}
+    {% endset %}
+    {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}?{% endfor %}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}{%if param.typeName.isOptional%}?{%endif%}]{% endfor %} = []
-    {% elif not method.parameters.count == 0 %}
+    {% elif not method.parameters.count == 0 and not hasNonEscapingClosures %}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})?
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})] = []
     {% endif %}
