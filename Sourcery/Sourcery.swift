@@ -63,7 +63,7 @@ public class Sourcery {
     ///   - forceParse: extensions of generated sourcery file that can be parsed
     ///   - watcherEnabled: Whether daemon watcher should be enabled.
     /// - Throws: Potential errors.
-    public func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Output, isDryRun: Bool = false, forceParse: [String] = [], parseDocumentation: Bool = false) throws -> [FolderWatcher.Local]? {
+    public func processFiles(_ source: Source, usingTemplates templatesPaths: Paths, output: Output, isDryRun: Bool = false, forceParse: [String] = [], parseDocumentation: Bool = false, baseIndentation: Int) throws -> [FolderWatcher.Local]? {
         self.templatesPaths = templatesPaths
         self.outputPath = output
         self.isDryRun = isDryRun
@@ -106,7 +106,7 @@ public class Sourcery {
                 result = try self.parse(from: paths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
-            try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result, forceParse: forceParse)
+            try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result, forceParse: forceParse, baseIndentation: baseIndentation)
             return result
         }
 
@@ -168,7 +168,7 @@ public class Sourcery {
                         } else {
                             Log.info("Templates changed: ")
                         }
-                        try self.generate(source: source, templatePaths: Paths(include: [templatesPath]), output: output, parsingResult: &result, forceParse: forceParse)
+                        try self.generate(source: source, templatePaths: Paths(include: [templatesPath]), output: output, parsingResult: &result, forceParse: forceParse, baseIndentation: baseIndentation)
                     } catch {
                         Log.error(error)
                     }
@@ -442,7 +442,7 @@ extension Sourcery {
     private typealias SourceChange = (path: String, rangeInFile: NSRange, newRangeInFile: NSRange)
     private typealias GenerationResult = (String, [SourceChange])
 
-    fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: inout ParsingResult, forceParse: [String]) throws {
+    fileprivate func generate(source: Source, templatePaths: Paths, output: Output, parsingResult: inout ParsingResult, forceParse: [String], baseIndentation: Int) throws {
         let generationStart = currentTimestamp()
 
         Log.info("Loading templates...")
@@ -455,7 +455,7 @@ extension Sourcery {
 
         if output.isDirectory {
             try allTemplates.forEach { template in
-                let (result, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path, forceParse: forceParse)
+                let (result, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path, forceParse: forceParse, baseIndentation: baseIndentation)
                 updateRanges(in: &parsingResult, sourceChanges: sourceChanges)
                 let outputPath = output.path + generatedPath(for: template.sourcePath)
                 try self.output(type: .template(template.sourcePath.string), result: result, to: outputPath)
@@ -469,7 +469,7 @@ extension Sourcery {
         } else {
             let result = try allTemplates.reduce((contents: "", parsingResult: parsingResult)) { state, template in
                 var (result, parsingResult) = state
-                let (generatedCode, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path, forceParse: forceParse)
+                let (generatedCode, sourceChanges) = try generate(template, forParsingResult: parsingResult, outputPath: output.path, forceParse: forceParse, baseIndentation: baseIndentation)
                 result += "\n" + generatedCode
                 updateRanges(in: &parsingResult, sourceChanges: sourceChanges)
                 return (result, parsingResult)
@@ -607,13 +607,13 @@ extension Sourcery {
         try writeIfChanged(updatedContent(), to: path)
     }
 
-    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path, forceParse: [String]) throws -> GenerationResult {
+    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path, forceParse: [String], baseIndentation: Int) throws -> GenerationResult {
         guard watcherEnabled else {
             let generationStart = currentTimestamp()
             let result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
             Log.benchmark("\tGenerating \(template.sourcePath.lastComponent) took \(currentTimestamp() - generationStart)")
 
-            return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse)
+            return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse, baseIndentation: baseIndentation)
         }
 
         var result: String = ""
@@ -627,10 +627,10 @@ extension Sourcery {
             result = error?.description ?? ""
         }, finallyBlock: {})
 
-        return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse)
+        return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse, baseIndentation: baseIndentation)
     }
 
-    private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path, forceParse: [String]) throws -> GenerationResult {
+    private func processRanges(in parsingResult: ParsingResult, result: String, outputPath: Path, forceParse: [String], baseIndentation: Int) throws -> GenerationResult {
         let start = currentTimestamp()
         defer {
             Log.benchmark("\t\tProcessing Ranges took \(currentTimestamp() - start)")
@@ -638,11 +638,11 @@ extension Sourcery {
         var result = result
         result = processFileRanges(for: parsingResult, in: result, outputPath: outputPath, forceParse: forceParse)
         let sourceChanges: [SourceChange]
-        (result, sourceChanges) = try processInlineRanges(for: parsingResult, in: result, forceParse: forceParse)
+        (result, sourceChanges) = try processInlineRanges(for: parsingResult, in: result, forceParse: forceParse, baseIndentation: baseIndentation)
         return (TemplateAnnotationsParser.removingEmptyAnnotations(from: result), sourceChanges)
     }
 
-    private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String, forceParse: [String]) throws -> GenerationResult {
+    private func processInlineRanges(`for` parsingResult: ParsingResult, in contents: String, forceParse: [String], baseIndentation: Int) throws -> GenerationResult {
         var (annotatedRanges, rangesToReplace) = TemplateAnnotationsParser.annotationRanges("inline", contents: contents, forceParse: forceParse)
 
         typealias MappedInlineAnnotations = (
@@ -709,7 +709,7 @@ extension Sourcery {
                     toInsert += "\n"
                 }
 
-                let indent = indentRange.map { String(repeating: " ", count: $0.location) } ?? ""
+                let indent = String(repeating: " ", count: (indentRange?.location ?? 0) + baseIndentation)
                 return MappedInlineAnnotations(range, filePath, rangeInFile, toInsert, indent)
             }
             .sorted { lhs, rhs in

@@ -62,7 +62,7 @@ class SwiftTemplateTests: QuickSpec {
             }
 
             it("generates correct output") {
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -82,7 +82,7 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -92,7 +92,7 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("IncludeFile.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -102,7 +102,7 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("IncludesNoExtension.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -112,7 +112,7 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("IncludeFileNoExtension.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -122,7 +122,7 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("SubfolderIncludes.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -132,7 +132,7 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("SubfolderFileIncludes.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -193,7 +193,7 @@ class SwiftTemplateTests: QuickSpec {
 
             context("with existing cache") {
                 beforeEach {
-                    expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                    expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
                     expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
                 }
 
@@ -211,7 +211,7 @@ class SwiftTemplateTests: QuickSpec {
                     }
 
                     it("generates the code") {
-                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                         let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                         expect(result).to(equal(expectedResult))
@@ -223,7 +223,7 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("Function.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Function.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))

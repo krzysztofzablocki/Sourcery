@@ -277,6 +277,7 @@ public struct Configuration {
     public let cacheBasePath: Path
     public let forceParse: [String]
     public let parseDocumentation: Bool
+    public let baseIndentation: Int
     public let args: [String: NSObject]
 
     public init(
@@ -332,16 +333,18 @@ public struct Configuration {
             self.cacheBasePath = Path.defaultBaseCachePath
         }
 
+        self.baseIndentation = dict["baseIndentation"] as? Int ?? 0
         self.args = dict["args"] as? [String: NSObject] ?? [:]
     }
 
-    public init(sources: Paths, templates: Paths, output: Path, cacheBasePath: Path, forceParse: [String], parseDocumentation: Bool, args: [String: NSObject]) {
+    public init(sources: Paths, templates: Paths, output: Path, cacheBasePath: Path, forceParse: [String], parseDocumentation: Bool, baseIndentation: Int, args: [String: NSObject]) {
         self.source = .sources(sources)
         self.templates = templates
         self.output = Output(output, linkTo: nil)
         self.cacheBasePath = cacheBasePath
         self.forceParse = forceParse
         self.parseDocumentation = parseDocumentation
+        self.baseIndentation = baseIndentation
         self.args = args
     }
 

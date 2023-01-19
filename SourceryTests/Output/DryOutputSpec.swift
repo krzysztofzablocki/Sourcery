@@ -31,7 +31,8 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: false)
+                                              isDryRun: false,
+                                              baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(beNil())
@@ -48,7 +49,7 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -65,7 +66,7 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -82,7 +83,7 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -99,7 +100,7 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -121,7 +122,8 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: Output(outputDir),
-                                              isDryRun: false)
+                                              isDryRun: false,
+                                              baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(beNil())
@@ -144,7 +146,7 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: Output(outputDir),
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -161,7 +163,7 @@ class DryOutputSpec: QuickSpec {
                     try sourcery.processFiles(.sources(Paths(include: [sourcePath])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: Output("."),
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result(byOutputType: .init(id: "\(sourcePath):109",
@@ -286,7 +288,8 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: false)
+                                              isDryRun: false,
+                                              baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(beNil())
@@ -301,7 +304,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -318,7 +321,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -335,7 +338,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -352,7 +355,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -369,7 +372,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -386,7 +389,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -403,7 +406,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -420,7 +423,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: [templatePath]),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.result).to(equal(expectedResult))
@@ -453,7 +456,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: templatePaths),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(outputInterceptor.outputModel.outputs.count).to(equal(expectedResults.count))
@@ -486,7 +489,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                               usingTemplates: Paths(include: templatePaths),
                                               output: output,
-                                              isDryRun: true)
+                                              isDryRun: true, baseIndentation: 0)
                 }.toNot(throwError())
 
                 expect(
