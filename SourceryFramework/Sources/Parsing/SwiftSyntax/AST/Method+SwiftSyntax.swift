@@ -92,7 +92,7 @@ extension SourceryMethod {
         if let genericWhereClause = genericWhereClause {
             // TODO: add generic requirement to method
             // TODO: TBR
-            returnTypeName = TypeName(name: returnTypeName.name + " \(genericWhereClause.description.trimmed)",
+            returnTypeName = TypeName(name: returnTypeName.name + " \(genericWhereClause.withoutTrivia().description.trimmed)",
                                       unwrappedTypeName: returnTypeName.unwrappedTypeName,
                                       attributes: returnTypeName.attributes,
                                       isOptional: returnTypeName.isOptional,

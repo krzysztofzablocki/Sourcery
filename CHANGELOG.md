@@ -1,10 +1,11 @@
 # Sourcery CHANGELOG
 
-## 1.9.3
+## 2.0.0
 ## Changes
 - sourcery:auto inline fragments will appear on the body definition level
     - added baseIndentation/base-indentation option that will be taken into as default adjustment when using those fragments
 - add support for type methods to AutoMockable
+- Improved performance by about 20%
 
 ## 1.9.2
 ## Internal Changes
