@@ -6,7 +6,7 @@ extension SyntaxProtocol {
     @inlinable
     var sourcerySafeTypeIdentifier: String {
         let content = description
-        return String(content[content.index(content.startIndex, offsetBy: leadingTriviaLength.utf8Length)..<content.index(content.endIndex, offsetBy: -trailingTriviaLength.utf8Length)])
+        return String(content[content.utf8.index(content.startIndex, offsetBy: leadingTriviaLength.utf8Length)..<content.utf8.index(content.endIndex, offsetBy: -trailingTriviaLength.utf8Length)])
 
         // TBR: we only need this because we are trying to fit into old AST naming
         // TODO: there is a bug in syntax that sometimes crashes with unexpected nil when removing trivia
