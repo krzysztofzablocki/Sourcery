@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## x.x.x
+## Internal Changes
+- Fixed non-ASCII characters handling in source code parsing [#1130](https://github.com/krzysztofzablocki/Sourcery/pull/1130)
+
 ## 2.0.0
 ## Changes
 - sourcery:auto inline fragments will appear on the body definition level
