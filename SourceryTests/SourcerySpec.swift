@@ -365,7 +365,6 @@ class SourcerySpecTests: QuickSpec {
                             """
 
                         let result = try? sourcePath.read(.utf8)
-                        try! result!.write(toFile: "/Users/merowing/Desktop/test.txt", atomically: true, encoding: .utf8)
                         expect(result).to(equal(expectedResult))
                     }
 

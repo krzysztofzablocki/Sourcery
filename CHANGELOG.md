@@ -1,15 +1,14 @@
 # Sourcery CHANGELOG
 
-## x.x.x
+## 2.0.0
 ## Internal Changes
 - Fixed non-ASCII characters handling in source code parsing [#1130](https://github.com/krzysztofzablocki/Sourcery/pull/1130)
+- Improved performance by about 20%
 
-## 2.0.0
 ## Changes
 - sourcery:auto inline fragments will appear on the body definition level
     - added baseIndentation/base-indentation option that will be taken into as default adjustment when using those fragments
 - add support for type methods to AutoMockable
-- Improved performance by about 20%
 
 ## 1.9.2
 ## Internal Changes
