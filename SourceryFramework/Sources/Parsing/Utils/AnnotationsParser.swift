@@ -152,11 +152,13 @@ public struct AnnotationsParser {
         return documentation.reversed()
     }
 
-
+    
     func inlineFrom(line lineInfo: (line: Int, character: Int), stop: inout Bool) -> Annotations {
         let sourceLine = lines[lineInfo.line - 1]
-        var prefix = sourceLine.content.bridge()
-            .substring(to: max(0, lineInfo.character - 1))
+        
+        let string = String(String(cString: Array(sourceLine.content.utf8CString[0...max(0, lineInfo.character)] + CollectionOfOne(CChar(0)))).dropLast(1))
+        
+        var prefix = string.bridge()
             .trimmingCharacters(in: .whitespaces)
 
         guard !prefix.isEmpty else { return [:] }
