@@ -20,7 +20,7 @@ let package = Package(
         .plugin(name: "SourceryCommandPlugin", targets: ["SourceryCommandPlugin"])
     ],
     dependencies: [
-        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.3"),
         .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
         // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
         .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
