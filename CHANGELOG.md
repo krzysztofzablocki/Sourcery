@@ -1,6 +1,6 @@
 # Sourcery CHANGELOG
 
-## Master
+## 2.0.1
 ## Internal Changes
 - Fixed non-ASCII characters handling in source code parsing [#1130](https://github.com/krzysztofzablocki/Sourcery/pull/1130)
 - Improved performance by about 20%
