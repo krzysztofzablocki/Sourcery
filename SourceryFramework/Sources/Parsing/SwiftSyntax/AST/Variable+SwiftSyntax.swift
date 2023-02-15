@@ -69,7 +69,7 @@ extension Variable {
           node.initializer.flatMap { Self.inferType($0.value.description.trimmed) }
 
         self.init(
-          name: node.pattern.description.trimmed,
+          name: node.pattern.withoutTrivia().description.trimmed,
           typeName: typeName ?? TypeName.unknown(description: node.description.trimmed),
           type: nil,
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),

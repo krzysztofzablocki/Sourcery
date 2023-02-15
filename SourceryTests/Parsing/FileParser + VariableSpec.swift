@@ -311,6 +311,16 @@ class FileParserVariableSpec: QuickSpec {
                                                            "var name: Int { return 2 }")
                         expect(result).to(equal(expectedVariable))
                     }
+
+                    it("separates comments correctly from variable name") {
+                        let result = variable(
+"""
+@SomeWrapper
+var variable2 // some comment
+""")
+                        let expectedVariable = Variable(name: "variable2", typeName: TypeName(name: "UnknownTypeSoAddTypeAttributionToVariable"), accessLevel: (read: .internal, write: .internal), isComputed: false, attributes: ["SomeWrapper": [Attribute(name: "SomeWrapper", arguments: [:])]])
+                        expect(result).to(equal(expectedVariable))
+                    }
                     
                     it("extracts trailing annotations") {
                         let expectedVariable = Variable(name: "name", typeName: TypeName(name: "Int"), accessLevel: (read: .internal, write: .none), isComputed: true)
