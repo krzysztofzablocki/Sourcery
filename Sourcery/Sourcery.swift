@@ -29,6 +29,7 @@ public class Sourcery {
     fileprivate let arguments: [String: NSObject]
     fileprivate let cacheDisabled: Bool
     fileprivate let cacheBasePath: Path?
+    fileprivate let buildPath: Path?
     fileprivate let prune: Bool
     fileprivate let serialParse: Bool
 
@@ -44,12 +45,13 @@ public class Sourcery {
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
     /// Creates Sourcery processor
-    public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, prune: Bool = false, serialParse: Bool = false, arguments: [String: NSObject] = [:]) {
+  public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, buildPath: Path? = nil, prune: Bool = false, serialParse: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
         self.cacheDisabled = cacheDisabled
         self.cacheBasePath = cacheBasePath
+        self.buildPath = buildPath
         self.prune = prune
         self.serialParse = serialParse
     }
@@ -242,7 +244,7 @@ public class Sourcery {
                 }
             } else if $0.extension == "swifttemplate" {
                 let cachePath = cachesDir(sourcePath: $0)
-                return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version)
+                return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
             } else if $0.extension == "ejs" {
                 guard EJSTemplate.ejsPath != nil else {
                     Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
@@ -272,7 +274,7 @@ extension Sourcery {
 
     typealias ParserWrapper = (path: Path, parse: () throws -> FileParserResult?)
 
-    fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], parseDocumentation: Bool, modules: [String]?, requiresFileParserCopy: Bool) throws -> ParsingResult {
+  fileprivate func parse(from: [Path], exclude: [Path] = [], forceParse: [String] = [], parseDocumentation: Bool, modules: [String]?, requiresFileParserCopy: Bool) throws -> ParsingResult {
         if let modules = modules {
             precondition(from.count == modules.count, "There should be module for each file to parse")
         }
