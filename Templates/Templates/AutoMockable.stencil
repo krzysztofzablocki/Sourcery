@@ -1,6 +1,7 @@
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
 
+{% if argument.mockWrapDefine != nil %}#if {{ argument.mockWrapDefine }}{% endif %}
 import Foundation
 #if os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
@@ -225,3 +226,4 @@ import {{ import }}
 {% endfor %}
 }
 {% endif %}{% endfor %}
+{% if argument.mockWrapDefine != nil %}#endif // {{ argument.mockWrapDefine }}{% endif %}
