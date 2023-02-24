@@ -216,7 +216,7 @@ args:
   <name>: <value>
 ```
 
-Read more about this configuration file [here](https://merowing.info/Sourcery/usage.html#configuration-file).
+Read more about this configuration file [here](https://krzysztofzablocki.github.io/Sourcery/usage.html#configuration-file).
 
 ## Issues
 If you get an unverified developer warning when using binary zip distribution try:
