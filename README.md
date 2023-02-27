@@ -151,11 +151,11 @@ Sourcery is a command line tool; you can either run it manually or in a custom b
 $ ./bin/sourcery --sources <sources path> --templates <templates path> --output <output path>
 ```
 
-> Note: this command differs depending on how you installed Sourcery (see [Installing](#installing))
+> Note: this command differs depending on how you installed Sourcery (see [Installation](#installation))
 
 ### Swift Package command
 
-Sourcery can now be used as a Swift package command plugin. In order to do this, the package must be added as a dependency to your Swift package or Xcode project (see [Installing](#installing) above).
+Sourcery can now be used as a Swift package command plugin. In order to do this, the package must be added as a dependency to your Swift package or Xcode project (see [Installation](#installation) above).
 
 To provide a configuration for the plugin to use, place a `.sourcery.yml` file at the root of the target's directory (in the sources folder rather than the root of the package).
 
