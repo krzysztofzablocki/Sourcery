@@ -154,7 +154,8 @@ import {{ import }}
         get { return {% call underlyingMockedVariableName variable %} }
         set(value) { {% call underlyingMockedVariableName variable %} = value }
     }
-    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}!
+    {% set wrappedTypeName %}{% if variable.typeName.isProtocolComposition %}({{ variable.typeName }}){% else %}{{ variable.typeName }}{% endif %}{% endset %}
+    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ wrappedTypeName }}!
 {% endmacro %}
 
 {% macro variableThrowableErrorDeclaration variable %}
