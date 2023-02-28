@@ -25,6 +25,7 @@ private struct ProcessResult {
 open class SwiftTemplate {
 
     public let sourcePath: Path
+    let buildPath: Path?
     let cachePath: Path?
     let code: String
     let version: String?
@@ -32,12 +33,18 @@ open class SwiftTemplate {
 
     private lazy var buildDir: Path = {
         let pathComponent = "SwiftTemplate" + (version.map { "/\($0)" } ?? "")
+
+         if let buildPath {
+            return buildPath + pathComponent
+         }
+
         guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(pathComponent) else { fatalError("Unable to get temporary path") }
         return Path(tempDirURL.path)
     }()
 
-    public init(path: Path, cachePath: Path? = nil, version: String? = nil) throws {
+  public init(path: Path, cachePath: Path? = nil, version: String? = nil, buildPath: Path? = nil) throws {
         self.sourcePath = path
+        self.buildPath = buildPath
         self.cachePath = cachePath
         self.version = version
         (self.code, self.includedFiles) = try SwiftTemplate.parse(sourcePath: path)

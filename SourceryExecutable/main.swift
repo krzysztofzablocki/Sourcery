@@ -115,8 +115,9 @@ func runCLI() {
         	via `argument.<name>`. To pass in string you should use escaped quotes (\\").
         	"""),
         Option<Path>("ejsPath", default: "", description: "Path to EJS file for JavaScript templates."),
-        Option<Path>("cacheBasePath", default: "", description: "Base path to Sourcery's cache directory")
-    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, ejsPath, cacheBasePath in
+        Option<Path>("cacheBasePath", default: "", description: "Base path to Sourcery's cache directory"),
+        Option<Path>("buildPath", default: "", description: "Sets a custom build path")
+    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, ejsPath, cacheBasePath, buildPath in
         do {
             Log.stackMessages = isDryRun
             switch (quiet, verboseLogging) {
@@ -200,6 +201,7 @@ func runCLI() {
                                         watcherEnabled: watcherEnabled,
                                         cacheDisabled: disableCache,
                                         cacheBasePath: shouldUseCacheBasePathArg ? cacheBasePath : configuration.cacheBasePath,
+                                        buildPath: buildPath.string.isEmpty ? nil : buildPath,
                                         prune: prune,
                                         serialParse: serialParse,
                                         arguments: configuration.args)
