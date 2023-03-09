@@ -135,6 +135,11 @@ import Foundation
 /// Defines Swift enum
 @objcMembers public final class Enum: Type {
 
+    public override func cleanUp() {
+        super.cleanUp()
+        self.cases = []
+    }
+    
     // sourcery: skipDescription
     /// Returns "enum"
     public override var kind: String { return "enum" }

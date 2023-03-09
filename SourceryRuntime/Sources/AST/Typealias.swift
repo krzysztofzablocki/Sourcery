@@ -3,6 +3,12 @@ import Foundation
 // sourcery: skipJSExport
 /// :nodoc:
 @objcMembers public final class Typealias: NSObject, Typed, SourceryModel {
+    
+    public func cleanUp() {
+        self.type = nil
+        self.parent = nil
+    }
+    
     // New typealias name
     public let aliasName: String
 

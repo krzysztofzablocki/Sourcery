@@ -91,6 +91,11 @@ extension ProcessInfo {
 /// Collection of scanned types for accessing in templates
 @objcMembers public final class Types: NSObject, SourceryModel {
 
+    public func cleanUp() {
+        self.types.forEach { $0.cleanUp() }
+        self.typealiases.forEach { $0.cleanUp() }
+    }
+    
     /// :nodoc:
     public let types: [Type]
 

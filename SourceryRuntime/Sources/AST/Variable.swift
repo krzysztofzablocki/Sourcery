@@ -10,6 +10,11 @@ public typealias SourceryVariable = Variable
 
 /// Defines variable
 @objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {
+    
+    public func cleanUp() {
+        self.definedInType = nil
+    }
+    
     /// Variable name
     public let name: String
 

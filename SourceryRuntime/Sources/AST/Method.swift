@@ -5,6 +5,11 @@ public typealias SourceryMethod = Method
 
 /// Describes method parameter
 @objcMembers public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+    
+    public func cleanUp() {
+        self.type = nil
+    }
+    
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -203,6 +208,16 @@ extension Array where Element == ClosureParameter {
 /// Describes method
 @objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
 
+    func cleanUp() {
+        self.parameters.forEach {
+            $0.cleanUp()
+        }
+        self.parameters = []
+        
+        self.returnType = nil
+        self.definedInType = nil
+    }
+    
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
 

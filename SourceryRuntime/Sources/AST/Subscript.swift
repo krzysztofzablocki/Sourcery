@@ -3,6 +3,15 @@ import Foundation
 /// Describes subscript
 @objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition {
 
+    func cleanUp() {
+        self.parameters.forEach {
+            $0.cleanUp()
+        }
+        self.parameters = []
+        self.returnType = nil
+        self.definedInType = nil
+    }
+    
     /// Method parameters
     public var parameters: [MethodParameter]
 

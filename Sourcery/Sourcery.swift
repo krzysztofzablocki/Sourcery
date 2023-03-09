@@ -13,6 +13,7 @@ import SourcerySwift
 import SourceryStencil
 import TryCatch
 import XcodeProj
+import SiriAudioIntentUtils
 
 public class Sourcery {
     public static let version: String = SourceryVersion.current.value
@@ -114,6 +115,8 @@ public class Sourcery {
 
         var result = try process(source)
 
+        result.types.cleanUp()
+        
         if isDryRun {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
