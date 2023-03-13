@@ -13,7 +13,6 @@ import SourcerySwift
 import SourceryStencil
 import TryCatch
 import XcodeProj
-import SiriAudioIntentUtils
 
 public class Sourcery {
     public static let version: String = SourceryVersion.current.value
