@@ -355,6 +355,20 @@ namespace :release do
     `cd build/sourcery; zip -r -X ../sourcery-#{podspec_version}.zip .`
   end
 
+  def upload_zip(filename)
+    upload_url = json['upload_url'].gsub(/\{.*\}/, "?name=#{filename}")
+    zipfile = "build/#{filename}"
+    zipsize = File.size(zipfile)
+
+    print_info "Uploading ZIP (#{zipsize} bytes)"
+    post(upload_url, 'application/zip') do |req|
+      req.body_stream = File.open(zipfile, 'rb')
+      req.add_field('Content-Length', zipsize)
+      req.add_field('Content-Transfer-Encoding', 'binary')
+      req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
+    end
+  end
+
   desc 'Upload the zipped binaries to a new GitHub release'
   task :github => :zip do
     v = podspec_version
@@ -368,17 +382,7 @@ namespace :release do
       req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
     end
 
-    upload_url = json['upload_url'].gsub(/\{.*\}/,"?name=Sourcery-#{v}.zip")
-    zipfile = "build/Sourcery-#{v}.zip"
-    zipsize = File.size(zipfile)
-
-    print_info "Uploading ZIP (#{zipsize} bytes)"
-    post(upload_url, 'application/zip') do |req|
-      req.body_stream = File.open(zipfile, 'rb')
-      req.add_field('Content-Length', zipsize)
-      req.add_field('Content-Transfer-Encoding', 'binary')
-      req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
-    end
+    upload_zip("Sourcery-#{v}.zip")
   end
 
   desc 'pod trunk push Sourcery to CocoaPods'
