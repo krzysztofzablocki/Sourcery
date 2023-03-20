@@ -355,6 +355,26 @@ namespace :release do
     `cd build/sourcery; zip -r -X ../sourcery-#{podspec_version}.zip .`
   end
 
+  desc 'Create a zip containing all the prebuilt binaries in the artifact bundle format (for SwiftPM Package Plugins)'
+  task :artifactbundle => :zip do
+    bundle_dir = "build/sourcery.artifactbundle"
+
+    # Copy the built product to an artifact bundle
+    `mkdir -p #{bundle_dir}`
+    `cp -Rf build/sourcery #{bundle_dir}`
+
+    # Write the `info.json` artifact bundle manifest
+    info_template = File.read("Templates/artifactbundle.info.json.template")
+    info_file_content = info_template.gsub(/(VERSION)/, podspec_version)
+
+    File.open("#{bundle_dir}/info.json", "w") do |f|
+      f.write(info_file_content)
+    end
+
+    # Zip the bundle
+    `cd build; zip -r -X sourcery-#{podspec_version}.artifactbundle.zip sourcery.artifactbundle/`
+  end
+
   def upload_zip(filename)
     upload_url = json['upload_url'].gsub(/\{.*\}/, "?name=#{filename}")
     zipfile = "build/#{filename}"
@@ -370,7 +390,7 @@ namespace :release do
   end
 
   desc 'Upload the zipped binaries to a new GitHub release'
-  task :github => :zip do
+  task :github => :artifactbundle do
     v = podspec_version
 
     changelog = `sed -n /'^## #{v}$'/,/'^## '/p CHANGELOG.md`.gsub(/^## .*$/,'').strip
@@ -383,6 +403,7 @@ namespace :release do
     end
 
     upload_zip("Sourcery-#{v}.zip")
+    upload_zip("Sourcery-#{v}.artifactbundle.zip")
   end
 
   desc 'pod trunk push Sourcery to CocoaPods'
