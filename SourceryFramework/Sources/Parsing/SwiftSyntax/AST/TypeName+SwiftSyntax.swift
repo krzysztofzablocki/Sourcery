@@ -78,7 +78,7 @@ extension TypeName {
         } else if let typeIdentifier = node.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
             let type = TypeName(typeIdentifier.wrappedType)
             let needsWrapping = type.isClosure || type.isProtocolComposition
-            self.init(name: needsWrapping ? "(\(type.name))" : type.name,
+            self.init(name: needsWrapping ? "(\(type.asSource))" : type.asSource,
                       isOptional: false,
                       isImplicitlyUnwrappedOptional: true,
                       tuple: type.tuple,
