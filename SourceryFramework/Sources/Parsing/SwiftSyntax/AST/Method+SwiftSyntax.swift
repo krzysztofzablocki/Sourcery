@@ -28,7 +28,7 @@ extension SourceryMethod {
           signature: Signature(
             parameters: signature.input.parameterList,
             output: nil,
-            asyncKeyword: nil,
+            asyncKeyword: signature.asyncOrReasyncKeyword?.description.trimmed,
             throwsOrRethrowsKeyword: signature.throwsOrRethrowsKeyword?.description.trimmed,
             annotationsParser: annotationsParser
           ),
