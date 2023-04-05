@@ -284,8 +284,8 @@ open class SwiftTemplate {
         // For every included file, make sure that the path and modification date are included in the key
         let files = includedFiles.map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
         for file in files {
-            let modificationDate = file.modifiedDate?.timeIntervalSinceReferenceDate ?? 0
-            contents += "\n// \(file.string)-\(modificationDate)"
+            let hash = (try? file.read().sha256().base64EncodedString()) ?? ""
+            contents += "\n// \(file.string)-\(hash)"
         }
 
         return contents.sha256()
