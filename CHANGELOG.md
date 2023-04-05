@@ -1,6 +1,6 @@
 # Sourcery CHANGELOG
 
-## Master
+## 2.0.2
 - Fixes incorrectly parsed variable names that include property wrapper and comments, closes #1140
 
 ## 2.0.1
