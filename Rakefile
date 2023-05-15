@@ -345,17 +345,52 @@ namespace :release do
     print_info "Creating zip"
 
     sh %Q(mkdir -p "build")
-    sh %Q(mkdir -p "build/Resources")
-    sh %Q(cp -r #{CLI_DIR} build/)
-    sh %Q(cp -r Templates/Templates build/)
-    sh %Q(cp -r docs/docsets/Sourcery.docset build/)
-    `cp LICENSE README.md CHANGELOG.md build`
-    `cp Resources/daemon.gif Resources/icon-128.png build/Resources`
-    `cd build; zip -r -X sourcery-#{podspec_version}.zip .`
+    sh %Q(mkdir -p "build/sourcery")
+    sh %Q(mkdir -p "build/sourcery/Resources")
+    sh %Q(cp -r #{CLI_DIR} build/sourcery/)
+    sh %Q(cp -r Templates/Templates build/sourcery/)
+    sh %Q(cp -r docs/docsets/Sourcery.docset build/sourcery/)
+    `cp LICENSE README.md CHANGELOG.md build/sourcery`
+    `cp Resources/daemon.gif Resources/icon-128.png build/sourcery/Resources`
+    `cd build/sourcery; zip -r -X ../sourcery-#{podspec_version}.zip .`
+  end
+
+  desc 'Create a zip containing all the prebuilt binaries in the artifact bundle format (for SwiftPM Package Plugins)'
+  task :artifactbundle => :zip do
+    bundle_dir = "build/sourcery.artifactbundle"
+
+    # Copy the built product to an artifact bundle
+    `mkdir -p #{bundle_dir}`
+    `cp -Rf build/sourcery #{bundle_dir}`
+
+    # Write the `info.json` artifact bundle manifest
+    info_template = File.read("Templates/artifactbundle.info.json.template")
+    info_file_content = info_template.gsub(/(VERSION)/, podspec_version)
+
+    File.open("#{bundle_dir}/info.json", "w") do |f|
+      f.write(info_file_content)
+    end
+
+    # Zip the bundle
+    `cd build; zip -r -X sourcery-#{podspec_version}.artifactbundle.zip sourcery.artifactbundle/`
+  end
+
+  def upload_zip(filename)
+    upload_url = json['upload_url'].gsub(/\{.*\}/, "?name=#{filename}")
+    zipfile = "build/#{filename}"
+    zipsize = File.size(zipfile)
+
+    print_info "Uploading ZIP (#{zipsize} bytes)"
+    post(upload_url, 'application/zip') do |req|
+      req.body_stream = File.open(zipfile, 'rb')
+      req.add_field('Content-Length', zipsize)
+      req.add_field('Content-Transfer-Encoding', 'binary')
+      req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
+    end
   end
 
   desc 'Upload the zipped binaries to a new GitHub release'
-  task :github => :zip do
+  task :github => :artifactbundle do
     v = podspec_version
 
     changelog = `sed -n /'^## #{v}$'/,/'^## '/p CHANGELOG.md`.gsub(/^## .*$/,'').strip
@@ -367,17 +402,8 @@ namespace :release do
       req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
     end
 
-    upload_url = json['upload_url'].gsub(/\{.*\}/,"?name=Sourcery-#{v}.zip")
-    zipfile = "build/Sourcery-#{v}.zip"
-    zipsize = File.size(zipfile)
-
-    print_info "Uploading ZIP (#{zipsize} bytes)"
-    post(upload_url, 'application/zip') do |req|
-      req.body_stream = File.open(zipfile, 'rb')
-      req.add_field('Content-Length', zipsize)
-      req.add_field('Content-Transfer-Encoding', 'binary')
-      req.basic_auth ENV['SOURCERY_GITHUB_USERNAME'], ENV['SOURCERY_GITHUB_API_TOKEN'].chomp
-    end
+    upload_zip("Sourcery-#{v}.zip")
+    upload_zip("Sourcery-#{v}.artifactbundle.zip")
   end
 
   desc 'pod trunk push Sourcery to CocoaPods'
