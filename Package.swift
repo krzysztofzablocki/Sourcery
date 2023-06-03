@@ -27,7 +27,7 @@ let package = Package(
         .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
         .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.10.1"),
         .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
-        .package(name: "SwiftSyntax", url: "https://github.com/apple/swift-syntax.git", branch: "0.50800.0-SNAPSHOT-2022-12-29-a"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "508.0.0"),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0")
     ],
@@ -53,7 +53,7 @@ let package = Package(
                 "PathKit",
                 "Yams",
                 "StencilSwiftKit",
-                .product(name: "SwiftSyntax", package: "SwiftSyntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
                 "XcodeProj",
                 "TryCatch"
             ],
@@ -83,8 +83,8 @@ let package = Package(
             name: "SourceryFramework",
             dependencies: [
               "PathKit",
-              .product(name: "SwiftSyntax", package: "SwiftSyntax"),
-              .product(name: "SwiftParser", package: "SwiftSyntax"),
+              .product(name: "SwiftSyntax", package: "swift-syntax"),
+              .product(name: "SwiftParser", package: "swift-syntax"),
               "SourceryUtils",
               "SourceryRuntime"
             ],

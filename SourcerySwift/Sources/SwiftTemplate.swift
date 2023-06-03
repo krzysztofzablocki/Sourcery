@@ -34,9 +34,9 @@ open class SwiftTemplate {
     private lazy var buildDir: Path = {
         let pathComponent = "SwiftTemplate" + (version.map { "/\($0)" } ?? "")
 
-         if let buildPath {
-            return buildPath + pathComponent
-         }
+        if let buildPath {
+            return (buildPath + pathComponent).absolute()
+        }
 
         guard let tempDirURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(pathComponent) else { fatalError("Unable to get temporary path") }
         return Path(tempDirURL.path)
@@ -225,7 +225,9 @@ open class SwiftTemplate {
         try templateFilesDir.mkpath()
 
         try copyRuntimePackage(to: sourcesDir)
-        try manifestFile.write(manifestCode)
+        if !manifestFile.exists {
+            try manifestFile.write(manifestCode)
+        }
         try mainFile.write(code)
 
         let binaryFile = buildDir + Path(".build/release/SwiftTemplate")
@@ -258,7 +260,7 @@ open class SwiftTemplate {
 
     private var manifestCode: String {
         return """
-        // swift-tools-version:4.0
+        // swift-tools-version:5.7
         // The swift-tools-version declares the minimum version of Swift required to build this package.
 
         import PackageDescription
@@ -270,9 +272,7 @@ open class SwiftTemplate {
             ],
             targets: [
                 .target(name: "SourceryRuntime"),
-                .target(
-                    name: "SwiftTemplate",
-                    dependencies: ["SourceryRuntime"]),
+                .executableTarget(name: "SwiftTemplate", dependencies: ["SourceryRuntime"])
             ]
         )
         """
@@ -282,10 +282,10 @@ open class SwiftTemplate {
         var contents = code
 
         // For every included file, make sure that the path and modification date are included in the key
-        let files = includedFiles.map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
+        let files = (includedFiles + buildDir.allPaths).map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
         for file in files {
-            let modificationDate = file.modifiedDate?.timeIntervalSinceReferenceDate ?? 0
-            contents += "\n// \(file.string)-\(modificationDate)"
+            let hash = (try? file.read().sha256().base64EncodedString()) ?? ""
+            contents += "\n// \(file.string)-\(hash)"
         }
 
         return contents.sha256()

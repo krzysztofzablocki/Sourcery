@@ -41,7 +41,7 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
         inlineIndentations = inline.annotatedRanges.mapValues { $0[0].indentation }
 
         // Syntax walking
-        let tree = try Parser.parse(source: contents)
+        let tree = Parser.parse(source: contents)
         let fileName = path ?? "in-memory"
         let sourceLocationConverter = SourceLocationConverter(file: fileName, tree: tree)
         let collector = SyntaxTreeCollector(
