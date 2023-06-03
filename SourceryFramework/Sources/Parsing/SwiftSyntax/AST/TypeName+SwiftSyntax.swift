@@ -114,7 +114,7 @@ extension TypeName {
 
             // TODO: TBR
             if elements.count == 1, let type = elements.first?.typeName {
-                self.init(name: type.name,
+                self.init(name: type.unwrappedTypeName,
                           attributes: type.attributes,
                           isOptional: type.isOptional,
                           isImplicitlyUnwrappedOptional: type.isImplicitlyUnwrappedOptional,

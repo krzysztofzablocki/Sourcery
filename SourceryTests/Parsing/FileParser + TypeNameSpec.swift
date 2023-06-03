@@ -85,6 +85,11 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("(Int, (Int, Int))").isTuple).to(beTrue())
                     expect(typeName("(Int, (Int) -> (Int -> Int))").isTuple).to(beTrue())
                 }
+                
+                it("It unwraps optional correctly") {
+                    expect(typeName("(Int?)").asSource) == "Int?"
+                    expect(typeName("(CKRecord.ID) async -> (CKRecord?)").asSource) == "(CKRecord.ID) async -> (CKRecord?)"
+                }
             }
 
             context("given array type") {
