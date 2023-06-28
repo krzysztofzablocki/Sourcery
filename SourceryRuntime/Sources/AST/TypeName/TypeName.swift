@@ -149,8 +149,14 @@ import Foundation
         }
         if !specialTreatment {
             if isImplicitlyUnwrappedOptional {
+                if description.contains(" ") {
+                    description = "(" + description + ")"
+                }
                 description.append("!")
             } else if isOptional {
+                if description.contains(" ") {
+                    description = "(" + description + ")"
+                }
                 description.append("?")
             }
         }
