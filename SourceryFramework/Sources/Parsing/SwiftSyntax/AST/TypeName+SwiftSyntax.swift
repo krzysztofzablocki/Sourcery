@@ -114,7 +114,8 @@ extension TypeName {
 
             // TODO: TBR
             if elements.count == 1, let type = elements.first?.typeName {
-                self.init(name: type.unwrappedTypeName,
+                let preserveTuple = type.unwrappedTypeName.contains(" ")
+                self.init(name: preserveTuple ? "(" + type.unwrappedTypeName + ")" : type.unwrappedTypeName,
                           attributes: type.attributes,
                           isOptional: type.isOptional,
                           isImplicitlyUnwrappedOptional: type.isImplicitlyUnwrappedOptional,
