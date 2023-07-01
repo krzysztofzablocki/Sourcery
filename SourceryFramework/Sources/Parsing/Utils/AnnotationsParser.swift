@@ -63,15 +63,13 @@ public struct AnnotationsParser {
 
     func annotations(from node: IdentifierSyntax) -> Annotations {
         from(
-          location: findLocation(syntax: node.identifier),
-          precedingComments: node.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: node.identifier)
         )
     }
 
     func annotations(fromToken token: SyntaxProtocol) -> Annotations {
         from(
-          location: findLocation(syntax: token),
-          precedingComments: token.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: token)
         )
     }
 
@@ -80,8 +78,7 @@ public struct AnnotationsParser {
             return  []
         }
         return documentationFrom(
-          location: findLocation(syntax: node.identifier),
-          precedingComments: node.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: node.identifier)
         )
     }
 
@@ -90,8 +87,7 @@ public struct AnnotationsParser {
             return  []
         }
         return documentationFrom(
-          location: findLocation(syntax: token),
-          precedingComments: token.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: token)
         )
     }
 
@@ -100,7 +96,7 @@ public struct AnnotationsParser {
         return sourceLocationConverter!.location(for: syntax.positionAfterSkippingLeadingTrivia)
     }
 
-    private func from(location: SwiftSyntax.SourceLocation, precedingComments: [String]) -> Annotations {
+    private func from(location: SwiftSyntax.SourceLocation) -> Annotations {
         guard let lineNumber = location.line, let column = location.column else {
             return [:]
         }
@@ -125,7 +121,7 @@ public struct AnnotationsParser {
         return annotations
     }
 
-    private func documentationFrom(location: SwiftSyntax.SourceLocation, precedingComments: [String]) -> Documentation {
+    private func documentationFrom(location: SwiftSyntax.SourceLocation) -> Documentation {
         guard parseDocumentation,
             let lineNumber = location.line, let column = location.column else {
             return []
