@@ -30,7 +30,7 @@ jobs:
       - run: bundle exec rake build
       - run: bundle exec rake tests
       - store_artifacts:
-          path: /tmp/artifacts/logs
+          path: /tmp/artifacts/
 workflows:
   version: 2
   build-test:
