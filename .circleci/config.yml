@@ -2,7 +2,7 @@ version: 2
 
 jobs:
   test:
-  working_directory: /tmp
+    working_directory: /tmp
     macos:
       xcode: "13.3.0"
     environment:
