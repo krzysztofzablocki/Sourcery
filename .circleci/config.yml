@@ -22,10 +22,10 @@ jobs:
       - run: echo "ruby-3.0.0" > ~/.ruby-version
       - run: bundle install
       - run:
-        name: Validate Docs
-        command: |
-          mkdir /tmp/artifacts;
-          bundle exec rake validate_docs --trace;
+          name: Validate Docs
+          command: |
+            mkdir /tmp/artifacts;
+            bundle exec rake validate_docs --trace;
       - run: bundle exec danger || true
       - run: set -o pipefail
       - run: bundle exec rake build
