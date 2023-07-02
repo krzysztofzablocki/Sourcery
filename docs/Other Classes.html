@@ -17,7 +17,7 @@
     <a title="Other Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 2.0.1 Docs</a> (100% documented)</p>
+        <p><a href="index.html">Sourcery 2.0.2 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -200,10 +200,22 @@
                 <a href="Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
+                <a href="Extensions/BytesRange.html">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/FileParserResult.html">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/StringProtocol.html">StringProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/TemplateContext.html">TemplateContext</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Typealias.html">Typealias</a>
               </li>
             </ul>
           </li>
@@ -304,6 +316,8 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="kt">GenericRequirement</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericRequirement</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericRequirement</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -333,6 +347,8 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="kt">Import</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Import</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Import</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -361,6 +377,7 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
 <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ClosureParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ClosureParameter</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -391,6 +408,8 @@ if a declaration has modifier like <code>private(set)</code> it&rsquo;s name wil
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="kt">Modifier</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">AutoCoding</span><span class="p">,</span> <span class="kt">AutoEquatable</span><span class="p">,</span> <span class="kt">AutoDiffable</span><span class="p">,</span> <span class="kt">AutoJSExport</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Modifier</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Modifier</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
