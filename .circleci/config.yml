@@ -33,7 +33,7 @@ jobs:
       - store_artifacts:
           path: /tmp/artifacts
           destination: build.log
-      - store_artifcats:
+      - store_artifacts:
           path: /tmp/artifacts
 workflows:
   version: 2
