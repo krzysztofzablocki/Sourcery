@@ -24,7 +24,7 @@ jobs:
           name: Validate Docs
           command: |
             mkdir /tmp/artifacts;
-            bundle exec rake validate_docs --trace;
+            bundle exec rake validate_docs --trace > /tmp/artifacts/validate_docs.log;
       - run: bundle exec danger || true
       - run: set -o pipefail
       - run: bundle exec rake build
