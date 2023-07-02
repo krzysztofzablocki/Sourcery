@@ -20,7 +20,7 @@ jobs:
       - run: brew install coreutils
       - run: echo "ruby-3.0.0" > ~/.ruby-version
       - run: bundle install
-      - run: bundle exec rake validate_docs
+      - run: bundle exec rake validate_docs --trace
       - run: bundle exec danger || true
       - run: set -o pipefail
       - run: bundle exec rake build
