@@ -130,7 +130,7 @@ task :validate_docs do
   ## [1/12] Compiling scanner.c
   ## ...
   #sh "bundle exec sourcekitten doc --spm --module-name SourceryRuntime -- --very-verbose > docs.json && bundle exec jazzy --skip-undocumented && rm docs.json"
-  clean_jazzy
+  ## clean_jazzy
   sh "rm -fr #{temp_build_dir}"
 end
 
