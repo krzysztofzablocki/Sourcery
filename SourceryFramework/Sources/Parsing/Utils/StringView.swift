@@ -171,7 +171,7 @@ private extension RandomAccessCollection {
 
 // swiftlint:disable:next line_length
 // https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/swift/grammar/line-break
-private let newlinesCharacterSet = CharacterSet(charactersIn: "\u{000A}\u{000D}")
+private let newlinesCharacters = "\u{000D}\u{000A}"
 
 /// Structure that precalculates lines for the specified string and then uses this information for
 /// ByteRange to NSRange and NSRange to ByteRange operations
@@ -211,12 +211,12 @@ public struct StringView {
         var utf16CountSoFar = 0
         var bytesSoFar: ByteCount = 0
         var lines = [Line]()
-        let lineContents = string.components(separatedBy: newlinesCharacterSet)
+        let lineContents = string.components(separatedBy: newlinesCharacters)
         // Be compatible with `NSString.getLineStart(_:end:contentsEnd:forRange:)`
         let endsWithNewLineCharacter: Bool
         if let lastChar = utf16View.last,
             let lastCharScalar = UnicodeScalar(lastChar) {
-            endsWithNewLineCharacter = newlinesCharacterSet.contains(lastCharScalar)
+            endsWithNewLineCharacter = newlinesCharacters.contains(Character(lastCharScalar))
         } else {
             endsWithNewLineCharacter = false
         }

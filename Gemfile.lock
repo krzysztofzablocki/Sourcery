@@ -184,6 +184,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  arm64-darwin-23
 
 DEPENDENCIES
   cocoapods (= 1.11.3)
@@ -196,4 +197,4 @@ DEPENDENCIES
   xcpretty
 
 BUNDLED WITH
-   2.3.10
+   2.4.6
