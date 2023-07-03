@@ -827,6 +827,15 @@ class FileParserSpec: QuickSpec {
                                         EnumCase(name: "optionB", rawValue: "0")
                                     ])
                             ]))
+
+                        expect(parse("""
+                                     enum Foo: Int {
+                                       case optionA = 2 // comment
+                                     }
+                                     """))
+                            .to(equal([
+                                Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["Int"], cases: [EnumCase(name: "optionA", rawValue: "2")])
+                            ]))
                     }
 
                     it("extracts enums without rawType") {

@@ -36,7 +36,7 @@ extension EnumCase {
         }
 
         let rawValue: String? = {
-            var value = node.rawValue?.withEqual(nil).description.trimmed
+            var value = node.rawValue?.withEqual(nil).withTrailingTrivia(.zero).description.trimmed
             if let unwrapped = value, unwrapped.hasPrefix("\""), unwrapped.hasSuffix("\""), unwrapped.count > 2 {
                 let substring = unwrapped[unwrapped.index(after: unwrapped.startIndex) ..< unwrapped.index(before: unwrapped.endIndex)]
                 value = String(substring)
