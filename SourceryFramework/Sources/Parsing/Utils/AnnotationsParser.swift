@@ -20,6 +20,8 @@ public struct AnnotationsParser {
 
     private struct Line {
         enum LineType {
+            case propertyWrapper
+            case macros
             case comment
             case documentationComment
             case blockStart
@@ -63,15 +65,13 @@ public struct AnnotationsParser {
 
     func annotations(from node: IdentifierSyntax) -> Annotations {
         from(
-          location: findLocation(syntax: node.identifier),
-          precedingComments: node.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: node.identifier)
         )
     }
 
     func annotations(fromToken token: SyntaxProtocol) -> Annotations {
         from(
-          location: findLocation(syntax: token),
-          precedingComments: token.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: token)
         )
     }
 
@@ -80,8 +80,7 @@ public struct AnnotationsParser {
             return  []
         }
         return documentationFrom(
-          location: findLocation(syntax: node.identifier),
-          precedingComments: node.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: node.identifier)
         )
     }
 
@@ -90,8 +89,7 @@ public struct AnnotationsParser {
             return  []
         }
         return documentationFrom(
-          location: findLocation(syntax: token),
-          precedingComments: token.leadingTrivia?.compactMap({ $0.comment }) ?? []
+          location: findLocation(syntax: token)
         )
     }
 
@@ -100,7 +98,7 @@ public struct AnnotationsParser {
         return sourceLocationConverter!.location(for: syntax.positionAfterSkippingLeadingTrivia)
     }
 
-    private func from(location: SwiftSyntax.SourceLocation, precedingComments: [String]) -> Annotations {
+    private func from(location: SwiftSyntax.SourceLocation) -> Annotations {
         guard let lineNumber = location.line, let column = location.column else {
             return [:]
         }
@@ -113,7 +111,7 @@ public struct AnnotationsParser {
             line.annotations.forEach { annotation in
                 AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
             }
-            if line.type != .comment && line.type != .documentationComment {
+            if line.type != .comment && line.type != .documentationComment && line.type != .macros && line.type != .propertyWrapper {
                 break
             }
         }
@@ -125,7 +123,7 @@ public struct AnnotationsParser {
         return annotations
     }
 
-    private func documentationFrom(location: SwiftSyntax.SourceLocation, precedingComments: [String]) -> Documentation {
+    private func documentationFrom(location: SwiftSyntax.SourceLocation) -> Documentation {
         guard parseDocumentation,
             let lineNumber = location.line, let column = location.column else {
             return []
@@ -144,7 +142,7 @@ public struct AnnotationsParser {
             if line.type == .documentationComment {
                 documentation.append(line.content.trimmingCharacters(in: .whitespaces).trimmingPrefix("///").trimmingPrefix("/**").trimmingPrefix(" "))
             }
-            if line.type != .comment && line.type != .documentationComment {
+            if line.type != .comment && line.type != .documentationComment && line.type != .macros && line.type != .propertyWrapper {
                 break
             }
         }
@@ -195,8 +193,8 @@ public struct AnnotationsParser {
         if lineInfo.line - 2 > 0 {
             let previousLine = lines[lineInfo.line - 2]
             let content = previousLine.content.trimmingCharacters(in: .whitespaces)
-
-            guard previousLine.type == .comment || previousLine.type == .documentationComment, content.hasPrefix("//") || content.hasSuffix("*/") else {
+            
+            guard previousLine.type == .comment || previousLine.type == .documentationComment || previousLine.type == .propertyWrapper || previousLine.type == .macros, content.hasPrefix("//") || content.hasSuffix("*/") || content.hasPrefix("@") || content.hasPrefix("#") else {
                 stop = true
                 return annotations
             }
@@ -214,11 +212,17 @@ public struct AnnotationsParser {
                     var annotations = Annotations()
                     let isComment = content.hasPrefix("//") || content.hasPrefix("/*") || content.hasPrefix("*")
                     let isDocumentationComment = content.hasPrefix("///") || content.hasPrefix("/**")
+                    let isPropertyWrapper = content.hasPrefix("@")
+                    let isMacros = content.hasPrefix("#")
                     var type = Line.LineType.other
                     if isDocumentationComment {
                         type = .documentationComment
                     } else if isComment {
                         type = .comment
+                    } else if isPropertyWrapper {
+                        type = .propertyWrapper
+                    } else if isMacros {
+                        type = .macros
                     }
                     if isComment {
                         switch searchForAnnotations(commentLine: content) {
