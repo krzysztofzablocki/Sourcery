@@ -113,7 +113,7 @@ task :docs do
   print_info "Updating docs"
   temp_build_dir = "#{BUILD_DIR}tmp/"
   # tac Enum.html | sed '2d' | tac > Enum.html
-  sh "sourcekitten doc --spm --module-name SourceryRuntime > docs.json && bundle exec jazzy --clean --skip-undocumented && rm docs.json"
+  sh "bundle exec sourcekitten doc --spm --module-name SourceryRuntime > docs.json && bundle exec jazzy --clean --skip-undocumented && rm docs.json"
   clean_jazzy
   sh "rm -fr #{temp_build_dir}"
 end
@@ -122,8 +122,15 @@ desc "Validate docs"
 task :validate_docs do
   print_info "Checking docs are up to date"
   temp_build_dir = "#{BUILD_DIR}tmp/"
-  sh "sourcekitten doc --spm --module-name SourceryRuntime > docs.json && bundle exec jazzy --skip-undocumented && rm docs.json"
-  clean_jazzy
+  ## TODO: RA this step is disabled due to error comming only on CI and only sometimes locally:
+  ## [1/1] Compiling plugin SourceryCommandPlugin
+  ## Building for debugging...
+  ## error: command /Users/art-divin/Documents/Projects/Sourcery/.build/arm64-apple-macosx/debug/Sourcery_SourceryJS.bundle/ejs.js not registered
+  ## [1/12] Copying ejs.js
+  ## [1/12] Compiling scanner.c
+  ## ...
+  #sh "bundle exec sourcekitten doc --spm --module-name SourceryRuntime -- --very-verbose > docs.json && bundle exec jazzy --skip-undocumented && rm docs.json"
+  ## clean_jazzy
   sh "rm -fr #{temp_build_dir}"
 end
 

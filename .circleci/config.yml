@@ -3,7 +3,7 @@ version: 2
 jobs:
   test:
     macos:
-      xcode: "13.3.0"
+      xcode: "14.3.1"
     environment:
       BUNDLE_JOBS: 3
       BUNDLE_RETRY: 3
@@ -18,14 +18,13 @@ jobs:
       - run: brew update 1> /dev/null 2> /dev/null
       - run: brew install sourcekitten
       - run: brew install coreutils
-      - run: echo "ruby-3.0.0" > ~/.ruby-version
+      - run: echo "ruby-3.0.6" > ~/.ruby-version
       - run: bundle install
       - run: bundle exec rake validate_docs
       - run: bundle exec danger || true
       - run: set -o pipefail
       - run: bundle exec rake build
       - run: bundle exec rake tests
-
 workflows:
   version: 2
   build-test:
