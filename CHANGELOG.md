@@ -3,6 +3,7 @@
 ## 2.0.3
 ## Internal Changes
 - Modifications to included files of Swift Templates are now detected by hashing instead of using the modification date when invalidating the cache ([#1161](https://github.com/krzysztofzablocki/Sourcery/pull/1161))
+- Fixes incorrectly parsed /r/n newline sequences ([#1165](https://github.com/krzysztofzablocki/Sourcery/issues/1165) and [#1138](https://github.com/krzysztofzablocki/Sourcery/issues/1138))
 
 ## 2.0.2
 - Fixes incorrectly parsed variable names that include property wrapper and comments, closes #1140
