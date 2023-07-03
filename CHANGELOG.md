@@ -5,6 +5,7 @@
 - Modifications to included files of Swift Templates are now detected by hashing instead of using the modification date when invalidating the cache ([#1161](https://github.com/krzysztofzablocki/Sourcery/pull/1161))
 - Fixes incorrectly parsed /r/n newline sequences ([#1165](https://github.com/krzysztofzablocki/Sourcery/issues/1165) and [#1138](https://github.com/krzysztofzablocki/Sourcery/issues/1138))
 - Fixes incorrect parsing of annotations if there are attributes on lines preceeding declaration ([#1141](https://github.com/krzysztofzablocki/Sourcery/issues/1141))
+- Fixes incorrect parsing of trailing inline comments following enum case' rawValue ([#1154](https://github.com/krzysztofzablocki/Sourcery/issues/1154))
 
 ## 2.0.2
 - Fixes incorrectly parsed variable names that include property wrapper and comments, closes #1140
