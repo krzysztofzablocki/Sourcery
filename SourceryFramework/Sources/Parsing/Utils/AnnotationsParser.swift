@@ -153,9 +153,15 @@ public struct AnnotationsParser {
 
     func inlineFrom(line lineInfo: (line: Int, character: Int), stop: inout Bool) -> Annotations {
         let sourceLine = lines[lineInfo.line - 1]
-        var prefix = sourceLine.content.bridge()
-            .substring(to: max(0, lineInfo.character - 1))
-            .trimmingCharacters(in: .whitespaces)
+
+        let utf8View = sourceLine.content.utf8
+        let startIndex = utf8View.startIndex
+        let endIndex = sourceLine.content.utf8.index(startIndex, offsetBy: (lineInfo.character - 2))
+        let utf8Slice = utf8View[startIndex ... endIndex]
+
+        let relevantContent = String(decoding: utf8Slice, as: UTF8.self)
+
+        var prefix = relevantContent.trimmingCharacters(in: .whitespaces)
 
         guard !prefix.isEmpty else { return [:] }
         var annotations = sourceLine.blockAnnotations // get block annotations for this line
