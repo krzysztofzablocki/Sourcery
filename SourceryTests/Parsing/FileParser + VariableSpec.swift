@@ -15,6 +15,11 @@ class FileParserVariableSpec: QuickSpec {
     override func spec() {
         describe("Parser") {
             describe("parseVariable") {
+                func parse(_ code: String, parseDocumentation: Bool = false) -> FileParserResult? {
+                    guard let parser = try? makeParser(for: code, parseDocumentation: parseDocumentation) else { fail(); return nil }
+                    return try? parser.parse()
+                }
+
                 func variable(_ code: String, parseDocumentation: Bool = false) -> Variable? {
                     let wrappedCode =
                         """
@@ -22,8 +27,7 @@ class FileParserVariableSpec: QuickSpec {
                             \(code)
                         }
                         """
-                    guard let parser = try? makeParser(for: wrappedCode, parseDocumentation: parseDocumentation) else { fail(); return nil }
-                    let result = try? parser.parse()
+                    let result = parse(wrappedCode, parseDocumentation: parseDocumentation)
                     let variable = result?.types.first?.variables.first
                     variable?.definedInType = nil
                     variable?.definedInTypeName = nil
@@ -62,6 +66,22 @@ class FileParserVariableSpec: QuickSpec {
 
                 it("extracts standard property correctly") {
                     expect(variable("var name: String")).to(equal(Variable(name: "name", typeName: TypeName(name: "String"), accessLevel: (read: .internal, write: .internal), isComputed: false)))
+                }
+
+                it("infers types for variable when type is an inner type of the contained type correctly") {
+                    let content = """
+                    struct X {
+                      struct A {}
+
+                      let a: A
+                    }
+
+                    struct A {}
+                    """
+                    let expectedVariable = Variable(name: "a", typeName: TypeName("X.A"), type: Type(name: "A"), accessLevel: (.internal, .none), isComputed: false, isAsync: false, throws: false, isStatic: false, defaultValue: nil, attributes: [:], modifiers: [], annotations: [:], documentation: [], definedInTypeName: TypeName("X"))
+                    let result = parse(content)
+                    let variable = result?.types.first?.variables.first
+                    expect(variable).to(equal(expectedVariable))
                 }
 
                 it("extracts with custom access correctly") {
