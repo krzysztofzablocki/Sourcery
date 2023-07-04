@@ -156,8 +156,8 @@ public struct AnnotationsParser {
 
         let utf8View = sourceLine.content.utf8
         let startIndex = utf8View.startIndex
-        let endIndex = sourceLine.content.utf8.index(startIndex, offsetBy: (lineInfo.character - 2))
-        let utf8Slice = utf8View[startIndex ... endIndex]
+        let endIndex = sourceLine.content.utf8.index(startIndex, offsetBy: (lineInfo.character - 1))
+        let utf8Slice = utf8View[startIndex ..< endIndex]
 
         let relevantContent = String(decoding: utf8Slice, as: UTF8.self)
 
