@@ -868,6 +868,15 @@ class FileParserSpec: QuickSpec {
                                 ]))
                     }
 
+                    it("parses enums with multibyte cases with associated types") {
+                        let expectedEnum = Enum(name: "Foo", cases: [
+                            EnumCase(name: "こんにちは", associatedValues: [
+                                AssociatedValue(localName: nil, externalName: nil, typeName: TypeName(name: "Int"))
+                            ])
+                        ])
+                        expect(parse("enum Foo { case こんにちは(Int) }")).to(equal([expectedEnum]))
+                    }
+
                     it("extracts enums with indirect cases") {
                         expect(parse("enum Foo { case optionA; case optionB; indirect case optionC(Foo) }"))
                                 .to(equal([
