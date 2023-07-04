@@ -7,6 +7,7 @@
 - Fixes incorrect parsing of annotations if there are attributes on lines preceeding declaration ([#1141](https://github.com/krzysztofzablocki/Sourcery/issues/1141))
 - Fixes incorrect parsing of trailing inline comments following enum case' rawValue ([#1154](https://github.com/krzysztofzablocki/Sourcery/issues/1154))
 - Fixes incorrect parsing of multibyte enum case identifiers with associated values
+- Improves type inference when using contained types for variables ([#1091](https://github.com/krzysztofzablocki/Sourcery/issues/1091))
 
 ## 2.0.2
 - Fixes incorrectly parsed variable names that include property wrapper and comments, closes #1140
