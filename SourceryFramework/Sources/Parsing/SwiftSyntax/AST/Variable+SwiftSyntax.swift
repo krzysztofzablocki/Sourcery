@@ -60,13 +60,24 @@ extension Variable {
             hadGetter = true
         }
 
-        let isComputed = node.initializer == nil && hadGetter && !(visitingType is SourceryProtocol)
+        let isVisitingTypeSourceryProtocol = visitingType is SourceryProtocol
+        let isComputed = node.initializer == nil && hadGetter && !isVisitingTypeSourceryProtocol
         let isAsync = hadAsync
         let `throws` = hadThrowable
         let isWritable = variableNode.letOrVarKeyword.tokens(viewMode: .fixedUp).contains { $0.tokenKind == .varKeyword } && (!isComputed || hadSetter)
 
-        let typeName = node.typeAnnotation.map { TypeName($0.type) } ??
-          node.initializer.flatMap { Self.inferType($0.value.description.trimmed) }
+        var typeName: TypeName? = node.typeAnnotation.map { TypeName($0.type) } ??
+        node.initializer.flatMap { Self.inferType($0.value.description.trimmed) }
+        if !isVisitingTypeSourceryProtocol {
+            // we are in a custom type, which may contain other types
+            // in order to assign correct type to the variable, we need to match
+            // all of the contained types against the variable type
+            if let matchingContainedType = visitingType?.containedTypes.first(where: {
+                $0.localName == typeName?.name
+            }) {
+                typeName = TypeName(matchingContainedType.name)
+            }
+        }
 
         self.init(
           name: node.pattern.withoutTrivia().description.trimmed,
