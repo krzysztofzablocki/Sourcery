@@ -35,6 +35,7 @@ class TypeNameSpec: QuickSpec {
                 fit("restores everything") {
                     typeName("(@_Concurrency.MainActor () async throws -> Swift.Void)?").asSource == "(@_Concurrency.MainActor () async throws -> Swift.Void)?"
                     typeName("__shared Swift.String?").asSource == "Swift.String?"
+                    typeName("inout String").asSource == "inout String"
                 }
             }
             

@@ -30,11 +30,11 @@ class FileParserMethodsSpec: QuickSpec {
                 fit("test") {
                     let result = parseFunctions(
                         """
-                        public func test(name: __shared Swift.String, value: __shared Swift.String?, iOS_arm64_Foundation10_URLQueryItem01000_5d515 _: String)
+                        public func test(a: inout String)
                         """
                     )
                     
-                    print(result.first!.name)
+                    result.first!.name == "public func test(a: inout String)"
                 }
                 
                 it("extracts methods with inout properties") {
