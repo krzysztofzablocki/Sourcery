@@ -31,6 +31,12 @@ class TypeNameSpec: QuickSpec {
                 return result?.typealiases.first?.typeName ?? TypeName(name: "")
             }
 
+            context("restores correctly") {
+                fit("restores everything") {
+                    typeName("(@_Concurrency.MainActor () async throws -> Swift.Void)?").asSource == "(@_Concurrency.MainActor () async throws -> Swift.Void)?"
+                }
+            }
+            
             context("given optional type with short syntax") {
                 it("reports optional true") {
                     expect(typeName("Int?").isOptional).to(beTrue())

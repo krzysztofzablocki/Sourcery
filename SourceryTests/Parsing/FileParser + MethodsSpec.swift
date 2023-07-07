@@ -26,6 +26,17 @@ class FileParserMethodsSpec: QuickSpec {
                     return parserResult.functions
                 }
 
+                
+                fit("test") {
+                    let result = parseFunctions(
+                        """
+                        public func needsToContinueInForegroundError(_ dialog: AppIntents.IntentDialog?, continuation: (@_Concurrency.MainActor () async throws -> Swift.Void)?, iOS_arm64_AppIntents1_AppIntentsForegroundContinuableIntent087d8_7caea _: String) -> AppIntents.AppIntentError
+                        """
+                    )
+                    
+                    print(result.first!.name)
+                }
+                
                 it("extracts methods with inout properties") {
                     let methods = parse("""
                     class Foo {

@@ -113,20 +113,7 @@ extension TypeName {
             let name = typeIdentifier.sourcerySafeTypeIdentifier
 
             // TODO: TBR
-            if elements.count == 1, let type = elements.first?.typeName {
-                let preserveTuple = type.unwrappedTypeName.contains(" ")
-                self.init(name: preserveTuple ? "(" + type.unwrappedTypeName + ")" : type.unwrappedTypeName,
-                          attributes: type.attributes,
-                          isOptional: type.isOptional,
-                          isImplicitlyUnwrappedOptional: type.isImplicitlyUnwrappedOptional,
-                          tuple: type.tuple,
-                          array: type.array,
-                          dictionary: type.dictionary,
-                          closure: type.closure,
-                          generic: type.generic,
-                          isProtocolComposition: type.isProtocolComposition
-                )
-            } else if elements.count == 0 { // Void
+            if elements.count == 0 { // Void
                 self.init(name: "()")
             } else {
                 self.init(name: name, tuple: TupleType(name: name, elements: elements))

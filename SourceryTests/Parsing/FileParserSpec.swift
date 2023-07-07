@@ -30,18 +30,6 @@ class FileParserSpec: QuickSpec {
                 }
 
                 context("given it has sourcery annotations") {
-                    fit("test") {
-                        let result = parse(
-                            """
-                            public extension AnyPublisher {
-                                  @_Concurrency.MainActor public func indirectScribbleInteraction(_ interaction: any UIKit.UIInteraction, focusElementIfNeeded elementIdentifier: Self.ElementIdentifier, referencePoint focusReferencePoint: CoreFoundation.CGPoint, iOS_arm64_UIKit2_UIKitUIIndirectScribbleInteractionDelegate2d22a_6f1dd _: String) async -> (any UIKit.UIResponder & UIKit.UITextInput)?
-                            }
-                            """
-                        )
-                        
-                        print(result.first!.methods.first!.returnTypeName)
-                    }
-                    
                     it("extract annotations from extensions properly") {
                         let result = parse(
                             """
