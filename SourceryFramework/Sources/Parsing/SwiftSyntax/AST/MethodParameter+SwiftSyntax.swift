@@ -8,10 +8,10 @@ extension MethodParameter {
         let typeName = node.type.map { TypeName($0) } ?? TypeName.unknown(description: node.description.trimmed)
         let specifiers = TypeName.specifiers(from: node.type)
         
-        if specifiers.isInOut {
-            // TODO: TBR
-            typeName.name = "inout \(typeName.name)"
-        }
+//        if specifiers.isInOut {
+//            // TODO: TBR
+//            typeName.name = "inout \(typeName.name)"
+//        }
         
         self.init(
           argumentLabel: firstName,

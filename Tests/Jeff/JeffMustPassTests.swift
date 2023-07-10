@@ -28,7 +28,7 @@ class JeffMustPassTests: XCTestCase {
         XCTAssertEqual(parserResult.functions.first!.name, "test(a: inout String)")
     }
     
-    func testAttributedClosureTypeName() {
+    func testAttributedOptionalClosureTypeName() {
         XCTAssertEqual(
             typeName("(@_Concurrency.MainActor () async throws -> Swift.Void)?").asSource,
             "(@_Concurrency.MainActor () async throws -> Swift.Void)?"
@@ -38,7 +38,7 @@ class JeffMustPassTests: XCTestCase {
     func testExtraDecoratedTypeName() {
         XCTAssertEqual(
             typeName("__shared Swift.String?").asSource,
-            "Swift.String?"
+            "__shared Swift.String?"
         )
     }
     
@@ -49,16 +49,21 @@ class JeffMustPassTests: XCTestCase {
         )
     }
     
+    func testAttributedClosureTypeName() {
+        XCTAssertEqual(
+            typeName("@escaping () async throws -> Swift.Void").asSource,
+            "@escaping () async throws -> Swift.Void"
+        )
+    }
+    
     func typeName(_ code: String) -> TypeName {
         let wrappedCode =
           """
-          struct Wrapper {
-              var myFoo: \(code)
-          }
+          func test(a: \(code))
           """
         guard let parser = try? makeParser(for: wrappedCode) else { XCTFail(); return TypeName(name: "") }
         let result = try? parser.parse()
-        let variable = result?.types.first?.variables.first
-        return variable?.typeName ?? TypeName(name: "")
+        let parameter = result?.functions.first?.parameters.first
+        return parameter?.typeName ?? TypeName(name: "")
     }
 }

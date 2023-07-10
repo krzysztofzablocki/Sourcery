@@ -53,7 +53,11 @@ import Foundation
     }
 
     /// Type name used in declaration
-    public var name: String
+    public var name: String {
+        didSet {
+            print("Set name to \(name)")
+        }
+    }
 
     /// The generics of this TypeName
     public var generic: GenericType?

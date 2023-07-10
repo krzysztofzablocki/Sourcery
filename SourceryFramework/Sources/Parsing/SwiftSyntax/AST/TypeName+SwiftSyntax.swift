@@ -134,7 +134,7 @@ extension TypeName {
             let returnTypeName = TypeName(typeIdentifier.returnType)
             let asyncKeyword = typeIdentifier.fixedAsyncKeyword.map { $0.text.trimmed }
             let throwsOrRethrows = typeIdentifier.fixedThrowsOrRethrowsKeyword.map { $0.text.trimmed }
-            let name = "\(elements.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrows != nil ? " \(throwsOrRethrows!)" : "") -> \(returnTypeName.asSource)"
+            let name = typeIdentifier.description
             self.init(
                 name: name,
                 closure: ClosureType(
@@ -148,7 +148,7 @@ extension TypeName {
             let type = TypeName(typeIdentifier.baseType) // TODO: add test for nested type with attributes at multiple level?
             let attributes = Attribute.from(typeIdentifier.attributes)
 
-            self.init(name: type.name,
+            self.init(name: typeIdentifier.description,
                       attributes: attributes,
                       isOptional: type.isOptional,
                       isImplicitlyUnwrappedOptional: type.isImplicitlyUnwrappedOptional,
