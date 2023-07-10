@@ -179,6 +179,14 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "Jeff",
+            dependencies: [
+                "SourceryLib",
+                "Quick",
+                "Nimble"
+            ]
+        ),
+        .testTarget(
             name: "CodableContextTests",
             dependencies: [
                 "CodableContext",

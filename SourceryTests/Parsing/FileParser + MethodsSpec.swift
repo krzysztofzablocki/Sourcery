@@ -25,17 +25,6 @@ class FileParserMethodsSpec: QuickSpec {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
                     return parserResult.functions
                 }
-
-                
-                fit("test") {
-                    let result = parseFunctions(
-                        """
-                        public func test(a: inout String)
-                        """
-                    )
-                    
-                    result.first!.name == "public func test(a: inout String)"
-                }
                 
                 it("extracts methods with inout properties") {
                     let methods = parse("""
