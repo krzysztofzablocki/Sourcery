@@ -163,6 +163,8 @@ extension TypeName {
             self.init(name: "AnyObject")
         } else if let typeIdentifier = node.as(PackExpansionTypeSyntax.self) {
             self.init(typeIdentifier.patternType)
+            
+            self.name = typeIdentifier.description
         } else {
 //            assertionFailure("This is unexpected \(node)")
             self.init(node.sourcerySafeTypeIdentifier)

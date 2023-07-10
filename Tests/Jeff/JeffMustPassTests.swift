@@ -56,6 +56,13 @@ class JeffMustPassTests: XCTestCase {
         )
     }
     
+    func testEllipsesTypeName() {
+        XCTAssertEqual(
+            typeName("Int...").asSource,
+            "Int..."
+        )
+    }
+    
     func typeName(_ code: String) -> TypeName {
         let wrappedCode =
           """
