@@ -63,6 +63,13 @@ class JeffMustPassTests: XCTestCase {
         )
     }
     
+    func testImplicitlyUnwrappedTypeName() {
+        XCTAssertEqual(
+            typeName("Int!").asSource,
+            "Int!"
+        )
+    }
+    
     func typeName(_ code: String) -> TypeName {
         let wrappedCode =
           """
