@@ -679,8 +679,7 @@ class StaticMethodProtocolMock: StaticMethodProtocol {
 
     static func staticFunction(_: String) -> String {
         staticFunctionCallsCount += 1
-        staticFunctionReceived = 
-        staticFunctionReceivedInvocations.append()
+        staticFunctionReceived = staticFunctionReceivedInvocations.append()
         if let staticFunctionClosure = staticFunctionClosure {
             return staticFunctionClosure()
         } else {
@@ -790,5 +789,158 @@ class VariablesProtocolMock: VariablesProtocol {
     var underlyingAge: Int!
     var kids: [String] = []
     var universityMarks: [String: Int] = [:]
+
+}
+
+class AnyProtocolMock: AnyProtocol {
+
+
+    var a: any StubProtocol {
+        get { return underlyingA }
+        set(value) { underlyingA = value }
+    }
+    var underlyingA: (any StubProtocol)!
+    var b: (any StubProtocol)?
+    var c: (any StubProtocol)!
+    var d: (((any StubProtocol)?) -> Void) {
+        get { return underlyingD }
+        set(value) { underlyingD = value }
+    }
+    var underlyingD: ((((any StubProtocol)?) -> Void))!
+    var e: [(any StubProtocol)?] = []
+    var g: any StubProtocol {
+        get { return underlyingG }
+        set(value) { underlyingG = value }
+    }
+    var underlyingG: (any StubProtocol)!
+    var h: (any StubProtocol)?
+    var i: (any StubProtocol)!
+    var anyConfusingPropertyName: any StubProtocol {
+        get { return underlyingAnyConfusingPropertyName }
+        set(value) { underlyingAnyConfusingPropertyName = value }
+    }
+    var underlyingAnyConfusingPropertyName: (any StubProtocol)!
+    var o: any StubWithAnyNameProtocol {
+        get { return underlyingO }
+        set(value) { underlyingO = value }
+    }
+    var underlyingO: (any StubWithAnyNameProtocol)!
+
+
+    //MARK: - f
+
+    var fyzCallsCount = 0
+    var fyzCalled: Bool {
+        return fyzCallsCount > 0
+    }
+    var fyzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var fyzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var fyzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
+
+    func f(_ x: (any StubProtocol)?, y: (any StubProtocol)!, z: any StubProtocol) {
+        fyzCallsCount += 1
+        fyzReceivedArguments = (x: x, y: y, z: z)
+        fyzReceivedInvocations.append((x: x, y: y, z: z))
+        fyzClosure?(x, y, z)
+    }
+
+    //MARK: - j
+
+    var jxyzCallsCount = 0
+    var jxyzCalled: Bool {
+        return jxyzCallsCount > 0
+    }
+    var jxyzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var jxyzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var jxyzReturnValue: String!
+    var jxyzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
+
+    func j(x: (any StubProtocol)?, y: (any StubProtocol)!, z: any StubProtocol) async -> String {
+        jxyzCallsCount += 1
+        jxyzReceivedArguments = (x: x, y: y, z: z)
+        jxyzReceivedInvocations.append((x: x, y: y, z: z))
+        if let jxyzClosure = jxyzClosure {
+            return await jxyzClosure(x, y, z)
+        } else {
+            return jxyzReturnValue
+        }
+    }
+
+    //MARK: - k
+
+    var kxyCallsCount = 0
+    var kxyCalled: Bool {
+        return kxyCallsCount > 0
+    }
+    var kxyClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
+
+    func k(x: ((any StubProtocol)?) -> Void, y: (any StubProtocol) -> Void) {
+        kxyCallsCount += 1
+        kxyClosure?(x, y)
+    }
+
+    //MARK: - l
+
+    var lxyCallsCount = 0
+    var lxyCalled: Bool {
+        return lxyCallsCount > 0
+    }
+    var lxyClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
+
+    func l(x: ((any StubProtocol)?) -> Void, y: (any StubProtocol) -> Void) {
+        lxyCallsCount += 1
+        lxyClosure?(x, y)
+    }
+
+    //MARK: - m
+
+    var mAnyConfusingArgumentNameCallsCount = 0
+    var mAnyConfusingArgumentNameCalled: Bool {
+        return mAnyConfusingArgumentNameCallsCount > 0
+    }
+    var mAnyConfusingArgumentNameReceivedAnyConfusingArgumentName: (any StubProtocol)?
+    var mAnyConfusingArgumentNameReceivedInvocations: [(any StubProtocol)] = []
+    var mAnyConfusingArgumentNameClosure: ((any StubProtocol) -> Void)?
+
+    func m(anyConfusingArgumentName: any StubProtocol) {
+        mAnyConfusingArgumentNameCallsCount += 1
+        mAnyConfusingArgumentNameReceivedAnyConfusingArgumentName = anyConfusingArgumentName
+        mAnyConfusingArgumentNameReceivedInvocations.append(anyConfusingArgumentName)
+        mAnyConfusingArgumentNameClosure?(anyConfusingArgumentName)
+    }
+
+    //MARK: - n
+
+    var nxCallsCount = 0
+    var nxCalled: Bool {
+        return nxCallsCount > 0
+    }
+    var nxReceivedX: ((((any StubProtocol)?) -> Void))?
+    var nxReceivedInvocations: [((((any StubProtocol)?) -> Void))] = []
+    var nxClosure: ((@escaping ((any StubProtocol)?) -> Void) -> Void)?
+
+    func n(x: @escaping ((any StubProtocol)?) -> Void) {
+        nxCallsCount += 1
+        nxReceivedX = x
+        nxReceivedInvocations.append(x)
+        nxClosure?(x)
+    }
+
+    //MARK: - p
+
+    var pCallsCount = 0
+    var pCalled: Bool {
+        return pCallsCount > 0
+    }
+    var pReceivedX: (any StubWithAnyNameProtocol)?
+    var pReceivedInvocations: [(any StubWithAnyNameProtocol)?] = []
+    var pClosure: (((any StubWithAnyNameProtocol)?) -> Void)?
+
+    func p(_ x: (any StubWithAnyNameProtocol)?) {
+        pCallsCount += 1
+        pReceivedX = x
+        pReceivedInvocations.append(x)
+        pClosure?(x)
+    }
 
 }
