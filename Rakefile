@@ -364,11 +364,12 @@ namespace :release do
 
   desc 'Create a zip containing all the prebuilt binaries in the artifact bundle format (for SwiftPM Package Plugins)'
   task :artifactbundle => :zip do
-    bundle_dir = "build/sourcery.artifactbundle"
+    bundle_dir = 'build/sourcery.artifactbundle'
+    bin_dir = "#{bundle_dir}/sourcery/bin"
 
     # Copy the built product to an artifact bundle
-    `mkdir -p #{bundle_dir}`
-    `cp -Rf build/sourcery #{bundle_dir}`
+    `mkdir -p #{bin_dir}`
+    `cp -Rf build/sourcery #{bin_dir}`
 
     # Write the `info.json` artifact bundle manifest
     info_template = File.read("Templates/artifactbundle.info.json.template")
