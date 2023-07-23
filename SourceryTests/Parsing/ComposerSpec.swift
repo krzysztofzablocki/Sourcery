@@ -1954,7 +1954,7 @@ class ParserComposerSpec: QuickSpec {
                             ])
                             expectedBar.module = "Foo"
 
-                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName(name: "Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo"))], containedTypes: [expectedBar])
+                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName(name: "Foo.Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo"))], containedTypes: [expectedBar])
                             expectedFoo.module = "Foo"
 
                             let types = parseModules(
@@ -1987,7 +1987,7 @@ class ParserComposerSpec: QuickSpec {
                             expectedBaz.module = "ModuleA"
 
                             let expectedFoo = Struct(name: "Foo", variables: [
-                                Variable(name: "bar", typeName: TypeName(name: "Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
+                                Variable(name: "bar", typeName: TypeName(name: "Foo.Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
                                 Variable(name: "bazbars", typeName: TypeName(name: "Baz<Bar>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("ModuleA.Foo.Bar"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
                                 Variable(name: "bazDoubles", typeName: TypeName(name: "Baz<Double>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("Double"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
                                 Variable(name: "bazInts", typeName: TypeName(name: "Baz<Int>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("Int"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo"))
@@ -2039,7 +2039,7 @@ class ParserComposerSpec: QuickSpec {
                                 }
                             }
 
-                            check(variable: "bar", typeName: "Bar", type: "Foo.Bar", onType: "ModuleA.Foo")
+                            check(variable: "bar", typeName: "Foo.Bar", type: "Foo.Bar", onType: "ModuleA.Foo")
                             check(variable: "bazbars", typeName: "Baz<Bar>", type: "Foo.Baz", onType: "ModuleA.Foo")
                             check(variable: "bazDoubles", typeName: "Baz<Double>", type: "Foo.Baz", onType: "ModuleA.Foo")
                             check(variable: "bazInts", typeName: "Baz<Int>", type: "Foo.Baz", onType: "ModuleA.Foo")
