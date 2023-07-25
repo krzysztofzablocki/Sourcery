@@ -11,7 +11,7 @@ let package = Package(
     products: [
         // SPM won't generate .swiftmodule for a target directly used by a product,
         // hence it can't be imported by tests. Executable target can't be imported too.
-        .executable(name: "sourcery", targets: ["SourceryExecutable"]),
+//        .executable(name: "sourcery", targets: ["SourceryExecutable"]),
         .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
         .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
         .library(name: "SourceryJS", targets: ["SourceryJS"]),
