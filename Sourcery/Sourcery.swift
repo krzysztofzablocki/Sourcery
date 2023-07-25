@@ -79,6 +79,9 @@ public class Sourcery {
         case let .projects(projects):
             watchPaths = Paths(include: projects.map({ $0.root }),
                                exclude: projects.flatMap({ $0.exclude }))
+        case let .packages(packages):
+                #warning("TODO")
+                watchPaths = Paths(include: [])
         }
 
         let process: (Source) throws -> ParsingResult = { source in
@@ -106,6 +109,23 @@ public class Sourcery {
                     }
                 }
                 result = try self.parse(from: paths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
+            case let .packages(packages):
+                var paths: [Path] = []
+                var excludePaths: [Path] = []
+                var modules = [String]()
+                packages.forEach { package in
+                    let sourcesPath = Path("Sources", relativeTo: package.root)
+                    package.targets.forEach { target in
+                        guard let packageTarget = package.manifest.targetMap[target] else { return }
+                        modules.append(packageTarget.name)
+                        let path = packageTarget.path ?? packageTarget.name
+                        paths.append(Path(path, relativeTo: sourcesPath))
+                        packageTarget.exclude.forEach { exclude in
+                            excludePaths.append(Path(exclude, relativeTo: sourcesPath))
+                        }
+                    }
+                }
+                result = try self.parse(from: paths, exclude: excludePaths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
             try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result, forceParse: forceParse, baseIndentation: baseIndentation)

@@ -4,6 +4,10 @@ import PathKit
 import Yams
 import SourceryRuntime
 import QuartzCore
+import Basics
+import TSCBasic
+import Workspace
+import PackageModel
 
 public struct Project {
     public let file: XcodeProj
@@ -150,9 +154,49 @@ extension Path {
     }
 }
 
+public struct Package {
+    public let root: Path
+    public let manifest: Manifest
+    public let targets: [String]
+
+    public init(dict: [String: Any], relativePath: Path) throws {
+        guard let file = dict["file"] as? String else {
+            throw Configuration.Error.invalidSources(message: "Package file path is not provided. Expected string.")
+        }
+        let path = Path(file, relativeTo: relativePath)
+        
+        let packagePath = try AbsolutePath(validating: path.string)
+
+        let observability = ObservabilitySystem { Log.verbose("\($0): \($1)") }
+        let workspace = try Workspace(forRootPackage: packagePath)
+
+        var manifestResult: Result<Manifest, Error>?
+        let semaphore = DispatchSemaphore(value: 0)
+        workspace.loadRootManifest(at: packagePath, observabilityScope: observability.topScope, completion: { result in
+            manifestResult = result
+            semaphore.signal()
+        })
+        semaphore.wait()
+        
+        guard let manifest = try manifestResult?.get() else{
+            throw Configuration.Error.invalidSources(message: "Unable to load manifest")
+        }
+        self.root = path
+        self.manifest = manifest
+        if let targets = dict["target"] as? [String] {
+            self.targets = targets
+        } else if let target = dict["target"] as? String {
+            self.targets = [target]
+        } else {
+            throw Configuration.Error.invalidSources(message: "'target' key is missing. Expected object or array of objects.")
+        }
+    }
+}
+
 public enum Source {
     case projects([Project])
     case sources(Paths)
+    case packages([Package])
 
     public init(dict: [String: Any], relativePath: Path) throws {
         if let projects = (dict["project"] as? [[String: Any]]) ?? (dict["project"] as? [String: Any]).map({ [$0] }) {
@@ -164,8 +208,11 @@ public enum Source {
             } catch {
                 throw Configuration.Error.invalidSources(message: "\(error)")
             }
+        } else if let packages = (dict["package"] as? [[String: Any]]) ?? (dict["package"] as? [String: Any]).map({ [$0] }) {
+            guard !packages.isEmpty else { throw Configuration.Error.invalidSources(message: "No packages provided.") }
+            self = try .packages(packages.map({ try Package(dict: $0, relativePath: relativePath) }))
         } else {
-            throw Configuration.Error.invalidSources(message: "'sources' or 'project' key are missing.")
+            throw Configuration.Error.invalidSources(message: "'sources', 'project' or 'package' key are missing.")
         }
     }
 
@@ -175,6 +222,8 @@ public enum Source {
             return paths.allPaths.isEmpty
         case let .projects(projects):
             return projects.isEmpty
+        case let .packages(packages):
+            return packages.isEmpty
         }
     }
 }
