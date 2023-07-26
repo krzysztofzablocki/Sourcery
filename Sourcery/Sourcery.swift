@@ -77,11 +77,11 @@ public class Sourcery {
         case let .sources(paths):
             watchPaths = paths
         case let .projects(projects):
-            watchPaths = Paths(include: projects.map({ $0.root }),
-                               exclude: projects.flatMap({ $0.exclude }))
+            watchPaths = Paths(include: projects.map(\.root),
+                               exclude: projects.flatMap(\.exclude))
         case let .packages(packages):
-                #warning("TODO")
-                watchPaths = Paths(include: [])
+            watchPaths = Paths(include: packages.flatMap({ $0.targets.map(\.root) }),
+                               exclude: packages.flatMap({ $0.targets.flatMap(\.excludes) }))
         }
 
         let process: (Source) throws -> ParsingResult = { source in
@@ -110,21 +110,9 @@ public class Sourcery {
                 }
                 result = try self.parse(from: paths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             case let .packages(packages):
-                var paths: [Path] = []
-                var excludePaths: [Path] = []
-                var modules = [String]()
-                packages.forEach { package in
-                    let sourcesPath = Path("Sources", relativeTo: package.root)
-                    package.targets.forEach { target in
-                        guard let packageTarget = package.manifest.targetMap[target] else { return }
-                        modules.append(packageTarget.name)
-                        let path = packageTarget.path ?? packageTarget.name
-                        paths.append(Path(path, relativeTo: sourcesPath))
-                        packageTarget.exclude.forEach { exclude in
-                            excludePaths.append(Path(exclude, relativeTo: sourcesPath))
-                        }
-                    }
-                }
+                let paths: [Path] = packages.flatMap({ $0.targets.map(\.root) })
+                let excludePaths: [Path] = packages.flatMap({ $0.targets.flatMap(\.excludes) })
+                let modules = packages.flatMap({ $0.targets.map(\.name) })
                 result = try self.parse(from: paths, exclude: excludePaths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 

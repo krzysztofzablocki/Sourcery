@@ -156,17 +156,21 @@ extension Path {
 
 public struct Package {
     public let root: Path
-    public let manifest: Manifest
-    public let targets: [String]
+    public let targets: [Target]
+
+    public struct Target {
+        let name: String
+        let root: Path
+        let excludes: [Path]
+    }
 
     public init(dict: [String: Any], relativePath: Path) throws {
-        guard let file = dict["file"] as? String else {
-            throw Configuration.Error.invalidSources(message: "Package file path is not provided. Expected string.")
+        guard let packageRootPath = dict["path"] as? String else {
+            throw Configuration.Error.invalidSources(message: "Package file directory path is not provided. Expected string.")
         }
-        let path = Path(file, relativeTo: relativePath)
+        let path = Path(packageRootPath, relativeTo: relativePath)
         
         let packagePath = try AbsolutePath(validating: path.string)
-
         let observability = ObservabilitySystem { Log.verbose("\($0): \($1)") }
         let workspace = try Workspace(forRootPackage: packagePath)
 
@@ -182,14 +186,25 @@ public struct Package {
             throw Configuration.Error.invalidSources(message: "Unable to load manifest")
         }
         self.root = path
-        self.manifest = manifest
+        let targetNames: [String]
         if let targets = dict["target"] as? [String] {
-            self.targets = targets
+            targetNames = targets
         } else if let target = dict["target"] as? String {
-            self.targets = [target]
+            targetNames = [target]
         } else {
             throw Configuration.Error.invalidSources(message: "'target' key is missing. Expected object or array of objects.")
         }
+        let sourcesPath = Path("Sources", relativeTo: path)
+        self.targets = manifest.targets.compactMap({ target in
+            guard targetNames.contains(target.name) else {
+                return nil
+            }
+            let rootPath = target.path ?? target.name
+            let excludePaths = target.exclude.map { path in
+                Path(path, relativeTo: sourcesPath)
+            }
+            return Target(name: target.name, root: Path(rootPath, relativeTo: sourcesPath), excludes: excludePaths)
+        })
     }
 }
 
