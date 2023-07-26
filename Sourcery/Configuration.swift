@@ -199,11 +199,11 @@ public struct Package {
             guard targetNames.contains(target.name) else {
                 return nil
             }
-            let rootPath = target.path ?? target.name
+            let rootPath = target.path.map { Path($0, relativeTo: path) } ?? Path(target.name, relativeTo: sourcesPath)
             let excludePaths = target.exclude.map { path in
-                Path(path, relativeTo: sourcesPath)
+                Path(path, relativeTo: rootPath)
             }
-            return Target(name: target.name, root: Path(rootPath, relativeTo: sourcesPath), excludes: excludePaths)
+            return Target(name: target.name, root: rootPath, excludes: excludePaths)
         })
     }
 }
