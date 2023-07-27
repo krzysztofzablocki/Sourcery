@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## 2.1.0
+## Changes
+- Added support for Swift Package Manager config ([#1184](https://github.com/krzysztofzablocki/Sourcery/pull/1184))
+
 ## 2.0.3
 ## Internal Changes
 - Modifications to included files of Swift Templates are now detected by hashing instead of using the modification date when invalidating the cache ([#1161](https://github.com/krzysztofzablocki/Sourcery/pull/1161))
