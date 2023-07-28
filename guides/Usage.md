@@ -100,6 +100,22 @@ project:
         - <path to xcframework file>
 ```
 
+You can also provide a Swift Package which will be scanned. Source files will be scanned based on the package's `path` and `exclude` options.
+
+```yaml
+package:
+  path: <path to to the Package.swift root directory>
+  target: <target name>
+```
+Multiple targets:
+```yaml
+package:
+  path: <path to to the Package.swift root directory>
+  target:
+    - <target name>
+    - <target name>
+```
+
 #### Excluding sources or templates
 
 You can specify paths to sources files that should be scanned using `include` key and paths that should be excluded using `exclude` key. These can be directory or file paths.

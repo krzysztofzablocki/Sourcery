@@ -117,7 +117,7 @@ class ConfigurationSpec: QuickSpec {
 
                 it("throws error on missing sources") {
                     let config: [String: Any] = ["templates": ["."], "output": "."]
-                    expect(configError(config)).to(equal("Invalid sources. 'sources' or 'project' key are missing."))
+                    expect(configError(config)).to(equal("Invalid sources. 'sources', 'project' or 'package' key are missing."))
                 }
 
                 it("throws error on invalid sources format") {
