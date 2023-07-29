@@ -858,7 +858,7 @@ class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOpt
         return implicitReturnCallsCount > 0
     }
     var implicitReturnReturnValue: String!
-    var implicitReturnClosure: (() -> String?)?
+    var implicitReturnClosure: (() -> String!)?
 
     func implicitReturn() -> String! {
         implicitReturnCallsCount += 1
