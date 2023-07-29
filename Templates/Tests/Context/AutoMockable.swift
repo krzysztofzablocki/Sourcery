@@ -139,7 +139,7 @@ protocol FunctionWithAttributes: AutoMockable {
     func callRepeatedAttributes() -> Bool
 }
 
-protocol AccessLevelProtocol: AutoMockable {
+public protocol AccessLevelProtocol: AutoMockable {
     var company: String? { get set }
     var name: String { get }
     
