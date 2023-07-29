@@ -890,7 +890,7 @@ class StaticMethodProtocolMock: StaticMethodProtocol {
 
     static func staticFunction(_ : String) -> String {
         staticFunctionCallsCount += 1
-        staticFunctionReceived =
+        staticFunctionReceived = 
         staticFunctionReceivedInvocations.append()
         if let staticFunctionClosure = staticFunctionClosure {
             return staticFunctionClosure()
