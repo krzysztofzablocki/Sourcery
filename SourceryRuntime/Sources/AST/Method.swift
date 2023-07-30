@@ -4,7 +4,10 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-@objcMembers public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+#if os(macOS)
+@objcMembers
+#endif
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -109,7 +112,10 @@ extension Array where Element == MethodParameter {
 }
 
 // sourcery: skipDiffing
-@objcMembers public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
+#if os(macOS)
+@objcMembers
+#endif
+public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -201,7 +207,10 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
+@objc(SwiftMethod) #if os(macOS)
+@objcMembers
+#endif
+public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String

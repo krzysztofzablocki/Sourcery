@@ -1,7 +1,22 @@
 import Foundation
 
+#if !os(macOS)
+public class NSException {
+    static func raise(_ name: String, format: String, arguments: CVaListPointer) {
+
+    }
+
+    static func raise(_ name: String) {
+
+    }
+}
+#endif
+
 /// Describes Swift AssociatedType
-@objcMembers public final class AssociatedType: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class AssociatedType: NSObject, SourceryModel {
     /// Associated type name
     public let name: String
 

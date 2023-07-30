@@ -1,3 +1,4 @@
+#if os(macOS)
 import JavaScriptCore
 import PathKit
 
@@ -120,3 +121,4 @@ open class EJSTemplate {
     }
 
 }
+#endif

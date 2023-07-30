@@ -50,7 +50,10 @@ class FileParserAttributesSpec: QuickSpec {
                     "objc": [Attribute(name: "objc", arguments: ["0": "Bar" as NSString], description: "@objc(Bar)")]
                 ]))
 
-                expect(parse("@objcMembers class Foo {}").first?.attributes).to(equal([
+                expect(parse("#if os(macOS)
+@objcMembers
+#endif
+class Foo {}").first?.attributes).to(equal([
                     "objcMembers": [Attribute(name: "objcMembers", arguments: [:], description: "@objcMembers")]
                 ]))
 

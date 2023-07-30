@@ -2,7 +2,10 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift actor
-@objc(SwiftActor) @objcMembers public final class Actor: Type {
+#if os(macOS)
+@objc(SwiftActor) @objcMembers
+#endif
+public final class Actor: Type {
     /// Returns "actor"
     public override var kind: String { return "actor" }
 

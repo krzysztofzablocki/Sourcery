@@ -5,7 +5,10 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-@objcMembers public final class ProtocolComposition: Type {
+#if os(macOS)
+@objcMembers
+#endif
+public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
     public override var kind: String { return "protocolComposition" }

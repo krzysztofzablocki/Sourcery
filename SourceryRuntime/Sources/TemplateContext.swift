@@ -7,7 +7,10 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-@objcMembers public final class TemplateContext: NSObject, SourceryModel, NSCoding {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TemplateContext: NSObject, SourceryModel, NSCoding {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
     public let functions: [SourceryMethod]
@@ -89,7 +92,10 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-@objcMembers public final class Types: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Types: NSObject, SourceryModel {
 
     /// :nodoc:
     public let types: [Type]
@@ -216,7 +222,10 @@ extension ProcessInfo {
 }
 
 /// :nodoc:
-@objcMembers public class TypesCollection: NSObject, AutoJSExport {
+#if os(macOS)
+@objcMembers
+#endif
+public class TypesCollection: NSObject, AutoJSExport {
 
     // sourcery:begin: skipJSExport
     let all: [Type]

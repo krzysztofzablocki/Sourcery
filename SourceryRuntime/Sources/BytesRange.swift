@@ -6,7 +6,10 @@
 import Foundation
 
 /// :nodoc:
-@objcMembers public final class BytesRange: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class BytesRange: NSObject, SourceryModel {
 
     public let offset: Int64
     public let length: Int64

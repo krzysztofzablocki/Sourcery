@@ -1,7 +1,10 @@
 import Foundation
 
 /// Describes tuple type
-@objcMembers public final class TupleType: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TupleType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -38,7 +41,10 @@ import Foundation
 }
 
 /// Describes tuple type element
-@objcMembers public final class TupleElement: NSObject, SourceryModel, Typed {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TupleElement: NSObject, SourceryModel, Typed {
 
     /// Tuple element name
     public let name: String?

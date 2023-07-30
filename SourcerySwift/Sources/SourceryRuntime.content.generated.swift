@@ -25,7 +25,10 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift actor
-@objc(SwiftActor) @objcMembers public final class Actor: Type {
+@objc(SwiftActor) #if os(macOS)
+@objcMembers
+#endif
+public final class Actor: Type {
     /// Returns "actor"
     public override var kind: String { return "actor" }
 
@@ -155,7 +158,10 @@ public extension Array {
 import Foundation
 
 /// Describes array type
-@objcMembers public final class ArrayType: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -209,7 +215,10 @@ import Foundation
 import Foundation
 
 /// Describes Swift AssociatedType
-@objcMembers public final class AssociatedType: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class AssociatedType: NSObject, SourceryModel {
     /// Associated type name
     public let name: String
 
@@ -251,7 +260,10 @@ import Foundation
 import Foundation
 
 /// Describes Swift attribute
-@objcMembers public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+#if os(macOS)
+@objcMembers
+#endif
+public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// Attribute name
     public let name: String
@@ -439,7 +451,10 @@ import Foundation
 import Foundation
 
 /// :nodoc:
-@objcMembers public final class BytesRange: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class BytesRange: NSObject, SourceryModel {
 
     public let offset: Int64
     public let length: Int64
@@ -475,7 +490,10 @@ import Foundation
 import Foundation
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) @objcMembers public final class Class: Type {
+@objc(SwiftClass) #if os(macOS)
+@objcMembers
+#endif
+public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 
@@ -539,7 +557,10 @@ import Foundation
 import Foundation
 
 /// Describes closure type
-@objcMembers public final class ClosureType: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class ClosureType: NSObject, SourceryModel {
 
     /// Type name used in declaration with stripped whitespaces and new lines
     public let name: String
@@ -1393,7 +1414,10 @@ extension Variable {
 import Foundation
 
 /// Describes dictionary type
-@objcMembers public final class DictionaryType: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class DictionaryType: NSObject, SourceryModel {
     /// Type name used in declaration
     public var name: String
 
@@ -1964,7 +1988,10 @@ extension NSRange: Diffable {
     }
 }
 
-@objcMembers public class DiffableResult: NSObject, AutoEquatable {
+#if os(macOS)
+@objcMembers
+#endif
+public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
     internal var identifier: String?
@@ -2157,7 +2184,10 @@ public protocol Documented {
 import Foundation
 
 /// Defines enum case associated value
-@objcMembers public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
+#if os(macOS)
+@objcMembers
+#endif
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
 
     /// Associated value local name.
     /// This is a name to be used to construct enum case value
@@ -2220,7 +2250,10 @@ import Foundation
 }
 
 /// Defines enum case
-@objcMembers public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented {
+#if os(macOS)
+@objcMembers
+#endif
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented {
 
     /// Enum case name
     public let name: String
@@ -2284,7 +2317,10 @@ import Foundation
 }
 
 /// Defines Swift enum
-@objcMembers public final class Enum: Type {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Enum: Type {
 
     // sourcery: skipDescription
     /// Returns "enum"
@@ -3419,7 +3455,10 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class FileParserResult: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class FileParserResult: NSObject, SourceryModel {
     public let path: String?
     public let module: String?
     public var types = [Type]() {
@@ -3496,7 +3535,10 @@ import Foundation
 import Foundation
 
 /// Descibes Swift generic type
-@objcMembers public final class GenericType: NSObject, SourceryModelWithoutDescription {
+#if os(macOS)
+@objcMembers
+#endif
+public final class GenericType: NSObject, SourceryModelWithoutDescription {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
     public var name: String
 
@@ -3538,7 +3580,10 @@ import Foundation
 }
 
 /// Descibes Swift generic type parameter
-@objcMembers public final class GenericTypeParameter: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class GenericTypeParameter: NSObject, SourceryModel {
 
     /// Generic parameter type name
     public var typeName: TypeName
@@ -3577,7 +3622,10 @@ import Foundation
 
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-@objcMembers public class GenericRequirement: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public class GenericRequirement: NSObject, SourceryModel {
 
     public enum Relationship: String {
         case equals
@@ -3635,7 +3683,10 @@ import Foundation
 import Foundation
 
 /// Defines import type
-@objcMembers public class Import: NSObject, SourceryModelWithoutDescription {
+#if os(macOS)
+@objcMembers
+#endif
+public class Import: NSObject, SourceryModelWithoutDescription {
     /// Import kind, e.g. class, struct in `import class Module.ClassName`
     public var kind: String?
 
@@ -4401,7 +4452,10 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-@objcMembers public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
+#if os(macOS)
+@objcMembers
+#endif
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -4506,7 +4560,10 @@ extension Array where Element == MethodParameter {
 }
 
 // sourcery: skipDiffing
-@objcMembers public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
+#if os(macOS)
+@objcMembers
+#endif
+public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -4598,7 +4655,10 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
+@objc(SwiftMethod) #if os(macOS)
+@objcMembers
+#endif
+public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -4850,7 +4910,10 @@ import Foundation
 public typealias SourceryModifier = Modifier
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-@objcMembers public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+#if os(macOS)
+@objcMembers
+#endif
+public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// The declaration modifier name.
     public let name: String
@@ -5435,7 +5498,10 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-@objcMembers public final class Protocol: Type {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Protocol: Type {
 
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
@@ -5520,7 +5586,10 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-@objcMembers public final class ProtocolComposition: Type {
+#if os(macOS)
+@objcMembers
+#endif
+public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
     public override var kind: String { return "protocolComposition" }
@@ -5600,7 +5669,10 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-@objcMembers public final class Struct: Type {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Struct: Type {
 
     /// Returns "struct"
     public override var kind: String { return "struct" }
@@ -5660,7 +5732,10 @@ import Foundation
 import Foundation
 
 /// Describes subscript
-@objcMembers public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition {
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -5810,7 +5885,10 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-@objcMembers public final class TemplateContext: NSObject, SourceryModel, NSCoding {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TemplateContext: NSObject, SourceryModel, NSCoding {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
     public let functions: [SourceryMethod]
@@ -5892,7 +5970,10 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-@objcMembers public final class Types: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Types: NSObject, SourceryModel {
 
     /// :nodoc:
     public let types: [Type]
@@ -6019,7 +6100,10 @@ extension ProcessInfo {
 }
 
 /// :nodoc:
-@objcMembers public class TypesCollection: NSObject, AutoJSExport {
+#if os(macOS)
+@objcMembers
+#endif
+public class TypesCollection: NSObject, AutoJSExport {
 
     // sourcery:begin: skipJSExport
     let all: [Type]
@@ -6101,7 +6185,10 @@ extension ProcessInfo {
 import Foundation
 
 /// Describes tuple type
-@objcMembers public final class TupleType: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TupleType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -6138,7 +6225,10 @@ import Foundation
 }
 
 /// Describes tuple type element
-@objcMembers public final class TupleElement: NSObject, SourceryModel, Typed {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TupleElement: NSObject, SourceryModel, Typed {
 
     /// Tuple element name
     public let name: String?
@@ -6204,7 +6294,10 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-@objcMembers public class Type: NSObject, SourceryModel, Annotated, Documented {
+#if os(macOS)
+@objcMembers
+#endif
+public class Type: NSObject, SourceryModel, Annotated, Documented {
 
     /// :nodoc:
     public var module: String?
@@ -6710,7 +6803,10 @@ extension Type {
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-@objcMembers public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
     /// :nodoc:
     public init(name: String,
                 actualTypeName: TypeName? = nil,
@@ -6936,7 +7032,10 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class Typealias: NSObject, Typed, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Typealias: NSObject, Typed, SourceryModel {
     // New typealias name
     public let aliasName: String
 
@@ -7164,7 +7263,10 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {
     /// Variable name
     public let name: String
 

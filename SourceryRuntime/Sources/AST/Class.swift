@@ -1,7 +1,10 @@
 import Foundation
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) @objcMembers public final class Class: Type {
+@objc(SwiftClass) #if os(macOS)
+@objcMembers
+#endif
+public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 

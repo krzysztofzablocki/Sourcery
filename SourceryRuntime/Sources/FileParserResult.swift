@@ -8,9 +8,23 @@
 
 import Foundation
 
+#if !os(macOS)
+
+public func getVaList(_ args: [CVarArg]) -> CVaListPointer {
+    getVaList(args)
+}
+
+public extension NSExceptionName {
+    public static var parseErrorException = "parseErrorException"
+}
+#endif
+
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class FileParserResult: NSObject, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class FileParserResult: NSObject, SourceryModel {
     public let path: String?
     public let module: String?
     public var types = [Type]() {

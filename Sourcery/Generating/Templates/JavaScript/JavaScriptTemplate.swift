@@ -1,6 +1,7 @@
 import SourceryFramework
 import SourceryJS
 import SourceryRuntime
+#if os(macOS)
 import JavaScriptCore
 
 class JavaScriptTemplate: EJSTemplate, Template {
@@ -52,3 +53,4 @@ private extension JSContext {
     }
 
 }
+#endif

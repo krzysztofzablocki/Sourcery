@@ -1,7 +1,10 @@
 import Foundation
 
 /// Describes Swift attribute
-@objcMembers public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
+#if os(macOS)
+@objcMembers
+#endif
+public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
 
     /// Attribute name
     public let name: String

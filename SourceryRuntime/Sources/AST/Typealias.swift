@@ -2,7 +2,10 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-@objcMembers public final class Typealias: NSObject, Typed, SourceryModel {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Typealias: NSObject, Typed, SourceryModel {
     // New typealias name
     public let aliasName: String
 

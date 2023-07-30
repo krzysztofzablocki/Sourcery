@@ -6,7 +6,10 @@
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-@objcMembers public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
+#if os(macOS)
+@objcMembers
+#endif
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
     /// :nodoc:
     public init(name: String,
                 actualTypeName: TypeName? = nil,

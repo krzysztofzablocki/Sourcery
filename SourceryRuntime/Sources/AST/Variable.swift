@@ -9,7 +9,10 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-@objcMembers public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {
+#if os(macOS)
+@objcMembers
+#endif
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {
     /// Variable name
     public let name: String
 
