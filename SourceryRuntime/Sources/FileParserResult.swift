@@ -15,7 +15,7 @@ public func getVaList(_ args: [CVarArg]) -> CVaListPointer {
 }
 
 public extension NSExceptionName {
-    public static var parseErrorException = "parseErrorException"
+    static var parseErrorException = "parseErrorException"
 }
 #endif
 

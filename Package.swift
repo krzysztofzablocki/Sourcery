@@ -56,7 +56,7 @@ let package = Package(
                 "StencilSwiftKit",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 "XcodeProj",
-                "TryCatch",
+                // "TryCatch",
                 .product(name: "SwiftPM-auto", package: "swift-package-manager"),
             ],
             path: "Sourcery",
@@ -157,7 +157,7 @@ let package = Package(
                 "Generated/AutoCodable.generated.swift"
             ]
         ),
-        .target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]),
+        // .target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]),
         .testTarget(
             name: "SourceryLibTests",
             dependencies: [

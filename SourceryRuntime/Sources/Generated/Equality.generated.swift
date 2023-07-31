@@ -2,7 +2,7 @@
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
-
+#if os(macOS)
 extension Actor {
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
@@ -778,3 +778,4 @@ extension Variable {
         return hasher.finalize()
     }
 }
+#endif

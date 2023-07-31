@@ -2,6 +2,7 @@
 // DO NOT EDIT
 import Foundation
 
+#if os(macOS)
 extension Actor {
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -13,8 +14,12 @@ extension Actor {
         return results
     }
 }
+#endif
 extension ArrayType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ArrayType else {
             results.append("Incorrect type <expected: ArrayType, received: \(Swift.type(of: object))>")
@@ -26,7 +31,10 @@ extension ArrayType: Diffable {
     }
 }
 extension AssociatedType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? AssociatedType else {
             results.append("Incorrect type <expected: AssociatedType, received: \(Swift.type(of: object))>")
@@ -38,7 +46,10 @@ extension AssociatedType: Diffable {
     }
 }
 extension AssociatedValue: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? AssociatedValue else {
             results.append("Incorrect type <expected: AssociatedValue, received: \(Swift.type(of: object))>")
@@ -53,7 +64,10 @@ extension AssociatedValue: Diffable {
     }
 }
 extension Attribute: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Attribute else {
             results.append("Incorrect type <expected: Attribute, received: \(Swift.type(of: object))>")
@@ -66,7 +80,10 @@ extension Attribute: Diffable {
     }
 }
 extension BytesRange: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? BytesRange else {
             results.append("Incorrect type <expected: BytesRange, received: \(Swift.type(of: object))>")
@@ -77,6 +94,7 @@ extension BytesRange: Diffable {
         return results
     }
 }
+#if os(macOS)
 extension Class {
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -88,8 +106,12 @@ extension Class {
         return results
     }
 }
+#endif
 extension ClosureType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ClosureType else {
             results.append("Incorrect type <expected: ClosureType, received: \(Swift.type(of: object))>")
@@ -106,7 +128,10 @@ extension ClosureType: Diffable {
     }
 }
 extension DictionaryType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? DictionaryType else {
             results.append("Incorrect type <expected: DictionaryType, received: \(Swift.type(of: object))>")
@@ -118,6 +143,7 @@ extension DictionaryType: Diffable {
         return results
     }
 }
+#if os(macOS)
 extension Enum {
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -131,8 +157,12 @@ extension Enum {
         return results
     }
 }
+#endif
 extension EnumCase: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? EnumCase else {
             results.append("Incorrect type <expected: EnumCase, received: \(Swift.type(of: object))>")
@@ -148,7 +178,10 @@ extension EnumCase: Diffable {
     }
 }
 extension FileParserResult: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? FileParserResult else {
             results.append("Incorrect type <expected: FileParserResult, received: \(Swift.type(of: object))>")
@@ -167,7 +200,10 @@ extension FileParserResult: Diffable {
     }
 }
 extension GenericRequirement: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericRequirement else {
             results.append("Incorrect type <expected: GenericRequirement, received: \(Swift.type(of: object))>")
@@ -181,7 +217,10 @@ extension GenericRequirement: Diffable {
     }
 }
 extension GenericType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericType else {
             results.append("Incorrect type <expected: GenericType, received: \(Swift.type(of: object))>")
@@ -193,7 +232,10 @@ extension GenericType: Diffable {
     }
 }
 extension GenericTypeParameter: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericTypeParameter else {
             results.append("Incorrect type <expected: GenericTypeParameter, received: \(Swift.type(of: object))>")
@@ -204,7 +246,10 @@ extension GenericTypeParameter: Diffable {
     }
 }
 extension Import: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Import else {
             results.append("Incorrect type <expected: Import, received: \(Swift.type(of: object))>")
@@ -216,7 +261,10 @@ extension Import: Diffable {
     }
 }
 extension Method: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Method else {
             results.append("Incorrect type <expected: Method, received: \(Swift.type(of: object))>")
@@ -242,7 +290,10 @@ extension Method: Diffable {
     }
 }
 extension MethodParameter: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? MethodParameter else {
             results.append("Incorrect type <expected: MethodParameter, received: \(Swift.type(of: object))>")
@@ -259,7 +310,10 @@ extension MethodParameter: Diffable {
     }
 }
 extension Modifier: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Modifier else {
             results.append("Incorrect type <expected: Modifier, received: \(Swift.type(of: object))>")
@@ -270,6 +324,7 @@ extension Modifier: Diffable {
         return results
     }
 }
+#if os(macOS)
 extension Protocol {
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -283,6 +338,8 @@ extension Protocol {
         return results
     }
 }
+#endif
+#if os(macOS)
 extension ProtocolComposition {
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -295,6 +352,8 @@ extension ProtocolComposition {
         return results
     }
 }
+#endif
+#if os(macOS)
 extension Struct {
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -306,8 +365,12 @@ extension Struct {
         return results
     }
 }
+#endif
 extension Subscript: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Subscript else {
             results.append("Incorrect type <expected: Subscript, received: \(Swift.type(of: object))>")
@@ -326,7 +389,10 @@ extension Subscript: Diffable {
     }
 }
 extension TemplateContext: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TemplateContext else {
             results.append("Incorrect type <expected: TemplateContext, received: \(Swift.type(of: object))>")
@@ -340,7 +406,10 @@ extension TemplateContext: Diffable {
     }
 }
 extension TupleElement: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TupleElement else {
             results.append("Incorrect type <expected: TupleElement, received: \(Swift.type(of: object))>")
@@ -352,7 +421,10 @@ extension TupleElement: Diffable {
     }
 }
 extension TupleType: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TupleType else {
             results.append("Incorrect type <expected: TupleType, received: \(Swift.type(of: object))>")
@@ -363,6 +435,7 @@ extension TupleType: Diffable {
         return results
     }
 }
+#if os(macOS)
 extension Type: Diffable {
     @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
@@ -393,8 +466,12 @@ extension Type: Diffable {
         return results
     }
 }
+#endif
 extension TypeName: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TypeName else {
             results.append("Incorrect type <expected: TypeName, received: \(Swift.type(of: object))>")
@@ -413,7 +490,10 @@ extension TypeName: Diffable {
     }
 }
 extension Typealias: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Typealias else {
             results.append("Incorrect type <expected: Typealias, received: \(Swift.type(of: object))>")
@@ -428,7 +508,10 @@ extension Typealias: Diffable {
     }
 }
 extension Types: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Types else {
             results.append("Incorrect type <expected: Types, received: \(Swift.type(of: object))>")
@@ -440,7 +523,10 @@ extension Types: Diffable {
     }
 }
 extension Variable: Diffable {
-    @objc public func diffAgainst(_ object: Any?) -> DiffableResult {
+    #if os(macOS)
+    @objc
+    #endif
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Variable else {
             results.append("Incorrect type <expected: Variable, received: \(Swift.type(of: object))>")

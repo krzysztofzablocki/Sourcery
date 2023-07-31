@@ -277,7 +277,8 @@ public class TypesCollection: NSObject, AutoJSExport {
     }
 
     /// :nodoc:
-    public override func value(forKey key: String) -> Any? {
+    #if os(macOS)
+    override public func value(forKey key: String) -> Any? {
         do {
             return try types(forKey: key)
         } catch {
@@ -285,6 +286,7 @@ public class TypesCollection: NSObject, AutoJSExport {
             return nil
         }
     }
+#endif
 
     /// :nodoc:
     public subscript(_ key: String) -> [Type] {
@@ -296,7 +298,9 @@ public class TypesCollection: NSObject, AutoJSExport {
         }
     }
 
-    public override func responds(to aSelector: Selector!) -> Bool {
+#if os(macOS)
+    override public func responds(to aSelector: Selector!) -> Bool {
         return true
     }
+#endif
 }

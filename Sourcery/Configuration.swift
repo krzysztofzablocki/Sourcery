@@ -3,7 +3,7 @@ import XcodeProj
 import PathKit
 import Yams
 import SourceryRuntime
-import QuartzCore
+// import QuartzCore
 import Basics
 import TSCBasic
 import Workspace
@@ -424,9 +424,9 @@ public enum Configurations {
             throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
         }
 
-        let start = CFAbsoluteTimeGetCurrent()
+        let start = Date().timeIntervalSince1970
         defer {
-            Log.benchmark("Resolving configurations took \(CFAbsoluteTimeGetCurrent() - start)")
+            Log.benchmark("Resolving configurations took \(Date().timeIntervalSince1970 - start)")
         }
 
         if let configurations = dict["configurations"] as? [[String: Any]] {

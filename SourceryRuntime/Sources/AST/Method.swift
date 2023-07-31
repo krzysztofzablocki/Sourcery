@@ -207,8 +207,8 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-@objc(SwiftMethod) #if os(macOS)
-@objcMembers
+#if os(macOS)
+@objc(SwiftMethod) @objcMembers
 #endif
 public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
 

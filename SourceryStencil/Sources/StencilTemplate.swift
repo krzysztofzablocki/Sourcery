@@ -87,6 +87,7 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
 
+#if os(macOS)
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
@@ -106,6 +107,7 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
                 return nil
             }
         }
+#endif
 
         ext.registerBoolFilter("initializer", filter: { (m: SourceryMethod) in m.isInitializer })
         ext.registerBoolFilterOr("class",

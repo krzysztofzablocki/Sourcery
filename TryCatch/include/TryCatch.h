@@ -24,9 +24,12 @@
  SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+//#import <Foundation/Foundation.h>
+@import Foundation;
 
-@interface SwiftTryCatch : NSObject
+@class NSException;
+
+@interface SwiftTryCatch// : NSObject
 
 /**
  Provides try catch functionality for swift by wrapping around Objective-C
