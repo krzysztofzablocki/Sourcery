@@ -24,8 +24,7 @@
  SOFTWARE.
  */
 
-//#import <Foundation/Foundation.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 @class NSException;
 

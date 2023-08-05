@@ -3,48 +3,7 @@
 import PackageDescription
 import Foundation
 
-let package = Package(
-    name: "Sourcery",
-    platforms: [
-       .macOS(.v12),
-    ],
-    products: [
-        // SPM won't generate .swiftmodule for a target directly used by a product,
-        // hence it can't be imported by tests. Executable target can't be imported too.
-        .executable(name: "sourcery", targets: ["SourceryExecutable"]),
-        .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
-        .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
-        .library(name: "SourceryJS", targets: ["SourceryJS"]),
-        .library(name: "SourcerySwift", targets: ["SourcerySwift"]),
-        .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
-        .library(name: "SourceryLib", targets: ["SourceryLib"]),
-        .plugin(name: "SourceryCommandPlugin", targets: ["SourceryCommandPlugin"])
-    ],
-    dependencies: [
-        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.3"),
-        .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
-        // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
-        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.10.1"),
-        .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "508.0.0"),
-        .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
-        .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
-        .package(url: "https://github.com/apple/swift-package-manager", revision: "fa3db13e0bd00e33c187c63c80673b3ac7c82f55"),
-    ],
-    targets: [
-        .executableTarget(
-            name: "SourceryExecutable",
-            dependencies: ["SourceryLib"],
-            path: "SourceryExecutable",
-            exclude: [
-                "Info.plist"
-            ]
-        ),
-        .target(
-            // Xcode doesn't like when a target has the same name as a product but in different case.
-            name: "SourceryLib",
-            dependencies: [
+var sourceryLibDependencies: [Target.Dependency] = [
                 "SourceryFramework",
                 "SourceryRuntime",
                 "SourceryStencil",
@@ -56,9 +15,25 @@ let package = Package(
                 "StencilSwiftKit",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 "XcodeProj",
-                // "TryCatch",
                 .product(name: "SwiftPM-auto", package: "swift-package-manager"),
-            ],
+            ]
+#if os(macOS)
+sourceryLibDependencies.append("TryCatch")
+#endif
+
+var targets: [Target] = [
+        .executableTarget(
+            name: "SourceryExecutable",
+            dependencies: ["SourceryLib"],
+            path: "SourceryExecutable",
+            exclude: [
+                "Info.plist"
+            ]
+        ),
+        .target(
+            // Xcode doesn't like when a target has the same name as a product but in different case.
+            name: "SourceryLib",
+            dependencies: sourceryLibDependencies,
             path: "Sourcery",
             exclude: [
                 "Templates",
@@ -157,7 +132,6 @@ let package = Package(
                 "Generated/AutoCodable.generated.swift"
             ]
         ),
-        // .target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]),
         .testTarget(
             name: "SourceryLibTests",
             dependencies: [
@@ -231,4 +205,40 @@ let package = Package(
             dependencies: ["SourceryExecutable"]
         )
     ]
+
+#if os(macOS)
+targets.append(.target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]))
+#endif
+
+
+let package = Package(
+    name: "Sourcery",
+    platforms: [
+       .macOS(.v12),
+    ],
+    products: [
+        // SPM won't generate .swiftmodule for a target directly used by a product,
+        // hence it can't be imported by tests. Executable target can't be imported too.
+        .executable(name: "sourcery", targets: ["SourceryExecutable"]),
+        .library(name: "SourceryRuntime", targets: ["SourceryRuntime"]),
+        .library(name: "SourceryStencil", targets: ["SourceryStencil"]),
+        .library(name: "SourceryJS", targets: ["SourceryJS"]),
+        .library(name: "SourcerySwift", targets: ["SourcerySwift"]),
+        .library(name: "SourceryFramework", targets: ["SourceryFramework"]),
+        .library(name: "SourceryLib", targets: ["SourceryLib"]),
+        .plugin(name: "SourceryCommandPlugin", targets: ["SourceryCommandPlugin"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.3"),
+        .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
+        // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
+        .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
+        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.10.1"),
+        .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "508.0.0"),
+        .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
+        .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
+        .package(url: "https://github.com/apple/swift-package-manager", revision: "fa3db13e0bd00e33c187c63c80673b3ac7c82f55"),
+    ],
+    targets: targets
 )
