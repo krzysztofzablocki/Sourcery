@@ -129,10 +129,12 @@ func runCLI() {
             Log.logBenchmarks = (verboseLogging || logBenchmark) && !quiet
             Log.logAST = (verboseLogging || logAST) && !quiet
 
+#if os(macOS)
             // if ejsPath is not provided use default value or executable path
             EJSTemplate.ejsPath = ejsPath.string.isEmpty
                 ? (EJSTemplate.ejsPath ?? Path(ProcessInfo.processInfo.arguments[0]).parent() + "ejs.js")
                 : ejsPath
+#endif
 
             let configurations = configPaths.flatMap { configPath -> [Configuration] in
                 let yamlPath: Path = configPath.isDirectory ? configPath + ".sourcery.yml" : configPath
@@ -190,7 +192,7 @@ func runCLI() {
                 }
             }
 
-            let start = CFAbsoluteTimeGetCurrent()
+            let start = Date().timeIntervalSince1970
 
             let keepAlive = try configurations.flatMap { configuration -> [FolderWatcher.Local] in
                 configuration.validate()
@@ -222,7 +224,7 @@ func runCLI() {
             }
 
             if keepAlive.isEmpty {
-                Log.info("Processing time \(CFAbsoluteTimeGetCurrent() - start) seconds")
+                Log.info("Processing time \(Date().timeIntervalSince1970 - start) seconds")
             } else {
                 RunLoop.current.run()
                 _ = keepAlive

@@ -134,7 +134,7 @@ public class Sourcery {
         }
 
         Log.info("Starting watching sources.")
-
+        #if os(macOS)
         let sourceWatchers = topPaths(from: watchPaths.allPaths).map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
@@ -187,6 +187,9 @@ public class Sourcery {
         })
 
         return Array([sourceWatchers, templateWatchers].joined())
+        #else
+        return []
+        #endif
     }
 
     private func topPaths(from paths: [Path]) -> [Path] {
@@ -235,7 +238,15 @@ public class Sourcery {
         }
     }
 
-    fileprivate func templates(from: Paths) throws -> [Template] {
+    private func templatePaths(from: Paths) -> [Path] {
+        return from.allPaths.filter { $0.isTemplateFile }
+    }
+
+}
+
+#if os(macOS)
+private extension Sourcery {
+    func templates(from: Paths) throws -> [Template] {
         return try templatePaths(from: from).compactMap {
             if $0.extension == "sourcerytemplate" {
                 let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
@@ -264,12 +275,24 @@ public class Sourcery {
             }
         }
     }
-
-    private func templatePaths(from: Paths) -> [Path] {
-        return from.allPaths.filter { $0.isTemplateFile }
-    }
-
 }
+#else
+private extension Sourcery {
+    func templates(from: Paths) throws -> [Template] {
+        return try templatePaths(from: from).compactMap {
+            if $0.extension == "sourcerytemplate" {
+                let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
+                return try StencilTemplate(path: $0, templateString: template.instance.content)
+            } else if $0.extension == "swifttemplate" {
+                let cachePath = cachesDir(sourcePath: $0)
+                return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
+            } else {
+                return try StencilTemplate(path: $0)
+            }
+        }
+    }
+}
+#endif
 
 // MARK: - Parsing
 
