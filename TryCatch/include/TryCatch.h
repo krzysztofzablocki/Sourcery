@@ -26,9 +26,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class NSException;
-
-@interface SwiftTryCatch// : NSObject
+@interface SwiftTryCatch : NSObject
 
 /**
  Provides try catch functionality for swift by wrapping around Objective-C
