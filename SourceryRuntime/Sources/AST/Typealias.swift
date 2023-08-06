@@ -51,12 +51,27 @@ public final class Typealias: NSObject, Typed, SourceryModel {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["aliasName"])); fatalError() }; self.aliasName = aliasName
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { 
+                withVaList(["aliasName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.aliasName = aliasName
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
+                withVaList(["typeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.module = aDecoder.decode(forKey: "module")
             self.parent = aDecoder.decode(forKey: "parent")
-            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["accessLevel"])); fatalError() }; self.accessLevel = accessLevel
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
+                withVaList(["accessLevel"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.accessLevel = accessLevel
             self.parentName = aDecoder.decode(forKey: "parentName")
         }
 

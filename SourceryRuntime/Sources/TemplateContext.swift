@@ -31,8 +31,18 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding {
 
     /// :nodoc:
     required public init?(coder aDecoder: NSCoder) {
-        guard let parserResult: FileParserResult = aDecoder.decode(forKey: "parserResult") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found. FileParserResults are required for template context that needs persisting.", arguments: getVaList(["parserResult"])); fatalError() }
-        guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["argument"])); fatalError() }
+        guard let parserResult: FileParserResult = aDecoder.decode(forKey: "parserResult") else { 
+                withVaList(["parserResult"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found. FileParserResults are required for template context that needs persisting.", arguments: arguments)
+                }
+                fatalError()
+             }
+        guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { 
+                withVaList(["argument"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }
 
         // if we want to support multiple cycles of encode / decode we need deep copy because composer changes reference types
         let fileParserResultCopy: FileParserResult? = nil
@@ -113,8 +123,18 @@ public final class Types: NSObject, SourceryModel {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
-            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
+            guard let types: [Type] = aDecoder.decode(forKey: "types") else { 
+                withVaList(["types"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.types = types
+            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { 
+                withVaList(["typealiases"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typealiases = typealiases
         }
 
         /// :nodoc:

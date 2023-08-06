@@ -28,8 +28,18 @@ public final class TupleType: NSObject, SourceryModel {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
-            guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["elements"])); fatalError() }; self.elements = elements
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { 
+                withVaList(["elements"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.elements = elements
         }
 
         /// :nodoc:
@@ -73,7 +83,12 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.name = aDecoder.decode(forKey: "name")
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typeName"])); fatalError() }; self.typeName = typeName
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
+                withVaList(["typeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
         }
 

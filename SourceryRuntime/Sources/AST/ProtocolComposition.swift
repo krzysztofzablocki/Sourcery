@@ -58,7 +58,12 @@ public final class ProtocolComposition: Type {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let composedTypeNames: [TypeName] = aDecoder.decode(forKey: "composedTypeNames") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["composedTypeNames"])); fatalError() }; self.composedTypeNames = composedTypeNames
+            guard let composedTypeNames: [TypeName] = aDecoder.decode(forKey: "composedTypeNames") else { 
+                withVaList(["composedTypeNames"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.composedTypeNames = composedTypeNames
             self.composedTypes = aDecoder.decode(forKey: "composedTypes")
             super.init(coder: aDecoder)
         }

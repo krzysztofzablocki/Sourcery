@@ -45,7 +45,12 @@ extension NSCoder {
 
         /// :nodoc:
         required {{ type.accessLevel }} init?(coder aDecoder: NSCoder) {
-            {% for variable in type.storedVariables|!annotated:"skipCoding" %}{% if variable.typeName.name == "Bool" or variable.typeName.name == "Int" %}self.{{variable.name}} = aDecoder.decode(forKey: "{{variable.name}}"){% elif variable.typeName.name == "Int32" or variable.typeName.name == "Int64" %}self.{{variable.name}} = aDecoder.decode{{variable.typeName.name}}(forKey: "{{variable.name}}"){% else %}{% if not variable.typeName.isOptional %}guard let {{variable.name}}: {{ variable.typeName.unwrappedTypeName }} = aDecoder.decode(forKey: "{{variable.name}}") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["{{ variable.name }}"])); fatalError() }; self.{{variable.name}} = {{variable.name}}{% else %}self.{{variable.name}} = aDecoder.{% if variable.typeName.unwrappedTypeName == "Any" %}decodeObject{% else %}decode{% endif %}(forKey: "{{variable.name}}"){% endif %}{% endif %}
+            {% for variable in type.storedVariables|!annotated:"skipCoding" %}{% if variable.typeName.name == "Bool" or variable.typeName.name == "Int" %}self.{{variable.name}} = aDecoder.decode(forKey: "{{variable.name}}"){% elif variable.typeName.name == "Int32" or variable.typeName.name == "Int64" %}self.{{variable.name}} = aDecoder.decode{{variable.typeName.name}}(forKey: "{{variable.name}}"){% else %}{% if not variable.typeName.isOptional %}guard let {{variable.name}}: {{ variable.typeName.unwrappedTypeName }} = aDecoder.decode(forKey: "{{variable.name}}") else { 
+                withVaList(["{{ variable.name }}"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.{{variable.name}} = {{variable.name}}{% else %}self.{{variable.name}} = aDecoder.{% if variable.typeName.unwrappedTypeName == "Any" %}decodeObject{% else %}decode{% endif %}(forKey: "{{variable.name}}"){% endif %}{% endif %}
             {% endfor %}{% if type.supertype.implements.AutoCoding %}super.init(coder: aDecoder){% endif %}
         }
 

@@ -38,7 +38,12 @@ public final class AssociatedType: NSObject, SourceryModel {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["name"])); fatalError() }; self.name = name
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
             self.typeName = aDecoder.decode(forKey: "typeName")
             self.type = aDecoder.decode(forKey: "type")
         }

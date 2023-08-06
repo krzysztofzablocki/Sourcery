@@ -9,11 +9,6 @@
 import Foundation
 
 #if !os(macOS)
-
-public func getVaList(_ args: [CVarArg]) -> CVaListPointer {
-    getVaList(args)
-}
-
 public extension NSExceptionName {
     static var parseErrorException = "parseErrorException"
 }
@@ -71,13 +66,48 @@ public final class FileParserResult: NSObject, SourceryModel {
         required public init?(coder aDecoder: NSCoder) {
             self.path = aDecoder.decode(forKey: "path")
             self.module = aDecoder.decode(forKey: "module")
-            guard let types: [Type] = aDecoder.decode(forKey: "types") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["types"])); fatalError() }; self.types = types
-            guard let functions: [SourceryMethod] = aDecoder.decode(forKey: "functions") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["functions"])); fatalError() }; self.functions = functions
-            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["typealiases"])); fatalError() }; self.typealiases = typealiases
-            guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineRanges"])); fatalError() }; self.inlineRanges = inlineRanges
-            guard let inlineIndentations: [String: String] = aDecoder.decode(forKey: "inlineIndentations") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["inlineIndentations"])); fatalError() }; self.inlineIndentations = inlineIndentations
-            guard let modifiedDate: Date = aDecoder.decode(forKey: "modifiedDate") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["modifiedDate"])); fatalError() }; self.modifiedDate = modifiedDate
-            guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["sourceryVersion"])); fatalError() }; self.sourceryVersion = sourceryVersion
+            guard let types: [Type] = aDecoder.decode(forKey: "types") else { 
+                withVaList(["types"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.types = types
+            guard let functions: [SourceryMethod] = aDecoder.decode(forKey: "functions") else { 
+                withVaList(["functions"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.functions = functions
+            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { 
+                withVaList(["typealiases"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typealiases = typealiases
+            guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { 
+                withVaList(["inlineRanges"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.inlineRanges = inlineRanges
+            guard let inlineIndentations: [String: String] = aDecoder.decode(forKey: "inlineIndentations") else { 
+                withVaList(["inlineIndentations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.inlineIndentations = inlineIndentations
+            guard let modifiedDate: Date = aDecoder.decode(forKey: "modifiedDate") else { 
+                withVaList(["modifiedDate"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.modifiedDate = modifiedDate
+            guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { 
+                withVaList(["sourceryVersion"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.sourceryVersion = sourceryVersion
         }
 
         /// :nodoc:

@@ -44,7 +44,12 @@ public class Import: NSObject, SourceryModelWithoutDescription {
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.kind = aDecoder.decode(forKey: "kind")
-            guard let path: String = aDecoder.decode(forKey: "path") else { NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: getVaList(["path"])); fatalError() }; self.path = path
+            guard let path: String = aDecoder.decode(forKey: "path") else { 
+                withVaList(["path"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.path = path
         }
 
         /// :nodoc:
