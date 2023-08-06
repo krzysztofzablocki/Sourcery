@@ -3,7 +3,6 @@ import XcodeProj
 import PathKit
 import Yams
 import SourceryRuntime
-// import QuartzCore
 import Basics
 import TSCBasic
 import Workspace
