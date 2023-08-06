@@ -306,6 +306,15 @@ public class TypesCollection: NSObject, AutoJSExport {
             return nil
         }
     }
+#else
+public func value(forKey key: String) -> Any? {
+        do {
+            return try types(forKey: key)
+        } catch {
+            Log.error(error)
+            return nil
+        }
+    }
 #endif
 
     /// :nodoc:
