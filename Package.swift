@@ -19,6 +19,8 @@ var sourceryLibDependencies: [Target.Dependency] = [
             ]
 #if os(macOS)
 sourceryLibDependencies.append("TryCatch")
+#else
+sourceryLibDependencies.append(.product(name: "Crypto", package: "swift-crypto"))
 #endif
 
 var targets: [Target] = [
@@ -42,16 +44,6 @@ var targets: [Target] = [
         .target(
             name: "SourceryRuntime",
             path: "SourceryRuntime",
-            exclude: [
-                "Supporting Files/Info.plist"
-            ]
-        ),
-        .target(
-            name: "SourceryUtils",
-            dependencies: [
-                "PathKit"
-            ],
-            path: "SourceryUtils",
             exclude: [
                 "Supporting Files/Info.plist"
             ]
@@ -208,8 +200,50 @@ var targets: [Target] = [
 
 #if os(macOS)
 targets.append(.target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]))
+targets.append(
+    .target(
+            name: "SourceryUtils",
+            dependencies: [
+                "PathKit"
+            ],
+            path: "SourceryUtils",
+            exclude: [
+                "Supporting Files/Info.plist"
+            ]
+        )
+)
+#else
+targets.append(
+    .target(
+            name: "SourceryUtils",
+            dependencies: [
+                "PathKit",
+                .product(name: "Crypto", package: "swift-crypto")
+            ],
+            path: "SourceryUtils",
+            exclude: [
+                "Supporting Files/Info.plist"
+            ]
+        )
+)
 #endif
 
+var dependencies: [Package.Dependency] = [
+    .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.3"),
+    .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
+    // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
+    .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
+    .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.10.1"),
+    .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
+    .package(url: "https://github.com/apple/swift-syntax.git", from: "508.0.0"),
+    .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
+    .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
+    .package(url: "https://github.com/apple/swift-package-manager", revision: "fa3db13e0bd00e33c187c63c80673b3ac7c82f55"),
+]
+
+#if !os(macOS)
+dependencies.append(.package(url: "https://github.com/apple/swift-crypto", from: "2.2.3"))
+#endif
 
 let package = Package(
     name: "Sourcery",
@@ -228,17 +262,6 @@ let package = Package(
         .library(name: "SourceryLib", targets: ["SourceryLib"]),
         .plugin(name: "SourceryCommandPlugin", targets: ["SourceryCommandPlugin"])
     ],
-    dependencies: [
-        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.3"),
-        .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
-        // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
-        .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
-        .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.10.1"),
-        .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "508.0.0"),
-        .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
-        .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
-        .package(url: "https://github.com/apple/swift-package-manager", revision: "fa3db13e0bd00e33c187c63c80673b3ac7c82f55"),
-    ],
+    dependencies: dependencies,
     targets: targets
 )

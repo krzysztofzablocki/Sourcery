@@ -6,6 +6,8 @@
 import Foundation
 #if os(macOS)
 import CommonCrypto
+#else
+import Crypto
 #endif
 
 extension Data {
@@ -17,7 +19,8 @@ extension Data {
         }
         return Data(hash)
         #else
-        self
+        let digest = SHA256.hash(data: self)
+        return Data(digest)
         #endif
     }
 }
