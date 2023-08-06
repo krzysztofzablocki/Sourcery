@@ -7,6 +7,9 @@ import Foundation
 #else
 @testable import Sourcery
 #endif
+#if !os(macOS)
+import CDispatch
+#endif
 @testable import SourceryRuntime
 import XcodeProj
 
