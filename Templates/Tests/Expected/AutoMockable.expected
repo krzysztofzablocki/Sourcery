@@ -215,6 +215,186 @@ class AnyProtocolMock: AnyProtocol {
         pClosure?(x)
     }
 
+    //MARK: - q
+
+    var qCallsCount = 0
+    var qCalled: Bool {
+        return qCallsCount > 0
+    }
+    var qReturnValue: (any StubProtocol)!
+    var qClosure: (() -> any StubProtocol)?
+
+    func q() -> any StubProtocol {
+        qCallsCount += 1
+        if let qClosure = qClosure {
+            return qClosure()
+        } else {
+            return qReturnValue
+        }
+    }
+
+    //MARK: - r
+
+    var rCallsCount = 0
+    var rCalled: Bool {
+        return rCallsCount > 0
+    }
+    var rReturnValue: ((any StubProtocol)?)
+    var rClosure: (() -> (any StubProtocol)?)?
+
+    func r() -> (any StubProtocol)? {
+        rCallsCount += 1
+        if let rClosure = rClosure {
+            return rClosure()
+        } else {
+            return rReturnValue
+        }
+    }
+
+    //MARK: - s
+
+    var sCallsCount = 0
+    var sCalled: Bool {
+        return sCallsCount > 0
+    }
+    var sReturnValue: (() -> any StubProtocol)!
+    var sClosure: (() -> () -> any StubProtocol)?
+
+    func s() -> () -> any StubProtocol {
+        sCallsCount += 1
+        if let sClosure = sClosure {
+            return sClosure()
+        } else {
+            return sReturnValue
+        }
+    }
+
+    //MARK: - t
+
+    var tCallsCount = 0
+    var tCalled: Bool {
+        return tCallsCount > 0
+    }
+    var tReturnValue: ((() -> (any StubProtocol)?))!
+    var tClosure: (() -> (() -> (any StubProtocol)?))?
+
+    func t() -> (() -> (any StubProtocol)?) {
+        tCallsCount += 1
+        if let tClosure = tClosure {
+            return tClosure()
+        } else {
+            return tReturnValue
+        }
+    }
+
+    //MARK: - u
+
+    var uCallsCount = 0
+    var uCalled: Bool {
+        return uCallsCount > 0
+    }
+    var uReturnValue: ((Int, () -> (any StubProtocol)?))!
+    var uClosure: (() -> (Int, () -> (any StubProtocol)?))?
+
+    func u() -> (Int, () -> (any StubProtocol)?) {
+        uCallsCount += 1
+        if let uClosure = uClosure {
+            return uClosure()
+        } else {
+            return uReturnValue
+        }
+    }
+
+    //MARK: - v
+
+    var vCallsCount = 0
+    var vCalled: Bool {
+        return vCallsCount > 0
+    }
+    var vReturnValue: ((Int, (() -> any StubProtocol)?))!
+    var vClosure: (() -> (Int, (() -> any StubProtocol)?))?
+
+    func v() -> (Int, (() -> any StubProtocol)?) {
+        vCallsCount += 1
+        if let vClosure = vClosure {
+            return vClosure()
+        } else {
+            return vReturnValue
+        }
+    }
+
+    //MARK: - w
+
+    var wCallsCount = 0
+    var wCalled: Bool {
+        return wCallsCount > 0
+    }
+    var wReturnValue: ([(any StubProtocol)?])!
+    var wClosure: (() -> [(any StubProtocol)?])?
+
+    func w() -> [(any StubProtocol)?] {
+        wCallsCount += 1
+        if let wClosure = wClosure {
+            return wClosure()
+        } else {
+            return wReturnValue
+        }
+    }
+
+    //MARK: - x
+
+    var xCallsCount = 0
+    var xCalled: Bool {
+        return xCallsCount > 0
+    }
+    var xReturnValue: ([String: (any StubProtocol)?])!
+    var xClosure: (() -> [String: (any StubProtocol)?])?
+
+    func x() -> [String: (any StubProtocol)?] {
+        xCallsCount += 1
+        if let xClosure = xClosure {
+            return xClosure()
+        } else {
+            return xReturnValue
+        }
+    }
+
+    //MARK: - y
+
+    var yCallsCount = 0
+    var yCalled: Bool {
+        return yCallsCount > 0
+    }
+    var yReturnValue: ((any StubProtocol, (any StubProtocol)?))!
+    var yClosure: (() -> (any StubProtocol, (any StubProtocol)?))?
+
+    func y() -> (any StubProtocol, (any StubProtocol)?) {
+        yCallsCount += 1
+        if let yClosure = yClosure {
+            return yClosure()
+        } else {
+            return yReturnValue
+        }
+    }
+
+    //MARK: - z
+
+    var zCallsCount = 0
+    var zCalled: Bool {
+        return zCallsCount > 0
+    }
+    var zReturnValue: (any StubProtocol & CustomStringConvertible)!
+    var zClosure: (() -> any StubProtocol & CustomStringConvertible)?
+
+    func z() -> any StubProtocol & CustomStringConvertible {
+        zCallsCount += 1
+        if let zClosure = zClosure {
+            return zClosure()
+        } else {
+            return zReturnValue
+        }
+    }
+
 }
 class AsyncProtocolMock: AsyncProtocol {
 
@@ -655,7 +835,7 @@ class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOpt
         return implicitReturnCallsCount > 0
     }
     var implicitReturnReturnValue: String!
-    var implicitReturnClosure: (() -> String?)?
+    var implicitReturnClosure: (() -> String!)?
 
     func implicitReturn() -> String! {
         implicitReturnCallsCount += 1
