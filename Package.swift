@@ -125,12 +125,13 @@ var targets: [Target] = [
             ]
         ),
         .testTarget(
-            name: "SourceryLibTests",
+            name: "SourceryPackageTests",
             dependencies: [
                 "SourceryLib",
                 "Quick",
                 "Nimble"
             ],
+            path: "Tests/SourceryLibTests",
             exclude: [
                 "Info.plist"
             ],

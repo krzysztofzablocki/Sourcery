@@ -2,7 +2,24 @@
 import JavaScriptCore
 import PathKit
 
-private extension Foundation.Bundle {
+// (c) https://forums.swift.org/t/swift-5-3-spm-resources-in-tests-uses-wrong-bundle-path/37051/46
+private extension Bundle {
+    static let mypackageResources: Bundle = {
+        #if DEBUG
+            if let moduleName = Bundle(for: BundleFinder.self).bundleIdentifier,
+               let testBundlePath = ProcessInfo.processInfo.environment["XCTestBundlePath"] {
+                if let resourceBundle = Bundle(path: testBundlePath + "/\(moduleName)_\(moduleName).bundle") {
+                    return resourceBundle
+                }
+            }
+        #endif
+        return Bundle.module
+    }()
+
+    private final class BundleFinder {}
+}
+
+public extension Foundation.Bundle {
     /// Returns the resource bundle associated with the current Swift module.
     static var jsModule: Bundle = {
         let bundleName = "Sourcery_SourceryJS"
@@ -24,8 +41,7 @@ private extension Foundation.Bundle {
                 return bundle
             }
         }
-
-        return Bundle(for: EJSTemplate.self)
+        return Bundle.mypackageResources
     }()
 }
 
@@ -45,7 +61,11 @@ open class EJSTemplate {
     #else
     static let bundle = Bundle(for: EJSTemplate.self)
     #endif
-    public static var ejsPath: Path! = bundle.path(forResource: "ejs", ofType: "js").map({ Path($0) })
+    public static var ejsPath: Path = {
+        let bundle = EJSTemplate.bundle
+        let path = bundle.path(forResource: "ejs", ofType: "js")
+        return Path(path!)
+    }()
 
     public let sourcePath: Path
     public let templateString: String
