@@ -38,23 +38,6 @@ class DryOutputSpec: QuickSpec {
                 expect(outputInterceptor.result).to(beNil())
             }
 
-            it("generates correct output, if isDryRun equal true") {
-                let templatePath = Stubs.jsTemplates + Path("Equality.ejs")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
-
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
-
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
-
             it("handles includes") {
                 let templatePath = Stubs.jsTemplates + Path("Includes.ejs")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
@@ -279,40 +262,23 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
             let templatePath = Stubs.swiftTemplates + Path("Equality.swifttemplate")
             let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-            it("has no stdout json output if isDryRun equal false (*also default value)") {
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("has no stdout json output if isDryRun equal false (*also default value)") {
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: false,
-                                              baseIndentation: 0)
-                }.toNot(throwError())
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: false,
+                                               baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect(outputInterceptor.result).to(beNil())
-            }
+                 expect(outputInterceptor.result).to(beNil())
+             }
 
-            it("generates correct output, if isDryRun equal true") {
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
-
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
-
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
-
-            it("handles includes") {
-                let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+            it("given swifttemplate, generates correct output, if isDryRun equal true") {
                 let sourcery = Sourcery(cacheDisabled: true)
                 let outputInterceptor = OutputInterceptor()
                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
@@ -327,177 +293,211 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                 expect(outputInterceptor.result).to(equal(expectedResult))
             }
 
-            it("handles file includes") {
-                let templatePath = Stubs.swiftTemplates + Path("IncludeFile.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("given ejs template, generates correct output, if isDryRun equal true") {
+                 let templatePath = Stubs.jsTemplates + Path("Equality.ejs")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-            it("handles includes without swifttemplate extension") {
-                let templatePath = Stubs.swiftTemplates + Path("IncludesNoExtension.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("handles includes") {
+                 let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-            it("handles file includes without swift extension") {
-                let templatePath = Stubs.swiftTemplates + Path("IncludeFileNoExtension.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("handles file includes") {
+                 let templatePath = Stubs.swiftTemplates + Path("IncludeFile.swifttemplate")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-            it("handles includes from included files relatively") {
-                let templatePath = Stubs.swiftTemplates + Path("SubfolderIncludes.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("handles includes without swifttemplate extension") {
+                 let templatePath = Stubs.swiftTemplates + Path("IncludesNoExtension.swifttemplate")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-            it("handles file includes from included files relatively") {
-                let templatePath = Stubs.swiftTemplates + Path("SubfolderFileIncludes.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("handles file includes without swift extension") {
+                 let templatePath = Stubs.swiftTemplates + Path("IncludeFileNoExtension.swifttemplate")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-            it("handles free functions") {
-                let templatePath = Stubs.swiftTemplates + Path("Function.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Function.swift")).read(.utf8)
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("handles includes from included files relatively") {
+                 let templatePath = Stubs.swiftTemplates + Path("SubfolderIncludes.swifttemplate")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: [templatePath]),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect(outputInterceptor.result).to(equal(expectedResult))
-            }
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-            // MARK: Multiple files check
-            it("return all outputs values") {
-                let templatePaths = ["Includes.swifttemplate",
-                                     "IncludeFile.swifttemplate",
-                                     "IncludesNoExtension.swifttemplate",
-                                     "IncludeFileNoExtension.swifttemplate",
-                                     "SubfolderIncludes.swifttemplate",
-                                     "SubfolderFileIncludes.swifttemplate",
-                                     "Function.swifttemplate"]
-                    .map { Stubs.swiftTemplates + Path($0) }
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+             it("handles file includes from included files relatively") {
+                 let templatePath = Stubs.swiftTemplates + Path("SubfolderFileIncludes.swifttemplate")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                let expectedResults = ["Basic+Other.swift",
-                                       "Basic.swift",
-                                       "Basic+Other.swift",
-                                       "Basic.swift",
-                                       "Basic.swift",
-                                       "Basic.swift",
-                                       "Function.swift"]
-                    .compactMap { try? (Stubs.resultDirectory + Path($0)).read(.utf8) }
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: templatePaths),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-                expect(outputInterceptor.outputModel.outputs.count).to(equal(expectedResults.count))
-                expect(outputInterceptor.outputModel.outputs.map { $0.value }.sorted()).to(equal(expectedResults.sorted()))
-            }
+             it("handles free functions") {
+                 let templatePath = Stubs.swiftTemplates + Path("Function.swifttemplate")
+                 let expectedResult = try? (Stubs.resultDirectory + Path("Function.swift")).read(.utf8)
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-            it("has same templates in outputs as in inputs") {
-                let templatePaths = ["Includes.swifttemplate",
-                                     "IncludeFile.swifttemplate",
-                                     "IncludesNoExtension.swifttemplate",
-                                     "IncludeFileNoExtension.swifttemplate",
-                                     "SubfolderIncludes.swifttemplate",
-                                     "SubfolderFileIncludes.swifttemplate",
-                                     "Function.swifttemplate"]
-                    .map { Stubs.swiftTemplates + Path($0) }
-                let sourcery = Sourcery(cacheDisabled: true)
-                let outputInterceptor = OutputInterceptor()
-                sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: [templatePath]),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
 
-                let expectedResults = ["Basic+Other.swift",
-                                       "Basic.swift",
-                                       "Basic+Other.swift",
-                                       "Basic.swift",
-                                       "Basic.swift",
-                                       "Basic.swift",
-                                       "Function.swift"]
-                    .compactMap { try? (Stubs.resultDirectory + Path($0)).read(.utf8) }
+                 expect(outputInterceptor.result).to(equal(expectedResult))
+             }
 
-                expect {
-                    try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
-                                              usingTemplates: Paths(include: templatePaths),
-                                              output: output,
-                                              isDryRun: true, baseIndentation: 0)
-                }.toNot(throwError())
+             // MARK: Multiple files check
+             it("return all outputs values") {
+                 let templatePaths = ["Includes.swifttemplate",
+                                      "IncludeFile.swifttemplate",
+                                      "IncludesNoExtension.swifttemplate",
+                                      "IncludeFileNoExtension.swifttemplate",
+                                      "SubfolderIncludes.swifttemplate",
+                                      "SubfolderFileIncludes.swifttemplate",
+                                      "Function.swifttemplate"]
+                     .map { Stubs.swiftTemplates + Path($0) }
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                expect(
-                    outputInterceptor.outputModel.outputs.compactMap { $0.type.id }.map { Path($0) }.sorted()
-                ).to(
-                    equal(templatePaths.sorted())
-                )
-            }
+                 let expectedResults = ["Basic+Other.swift",
+                                        "Basic.swift",
+                                        "Basic+Other.swift",
+                                        "Basic.swift",
+                                        "Basic.swift",
+                                        "Basic.swift",
+                                        "Function.swift"]
+                     .compactMap { try? (Stubs.resultDirectory + Path($0)).read(.utf8) }
+
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: templatePaths),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
+
+                 expect(outputInterceptor.outputModel.outputs.count).to(equal(expectedResults.count))
+                 expect(outputInterceptor.outputModel.outputs.map { $0.value }.sorted()).to(equal(expectedResults.sorted()))
+             }
+
+             it("has same templates in outputs as in inputs") {
+                 let templatePaths = ["Includes.swifttemplate",
+                                      "IncludeFile.swifttemplate",
+                                      "IncludesNoExtension.swifttemplate",
+                                      "IncludeFileNoExtension.swifttemplate",
+                                      "SubfolderIncludes.swifttemplate",
+                                      "SubfolderFileIncludes.swifttemplate",
+                                      "Function.swifttemplate"]
+                     .map { Stubs.swiftTemplates + Path($0) }
+                 let sourcery = Sourcery(cacheDisabled: true)
+                 let outputInterceptor = OutputInterceptor()
+                 sourcery.dryOutput = outputInterceptor.handleOutput(_:)
+
+                 let expectedResults = ["Basic+Other.swift",
+                                        "Basic.swift",
+                                        "Basic+Other.swift",
+                                        "Basic.swift",
+                                        "Basic.swift",
+                                        "Basic.swift",
+                                        "Function.swift"]
+                     .compactMap { try? (Stubs.resultDirectory + Path($0)).read(.utf8) }
+
+                 expect {
+                     try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                               usingTemplates: Paths(include: templatePaths),
+                                               output: output,
+                                               isDryRun: true, baseIndentation: 0)
+                 }.toNot(throwError())
+
+                 expect(
+                     outputInterceptor.outputModel.outputs.compactMap { $0.type.id }.map { Path($0) }.sorted()
+                 ).to(
+                     equal(templatePaths.sorted())
+                 )
+             }
         }
     }
 }
