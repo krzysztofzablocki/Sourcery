@@ -1,0 +1,48 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: Swift
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: [ubuntu-latest, macos-latest]
+
+    steps:
+    - name: Bundler CLI
+      # You may pin to the exact commit or the version.
+      # uses: CultureHQ/actions-bundler@285f68b1d2059b91ca1eb26683263cf1960e7161
+      uses: CultureHQ/actions-bundler@v1.0.0
+    - name: Setup Swift
+      # You may pin to the exact commit or the version.
+      # uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
+      uses: swift-actions/setup-swift@v1.23.0
+      with:
+        # Swift version to configure
+        swift-version: 5.8.1 # default is 5.8
+    - uses: actions/checkout@v3
+    - name: Build
+      run:  |
+            if [ "$RUNNER_OS" == "ubuntu-latest" ]; then
+              sudo apt install libffi-dev
+              sudo apt install build-essential
+              sudo apt install libsqlite3-dev
+              sudo apt-get install libncurses5-dev
+              bundle install
+            else
+              bundle install
+            fi
+            swift build -v
+      shell: bash
+    - name: Run tests
+      run: swift test -v
+
+
+
+ 
