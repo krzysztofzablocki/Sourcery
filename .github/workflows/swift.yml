@@ -13,10 +13,6 @@ jobs:
   linux_build:
     runs-on: ubuntu-latest
     steps:
-    - name: Bundler CLI
-      # You may pin to the exact commit or the version.
-      # uses: CultureHQ/actions-bundler@285f68b1d2059b91ca1eb26683263cf1960e7161
-      uses: CultureHQ/actions-bundler@v1.0.0
     - name: Setup Swift
       # You may pin to the exact commit or the version.
       # uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
@@ -43,10 +39,6 @@ jobs:
   macos_build:
     runs-on: macos-latest
     steps:
-    - name: Bundler CLI
-      # You may pin to the exact commit or the version.
-      # uses: CultureHQ/actions-bundler@285f68b1d2059b91ca1eb26683263cf1960e7161
-      uses: CultureHQ/actions-bundler@v1.0.0
     - name: Setup Swift
       # You may pin to the exact commit or the version.
       # uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
