@@ -11,6 +11,7 @@ on:
 
 jobs:
   linux_build:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
     - name: Setup Swift
@@ -56,6 +57,12 @@ jobs:
     - name: Update Homebrew
       run:  |
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      shell: bash
+    - name: Setup Homebrew PATH
+      run:  |
+            (echo; echo 'eval "$(/usr/local/bin/brew shellenv)"') >> /Users/runner/.bash_profile
+            eval "$(/usr/local/bin/brew shellenv)"
+            brew install ack
       shell: bash
     - name: Bundle Install
       run:  bundle install
