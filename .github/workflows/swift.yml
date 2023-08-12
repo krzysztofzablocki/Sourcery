@@ -53,16 +53,9 @@ jobs:
       uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
       with:
         ruby-version: '3.1'
-    - name: Install CommandLineTools
+    - name: Install Brew along with CLT
       run:  |
-            touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
-            PROD=$(softwareupdate -l | \
-            grep "\*.*Command Line" | \
-            head -n 1 | awk -F"*" '{print $2}' | \
-            sed -e 's/^ *//' | \
-            tr -d '\n')
-            softwareupdate -i "$PROD" --verbose
-            rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+            ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     - name: Bundle Install
       run:  bundle install
     - name: Swift Build
