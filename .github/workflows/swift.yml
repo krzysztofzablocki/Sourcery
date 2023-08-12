@@ -25,15 +25,17 @@ jobs:
       uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
       with:
         ruby-version: '3.1'
-    - name: Build
+    - name: Install dependencies
       run:  |
             sudo apt install libffi-dev
             sudo apt install build-essential
             sudo apt install libsqlite3-dev
             sudo apt-get install libncurses5-dev
-            bundle install
-            swift build -v
       shell: bash
+    - name: Bundle Install
+      run:  bundle install
+    - name: Swift Build
+      run:  swift build -v
     - name: Run tests
       run: swift test -v
   macos_build:
@@ -47,15 +49,24 @@ jobs:
         # Swift version to configure
         swift-version: 5.8 # default is 5.8
     - uses: actions/checkout@v3
-    - name: Set up Ruby
+    - name: Setup Ruby
       uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
       with:
         ruby-version: '3.1'
-    - name: Build
+    - name: Install CommandLineTools
       run:  |
-            bundle install
-            swift build -v
-      shell: bash
+            touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress;
+            PROD=$(softwareupdate -l | \
+            grep "\*.*Command Line" | \
+            head -n 1 | awk -F"*" '{print $2}' | \
+            sed -e 's/^ *//' | \
+            tr -d '\n')
+            softwareupdate -i "$PROD" --verbose
+            rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    - name: Bundle Install
+      run:  bundle install
+    - name: Swift Build
+      run:  swift build -v
     - name: Run tests
       run: swift test -v
 
