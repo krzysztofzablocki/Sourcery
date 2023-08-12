@@ -55,8 +55,8 @@ jobs:
         ruby-version: '3.1'
     - name: Update Homebrew
       run:  |
-        brew update --preinstall
-        cat "$(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/foo.rb" > .github/brew-formulae
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      shell: bash
     - name: Bundle Install
       run:  bundle install
     - name: Swift Build
