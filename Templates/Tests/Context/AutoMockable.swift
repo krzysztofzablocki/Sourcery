@@ -171,4 +171,14 @@ protocol AnyProtocol: AutoMockable {
     func n(x: @escaping ((any StubProtocol)?) -> Void)
     var o: any StubWithAnyNameProtocol { get }
     func p(_ x: (any StubWithAnyNameProtocol)?)
+    func q() -> any StubProtocol
+    func r() -> (any StubProtocol)?
+    func s() -> () -> any StubProtocol
+    func t() -> () -> (any StubProtocol)?
+    func u() -> (Int, () -> (any StubProtocol)?)
+    func v() -> (Int, (() -> any StubProtocol)?)
+    func w() -> [(any StubProtocol)?]
+    func x() -> [String: (any StubProtocol)?]
+    func y() -> (any StubProtocol, (any StubProtocol)?)
+    func z() -> any StubProtocol & CustomStringConvertible
 }

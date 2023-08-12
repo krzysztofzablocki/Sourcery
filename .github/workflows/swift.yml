@@ -1,0 +1,58 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: Swift
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  linux_build:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Swift
+      # You may pin to the exact commit or the version.
+      # uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
+      uses: swift-actions/setup-swift@v1.23.0
+      with:
+        # Swift version to configure
+        swift-version: 5.8 # default is 5.8
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      with:
+        ruby-version: '3.1'
+    - name: Install dependencies
+      run:  |
+            sudo apt install libffi-dev
+            sudo apt install build-essential
+            sudo apt install libsqlite3-dev
+            sudo apt-get install libncurses5-dev
+      shell: bash
+    - name: Bundle Install
+      run:  bundle install
+    - name: Swift Build
+      run:  swift build -v
+    - name: Run tests
+      run: swift test -v
+  macos_build:
+    if: ${{ false }}
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      with:
+        ruby-version: '3.1'
+    - name: Bundle Install
+      run:  bundle install
+    - name: Swift Build
+      run:  swift build -v
+    - name: Run tests
+      run: swift test -v
+
+ 
