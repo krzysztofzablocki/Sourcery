@@ -56,6 +56,9 @@ jobs:
         ruby-version: '3.1'
     - name: Xcode Select
       uses: devbotsxyz/xcode-select@v1.1.0
+    - name: Export SDKROOT
+      run: export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+      shell: bash
     - name: Bundle Install
       run:  bundle install
     - name: Swift Build
