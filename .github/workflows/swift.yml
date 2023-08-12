@@ -51,10 +51,6 @@ jobs:
     - name: Print Current Xcode
       run: xcode-select -p
     - uses: actions/checkout@v3
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-      with:
-        ruby-version: '3.1'
     - name: Bundle Install
       run:  bundle install
     - name: Swift Build
