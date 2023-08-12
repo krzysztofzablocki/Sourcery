@@ -65,13 +65,13 @@ jobs:
             brew install ack
             export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
       shell: bash
+    - name: Xcode Build
+      uses: devbotsxyz/xcode-build@v1.0.0
     - name: Bundle Install
       run:  bundle install
     - name: Swift Build
       run:  swift build -v
     - name: Run tests
       run: swift test -v
-
-
 
  
