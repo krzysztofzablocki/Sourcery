@@ -11,7 +11,6 @@ on:
 
 jobs:
   linux_build:
-    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
     - name: Setup Swift
@@ -40,7 +39,6 @@ jobs:
     - name: Run tests
       run: swift test -v
   macos_build:
-    if: ${{ false }}
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
