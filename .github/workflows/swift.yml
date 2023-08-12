@@ -63,6 +63,7 @@ jobs:
             (echo; echo 'eval "$(/usr/local/bin/brew shellenv)"') >> /Users/runner/.bash_profile
             eval "$(/usr/local/bin/brew shellenv)"
             brew install ack
+            export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
       shell: bash
     - name: Bundle Install
       run:  bundle install
