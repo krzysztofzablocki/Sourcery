@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ['ubuntu-latest', 'macos-latest']
+    runs-on: ['ubuntu:latest', 'macos:latest']
 
     steps:
     - name: Bundler CLI
