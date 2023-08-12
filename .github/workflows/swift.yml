@@ -54,17 +54,6 @@ jobs:
       uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
       with:
         ruby-version: '3.1'
-    - name: Update Homebrew
-      run:  |
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      shell: bash
-    - name: Setup Homebrew PATH
-      run:  |
-            (echo; echo 'eval "$(/usr/local/bin/brew shellenv)"') >> /Users/runner/.bash_profile
-            eval "$(/usr/local/bin/brew shellenv)"
-            brew install ack
-            export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
-      shell: bash
     - name: Xcode Select
       uses: devbotsxyz/xcode-select@v1.1.0
     - name: Bundle Install
