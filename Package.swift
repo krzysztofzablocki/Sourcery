@@ -145,7 +145,8 @@ var targets: [Target] = [
                 .copy("Stub/Result"),
                 .copy("Stub/Templates"),
                 .copy("Stub/Source")
-            ]
+            ],
+            swiftSettings: [.unsafeFlags(["-enable-testing"])]
         ),
         .testTarget(
             name: "CodableContextTests",
@@ -157,7 +158,8 @@ var targets: [Target] = [
             path: "Templates/CodableContextTests",
             exclude: [
                 "Info.plist"
-            ]
+            ],
+            swiftSettings: [.unsafeFlags(["-enable-testing"])]
         ),
         .testTarget(
             name: "TemplatesTests",
@@ -182,7 +184,8 @@ var targets: [Target] = [
                 .copy("Templates"),
                 .copy("Tests/Context"),
                 .copy("Tests/Expected")
-            ]
+            ],
+            swiftSettings: [.unsafeFlags(["-enable-testing"])]
         ),
         .plugin(
             name: "SourceryCommandPlugin",
