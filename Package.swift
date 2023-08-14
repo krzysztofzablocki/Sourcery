@@ -1,4 +1,4 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.8.1
 
 import PackageDescription
 import Foundation
@@ -125,13 +125,12 @@ var targets: [Target] = [
             ]
         ),
         .testTarget(
-            name: "SourceryPackageTests",
+            name: "SourceryLibTests",
             dependencies: [
                 "SourceryLib",
                 "Quick",
                 "Nimble"
             ],
-            path: "Tests/SourceryLibTests",
             exclude: [
                 "Info.plist"
             ],
@@ -203,34 +202,24 @@ var targets: [Target] = [
     ]
 
 #if os(macOS)
+let sourceryUtilsDependencies: [Target.Dependency] = ["PathKit"]
 targets.append(.target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]))
-targets.append(
-    .target(
-            name: "SourceryUtils",
-            dependencies: [
-                "PathKit"
-            ],
-            path: "SourceryUtils",
-            exclude: [
-                "Supporting Files/Info.plist"
-            ]
-        )
-)
 #else
+let sourceryUtilsDependencies: [Target.Dependency] = [
+    "PathKit",
+    .product(name: "Crypto", package: "swift-crypto")
+]
+#endif
 targets.append(
     .target(
             name: "SourceryUtils",
-            dependencies: [
-                "PathKit",
-                .product(name: "Crypto", package: "swift-crypto")
-            ],
+            dependencies: sourceryUtilsDependencies,
             path: "SourceryUtils",
             exclude: [
                 "Supporting Files/Info.plist"
             ]
         )
 )
-#endif
 
 var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.3"),
