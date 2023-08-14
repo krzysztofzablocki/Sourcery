@@ -46,8 +46,10 @@ jobs:
       shell: bash
     - name: Print Current Xcode
       run: xcode-select -p
-    - name: Set Xcode 14.3.1
-      run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer
+    # - name: Set Xcode 14.3.1
+    #   run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer
+    - name: Set Xcode 15.0 Beta
+      run: sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
     - name: Print Current Xcode
       run: xcode-select -p
     - uses: actions/checkout@v3
