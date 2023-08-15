@@ -573,8 +573,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented {
             aCoder.encode(self.fileName, forKey: "fileName")
         }
 // sourcery:end
-#if !os(macOS)
-public func diffAgainst(_ object: Any?) -> DiffableResult {
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Type else {
             results.append("Incorrect type <expected: Type, received: \(Swift.type(of: object))>")
@@ -602,7 +602,7 @@ public func diffAgainst(_ object: Any?) -> DiffableResult {
         results.append(contentsOf: DiffableResult(identifier: "fileName").trackDifference(actual: self.fileName, expected: castObject.fileName))
         return results
     }
-#endif
+
 }
 
 extension Type {
@@ -618,11 +618,13 @@ extension Type {
 /// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
 extension Type {
     /// :nodoc:
-    // override public func value(forUndefinedKey key: String) -> Any? {
-    //     if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
-    //         return innerType
-    //     }
+    #if !canImport(ObjectiveC)
+    override public func value(forUndefinedKey key: String) -> Any? {
+        if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
+            return innerType
+        }
 
-    //     return super.value(forUndefinedKey: key)
-    // }
+        return super.value(forUndefinedKey: key)
+    }
+    #endif
 }
