@@ -8,7 +8,7 @@
 
 import Foundation
 
-#if !os(macOS)
+#if !canImport(ObjectiveC)
 public extension NSExceptionName {
     static var parseErrorException = "parseErrorException"
 }

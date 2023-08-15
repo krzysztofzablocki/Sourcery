@@ -234,7 +234,7 @@ var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/apple/swift-package-manager", revision: "fa3db13e0bd00e33c187c63c80673b3ac7c82f55"),
 ]
 
-#if !os(macOS)
+#if !canImport(ObjectiveC)
 dependencies.append(.package(url: "https://github.com/apple/swift-crypto", from: "2.2.3"))
 #endif
 

@@ -7,7 +7,7 @@ import Foundation
 #else
 @testable import Sourcery
 #endif
-#if !os(macOS)
+#if !canImport(ObjectiveC)
 import CDispatch
 #endif
 @testable import SourceryRuntime
