@@ -618,7 +618,7 @@ extension Type {
 /// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
 extension Type {
     /// :nodoc:
-    #if !canImport(ObjectiveC)
+    #if canImport(ObjectiveC)
     override public func value(forUndefinedKey key: String) -> Any? {
         if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
             return innerType
