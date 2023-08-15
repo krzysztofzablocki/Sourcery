@@ -9,7 +9,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {

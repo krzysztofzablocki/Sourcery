@@ -16,7 +16,7 @@ public extension NSExceptionName {
 
 // sourcery: skipJSExport
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class FileParserResult: NSObject, SourceryModel, Diffable {

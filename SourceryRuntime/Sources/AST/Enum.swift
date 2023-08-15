@@ -6,7 +6,7 @@
 import Foundation
 
 /// Defines enum case associated value
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable {
@@ -96,7 +96,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 }
 
 /// Defines enum case
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable {
@@ -198,7 +198,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 }
 
 /// Defines Swift enum
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Enum: Type {

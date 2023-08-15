@@ -10,7 +10,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Struct: Type {

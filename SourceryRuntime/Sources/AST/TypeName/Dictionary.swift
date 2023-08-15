@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes dictionary type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class DictionaryType: NSObject, SourceryModel, Diffable {

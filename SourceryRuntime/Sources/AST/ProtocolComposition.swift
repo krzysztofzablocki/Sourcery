@@ -5,7 +5,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class ProtocolComposition: Type {

@@ -2,7 +2,7 @@
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
-#if os(macOS)
+#if canImport(ObjectiveC)
 extension Actor {
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {

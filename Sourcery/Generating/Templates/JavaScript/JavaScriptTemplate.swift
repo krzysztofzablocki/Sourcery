@@ -1,7 +1,7 @@
 import SourceryFramework
 import SourceryJS
 import SourceryRuntime
-#if os(macOS)
+#if canImport(ObjectiveC)
 import JavaScriptCore
 
 class JavaScriptTemplate: EJSTemplate, Template {

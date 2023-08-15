@@ -6,7 +6,7 @@
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable {

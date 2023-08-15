@@ -9,7 +9,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable {

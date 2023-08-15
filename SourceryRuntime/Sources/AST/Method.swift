@@ -4,7 +4,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable {
@@ -143,7 +143,7 @@ extension Array where Element == MethodParameter {
 }
 
 // sourcery: skipDiffing
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
@@ -248,7 +248,7 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objc(SwiftMethod) @objcMembers
 #endif
 public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {

@@ -25,9 +25,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift actor
-@objc(SwiftActor) #if os(macOS)
-@objcMembers
-#endif
+@objc(SwiftActor) @objcMembers
 public final class Actor: Type {
     /// Returns "actor"
     public override var kind: String { return "actor" }
@@ -158,10 +156,7 @@ public extension Array {
 import Foundation
 
 /// Describes array type
-#if os(macOS)
-@objcMembers
-#endif
-public final class ArrayType: NSObject, SourceryModel {
+@objcMembers public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String

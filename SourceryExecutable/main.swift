@@ -129,7 +129,7 @@ func runCLI() {
             Log.logBenchmarks = (verboseLogging || logBenchmark) && !quiet
             Log.logAST = (verboseLogging || logAST) && !quiet
 
-#if os(macOS)
+#if canImport(ObjectiveC)
             // if ejsPath is not provided use default value or executable path
             EJSTemplate.ejsPath = ejsPath.string.isEmpty
                 ? (EJSTemplate.ejsPath ?? Path(ProcessInfo.processInfo.arguments[0]).parent() + "ejs.js")
@@ -245,7 +245,7 @@ func runCLI() {
         }.run(Sourcery.version)
 }
 
-#if os(macOS)
+#if canImport(ObjectiveC)
 import AppKit
 
 if !inUnitTests {

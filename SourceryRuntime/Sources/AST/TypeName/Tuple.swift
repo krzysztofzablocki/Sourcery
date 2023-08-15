@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes tuple type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TupleType: NSObject, SourceryModel, Diffable {
@@ -62,7 +62,7 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
 }
 
 /// Describes tuple type element
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {

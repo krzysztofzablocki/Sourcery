@@ -17,7 +17,7 @@ var sourceryLibDependencies: [Target.Dependency] = [
                 "XcodeProj",
                 .product(name: "SwiftPM-auto", package: "swift-package-manager"),
             ]
-#if os(macOS)
+#if canImport(ObjectiveC)
 sourceryLibDependencies.append("TryCatch")
 #else
 sourceryLibDependencies.append(.product(name: "Crypto", package: "swift-crypto"))
@@ -201,7 +201,7 @@ var targets: [Target] = [
         )
     ]
 
-#if os(macOS)
+#if canImport(ObjectiveC)
 let sourceryUtilsDependencies: [Target.Dependency] = ["PathKit"]
 targets.append(.target(name: "TryCatch", path: "TryCatch", exclude: ["Info.plist"]))
 #else

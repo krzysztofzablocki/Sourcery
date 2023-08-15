@@ -6,7 +6,7 @@
 import Foundation
 
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class BytesRange: NSObject, SourceryModel, Diffable {

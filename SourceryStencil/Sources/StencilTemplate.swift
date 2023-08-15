@@ -87,7 +87,7 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
 
-#if os(macOS)
+#if canImport(ObjectiveC)
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:

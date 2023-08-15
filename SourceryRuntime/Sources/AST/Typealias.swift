@@ -2,7 +2,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Typealias: NSObject, Typed, SourceryModel, Diffable {

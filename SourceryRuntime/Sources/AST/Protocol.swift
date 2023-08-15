@@ -12,7 +12,7 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Protocol: Type {

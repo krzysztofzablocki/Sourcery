@@ -1,7 +1,7 @@
 import Foundation
 
 /// Defines import type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class Import: NSObject, SourceryModelWithoutDescription, Diffable {

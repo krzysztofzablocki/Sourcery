@@ -27,7 +27,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
-#if os(macOS)
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(AssociatedValue(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
                 expect(AssociatedValue(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -79,7 +79,7 @@ class TypedSpec: QuickSpec {
                 return variable?.typeName ?? TypeName(name: "")
             }
 
-#if os(macOS)
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(ClosureParameter(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
                 expect(ClosureParameter(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -130,7 +130,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
-#if os(macOS)
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(MethodParameter(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
                 expect(MethodParameter(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -181,7 +181,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
-#if os(macOS)
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(TupleElement(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
                 expect(TupleElement(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -233,7 +233,7 @@ class TypedSpec: QuickSpec {
                 return variable?.typeName ?? TypeName(name: "")
             }
 
-#if os(macOS)
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(Typealias(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
                 expect(Typealias(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -284,7 +284,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
-#if os(macOS)
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(Variable(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
                 expect(Variable(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))

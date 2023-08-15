@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes closure type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class ClosureType: NSObject, SourceryModel, Diffable {

@@ -2,7 +2,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift actor
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objc(SwiftActor) @objcMembers
 #endif
 public final class Actor: Type {

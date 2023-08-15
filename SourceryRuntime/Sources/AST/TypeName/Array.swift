@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes array type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers 
 #endif
 public final class ArrayType: NSObject, SourceryModel, Diffable {

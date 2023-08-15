@@ -11,7 +11,7 @@ import SourceryRuntime
 import SourceryJS
 import SourcerySwift
 import SourceryStencil
-#if os(macOS)
+#if canImport(ObjectiveC)
 import TryCatch
 #endif
 import XcodeProj
@@ -136,7 +136,7 @@ public class Sourcery {
         }
 
         Log.info("Starting watching sources.")
-        #if os(macOS)
+#if canImport(ObjectiveC)
         let sourceWatchers = topPaths(from: watchPaths.allPaths).map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
@@ -246,7 +246,7 @@ public class Sourcery {
 
 }
 
-#if os(macOS)
+#if canImport(ObjectiveC)
 private extension Sourcery {
     func templates(from: Paths) throws -> [Template] {
         return try templatePaths(from: from).compactMap {
@@ -448,7 +448,7 @@ extension Sourcery {
     private func load(artifacts: String, modifiedDate: Date, path: Path) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
 
-        #if os(macOS)
+#if canImport(ObjectiveC)
         SwiftTryCatch.try({
             // this deprecation can't be removed atm, new API is 10x slower
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
@@ -652,7 +652,7 @@ extension Sourcery {
         }
 
         var result: String = ""
-        #if os(macOS)
+#if canImport(ObjectiveC)
         SwiftTryCatch.try({
             do {
                 result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)

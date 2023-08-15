@@ -1,7 +1,7 @@
 import Foundation
 
 /// Descibes Swift generic type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffable {
@@ -67,7 +67,7 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
 }
 
 /// Descibes Swift generic type parameter
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes subscript
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {

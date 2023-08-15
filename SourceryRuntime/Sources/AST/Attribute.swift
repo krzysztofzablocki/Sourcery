@@ -1,7 +1,7 @@
 import Foundation
 
 /// Describes Swift attribute
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, Diffable {

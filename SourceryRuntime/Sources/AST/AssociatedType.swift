@@ -13,7 +13,7 @@ public class NSException {
 #endif
 
 /// Describes Swift AssociatedType
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class AssociatedType: NSObject, SourceryModel {

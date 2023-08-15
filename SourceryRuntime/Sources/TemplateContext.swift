@@ -7,7 +7,7 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable {
@@ -115,7 +115,7 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Types: NSObject, SourceryModel, Diffable {
@@ -267,7 +267,7 @@ public final class Types: NSObject, SourceryModel, Diffable {
 }
 
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class TypesCollection: NSObject, AutoJSExport {
@@ -322,7 +322,7 @@ public class TypesCollection: NSObject, AutoJSExport {
     }
 
     /// :nodoc:
-    #if os(macOS)
+#if canImport(ObjectiveC)
     override public func value(forKey key: String) -> Any? {
         do {
             return try types(forKey: key)
@@ -352,7 +352,7 @@ public func value(forKey key: String) -> Any? {
         }
     }
 
-#if os(macOS)
+#if canImport(ObjectiveC)
     override public func responds(to aSelector: Selector!) -> Bool {
         return true
     }

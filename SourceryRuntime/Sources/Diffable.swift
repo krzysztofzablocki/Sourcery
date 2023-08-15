@@ -36,7 +36,7 @@ extension NSRange: Diffable {
     }
 }
 
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class DiffableResult: NSObject, AutoEquatable {

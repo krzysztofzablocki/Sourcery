@@ -1,7 +1,7 @@
 import Foundation
 // sourcery: skipDescription
 /// Descibes Swift class
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objc(SwiftClass) @objcMembers
 #endif
 public final class Class: Type {
