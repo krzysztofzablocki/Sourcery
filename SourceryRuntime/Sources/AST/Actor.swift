@@ -49,6 +49,16 @@ public final class Actor: Type {
         )
     }
 
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Actor else {
+            results.append("Incorrect type <expected: Actor, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+
 // sourcery:inline:Actor.AutoCoding
 
         /// :nodoc:
@@ -61,4 +71,5 @@ public final class Actor: Type {
             super.encode(with: aCoder)
         }
 // sourcery:end
+    
 }

@@ -53,6 +53,16 @@ public final class Struct: Type {
         )
     }
 
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Struct else {
+            results.append("Incorrect type <expected: Struct, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+
 // sourcery:inline:Struct.AutoCoding
 
         /// :nodoc:

@@ -5,7 +5,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public class GenericRequirement: NSObject, SourceryModel {
+public class GenericRequirement: NSObject, SourceryModel, Diffable {
 
     public enum Relationship: String {
         case equals
@@ -35,6 +35,19 @@ public class GenericRequirement: NSObject, SourceryModel {
         self.rightType = rightType
         self.relationship = relationship.rawValue
         self.relationshipSyntax = relationship.syntax
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericRequirement else {
+            results.append("Incorrect type <expected: GenericRequirement, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "leftType").trackDifference(actual: self.leftType, expected: castObject.leftType))
+        results.append(contentsOf: DiffableResult(identifier: "rightType").trackDifference(actual: self.rightType, expected: castObject.rightType))
+        results.append(contentsOf: DiffableResult(identifier: "relationship").trackDifference(actual: self.relationship, expected: castObject.relationship))
+        results.append(contentsOf: DiffableResult(identifier: "relationshipSyntax").trackDifference(actual: self.relationshipSyntax, expected: castObject.relationshipSyntax))
+        return results
     }
 
     // sourcery:inline:GenericRequirement.AutoCoding

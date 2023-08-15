@@ -4,7 +4,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public class Import: NSObject, SourceryModelWithoutDescription {
+public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
     /// Import kind, e.g. class, struct in `import class Module.ClassName`
     public var kind: String?
 
@@ -37,6 +37,17 @@ public class Import: NSObject, SourceryModelWithoutDescription {
         } else {
             return path
         }
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Import else {
+            results.append("Incorrect type <expected: Import, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "kind").trackDifference(actual: self.kind, expected: castObject.kind))
+        results.append(contentsOf: DiffableResult(identifier: "path").trackDifference(actual: self.path, expected: castObject.path))
+        return results
     }
 
 // sourcery:inline:Import.AutoCoding

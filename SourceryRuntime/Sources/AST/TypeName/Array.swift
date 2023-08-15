@@ -4,7 +4,7 @@ import Foundation
 #if os(macOS)
 @objcMembers 
 #endif
-public final class ArrayType: NSObject, SourceryModel {
+public final class ArrayType: NSObject, SourceryModel, Diffable {
     /// Type name used in declaration
     public var name: String
 
@@ -31,6 +31,17 @@ public final class ArrayType: NSObject, SourceryModel {
 
     public var asSource: String {
         "[\(elementTypeName.asSource)]"
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? ArrayType else {
+            results.append("Incorrect type <expected: ArrayType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
+        return results
     }
 
 // sourcery:inline:ArrayType.AutoCoding

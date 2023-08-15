@@ -4,7 +4,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public final class GenericType: NSObject, SourceryModelWithoutDescription {
+public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffable {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
     public var name: String
 
@@ -26,6 +26,17 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription {
 
     public override var description: String {
         asSource
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericType else {
+            results.append("Incorrect type <expected: GenericType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeParameters").trackDifference(actual: self.typeParameters, expected: castObject.typeParameters))
+        return results
     }
 
 // sourcery:inline:GenericType.AutoCoding
@@ -59,7 +70,7 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription {
 #if os(macOS)
 @objcMembers
 #endif
-public final class GenericTypeParameter: NSObject, SourceryModel {
+public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {
 
     /// Generic parameter type name
     public var typeName: TypeName
@@ -72,6 +83,16 @@ public final class GenericTypeParameter: NSObject, SourceryModel {
     public init(typeName: TypeName, type: Type? = nil) {
         self.typeName = typeName
         self.type = type
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericTypeParameter else {
+            results.append("Incorrect type <expected: GenericTypeParameter, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
     }
 
 // sourcery:inline:GenericTypeParameter.AutoCoding

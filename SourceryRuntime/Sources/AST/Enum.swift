@@ -9,7 +9,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable {
 
     /// Associated value local name.
     /// This is a name to be used to construct enum case value
@@ -44,6 +44,20 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 
     convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
         self.init(localName: name, externalName: name, typeName: typeName, type: type, defaultValue: defaultValue, annotations: annotations)
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedValue else {
+            results.append("Incorrect type <expected: AssociatedValue, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
+        results.append(contentsOf: DiffableResult(identifier: "externalName").trackDifference(actual: self.externalName, expected: castObject.externalName))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        return results
     }
 
 // sourcery:inline:AssociatedValue.AutoCoding
@@ -85,7 +99,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 #if os(macOS)
 @objcMembers
 #endif
-public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented {
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable {
 
     /// Enum case name
     public let name: String
@@ -122,6 +136,21 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         self.annotations = annotations
         self.documentation = documentation
         self.indirect = indirect
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? EnumCase else {
+            results.append("Incorrect type <expected: EnumCase, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: castObject.rawValue))
+        results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: castObject.associatedValues))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
+        results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
+        return results
     }
 
 // sourcery:inline:EnumCase.AutoCoding
@@ -253,6 +282,18 @@ public final class Enum: Type {
         if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
         }
+    }
+
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Enum else {
+            results.append("Incorrect type <expected: Enum, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: castObject.cases))
+        results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
     }
 
 // sourcery:inline:Enum.AutoCoding

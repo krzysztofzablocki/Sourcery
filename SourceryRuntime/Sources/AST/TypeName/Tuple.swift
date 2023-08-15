@@ -4,7 +4,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public final class TupleType: NSObject, SourceryModel {
+public final class TupleType: NSObject, SourceryModel, Diffable {
 
     /// Type name used in declaration
     public var name: String
@@ -22,6 +22,17 @@ public final class TupleType: NSObject, SourceryModel {
     public init(elements: [TupleElement]) {
         self.name = elements.asSource
         self.elements = elements
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TupleType else {
+            results.append("Incorrect type <expected: TupleType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "elements").trackDifference(actual: self.elements, expected: castObject.elements))
+        return results
     }
 
 // sourcery:inline:TupleType.AutoCoding
@@ -54,7 +65,7 @@ public final class TupleType: NSObject, SourceryModel {
 #if os(macOS)
 @objcMembers
 #endif
-public final class TupleElement: NSObject, SourceryModel, Typed {
+public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
 
     /// Tuple element name
     public let name: String?
@@ -76,6 +87,17 @@ public final class TupleElement: NSObject, SourceryModel, Typed {
     public var asSource: String {
         // swiftlint:disable:next force_unwrapping
         "\(name != nil ? "\(name!): " : "")\(typeName.asSource)"
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TupleElement else {
+            results.append("Incorrect type <expected: TupleElement, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
     }
 
 // sourcery:inline:TupleElement.AutoCoding

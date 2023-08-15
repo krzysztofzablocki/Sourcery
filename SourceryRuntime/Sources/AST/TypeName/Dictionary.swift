@@ -4,7 +4,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public final class DictionaryType: NSObject, SourceryModel {
+public final class DictionaryType: NSObject, SourceryModel, Diffable {
     /// Type name used in declaration
     public var name: String
 
@@ -41,6 +41,18 @@ public final class DictionaryType: NSObject, SourceryModel {
 
     public var asSource: String {
         "[\(keyTypeName.asSource): \(valueTypeName.asSource)]"
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? DictionaryType else {
+            results.append("Incorrect type <expected: DictionaryType, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "valueTypeName").trackDifference(actual: self.valueTypeName, expected: castObject.valueTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: castObject.keyTypeName))
+        return results
     }
 
 // sourcery:inline:DictionaryType.AutoCoding

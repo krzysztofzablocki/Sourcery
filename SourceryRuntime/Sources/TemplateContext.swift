@@ -10,7 +10,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public final class TemplateContext: NSObject, SourceryModel, NSCoding {
+public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
     public let functions: [SourceryMethod]
@@ -71,6 +71,19 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding {
         ]
     }
 
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TemplateContext else {
+            results.append("Incorrect type <expected: TemplateContext, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "parserResult").trackDifference(actual: self.parserResult, expected: castObject.parserResult))
+        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
+        return results
+    }
+
     // sourcery: skipDescription, skipEquality
     public var jsContext: [String: Any] {
         return [
@@ -105,7 +118,7 @@ extension ProcessInfo {
 #if os(macOS)
 @objcMembers
 #endif
-public final class Types: NSObject, SourceryModel {
+public final class Types: NSObject, SourceryModel, Diffable {
 
     /// :nodoc:
     public let types: [Type]
@@ -118,6 +131,18 @@ public final class Types: NSObject, SourceryModel {
         self.types = types
         self.typealiases = typealiases
     }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Types else {
+            results.append("Incorrect type <expected: Types, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
+        return results
+    }
+
 
 // sourcery:inline:Types.AutoCoding
 

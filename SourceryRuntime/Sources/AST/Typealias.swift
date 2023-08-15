@@ -5,7 +5,7 @@ import Foundation
 #if os(macOS)
 @objcMembers
 #endif
-public final class Typealias: NSObject, Typed, SourceryModel {
+public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
     // New typealias name
     public let aliasName: String
 
@@ -47,6 +47,20 @@ public final class Typealias: NSObject, Typed, SourceryModel {
         self.module = module
     }
 
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Typealias else {
+            results.append("Incorrect type <expected: Typealias, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: castObject.aliasName))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        return results
+    }
+    
 // sourcery:inline:Typealias.AutoCoding
 
         /// :nodoc:
