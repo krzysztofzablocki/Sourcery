@@ -16,12 +16,6 @@ import PathKit
 @testable import SourceryRuntime
 import XCTest
 
-class MyTestCase: XCTestCase {
-    func testFailingTest() {
-        XCTFail("fail")
-    }
-}
-
 // swiftlint:disable type_body_length file_length
 class ParserComposerSpec: QuickSpec {
     // swiftlint:disable function_body_length
