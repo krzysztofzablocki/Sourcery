@@ -119,11 +119,21 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         }
         #else
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
-            nil
+            switch array {
+            case let array as NSArray:
+                return array
+            default:
+                return nil
+            }
         }
 
         ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
-            nil
+            switch array {
+            case let array as NSArray:
+                return array
+            default:
+                return nil
+            }
         }
         #endif
 

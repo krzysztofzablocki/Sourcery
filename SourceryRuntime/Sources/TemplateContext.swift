@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Stencil
 
 /// :nodoc:
 // sourcery: skipCoding
@@ -118,7 +119,16 @@ extension ProcessInfo {
 #if canImport(ObjectiveC)
 @objcMembers
 #endif
-public final class Types: NSObject, SourceryModel, Diffable {
+public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "types":
+                return types
+            default:
+                return nil
+        }
+    }
+
 
     /// :nodoc:
     public let types: [Type]

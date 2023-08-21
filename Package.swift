@@ -43,6 +43,9 @@ var targets: [Target] = [
         ),
         .target(
             name: "SourceryRuntime",
+            dependencies: [
+                "StencilSwiftKit"
+            ],
             path: "SourceryRuntime",
             exclude: [
                 "Supporting Files/Info.plist"
@@ -226,7 +229,8 @@ var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/kylef/Commander.git", exact: "0.9.1"),
     // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
     .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
-    .package(url: "https://github.com/SwiftGen/StencilSwiftKit.git", exact: "2.10.1"),
+    .package(url: "https://github.com/art-divin/StencilSwiftKit.git", branch: "stable"),
+    .package(url: "https://github.com/art-divin/Stencil.git", branch: "master"),
     .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.3.1"),
     .package(url: "https://github.com/apple/swift-syntax.git", from: "508.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),

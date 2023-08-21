@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Stencil
 
 /// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
@@ -12,7 +13,27 @@ public typealias AttributeList = [String: [Attribute]]
 #if canImport(ObjectiveC)
 @objcMembers
 #endif
-public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
+public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "implements":
+                return implements
+            case "name":
+                return name
+            case "kind":
+                return kind
+            case "based":
+                return based
+            case "supertype":
+                return supertype
+            case "accessLevel":
+                return accessLevel
+            case "storedVariables":
+                return storedVariables
+            default:
+                return nil
+        }   
+    }
 
     /// :nodoc:
     public var module: String?

@@ -25,7 +25,9 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift actor
+#if canImport(ObjectiveC)
 @objc(SwiftActor) @objcMembers
+#endif
 public final class Actor: Type {
     /// Returns "actor"
     public override var kind: String { return "actor" }
@@ -156,7 +158,10 @@ public extension Array {
 import Foundation
 
 /// Describes array type
-@objcMembers public final class ArrayType: NSObject, SourceryModel {
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
+public final class ArrayType: NSObject, SourceryModel {
 
     /// Type name used in declaration
     public var name: String
@@ -220,7 +225,7 @@ import Foundation
 import Foundation
 
 /// Describes Swift AssociatedType
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class AssociatedType: NSObject, SourceryModel {
@@ -270,7 +275,7 @@ public final class AssociatedType: NSObject, SourceryModel {
 import Foundation
 
 /// Describes Swift attribute
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
@@ -476,7 +481,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 import Foundation
 
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class BytesRange: NSObject, SourceryModel {
@@ -515,7 +520,8 @@ public final class BytesRange: NSObject, SourceryModel {
 import Foundation
 // sourcery: skipDescription
 /// Descibes Swift class
-@objc(SwiftClass) #if os(macOS)
+#if canImport(ObjectiveC)
+@objc(SwiftClass) 
 @objcMembers
 #endif
 public final class Class: Type {
@@ -582,7 +588,7 @@ public final class Class: Type {
 import Foundation
 
 /// Describes closure type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class ClosureType: NSObject, SourceryModel {
@@ -1454,7 +1460,7 @@ extension Variable {
 import Foundation
 
 /// Describes dictionary type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class DictionaryType: NSObject, SourceryModel {
@@ -2043,7 +2049,7 @@ extension NSRange: Diffable {
     }
 }
 
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class DiffableResult: NSObject, AutoEquatable {
@@ -2239,7 +2245,7 @@ public protocol Documented {
 import Foundation
 
 /// Defines enum case associated value
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated {
@@ -2315,7 +2321,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 }
 
 /// Defines enum case
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented {
@@ -2402,7 +2408,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 }
 
 /// Defines Swift enum
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Enum: Type {
@@ -3545,7 +3551,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class FileParserResult: NSObject, SourceryModel {
@@ -3660,7 +3666,7 @@ public final class FileParserResult: NSObject, SourceryModel {
 import Foundation
 
 /// Descibes Swift generic type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class GenericType: NSObject, SourceryModelWithoutDescription {
@@ -3715,7 +3721,7 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription {
 }
 
 /// Descibes Swift generic type parameter
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class GenericTypeParameter: NSObject, SourceryModel {
@@ -3762,7 +3768,7 @@ import Foundation
 
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class GenericRequirement: NSObject, SourceryModel {
@@ -3843,7 +3849,7 @@ public class GenericRequirement: NSObject, SourceryModel {
 import Foundation
 
 /// Defines import type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class Import: NSObject, SourceryModelWithoutDescription {
@@ -3910,9 +3916,10 @@ public class Import: NSObject, SourceryModelWithoutDescription {
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
+#if canImport(ObjectiveC)
 import JavaScriptCore
 
-@objc protocol ActorAutoJSExport: JSExport {
+@objc protocol : JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
     var module: String? { get }
@@ -4529,11 +4536,13 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
 extension Variable: VariableAutoJSExport {}
 
 
-
+#endif
 """),
     .init(name: "Log.swift", content:
 """
+#if canImport(ObjectiveC)
 import Darwin
+#endif
 import Foundation
 
 /// :nodoc:
@@ -4617,7 +4626,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class MethodParameter: NSObject, SourceryModel, Typed, Annotated {
@@ -4740,7 +4749,7 @@ extension Array where Element == MethodParameter {
 }
 
 // sourcery: skipDiffing
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
@@ -4845,7 +4854,8 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-@objc(SwiftMethod) #if os(macOS)
+#if canImport(ObjectiveC)
+@objc(SwiftMethod) 
 @objcMembers
 #endif
 public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition {
@@ -5145,7 +5155,7 @@ import Foundation
 public typealias SourceryModifier = Modifier
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport {
@@ -5738,7 +5748,7 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Protocol: Type {
@@ -5836,7 +5846,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class ProtocolComposition: Type {
@@ -5924,7 +5934,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Struct: Type {
@@ -5987,7 +5997,7 @@ public final class Struct: Type {
 import Foundation
 
 /// Describes subscript
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition {
@@ -6180,7 +6190,7 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TemplateContext: NSObject, SourceryModel, NSCoding {
@@ -6275,7 +6285,7 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Types: NSObject, SourceryModel {
@@ -6415,7 +6425,7 @@ public final class Types: NSObject, SourceryModel {
 }
 
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class TypesCollection: NSObject, AutoJSExport {
@@ -6500,7 +6510,7 @@ public class TypesCollection: NSObject, AutoJSExport {
 import Foundation
 
 /// Describes tuple type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TupleType: NSObject, SourceryModel {
@@ -6550,7 +6560,7 @@ public final class TupleType: NSObject, SourceryModel {
 }
 
 /// Describes tuple type element
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TupleElement: NSObject, SourceryModel, Typed {
@@ -6624,7 +6634,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public class Type: NSObject, SourceryModel, Annotated, Documented {
@@ -7223,7 +7233,7 @@ extension Type {
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible {
@@ -7472,7 +7482,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Typealias: NSObject, Typed, SourceryModel {
@@ -7714,11 +7724,29 @@ public protocol Typed {
 
 import Foundation
 
+#if !canImport(ObjectiveC)
+public extension NSExceptionName {
+    static var parseErrorException = "parseErrorException"
+}
+#endif
+
+#if !canImport(ObjectiveC)
+public class NSException {
+    static func raise(_ name: String, format: String, arguments: CVaListPointer) {
+        fatalError(name + " exception: " + NSString(format: format, arguments: arguments))
+    }
+
+    static func raise(_ name: String) {
+        fatalError(name + " exception")
+    }
+}
+#endif 
+
 /// :nodoc:
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-#if os(macOS)
+#if canImport(ObjectiveC)
 @objcMembers
 #endif
 public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition {

@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Stencil
 
 /// :nodoc:
 public typealias SourceryVariable = Variable
@@ -12,7 +13,22 @@ public typealias SourceryVariable = Variable
 #if canImport(ObjectiveC)
 @objcMembers
 #endif
-public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable {
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+        case "readAccess":
+            return readAccess
+        case "annotations":
+            return annotations
+        case "isOptional":
+            return isOptional
+        case "name":
+            return name
+        default:
+            return nil
+        }
+    }
+
     /// Variable name
     public let name: String
 

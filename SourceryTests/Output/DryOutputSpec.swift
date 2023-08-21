@@ -15,6 +15,7 @@ import PathKit
 class DryOutputSpec: QuickSpec {
     override func spec() {
         // MARK: - DryOutput + JavaScriptTemplate
+#if canImport(ObjectiveC)
         describe("DryOutput+JavaScriptTemplate") {
             let outputDir: Path = {
                 return Stubs.cleanTemporarySourceryDir()
@@ -89,6 +90,7 @@ class DryOutputSpec: QuickSpec {
                 expect(outputInterceptor.result).to(equal(expectedResult))
             }
         }
+#endif
 
         // MARK: - DryOutput + StencilTemplate
         describe("DryOutput+StencilTemplate") {
@@ -293,6 +295,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                 expect(outputInterceptor.result).to(equal(expectedResult))
             }
 
+#if canImport(ObjectiveC)
              it("given ejs template, generates correct output, if isDryRun equal true") {
                  let templatePath = Stubs.jsTemplates + Path("Equality.ejs")
                  let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
@@ -309,7 +312,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
 
                  expect(outputInterceptor.result).to(equal(expectedResult))
              }
-
+#endif
              it("handles includes") {
                  let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
                  let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
