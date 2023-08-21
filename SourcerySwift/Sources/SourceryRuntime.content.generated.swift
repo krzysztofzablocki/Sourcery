@@ -2528,7 +2528,7 @@ public final class Enum: Type {
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
-
+#if canImport(ObjectiveC)
 extension Actor {
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
@@ -3305,6 +3305,7 @@ extension Variable {
     }
 }
 
+#endif
 """),
     .init(name: "Extensions.swift", content:
 """
@@ -7733,7 +7734,7 @@ public extension NSExceptionName {
 #if !canImport(ObjectiveC)
 public class NSException {
     static func raise(_ name: String, format: String, arguments: CVaListPointer) {
-        fatalError(name + " exception: " + NSString(format: format, arguments: arguments))
+        fatalError(name + " exception: " + NSString(format: format, arguments: arguments) as String)
     }
 
     static func raise(_ name: String) {
