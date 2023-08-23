@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -8,7 +8,6 @@ extension Actor {
     override public var description: String {
         var string = super.description
         string += ", "
-        string += "kind = \(String(describing: self.kind)), "
         string += "isFinal = \(String(describing: self.isFinal))"
         return string
     }
@@ -59,7 +58,6 @@ extension Class {
     override public var description: String {
         var string = super.description
         string += ", "
-        string += "kind = \(String(describing: self.kind)), "
         string += "isFinal = \(String(describing: self.isFinal))"
         return string
     }
