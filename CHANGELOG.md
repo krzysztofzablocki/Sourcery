@@ -5,6 +5,7 @@
 - Added support for Swift Package Manager config ([#1184](https://github.com/krzysztofzablocki/Sourcery/pull/1184))
 - Add support to any keyword for function parameter type to AutoMockable.stencil ([#1169](https://github.com/krzysztofzablocki/Sourcery/pull/1169))
 - Add support to any keyword for function return type to AutoMockable.stencil([#1186](https://github.com/krzysztofzablocki/Sourcery/pull/1186))
+- Add support for protocol compositions in EJS templates. ([#1192](https://github.com/krzysztofzablocki/Sourcery/pull/1192))
 
 ## 2.0.3
 ## Internal Changes

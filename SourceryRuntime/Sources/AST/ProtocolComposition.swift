@@ -3,7 +3,6 @@
 
 import Foundation
 
-// sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
 @objcMembers public final class ProtocolComposition: Type {
 

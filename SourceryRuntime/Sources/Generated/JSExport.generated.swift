@@ -408,6 +408,54 @@ extension Modifier: ModifierAutoJSExport {}
 
 extension Protocol: ProtocolAutoJSExport {}
 
+@objc protocol ProtocolCompositionAutoJSExport: JSExport {
+    var kind: String { get }
+    var composedTypeNames: [TypeName] { get }
+    var composedTypes: [Type]? { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
+}
+
+extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
 
 
 
@@ -585,6 +633,21 @@ extension Type: TypeAutoJSExport {}
 
 extension TypeName: TypeNameAutoJSExport {}
 
+@objc protocol TypealiasAutoJSExport: JSExport {
+    var aliasName: String { get }
+    var typeName: TypeName { get }
+    var type: Type? { get }
+    var module: String? { get }
+    var parent: Type? { get }
+    var accessLevel: String { get }
+    var parentName: String? { get }
+    var name: String { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension Typealias: TypealiasAutoJSExport {}
 
 
 @objc protocol TypesCollectionAutoJSExport: JSExport {
