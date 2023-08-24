@@ -70,7 +70,8 @@ import Foundation
                 "extensions": types.extensions,
                 "based": types.based,
                 "inheriting": types.inheriting,
-                "implementing": types.implementing
+                "implementing": types.implementing,
+                "protocolCompositions": types.protocolCompositions
             ],
             "functions": functions,
             "type": types.typesByName,

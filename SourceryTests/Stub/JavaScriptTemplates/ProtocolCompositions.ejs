@@ -1,0 +1,12 @@
+<%_
+for (composition of types.protocolCompositions.filter((t) => t.annotations.AutoStruct != null)) { %>
+struct Any<%- composition.name %>: <%- composition.name %> {
+<%_ for (type of composition.composedTypes) { -%>
+
+    // MARK: <%- type.name %> properties
+<%_ for (variable of type.instanceVariables) { -%>
+    var <%- variable.name %>: <%- variable.typeName.asSource %>
+<% }
+} -%>
+}
+<%_ } -%>

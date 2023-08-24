@@ -28,6 +28,17 @@ class JavaScriptTemplateTests: QuickSpec {
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
             }
+            
+            it("provides protocol compositions") {
+                let templatePath = Stubs.jsTemplates + Path("ProtocolCompositions.ejs")
+                let expectedResult = try? (Stubs.resultDirectory + Path("FooBar.swift")).read(.utf8)
+                
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                print("expected:\n\(expectedResult)\n\ngot:\n\(result)")
+                expect(result).to(equal(expectedResult))
+            }
 
             it("handles includes") {
                 let templatePath = Stubs.jsTemplates + Path("Includes.ejs")
