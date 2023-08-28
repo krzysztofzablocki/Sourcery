@@ -1065,6 +1065,102 @@ class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
     }
 
 }
+class SomeProtocolMock: SomeProtocol {
+
+
+
+
+    //MARK: - a
+
+    var ayzCallsCount = 0
+    var ayzCalled: Bool {
+        return ayzCallsCount > 0
+    }
+    var ayzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var ayzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var ayzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
+
+    func a(_ x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) {
+        ayzCallsCount += 1
+        ayzReceivedArguments = (x: x, y: y, z: z)
+        ayzReceivedInvocations.append((x: x, y: y, z: z))
+        ayzClosure?(x, y, z)
+    }
+
+    //MARK: - b
+
+    var bxyzCallsCount = 0
+    var bxyzCalled: Bool {
+        return bxyzCallsCount > 0
+    }
+    var bxyzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var bxyzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var bxyzReturnValue: String!
+    var bxyzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
+
+    func b(x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) async -> String {
+        bxyzCallsCount += 1
+        bxyzReceivedArguments = (x: x, y: y, z: z)
+        bxyzReceivedInvocations.append((x: x, y: y, z: z))
+        if let bxyzClosure = bxyzClosure {
+            return await bxyzClosure(x, y, z)
+        } else {
+            return bxyzReturnValue
+        }
+    }
+
+    //MARK: - someConfusingFuncName
+
+    var someConfusingFuncNameXCallsCount = 0
+    var someConfusingFuncNameXCalled: Bool {
+        return someConfusingFuncNameXCallsCount > 0
+    }
+    var someConfusingFuncNameXReceivedX: (any StubProtocol)?
+    var someConfusingFuncNameXReceivedInvocations: [(any StubProtocol)] = []
+    var someConfusingFuncNameXClosure: ((any StubProtocol) -> Void)?
+
+    func someConfusingFuncName(x: some StubProtocol) {
+        someConfusingFuncNameXCallsCount += 1
+        someConfusingFuncNameXReceivedX = x
+        someConfusingFuncNameXReceivedInvocations.append(x)
+        someConfusingFuncNameXClosure?(x)
+    }
+
+    //MARK: - c
+
+    var cSomeConfusingArgumentNameCallsCount = 0
+    var cSomeConfusingArgumentNameCalled: Bool {
+        return cSomeConfusingArgumentNameCallsCount > 0
+    }
+    var cSomeConfusingArgumentNameReceivedSomeConfusingArgumentName: (any StubProtocol)?
+    var cSomeConfusingArgumentNameReceivedInvocations: [(any StubProtocol)] = []
+    var cSomeConfusingArgumentNameClosure: ((any StubProtocol) -> Void)?
+
+    func c(someConfusingArgumentName: some StubProtocol) {
+        cSomeConfusingArgumentNameCallsCount += 1
+        cSomeConfusingArgumentNameReceivedSomeConfusingArgumentName = someConfusingArgumentName
+        cSomeConfusingArgumentNameReceivedInvocations.append(someConfusingArgumentName)
+        cSomeConfusingArgumentNameClosure?(someConfusingArgumentName)
+    }
+
+    //MARK: - d
+
+    var dCallsCount = 0
+    var dCalled: Bool {
+        return dCallsCount > 0
+    }
+    var dReceivedX: (any StubWithSomeNameProtocol)?
+    var dReceivedInvocations: [(any StubWithSomeNameProtocol)?] = []
+    var dClosure: (((any StubWithSomeNameProtocol)?) -> Void)?
+
+    func d(_ x: (some StubWithSomeNameProtocol)?) {
+        dCallsCount += 1
+        dReceivedX = x
+        dReceivedInvocations.append(x)
+        dClosure?(x)
+    }
+
+}
 class StaticMethodProtocolMock: StaticMethodProtocol {
 
 

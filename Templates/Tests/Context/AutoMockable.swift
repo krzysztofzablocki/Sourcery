@@ -182,3 +182,13 @@ protocol AnyProtocol: AutoMockable {
     func y() -> (any StubProtocol, (any StubProtocol)?)
     func z() -> any StubProtocol & CustomStringConvertible
 }
+
+protocol StubWithSomeNameProtocol {}
+
+protocol SomeProtocol: AutoMockable {
+    func a(_ x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol)
+    func b(x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) async -> String
+    func someConfusingFuncName(x: some StubProtocol)
+    func c(someConfusingArgumentName: some StubProtocol)
+    func d(_ x: (some StubWithSomeNameProtocol)?)
+}
