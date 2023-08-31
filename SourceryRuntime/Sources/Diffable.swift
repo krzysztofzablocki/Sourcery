@@ -61,6 +61,13 @@ public class DiffableResult: NSObject, AutoEquatable {
 
     var isEmpty: Bool { return results.isEmpty }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DiffableResult else { return false }
+        if self.identifier != rhs.identifier { return false }
+        return true
+    }
+
     public override var description: String {
         guard !results.isEmpty else { return "" }
         return "\(identifier.flatMap { "\($0) " } ?? "")" + results.joined(separator: "\n")

@@ -164,6 +164,26 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Variable else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.isComputed != rhs.isComputed { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.readAccess != rhs.readAccess { return false }
+        if self.writeAccess != rhs.writeAccess { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        return true
+    }
+
 // sourcery:inline:Variable.AutoCoding
 
         /// :nodoc:

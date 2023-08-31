@@ -125,6 +125,21 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Subscript else { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.readAccess != rhs.readAccess { return false }
+        if self.writeAccess != rhs.writeAccess { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        return true
+    }
+
 // sourcery:inline:Subscript.AutoCoding
 
         /// :nodoc:

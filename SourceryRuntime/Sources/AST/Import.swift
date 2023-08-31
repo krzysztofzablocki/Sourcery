@@ -50,6 +50,14 @@ public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Import else { return false }
+        if self.kind != rhs.kind { return false }
+        if self.path != rhs.path { return false }
+        return true
+    }
+
 // sourcery:inline:Import.AutoCoding
 
         /// :nodoc:

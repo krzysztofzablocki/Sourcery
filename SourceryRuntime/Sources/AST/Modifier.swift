@@ -38,6 +38,14 @@ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJS
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Modifier else { return false }
+        if self.name != rhs.name { return false }
+        if self.detail != rhs.detail { return false }
+        return true
+    }
+
     // sourcery:inline:Modifier.AutoCoding
 
             /// :nodoc:

@@ -45,6 +45,14 @@ public final class AssociatedType: NSObject, SourceryModel {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
 // sourcery:inline:AssociatedType.AutoCoding
 
         /// :nodoc:

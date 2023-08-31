@@ -84,6 +84,14 @@ public final class Protocol: Type {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Protocol else { return false }
+        if self.associatedTypes != rhs.associatedTypes { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
+        return super.isEqual(rhs)
+    }
+
 // sourcery:inline:Protocol.AutoCoding
 
         /// :nodoc:

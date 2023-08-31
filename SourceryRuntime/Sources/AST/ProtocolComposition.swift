@@ -65,6 +65,13 @@ public final class ProtocolComposition: Type {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ProtocolComposition else { return false }
+        if self.composedTypeNames != rhs.composedTypeNames { return false }
+        return super.isEqual(rhs)
+    }
+
 // sourcery:inline:ProtocolComposition.AutoCoding
 
         /// :nodoc:

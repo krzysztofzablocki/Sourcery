@@ -78,6 +78,21 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? FileParserResult else { return false }
+        if self.path != rhs.path { return false }
+        if self.module != rhs.module { return false }
+        if self.types != rhs.types { return false }
+        if self.functions != rhs.functions { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.inlineRanges != rhs.inlineRanges { return false }
+        if self.inlineIndentations != rhs.inlineIndentations { return false }
+        if self.modifiedDate != rhs.modifiedDate { return false }
+        if self.sourceryVersion != rhs.sourceryVersion { return false }
+        return true
+    }
+
 // sourcery:inline:FileParserResult.AutoCoding
 
         /// :nodoc:

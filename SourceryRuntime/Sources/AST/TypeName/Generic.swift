@@ -39,6 +39,14 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeParameters != rhs.typeParameters { return false }
+        return true
+    }   
+
 // sourcery:inline:GenericType.AutoCoding
 
         /// :nodoc:
@@ -93,6 +101,13 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         return results
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypeParameter else { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
     }
 
 // sourcery:inline:GenericTypeParameter.AutoCoding

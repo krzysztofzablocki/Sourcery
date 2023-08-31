@@ -187,6 +187,21 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TypeName else { return false }
+        if self.name != rhs.name { return false }
+        if self.generic != rhs.generic { return false }
+        if self.isProtocolComposition != rhs.isProtocolComposition { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.tuple != rhs.tuple { return false }
+        if self.array != rhs.array { return false }
+        if self.dictionary != rhs.dictionary { return false }
+        if self.closure != rhs.closure { return false }
+        return true
+    }
+
 // sourcery:inline:TypeName.AutoCoding
 
         /// :nodoc:

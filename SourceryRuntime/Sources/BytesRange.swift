@@ -34,6 +34,14 @@ public final class BytesRange: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? BytesRange else { return false }
+        if self.offset != rhs.offset { return false }
+        if self.length != rhs.length { return false }
+        return true
+    }
+
 // sourcery:inline:BytesRange.AutoCoding
 
         /// :nodoc:

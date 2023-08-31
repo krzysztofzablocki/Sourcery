@@ -85,6 +85,16 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TemplateContext else { return false }
+        if self.parserResult != rhs.parserResult { return false }
+        if self.functions != rhs.functions { return false }
+        if self.types != rhs.types { return false }
+        if self.argument != rhs.argument { return false }
+        return true
+    }
+
     // sourcery: skipDescription, skipEquality
     public var jsContext: [String: Any] {
         return [
@@ -153,6 +163,13 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Types else { return false }
+        if self.types != rhs.types { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        return true
+    }
 
 // sourcery:inline:Types.AutoCoding
 

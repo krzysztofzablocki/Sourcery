@@ -432,7 +432,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                  expect(outputInterceptor.result).to(equal(expectedResult))
              }
 
-             // MARK: Multiple files check
+            //  MARK: Multiple files check
              it("return all outputs values") {
                  let templatePaths = ["Includes.swifttemplate",
                                       "IncludeFile.swifttemplate",

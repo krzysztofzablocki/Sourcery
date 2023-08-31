@@ -63,6 +63,12 @@ public final class Struct: Type {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Struct else { return false }
+        return super.isEqual(rhs)
+    }
+
 // sourcery:inline:Struct.AutoCoding
 
         /// :nodoc:

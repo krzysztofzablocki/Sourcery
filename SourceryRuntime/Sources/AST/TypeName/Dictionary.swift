@@ -55,6 +55,15 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DictionaryType else { return false }
+        if self.name != rhs.name { return false }
+        if self.valueTypeName != rhs.valueTypeName { return false }
+        if self.keyTypeName != rhs.keyTypeName { return false }
+        return true
+    }
+
 // sourcery:inline:DictionaryType.AutoCoding
 
         /// :nodoc:

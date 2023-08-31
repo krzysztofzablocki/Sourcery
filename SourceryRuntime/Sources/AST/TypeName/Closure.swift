@@ -86,6 +86,19 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureType else { return false }
+        if self.name != rhs.name { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.asyncKeyword != rhs.asyncKeyword { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
+        return true
+    }
+
 // sourcery:inline:ClosureType.AutoCoding
 
         /// :nodoc:

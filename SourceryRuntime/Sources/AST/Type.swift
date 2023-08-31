@@ -467,6 +467,33 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Type else { return false }
+        if self.module != rhs.module { return false }
+        if self.imports != rhs.imports { return false }
+        if self.typealiases != rhs.typealiases { return false }
+        if self.isExtension != rhs.isExtension { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isUnknownExtension != rhs.isUnknownExtension { return false }
+        if self.isGeneric != rhs.isGeneric { return false }
+        if self.localName != rhs.localName { return false }
+        if self.rawVariables != rhs.rawVariables { return false }
+        if self.rawMethods != rhs.rawMethods { return false }
+        if self.rawSubscripts != rhs.rawSubscripts { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.inheritedTypes != rhs.inheritedTypes { return false }
+        if self.inherits != rhs.inherits { return false }
+        if self.containedTypes != rhs.containedTypes { return false }
+        if self.parentName != rhs.parentName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.fileName != rhs.fileName { return false }
+        if self.kind != rhs.kind { return false }
+        return true
+    }
+
 // sourcery:inline:Type.AutoCoding
 
         /// :nodoc:

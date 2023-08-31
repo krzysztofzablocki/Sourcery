@@ -93,6 +93,19 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? MethodParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.isVariadic != rhs.isVariadic { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
 // sourcery:inline:MethodParameter.AutoCoding
 
         /// :nodoc:
@@ -202,6 +215,18 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
           .joined(separator: " ")
 
         return (labels.nilIfEmpty ?? "_") + typeSuffix
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
     }
 
     // sourcery:inline:ClosureParameter.AutoCoding
@@ -470,6 +495,28 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         return results
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Method else { return false }
+        if self.name != rhs.name { return false }
+        if self.selectorName != rhs.selectorName { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.`rethrows` != rhs.`rethrows` { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.isClass != rhs.isClass { return false }
+        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        return true
     }
 
 // sourcery:inline:Method.AutoCoding

@@ -162,6 +162,15 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Attribute else { return false }
+        if self.name != rhs.name { return false }
+        if self.arguments != rhs.arguments { return false }
+        if self._description != rhs._description { return false }
+        return true
+    }
+
 // sourcery:inline:Attribute.AutoCoding
 
         /// :nodoc:

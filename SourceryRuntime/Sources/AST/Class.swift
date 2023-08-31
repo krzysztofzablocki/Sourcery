@@ -48,6 +48,22 @@ public final class Class: Type {
         )
     }
 
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Class else {
+            results.append("Incorrect type <expected: Class, received: \(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Class else { return false }
+        return super.isEqual(rhs)
+    }
+
 // sourcery:inline:Class.AutoCoding
 
         /// :nodoc:
@@ -61,13 +77,4 @@ public final class Class: Type {
         }
 // sourcery:end
 
-    override public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Class else {
-            results.append("Incorrect type <expected: Class, received: \(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: super.diffAgainst(castObject))
-        return results
-    }
 }

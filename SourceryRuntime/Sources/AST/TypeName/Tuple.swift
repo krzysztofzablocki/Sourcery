@@ -35,6 +35,14 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elements != rhs.elements { return false }
+        return true
+    }
+
 // sourcery:inline:TupleType.AutoCoding
 
         /// :nodoc:
@@ -98,6 +106,14 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         return results
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TupleElement else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
     }
 
 // sourcery:inline:TupleElement.AutoCoding

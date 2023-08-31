@@ -50,6 +50,16 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericRequirement else { return false }
+        if self.leftType != rhs.leftType { return false }
+        if self.rightType != rhs.rightType { return false }
+        if self.relationship != rhs.relationship { return false }
+        if self.relationshipSyntax != rhs.relationshipSyntax { return false }
+        return true
+    }
+
     // sourcery:inline:GenericRequirement.AutoCoding
 
             /// :nodoc:

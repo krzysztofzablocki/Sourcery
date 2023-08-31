@@ -60,6 +60,17 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
         return results
     }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Typealias else { return false }
+        if self.aliasName != rhs.aliasName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.module != rhs.module { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.parentName != rhs.parentName { return false }
+        return true
+    }
     
 // sourcery:inline:Typealias.AutoCoding
 

@@ -44,6 +44,14 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ArrayType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elementTypeName != rhs.elementTypeName { return false }
+        return true
+    }
+
 // sourcery:inline:ArrayType.AutoCoding
 
         /// :nodoc:

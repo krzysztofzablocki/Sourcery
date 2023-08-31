@@ -60,6 +60,17 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
         return results
     }
 
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedValue else { return false }
+        if self.localName != rhs.localName { return false }
+        if self.externalName != rhs.externalName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
 // sourcery:inline:AssociatedValue.AutoCoding
 
         /// :nodoc:
@@ -151,6 +162,18 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
         return results
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? EnumCase else { return false }
+        if self.name != rhs.name { return false }
+        if self.rawValue != rhs.rawValue { return false }
+        if self.associatedValues != rhs.associatedValues { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.indirect != rhs.indirect { return false }
+        return true
     }
 
 // sourcery:inline:EnumCase.AutoCoding
@@ -294,6 +317,14 @@ public final class Enum: Type {
         results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Enum else { return false }
+        if self.cases != rhs.cases { return false }
+        if self.rawTypeName != rhs.rawTypeName { return false }
+        return super.isEqual(rhs)
     }
 
 // sourcery:inline:Enum.AutoCoding
