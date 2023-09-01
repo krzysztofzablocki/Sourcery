@@ -4,14 +4,13 @@
 
 #if canImport(ObjectiveC)
 extension Actor {
-    
     /// :nodoc:
     override public var description: String {  
         var string = super.description
         string += ", "
         string += "kind = \(String(describing: self.kind)), "
         string += "isFinal = \(String(describing: self.isFinal))"
-        return strings
+        return string
     }
 }
 extension ArrayType {
