@@ -232,8 +232,8 @@ guard lhs.bar == rhs.bar else { return false }
 
 // MARK: - AutoEquatable for Enums
 
-
 """))
+#if canImport(ObjectiveC)
                 expect(outputInterceptor.result(byOutputType: .init(id: "Generated/EqEnum+TemplateName.generated.swift", subType: .path)).value)
                     .to(equal("""
 // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
@@ -251,6 +251,7 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
 }
 
 """))
+#endif
             } // supports different ways for code generation: end
         }
 
