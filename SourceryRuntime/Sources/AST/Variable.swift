@@ -24,8 +24,10 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             return isOptional
         case "name":
             return name
+        case "typeName":
+            return typeName
         default:
-            return nil
+            fatalError("unable to lookup: \(member) in \(self)")
         }
     }
 

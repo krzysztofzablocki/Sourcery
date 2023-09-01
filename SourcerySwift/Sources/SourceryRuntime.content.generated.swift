@@ -6349,7 +6349,7 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
             case "types":
                 return types
             default:
-                return nil
+                fatalError("unable to lookup: \\(member) in \\(self)")
         }
     }
 
@@ -13754,7 +13754,7 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
             case "types":
                 return types
             default:
-                return nil
+                fatalError("unable to lookup: \\(member) in \\(self)")
         }
     }
 
