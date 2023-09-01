@@ -32,6 +32,10 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 return storedVariables
             case "variables":
                 return variables
+            case "allVariables":
+                return allVariables
+            case "allMethods":
+                return allMethods
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }   
