@@ -3975,7 +3975,7 @@ public class Import: NSObject, SourceryModelWithoutDescription {
 
 import JavaScriptCore
 
-@objc protocol : JSExport {
+@objc protocol ActorAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
     var module: String? { get }
@@ -6343,17 +6343,7 @@ extension ProcessInfo {
 #if canImport(ObjectiveC)
 @objcMembers
 #endif
-public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "types":
-                return types
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
-
-
+public final class Types: NSObject, SourceryModel, Diffable {
     /// :nodoc:
     public let types: [Type]
 
