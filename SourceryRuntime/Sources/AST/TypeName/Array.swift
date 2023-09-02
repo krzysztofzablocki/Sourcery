@@ -33,6 +33,23 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
         "[\(elementTypeName.asSource)]"
     }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elementTypeName)
+        return hasher.finalize()
+    }
+
+    override
+    public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
+        string += "asGeneric = \\(String(describing: self.asGeneric)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ArrayType else {
