@@ -185,10 +185,12 @@ guard lhs.n == rhs.n else { return false }
 }
 
 """))
+                #if canImport(ObjectiveC)
                 let templatePathResult = outputInterceptor
                     .result(byOutputType: .init(id: "\(templatePath)", subType: .template)).value
                 expect(templatePathResult)
-                    .to(equal("""
+                    .to(equal(
+"""
 // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
@@ -232,7 +234,61 @@ guard lhs.bar == rhs.bar else { return false }
 
 // MARK: - AutoEquatable for Enums
 
-"""))
+
+"""
+                    ))
+                #else
+                let templatePathResult = outputInterceptor
+                    .result(byOutputType: .init(id: "\(templatePath)", subType: .template)).value
+                expect(templatePathResult)
+                    .to(equal(
+"""
+// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+
+// swiftlint:disable file_length
+fileprivate func compareOptionals<T>(lhs: T?, rhs: T?, compare: (_ lhs: T, _ rhs: T) -> Bool) -> Bool {
+    switch (lhs, rhs) {
+    case let (lValue?, rValue?):
+        return compare(lValue, rValue)
+    case (nil, nil):
+        return true
+    default:
+        return false
+    }
+}
+
+fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs: T) -> Bool) -> Bool {
+    guard lhs.count == rhs.count else { return false }
+    for (idx, lhsItem) in lhs.enumerated() {
+        guard compare(lhsItem, rhs[idx]) else { return false }
+    }
+
+    return true
+}
+
+
+// MARK: - AutoEquatable for classes, protocols, structs
+
+
+
+// sourcery:inline:Eq3.AutoEquatable
+// MARK: - Eq3 AutoEquatable
+extension Eq3: Equatable {}
+internal func == (lhs: Eq3, rhs: Eq3) -> Bool {
+guard lhs.counter == rhs.counter else { return false }
+guard lhs.foo == rhs.foo else { return false }
+guard lhs.bar == rhs.bar else { return false }
+    return true
+}
+
+// sourcery:end
+
+// MARK: - AutoEquatable for Enums
+
+"""
+                    ))
+                #endif
 #if canImport(ObjectiveC)
                 expect(outputInterceptor.result(byOutputType: .init(id: "Generated/EqEnum+TemplateName.generated.swift", subType: .path)).value)
                     .to(equal("""
