@@ -134,6 +134,8 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
         switch member {
             case "types":
                 return types
+            case "enums":
+                return enums;
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
