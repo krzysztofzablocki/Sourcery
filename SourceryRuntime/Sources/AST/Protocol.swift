@@ -72,6 +72,16 @@ public final class Protocol: Type {
         )
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "associatedTypes = \(String(describing: self.associatedTypes)), "
+        string += "genericRequirements = \(String(describing: self.genericRequirements))"
+        return string
+    }
+
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Protocol else {
@@ -82,6 +92,14 @@ public final class Protocol: Type {
         results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.associatedTypes)
+        hasher.combine(self.genericRequirements)
+        hasher.combine(super.hash)
+        return hasher.finalize()
     }
 
     /// :nodoc:

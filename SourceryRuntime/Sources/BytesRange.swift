@@ -23,6 +23,14 @@ public final class BytesRange: NSObject, SourceryModel, Diffable {
         self.init(offset: range.offset, length: range.length)
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "offset = \(String(describing: self.offset)), "
+        string += "length = \(String(describing: self.length))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? BytesRange else {
@@ -32,6 +40,13 @@ public final class BytesRange: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "offset").trackDifference(actual: self.offset, expected: castObject.offset))
         results.append(contentsOf: DiffableResult(identifier: "length").trackDifference(actual: self.length, expected: castObject.length))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.offset)
+        hasher.combine(self.length)
+        return hasher.finalize()
     }
 
     /// :nodoc:

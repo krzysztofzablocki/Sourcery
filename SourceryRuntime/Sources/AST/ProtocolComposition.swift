@@ -54,6 +54,15 @@ public final class ProtocolComposition: Type {
         )
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "composedTypeNames = \(String(describing: self.composedTypeNames))"
+        return string
+    }
+
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ProtocolComposition else {
@@ -63,6 +72,13 @@ public final class ProtocolComposition: Type {
         results.append(contentsOf: DiffableResult(identifier: "composedTypeNames").trackDifference(actual: self.composedTypeNames, expected: castObject.composedTypeNames))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.composedTypeNames)
+        hasher.combine(super.hash)
+        return hasher.finalize()
     }
 
     /// :nodoc:

@@ -34,6 +34,14 @@ public final class AssociatedType: NSObject, SourceryModel {
         self.type = type
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? AssociatedType else {
@@ -43,6 +51,13 @@ public final class AssociatedType: NSObject, SourceryModel {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        return hasher.finalize()
     }
 
     /// :nodoc:

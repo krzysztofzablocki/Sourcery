@@ -50,6 +50,13 @@ public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
         return results
     }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.kind)
+        hasher.combine(self.path)
+        return hasher.finalize()
+    }
+
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Import else { return false }

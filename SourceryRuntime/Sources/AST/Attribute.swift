@@ -162,6 +162,14 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         return results
     }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.arguments)
+        hasher.combine(self._description)
+        return hasher.finalize()
+    }
+
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Attribute else { return false }

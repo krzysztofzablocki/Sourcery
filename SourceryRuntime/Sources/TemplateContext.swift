@@ -72,6 +72,17 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
         ]
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "parserResult = \(String(describing: self.parserResult)), "
+        string += "functions = \(String(describing: self.functions)), "
+        string += "types = \(String(describing: self.types)), "
+        string += "argument = \(String(describing: self.argument)), "
+        string += "stencilContext = \(String(describing: self.stencilContext))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TemplateContext else {
@@ -83,6 +94,15 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
         results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.parserResult)
+        hasher.combine(self.functions)
+        hasher.combine(self.types)
+        hasher.combine(self.argument)
+        return hasher.finalize()
     }
 
     /// :nodoc:
@@ -153,7 +173,6 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
         }
     }
 
-
     /// :nodoc:
     public let types: [Type]
 
@@ -166,6 +185,14 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
         self.typealiases = typealiases
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "types = \(String(describing: self.types)), "
+        string += "typealiases = \(String(describing: self.typealiases))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Types else {
@@ -175,6 +202,13 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
         results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
         results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.types)
+        hasher.combine(self.typealiases)
+        return hasher.finalize()
     }
 
     /// :nodoc:

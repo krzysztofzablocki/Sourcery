@@ -33,20 +33,13 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
         "[\(elementTypeName.asSource)]"
     }
 
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.elementTypeName)
-        return hasher.finalize()
-    }
-
-    override
-    public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
-        string += "asGeneric = \\(String(describing: self.asGeneric)), "
-        string += "asSource = \\(String(describing: self.asSource))"
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "elementTypeName = \(String(describing: self.elementTypeName)), "
+        string += "asGeneric = \(String(describing: self.asGeneric)), "
+        string += "asSource = \(String(describing: self.asSource))"
         return string
     }
 
@@ -59,6 +52,13 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elementTypeName)
+        return hasher.finalize()
     }
 
     /// :nodoc:

@@ -39,6 +39,13 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
         return results
     }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeParameters)
+        return hasher.finalize()
+    }
+
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? GenericType else { return false }
@@ -93,6 +100,13 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {
         self.type = type
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "typeName = \(String(describing: self.typeName))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericTypeParameter else {
@@ -101,6 +115,12 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {
         }
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.typeName)
+        return hasher.finalize()
     }
 
     /// :nodoc:

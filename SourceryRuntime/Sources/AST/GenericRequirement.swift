@@ -37,6 +37,16 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable {
         self.relationshipSyntax = relationship.syntax
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "leftType = \(String(describing: self.leftType)), "
+        string += "rightType = \(String(describing: self.rightType)), "
+        string += "relationship = \(String(describing: self.relationship)), "
+        string += "relationshipSyntax = \(String(describing: self.relationshipSyntax))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? GenericRequirement else {
@@ -48,6 +58,15 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "relationship").trackDifference(actual: self.relationship, expected: castObject.relationship))
         results.append(contentsOf: DiffableResult(identifier: "relationshipSyntax").trackDifference(actual: self.relationshipSyntax, expected: castObject.relationshipSyntax))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.leftType)
+        hasher.combine(self.rightType)
+        hasher.combine(self.relationship)
+        hasher.combine(self.relationshipSyntax)
+        return hasher.finalize()
     }
 
     /// :nodoc:

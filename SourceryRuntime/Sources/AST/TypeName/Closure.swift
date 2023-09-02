@@ -70,6 +70,21 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         "\(parameters.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrowsKeyword != nil ? " \(throwsOrRethrowsKeyword!)" : "") -> \(returnTypeName.asSource)"
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "isAsync = \(String(describing: self.isAsync)), "
+        string += "asyncKeyword = \(String(describing: self.asyncKeyword)), "
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? ClosureType else {
@@ -84,6 +99,18 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
         results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.asyncKeyword)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.throwsOrRethrowsKeyword)
+        return hasher.finalize()
     }
 
     /// :nodoc:

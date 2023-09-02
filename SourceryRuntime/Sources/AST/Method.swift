@@ -77,6 +77,21 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         return (labels.nilIfEmpty ?? "_") + typeSuffix
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "argumentLabel = \(String(describing: self.argumentLabel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "`inout` = \(String(describing: self.`inout`)), "
+        string += "isVariadic = \(String(describing: self.isVariadic)), "
+        string += "typeAttributes = \(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? MethodParameter else {
@@ -91,6 +106,18 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.isVariadic)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
     }
 
     /// :nodoc:
@@ -215,6 +242,31 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
           .joined(separator: " ")
 
         return (labels.nilIfEmpty ?? "_") + typeSuffix
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "argumentLabel = \(String(describing: self.argumentLabel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "`inout` = \(String(describing: self.`inout`)), "
+        string += "typeAttributes = \(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
     }
 
     /// :nodoc:
@@ -472,6 +524,28 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         self.definedInTypeName = definedInTypeName
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "selectorName = \(String(describing: self.selectorName)), "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "isAsync = \(String(describing: self.isAsync)), "
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "`rethrows` = \(String(describing: self.`rethrows`)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "isStatic = \(String(describing: self.isStatic)), "
+        string += "isClass = \(String(describing: self.isClass)), "
+        string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "documentation = \(String(describing: self.documentation)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Method else {
@@ -495,6 +569,27 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.selectorName)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.`rethrows`)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.isClass)
+        hasher.combine(self.isFailableInitializer)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        return hasher.finalize()
     }
 
     /// :nodoc:

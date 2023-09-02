@@ -60,6 +60,22 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
         }
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "path = \(String(describing: self.path)), "
+        string += "module = \(String(describing: self.module)), "
+        string += "types = \(String(describing: self.types)), "
+        string += "functions = \(String(describing: self.functions)), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "inlineRanges = \(String(describing: self.inlineRanges)), "
+        string += "inlineIndentations = \(String(describing: self.inlineIndentations)), "
+        string += "modifiedDate = \(String(describing: self.modifiedDate)), "
+        string += "sourceryVersion = \(String(describing: self.sourceryVersion)), "
+        string += "isEmpty = \(String(describing: self.isEmpty))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? FileParserResult else {
@@ -76,6 +92,20 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "modifiedDate").trackDifference(actual: self.modifiedDate, expected: castObject.modifiedDate))
         results.append(contentsOf: DiffableResult(identifier: "sourceryVersion").trackDifference(actual: self.sourceryVersion, expected: castObject.sourceryVersion))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.path)
+        hasher.combine(self.module)
+        hasher.combine(self.types)
+        hasher.combine(self.functions)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.inlineRanges)
+        hasher.combine(self.inlineIndentations)
+        hasher.combine(self.modifiedDate)
+        hasher.combine(self.sourceryVersion)
+        return hasher.finalize()
     }
 
     /// :nodoc:

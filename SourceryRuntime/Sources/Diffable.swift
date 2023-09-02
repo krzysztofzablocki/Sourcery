@@ -61,6 +61,12 @@ public class DiffableResult: NSObject, AutoEquatable {
 
     var isEmpty: Bool { return results.isEmpty }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.identifier)
+        return hasher.finalize()
+    }
+
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? DiffableResult else { return false }

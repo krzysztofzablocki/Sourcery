@@ -107,6 +107,25 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         self.definedInTypeName = definedInTypeName
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "readAccess = \(String(describing: self.readAccess)), "
+        string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "isMutable = \(String(describing: self.isMutable)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "documentation = \(String(describing: self.documentation)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Subscript else {
@@ -123,6 +142,20 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.readAccess)
+        hasher.combine(self.writeAccess)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        return hasher.finalize()
     }
 
     /// :nodoc:

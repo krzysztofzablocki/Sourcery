@@ -43,6 +43,17 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
         "[\(keyTypeName.asSource): \(valueTypeName.asSource)]"
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "valueTypeName = \(String(describing: self.valueTypeName)), "
+        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
+        string += "asGeneric = \(String(describing: self.asGeneric)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? DictionaryType else {
@@ -53,6 +64,14 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "valueTypeName").trackDifference(actual: self.valueTypeName, expected: castObject.valueTypeName))
         results.append(contentsOf: DiffableResult(identifier: "keyTypeName").trackDifference(actual: self.keyTypeName, expected: castObject.keyTypeName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.valueTypeName)
+        hasher.combine(self.keyTypeName)
+        return hasher.finalize()
     }
 
     /// :nodoc:

@@ -47,6 +47,18 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         self.module = module
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "aliasName = \(String(describing: self.aliasName)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "module = \(String(describing: self.module)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "parentName = \(String(describing: self.parentName)), "
+        string += "name = \(String(describing: self.name))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Typealias else {
@@ -59,6 +71,16 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.aliasName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.module)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.parentName)
+        return hasher.finalize()
     }
 
     /// :nodoc:

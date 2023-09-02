@@ -38,6 +38,13 @@ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJS
         return results
     }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.detail)
+        return hasher.finalize()
+    }
+
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Modifier else { return false }

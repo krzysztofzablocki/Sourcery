@@ -444,6 +444,44 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
         self.rawSubscripts += type.rawSubscripts
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "module = \(String(describing: self.module)), "
+        string += "imports = \(String(describing: self.imports)), "
+        string += "allImports = \(String(describing: self.allImports)), "
+        string += "typealiases = \(String(describing: self.typealiases)), "
+        string += "isExtension = \(String(describing: self.isExtension)), "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "name = \(String(describing: self.name)), "
+        string += "isUnknownExtension = \(String(describing: self.isUnknownExtension)), "
+        string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "localName = \(String(describing: self.localName)), "
+        string += "rawVariables = \(String(describing: self.rawVariables)), "
+        string += "rawMethods = \(String(describing: self.rawMethods)), "
+        string += "rawSubscripts = \(String(describing: self.rawSubscripts)), "
+        string += "initializers = \(String(describing: self.initializers)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "documentation = \(String(describing: self.documentation)), "
+        string += "staticVariables = \(String(describing: self.staticVariables)), "
+        string += "staticMethods = \(String(describing: self.staticMethods)), "
+        string += "classMethods = \(String(describing: self.classMethods)), "
+        string += "instanceVariables = \(String(describing: self.instanceVariables)), "
+        string += "instanceMethods = \(String(describing: self.instanceMethods)), "
+        string += "computedVariables = \(String(describing: self.computedVariables)), "
+        string += "storedVariables = \(String(describing: self.storedVariables)), "
+        string += "inheritedTypes = \(String(describing: self.inheritedTypes)), "
+        string += "inherits = \(String(describing: self.inherits)), "
+        string += "containedTypes = \(String(describing: self.containedTypes)), "
+        string += "parentName = \(String(describing: self.parentName)), "
+        string += "parentTypes = \(String(describing: self.parentTypes)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers)), "
+        string += "fileName = \(String(describing: self.fileName))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Type else {
@@ -471,6 +509,32 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         results.append(contentsOf: DiffableResult(identifier: "fileName").trackDifference(actual: self.fileName, expected: castObject.fileName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.module)
+        hasher.combine(self.imports)
+        hasher.combine(self.typealiases)
+        hasher.combine(self.isExtension)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isUnknownExtension)
+        hasher.combine(self.isGeneric)
+        hasher.combine(self.localName)
+        hasher.combine(self.rawVariables)
+        hasher.combine(self.rawMethods)
+        hasher.combine(self.rawSubscripts)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        hasher.combine(self.inheritedTypes)
+        hasher.combine(self.inherits)
+        hasher.combine(self.containedTypes)
+        hasher.combine(self.parentName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.fileName)
+        hasher.combine(kind)
+        return hasher.finalize()
     }
 
     /// :nodoc:

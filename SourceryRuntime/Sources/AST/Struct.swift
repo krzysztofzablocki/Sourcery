@@ -53,6 +53,14 @@ public final class Struct: Type {
         )
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind))"
+        return string
+    }
+
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Struct else {
@@ -61,6 +69,12 @@ public final class Struct: Type {
         }
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
     }
 
     /// :nodoc:

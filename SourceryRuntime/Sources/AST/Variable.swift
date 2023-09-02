@@ -143,6 +143,31 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         self.definedInTypeName = definedInTypeName
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "isComputed = \(String(describing: self.isComputed)), "
+        string += "isAsync = \(String(describing: self.isAsync)), "
+        string += "`throws` = \(String(describing: self.`throws`)), "
+        string += "isStatic = \(String(describing: self.isStatic)), "
+        string += "readAccess = \(String(describing: self.readAccess)), "
+        string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "accessLevel = \(String(describing: self.accessLevel)), "
+        string += "isMutable = \(String(describing: self.isMutable)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "documentation = \(String(describing: self.documentation)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers)), "
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "isLazy = \(String(describing: self.isLazy)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Variable else {
@@ -164,6 +189,25 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.isComputed)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.readAccess)
+        hasher.combine(self.writeAccess)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.definedInTypeName)
+        return hasher.finalize()
     }
 
     /// :nodoc:

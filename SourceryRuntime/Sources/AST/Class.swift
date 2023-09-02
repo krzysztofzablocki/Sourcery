@@ -48,6 +48,15 @@ public final class Class: Type {
         )
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "kind = \(String(describing: self.kind)), "
+        string += "isFinal = \(String(describing: self.isFinal))"
+        return string
+    }
+
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Class else {
@@ -56,6 +65,12 @@ public final class Class: Type {
         }
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(super.hash)
+        return hasher.finalize()
     }
 
     /// :nodoc:

@@ -46,6 +46,17 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
         self.init(localName: name, externalName: name, typeName: typeName, type: type, defaultValue: defaultValue, annotations: annotations)
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "localName = \(String(describing: self.localName)), "
+        string += "externalName = \(String(describing: self.externalName)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "defaultValue = \(String(describing: self.defaultValue)), "
+        string += "annotations = \(String(describing: self.annotations))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? AssociatedValue else {
@@ -58,6 +69,16 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.localName)
+        hasher.combine(self.externalName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
     }
 
     /// :nodoc:
@@ -149,6 +170,19 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         self.indirect = indirect
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "rawValue = \(String(describing: self.rawValue)), "
+        string += "associatedValues = \(String(describing: self.associatedValues)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "documentation = \(String(describing: self.documentation)), "
+        string += "indirect = \(String(describing: self.indirect)), "
+        string += "hasAssociatedValue = \(String(describing: self.hasAssociatedValue))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? EnumCase else {
@@ -162,6 +196,17 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.rawValue)
+        hasher.combine(self.associatedValues)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        hasher.combine(self.indirect)
+        return hasher.finalize()
     }
 
     /// :nodoc:
@@ -315,6 +360,16 @@ public final class Enum: Type {
         }
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "cases = \(String(describing: self.cases)), "
+        string += "rawTypeName = \(String(describing: self.rawTypeName)), "
+        string += "hasAssociatedValues = \(String(describing: self.hasAssociatedValues))"
+        return string
+    }
+
     override public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Enum else {
@@ -325,6 +380,14 @@ public final class Enum: Type {
         results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.cases)
+        hasher.combine(self.rawTypeName)
+        hasher.combine(super.hash)
+        return hasher.finalize()
     }
 
     /// :nodoc:

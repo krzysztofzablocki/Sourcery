@@ -24,6 +24,14 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
         self.elements = elements
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "elements = \(String(describing: self.elements))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TupleType else {
@@ -33,6 +41,13 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "elements").trackDifference(actual: self.elements, expected: castObject.elements))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elements)
+        return hasher.finalize()
     }
 
     /// :nodoc:
@@ -97,6 +112,15 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
         "\(name != nil ? "\(name!): " : "")\(typeName.asSource)"
     }
 
+    /// :nodoc:
+    override public var description: String {
+        var string = "\(Swift.type(of: self)): "
+        string += "name = \(String(describing: self.name)), "
+        string += "typeName = \(String(describing: self.typeName)), "
+        string += "asSource = \(String(describing: self.asSource))"
+        return string
+    }
+
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? TupleElement else {
@@ -106,6 +130,13 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
         results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        return hasher.finalize()
     }
 
     /// :nodoc:

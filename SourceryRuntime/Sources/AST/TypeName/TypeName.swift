@@ -161,20 +161,6 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         return description
     }
 
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.generic)
-        hasher.combine(self.isProtocolComposition)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        hasher.combine(self.tuple)
-        hasher.combine(self.array)
-        hasher.combine(self.dictionary)
-        hasher.combine(self.closure)
-        return hasher.finalize()
-    }
-
     public override var description: String {
        (
           attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
@@ -199,6 +185,20 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: castObject.dictionary))
         results.append(contentsOf: DiffableResult(identifier: "closure").trackDifference(actual: self.closure, expected: castObject.closure))
         return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.generic)
+        hasher.combine(self.isProtocolComposition)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.tuple)
+        hasher.combine(self.array)
+        hasher.combine(self.dictionary)
+        hasher.combine(self.closure)
+        return hasher.finalize()
     }
 
     /// :nodoc:
