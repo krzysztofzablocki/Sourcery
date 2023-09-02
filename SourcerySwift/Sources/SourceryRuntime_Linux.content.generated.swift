@@ -968,7 +968,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -6780,7 +6780,7 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 

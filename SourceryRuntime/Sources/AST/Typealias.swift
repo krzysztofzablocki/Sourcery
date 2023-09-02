@@ -1,6 +1,5 @@
 import Foundation
 
-// sourcery: skipJSExport
 /// :nodoc:
 #if canImport(ObjectiveC)
 @objcMembers
