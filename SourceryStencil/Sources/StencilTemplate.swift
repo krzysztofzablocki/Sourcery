@@ -121,7 +121,12 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
-                return array
+                return array.sortedArray {
+                    guard let arg1 = $0 as? String, let arg2 = $1 as? String else {
+                        return .orderedAscending
+                    }
+                    return arg1.caseInsensitiveCompare(arg2)
+                }
             default:
                 return nil
             }
@@ -130,7 +135,12 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
-                return array
+                return array.sortedArray {
+                    guard let arg1 = $0 as? String, let arg2 = $1 as? String else {
+                        return .orderedDescending
+                    }
+                    return arg2.caseInsensitiveCompare(arg1)
+                }
             default:
                 return nil
             }
