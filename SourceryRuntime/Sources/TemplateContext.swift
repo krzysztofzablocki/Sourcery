@@ -173,6 +173,8 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
                 return implementing
             case "inheriting":
                 return inheriting
+            case "based":
+                return based
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }

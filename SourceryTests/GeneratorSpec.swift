@@ -258,7 +258,7 @@ class GeneratorSpec: QuickSpec {
                 }
 
                 it("can render variable isOptional") {
-                    expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("0"))
+                    expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("false"))
                 }
 
                 it("can render variable definedInType") {
