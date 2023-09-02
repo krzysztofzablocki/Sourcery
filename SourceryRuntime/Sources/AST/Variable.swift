@@ -26,6 +26,20 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             return name
         case "typeName":
             return typeName
+        case "type":
+            return type
+        case "definedInType":
+            return definedInType
+        case "isStatic":
+            return isStatic
+        case "isAsync":
+            return isAsync
+        case "throws":
+            return `throws`
+        case "isArray":
+            return isArray
+        case "isDictionary":
+            return isDictionary
         default:
             fatalError("unable to lookup: \(member) in \(self)")
         }

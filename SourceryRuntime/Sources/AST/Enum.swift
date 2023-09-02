@@ -274,6 +274,8 @@ public final class Enum: Type {
         switch member {
         case "cases":
             return cases
+        case "hasAssociatedValues":
+            return hasAssociatedValues
         default:
             return super[dynamicMember: member]
         }
