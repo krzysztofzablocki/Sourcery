@@ -27,8 +27,6 @@
 
 #import "TryCatch.h"
 
-@class NSException;
-
 @implementation SwiftTryCatch
 
 /**
