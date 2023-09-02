@@ -35,9 +35,9 @@ jobs:
     - name: Bundle Install
       run:  bundle install
     - name: Swift Build
-      run:  swift build -v
+      run:  swift build
     - name: Run tests
-      run: swift test -v
+      run: swift test
   macos_build:
     runs-on: macos-13
     steps:
@@ -56,8 +56,8 @@ jobs:
     - name: Bundle Install
       run:  bundle install
     - name: Swift Build
-      run:  swift build -v
+      run:  swift build
     - name: Run tests
-      run: swift test -v
+      run: swift test
 
  
