@@ -1124,6 +1124,7 @@ class SourcerySpecTests: QuickSpec {
                     }
                 }
 
+#if canImport(ObjectiveC)
                 context("with watcher") {
                     var watcher: Any?
                     let tmpTemplate = outputDir + Path("FakeTemplate.stencil")
@@ -1143,14 +1144,15 @@ class SourcerySpecTests: QuickSpec {
                         _ = watcher
                     }
                 }
+#endif
             }
 
             context("given a template folder") {
 
                 context("given a single file output") {
                     let outputFile = outputDir + "Composed.swift"
+#if canImport(JavaScriptCore)
                     let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other+SourceryTemplates.swift")).read(.utf8).withoutWhitespaces
-
                     it("joins generated code into single file") {
                         expect {
                             try Sourcery(cacheDisabled: true)
@@ -1167,6 +1169,24 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? outputFile.read(.utf8)
                         expect(result?.withoutWhitespaces).to(equal(expectedResult?.withoutWhitespaces))
                     }
+#else
+                    let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other+SourceryTemplates_Linux.swift")).read(.utf8).withoutWhitespaces
+                    it("joins generated code into single file") {
+                        expect {
+                            try Sourcery(cacheDisabled: true)
+                                .processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                              usingTemplates: Paths(include: [
+                                                Stubs.templateDirectory + "Basic.stencil",
+                                                Stubs.templateDirectory + "Other.stencil",
+                                                Stubs.templateDirectory + "SourceryTemplateStencil.sourcerytemplate"
+                                              ]),
+                                              output: Output(outputFile), baseIndentation: 0)
+                            }.toNot(throwError())
+
+                        let result = try? outputFile.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult?.withoutWhitespaces))
+                    }
+#endif
 
                     it("does not create generated file with empty content") {
                         let templatePath = Stubs.templateDirectory + Path("Empty.stencil")
