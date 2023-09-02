@@ -6221,7 +6221,6 @@ extension Array where Element == TupleElement {
 //
 
 import Foundation
-import Stencil
 
 /// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
@@ -7559,7 +7558,6 @@ public protocol Typed {
 //
 
 import Foundation
-import Stencil
 
 /// :nodoc:
 public typealias SourceryVariable = Variable
