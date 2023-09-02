@@ -22,18 +22,18 @@ import Quick
             FileParserSpec.self,
             FileParserSubscriptsSpec.self,
             FileParserVariableSpec.self,
-            // GeneratorSpec.self,
+            // GeneratorSpec.self, // <<<<<< faulty
             // // JavaScriptTemplateTests.self,
-            // MethodSpec.self,
-            // ParserComposerSpec.self,
-            // ProtocolSpec.self,
-            // SourcerySpecTests.self,
-            // StencilTemplateSpec.self,
-            // StringViewSpec.self,
-            // StructSpec.self,
-            // SwiftTemplateTests.self,
-            // TemplateAnnotationsParserSpec.self,
-            // TemplatesAnnotationParserPassInlineCodeSpec.self,
+            MethodSpec.self,
+            ParserComposerSpec.self,
+            ProtocolSpec.self,
+            // SourcerySpecTests.self, // <<<<< faulty
+            StencilTemplateSpec.self,
+            StringViewSpec.self,
+            StructSpec.self,
+            SwiftTemplateTests.self,
+            TemplateAnnotationsParserSpec.self,
+            TemplatesAnnotationParserPassInlineCodeSpec.self,
             TypeNameSpec.self,
             TypeSpec.self,
             TypealiasSpec.self,
@@ -41,7 +41,7 @@ import Quick
             VariableSpec.self,
             VerifierSpec.self,
             CodableContextTests.self,
-            // TemplatesTests.self
+            // TemplatesTests.self // <<<<< faulty
         ],
         configurations: [],
         testCases: [
@@ -59,18 +59,18 @@ import Quick
             testCase(FileParserSpec.allTests),
             testCase(FileParserSubscriptsSpec.allTests),
             testCase(FileParserVariableSpec.allTests),
-            // testCase(GeneratorSpec.allTests),
+            // testCase(GeneratorSpec.allTests), // <<<<< faulty
             // // testCase(JavaScriptTemplateTests.allTests),
-            // testCase(MethodSpec.allTests),
-            // testCase(ParserComposerSpec.allTests),
-            // testCase(ProtocolSpec.allTests),
-            // testCase(SourcerySpecTests.allTests),
-            // testCase(StencilTemplateSpec.allTests),
-            // testCase(StringViewSpec.allTests),
-            // testCase(StructSpec.allTests),
-            // testCase(SwiftTemplateTests.allTests),
-            // testCase(TemplateAnnotationsParserSpec.allTests),
-            // testCase(TemplatesAnnotationParserPassInlineCodeSpec.allTests),
+            testCase(MethodSpec.allTests),
+            testCase(ParserComposerSpec.allTests),
+            testCase(ProtocolSpec.allTests),
+            // testCase(SourcerySpecTests.allTests), // <<<< faulty
+            testCase(StencilTemplateSpec.allTests),
+            testCase(StringViewSpec.allTests),
+            testCase(StructSpec.allTests),
+            testCase(SwiftTemplateTests.allTests),
+            testCase(TemplateAnnotationsParserSpec.allTests),
+            testCase(TemplatesAnnotationParserPassInlineCodeSpec.allTests),
             testCase(TypeNameSpec.allTests),
             testCase(TypeSpec.allTests),
             testCase(TypealiasSpec.allTests),
@@ -78,7 +78,7 @@ import Quick
             testCase(VariableSpec.allTests),
             testCase(VerifierSpec.allTests),
             testCase(CodableContextTests.allTests),
-            // testCase(TemplatesTests.allTests)
+            // testCase(TemplatesTests.allTests) // <<<<<< faulty
         ])
     }
 }
