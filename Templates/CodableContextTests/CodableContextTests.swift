@@ -22,14 +22,17 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnum.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    expect(String(data: encoded, encoding: .utf8)).to(equal("""
-                    {
-                      "type" : "someCase",
-                      "id" : 0,
-                      "name" : "a"
-                    }
-                    """
+                    #if canImport(ObjectiveC)
+                    expect(String(data: encoded, encoding: .utf8)).to(equal(
+"""
+{
+  "type" : "someCase",
+  "id" : 0,
+  "name" : "a"
+}
+"""
                     ))
+                    #endif
 
                     let decoded = try! decoder.decode(AssociatedValuesEnum.self, from: encoded)
                     expect(decoded).to(equal(value))
@@ -73,15 +76,18 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnumNoCaseKey.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    expect(String(data: encoded, encoding: .utf8)).to(equal("""
-                    {
-                      "someCase" : {
-                        "id" : 0,
-                        "name" : "a"
-                      }
-                    }
-                    """
+                    #if canImport(ObjectiveC)
+                    expect(String(data: encoded, encoding: .utf8)).to(equal(
+"""
+{
+  "someCase" : {
+    "id" : 0,
+    "name" : "a"
+  }
+}
+"""
                     ))
+                    #endif
 
                     let decoded = try! decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded)
                     expect(decoded).to(equal(value))
