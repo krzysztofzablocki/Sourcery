@@ -5135,6 +5135,8 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
                 return implementing
             case "inheriting":
                 return inheriting
+            case "based":
+                return based
             default:
                 fatalError("unable to lookup: \\(member) in \\(self)")
         }
@@ -5626,6 +5628,16 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 return allVariables
             case "allMethods":
                 return allMethods
+            case "annotations":
+                return annotations
+            case "methods":
+                return methods
+            case "containedType":
+                return containedType
+            case "computedVariables":
+                return computedVariables
+            case "inherits":
+                return inherits
             default:
                 fatalError("unable to lookup: \\(member) in \\(self)")
         }
@@ -6953,6 +6965,20 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             return name
         case "typeName":
             return typeName
+        case "type":
+            return type
+        case "definedInType":
+            return definedInType
+        case "isStatic":
+            return isStatic
+        case "isAsync":
+            return isAsync
+        case "throws":
+            return `throws`
+        case "isArray":
+            return isArray
+        case "isDictionary":
+            return isDictionary
         default:
             fatalError("unable to lookup: \\(member) in \\(self)")
         }
