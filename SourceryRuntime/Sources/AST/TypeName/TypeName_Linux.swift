@@ -2,12 +2,26 @@
 // Created by Krzysztof Zabłocki on 25/12/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-@objcMembers
-public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable {
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "tuple":
+                return tuple
+            case "name":
+                return name
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
+
     /// :nodoc:
     public init(name: String,
                 actualTypeName: TypeName? = nil,

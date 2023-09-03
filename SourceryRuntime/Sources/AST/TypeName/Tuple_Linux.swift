@@ -1,9 +1,20 @@
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 /// Describes tuple type
-@objcMembers
-public final class TupleType: NSObject, SourceryModel, Diffable {
+public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "elements":
+                return elements
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
 
     /// Type name used in declaration
     public var name: String
@@ -84,8 +95,19 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
 }
 
 /// Describes tuple type element
-@objcMembers
-public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
+public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "typeName":
+                return typeName
+            case "type":
+                return type
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
 
     /// Tuple element name
     public let name: String?
