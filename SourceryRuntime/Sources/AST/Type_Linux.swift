@@ -43,6 +43,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 return computedVariables
             case "inherits":
                 return inherits
+            case "inheritedTypes":
+                return inheritedTypes
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }   
