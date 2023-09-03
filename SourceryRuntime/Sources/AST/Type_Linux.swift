@@ -2,7 +2,7 @@
 // Created by Krzysztof Zablocki on 11/09/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
 import Stencil
 
@@ -10,9 +10,43 @@ import Stencil
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-
-@objcMembers
-public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
+public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "implements":
+                return implements
+            case "name":
+                return name
+            case "kind":
+                return kind
+            case "based":
+                return based
+            case "supertype":
+                return supertype
+            case "accessLevel":
+                return accessLevel
+            case "storedVariables":
+                return storedVariables
+            case "variables":
+                return variables
+            case "allVariables":
+                return allVariables
+            case "allMethods":
+                return allMethods
+            case "annotations":
+                return annotations
+            case "methods":
+                return methods
+            case "containedType":
+                return containedType
+            case "computedVariables":
+                return computedVariables
+            case "inherits":
+                return inherits
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }   
+    }
 
     /// :nodoc:
     public var module: String?
@@ -703,18 +737,6 @@ extension Type {
     var isClass: Bool {
         let isNotClass = self is Struct || self is Enum || self is Protocol
         return !isNotClass && !isExtension
-    }
-}
-
-/// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
-extension Type {
-    /// :nodoc:
-    override public func value(forUndefinedKey key: String) -> Any? {
-        if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
-            return innerType
-        }
-
-        return super.value(forUndefinedKey: key)
     }
 }
 #endif
