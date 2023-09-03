@@ -26,9 +26,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift actor
-#if canImport(ObjectiveC)
 @objc(SwiftActor) @objcMembers
-#endif
 public final class Actor: Type {
     /// Returns "actor"
     public override var kind: String { return "actor" }
@@ -191,9 +189,7 @@ public extension Array {
 import Foundation
 
 /// Describes array type
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class ArrayType: NSObject, SourceryModel, Diffable {
     /// Type name used in declaration
     public var name: String
@@ -292,22 +288,8 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
 """
 import Foundation
 
-#if !canImport(ObjectiveC)
-public class NSException {
-    static func raise(_ name: String, format: String, arguments: CVaListPointer) {
-        fatalError ("\\(name) exception: \\(NSString(format: format, arguments: arguments))")
-    }
-
-    static func raise(_ name: String) {
-        fatalError("\\(name) exception")
-    }
-}
-#endif
-
 /// Describes Swift AssociatedType
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class AssociatedType: NSObject, SourceryModel {
     /// Associated type name
     public let name: String
@@ -389,9 +371,7 @@ public final class AssociatedType: NSObject, SourceryModel {
 import Foundation
 
 /// Describes Swift attribute
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, Diffable {
 
     /// Attribute name
@@ -624,9 +604,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 import Foundation
 
 /// :nodoc:
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class BytesRange: NSObject, SourceryModel, Diffable {
 
     public let offset: Int64
@@ -697,9 +675,7 @@ public final class BytesRange: NSObject, SourceryModel, Diffable {
 import Foundation
 // sourcery: skipDescription
 /// Descibes Swift class
-#if canImport(ObjectiveC)
 @objc(SwiftClass) @objcMembers
-#endif
 public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
@@ -796,9 +772,7 @@ public final class Class: Type {
 import Foundation
 
 /// Describes closure type
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class ClosureType: NSObject, SourceryModel, Diffable {
 
     /// Type name used in declaration with stripped whitespaces and new lines
@@ -1343,9 +1317,7 @@ public protocol Definition: AnyObject {
 import Foundation
 
 /// Describes dictionary type
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class DictionaryType: NSObject, SourceryModel, Diffable {
     /// Type name used in declaration
     public var name: String
@@ -1503,9 +1475,7 @@ extension NSRange: Diffable {
     }
 }
 
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
@@ -1699,9 +1669,7 @@ public protocol Documented {
 import Foundation
 
 /// Defines enum case associated value
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable {
 
     /// Associated value local name.
@@ -1821,9 +1789,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 }
 
 /// Defines enum case
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable {
 
     /// Enum case name
@@ -1959,9 +1925,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 }
 
 /// Defines Swift enum
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class Enum: Type {
     public override subscript(dynamicMember member: String) -> Any? {
         switch member {
@@ -2344,7 +2308,7 @@ public extension String {
 
 public extension NSString {
     /// :nodoc:
-    var entireRange: NSRange {
+    var entireRange: NSRange {5
         return NSRange(location: 0, length: self.length)
     }
 }
@@ -2362,17 +2326,9 @@ public extension NSString {
 
 import Foundation
 
-#if !canImport(ObjectiveC)
-public extension NSExceptionName {
-    static var parseErrorException = "parseErrorException"
-}
-#endif
-
 // sourcery: skipJSExport
 /// :nodoc:
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class FileParserResult: NSObject, SourceryModel, Diffable {
     public let path: String?
     public let module: String?
@@ -2548,9 +2504,7 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
 import Foundation
 
 /// Descibes Swift generic type
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffable {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
     public var name: String
@@ -2629,9 +2583,7 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
 }
 
 /// Descibes Swift generic type parameter
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {
 
     /// Generic parameter type name
@@ -2706,9 +2658,7 @@ import Foundation
 
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public class GenericRequirement: NSObject, SourceryModel, Diffable {
 
     public enum Relationship: String {
@@ -2829,9 +2779,7 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable {
 import Foundation
 
 /// Defines import type
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
     /// Import kind, e.g. class, struct in `import class Module.ClassName`
     public var kind: String?
@@ -3544,9 +3492,7 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Log.swift", content:
 """
-#if canImport(ObjectiveC)
 import Darwin
-#endif
 import Foundation
 
 /// :nodoc:
@@ -3630,9 +3576,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method parameter
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable {
     /// Parameter external name
     public var argumentLabel: String?
@@ -3809,9 +3753,7 @@ extension Array where Element == MethodParameter {
 }
 
 // sourcery: skipDiffing
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name
     public var argumentLabel: String?
@@ -3951,9 +3893,7 @@ extension Array where Element == ClosureParameter {
 }
 
 /// Describes method
-#if canImport(ObjectiveC)
 @objc(SwiftMethod) @objcMembers
-#endif
 public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
@@ -4341,9 +4281,7 @@ import Foundation
 public typealias SourceryModifier = Modifier
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, Diffable {
 
     /// The declaration modifier name.
@@ -4961,9 +4899,7 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class Protocol: Type {
 
     /// Returns "protocol"
@@ -5097,9 +5033,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
@@ -5219,9 +5153,7 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class Struct: Type {
 
     /// Returns "struct"
@@ -5312,9 +5244,7 @@ public final class Struct: Type {
 import Foundation
 
 /// Describes subscript
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
 
     /// Method parameters
@@ -5560,34 +5490,6 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
 }
 
 """),
-    .init(name: "DynamicMemberLookup.swift", content:
-"""
-//
-// Stencil
-// Copyright © 2022 Stencil
-// MIT Licence
-//
-
-/// Marker protocol so we can know which types support `@dynamicMemberLookup`. Add this to your own types that support
-/// lookup by String.
-public protocol DynamicMemberLookup {
-  /// Get a value for a given `String` key
-  subscript(dynamicMember member: String) -> Any? { get }
-}
-
-public extension DynamicMemberLookup where Self: RawRepresentable {
-  /// Get a value for a given `String` key
-  subscript(dynamicMember member: String) -> Any? {
-    switch member {
-    case "rawValue":
-      return rawValue
-    default:
-      return nil
-    }
-  }
-}
-
-"""),
     .init(name: "TemplateContext.swift", content:
 """
 //
@@ -5599,9 +5501,7 @@ import Foundation
 
 /// :nodoc:
 // sourcery: skipCoding
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable {
     // sourcery: skipJSExport
     public let parserResult: FileParserResult?
@@ -5737,36 +5637,8 @@ extension ProcessInfo {
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
-public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "types":
-                return types
-            case "enums":
-                return enums
-            case "all":
-                return all
-            case "protocols":
-                return protocols
-            case "classes":
-                return classes
-            case "structs":
-                return structs
-            case "extensions":
-                return extensions
-            case "implementing":
-                return implementing
-            case "inheriting":
-                return inheriting
-            case "based":
-                return based
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class Types: NSObject, SourceryModel, Diffable {
 
     /// :nodoc:
     public let types: [Type]
@@ -6022,9 +5894,7 @@ public class TypesCollection: NSObject, AutoJSExport {
 import Foundation
 
 /// Describes tuple type
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class TupleType: NSObject, SourceryModel, Diffable {
 
     /// Type name used in declaration
@@ -6106,9 +5976,7 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
 }
 
 /// Describes tuple type element
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
 
     /// Tuple element name
@@ -6215,46 +6083,8 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
-public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "implements":
-                return implements
-            case "name":
-                return name
-            case "kind":
-                return kind
-            case "based":
-                return based
-            case "supertype":
-                return supertype
-            case "accessLevel":
-                return accessLevel
-            case "storedVariables":
-                return storedVariables
-            case "variables":
-                return variables
-            case "allVariables":
-                return allVariables
-            case "allMethods":
-                return allMethods
-            case "annotations":
-                return annotations
-            case "methods":
-                return methods
-            case "containedType":
-                return containedType
-            case "computedVariables":
-                return computedVariables
-            case "inherits":
-                return inherits
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     /// :nodoc:
     public var module: String?
@@ -6951,7 +6781,6 @@ extension Type {
 /// Extends type so that inner types can be accessed via KVC e.g. Parent.Inner.Children
 extension Type {
     /// :nodoc:
-    #if canImport(ObjectiveC)
     override public func value(forUndefinedKey key: String) -> Any? {
         if let innerType = containedTypes.lazy.filter({ $0.localName == key }).first {
             return innerType
@@ -6959,7 +6788,6 @@ extension Type {
 
         return super.value(forUndefinedKey: key)
     }
-    #endif
 }
 
 """),
@@ -6973,9 +6801,7 @@ extension Type {
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable {
     /// :nodoc:
     public init(name: String,
@@ -7269,9 +7095,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
     // New typealias name
     public let aliasName: String
@@ -7562,40 +7386,8 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
-public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-        case "readAccess":
-            return readAccess
-        case "annotations":
-            return annotations
-        case "isOptional":
-            return isOptional
-        case "name":
-            return name
-        case "typeName":
-            return typeName
-        case "type":
-            return type
-        case "definedInType":
-            return definedInType
-        case "isStatic":
-            return isStatic
-        case "isAsync":
-            return isAsync
-        case "throws":
-            return `throws`
-        case "isArray":
-            return isArray
-        case "isDictionary":
-            return isDictionary
-        default:
-            fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable {
 
     /// Variable name
     public let name: String
