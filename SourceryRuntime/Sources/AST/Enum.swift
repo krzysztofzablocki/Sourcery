@@ -270,6 +270,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 @objcMembers
 #endif
 public final class Enum: Type {
+#if !canImport(ObjectiveC)
     public override subscript(dynamicMember member: String) -> Any? {
         switch member {
         case "cases":
@@ -280,7 +281,7 @@ public final class Enum: Type {
             return super[dynamicMember: member]
         }
     }
-
+#endif
     // sourcery: skipDescription
     /// Returns "enum"
     public override var kind: String { return "enum" }
