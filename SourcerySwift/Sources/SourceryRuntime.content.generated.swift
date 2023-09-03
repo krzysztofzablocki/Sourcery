@@ -1927,15 +1927,6 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 /// Defines Swift enum
 @objcMembers
 public final class Enum: Type {
-    public override subscript(dynamicMember member: String) -> Any? {
-        switch member {
-        case "cases":
-            return cases
-        default:
-            return super[dynamicMember: member]
-        }
-    }
-
     // sourcery: skipDescription
     /// Returns "enum"
     public override var kind: String { return "enum" }

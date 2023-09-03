@@ -256,10 +256,15 @@ class GeneratorSpec: QuickSpec {
                 it("can access variable type information") {
                     expect(generate("{% for variable in type.Complex.variables %}{{ variable.type.name }}{% endfor %}")).to(equal("FooBar"))
                 }
-
+                #if canImport(ObjectiveC)
+                it("can render variable isOptional") {
+                    expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("0"))
+                }
+                #else
                 it("can render variable isOptional") {
                     expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("false"))
                 }
+                #endif
 
                 it("can render variable definedInType") {
                     expect(generate("{% for type in types.all %}{% for variable in type.variables %}{{ variable.definedInType.name }} {% endfor %}{% endfor %}")).to(equal("Complex Complex Complex Complex Complex Complex Foo Options "))
