@@ -5310,6 +5310,9 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
     }()
 }
 
+"""),
+    .init(name: "TypesCollection.swift", content:
+"""
 /// :nodoc:
 public class TypesCollection: NSObject, AutoJSExport, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {

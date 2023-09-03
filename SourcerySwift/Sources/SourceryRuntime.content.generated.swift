@@ -5936,6 +5936,9 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
     }()
 }
 
+"""),
+    .init(name: "TypesCollection.swift", content:
+"""
 /// :nodoc:
 @objcMembers
 public class TypesCollection: NSObject, AutoJSExport {
