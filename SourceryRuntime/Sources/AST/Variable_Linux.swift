@@ -2,7 +2,7 @@
 // Created by Krzysztof Zablocki on 13/09/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
 import Stencil
 
@@ -10,8 +10,37 @@ import Stencil
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-@objcMembers
-public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable {
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+        case "readAccess":
+            return readAccess
+        case "annotations":
+            return annotations
+        case "isOptional":
+            return isOptional
+        case "name":
+            return name
+        case "typeName":
+            return typeName
+        case "type":
+            return type
+        case "definedInType":
+            return definedInType
+        case "isStatic":
+            return isStatic
+        case "isAsync":
+            return isAsync
+        case "throws":
+            return `throws`
+        case "isArray":
+            return isArray
+        case "isDictionary":
+            return isDictionary
+        default:
+            fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
 
     /// Variable name
     public let name: String
