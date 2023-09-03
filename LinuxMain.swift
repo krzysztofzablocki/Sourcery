@@ -22,7 +22,7 @@ import Quick
             FileParserSpec.self,
             FileParserSubscriptsSpec.self,
             FileParserVariableSpec.self,
-            // GeneratorSpec.self, // <<<<<< faulty
+            GeneratorSpec.self,
             // // JavaScriptTemplateTests.self,
             MethodSpec.self,
             ParserComposerSpec.self,
@@ -59,7 +59,7 @@ import Quick
             testCase(FileParserSpec.allTests),
             testCase(FileParserSubscriptsSpec.allTests),
             testCase(FileParserVariableSpec.allTests),
-            // testCase(GeneratorSpec.allTests), // <<<<< faulty
+            testCase(GeneratorSpec.allTests),
             // // testCase(JavaScriptTemplateTests.allTests),
             testCase(MethodSpec.allTests),
             testCase(ParserComposerSpec.allTests),
