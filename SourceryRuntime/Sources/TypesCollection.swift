@@ -2,15 +2,10 @@
 // Created by Krzysztof Zablocki on 31/12/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-
+#if canImport(ObjectiveC)
 import Foundation
-// For DynamicMemberLookup we need to import Stencil,
-// however, this is different from SourceryRuntime.content.generated.swift, because
-// it cannot reference Stencil
-import Stencil
 
 /// :nodoc:
-#if canImport(ObjectiveC)
 @objcMembers
 public class TypesCollection: NSObject, AutoJSExport {
     // sourcery:begin: skipJSExport
