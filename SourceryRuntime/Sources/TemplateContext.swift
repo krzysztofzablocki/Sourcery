@@ -132,7 +132,7 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
                 "inheriting": types.inheriting,
                 "implementing": types.implementing,
                 "protocolCompositions": types.protocolCompositions
-            ],
+            ] as [String : Any],
             "functions": functions,
             "type": types.typesByName,
             "argument": argument

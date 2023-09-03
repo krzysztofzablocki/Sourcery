@@ -5619,7 +5619,7 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
                 "based": types.based,
                 "inheriting": types.inheriting,
                 "implementing": types.implementing
-            ],
+            ] as [String : Any],
             "functions": functions,
             "type": types.typesByName,
             "argument": argument
