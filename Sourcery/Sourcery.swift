@@ -189,9 +189,9 @@ public class Sourcery {
         })
 
         return Array([sourceWatchers, templateWatchers].joined())
-        #else
+#else
         return []
-        #endif
+#endif
     }
 
     private func topPaths(from paths: [Path]) -> [Path] {
