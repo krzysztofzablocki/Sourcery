@@ -5816,6 +5816,8 @@ public final class Types: NSObject, SourceryModel, Diffable {
 """),
     .init(name: "TypesCollection.swift", content:
 """
+import Foundation
+
 /// :nodoc:
 @objcMembers
 public class TypesCollection: NSObject, AutoJSExport {
