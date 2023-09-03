@@ -15,6 +15,8 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         switch member {
             case "name":
                 return name
+            case "hasAssociatedValue":
+                return hasAssociatedValue
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
