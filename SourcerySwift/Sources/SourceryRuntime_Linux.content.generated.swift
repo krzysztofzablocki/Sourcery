@@ -5029,6 +5029,11 @@ extension ProcessInfo {
     }
 }
 
+"""),
+    .init(name: "Types.swift", content:
+"""
+import Foundation
+
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
 public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
