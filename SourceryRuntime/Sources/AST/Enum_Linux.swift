@@ -3,12 +3,22 @@
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
 
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
 
 /// Defines Swift enum
-@objcMembers
 public final class Enum: Type {
+    public override subscript(dynamicMember member: String) -> Any? {
+        switch member {
+        case "cases":
+            return cases
+        case "hasAssociatedValues":
+            return hasAssociatedValues
+        default:
+            return super[dynamicMember: member]
+        }
+    }
+
     // sourcery: skipDescription
     /// Returns "enum"
     public override var kind: String { return "enum" }
