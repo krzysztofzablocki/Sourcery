@@ -459,14 +459,14 @@ extension Sourcery {
         }, catch: { _ in
             Log.warning("Failed to unarchive cache for \(path.string) due to error, re-parsing file")
         }, finallyBlock: {})
-        #else
-        // this deprecation can't be removed atm, new API is 10x slower
+#else
+            // this deprecation can't be removed atm, new API is 10x slower
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
                 if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
                     unarchivedResult = unarchived
                 }
             }
-        #endif
+#endif
 
         return unarchivedResult
     }
@@ -662,13 +662,13 @@ extension Sourcery {
         }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})
-        #else
+#else
         do {
                 result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
             } catch {
                 Log.error(error)
             }
-        #endif
+#endif
 
         return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse, baseIndentation: baseIndentation)
     }
