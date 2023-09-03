@@ -1,9 +1,20 @@
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
 
 /// Describes method parameter
-@objcMembers
-public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable {
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "argumentLabel":
+                return argumentLabel
+            case "name":
+                return name
+            case "typeName":
+                return typeName
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
     /// Parameter external name
     public var argumentLabel: String?
 
