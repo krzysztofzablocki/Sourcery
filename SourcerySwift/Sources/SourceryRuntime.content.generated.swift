@@ -5937,11 +5937,8 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
 }
 
 /// :nodoc:
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public class TypesCollection: NSObject, AutoJSExport {
-
     // sourcery:begin: skipJSExport
     let all: [Type]
     let types: [String: [Type]]
@@ -5992,7 +5989,6 @@ public class TypesCollection: NSObject, AutoJSExport {
     }
 
     /// :nodoc:
-#if canImport(ObjectiveC)
     override public func value(forKey key: String) -> Any? {
         do {
             return try types(forKey: key)
@@ -6001,16 +5997,6 @@ public class TypesCollection: NSObject, AutoJSExport {
             return nil
         }
     }
-#else
-public func value(forKey key: String) -> Any? {
-        do {
-            return try types(forKey: key)
-        } catch {
-            Log.error(error)
-            return nil
-        }
-    }
-#endif
 
     /// :nodoc:
     public subscript(_ key: String) -> [Type] {
@@ -6022,11 +6008,9 @@ public func value(forKey key: String) -> Any? {
         }
     }
 
-#if canImport(ObjectiveC)
     override public func responds(to aSelector: Selector!) -> Bool {
         return true
     }
-#endif
 }
 
 """),
