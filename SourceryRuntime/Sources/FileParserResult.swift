@@ -8,12 +8,6 @@
 
 import Foundation
 
-#if !canImport(ObjectiveC)
-public extension NSExceptionName {
-    static var parseErrorException = "parseErrorException"
-}
-#endif
-
 // sourcery: skipJSExport
 /// :nodoc:
 #if canImport(ObjectiveC)
