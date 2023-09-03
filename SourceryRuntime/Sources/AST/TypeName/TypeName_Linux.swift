@@ -17,6 +17,10 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return tuple
             case "name":
                 return name
+            case "isOptional":
+                return isOptional
+            case "unwrappedTypeName":
+                return unwrappedTypeName
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
