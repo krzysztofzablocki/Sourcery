@@ -1,12 +1,21 @@
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
+import Stencil
 
 /// :nodoc:
 public typealias SourceryMethod = Method
 
 /// Describes method
-@objc(SwiftMethod) @objcMembers
-public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
+public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "definedInType":
+                return definedInType
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
+
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
