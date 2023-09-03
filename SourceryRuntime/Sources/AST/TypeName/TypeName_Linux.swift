@@ -23,6 +23,10 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return unwrappedTypeName
             case "isProtocolComposition":
                 return isProtocolComposition
+            case "isVoid":
+                return isVoid
+            case "isClosure":
+                return isClosure
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }

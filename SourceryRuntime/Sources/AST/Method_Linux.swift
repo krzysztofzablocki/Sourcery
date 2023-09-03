@@ -24,6 +24,22 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 return callName
             case "parameters":
                 return parameters
+            case "throws":
+                return `throws`
+            case "isInitializer":
+                return isInitializer
+            case "accessLevel":
+                return accessLevel
+            case "isStatic":
+                return isStatic
+            case "returnTypeName":
+                return returnTypeName
+            case "isAsync":
+                return isAsync
+            case "attributes":
+                return attributes
+            case "isOptionalReturnType":
+                return isOptionalReturnType
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
