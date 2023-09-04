@@ -143,6 +143,10 @@ Add the dependency to `.pre-commit-config.yaml`.
 
 Full documentation for the latest release is available [here](http://merowing.info/Sourcery/).
 
+## Linux Support
+
+Linux support is [described on this page](LINUX.md).
+
 ## Usage
 
 ### Running the executable

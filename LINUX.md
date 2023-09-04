@@ -9,7 +9,12 @@ Currently (as per 2.1.0 release), Linux Support is **experimental**. This means 
 
 All issues related to Linux will be mentioned in #1198
 
-## Installation of Linux Environment
+## Using Sourcery under Linux
+
+Simply add package dependency of Sourcery as described in the [README](README.md).
+
+## Contributing
+### Installation of Linux Environment
 
 I have installed ubuntu VM through [tart](https://github.com/cirruslabs/tart/issues/62#issuecomment-1225956540) and updated to 22.04 according to [this guide](https://www.linuxtechi.com/upgrade-ubuntu-20-04-to-ubuntu-22-04/).
 
@@ -22,11 +27,11 @@ I had to run the following commands prior to being able to run `bundle install` 
 
 Then, `swiftly` needs to be install to easily manage Swift installation under Linux. How to install Swiftly is described [in this README](https://github.com/swift-server/swiftly).
 
-## Running Tests Under Linux
+### Running Tests Under Linux
 
 To run tests, you can use either Visual Studio Code distribution, or simply `swift test` in Sourcery root directory.
 
-### Visual Studio Code
+#### Visual Studio Code
 
 To install VS Code, you can follow [the official guide](https://code.visualstudio.com/docs/setup/linux), which mentions the following commands:
 
@@ -44,7 +49,7 @@ sudo apt update
 sudo apt install code # or code-insiders
 ```
 
-## Test Discovery Under Linux
+### Test Discovery Under Linux
 
 Due to a missing feature in Swift Package Manager, tests under Linux are not discovered if the root class, from which tests are inherited, is located "in another Package/Module". Details regarding this [can be found here](https://github.com/apple/swift-package-manager/issues/5573).
 
