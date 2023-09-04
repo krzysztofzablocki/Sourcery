@@ -26,8 +26,7 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
             case "annotations":
                 return annotations
             default:
-                print("unable to lookup: \(member) in \(Self.self)"); return nil;
-                // fatalError("unable to lookup: \(member) in \(self)")
+                fatalError("unable to lookup: \(member) in \(self)")
         }
     }
 

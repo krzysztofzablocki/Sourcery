@@ -45,7 +45,6 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         }
     }
 
-
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
 

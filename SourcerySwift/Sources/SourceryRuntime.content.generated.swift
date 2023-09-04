@@ -1659,13 +1659,8 @@ public protocol Documented {
 }
 
 """),
-    .init(name: "Enum.swift", content:
+    .init(name: "AssociatedValue.swift", content:
 """
-//
-// Created by Krzysztof Zablocki on 13/09/2016.
-// Copyright (c) 2016 Pixle. All rights reserved.
-//
-
 import Foundation
 
 /// Defines enum case associated value
@@ -1787,6 +1782,10 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
 // sourcery:end
 
 }
+"""),
+    .init(name: "EnumCase.swift", content:
+"""
+import Foundation
 
 /// Defines enum case
 @objcMembers
@@ -1923,6 +1922,15 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         }
 // sourcery:end
 }
+"""),
+    .init(name: "Enum.swift", content:
+"""
+//
+// Created by Krzysztof Zablocki on 13/09/2016.
+// Copyright (c) 2016 Pixle. All rights reserved.
+//
+
+import Foundation
 
 /// Defines Swift enum
 @objcMembers
@@ -3559,12 +3567,9 @@ public enum Log {
 extension String: Error {}
 
 """),
-    .init(name: "Method.swift", content:
+    .init(name: "MethodParameter.swift", content:
 """
 import Foundation
-
-/// :nodoc:
-public typealias SourceryMethod = Method
 
 /// Describes method parameter
 @objcMembers
@@ -3743,6 +3748,11 @@ extension Array where Element == MethodParameter {
     }
 }
 
+"""),
+    .init(name: "ClosureParameter.swift", content:
+"""
+import Foundation
+
 // sourcery: skipDiffing
 @objcMembers
 public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
@@ -3882,6 +3892,13 @@ extension Array where Element == ClosureParameter {
         "(\\(map { $0.asSource }.joined(separator: ", ")))"
     }
 }
+"""),
+    .init(name: "Method.swift", content:
+"""
+import Foundation
+
+/// :nodoc:
+public typealias SourceryMethod = Method
 
 /// Describes method
 @objc(SwiftMethod) @objcMembers
