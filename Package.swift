@@ -19,8 +19,23 @@ var sourceryLibDependencies: [Target.Dependency] = [
             ]
 #if canImport(ObjectiveC)
 sourceryLibDependencies.append("TryCatch")
+let templatesTestsResourcesCopy: [Resource] = [
+    .copy("Templates"),
+    .copy("Tests/Context"),
+    .copy("Tests/Expected")
+]
 #else
 sourceryLibDependencies.append(.product(name: "Crypto", package: "swift-crypto"))
+let templatesTestsResourcesCopy: [Resource] = [
+    .copy("Templates"),
+    .copy("Tests/Context/AutoCases.swift"),
+    .copy("Tests/Context/AutoEquatable.swift"),
+    .copy("Tests/Context/AutoHashable.swift"),
+    .copy("Tests/Context/AutoLenses.swift"),
+    .copy("Tests/Context/AutoMockable.swift"),
+    .copy("Tests/Context/LinuxMain.swift"),
+    .copy("Tests/Expected")
+]
 #endif
 
 var targets: [Target] = [
@@ -182,11 +197,7 @@ var targets: [Target] = [
                 // since there is no way to run script before compilation begins.
                 "Tests/TemplatesTests.swift"
             ],
-            resources: [
-                .copy("Templates"),
-                .copy("Tests/Context"),
-                .copy("Tests/Expected")
-            ],
+            resources: templatesTestsResourcesCopy,
             swiftSettings: [.unsafeFlags(["-enable-testing"])]
         ),
         .plugin(

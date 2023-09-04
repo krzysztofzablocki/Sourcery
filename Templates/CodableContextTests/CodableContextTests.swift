@@ -1,3 +1,4 @@
+#if canImport(ObjectiveC)
 import Foundation
 import Quick
 import Nimble
@@ -22,7 +23,6 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnum.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    #if canImport(ObjectiveC)
                     expect(String(data: encoded, encoding: .utf8)).to(equal(
 """
 {
@@ -32,7 +32,6 @@ class CodableContextTests: QuickSpec {
 }
 """
                     ))
-                    #endif
 
                     let decoded = try! decoder.decode(AssociatedValuesEnum.self, from: encoded)
                     expect(decoded).to(equal(value))
@@ -76,7 +75,6 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnumNoCaseKey.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    #if canImport(ObjectiveC)
                     expect(String(data: encoded, encoding: .utf8)).to(equal(
 """
 {
@@ -87,7 +85,6 @@ class CodableContextTests: QuickSpec {
 }
 """
                     ))
-                    #endif
 
                     let decoded = try! decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded)
                     expect(decoded).to(equal(value))
@@ -139,3 +136,4 @@ class CodableContextTests: QuickSpec {
         }
     }
 }
+#endif
