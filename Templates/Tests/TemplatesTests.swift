@@ -37,13 +37,18 @@ class TemplatesTests: QuickSpec {
                 print(error)
             }
         }
+        #if canImport(ObjectiveC)
+        let contextSources = "\(resources)/Context"
+        #else
+        let contextSources = "\(resources)/Context_Linux"
+        #endif
         var output: String?
         buildDir.chdir {
             output = launch(
                 sourceryPath: sourcery,
                 args: [
                     "--sources",
-                    "\(resources)/Context",
+                    contextSources,
                     "--templates",
                     "\(resources)/Templates",
                     "--output",

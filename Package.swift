@@ -28,12 +28,7 @@ let templatesTestsResourcesCopy: [Resource] = [
 sourceryLibDependencies.append(.product(name: "Crypto", package: "swift-crypto"))
 let templatesTestsResourcesCopy: [Resource] = [
     .copy("Templates"),
-    .copy("Tests/Context/AutoCases.swift"),
-    .copy("Tests/Context/AutoEquatable.swift"),
-    .copy("Tests/Context/AutoHashable.swift"),
-    .copy("Tests/Context/AutoLenses.swift"),
-    .copy("Tests/Context/AutoMockable.swift"),
-    .copy("Tests/Context/LinuxMain.swift"),
+    .copy("Tests/Context_Linux"),
     .copy("Tests/Expected")
 ]
 #endif
