@@ -25,7 +25,7 @@ I had to run the following commands prior to being able to run `bundle install` 
 3. `sudo apt install libsqlite3-dev`
 4. `sudo apt-get install libncurses5-dev`
 
-Then, `swiftly` needs to be install to easily manage Swift installation under Linux. How to install Swiftly is described [in this README](https://github.com/swift-server/swiftly).
+Then, `swiftly` needs to be installed to easily manage Swift installation under Linux. How to install Swiftly is described [in this README](https://github.com/swift-server/swiftly).
 
 ### Running Tests Under Linux
 
