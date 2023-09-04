@@ -2,12 +2,34 @@
 // Created by Krzysztof Zablocki on 13/09/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 /// Defines enum case associated value
-@objcMembers
-public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable {
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "externalName":
+                return externalName
+            case "localName":
+                return localName
+            case "typeName":
+                return typeName
+            case "type":
+                return type
+            case "defaultValue":
+                return defaultValue
+            case "annotations":
+                return annotations
+            default:
+                print("unable to lookup: \(member) in \(Self.self)"); return nil;
+                // fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
 
     /// Associated value local name.
     /// This is a name to be used to construct enum case value

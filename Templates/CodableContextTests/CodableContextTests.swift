@@ -5,7 +5,7 @@ import Nimble
 
 class CodableContextTests: QuickSpec {
     override func spec() {
-
+#if canImport(ObjectiveC)
         let encoder: JSONEncoder = {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
@@ -22,7 +22,6 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnum.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    #if canImport(ObjectiveC)
                     expect(String(data: encoded, encoding: .utf8)).to(equal(
 """
 {
@@ -32,7 +31,6 @@ class CodableContextTests: QuickSpec {
 }
 """
                     ))
-                    #endif
 
                     let decoded = try! decoder.decode(AssociatedValuesEnum.self, from: encoded)
                     expect(decoded).to(equal(value))
@@ -76,7 +74,6 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnumNoCaseKey.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    #if canImport(ObjectiveC)
                     expect(String(data: encoded, encoding: .utf8)).to(equal(
 """
 {
@@ -87,7 +84,6 @@ class CodableContextTests: QuickSpec {
 }
 """
                     ))
-                    #endif
 
                     let decoded = try! decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded)
                     expect(decoded).to(equal(value))
@@ -137,5 +133,6 @@ class CodableContextTests: QuickSpec {
                 }
             }
         }
+#endif
     }
 }

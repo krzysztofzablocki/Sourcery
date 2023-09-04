@@ -40,7 +40,7 @@ import Quick
             VariableSpec.self,
             VerifierSpec.self,
             CodableContextTests.self,
-            // TemplatesTests.self // <<<<< faulty
+            TemplatesTests.self
         ],
         configurations: [],
         testCases: [
@@ -76,7 +76,7 @@ import Quick
             testCase(VariableSpec.allTests),
             testCase(VerifierSpec.allTests),
             testCase(CodableContextTests.allTests),
-            // testCase(TemplatesTests.allTests) // <<<<<< faulty
+            testCase(TemplatesTests.allTests)
         ])
     }
 }

@@ -6,10 +6,15 @@ import PathKit
 #endif
 
 class TemplatesTests: QuickSpec {
-    #if SWIFT_PACKAGE
+    #if SWIFT_PACKAGE || os(Linux)
     override class func setUp() {
         super.setUp()
 
+        generateFiles()
+    }
+    #endif
+
+    private static func generateFiles() {
         print("Generating sources...", terminator: " ")
 
         let buildDir: Path
@@ -32,14 +37,18 @@ class TemplatesTests: QuickSpec {
                 print(error)
             }
         }
-
+        #if canImport(ObjectiveC)
+        let contextSources = "\(resources)/Context"
+        #else
+        let contextSources = "\(resources)/Context_Linux"
+        #endif
         var output: String?
         buildDir.chdir {
             output = launch(
                 sourceryPath: sourcery,
                 args: [
                     "--sources",
-                    "\(resources)/Context",
+                    contextSources,
                     "--templates",
                     "\(resources)/Templates",
                     "--output",
@@ -56,7 +65,6 @@ class TemplatesTests: QuickSpec {
             print("Done!")
         }
     }
-    #endif
 
     override func spec() {
         func check(template name: String) {
@@ -81,6 +89,12 @@ class TemplatesTests: QuickSpec {
             let expectedFileFilteredLines = expectedFileLines.filter(emptyLinesFilter).filter(commentLinesFilter)
             expect(generatedFileFilteredLines).to(equal(expectedFileFilteredLines))
         }
+
+#if !canImport(ObjectiveC)
+        beforeSuite {
+            TemplatesTests.generateFiles()
+        }
+#endif
 
         describe("AutoCases template") {
             it("generates expected code") {
@@ -117,12 +131,13 @@ class TemplatesTests: QuickSpec {
                 check(template: "LinuxMain")
             }
         }
-
+#if canImport(ObjectiveC)
         describe("AutoCodable template") {
             it("generates expected code") {
                 check(template: "AutoCodable")
             }
         }
+#endif
     }
 
     private func path(forResource name: String, ofType ext: String, in dirName: String) -> String? {

@@ -4,6 +4,9 @@
 //
 #if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
 import Stencil
 
 /// :nodoc:
@@ -43,6 +46,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 return computedVariables
             case "inherits":
                 return inherits
+            case "inheritedTypes":
+                return inheritedTypes
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }   
