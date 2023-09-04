@@ -1,4 +1,3 @@
-#if canImport(ObjectiveC)
 import Foundation
 import Quick
 import Nimble
@@ -6,7 +5,7 @@ import Nimble
 
 class CodableContextTests: QuickSpec {
     override func spec() {
-
+#if canImport(ObjectiveC)
         let encoder: JSONEncoder = {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted
@@ -134,6 +133,6 @@ class CodableContextTests: QuickSpec {
                 }
             }
         }
+#endif
     }
 }
-#endif
