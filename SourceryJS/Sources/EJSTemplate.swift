@@ -61,10 +61,12 @@ open class EJSTemplate {
     #else
     static let bundle = Bundle(for: EJSTemplate.self)
     #endif
-    public static var ejsPath: Path = {
+    public static var ejsPath: Path? = {
         let bundle = EJSTemplate.bundle
-        let path = bundle.path(forResource: "ejs", ofType: "js")
-        return Path(path!)
+        guard let path = bundle.path(forResource: "ejs", ofType: "js") else {
+            return nil
+        }
+        return Path(path)
     }()
 
     public let sourcePath: Path
@@ -87,17 +89,17 @@ open class EJSTemplate {
         }
     }
 
-    public convenience init(path: Path, ejsPath: Path = EJSTemplate.ejsPath) throws {
+    public convenience init(path: Path, ejsPath: Path) throws {
         try self.init(path: path, templateString: try path.read(), ejsPath: ejsPath)
     }
 
-    public init(path: Path, templateString: String, ejsPath: Path = EJSTemplate.ejsPath) throws {
+    public init(path: Path, templateString: String, ejsPath: Path) throws {
         self.templateString = templateString
         sourcePath = path
         self.ejs = try ejsPath.read(.utf8)
     }
     
-    public init(templateString: String, ejsPath: Path = EJSTemplate.ejsPath) throws {
+    public init(templateString: String, ejsPath: Path) throws {
         self.templateString = templateString
         sourcePath = ""
         self.ejs = try ejsPath.read(.utf8)

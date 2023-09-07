@@ -254,7 +254,11 @@ private extension Sourcery {
                 let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
                 switch template.instance.kind {
                 case .ejs:
-                    return try JavaScriptTemplate(path: $0, templateString: template.instance.content)
+                    guard let ejsPath = EJSTemplate.ejsPath else {
+                        Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
+                        return nil
+                    }
+                    return try JavaScriptTemplate(path: $0, templateString: template.instance.content, ejsPath: ejsPath)
                 case .stencil:
                     return try StencilTemplate(path: $0, templateString: template.instance.content)
                 }
@@ -262,7 +266,11 @@ private extension Sourcery {
                 let cachePath = cachesDir(sourcePath: $0)
                 return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
             } else if $0.extension == "ejs" {
-                return try JavaScriptTemplate(path: $0)
+                guard let ejsPath = EJSTemplate.ejsPath else {
+                    Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
+                    return nil
+                }
+                return try JavaScriptTemplate(path: $0, ejsPath: ejsPath)
             } else {
                 return try StencilTemplate(path: $0)
             }
