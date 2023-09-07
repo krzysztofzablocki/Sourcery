@@ -11,7 +11,9 @@ import SourceryRuntime
 import SourceryJS
 import SourcerySwift
 import SourceryStencil
+#if canImport(ObjectiveC)
 import TryCatch
+#endif
 import XcodeProj
 
 public class Sourcery {
@@ -134,7 +136,7 @@ public class Sourcery {
         }
 
         Log.info("Starting watching sources.")
-
+#if canImport(ObjectiveC)
         let sourceWatchers = topPaths(from: watchPaths.allPaths).map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
@@ -187,6 +189,9 @@ public class Sourcery {
         })
 
         return Array([sourceWatchers, templateWatchers].joined())
+#else
+        return []
+#endif
     }
 
     private func topPaths(from paths: [Path]) -> [Path] {
@@ -235,18 +240,25 @@ public class Sourcery {
         }
     }
 
-    fileprivate func templates(from: Paths) throws -> [Template] {
+    private func templatePaths(from: Paths) -> [Path] {
+        return from.allPaths.filter { $0.isTemplateFile }
+    }
+
+}
+
+#if canImport(ObjectiveC)
+private extension Sourcery {
+    func templates(from: Paths) throws -> [Template] {
         return try templatePaths(from: from).compactMap {
             if $0.extension == "sourcerytemplate" {
                 let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
                 switch template.instance.kind {
                 case .ejs:
-                    guard EJSTemplate.ejsPath != nil else {
+                    guard let ejsPath = EJSTemplate.ejsPath else {
                         Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
                         return nil
                     }
-                    return try JavaScriptTemplate(path: $0, templateString: template.instance.content)
-
+                    return try JavaScriptTemplate(path: $0, templateString: template.instance.content, ejsPath: ejsPath)
                 case .stencil:
                     return try StencilTemplate(path: $0, templateString: template.instance.content)
                 }
@@ -254,22 +266,34 @@ public class Sourcery {
                 let cachePath = cachesDir(sourcePath: $0)
                 return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
             } else if $0.extension == "ejs" {
-                guard EJSTemplate.ejsPath != nil else {
+                guard let ejsPath = EJSTemplate.ejsPath else {
                     Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
                     return nil
                 }
-                return try JavaScriptTemplate(path: $0)
+                return try JavaScriptTemplate(path: $0, ejsPath: ejsPath)
             } else {
                 return try StencilTemplate(path: $0)
             }
         }
     }
-
-    private func templatePaths(from: Paths) -> [Path] {
-        return from.allPaths.filter { $0.isTemplateFile }
-    }
-
 }
+#else
+private extension Sourcery {
+    func templates(from: Paths) throws -> [Template] {
+        return try templatePaths(from: from).compactMap {
+            if $0.extension == "sourcerytemplate" {
+                let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
+                return try StencilTemplate(path: $0, templateString: template.instance.content)
+            } else if $0.extension == "swifttemplate" {
+                let cachePath = cachesDir(sourcePath: $0)
+                return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
+            } else {
+                return try StencilTemplate(path: $0)
+            }
+        }
+    }
+}
+#endif
 
 // MARK: - Parsing
 
@@ -431,8 +455,9 @@ extension Sourcery {
 
     private func load(artifacts: String, modifiedDate: Date, path: Path) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
-        SwiftTryCatch.try({
 
+#if canImport(ObjectiveC)
+        SwiftTryCatch.try({
             // this deprecation can't be removed atm, new API is 10x slower
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
                 if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
@@ -442,6 +467,14 @@ extension Sourcery {
         }, catch: { _ in
             Log.warning("Failed to unarchive cache for \(path.string) due to error, re-parsing file")
         }, finallyBlock: {})
+#else
+            // this deprecation can't be removed atm, new API is 10x slower
+            if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
+                if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
+                    unarchivedResult = unarchived
+                }
+            }
+#endif
 
         return unarchivedResult
     }
@@ -627,6 +660,7 @@ extension Sourcery {
         }
 
         var result: String = ""
+#if canImport(ObjectiveC)
         SwiftTryCatch.try({
             do {
                 result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
@@ -636,6 +670,13 @@ extension Sourcery {
         }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})
+#else
+        do {
+                result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
+            } catch {
+                Log.error(error)
+            }
+#endif
 
         return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse, baseIndentation: baseIndentation)
     }

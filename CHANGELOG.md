@@ -6,6 +6,7 @@
 - Add support to any keyword for function parameter type to AutoMockable.stencil ([#1169](https://github.com/krzysztofzablocki/Sourcery/pull/1169))
 - Add support to any keyword for function return type to AutoMockable.stencil([#1186](https://github.com/krzysztofzablocki/Sourcery/pull/1186))
 - Add support for protocol compositions in EJS templates. ([#1192](https://github.com/krzysztofzablocki/Sourcery/pull/1192))
+- Linux Support (experimental) ([#1188](https://github.com/krzysztofzablocki/Sourcery/pull/1188))
 
 ## 2.0.3
 ## Internal Changes

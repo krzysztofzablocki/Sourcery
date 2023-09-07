@@ -14,6 +14,7 @@ import PathKit
 #endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
+import XCTest
 
 // swiftlint:disable type_body_length file_length
 class ParserComposerSpec: QuickSpec {

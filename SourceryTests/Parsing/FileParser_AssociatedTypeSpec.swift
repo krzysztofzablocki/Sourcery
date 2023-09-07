@@ -12,6 +12,7 @@ import PathKit
 final class FileParserAssociatedTypeSpec: QuickSpec {
     override func spec() {
         describe("Parser") {
+#if canImport(ObjectiveC)
             describe("parse associated type") {
                 func associatedType(_ code: String, protocolName: String? = nil) -> [AssociatedType] {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return [] }
@@ -98,6 +99,7 @@ final class FileParserAssociatedTypeSpec: QuickSpec {
                     }
                 }
             }
+#endif
         }
     }
 }

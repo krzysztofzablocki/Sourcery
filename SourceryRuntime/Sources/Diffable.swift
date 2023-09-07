@@ -36,7 +36,10 @@ extension NSRange: Diffable {
     }
 }
 
-@objcMembers public class DiffableResult: NSObject, AutoEquatable {
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
+public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
     internal var identifier: String?
@@ -57,6 +60,19 @@ extension NSRange: Diffable {
     }
 
     var isEmpty: Bool { return results.isEmpty }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.identifier)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DiffableResult else { return false }
+        if self.identifier != rhs.identifier { return false }
+        return true
+    }
 
     public override var description: String {
         guard !results.isEmpty else { return "" }

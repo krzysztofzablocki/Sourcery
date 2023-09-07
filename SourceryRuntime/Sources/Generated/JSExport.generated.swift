@@ -1,7 +1,7 @@
 // Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
-
+#if canImport(JavaScriptCore)
 import JavaScriptCore
 
 @objc protocol ActorAutoJSExport: JSExport {
@@ -684,3 +684,4 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
 extension Variable: VariableAutoJSExport {}
 
 
+#endif

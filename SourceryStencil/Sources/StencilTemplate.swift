@@ -87,10 +87,16 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
 
+        #if canImport(ObjectiveC)
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
-                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
+                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: true, comparator: {
+                    guard let arg1 = $0 as? String, let arg2 = $1 as? String else {
+                        return .orderedAscending
+                    }
+                    return arg1.caseInsensitiveCompare(arg2)
+                })
                 return array.sortedArray(using: [sortDescriptor])
             default:
                 return nil
@@ -100,12 +106,46 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
             switch array {
             case let array as NSArray:
-                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: false, selector: #selector(NSString.caseInsensitiveCompare))
+                let sortDescriptor = NSSortDescriptor(key: propertyName, ascending: false, comparator: {
+                    guard let arg1 = $0 as? String, let arg2 = $1 as? String else {
+                        return .orderedDescending
+                    }
+                    return arg1.caseInsensitiveCompare(arg2)
+                })
                 return array.sortedArray(using: [sortDescriptor])
             default:
                 return nil
             }
         }
+        #else
+        ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
+            switch array {
+            case let array as NSArray:
+                return array.sortedArray {
+                    guard let arg1 = $0 as? String, let arg2 = $1 as? String else {
+                        return .orderedAscending
+                    }
+                    return arg1.caseInsensitiveCompare(arg2)
+                }
+            default:
+                return nil
+            }
+        }
+
+        ext.registerFilterWithArguments("sortedDescending") { (array, propertyName: String) -> Any? in
+            switch array {
+            case let array as NSArray:
+                return array.sortedArray {
+                    guard let arg1 = $0 as? String, let arg2 = $1 as? String else {
+                        return .orderedDescending
+                    }
+                    return arg2.caseInsensitiveCompare(arg1)
+                }
+            default:
+                return nil
+            }
+        }
+        #endif
 
         ext.registerBoolFilter("initializer", filter: { (m: SourceryMethod) in m.isInitializer })
         ext.registerBoolFilterOr("class",

@@ -6,7 +6,7 @@
 import Foundation
 
 private func currentTimestamp() -> TimeInterval {
-    return CFAbsoluteTimeGetCurrent()
+    return Date().timeIntervalSince1970
 }
 
 /// Responsible for composing results of `FileParser`.

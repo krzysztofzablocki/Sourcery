@@ -1,4 +1,4 @@
-import Darwin
+//import Darwin
 import Foundation
 
 /// :nodoc:
@@ -21,7 +21,7 @@ public enum Log {
     public static func error(_ message: Any) {
         log(level: .errors, "error: \(message)")
         // to return error when running swift templates which is done in a different process
-        if ProcessInfo().processName != "Sourcery" {
+        if ProcessInfo.processInfo.processName != "Sourcery" {
             fputs("\(message)", stderr)
         }
     }

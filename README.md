@@ -1,4 +1,6 @@
 [![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=shield)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
+[![macOS](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/macOS.yml/badge.svg)](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/macOS.yml)
+[![Ubuntu (Experimental)](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/Ubuntu.yml/badge.svg)](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/Ubuntu.yml)
 <!-- [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery) -->
 [![docs](https://krzysztofzablocki.github.io/Sourcery/badge.svg)](https://krzysztofzablocki.github.io/Sourcery/index.html)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
@@ -140,6 +142,10 @@ Add the dependency to `.pre-commit-config.yaml`.
 ## Documentation
 
 Full documentation for the latest release is available [here](http://merowing.info/Sourcery/).
+
+## Linux Support
+
+Linux support is [described on this page](LINUX.md).
 
 ## Usage
 

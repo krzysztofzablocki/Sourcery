@@ -70,12 +70,21 @@ class StencilTemplateSpec: QuickSpec {
             }
 
             describe("toArray") {
+                #if canImport(ObjectiveC)
                 context("given array") {
                     it("doesnt modify the value") {
                         let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | toArray }}{% endfor %}")
                         expect(result).to(equal("[Hello, beautiful, World]"))
                     }
                 }
+                #else
+                context("given array") {
+                    it("doesnt modify the value") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | toArray }}{% endfor %}")
+                        expect(result).to(equal("[\"Hello\", \"beautiful\", \"World\"]"))
+                    }
+                }
+                #endif
 
                 context("given something") {
                     it("transforms it into array") {
@@ -111,29 +120,52 @@ class StencilTemplateSpec: QuickSpec {
             }
 
             describe("sorted") {
+              #if canImport(ObjectiveC)
               context("given array") {
                 it("sorts it") {
                   let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sorted:\"description\" }}{% endfor %}")
                   expect(result).to(equal("[beautiful, Hello, World]"))
                 }
               }
+              #else
+              context("given array") {
+                it("sorts it") {
+                  let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sorted:\"description\" }}{% endfor %}")
+                  expect(result).to(equal("[\"beautiful\", \"Hello\", \"World\"]"))
+                }
+              }
+              #endif
             }
 
             describe("sortedDescending") {
                 context("given array") {
+                    #if canImport(ObjectiveC)
                     it("sorts it descending") {
                         let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sortedDescending:\"description\" }}{% endfor %}")
                         expect(result).to(equal("[World, Hello, beautiful]"))
                     }
+                    #else
+                    it("sorts it descending") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | sortedDescending:\"description\" }}{% endfor %}")
+                        expect(result).to(equal("[\"World\", \"Hello\", \"beautiful\"]"))
+                    }
+                    #endif
                 }
             }
 
             describe("reversed") {
                 context("given array") {
+                    #if canImport(ObjectiveC)
                     it("reverses it") {
                         let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | reversed }}{% endfor %}")
                         expect(result).to(equal("[World, beautiful, Hello]"))
                     }
+                    #else
+                    it("reverses it") {
+                        let result = generate("{% for key,value in type.MyClass.variables.2.annotations %}{{ value | reversed }}{% endfor %}")
+                        expect(result).to(equal("[\"World\", \"beautiful\", \"Hello\"]"))
+                    }
+                    #endif
                 }
             }
 

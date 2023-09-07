@@ -83,7 +83,7 @@ open class SwiftTemplate {
         import Foundation
         import SourceryRuntime
 
-        let context = ProcessInfo().context!
+        let context = ProcessInfo.processInfo.context!
         let types = context.types
         let functions = context.functions
         let type = context.types.typesByName
@@ -235,7 +235,7 @@ open class SwiftTemplate {
         try includedFiles.forEach { includedFile in
             try includedFile.copy(templateFilesDir + Path(includedFile.lastComponent))
         }
-
+#if os(macOS)
         let arguments = [
             "xcrun",
             "--sdk", "macosx",
@@ -245,6 +245,15 @@ open class SwiftTemplate {
             "-Xswiftc", "-suppress-warnings",
             "--disable-sandbox"
         ]
+#else
+        let arguments = [
+            "swift",
+            "build",
+            "-c", "release",
+            "-Xswiftc", "-suppress-warnings",
+            "--disable-sandbox"
+        ]
+#endif
         let compilationResult = try Process.runCommand(path: "/usr/bin/env",
                                                        arguments: arguments,
                                                        currentDirectoryPath: buildDir)

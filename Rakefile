@@ -6,6 +6,7 @@ require 'yaml'
 require 'json'
 require 'net/http'
 require 'uri'
+require 'rbconfig'
 
 BUILD_DIR = 'build/'
 CLI_DIR = 'cli/'
@@ -42,10 +43,7 @@ end
 desc "Run the Unit Tests on all projects"
 task :tests do
   print_info "Running Unit Tests"
-  # we can't use SPM directly because it doesn't link rpath and thus often uses wrong dylib
-  # sh %Q(swift test)
-  xcpretty %Q(xcodebuild -scheme sourcery -destination platform=macOS,arch=x86_64)
-  xcpretty %Q(xcodebuild -scheme Sourcery-Package -destination platform=macOS,arch=x86_64 test)
+  sh %Q(swift test)
 end
 
 desc "Delete the build/ directory"

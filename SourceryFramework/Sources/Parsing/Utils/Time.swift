@@ -9,5 +9,5 @@ import Foundation
 
 /// Returns current timestamp interval
 public func currentTimestamp() -> TimeInterval {
-    return CFAbsoluteTimeGetCurrent()
+    return Date().timeIntervalSince1970
 }

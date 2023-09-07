@@ -39,11 +39,14 @@ class EnumSpec: QuickSpec {
             }
 
             describe("When testing equality") {
+
+#if canImport(ObjectiveC) 
                 context("given same items") {
                     it("is equal") {
                         expect(sut).to(equal(Enum(name: "Foo", accessLevel: .internal, isExtension: false, inheritedTypes: ["String"], cases: [EnumCase(name: "CaseA"), EnumCase(name: "CaseB")])))
                     }
                 }
+#endif
 
                 context("given different items") {
                     it("is not equal") {
