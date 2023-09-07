@@ -191,7 +191,7 @@ func runCLI() {
                 }
             }
 
-            let start = Date().timeIntervalSince1970
+            let start = currentTimestamp()
 
             let keepAlive = try configurations.flatMap { configuration -> [FolderWatcher.Local] in
                 configuration.validate()
@@ -223,7 +223,7 @@ func runCLI() {
             }
 
             if keepAlive.isEmpty {
-                Log.info("Processing time \(Date().timeIntervalSince1970 - start) seconds")
+                Log.info("Processing time \(currentTimestamp() - start) seconds")
             } else {
                 RunLoop.current.run()
                 _ = keepAlive
@@ -368,7 +368,7 @@ func runCLI() {
                 }
             }
 
-            let start = Date().timeIntervalSince1970
+            let start = currentTimestamp()
 
             let keepAlive = try configurations.flatMap { configuration -> [FolderWatcher.Local] in
                 configuration.validate()
@@ -396,7 +396,7 @@ func runCLI() {
             }
 
             if keepAlive.isEmpty {
-                Log.info("Processing time \(Date().timeIntervalSince1970 - start) seconds")
+                Log.info("Processing time \(currentTimestamp() - start) seconds")
             } else {
                 RunLoop.current.run()
                 _ = keepAlive
