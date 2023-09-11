@@ -291,7 +291,7 @@ open class SwiftTemplate {
         var contents = code
 
         // For every included file, make sure that the path and modification date are included in the key
-        let files = (includedFiles + buildDir.allPaths).map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
+        let files = includedFiles.map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
         for file in files {
             let hash = (try? file.read().sha256().base64EncodedString()) ?? ""
             contents += "\n// \(file.string)-\(hash)"
