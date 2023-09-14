@@ -17,7 +17,7 @@
     <a title="Types  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 2.0.2 Docs</a> (100% documented)</p>
+        <p><a href="index.html">Sourcery 2.1.0 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -92,6 +92,12 @@
                 <a href="Classes/Types.html">Types</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/Types.html">Types</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/Type.html">Type</a>
               </li>
               <li class="nav-group-task">
@@ -107,7 +113,16 @@
                 <a href="Classes/Enum.html">Enum</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/AssociatedValue.html">AssociatedValue</a>
@@ -119,7 +134,16 @@
                 <a href="Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/MethodParameter.html">MethodParameter</a>
@@ -131,7 +155,16 @@
                 <a href="Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/TupleElement.html">TupleElement</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/TupleElement.html">TupleElement</a>
@@ -183,6 +216,9 @@
               <li class="nav-group-task">
                 <a href="Classes/Modifier.html">Modifier</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Other%20Classes.html#/NSException">NSException</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -200,19 +236,22 @@
                 <a href="Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="Extensions/BytesRange.html">BytesRange</a>
+                <a href="Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="Extensions/FileParserResult.html">FileParserResult</a>
+                <a href="Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/NSExceptionName.html">NSExceptionName</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/StringProtocol.html">StringProtocol</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/TemplateContext.html">TemplateContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/Typealias.html">Typealias</a>
@@ -283,11 +322,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Types</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Types</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Types</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Types</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/Types" class="dashAnchor"></a>
+                    <a class="token" href="#/">Types</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Collection of scanned types for accessing in templates</p>
+
+                        <a href="Classes/Types.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -314,11 +372,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="k">Type</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="k">Type</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/Type" class="dashAnchor"></a>
+                    <a class="token" href="#/">Type</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines Swift type</p>
+
+                        <a href="Classes/Type.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -443,6 +520,26 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/Enum" class="dashAnchor"></a>
+                    <a class="token" href="#/">Enum</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines Swift enum</p>
+
+                        <a href="Classes/Enum.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/c:@M@SourceryRuntime@objc(cs)EnumCase"></a>
                     <a name="//apple_ref/swift/Class/EnumCase" class="dashAnchor"></a>
                     <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)EnumCase">EnumCase</a>
@@ -462,11 +559,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">EnumCase</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">EnumCase</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">EnumCase</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">EnumCase</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/EnumCase" class="dashAnchor"></a>
+                    <a class="token" href="#/">EnumCase</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines enum case</p>
+
+                        <a href="Classes/EnumCase.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -493,11 +609,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedValue</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedValue</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AssociatedValue</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AssociatedValue</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/AssociatedValue" class="dashAnchor"></a>
+                    <a class="token" href="#/">AssociatedValue</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines enum case associated value</p>
+
+                        <a href="Classes/AssociatedValue.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -526,7 +661,6 @@
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
 <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AssociatedType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AssociatedType</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -555,11 +689,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Variable</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Variable</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Variable</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Variable</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/Variable" class="dashAnchor"></a>
+                    <a class="token" href="#/">Variable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines variable</p>
+
+                        <a href="Classes/Variable.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -587,11 +740,30 @@
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objc(SwiftMethod)</span>
 <span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/Method" class="dashAnchor"></a>
+                    <a class="token" href="#/">Method</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes method</p>
+
+                        <a href="Classes/Method.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -618,11 +790,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="kt">MethodParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">MethodParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MethodParameter</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MethodParameter</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/MethodParameter" class="dashAnchor"></a>
+                    <a class="token" href="#/">MethodParameter</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes method parameter</p>
+
+                        <a href="Classes/MethodParameter.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -649,9 +840,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Subscript</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Subscript</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Subscript</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Subscript</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -680,11 +870,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypeName</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span><span class="p">,</span> <span class="kt">LosslessStringConvertible</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypeName</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span><span class="p">,</span> <span class="kt">LosslessStringConvertible</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TypeName</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TypeName</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/TypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/">TypeName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes name of the type used in typed declaration (variable, method parameter or return value etc.)</p>
+
+                        <a href="Classes/TypeName.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -711,11 +920,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TupleType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TupleType</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/TupleType" class="dashAnchor"></a>
+                    <a class="token" href="#/">TupleType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes tuple type</p>
+
+                        <a href="Classes/TupleType.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -742,11 +970,30 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleElement</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleElement</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TupleElement</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TupleElement</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/TupleElement" class="dashAnchor"></a>
+                    <a class="token" href="#/">TupleElement</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Describes tuple type element</p>
+
+                        <a href="Classes/TupleElement.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -773,9 +1020,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ArrayType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ArrayType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ArrayType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ArrayType</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -804,9 +1050,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">DictionaryType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">DictionaryType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">DictionaryType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">DictionaryType</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -835,9 +1080,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ClosureType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ClosureType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ClosureType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ClosureType</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -866,9 +1110,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericType</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -897,9 +1140,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericTypeParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericTypeParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericTypeParameter</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericTypeParameter</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -928,9 +1170,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="kt">Attribute</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">AutoCoding</span><span class="p">,</span> <span class="kt">AutoEquatable</span><span class="p">,</span> <span class="kt">AutoDiffable</span><span class="p">,</span> <span class="kt">AutoJSExport</span></code></pre>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">Attribute</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">AutoCoding</span><span class="p">,</span> <span class="kt">AutoEquatable</span><span class="p">,</span> <span class="kt">AutoDiffable</span><span class="p">,</span> <span class="kt">AutoJSExport</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Attribute</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Attribute</span><span class="p">:</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
 
                         </div>
                       </div>

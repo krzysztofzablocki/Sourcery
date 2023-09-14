@@ -17,7 +17,7 @@
     <a title="Method Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Sourcery 2.0.2 Docs</a> (100% documented)</p>
+        <p><a href="../index.html">Sourcery 2.1.0 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="../search.json">
@@ -92,6 +92,12 @@
                 <a href="../Classes/Types.html">Types</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Types.html">Types</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Type.html">Type</a>
               </li>
               <li class="nav-group-task">
@@ -107,7 +113,16 @@
                 <a href="../Classes/Enum.html">Enum</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
@@ -119,7 +134,16 @@
                 <a href="../Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/MethodParameter.html">MethodParameter</a>
@@ -131,7 +155,16 @@
                 <a href="../Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleElement.html">TupleElement</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TupleElement.html">TupleElement</a>
@@ -183,6 +216,9 @@
               <li class="nav-group-task">
                 <a href="../Classes/Modifier.html">Modifier</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Classes.html#/NSException">NSException</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -200,19 +236,22 @@
                 <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/BytesRange.html">BytesRange</a>
+                <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/FileParserResult.html">FileParserResult</a>
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSExceptionName.html">NSExceptionName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/StringProtocol.html">StringProtocol</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/TemplateContext.html">TemplateContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/Typealias.html">Typealias</a>
@@ -256,17 +295,6 @@
         <section>
           <section class="section">
             <h1>Method</h1>
-              <div class="declaration">
-                <div class="language">
-                  
-                  <pre class="highlight swift"><code><span class="kd">@objc(SwiftMethod)</span>
-<span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Definition.html">Definition</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Diffable.html">Diffable</a></span></code></pre>
-
-                </div>
-              </div>
             <p>Describes method</p>
 
           </section>
@@ -276,9 +304,27 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)name"></a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/subscript(dynamicMember:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">subscript(dynamicMember:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)name">name</a>
+                    <a class="token" href="#/">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -289,23 +335,15 @@
                         <p>Full method name, including generic constraints, i.e. <code>foo&lt;T&gt;(bar: T)</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)selectorName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/selectorName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)selectorName">selectorName</a>
+                    <a class="token" href="#/">selectorName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -316,23 +354,15 @@
                         <p>Method name including arguments names, i.e. <code>foo(bar:)</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">selectorName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)shortName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/shortName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)shortName">shortName</a>
+                    <a class="token" href="#/">shortName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -343,23 +373,15 @@
                         <p>Method name without arguments names and parenthesis, i.e. <code>foo&lt;T&gt;</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">shortName</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)callName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/callName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)callName">callName</a>
+                    <a class="token" href="#/">callName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -370,23 +392,15 @@
                         <p>Method name without arguments names, parenthesis and generic types, i.e. <code>foo</code> (can be used to generate code for method call)</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">callName</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)parameters"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/parameters" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)parameters">parameters</a>
+                    <a class="token" href="#/">parameters</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -397,23 +411,15 @@
                         <p>Method parameters</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">parameters</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/MethodParameter.html">MethodParameter</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)returnTypeName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/returnTypeName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)returnTypeName">returnTypeName</a>
+                    <a class="token" href="#/">returnTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -424,23 +430,15 @@
                         <p>Return value type name used in declaration, including generic constraints, i.e. <code>where T: Equatable</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">returnTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)actualReturnTypeName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/actualReturnTypeName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)actualReturnTypeName">actualReturnTypeName</a>
+                    <a class="token" href="#/">actualReturnTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -448,16 +446,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Actual return value type name if declaration uses typealias, otherwise just a <code><a href="../Classes/Method.html#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)returnTypeName">returnTypeName</a></code></p>
+                        <p>Actual return value type name if declaration uses typealias, otherwise just a <code><a href="../Classes/Method.html#/returnTypeName">returnTypeName</a></code></p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">actualReturnTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
@@ -465,9 +455,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)returnType"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/returnType" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)returnType">returnType</a>
+                    <a class="token" href="#/">returnType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -478,23 +468,15 @@
                         <p>Actual return value type, if known</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">returnType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isOptionalReturnType"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isOptionalReturnType" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isOptionalReturnType">isOptionalReturnType</a>
+                    <a class="token" href="#/">isOptionalReturnType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -505,23 +487,15 @@
                         <p>Whether return value type is optional</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isOptionalReturnType</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isImplicitlyUnwrappedOptionalReturnType"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isImplicitlyUnwrappedOptionalReturnType" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isImplicitlyUnwrappedOptionalReturnType">isImplicitlyUnwrappedOptionalReturnType</a>
+                    <a class="token" href="#/">isImplicitlyUnwrappedOptionalReturnType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -532,23 +506,15 @@
                         <p>Whether return value type is implicitly unwrapped optional</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isImplicitlyUnwrappedOptionalReturnType</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)unwrappedReturnTypeName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/unwrappedReturnTypeName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)unwrappedReturnTypeName">unwrappedReturnTypeName</a>
+                    <a class="token" href="#/">unwrappedReturnTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -559,23 +525,15 @@
                         <p>Return value type name without attributes and optional type information</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">unwrappedReturnTypeName</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isAsync"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isAsync" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isAsync">isAsync</a>
+                    <a class="token" href="#/">isAsync</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -586,23 +544,15 @@
                         <p>Whether method is async method</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isAsync</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)throws"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/throws" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)throws">throws</a>
+                    <a class="token" href="#/">throws</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -613,23 +563,15 @@
                         <p>Whether method throws</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">let</span> <span class="err">`</span><span class="k">throws</span><span class="err">`</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)rethrows"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/rethrows" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)rethrows">rethrows</a>
+                    <a class="token" href="#/">rethrows</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -640,23 +582,15 @@
                         <p>Whether method rethrows</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">let</span> <span class="err">`</span><span class="k">rethrows</span><span class="err">`</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)accessLevel"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/accessLevel" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)accessLevel">accessLevel</a>
+                    <a class="token" href="#/">accessLevel</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -667,23 +601,15 @@
                         <p>Method access level, i.e. <code>internal</code>, <code>private</code>, <code>fileprivate</code>, <code>public</code>, <code>open</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">accessLevel</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isStatic"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isStatic" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isStatic">isStatic</a>
+                    <a class="token" href="#/">isStatic</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -694,23 +620,15 @@
                         <p>Whether method is a static method</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isStatic</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isClass"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isClass" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isClass">isClass</a>
+                    <a class="token" href="#/">isClass</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -721,23 +639,15 @@
                         <p>Whether method is a class method</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isClass</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isInitializer"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isInitializer" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isInitializer">isInitializer</a>
+                    <a class="token" href="#/">isInitializer</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -748,23 +658,15 @@
                         <p>Whether method is an initializer</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isInitializer</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isDeinitializer"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isDeinitializer" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isDeinitializer">isDeinitializer</a>
+                    <a class="token" href="#/">isDeinitializer</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -775,23 +677,15 @@
                         <p>Whether method is an deinitializer</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isDeinitializer</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isFailableInitializer"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isFailableInitializer" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isFailableInitializer">isFailableInitializer</a>
+                    <a class="token" href="#/">isFailableInitializer</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -802,23 +696,15 @@
                         <p>Whether method is a failable initializer</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isFailableInitializer</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isConvenienceInitializer"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isConvenienceInitializer" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isConvenienceInitializer">isConvenienceInitializer</a>
+                    <a class="token" href="#/">isConvenienceInitializer</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -829,23 +715,15 @@
                         <p>Whether method is a convenience initializer</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isConvenienceInitializer</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isRequired"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isRequired" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isRequired">isRequired</a>
+                    <a class="token" href="#/">isRequired</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -856,23 +734,15 @@
                         <p>Whether method is required</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isRequired</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isFinal"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isFinal" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isFinal">isFinal</a>
+                    <a class="token" href="#/">isFinal</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -883,23 +753,15 @@
                         <p>Whether method is final</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isFinal</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isMutating"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isMutating" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isMutating">isMutating</a>
+                    <a class="token" href="#/">isMutating</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -910,23 +772,15 @@
                         <p>Whether method is mutating</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isMutating</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isGeneric"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isGeneric" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isGeneric">isGeneric</a>
+                    <a class="token" href="#/">isGeneric</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -937,23 +791,15 @@
                         <p>Whether method is generic</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isGeneric</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isOptional"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isOptional" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isOptional">isOptional</a>
+                    <a class="token" href="#/">isOptional</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -964,23 +810,15 @@
                         <p>Whether method is optional (in an Objective-C protocol)</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isOptional</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isNonisolated"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isNonisolated" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)isNonisolated">isNonisolated</a>
+                    <a class="token" href="#/">isNonisolated</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -991,23 +829,15 @@
                         <p>Whether method is nonisolated (this modifier only applies to actor methods)</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isNonisolated</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)annotations"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/annotations" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)annotations">annotations</a>
+                    <a class="token" href="#/">annotations</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1018,23 +848,15 @@
                         <p>Annotations, that were created with // sourcery: annotation1, other = &ldquo;annotation value&rdquo;, alterantive = 2</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">annotations</span><span class="p">:</span> <span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime11Annotationsa">Annotations</a></span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)documentation"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/documentation" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)documentation">documentation</a>
+                    <a class="token" href="#/">documentation</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1044,23 +866,15 @@
                       <div class="abstract">
                         
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">documentation</span><span class="p">:</span> <span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime13Documentationa">Documentation</a></span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)definedInTypeName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/definedInTypeName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)definedInTypeName">definedInTypeName</a>
+                    <a class="token" href="#/">definedInTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1072,23 +886,15 @@
 nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">definedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)actualDefinedInTypeName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/actualDefinedInTypeName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)actualDefinedInTypeName">actualDefinedInTypeName</a>
+                    <a class="token" href="#/">actualDefinedInTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1096,16 +902,8 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a <code><a href="../Classes/Method.html#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)definedInTypeName">definedInTypeName</a></code></p>
+                        <p>Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a <code><a href="../Classes/Method.html#/definedInTypeName">definedInTypeName</a></code></p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">actualDefinedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
@@ -1113,9 +911,9 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)definedInType"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/definedInType" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)definedInType">definedInType</a>
+                    <a class="token" href="#/">definedInType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1127,23 +925,15 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
 nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc or type is unknown</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">definedInType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)attributes"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/attributes" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)attributes">attributes</a>
+                    <a class="token" href="#/">attributes</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1154,23 +944,15 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                         <p>Method attributes, i.e. <code>@discardableResult</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">attributes</span><span class="p">:</span> <span class="kt">AttributeList</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)modifiers"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/modifiers" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)SwiftMethod(py)modifiers">modifiers</a>
+                    <a class="token" href="#/">modifiers</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1181,23 +963,15 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                         <p>Method modifiers, i.e. <code>private</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">modifiers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime0A8Modifiera">SourceryModifier</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/diffAgainst(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF">diffAgainst(_:<wbr>)</a>
+                    <a class="token" href="#/">diffAgainst(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1206,38 +980,16 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                       <div class="pointer"></div>
                       <div class="abstract">
                         
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@objc</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">diffAgainst</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/DiffableResult.html">DiffableResult</a></span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Method%20AutoHashable"></a>
-                <a name="//apple_ref/swift/Section/Method AutoHashable" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Method%20AutoHashable"></a>
-                  <h3 class="section-name"><p>Method AutoHashable</p>
-</h3>
-                </div>
-              </div>
-              <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@CM@SourceryRuntime@objc(cs)SwiftMethod(py)hash"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/hash" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@CM@SourceryRuntime@objc(cs)SwiftMethod(py)hash">hash</a>
+                    <a class="token" href="#/">hash</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1246,14 +998,6 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                       <div class="pointer"></div>
                       <div class="abstract">
                         
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">override</span> <span class="k">var</span> <span class="nv">hash</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>

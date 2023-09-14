@@ -17,7 +17,7 @@
     <a title="Types Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Sourcery 2.0.2 Docs</a> (100% documented)</p>
+        <p><a href="../index.html">Sourcery 2.1.0 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="../search.json">
@@ -92,6 +92,12 @@
                 <a href="../Classes/Types.html">Types</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Types.html">Types</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Type.html">Type</a>
               </li>
               <li class="nav-group-task">
@@ -107,7 +113,16 @@
                 <a href="../Classes/Enum.html">Enum</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
@@ -119,7 +134,16 @@
                 <a href="../Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/MethodParameter.html">MethodParameter</a>
@@ -131,7 +155,16 @@
                 <a href="../Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleElement.html">TupleElement</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TupleElement.html">TupleElement</a>
@@ -183,6 +216,9 @@
               <li class="nav-group-task">
                 <a href="../Classes/Modifier.html">Modifier</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Classes.html#/NSException">NSException</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -200,19 +236,22 @@
                 <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/BytesRange.html">BytesRange</a>
+                <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/FileParserResult.html">FileParserResult</a>
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSExceptionName.html">NSExceptionName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/StringProtocol.html">StringProtocol</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/TemplateContext.html">TemplateContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/Typealias.html">Typealias</a>
@@ -256,16 +295,6 @@
         <section>
           <section class="section">
             <h1>Types</h1>
-              <div class="declaration">
-                <div class="language">
-                  
-                  <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Types</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Types</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Types</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Diffable.html">Diffable</a></span></code></pre>
-
-                </div>
-              </div>
             <p>Collection of scanned types for accessing in templates</p>
 
           </section>
@@ -275,9 +304,27 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)typealiases"></a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/subscript(dynamicMember:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">subscript(dynamicMember:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/typealiases" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)typealiases">typealiases</a>
+                    <a class="token" href="#/">typealiases</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -288,13 +335,23 @@
                         <p>All known typealiases</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">typealiases</span><span class="p">:</span> <span class="p">[</span><span class="kt">Typealias</span><span class="p">]</span></code></pre>
-
-                        </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/diffAgainst(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">diffAgainst(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
                       </div>
                     </section>
                   </div>
@@ -302,9 +359,27 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)all"></a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Property/hash" class="dashAnchor"></a>
+                    <a class="token" href="#/">hash</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/all" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)all">all</a>
+                    <a class="token" href="#/">all</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -315,23 +390,15 @@
                         <p>All known types, excluding protocols or protocol compositions.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">all</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)protocols"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/protocols" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)protocols">protocols</a>
+                    <a class="token" href="#/">protocols</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -342,23 +409,15 @@
                         <p>All known protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocols</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Protocol.html">Protocol</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)protocolCompositions"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/protocolCompositions" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)protocolCompositions">protocolCompositions</a>
+                    <a class="token" href="#/">protocolCompositions</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -369,23 +428,15 @@
                         <p>All known protocol compositions</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">protocolCompositions</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/ProtocolComposition.html">ProtocolComposition</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)classes"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/classes" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)classes">classes</a>
+                    <a class="token" href="#/">classes</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -396,23 +447,15 @@
                         <p>All known classes</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">classes</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Class.html">Class</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)structs"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/structs" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)structs">structs</a>
+                    <a class="token" href="#/">structs</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -423,23 +466,15 @@
                         <p>All known structs</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">structs</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Struct.html">Struct</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)enums"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/enums" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)enums">enums</a>
+                    <a class="token" href="#/">enums</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -450,23 +485,15 @@
                         <p>All known enums</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">enums</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Enum.html">Enum</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)extensions"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/extensions" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)extensions">extensions</a>
+                    <a class="token" href="#/">extensions</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -477,23 +504,15 @@
                         <p>All known extensions</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">extensions</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)based"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/based" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)based">based</a>
+                    <a class="token" href="#/">based</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -505,23 +524,15 @@
 <code>types.based.MyType</code> returns list of types based on <code>MyType</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">based</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)inheriting"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/inheriting" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)inheriting">inheriting</a>
+                    <a class="token" href="#/">inheriting</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -533,23 +544,15 @@
 <code>types.inheriting.MyClass</code> returns list of types inheriting from <code>MyClass</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">inheriting</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Types(py)implementing"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/implementing" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Types(py)implementing">implementing</a>
+                    <a class="token" href="#/">implementing</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -560,80 +563,6 @@
                         <p>Types implementing known protocol, grouped by its name.
 <code>types.implementing.MyProtocol</code> returns list of types implementing <code>MyProtocol</code></p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">lazy</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">implementing</span><span class="p">:</span> <span class="kt">TypesCollection</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF"></a>
-                    <a name="//apple_ref/swift/Method/diffAgainst(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF">diffAgainst(_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@objc</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">diffAgainst</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/DiffableResult.html">DiffableResult</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Types%20AutoHashable"></a>
-                <a name="//apple_ref/swift/Section/Types AutoHashable" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Types%20AutoHashable"></a>
-                  <h3 class="section-name"><p>Types AutoHashable</p>
-</h3>
-                </div>
-              </div>
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@CM@SourceryRuntime@objc(cs)Types(py)hash"></a>
-                    <a name="//apple_ref/swift/Property/hash" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@CM@SourceryRuntime@objc(cs)Types(py)hash">hash</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">override</span> <span class="k">var</span> <span class="nv">hash</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>

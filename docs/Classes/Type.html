@@ -17,7 +17,7 @@
     <a title="Type Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Sourcery 2.0.2 Docs</a> (100% documented)</p>
+        <p><a href="../index.html">Sourcery 2.1.0 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="../search.json">
@@ -92,6 +92,12 @@
                 <a href="../Classes/Types.html">Types</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Types.html">Types</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Type.html">Type</a>
               </li>
               <li class="nav-group-task">
@@ -107,7 +113,16 @@
                 <a href="../Classes/Enum.html">Enum</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Enum.html">Enum</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EnumCase.html">EnumCase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
@@ -119,7 +134,16 @@
                 <a href="../Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Variable.html">Variable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Method.html">Method</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/MethodParameter.html">MethodParameter</a>
@@ -131,7 +155,16 @@
                 <a href="../Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/TypeName.html">TypeName</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleType.html">TupleType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TupleElement.html">TupleElement</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TupleElement.html">TupleElement</a>
@@ -183,6 +216,9 @@
               <li class="nav-group-task">
                 <a href="../Classes/Modifier.html">Modifier</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Classes.html#/NSException">NSException</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -200,19 +236,22 @@
                 <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/BytesRange.html">BytesRange</a>
+                <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/FileParserResult.html">FileParserResult</a>
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSExceptionName.html">NSExceptionName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/StringProtocol.html">StringProtocol</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/TemplateContext.html">TemplateContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/Typealias.html">Typealias</a>
@@ -256,16 +295,6 @@
         <section>
           <section class="section">
             <h1>Type</h1>
-              <div class="declaration">
-                <div class="language">
-                  
-                  <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Documented.html">Documented</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="k">Type</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="k">Type</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Diffable.html">Diffable</a></span></code></pre>
-
-                </div>
-              </div>
             <p>Defines Swift type</p>
 
           </section>
@@ -275,9 +304,27 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)imports"></a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/subscript(dynamicMember:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">subscript(dynamicMember:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/imports" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)imports">imports</a>
+                    <a class="token" href="#/">imports</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -288,23 +335,15 @@
                         <p>Imports that existed in the file that contained this type declaration</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">imports</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Import.html">Import</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)allImports"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/allImports" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)allImports">allImports</a>
+                    <a class="token" href="#/">allImports</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -315,23 +354,15 @@
                         <p>Imports existed in all files containing this type and all its super classes/protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">allImports</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Import.html">Import</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)isExtension"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isExtension" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)isExtension">isExtension</a>
+                    <a class="token" href="#/">isExtension</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -342,23 +373,15 @@
                         <p>Whether declaration is an extension of some type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isExtension</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)kind"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/kind" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)kind">kind</a>
+                    <a class="token" href="#/">kind</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -369,23 +392,15 @@
                         <p>Kind of type declaration, i.e. <code>enum</code>, <code>struct</code>, <code>class</code>, <code>protocol</code> or <code>extension</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">kind</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)accessLevel"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/accessLevel" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)accessLevel">accessLevel</a>
+                    <a class="token" href="#/">accessLevel</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -396,23 +411,15 @@
                         <p>Type access level, i.e. <code>internal</code>, <code>private</code>, <code>fileprivate</code>, <code>public</code>, <code>open</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">accessLevel</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)name"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)name">name</a>
+                    <a class="token" href="#/">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -423,23 +430,15 @@
                         <p>Type name in global scope. For inner types includes the name of its containing type, i.e. <code>Type.Inner</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)isUnknownExtension"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isUnknownExtension" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)isUnknownExtension">isUnknownExtension</a>
+                    <a class="token" href="#/">isUnknownExtension</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -450,23 +449,15 @@
                         <p>Whether the type has been resolved as unknown extension</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isUnknownExtension</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)globalName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/globalName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)globalName">globalName</a>
+                    <a class="token" href="#/">globalName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -477,23 +468,15 @@
                         <p>Global type name including module name, unless it&rsquo;s an extension of unknown type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">globalName</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)isGeneric"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/isGeneric" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)isGeneric">isGeneric</a>
+                    <a class="token" href="#/">isGeneric</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -504,23 +487,15 @@
                         <p>Whether type is generic</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isGeneric</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)localName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/localName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)localName">localName</a>
+                    <a class="token" href="#/">localName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -531,23 +506,15 @@
                         <p>Type name in its own scope.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">localName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)variables"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/variables" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)variables">variables</a>
+                    <a class="token" href="#/">variables</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -559,23 +526,15 @@
 but not including variables inherited from superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">variables</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Variable.html">Variable</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)rawVariables"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/rawVariables" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)rawVariables">rawVariables</a>
+                    <a class="token" href="#/">rawVariables</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -587,23 +546,15 @@ but not including variables inherited from superclasses (for classes only) and p
 but not including variables inherited from superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">rawVariables</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Variable.html">Variable</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)allVariables"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/allVariables" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)allVariables">allVariables</a>
+                    <a class="token" href="#/">allVariables</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -615,23 +566,15 @@ but not including variables inherited from superclasses (for classes only) and p
 in superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">allVariables</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Variable.html">Variable</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)methods"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/methods" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)methods">methods</a>
+                    <a class="token" href="#/">methods</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -643,23 +586,15 @@ in superclasses (for classes only) and protocols</p>
 but not including methods inherited from superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">methods</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)rawMethods"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/rawMethods" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)rawMethods">rawMethods</a>
+                    <a class="token" href="#/">rawMethods</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -671,23 +606,15 @@ but not including methods inherited from superclasses (for classes only) and pro
 but not including methods inherited from superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">rawMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)allMethods"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/allMethods" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)allMethods">allMethods</a>
+                    <a class="token" href="#/">allMethods</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -699,23 +626,15 @@ but not including methods inherited from superclasses (for classes only) and pro
 in superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">allMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)subscripts"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/subscripts" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)subscripts">subscripts</a>
+                    <a class="token" href="#/">subscripts</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -727,23 +646,15 @@ in superclasses (for classes only) and protocols</p>
 but not including subscripts inherited from superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">subscripts</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Subscript.html">Subscript</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)rawSubscripts"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/rawSubscripts" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)rawSubscripts">rawSubscripts</a>
+                    <a class="token" href="#/">rawSubscripts</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -755,23 +666,15 @@ but not including subscripts inherited from superclasses (for classes only) and 
 but not including subscripts inherited from superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">rawSubscripts</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Subscript.html">Subscript</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)allSubscripts"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/allSubscripts" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)allSubscripts">allSubscripts</a>
+                    <a class="token" href="#/">allSubscripts</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -783,23 +686,15 @@ but not including subscripts inherited from superclasses (for classes only) and 
 in superclasses (for classes only) and protocols</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">allSubscripts</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Subscript.html">Subscript</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)bodyBytesRange"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/bodyBytesRange" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)bodyBytesRange">bodyBytesRange</a>
+                    <a class="token" href="#/">bodyBytesRange</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -810,23 +705,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Bytes position of the body of this type in its declaration file if available.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">bodyBytesRange</span><span class="p">:</span> <span class="kt">BytesRange</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)completeDeclarationRange"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/completeDeclarationRange" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)completeDeclarationRange">completeDeclarationRange</a>
+                    <a class="token" href="#/">completeDeclarationRange</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -837,23 +724,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Bytes position of the whole declaration of this type in its declaration file if available.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">completeDeclarationRange</span><span class="p">:</span> <span class="kt">BytesRange</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)initializers"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/initializers" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)initializers">initializers</a>
+                    <a class="token" href="#/">initializers</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -864,23 +743,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>All initializers defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">initializers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)annotations"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/annotations" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)annotations">annotations</a>
+                    <a class="token" href="#/">annotations</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -891,23 +762,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>All annotations for this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">annotations</span><span class="p">:</span> <span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime11Annotationsa">Annotations</a></span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)documentation"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/documentation" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)documentation">documentation</a>
+                    <a class="token" href="#/">documentation</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -917,23 +780,15 @@ in superclasses (for classes only) and protocols</p>
                       <div class="abstract">
                         
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">documentation</span><span class="p">:</span> <span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime13Documentationa">Documentation</a></span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)staticVariables"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/staticVariables" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)staticVariables">staticVariables</a>
+                    <a class="token" href="#/">staticVariables</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -944,23 +799,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Static variables defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">staticVariables</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Variable.html">Variable</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)staticMethods"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/staticMethods" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)staticMethods">staticMethods</a>
+                    <a class="token" href="#/">staticMethods</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -971,23 +818,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Static methods defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">staticMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)classMethods"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/classMethods" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)classMethods">classMethods</a>
+                    <a class="token" href="#/">classMethods</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -998,23 +837,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Class methods defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">classMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)instanceVariables"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/instanceVariables" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)instanceVariables">instanceVariables</a>
+                    <a class="token" href="#/">instanceVariables</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1025,23 +856,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Instance variables defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">instanceVariables</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Variable.html">Variable</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)instanceMethods"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/instanceMethods" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)instanceMethods">instanceMethods</a>
+                    <a class="token" href="#/">instanceMethods</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1052,23 +875,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Instance methods defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">instanceMethods</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Method.html">Method</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)computedVariables"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/computedVariables" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)computedVariables">computedVariables</a>
+                    <a class="token" href="#/">computedVariables</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1079,23 +894,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Computed instance variables defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">computedVariables</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Variable.html">Variable</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)storedVariables"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/storedVariables" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)storedVariables">storedVariables</a>
+                    <a class="token" href="#/">storedVariables</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1106,23 +913,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Stored instance variables defined in this type</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">storedVariables</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/Variable.html">Variable</a></span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)inheritedTypes"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/inheritedTypes" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)inheritedTypes">inheritedTypes</a>
+                    <a class="token" href="#/">inheritedTypes</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1133,23 +932,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Names of types this type inherits from (for classes only) and protocols it implements, in order of definition</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">inheritedTypes</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)based"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/based" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)based">based</a>
+                    <a class="token" href="#/">based</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1160,23 +951,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Names of types or protocols this type inherits from, including unknown (not scanned) types</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">based</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)basedTypes"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/basedTypes" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)basedTypes">basedTypes</a>
+                    <a class="token" href="#/">basedTypes</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1187,23 +970,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Types this type inherits from or implements, including unknown (not scanned) types with extensions defined</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">basedTypes</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="k">Type</span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)inherits"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/inherits" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)inherits">inherits</a>
+                    <a class="token" href="#/">inherits</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1214,23 +989,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Types this type inherits from</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">inherits</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="k">Type</span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)implements"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/implements" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)implements">implements</a>
+                    <a class="token" href="#/">implements</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1241,23 +1008,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Protocols this type implements</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">implements</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="k">Type</span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)containedTypes"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/containedTypes" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)containedTypes">containedTypes</a>
+                    <a class="token" href="#/">containedTypes</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1268,23 +1027,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Contained types</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">containedTypes</span><span class="p">:</span> <span class="p">[</span><span class="k">Type</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)containedType"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/containedType" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)containedType">containedType</a>
+                    <a class="token" href="#/">containedType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1295,23 +1046,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Contained types groupd by their names</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">containedType</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="k">Type</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)parentName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/parentName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)parentName">parentName</a>
+                    <a class="token" href="#/">parentName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1322,23 +1065,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Name of parent type (for contained types only)</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">parentName</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)parent"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/parent" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)parent">parent</a>
+                    <a class="token" href="#/">parent</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1349,23 +1084,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Parent type, if known (for contained types only)</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">parent</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)supertype"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/supertype" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)supertype">supertype</a>
+                    <a class="token" href="#/">supertype</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1376,23 +1103,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Superclass type, if known (only for classes)</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">supertype</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)attributes"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/attributes" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)attributes">attributes</a>
+                    <a class="token" href="#/">attributes</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1403,23 +1122,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Type attributes, i.e. <code>@objc</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">attributes</span><span class="p">:</span> <span class="kt">AttributeList</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)modifiers"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/modifiers" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)modifiers">modifiers</a>
+                    <a class="token" href="#/">modifiers</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1430,23 +1141,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Type modifiers, i.e. <code>private</code>, <code>final</code></p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">modifiers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime0A8Modifiera">SourceryModifier</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)path"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/path" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)path">path</a>
+                    <a class="token" href="#/">path</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1457,23 +1160,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Path to file where the type is defined</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">path</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)directory"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/directory" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)directory">directory</a>
+                    <a class="token" href="#/">directory</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1484,23 +1179,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>Directory to file where the type is defined</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">directory</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@SourceryRuntime@objc(cs)Type(py)fileName"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/fileName" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Type(py)fileName">fileName</a>
+                    <a class="token" href="#/">fileName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1511,23 +1198,15 @@ in superclasses (for classes only) and protocols</p>
                         <p>File name where the type was defined</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">fileName</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/diffAgainst(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF">diffAgainst(_:<wbr>)</a>
+                    <a class="token" href="#/">diffAgainst(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1536,38 +1215,16 @@ in superclasses (for classes only) and protocols</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@objc</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">diffAgainst</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/DiffableResult.html">DiffableResult</a></span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Type%20AutoHashable"></a>
-                <a name="//apple_ref/swift/Section/Type AutoHashable" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Type%20AutoHashable"></a>
-                  <h3 class="section-name"><p>Type AutoHashable</p>
-</h3>
-                </div>
-              </div>
-              <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@CM@SourceryRuntime@objc(cs)Type(py)hash"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/hash" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@CM@SourceryRuntime@objc(cs)Type(py)hash">hash</a>
+                    <a class="token" href="#/">hash</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1576,14 +1233,6 @@ in superclasses (for classes only) and protocols</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">override</span> <span class="k">var</span> <span class="nv">hash</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
