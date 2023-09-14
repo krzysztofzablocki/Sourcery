@@ -58,11 +58,11 @@ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJS
             /// :nodoc:
             required public init?(coder aDecoder: NSCoder) {
                 guard let name: String = aDecoder.decode(forKey: "name") else { 
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
+                    withVaList(["name"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.name = name
                 self.detail = aDecoder.decode(forKey: "detail")
             }
 

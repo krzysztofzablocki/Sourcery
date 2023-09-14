@@ -106,20 +106,20 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
                 self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
                 self.name = aDecoder.decode(forKey: "name")
                 guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
-                withVaList(["typeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.typeName = typeName
+                    withVaList(["typeName"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.typeName = typeName
                 self.`inout` = aDecoder.decode(forKey: "`inout`")
                 self.type = aDecoder.decode(forKey: "type")
                 self.defaultValue = aDecoder.decode(forKey: "defaultValue")
                 guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
-                withVaList(["annotations"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.annotations = annotations
+                    withVaList(["annotations"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.annotations = annotations
             }
 
             /// :nodoc:
