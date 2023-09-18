@@ -2,24 +2,7 @@
 import JavaScriptCore
 import PathKit
 
-// (c) https://forums.swift.org/t/swift-5-3-spm-resources-in-tests-uses-wrong-bundle-path/37051/46
-private extension Bundle {
-    static let mypackageResources: Bundle = {
-        #if DEBUG
-            if let moduleName = Bundle(for: BundleFinder.self).bundleIdentifier,
-               let testBundlePath = ProcessInfo.processInfo.environment["XCTestBundlePath"] {
-                if let resourceBundle = Bundle(path: testBundlePath + "/\(moduleName)_\(moduleName).bundle") {
-                    return resourceBundle
-                }
-            }
-        #endif
-        return Bundle.module
-    }()
-
-    private final class BundleFinder {}
-}
-
-public extension Foundation.Bundle {
+private extension Foundation.Bundle {
     /// Returns the resource bundle associated with the current Swift module.
     static var jsModule: Bundle = {
         let bundleName = "Sourcery_SourceryJS"
@@ -41,7 +24,8 @@ public extension Foundation.Bundle {
                 return bundle
             }
         }
-        return Bundle.mypackageResources
+
+        return Bundle(for: EJSTemplate.self)
     }()
 }
 
@@ -61,13 +45,7 @@ open class EJSTemplate {
     #else
     static let bundle = Bundle(for: EJSTemplate.self)
     #endif
-    public static var ejsPath: Path? = {
-        let bundle = EJSTemplate.bundle
-        guard let path = bundle.path(forResource: "ejs", ofType: "js") else {
-            return nil
-        }
-        return Path(path)
-    }()
+    public static var ejsPath: Path! = bundle.path(forResource: "ejs", ofType: "js").map({ Path($0) })
 
     public let sourcePath: Path
     public let templateString: String
@@ -89,17 +67,17 @@ open class EJSTemplate {
         }
     }
 
-    public convenience init(path: Path, ejsPath: Path) throws {
+    public convenience init(path: Path, ejsPath: Path = EJSTemplate.ejsPath) throws {
         try self.init(path: path, templateString: try path.read(), ejsPath: ejsPath)
     }
 
-    public init(path: Path, templateString: String, ejsPath: Path) throws {
+    public init(path: Path, templateString: String, ejsPath: Path = EJSTemplate.ejsPath) throws {
         self.templateString = templateString
         sourcePath = path
         self.ejs = try ejsPath.read(.utf8)
     }
     
-    public init(templateString: String, ejsPath: Path) throws {
+    public init(templateString: String, ejsPath: Path = EJSTemplate.ejsPath) throws {
         self.templateString = templateString
         sourcePath = ""
         self.ejs = try ejsPath.read(.utf8)
