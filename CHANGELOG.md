@@ -1,5 +1,9 @@
 # Sourcery CHANGELOG
 
+## 2.1.1
+## Changes
+- Separate EJSTemplate.swift for swift test and for swift build -c release ([#1203](https://github.com/krzysztofzablocki/Sourcery/pull/1203))
+
 ## 2.1.0
 ## Changes
 - Added support for Swift Package Manager config ([#1184](https://github.com/krzysztofzablocki/Sourcery/pull/1184))
