@@ -1,0 +1,6 @@
+<%_ for (type of types.all) { -%>
+// Typealiases in <%= type.name %>
+<%_ for (const [aliasName, aliasValue] of Object.entries(type.typealiases)) { -%>
+// - name '<%= aliasName %>', type '<%= aliasValue.typeName.name %>'
+<% }
+} -%>

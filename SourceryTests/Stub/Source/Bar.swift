@@ -6,6 +6,7 @@ import Foundation
 // sourcery: showComment
 /// other documentation
 class Bar: Foo, AutoEquatable {
+    typealias List = [Foo]
     var parent: Foo? = nil
     var otherVariable: Int = 0
 }

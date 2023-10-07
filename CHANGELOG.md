@@ -1,4 +1,7 @@
 # Sourcery CHANGELOG
+## Master
+## Changes
+- Add support for `typealias`es in EJS templates. ([#1208](https://github.com/krzysztofzablocki/Sourcery/pull/1208))
 
 ## 2.1.2
 ## Changes
