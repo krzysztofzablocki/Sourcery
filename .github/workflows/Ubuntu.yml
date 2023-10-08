@@ -23,7 +23,7 @@ jobs:
       uses: swift-actions/setup-swift@v1.23.0
       with:
         # Swift version to configure
-        swift-version: 5.8 # default is 5.8
+        swift-version: 5.9 # default is 5.8
     - uses: actions/checkout@v3
     - name: Set up Ruby
       uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
