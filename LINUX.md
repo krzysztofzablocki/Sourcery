@@ -13,6 +13,20 @@ All issues related to Linux will be mentioned in #1198
 
 Simply add package dependency of Sourcery as described in the [README](README.md).
 
+## Using Sourcery with Docker
+
+You can build Docker container with Sourcery installed using this command:
+
+```console
+docker build -t sourcery-image .
+```
+
+Then you can run this Docker image passing the arguments you'd like:
+
+```console
+docker run sourcery-image sourcery --help
+```
+
 ## Contributing
 ### Installation of Linux Environment
 
