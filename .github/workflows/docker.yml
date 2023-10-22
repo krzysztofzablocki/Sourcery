@@ -1,5 +1,9 @@
 name: Docker
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
