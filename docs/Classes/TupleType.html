@@ -92,12 +92,6 @@
                 <a href="../Classes/Types.html">Types</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/Types.html">Types</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/Type.html">Type</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/Type.html">Type</a>
               </li>
               <li class="nav-group-task">
@@ -113,16 +107,7 @@
                 <a href="../Classes/Enum.html">Enum</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/Enum.html">Enum</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/EnumCase.html">EnumCase</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/EnumCase.html">EnumCase</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AssociatedValue.html">AssociatedValue</a>
@@ -134,16 +119,7 @@
                 <a href="../Classes/Variable.html">Variable</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/Variable.html">Variable</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/Method.html">Method</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/Method.html">Method</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/MethodParameter.html">MethodParameter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/MethodParameter.html">MethodParameter</a>
@@ -155,16 +131,7 @@
                 <a href="../Classes/TypeName.html">TypeName</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/TypeName.html">TypeName</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/TupleType.html">TupleType</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/TupleType.html">TupleType</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/TupleElement.html">TupleElement</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TupleElement.html">TupleElement</a>
@@ -216,9 +183,6 @@
               <li class="nav-group-task">
                 <a href="../Classes/Modifier.html">Modifier</a>
               </li>
-              <li class="nav-group-task">
-                <a href="../Other%20Classes.html#/NSException">NSException</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -236,16 +200,10 @@
                 <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/Array.html">Array</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/NSExceptionName.html">NSExceptionName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/String.html">String</a>
@@ -295,6 +253,15 @@
         <section>
           <section class="section">
             <h1>TupleType</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TupleType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
+
+                </div>
+              </div>
             <p>Describes tuple type</p>
 
           </section>
@@ -304,27 +271,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/subscript(dynamicMember:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">subscript(dynamicMember:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)TupleType(py)name"></a>
                     <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
-                    <a class="token" href="#/">name</a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)TupleType(py)name">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -335,15 +284,23 @@
                         <p>Type name used in declaration</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)TupleType(py)elements"></a>
                     <a name="//apple_ref/swift/Property/elements" class="dashAnchor"></a>
-                    <a class="token" href="#/">elements</a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)TupleType(py)elements">elements</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -354,15 +311,23 @@
                         <p>Tuple elements</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">elements</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/TupleElement.html">TupleElement</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF"></a>
                     <a name="//apple_ref/swift/Method/diffAgainst(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">diffAgainst(_:<wbr>)</a>
+                    <a class="token" href="#/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF">diffAgainst(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -372,15 +337,23 @@
                       <div class="abstract">
                         
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">diffAgainst</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/DiffableResult.html">DiffableResult</a></span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)TupleType(py)hash"></a>
                     <a name="//apple_ref/swift/Property/hash" class="dashAnchor"></a>
-                    <a class="token" href="#/">hash</a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)TupleType(py)hash">hash</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -389,6 +362,14 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">override</span> <span class="k">var</span> <span class="nv">hash</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
