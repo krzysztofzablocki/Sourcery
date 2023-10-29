@@ -1,5 +1,10 @@
 # Sourcery CHANGELOG
 
+## 2.1.2
+## Changes
+- Bump SPM version to support Swift 5.9 ([#1213](https://github.com/krzysztofzablocki/Sourcery/pull/1213))
+- Add Dockerfile ([#1211](https://github.com/krzysztofzablocki/Sourcery/pull/1211))
+
 ## 2.1.1
 ## Changes
 - Separate EJSTemplate.swift for swift test and for swift build -c release ([#1203](https://github.com/krzysztofzablocki/Sourcery/pull/1203))
