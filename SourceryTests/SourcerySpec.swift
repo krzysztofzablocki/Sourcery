@@ -1324,7 +1324,7 @@ class SourcerySpecTests: QuickSpec {
                     expect {
                         let paths = sourceFilesPaths
                         expect(paths.contains(outputDir + "PerFileGeneration.generated.swift")).to(beTrue())
-                        expect(paths.contains(outputDir + "Generated/Foo.generated.swift")).to(beTrue())
+                        expect(paths.contains(outputDir + "Generated/FooBarBaz.generated.swift")).to(beTrue())
                     }.toNot(throwError())
                 }
             }

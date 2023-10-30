@@ -10,6 +10,7 @@ import JavaScriptCore
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -106,6 +107,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -206,6 +208,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -366,6 +369,7 @@ extension Modifier: ModifierAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -415,6 +419,7 @@ extension Protocol: ProtocolAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -464,6 +469,7 @@ extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -563,6 +569,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var kind: String { get }
     var accessLevel: String { get }
     var name: String { get }

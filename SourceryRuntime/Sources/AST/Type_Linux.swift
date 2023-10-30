@@ -75,7 +75,6 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
     }
 
     // All local typealiases
-    // sourcery: skipJSExport
     /// :nodoc:
     public var typealiases: [String: Typealias] {
         didSet {

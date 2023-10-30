@@ -1,10 +1,10 @@
 import Foundation
 
 protocol HasFoo {
-    var foo: Foo { get }
+    var foo: FooBarBaz { get }
 }
 protocol HasBar {
-    var bar: Bar { get }
+    var bar: BarBaz { get }
 }
 
 // sourcery: AutoStruct

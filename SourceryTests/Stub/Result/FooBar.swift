@@ -4,8 +4,8 @@
 struct AnyFooBar: FooBar {
 
     // MARK: HasFoo properties
-    var foo: Foo
+    var foo: FooBarBaz
 
     // MARK: HasBar properties
-    var bar: Bar
+    var bar: BarBaz
 }
