@@ -192,3 +192,10 @@ protocol SomeProtocol: AutoMockable {
     func c(someConfusingArgumentName: some StubProtocol)
     func d(_ x: (some StubWithSomeNameProtocol)?)
 }
+
+protocol PersonProtocol {}
+
+protocol HouseProtocol: AutoMockable {
+    var aPublisher: AnyPublisher<any PersonProtocol, Never>? { get }
+    var bPublisher: AnyPublisher<(any PersonProtocol)?, Never>? { get }
+}

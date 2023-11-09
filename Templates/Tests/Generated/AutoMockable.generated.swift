@@ -846,6 +846,14 @@ class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
     }
 
 }
+class HouseProtocolMock: HouseProtocol {
+
+
+    var aPublisher: AnyPublisher<any PersonProtocol, Never>?
+    var bPublisher: AnyPublisher<(any PersonProtocol)?, Never>?
+
+
+}
 class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOptionalReturnValueProtocol {
 
 
