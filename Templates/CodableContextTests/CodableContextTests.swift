@@ -8,7 +8,7 @@ class CodableContextTests: QuickSpec {
 #if canImport(ObjectiveC)
         let encoder: JSONEncoder = {
             let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             return encoder
         }()
 
@@ -22,14 +22,13 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnum.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    expect(String(data: encoded, encoding: .utf8)).to(equal(
-"""
-{
-  "type" : "someCase",
-  "id" : 0,
-  "name" : "a"
-}
-"""
+                    expect(String(data: encoded, encoding: .utf8)).to(equal("""
+                    {
+                      "id" : 0,
+                      "name" : "a",
+                      "type" : "someCase"
+                    }
+                    """
                     ))
 
                     let decoded = try! decoder.decode(AssociatedValuesEnum.self, from: encoded)
