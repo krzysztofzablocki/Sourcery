@@ -2,6 +2,7 @@
 ## Master
 ## Changes
 - Add support for `typealias`es in EJS templates. ([#1208](https://github.com/krzysztofzablocki/Sourcery/pull/1208))
+- Add support for existential to Automockable Protocol with generic types. ([#1220](https://github.com/krzysztofzablocki/Sourcery/pull/1220))
 
 ## 2.1.2
 ## Changes

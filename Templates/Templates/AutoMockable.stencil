@@ -203,8 +203,8 @@ import {{ import }}
 {% macro underlyingMockedVariableName variable %}underlying{{ variable.name|upperFirstLetter }}{% endmacro %}
 {% macro mockedVariableName variable %}{{ variable.name }}{% endmacro %}
 {% macro existentialVariableTypeName typeName -%}
-    {%- if typeName|contains:"Publisher<any " or typeName|contains:"Publisher<(any " -%}
-       {{ typeName }}
+    {%- if typeName|contains:"<" and typeName|contains:">" -%}
+        {{ typeName }}
     {%- elif typeName|contains:"any " and typeName|contains:"!"  -%}
         {{ typeName | replace:"any","(any" | replace:"!",")!" }}
     {%- elif typeName|contains:"any " and typeName.isOptional  -%}
