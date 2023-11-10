@@ -192,3 +192,21 @@ protocol SomeProtocol: AutoMockable {
     func c(someConfusingArgumentName: some StubProtocol)
     func d(_ x: (some StubWithSomeNameProtocol)?)
 }
+
+protocol PersonProtocol {}
+class GenericType<A, B, C>{}
+
+protocol HouseProtocol: AutoMockable {
+    var aPublisher: AnyPublisher<any PersonProtocol, Never>? { get }
+    var bPublisher: AnyPublisher<(any PersonProtocol)?, Never>? { get }
+    var cPublisher: CurrentValueSubject<(any PersonProtocol)?, Never>? { get }
+    var dPublisher: PassthroughSubject<(any PersonProtocol)?, Never>? { get }
+    var e1Publisher: GenericType<(any PersonProtocol)?, Never, Never>? { get }
+    var e2Publisher: GenericType<Never, (any PersonProtocol)?, Never>? { get }
+    var e3Publisher: GenericType<Never, Never, (any PersonProtocol)?>? { get }
+    var e4Publisher: GenericType<(any PersonProtocol)?, (any PersonProtocol)?, (any PersonProtocol)?>? { get }
+    var f1Publisher: GenericType<any PersonProtocol, Never, Never>? { get }
+    var f2Publisher: GenericType<Never, any PersonProtocol, Never>? { get }
+    var f3Publisher: GenericType<Never, Never, any PersonProtocol>? { get }
+    var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>? { get }
+}

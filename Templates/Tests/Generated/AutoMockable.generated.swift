@@ -846,6 +846,24 @@ class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
     }
 
 }
+class HouseProtocolMock: HouseProtocol {
+
+
+    var aPublisher: AnyPublisher<any PersonProtocol, Never>?
+    var bPublisher: AnyPublisher<(any PersonProtocol)?, Never>?
+    var cPublisher: CurrentValueSubject<(any PersonProtocol)?, Never>?
+    var dPublisher: PassthroughSubject<(any PersonProtocol)?, Never>?
+    var e1Publisher: GenericType<(any PersonProtocol)?, Never, Never>?
+    var e2Publisher: GenericType<Never, (any PersonProtocol)?, Never>?
+    var e3Publisher: GenericType<Never, Never, (any PersonProtocol)?>?
+    var e4Publisher: GenericType<(any PersonProtocol)?, (any PersonProtocol)?, (any PersonProtocol)?>?
+    var f1Publisher: GenericType<any PersonProtocol, Never, Never>?
+    var f2Publisher: GenericType<Never, any PersonProtocol, Never>?
+    var f3Publisher: GenericType<Never, Never, any PersonProtocol>?
+    var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>?
+
+
+}
 class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOptionalReturnValueProtocol {
 
 
