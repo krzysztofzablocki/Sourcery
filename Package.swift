@@ -17,6 +17,9 @@ var sourceryLibDependencies: [Target.Dependency] = [
                 "XcodeProj",
                 .product(name: "SwiftPM-auto", package: "swift-package-manager"),
             ]
+
+// Note: when Swift Linux doesn't bug out on [String: String], add a test back for it
+// See https://github.com/krzysztofzablocki/Sourcery/pull/1208#issuecomment-1752185381
 #if canImport(ObjectiveC)
 sourceryLibDependencies.append("TryCatch")
 let templatesTestsResourcesCopy: [Resource] = [
@@ -30,6 +33,34 @@ let templatesTestsResourcesCopy: [Resource] = [
     .copy("Templates"),
     .copy("Tests/Context_Linux"),
     .copy("Tests/Expected")
+]
+#endif
+
+// Note: when Swift Linux doesn't bug out on [String: String], add a test back for it
+// See https://github.com/krzysztofzablocki/Sourcery/pull/1208#issuecomment-1752185381
+#if canImport(ObjectiveC)
+let sourceryLibTestsResources: [Resource] = [
+    .copy("Stub/Configs"),
+    .copy("Stub/Errors"),
+    .copy("Stub/JavaScriptTemplates"),
+    .copy("Stub/SwiftTemplates"),
+    .copy("Stub/Performance-Code"),
+    .copy("Stub/DryRun-Code"),
+    .copy("Stub/Result"),
+    .copy("Stub/Templates"),
+    .copy("Stub/Source")
+]
+#else
+let sourceryLibTestsResources: [Resource] = [
+    .copy("Stub/Configs"),
+    .copy("Stub/Errors"),
+    .copy("Stub/JavaScriptTemplates"),
+    .copy("Stub/SwiftTemplates"),
+    .copy("Stub/Performance-Code"),
+    .copy("Stub/DryRun-Code"),
+    .copy("Stub/Result"),
+    .copy("Stub/Templates"),
+    .copy("Stub/Source_Linux")
 ]
 #endif
 
@@ -147,17 +178,7 @@ var targets: [Target] = [
             exclude: [
                 "Info.plist"
             ],
-            resources: [
-                .copy("Stub/Configs"),
-                .copy("Stub/Errors"),
-                .copy("Stub/JavaScriptTemplates"),
-                .copy("Stub/SwiftTemplates"),
-                .copy("Stub/Performance-Code"),
-                .copy("Stub/DryRun-Code"),
-                .copy("Stub/Result"),
-                .copy("Stub/Templates"),
-                .copy("Stub/Source")
-            ],
+            resources: sourceryLibTestsResources,
             swiftSettings: [.unsafeFlags(["-enable-testing"])]
         ),
         .testTarget(
