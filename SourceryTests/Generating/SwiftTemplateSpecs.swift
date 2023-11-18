@@ -89,7 +89,6 @@ class SwiftTemplateTests: QuickSpec {
                 expect(result).to(equal(expectedResult))
             }
 
-// crashing test
             it("handles file includes") {
                 let templatePath = Stubs.swiftTemplates + Path("IncludeFile.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
@@ -205,7 +204,9 @@ class SwiftTemplateTests: QuickSpec {
                 // }
 
                 context("and missing build dir") {
+#if canImport(ObjectiveC)
                     expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+#endif
                     expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
                     guard let buildDir = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate").map({ Path($0.path) }) else {
                         fail("Could not create buildDir path")
