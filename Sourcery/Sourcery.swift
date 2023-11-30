@@ -429,7 +429,7 @@ extension Sourcery {
         }
 
         let path = parser.path
-        let artifactsPath = cachesPath + "\(path.string.hash).srf"
+        let artifactsPath = cachesPath + "\(path.string.sha256()?.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? "\(path.string.hash)").srf"
 
         guard
             artifactsPath.exists,
