@@ -169,6 +169,15 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("@escaping @autoclosure () -> String").description).to(equal("@autoclosure @escaping () -> String"))
                 }
             }
+
+            context("given optional closure type with attributes") {
+                it("keeps attributes in unwrappedTypeName") {
+                    expect(typeName("(@MainActor @Sendable (Int) -> Void)?").unwrappedTypeName).to(equal("@MainActor @Sendable (Int) -> Void"))
+                }
+                it("keeps attributes in name") {
+                    expect(typeName("(@MainActor @Sendable (Int) -> Void)?").name).to(equal("(@MainActor @Sendable (Int) -> Void)?"))
+                }
+            }
         }
     }
 }
