@@ -66,7 +66,6 @@ extension TypeName {
             let type = TypeName(typeIdentifier.wrappedType)
             let needsWrapping = type.isClosure || type.isProtocolComposition
             self.init(name: needsWrapping ? "(\(type.asSource))" : type.name,
-                      unwrappedTypeName: needsWrapping ? type.asSource : nil,
                       isOptional: true,
                       isImplicitlyUnwrappedOptional: false,
                       tuple: type.tuple,

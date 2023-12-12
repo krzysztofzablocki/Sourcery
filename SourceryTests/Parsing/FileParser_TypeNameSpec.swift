@@ -172,7 +172,7 @@ class TypeNameSpec: QuickSpec {
 
             context("given optional closure type with attributes") {
                 it("keeps attributes in unwrappedTypeName") {
-                    expect(typeName("(@MainActor @Sendable (Int) -> Void)?").unwrappedTypeName).to(equal("@MainActor @Sendable (Int) -> Void"))
+                    expect(typeName("(@MainActor @Sendable (Int) -> Void)?").unwrappedTypeName).to(equal("(@MainActor @Sendable (Int) -> Void)"))
                 }
                 it("keeps attributes in name") {
                     expect(typeName("(@MainActor @Sendable (Int) -> Void)?").name).to(equal("(@MainActor @Sendable (Int) -> Void)?"))
