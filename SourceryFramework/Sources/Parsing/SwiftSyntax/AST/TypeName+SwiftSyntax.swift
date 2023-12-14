@@ -64,12 +64,7 @@ extension TypeName {
             self.init(name: name, isProtocolComposition: true)
         } else if let typeIdentifier = node.as(OptionalTypeSyntax.self) {
             let type = TypeName(typeIdentifier.wrappedType)
-            let needsWrapping = [
-                type.isClosure,
-                type.isProtocolComposition,
-                type.isExistential,
-                type.isOpaque,
-            ].contains(true)
+            let needsWrapping = type.isClosure || type.isProtocolComposition
             self.init(name: needsWrapping ? "(\(type.asSource))" : type.name,
                       isOptional: true,
                       isImplicitlyUnwrappedOptional: false,
@@ -82,12 +77,7 @@ extension TypeName {
             )
         } else if let typeIdentifier = node.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
             let type = TypeName(typeIdentifier.wrappedType)
-            let needsWrapping = [
-                type.isClosure,
-                type.isProtocolComposition,
-                type.isExistential,
-                type.isOpaque,
-            ].contains(true)
+            let needsWrapping = type.isClosure || type.isProtocolComposition
             self.init(name: needsWrapping ? "(\(type.asSource))" : type.name,
                       isOptional: false,
                       isImplicitlyUnwrappedOptional: true,

@@ -95,18 +95,6 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         return name == "Void" || name == "()" || unwrappedTypeName == "Void"
     }
 
-    // sourcery: skipEquality
-    /// Whether type is existential type (`any FooBar`)
-    public var isExistential: Bool {
-        return name.hasPrefix("any")
-    }
-
-    // sourcery: skipEquality
-    /// Whether type is opaque type (`some FooBar`)
-    public var isOpaque: Bool {
-        return name.hasPrefix("some")
-    }
-
     /// Whether type is a tuple
     public var isTuple: Bool {
         actualTypeName?.tuple != nil || tuple != nil
