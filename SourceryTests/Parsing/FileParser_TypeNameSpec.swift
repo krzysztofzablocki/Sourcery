@@ -187,6 +187,33 @@ class TypeNameSpec: QuickSpec {
                     expect(typeName("(@MainActor @Sendable (Int) -> Void)!").name).to(equal("(@MainActor @Sendable (Int) -> Void)!"))
                 }
             }
+
+            context("given optional opaque type") {
+                it("unwrappedTypeName keeps brackets") {
+                    expect(typeName("(some FooBar)?").unwrappedTypeName).to(equal("(some FooBar)"))
+                }
+                it("name keeps brackets") {
+                    expect(typeName("(some FooBar)?").name).to(equal("(some FooBar)?"))
+                }
+            }
+
+            context("given implicitly unwrapped optional opaque type") {
+                it("unwrappedTypeName keeps brackets") {
+                    expect(typeName("(some FooBar)!").unwrappedTypeName).to(equal("(some FooBar)"))
+                }
+                it("name keeps brackets") {
+                    expect(typeName("(some FooBar)!").name).to(equal("(some FooBar)!"))
+                }
+            }
+
+            context("given implicitly unwrapped optional existential type") {
+                it("unwrappedTypeName keeps brackets") {
+                    expect(typeName("(any FooBar)!").unwrappedTypeName).to(equal("(any FooBar)"))
+                }
+                it("name keeps brackets") {
+                    expect(typeName("(any FooBar)!").name).to(equal("(any FooBar)!"))
+                }
+            }
         }
     }
 }
