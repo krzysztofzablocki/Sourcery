@@ -221,7 +221,7 @@ public struct AnnotationsParser {
                     var annotations = Annotations()
                     let isComment = content.hasPrefix("//") || content.hasPrefix("/*") || content.hasPrefix("*")
                     let isDocumentationComment = content.hasPrefix("///") || content.hasPrefix("/**")
-                    let isPropertyWrapper = content.isMacros
+                    let isPropertyWrapper = content.isPropertyWrapper
                     let isMacros = content.hasPrefix("#")
                     var type = Line.LineType.other
                     if isDocumentationComment {
@@ -438,7 +438,7 @@ private extension String {
     /// @MyAttribute(some     thing) // true
     /// @MyAttribute(some     thing) var paosdjapsodji = 1 // false
     /// @objc let asdasd // false
-    var isMacros: Bool {
+    var isPropertyWrapper: Bool {
         guard hasPrefix("@") else { return false }
         guard contains(")") || !contains(" ") else { return false }
         return true
