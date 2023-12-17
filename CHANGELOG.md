@@ -7,6 +7,7 @@
     ([#1224](https://github.com/krzysztofzablocki/Sourcery/pull/1224)
 - Fix unit tests on Linux ([#1225](https://github.com/krzysztofzablocki/Sourcery/pull/1225))
 - Updated XcodeProj to 8.16.0 ([#1228](https://github.com/krzysztofzablocki/Sourcery/pull/1228))
+- Support for variadic arguments as method parameters ([#1222](https://github.com/krzysztofzablocki/Sourcery/issues/1222))
 
 ## 2.1.2
 ## Changes
