@@ -16,18 +16,18 @@ import {{ import }}
 @testable import {{ import }}
 {% endfor %}
 
-{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
+{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 
 {% macro accessLevel level %}{% if level != 'internal' %}{{ level }} {% endif %}{% endmacro %}
 
 {% macro staticSpecifier method %}{% if method.isStatic and not method.isInitializer %}static {% endif %}{% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ThrowableError: Error?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}ThrowableError: Error?
 {% endmacro %}
 
 {% macro methodThrowableErrorUsage method %}
-        if let error = {% call swiftifyMethodName method.selectorName %}ThrowableError {
+        if let error = {% call swiftifyMethodName method.name %}ThrowableError {
             throw error
         }
 {% endmacro %}
@@ -39,17 +39,17 @@ import {{ import }}
         {% endfor -%}
     {% endset %}
     {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
-        {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append({% for param in method.parameters %}{{ param.name }}){% endfor %}
+        {% call swiftifyMethodName method.name %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
+        {% call swiftifyMethodName method.name %}ReceivedInvocations.append({% for param in method.parameters %}{{ param.name }}){% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 and not hasNonEscapingClosures %}
-        {% call swiftifyMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append(({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %}))
+        {% call swiftifyMethodName method.name %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
+        {% call swiftifyMethodName method.name %}ReceivedInvocations.append(({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %}))
     {% endif %}
     {% endif %}
 {% endmacro %}
 
-{% macro methodClosureName method %}{% call swiftifyMethodName method.selectorName %}Closure{% endmacro %}
+{% macro methodClosureName method %}{% call swiftifyMethodName method.name %}Closure{% endmacro %}
 
 {% macro closureReturnTypeName method %}{% if method.isOptionalReturnType %}{{ method.unwrappedReturnTypeName }}?{% else %}{{ method.returnTypeName }}{% endif %}{% endmacro %}
 
@@ -66,9 +66,9 @@ import {{ import }}
         {% call methodThrowableErrorDeclaration method %}
     {% endif %}
     {% if not method.isInitializer %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}CallsCount = 0
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}Called: Bool {
-        return {% call swiftifyMethodName method.selectorName %}CallsCount > 0
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}CallsCount = 0
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}Called: Bool {
+        return {% call swiftifyMethodName method.name %}CallsCount > 0
     }
     {% endif %}
     {% set hasNonEscapingClosures %}
@@ -77,14 +77,14 @@ import {{ import }}
         {% endfor -%}
     {% endset %}
     {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}{{ ')' if param.isClosure }})?{% endfor %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}){{ ')' if param.isClosure }}{%if param.typeName.isOptional%}?{%endif%}]{% endfor %} = []
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}{{ ')' if param.isClosure }})?{% endfor %}
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}){{ ')' if param.isClosure }}{%if param.typeName.isOptional%}?{%endif%}]{% endfor %} = []
     {% elif not method.parameters.count == 0 and not hasNonEscapingClosures %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}{% else %}{% call existentialClosureVariableTypeName param.typeName %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})?
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}{% else %}{% call existentialClosureVariableTypeName param.typeName %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})] = []
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}{% else %}{% call existentialClosureVariableTypeName param.typeName %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName %}{% else %}{% call existentialClosureVariableTypeName param.typeName %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})] = []
     {% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ '(' if method.returnTypeName.isClosure and not method.isOptionalReturnType  or method.returnTypeName|contains:"any "}}{% call existentialVariableTypeName method.returnTypeName %}{{ ')' if method.returnTypeName.isClosure and not method.isOptionalReturnType or method.returnTypeName|contains:"any " }}{{ '!' if not method.isOptionalReturnType }}
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.name %}ReturnValue: {{ '(' if method.returnTypeName.isClosure and not method.isOptionalReturnType  or method.returnTypeName|contains:"any "}}{% call existentialVariableTypeName method.returnTypeName %}{{ ')' if method.returnTypeName.isClosure and not method.isOptionalReturnType or method.returnTypeName|contains:"any " }}{{ '!' if not method.isOptionalReturnType }}
     {% endif %}
     {% call methodClosureDeclaration method %}
 
@@ -100,7 +100,7 @@ import {{ import }}
     {% endfor %}
     {% endfor %}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}{% call methodName method %}{{ ' async' if method.isAsync }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {% call existentialVariableTypeName method.returnTypeName %}{% endif %} {
-        {% call swiftifyMethodName method.selectorName %}CallsCount += 1
+        {% call swiftifyMethodName method.name %}CallsCount += 1
         {% call methodReceivedParameters method %}
         {% if method.throws %}
         {% call methodThrowableErrorUsage method %}
@@ -111,7 +111,7 @@ import {{ import }}
         if let {% call methodClosureName method %} = {% call methodClosureName method %} {
             return {{ 'try ' if method.throws }}{{ 'await ' if method.isAsync }}{% call methodClosureName method %}({% call methodClosureCallParameters method %})
         } else {
-            return {% call swiftifyMethodName method.selectorName %}ReturnValue
+            return {% call swiftifyMethodName method.name %}ReturnValue
         }
         {% endif %}
     }
@@ -123,18 +123,18 @@ import {{ import }}
         {# for type method which are mocked, a way to reset the invocation, argument, etc #}
         {% if method.isStatic and not method.isInitializer %} //MARK: - {{ method.shortName }}
         {% if not method.isInitializer %}
-        {% call swiftifyMethodName method.selectorName %}CallsCount = 0
+        {% call swiftifyMethodName method.name %}CallsCount = 0
         {% endif %}
         {% if method.parameters.count == 1 %}
-        {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}{% endfor %} = nil
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations = []
+        {% call swiftifyMethodName method.name %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}{% endfor %} = nil
+        {% call swiftifyMethodName method.name %}ReceivedInvocations = []
         {% elif not method.parameters.count == 0 %}
-        {% call swiftifyMethodName method.selectorName %}ReceivedArguments = nil
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations = []
+        {% call swiftifyMethodName method.name %}ReceivedArguments = nil
+        {% call swiftifyMethodName method.name %}ReceivedInvocations = []
         {% endif %}
         {% call methodClosureName method %} = nil
         {% if method.throws %}
-        {% call swiftifyMethodName method.selectorName %}ThrowableError = nil
+        {% call swiftifyMethodName method.name %}ThrowableError = nil
         {% endif %}
 
         {% endif %}
