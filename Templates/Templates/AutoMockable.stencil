@@ -218,6 +218,8 @@ import {{ import }}
         {{ typeName | replace:"some","(some" | replace:"?",")?" }}
     {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
         ({{ typeName | replace:"some","(some" | replace:"?",")?" }})
+    {%- elif typeName.isClosure -%}
+        ({{ typeName }})
     {%- else -%}
         {{ typeName }}
     {%- endif -%}
