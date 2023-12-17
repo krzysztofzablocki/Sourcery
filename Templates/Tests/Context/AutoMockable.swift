@@ -216,4 +216,8 @@ public protocol ProtocolWithOverrides {
     func doSomething(_ data: Int) -> [String]
     func doSomething(_ data: String) -> [String]
     func doSomething(_ data: String) -> [Int]
+    func doSomething(_ data: String) -> ([Int], [String])
+    func doSomething(_ data: String) throws -> ([Int], [Any])
+    func doSomething(_ data: String) -> (([Int], [String]) -> Void)
+    func doSomething(_ data: String) throws -> (([Int], [Any]) -> Void)
 }
