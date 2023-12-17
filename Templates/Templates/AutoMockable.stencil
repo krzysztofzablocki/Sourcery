@@ -16,7 +16,7 @@ import {{ import }}
 @testable import {{ import }}
 {% endfor %}
 
-{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
+{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | replace:".","_" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 
 {% macro accessLevel level %}{% if level != 'internal' %}{{ level }} {% endif %}{% endmacro %}
 
