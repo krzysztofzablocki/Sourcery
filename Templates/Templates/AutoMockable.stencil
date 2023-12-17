@@ -238,7 +238,7 @@ import {{ import }}
         {{ typeName|replace:"some ","any " }}
     {%- endif -%}
 {%- endmacro %}
-{% macro existentialParameterTypeName typeName -%}
+{% macro existentialParameterTypeName typeName isVariadic -%}
     {%- if typeName|contains:"any " and typeName|contains:"?," and typeName|contains:">?" -%}
         {{ typeName | replace:"any","(any" | replace:"?,",")?," }}
     {%- elif typeName|contains:"any " and typeName|contains:"!" -%}
@@ -253,11 +253,13 @@ import {{ import }}
         {{ typeName | replace:"some","(some" | replace:"?",")?" }}
     {%- elif typeName|contains:"some " and typeName.isOptional -%}
         {{ typeName | replace:"some","(some" | replace:"?",")?" }}
+    {%- elif isVariadic -%}
+        {{ typeName }}...
     {%- else -%}
         {{ typeName }}
     {%- endif -%}
 {%- endmacro %}
-{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {{ param.name }}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% call existentialParameterTypeName param.typeName %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
+{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {{ param.name }}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
 
 {% for type in types.protocols where type.based.AutoMockable or type|annotated:"AutoMockable" %}{% if type.name != "AutoMockable" %}
 {% call accessLevel type.accessLevel %}class {{ type.name }}Mock: {{ type.name }} {
