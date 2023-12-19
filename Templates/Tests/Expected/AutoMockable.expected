@@ -671,23 +671,23 @@ class ExampleVarargMock: ExampleVararg {
 
     //MARK: - string
 
-    var stringKeyArgsCallsCount = 0
-    var stringKeyArgsCalled: Bool {
-        return stringKeyArgsCallsCount > 0
+    var StringKeyStringArgsCVarArgStringCallsCount = 0
+    var StringKeyStringArgsCVarArgStringCalled: Bool {
+        return StringKeyStringArgsCVarArgStringCallsCount > 0
     }
-    var stringKeyArgsReceivedArguments: (key: String, args: CVarArg...)?
-    var stringKeyArgsReceivedInvocations: [(key: String, args: CVarArg...)] = []
-    var stringKeyArgsReturnValue: String!
-    var stringKeyArgsClosure: ((String, CVarArg...) -> String)?
+    var StringKeyStringArgsCVarArgStringReceivedArguments: (key: String, args: CVarArg...)?
+    var StringKeyStringArgsCVarArgStringReceivedInvocations: [(key: String, args: CVarArg...)] = []
+    var StringKeyStringArgsCVarArgStringReturnValue: String!
+    var StringKeyStringArgsCVarArgStringClosure: ((String, CVarArg...) -> String)?
 
     func string(key: String, args: CVarArg...) -> String {
-        stringKeyArgsCallsCount += 1
-        stringKeyArgsReceivedArguments = (key: key, args: args)
-        stringKeyArgsReceivedInvocations.append((key: key, args: args))
-        if let stringKeyArgsClosure = stringKeyArgsClosure {
-            return stringKeyArgsClosure(key, args)
+        StringKeyStringArgsCVarArgStringCallsCount += 1
+        StringKeyStringArgsCVarArgStringReceivedArguments = (key: key, args: args)
+        StringKeyStringArgsCVarArgStringReceivedInvocations.append((key: key, args: args))
+        if let StringKeyStringArgsCVarArgStringClosure = StringKeyStringArgsCVarArgStringClosure {
+            return StringKeyStringArgsCVarArgStringClosure(key, args)
         } else {
-            return stringKeyArgsReturnValue
+            return StringKeyStringArgsCVarArgStringReturnValue
         }
     }
 
