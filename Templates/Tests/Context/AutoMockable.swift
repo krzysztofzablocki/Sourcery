@@ -210,3 +210,8 @@ protocol HouseProtocol: AutoMockable {
     var f3Publisher: GenericType<Never, Never, any PersonProtocol>? { get }
     var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>? { get }
 }
+
+// sourcery: AutoMockable
+protocol ExampleVararg {
+    func string(key: String, args: CVarArg...) -> String
+}
