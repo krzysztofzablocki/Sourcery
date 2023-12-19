@@ -664,6 +664,34 @@ class CurrencyPresenterMock: CurrencyPresenter {
     }
 
 }
+class ExampleVarargMock: ExampleVararg {
+
+
+
+
+    //MARK: - string
+
+    var stringKeyArgsCallsCount = 0
+    var stringKeyArgsCalled: Bool {
+        return stringKeyArgsCallsCount > 0
+    }
+    var stringKeyArgsReceivedArguments: (key: String, args: CVarArg...)?
+    var stringKeyArgsReceivedInvocations: [(key: String, args: CVarArg...)] = []
+    var stringKeyArgsReturnValue: String!
+    var stringKeyArgsClosure: ((String, CVarArg...) -> String)?
+
+    func string(key: String, args: CVarArg...) -> String {
+        stringKeyArgsCallsCount += 1
+        stringKeyArgsReceivedArguments = (key: key, args: args)
+        stringKeyArgsReceivedInvocations.append((key: key, args: args))
+        if let stringKeyArgsClosure = stringKeyArgsClosure {
+            return stringKeyArgsClosure(key, args)
+        } else {
+            return stringKeyArgsReturnValue
+        }
+    }
+
+}
 class ExtendableProtocolMock: ExtendableProtocol {
 
 

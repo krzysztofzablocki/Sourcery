@@ -212,6 +212,11 @@ protocol HouseProtocol: AutoMockable {
 }
 
 // sourcery: AutoMockable
+protocol ExampleVararg {
+    func string(key: String, args: CVarArg...) -> String
+}
+
+// sourcery: AutoMockable
 public protocol ProtocolWithOverrides {
     func doSomething(_ data: Int) -> [String]
     func doSomething(_ data: String) -> [String]
