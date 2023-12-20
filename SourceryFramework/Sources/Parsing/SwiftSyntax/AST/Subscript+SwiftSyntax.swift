@@ -49,10 +49,25 @@ extension Subscript {
             readAccess = parentAccess
         }
 
+        let genericParameters = node.genericParameterClause?.genericParameterList.compactMap { parameter in
+            return GenericParameter(parameter)
+        } ?? []
+
+        let genericRequirements: [GenericRequirement] = node.genericWhereClause?.requirementList.compactMap { requirement in
+            if let sameType = requirement.body.as(SameTypeRequirementSyntax.self) {
+                return GenericRequirement(sameType)
+            } else if let conformanceType = requirement.body.as(ConformanceRequirementSyntax.self) {
+                return GenericRequirement(conformanceType)
+            }
+            return nil
+        } ?? []
+
         self.init(
           parameters: node.indices.parameterList.map { MethodParameter($0, annotationsParser: annotationsParser) },
           returnTypeName: TypeName(node.result.returnType.description.trimmed),
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
+          genericParameters: genericParameters,
+          genericRequirements: genericRequirements,
           attributes: Attribute.from(node.attributes),
           modifiers: modifiers.map(SourceryModifier.init),
           annotations: node.firstToken.map { annotationsParser.annotations(fromToken: $0) } ?? [:],
