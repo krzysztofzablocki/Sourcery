@@ -40,6 +40,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 return attributes
             case "isOptionalReturnType":
                 return isOptionalReturnType
+            case "actualReturnTypeName":
+                return actualReturnTypeName
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
