@@ -277,6 +277,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
+            aCoder.encode(self.genericParameters, forKey: "genericParameters")
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")

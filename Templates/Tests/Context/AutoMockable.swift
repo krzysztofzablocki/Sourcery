@@ -210,3 +210,10 @@ protocol HouseProtocol: AutoMockable {
     var f3Publisher: GenericType<Never, Never, any PersonProtocol>? { get }
     var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>? { get }
 }
+
+protocol SubscriptProtocol: AutoMockable {
+    subscript(arg: Int) -> String { get set }
+    subscript<T>(arg: T) -> Int { get }
+    subscript<T: Hashable>(arg: T) -> T? { get set }
+    subscript<T>(arg: String) -> T? where T: Cancellable { get }
+}
