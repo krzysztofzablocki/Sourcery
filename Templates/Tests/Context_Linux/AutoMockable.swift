@@ -210,3 +210,19 @@ protocol HouseProtocol: AutoMockable {
     var f3Publisher: GenericType<Never, Never, any PersonProtocol>? { get }
     var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>? { get }
 }
+
+// sourcery: AutoMockable
+protocol ExampleVararg {
+    func string(key: String, args: CVarArg...) -> String
+}
+
+// sourcery: AutoMockable
+public protocol ProtocolWithOverrides {
+    func doSomething(_ data: Int) -> [String]
+    func doSomething(_ data: String) -> [String]
+    func doSomething(_ data: String) -> [Int]
+    func doSomething(_ data: String) -> ([Int], [String])
+    func doSomething(_ data: String) throws -> ([Int], [Any])
+    func doSomething(_ data: String) -> (([Int], [String]) -> Void)
+    func doSomething(_ data: String) throws -> (([Int], [Any]) -> Void)
+}

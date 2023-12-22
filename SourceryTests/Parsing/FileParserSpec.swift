@@ -92,6 +92,77 @@ class FileParserSpec: QuickSpec {
                         expect(result.first).to(equal(expectedType))
                     }
 
+                    it("extracts annotations which not affect consequently declared properties") {
+                        let annotations: [[String: NSObject]] = [
+                            ["extraAnnotation": NSNumber(value: Float(2))],
+                            [:],
+                            [:]
+                        ]
+                        let attributes: [AttributeList] = [
+                            ["objc": [Attribute(name: "objc")]],
+                            ["objc": [Attribute(name: "objc")]],
+                            [:]
+                        ]
+                        let expectedVariables = (1...3)
+                            .map { Variable(name: "property\($0)", typeName: TypeName (name: "Int"), attributes: attributes[$0 - 1], annotations: annotations[$0 - 1], definedInTypeName: TypeName (name: "Foo" )) }
+                        let expectedType = Class(name: "Foo", variables: expectedVariables, annotations: [:])
+                        let result = parse(
+                        """
+                        class Foo {\n
+                          // sourcery: extraAnnotation = 2
+                          @objc var property1: Int
+                          @objc var property2: Int
+                          var property3: Int
+                        }
+                        """
+                        )
+                        expect(result.first).to(equal(expectedType))
+                    }
+
+                    it("extracts annotations and attributes which not affect consequently declared properties") {
+                        let annotations: [[String: NSObject]] = [
+                            ["extraAnnotation": NSNumber(value: Float(2))],
+                            [:],
+                            [:],
+                            [:],
+                            [:]
+                        ]
+                        let attributes: [AttributeList] = [
+                            ["objc": [Attribute(name: "objc")]],
+                            ["objc": [Attribute(name: "objc")]],
+                            ["MyAttribute": [Attribute(name: "MyAttribute")]],
+                            ["MyAttribute2": [Attribute(name: "MyAttribute2", arguments: ["0": "Hello" as NSString], description: "@MyAttribute2(Hello there)")]],
+                            [:]
+                        ]
+                        let expectedVariables = (1...5)
+                            .map {
+                                Variable(
+                                    name: "property\($0)",
+                                    typeName: TypeName (name: "Int"),
+                                    attributes: attributes[$0 - 1],
+                                    annotations: annotations[$0 - 1],
+                                    definedInTypeName: TypeName (name: "Foo" )
+                                )
+                            }
+                        let expectedType = Class(name: "Foo", variables: expectedVariables, annotations: [:])
+                        let result = parse(
+                        """
+                        class Foo {\n
+                          // sourcery: extraAnnotation = 2
+                          @objc
+                          var property1: Int
+                          @objc var property2: Int
+                          @MyAttribute
+                          var property3: Int
+                          @MyAttribute2(Hello there)
+                          var property4: Int
+                          var property5: Int
+                        }
+                        """
+                        )
+                        expect(result.first).to(equal(expectedType))
+                    }
+
                     it("extracts annotations when declaration has an attribute on the preceding line") {
                         let annotations = ["Annotation": NSNumber(value: true)]
 

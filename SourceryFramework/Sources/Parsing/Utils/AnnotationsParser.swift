@@ -107,11 +107,17 @@ public struct AnnotationsParser {
         var annotations = inlineFrom(line: (lineNumber, column), stop: &stop)
         guard !stop else { return annotations }
 
-        for line in lines[0..<lineNumber-1].reversed() {
+        let reversedArray = lines[0..<lineNumber-1].reversed()
+        for line in reversedArray {
             line.annotations.forEach { annotation in
                 AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
             }
-            if line.type != .comment && line.type != .documentationComment && line.type != .macros && line.type != .propertyWrapper {
+
+            if line.type != .comment 
+                && line.type != .documentationComment
+                && line.type != .macros
+                && line.type != .propertyWrapper
+            {
                 break
             }
         }
@@ -215,7 +221,7 @@ public struct AnnotationsParser {
                     var annotations = Annotations()
                     let isComment = content.hasPrefix("//") || content.hasPrefix("/*") || content.hasPrefix("*")
                     let isDocumentationComment = content.hasPrefix("///") || content.hasPrefix("/**")
-                    let isPropertyWrapper = content.hasPrefix("@")
+                    let isPropertyWrapper = content.isPropertyWrapper
                     let isMacros = content.hasPrefix("#")
                     var type = Line.LineType.other
                     if isDocumentationComment {
@@ -423,4 +429,18 @@ public struct AnnotationsParser {
         }
     }
 
+}
+
+// Parses string to see if it is a macros or not
+private extension String {
+    /// @objc // true
+    /// @objc var paosdjapsodji = 1 // false
+    /// @MyAttribute(some     thing) // true
+    /// @MyAttribute(some     thing) var paosdjapsodji = 1 // false
+    /// @objc let asdasd // false
+    var isPropertyWrapper: Bool {
+        guard hasPrefix("@") else { return false }
+        guard contains(")") || !contains(" ") else { return false }
+        return true
+    }
 }
