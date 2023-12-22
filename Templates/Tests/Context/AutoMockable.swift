@@ -227,7 +227,8 @@ public protocol ProtocolWithOverrides {
     func doSomething(_ data: String) throws -> (([Int], [Any]) -> Void)
 }
 
-protocol SubscriptProtocol: AutoMockable {
+// sourcery: AutoMockable
+protocol SubscriptProtocol {
     subscript(arg: Int) -> String { get set }
     subscript<T>(arg: T) -> Int { get }
     subscript<T: Hashable>(arg: T) -> T? { get set }
