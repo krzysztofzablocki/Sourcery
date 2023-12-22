@@ -4799,11 +4799,58 @@ public final class Struct: Type {
 
 """),
     .init(name: "Subscript.swift", content:
-"""
+#"""
 import Foundation
 
 /// Describes subscript
-public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
+public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "parameters":
+                return parameters
+            case "returnTypeName":
+                return returnTypeName
+            case "actualReturnTypeName":
+                return actualReturnTypeName
+            case "returnType":
+                return returnType
+            case "isOptionalReturnType":
+                return isOptionalReturnType
+            case "isImplicitlyUnwrappedOptionalReturnType":
+                return isImplicitlyUnwrappedOptionalReturnType
+            case "unwrappedReturnTypeName":
+                return unwrappedReturnTypeName
+            case "isFinal":
+                return isFinal
+            case "readAccess":
+                return readAccess
+            case "writeAccess":
+                return writeAccess
+            case "isMutable":
+                return isMutable
+            case "annotations":
+                return annotations
+            case "documentation":
+                return documentation
+            case "definedInTypeName":
+                return definedInTypeName
+            case "actualDefinedInTypeName":
+                return actualDefinedInTypeName
+            case "attributes":
+                return attributes
+            case "modifiers":
+                return modifiers
+            case "genericParameters":
+                return genericParameters
+            case "genericRequirements":
+                return genericRequirements
+            case "isGeneric":
+                return isGeneric
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -4880,6 +4927,17 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     /// Method modifiers, i.e. `private`
     public let modifiers: [SourceryModifier]
 
+    /// list of generic parameters
+    public let genericParameters: [GenericParameter]
+
+    /// list of generic requirements
+    public let genericRequirements: [GenericRequirement]
+
+    /// Whether subscript is generic or not
+    public var isGeneric: Bool {
+        return genericParameters.isEmpty == false
+    }
+
     // Underlying parser data, never to be used by anything else
     // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
     /// :nodoc:
@@ -4889,6 +4947,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     public init(parameters: [MethodParameter] = [],
                 returnTypeName: TypeName,
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
+                genericParameters: [GenericParameter] = [],
+                genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
@@ -4899,6 +4959,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         self.returnTypeName = returnTypeName
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
+        self.genericParameters = genericParameters
+        self.genericRequirements = genericRequirements
         self.attributes = attributes
         self.modifiers = modifiers
         self.annotations = annotations
@@ -4908,27 +4970,30 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
 
     /// :nodoc:
     override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
-        string += "isFinal = \\(String(describing: self.isFinal)), "
-        string += "readAccess = \\(String(describing: self.readAccess)), "
-        string += "writeAccess = \\(String(describing: self.writeAccess)), "
-        string += "isMutable = \\(String(describing: self.isMutable)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
+        var string = "\(Swift.type(of: self)): "
+        string += "parameters = \(String(describing: self.parameters)), "
+        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
+        string += "isFinal = \(String(describing: self.isFinal)), "
+        string += "readAccess = \(String(describing: self.readAccess)), "
+        string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "isMutable = \(String(describing: self.isMutable)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "documentation = \(String(describing: self.documentation)), "
+        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
+        string += "genericParameters = \(String(describing: self.genericParameters)), "
+        string += "genericRequirements = \(String(describing: self.genericRequirements)), "
+        string += "isGeneric = \(String(describing: self.isGeneric)), "
+        string += "attributes = \(String(describing: self.attributes)), "
+        string += "modifiers = \(String(describing: self.modifiers))"
         return string
     }
 
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Subscript else {
-            results.append("Incorrect type <expected: Subscript, received: \\(Swift.type(of: object))>")
+            results.append("Incorrect type <expected: Subscript, received: \(Swift.type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
@@ -4938,6 +5003,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "genericParameters").trackDifference(actual: self.genericParameters, expected: castObject.genericParameters))
+        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         return results
@@ -4952,6 +5019,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         hasher.combine(self.annotations)
         hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
+        hasher.combine(self.genericParameters)
+        hasher.combine(self.genericRequirements)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         return hasher.finalize()
@@ -4967,6 +5036,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         if self.annotations != rhs.annotations { return false }
         if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.genericParameters != rhs.genericParameters { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
         return true
@@ -5027,6 +5098,18 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
                 }
                 fatalError()
              }; self.modifiers = modifiers
+            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else {
+                withVaList(["genericParameters"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+            }; self.genericParameters = genericParameters
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
+                withVaList(["genericRequirements"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+            }; self.genericRequirements = genericRequirements
         }
 
         /// :nodoc:
@@ -5040,6 +5123,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
+            aCoder.encode(self.genericParameters, forKey: "genericParameters")
+            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
         }
@@ -5047,35 +5132,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
 
 }
 
-"""),
-    .init(name: "DynamicMemberLookup.swift", content:
-"""
-//
-// Stencil
-// Copyright © 2022 Stencil
-// MIT Licence
-//
-
-/// Marker protocol so we can know which types support `@dynamicMemberLookup`. Add this to your own types that support
-/// lookup by String.
-public protocol DynamicMemberLookup {
-  /// Get a value for a given `String` key
-  subscript(dynamicMember member: String) -> Any? { get }
-}
-
-public extension DynamicMemberLookup where Self: RawRepresentable {
-  /// Get a value for a given `String` key
-  subscript(dynamicMember member: String) -> Any? {
-    switch member {
-    case "rawValue":
-      return rawValue
-    default:
-      return nil
-    }
-  }
-}
-
-"""),
+"""#),
     .init(name: "TemplateContext.swift", content:
 """
 //
