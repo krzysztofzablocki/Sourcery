@@ -48,6 +48,12 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 return inherits
             case "inheritedTypes":
                 return inheritedTypes
+            case "subscripts":
+                return subscripts
+            case "rawSubscripts":
+                return rawSubscripts
+            case "allSubscripts":
+                return allSubscripts
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }   
