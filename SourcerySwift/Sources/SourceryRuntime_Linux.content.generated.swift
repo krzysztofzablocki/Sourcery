@@ -20,7 +20,7 @@ public enum AccessLevel: String {
 }
 
 """),
-    .init(name: "GenericParameter", content:
+    .init(name: "GenericParameter.swift", content:
 """
 import Foundation
 // For DynamicMemberLookup we need to import Stencil,

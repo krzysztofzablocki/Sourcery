@@ -389,6 +389,12 @@ struct FolderSynchronizer {
     struct File {
         let name: String
         let content: String
+
+        init(name: String, content: String) {
+            assert(name.isEmpty == false)
+            self.name = name
+            self.content = content
+        }
     }
 
     func sync(files: [File], to dir: Path) throws {

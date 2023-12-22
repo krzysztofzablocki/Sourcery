@@ -20,7 +20,7 @@ public enum AccessLevel: String {
 }
 
 """),
-    .init(name: "", content:
+    .init(name: "GenericParameter.swift", content:
 """
 import Foundation
 
