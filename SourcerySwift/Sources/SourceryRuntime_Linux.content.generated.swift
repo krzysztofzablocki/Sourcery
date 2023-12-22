@@ -37,7 +37,7 @@ public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicM
             case "inheritedTypeName":
                 return inheritedTypeName
             default:
-                fatalError("unable to lookup: \\(member) in \(self)")
+                fatalError("unable to lookup: \\(member) in \\(self)")
         }
     }
 
