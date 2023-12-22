@@ -25,7 +25,7 @@ public enum AccessLevel: String {
 import Foundation
 
 /// Descibes Swift generic parameter
-public final class GenericParameter: NSObject, SourceryModel, Diffable {
+public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":
@@ -1759,7 +1759,7 @@ public protocol Documented {
 import Foundation
 
 /// Defines enum case
-public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable {
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":
@@ -1922,7 +1922,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 import Foundation
 
 /// Defines enum case associated value
-public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable {
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "externalName":
@@ -3079,7 +3079,7 @@ extension String: Error {}
 import Foundation
 
 /// Describes method parameter
-public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable {
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "argumentLabel":
@@ -3423,7 +3423,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method
-public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
+public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "definedInType":
@@ -4803,7 +4803,7 @@ public final class Struct: Type {
 import Foundation
 
 /// Describes subscript
-public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
+public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
 
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
@@ -5284,7 +5284,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-public final class Types: NSObject, SourceryModel, Diffable {
+public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "types":
@@ -5486,7 +5486,7 @@ public final class Types: NSObject, SourceryModel, Diffable {
 import Foundation
 
 /// :nodoc:
-public class TypesCollection: NSObject, AutoJSExport {
+public class TypesCollection: NSObject, AutoJSExport, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         return try? types(forKey: member)
     }
@@ -5567,7 +5567,7 @@ public class TypesCollection: NSObject, AutoJSExport {
 import Foundation
 
 /// Describes tuple type
-public final class TupleType: NSObject, SourceryModel, Diffable {
+public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "elements":
@@ -5656,7 +5656,7 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
 }
 
 /// Describes tuple type element
-public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
+public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":
@@ -5774,7 +5774,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
+public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "implements":
@@ -6523,7 +6523,7 @@ extension Type {
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable {
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "tuple":
@@ -7126,7 +7126,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable {
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
         case "readAccess":
