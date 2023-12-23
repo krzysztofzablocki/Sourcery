@@ -439,6 +439,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case autoclosure
         case convention
         case mutating
+        case nonisolated
+        case isolated
         case escaping
         case final
         case open
@@ -452,6 +454,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case privateSetter = "setter_access.private"
         case fileprivateSetter = "setter_access.fileprivate"
         case optional
+        case dynamic
 
         public init?(identifier: String) {
             let identifier = identifier.trimmingPrefix("source.decl.attribute.")
@@ -3333,6 +3336,10 @@ extension Array where Element == ClosureParameter {
     .init(name: "Method.swift", content:
 """
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 /// :nodoc:
 public typealias SourceryMethod = Method
@@ -3369,8 +3376,12 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 return attributes
             case "isOptionalReturnType":
                 return isOptionalReturnType
+            case "actualReturnTypeName":
+                return actualReturnTypeName
+            case "isDynamic":
+                return isDynamic
             default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
+                fatalError("unable to lookup: \\(member) in \(self)")
         }
     }
 
@@ -3462,25 +3473,25 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     // sourcery: skipEquality, skipDescription
     /// Whether method is a convenience initializer
     public var isConvenienceInitializer: Bool {
-        modifiers.contains { $0.name == "convenience" }
+        modifiers.contains { $0.name == Attribute.Identifier.convenience.rawValue }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is required
     public var isRequired: Bool {
-        modifiers.contains { $0.name == "required" }
+        modifiers.contains { $0.name == Attribute.Identifier.required.rawValue }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is final
     public var isFinal: Bool {
-        modifiers.contains { $0.name == "final" }
+        modifiers.contains { $0.name == Attribute.Identifier.final.rawValue }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is mutating
     public var isMutating: Bool {
-        modifiers.contains { $0.name == "mutating" }
+        modifiers.contains { $0.name == Attribute.Identifier.mutating.rawValue }
     }
 
     // sourcery: skipEquality, skipDescription
@@ -3492,13 +3503,19 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     // sourcery: skipEquality, skipDescription
     /// Whether method is optional (in an Objective-C protocol)
     public var isOptional: Bool {
-        modifiers.contains { $0.name == "optional" }
+        modifiers.contains { $0.name == Attribute.Identifier.optional.rawValue }
     }
 
     // sourcery: skipEquality, skipDescription
     /// Whether method is nonisolated (this modifier only applies to actor methods)
     public var isNonisolated: Bool {
-        modifiers.contains { $0.name == "nonisolated" }
+        modifiers.contains { $0.name == Attribute.Identifier.nonisolated.rawValue }
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is dynamic
+    public var isDynamic: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.dynamic.rawValue }
     }
 
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
