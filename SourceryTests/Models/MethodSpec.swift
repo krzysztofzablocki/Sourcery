@@ -60,6 +60,11 @@ class MethodSpec: QuickSpec {
                 expect(Method(name: "foo()").isGeneric).to(beFalse())
             }
 
+            it("has correct access level") {
+                expect(Method(name: "foo<T>()", accessLevel: .package).accessLevel == AccessLevel.package.rawValue).to(beTrue())
+                expect(Method(name: "foo<T>()", accessLevel: .open).accessLevel == AccessLevel.package.rawValue).to(beFalse())
+            }
+
             describe("When testing equality") {
 
                 context("given same items") {
