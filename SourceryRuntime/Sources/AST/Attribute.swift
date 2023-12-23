@@ -62,6 +62,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case final
         case open
         case lazy
+        case `package` = "package"
         case `public` = "public"
         case `internal` = "internal"
         case `private` = "private"

@@ -7,6 +7,7 @@ import Foundation
 
 /// :nodoc:
 public enum AccessLevel: String {
+    case `package` = "package"
     case `internal` = "internal"
     case `private` = "private"
     case `fileprivate` = "fileprivate"
