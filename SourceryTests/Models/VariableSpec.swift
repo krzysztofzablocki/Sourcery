@@ -26,6 +26,7 @@ class VariableSpec: QuickSpec {
 
             it("has proper read access") {
                 expect(sut?.readAccess == AccessLevel.public.rawValue).to(beTrue())
+                expect(Variable(name: "variable", typeName: TypeName(name: "Int"), accessLevel: (read: .package, write: .public), isComputed: true).readAccess == AccessLevel.package.rawValue).to(beTrue())
             }
 
             it("has proper dynamic state") {
@@ -35,6 +36,7 @@ class VariableSpec: QuickSpec {
 
             it("has proper write access") {
                 expect(sut?.writeAccess == AccessLevel.internal.rawValue).to(beTrue())
+                expect(Variable(name: "variable", typeName: TypeName(name: "Int"), accessLevel: (read: .public, write: .package), isComputed: true).writeAccess == AccessLevel.package.rawValue).to(beTrue())
             }
 
             describe("When testing equality") {
