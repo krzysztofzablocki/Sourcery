@@ -3381,7 +3381,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             case "isDynamic":
                 return isDynamic
             default:
-                fatalError("unable to lookup: \\(member) in \(self)")
+                fatalError("unable to lookup: \\(member) in \\(self)")
         }
     }
 
