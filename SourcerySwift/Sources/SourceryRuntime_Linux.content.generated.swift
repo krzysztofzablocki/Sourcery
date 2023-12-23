@@ -3336,10 +3336,6 @@ extension Array where Element == ClosureParameter {
     .init(name: "Method.swift", content:
 """
 import Foundation
-// For DynamicMemberLookup we need to import Stencil,
-// however, this is different from SourceryRuntime.content.generated.swift, because
-// it cannot reference Stencil
-import Stencil
 
 /// :nodoc:
 public typealias SourceryMethod = Method
