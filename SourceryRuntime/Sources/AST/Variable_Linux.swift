@@ -40,6 +40,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             return isArray
         case "isDictionary":
             return isDictionary
+        case "isDynamic":
+            return isDynamic
         default:
             fatalError("unable to lookup: \(member) in \(self)")
         }
@@ -102,12 +104,17 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 
     /// Whether variable is final or not
     public var isFinal: Bool {
-        return modifiers.contains { $0.name == "final" }
+        return modifiers.contains { $0.name == Attribute.Identifier.final.rawValue }
     }
 
     /// Whether variable is lazy or not
     public var isLazy: Bool {
-        return modifiers.contains { $0.name == "lazy" }
+        return modifiers.contains { $0.name == Attribute.Identifier.lazy.rawValue }
+    }
+
+    /// Whether variable is dynamic or not
+    public var isDynamic: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.dynamic.rawValue }
     }
 
     /// Reference to type name where the variable is defined,
@@ -177,6 +184,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         string += "modifiers = \(String(describing: self.modifiers)), "
         string += "isFinal = \(String(describing: self.isFinal)), "
         string += "isLazy = \(String(describing: self.isLazy)), "
+        string += "isDynamic = \(String(describing: self.isDynamic)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
         string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName))"
         return string
