@@ -25,17 +25,7 @@ public enum AccessLevel: String {
 import Foundation
 
 /// Descibes Swift generic parameter
-public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "name":
-                return name
-            case "inheritedTypeName":
-                return inheritedTypeName
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class GenericParameter: NSObject, SourceryModel, Diffable {
 
     /// Generic parameter name
     public var name: String
@@ -1759,25 +1749,7 @@ public protocol Documented {
 import Foundation
 
 /// Defines enum case
-public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "name":
-                return name
-            case "hasAssociatedValue":
-                return hasAssociatedValue
-            case "associatedValues":
-                return associatedValues
-            case "indirect":
-                return indirect
-            case "annotations":
-                return annotations
-            case "rawValue":
-                return rawValue
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable {
 
     /// Enum case name
     public let name: String
@@ -1922,25 +1894,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
 import Foundation
 
 /// Defines enum case associated value
-public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "externalName":
-                return externalName
-            case "localName":
-                return localName
-            case "typeName":
-                return typeName
-            case "type":
-                return type
-            case "defaultValue":
-                return defaultValue
-            case "annotations":
-                return annotations
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable {
 
     /// Associated value local name.
     /// This is a name to be used to construct enum case value
@@ -2065,14 +2019,6 @@ import Foundation
 
 /// Defines Swift enum
 public final class Enum: Type {
-    public override subscript(dynamicMember member: String) -> Any? {
-        switch member {
-        case "cases":
-            return cases
-        default:
-            return super[dynamicMember: member]
-        }
-    }
 
     // sourcery: skipDescription
     /// Returns "enum"
@@ -3079,23 +3025,8 @@ extension String: Error {}
 import Foundation
 
 /// Describes method parameter
-public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "argumentLabel":
-                return argumentLabel
-            case "name":
-                return name
-            case "typeName":
-                return typeName
-            case "isClosure":
-                return isClosure
-            case "typeAttributes":
-                return typeAttributes
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable {
+
     /// Parameter external name
     public var argumentLabel: String?
 
@@ -3423,41 +3354,7 @@ import Foundation
 public typealias SourceryMethod = Method
 
 /// Describes method
-public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "definedInType":
-                return definedInType
-            case "shortName":
-                return shortName
-            case "name":
-                return name
-            case "selectorName":
-                return selectorName
-            case "callName":
-                return callName
-            case "parameters":
-                return parameters
-            case "throws":
-                return `throws`
-            case "isInitializer":
-                return isInitializer
-            case "accessLevel":
-                return accessLevel
-            case "isStatic":
-                return isStatic
-            case "returnTypeName":
-                return returnTypeName
-            case "isAsync":
-                return isAsync
-            case "attributes":
-                return attributes
-            case "isOptionalReturnType":
-                return isOptionalReturnType
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
 
     /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
     public let name: String
@@ -4803,54 +4700,7 @@ public final class Struct: Type {
 import Foundation
 
 /// Describes subscript
-public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
-
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "parameters":
-                return parameters
-            case "returnTypeName":
-                return returnTypeName
-            case "actualReturnTypeName":
-                return actualReturnTypeName
-            case "returnType":
-                return returnType
-            case "isOptionalReturnType":
-                return isOptionalReturnType
-            case "isImplicitlyUnwrappedOptionalReturnType":
-                return isImplicitlyUnwrappedOptionalReturnType
-            case "unwrappedReturnTypeName":
-                return unwrappedReturnTypeName
-            case "isFinal":
-                return isFinal
-            case "readAccess":
-                return readAccess
-            case "writeAccess":
-                return writeAccess
-            case "isMutable":
-                return isMutable
-            case "annotations":
-                return annotations
-            case "documentation":
-                return documentation
-            case "definedInTypeName":
-                return definedInTypeName
-            case "actualDefinedInTypeName":
-                return actualDefinedInTypeName
-            case "attributes":
-                return attributes
-            case "modifiers":
-                return modifiers
-            case "genericParameters":
-                return genericParameters
-            case "genericRequirements":
-                return genericRequirements
-            case "isGeneric":
-                return isGeneric
-            default:
-                fatalError("unable to lookup: \(member) in \(self)")
-        }
-    }
+public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -5284,33 +5134,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "types":
-                return types
-            case "enums":
-                return enums
-            case "all":
-                return all
-            case "protocols":
-                return protocols
-            case "classes":
-                return classes
-            case "structs":
-                return structs
-            case "extensions":
-                return extensions
-            case "implementing":
-                return implementing
-            case "inheriting":
-                return inheriting
-            case "based":
-                return based
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class Types: NSObject, SourceryModel, Diffable {
 
     /// :nodoc:
     public let types: [Type]
@@ -5486,10 +5310,7 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
 import Foundation
 
 /// :nodoc:
-public class TypesCollection: NSObject, AutoJSExport, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        return try? types(forKey: member)
-    }
+public class TypesCollection: NSObject, AutoJSExport {
 
     // sourcery:begin: skipJSExport
     let all: [Type]
@@ -5567,15 +5388,7 @@ public class TypesCollection: NSObject, AutoJSExport, DynamicMemberLookup {
 import Foundation
 
 /// Describes tuple type
-public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "elements":
-                return elements
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class TupleType: NSObject, SourceryModel, Diffable {
 
     /// Type name used in declaration
     public var name: String
@@ -5656,19 +5469,7 @@ public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLo
 }
 
 /// Describes tuple type element
-public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "name":
-                return name
-            case "typeName":
-                return typeName
-            case "type":
-                return type
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
 
     /// Tuple element name
     public let name: String?
@@ -5774,51 +5575,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "implements":
-                return implements
-            case "name":
-                return name
-            case "kind":
-                return kind
-            case "based":
-                return based
-            case "supertype":
-                return supertype
-            case "accessLevel":
-                return accessLevel
-            case "storedVariables":
-                return storedVariables
-            case "variables":
-                return variables
-            case "allVariables":
-                return allVariables
-            case "allMethods":
-                return allMethods
-            case "annotations":
-                return annotations
-            case "methods":
-                return methods
-            case "containedType":
-                return containedType
-            case "computedVariables":
-                return computedVariables
-            case "inherits":
-                return inherits
-            case "inheritedTypes":
-                return inheritedTypes
-            case "subscripts":
-                return subscripts
-            case "rawSubscripts":
-                return rawSubscripts
-            case "allSubscripts":
-                return allSubscripts
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     /// :nodoc:
     public var module: String?
@@ -6523,27 +6280,8 @@ extension Type {
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "tuple":
-                return tuple
-            case "name":
-                return name
-            case "isOptional":
-                return isOptional
-            case "unwrappedTypeName":
-                return unwrappedTypeName
-            case "isProtocolComposition":
-                return isProtocolComposition
-            case "isVoid":
-                return isVoid
-            case "isClosure":
-                return isClosure
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable {
+
     /// :nodoc:
     public init(name: String,
                 actualTypeName: TypeName? = nil,
@@ -7126,37 +6864,7 @@ import Foundation
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-        case "readAccess":
-            return readAccess
-        case "annotations":
-            return annotations
-        case "isOptional":
-            return isOptional
-        case "name":
-            return name
-        case "typeName":
-            return typeName
-        case "type":
-            return type
-        case "definedInType":
-            return definedInType
-        case "isStatic":
-            return isStatic
-        case "isAsync":
-            return isAsync
-        case "throws":
-            return `throws`
-        case "isArray":
-            return isArray
-        case "isDictionary":
-            return isDictionary
-        default:
-            fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable {
 
     /// Variable name
     public let name: String
