@@ -1,9 +1,25 @@
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 /// Describes Swift AssociatedType
-@objcMembers
-public final class AssociatedType: NSObject, SourceryModel {
+public final class AssociatedType: NSObject, SourceryModel, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "typeName":
+                return typeName
+            case "type":
+                return type
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
+
     /// Associated type name
     public let name: String
 
@@ -59,7 +75,7 @@ public final class AssociatedType: NSObject, SourceryModel {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { 
+            guard let name: String = aDecoder.decode(forKey: "name") else {
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
