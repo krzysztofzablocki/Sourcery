@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/art-divin/Stencil.git",
       "state" : {
-        "revision" : "ea58733eb66b063f37288d009959d47c09f520c7",
-        "version" : "0.15.2"
+        "revision" : "03a1dca8923bef5a34c08f5a560fb420326f7244",
+        "version" : "0.15.3"
       }
     },
     {
@@ -86,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/art-divin/StencilSwiftKit.git",
       "state" : {
-        "revision" : "60bd09805246f788154aefd74dfbbba512408c84",
-        "version" : "2.10.3"
+        "revision" : "6b07f85def6984e7015d65502d41b91f3f8db6d5",
+        "version" : "2.10.4"
       }
     },
     {

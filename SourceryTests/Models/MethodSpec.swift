@@ -26,6 +26,11 @@ class MethodSpec: QuickSpec {
                 expect(sut?.shortName).to(equal("foo"))
             }
 
+            it("reports isDynamic properly") {
+                expect(Method(name: "foo()", modifiers: [Modifier(name: "dynamic", detail: nil)]).isDynamic).to(beTrue())
+                expect(Method(name: "foo()", modifiers: [Modifier(name: "mutating", detail: nil)]).isDynamic).to(beFalse())
+            }
+
             it("reports definedInTypeName propertly") {
                 expect(Method(name: "foo()", definedInTypeName: TypeName(name: "BarAlias", actualTypeName: TypeName(name: "Bar"))).definedInTypeName).to(equal(TypeName(name: "BarAlias")))
                 expect(Method(name: "foo()", definedInTypeName: TypeName(name: "Foo")).definedInTypeName).to(equal(TypeName(name: "Foo")))
@@ -53,6 +58,11 @@ class MethodSpec: QuickSpec {
             it("reports generic method") {
                 expect(Method(name: "foo<T>()").isGeneric).to(beTrue())
                 expect(Method(name: "foo()").isGeneric).to(beFalse())
+            }
+
+            it("has correct access level") {
+                expect(Method(name: "foo<T>()", accessLevel: .package).accessLevel == AccessLevel.package.rawValue).to(beTrue())
+                expect(Method(name: "foo<T>()", accessLevel: .open).accessLevel == AccessLevel.package.rawValue).to(beFalse())
             }
 
             describe("When testing equality") {

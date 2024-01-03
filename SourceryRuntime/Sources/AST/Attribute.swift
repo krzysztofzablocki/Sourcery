@@ -56,10 +56,13 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case autoclosure
         case convention
         case mutating
+        case nonisolated
+        case isolated
         case escaping
         case final
         case open
         case lazy
+        case `package` = "package"
         case `public` = "public"
         case `internal` = "internal"
         case `private` = "private"
@@ -69,6 +72,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case privateSetter = "setter_access.private"
         case fileprivateSetter = "setter_access.fileprivate"
         case optional
+        case dynamic
 
         public init?(identifier: String) {
             let identifier = identifier.trimmingPrefix("source.decl.attribute.")
