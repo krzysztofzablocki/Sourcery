@@ -30,6 +30,10 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
                 return readAccess
             case "writeAccess":
                 return writeAccess
+            case "isAsync":
+                return isAsync
+            case "throws":
+                return `throws`
             case "isMutable":
                 return isMutable
             case "annotations":
@@ -100,6 +104,12 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     /// For immutable variables this value is empty string
     public var writeAccess: String
 
+    /// Whether subscript is async
+    public let isAsync: Bool
+
+    /// Whether subscript throws
+    public let `throws`: Bool
+
     /// Whether variable is mutable or not
     public var isMutable: Bool {
         return writeAccess != AccessLevel.none.rawValue
@@ -150,6 +160,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     public init(parameters: [MethodParameter] = [],
                 returnTypeName: TypeName,
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
+                isAsync: Bool = false,
+                `throws`: Bool = false,
                 genericParameters: [GenericParameter] = [],
                 genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
@@ -162,6 +174,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         self.returnTypeName = returnTypeName
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
+        self.isAsync = isAsync
+        self.throws = `throws`
         self.genericParameters = genericParameters
         self.genericRequirements = genericRequirements
         self.attributes = attributes
@@ -180,6 +194,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         string += "isFinal = \(String(describing: self.isFinal)), "
         string += "readAccess = \(String(describing: self.readAccess)), "
         string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "isAsync = \(String(describing: self.isAsync)), "
+        string += "`throws` = \(String(describing: self.throws)), "
         string += "isMutable = \(String(describing: self.isMutable)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "documentation = \(String(describing: self.documentation)), "
@@ -203,6 +219,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
+        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.throws, expected: castObject.throws))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
@@ -219,6 +237,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         hasher.combine(self.returnTypeName)
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.throws)
         hasher.combine(self.annotations)
         hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
@@ -236,6 +256,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         if self.returnTypeName != rhs.returnTypeName { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.throws != rhs.throws { return false }
         if self.annotations != rhs.annotations { return false }
         if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
@@ -287,6 +309,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
                 }
                 fatalError()
              }; self.documentation = documentation
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
             guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
@@ -322,6 +346,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             aCoder.encode(self.returnType, forKey: "returnType")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")

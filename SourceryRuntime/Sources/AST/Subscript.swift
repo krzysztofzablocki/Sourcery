@@ -50,6 +50,12 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     /// For immutable variables this value is empty string
     public var writeAccess: String
 
+    /// Whether subscript is async
+    public let isAsync: Bool
+
+    /// Whether subscript throws
+    public let `throws`: Bool
+
     /// Whether variable is mutable or not
     public var isMutable: Bool {
         return writeAccess != AccessLevel.none.rawValue
@@ -96,10 +102,11 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     /// :nodoc:
     public var __parserData: Any?
 
-    /// :nodoc:
     public init(parameters: [MethodParameter] = [],
                 returnTypeName: TypeName,
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
+                isAsync: Bool = false,
+                `throws`: Bool = false,
                 genericParameters: [GenericParameter] = [],
                 genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
@@ -112,6 +119,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         self.returnTypeName = returnTypeName
         self.readAccess = accessLevel.read.rawValue
         self.writeAccess = accessLevel.write.rawValue
+        self.isAsync = isAsync
+        self.throws = `throws`
         self.genericParameters = genericParameters
         self.genericRequirements = genericRequirements
         self.attributes = attributes
@@ -130,6 +139,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         string += "isFinal = \(String(describing: self.isFinal)), "
         string += "readAccess = \(String(describing: self.readAccess)), "
         string += "writeAccess = \(String(describing: self.writeAccess)), "
+        string += "isAsync = \(String(describing: self.isAsync)), "
+        string += "`throws` = \(String(describing: self.throws)), "
         string += "isMutable = \(String(describing: self.isMutable)), "
         string += "annotations = \(String(describing: self.annotations)), "
         string += "documentation = \(String(describing: self.documentation)), "
@@ -153,6 +164,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
+        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.throws, expected: castObject.throws))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
@@ -169,6 +182,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         hasher.combine(self.returnTypeName)
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.throws)
         hasher.combine(self.annotations)
         hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
@@ -186,6 +201,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         if self.returnTypeName != rhs.returnTypeName { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.throws != rhs.throws { return false }
         if self.annotations != rhs.annotations { return false }
         if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
@@ -200,52 +217,54 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { 
+            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else {
                 withVaList(["parameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.parameters = parameters
-            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { 
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else {
                 withVaList(["returnTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
-            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { 
+            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else {
                 withVaList(["readAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.readAccess = readAccess
-            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { 
+            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else {
                 withVaList(["writeAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.writeAccess = writeAccess
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
                 withVaList(["documentation"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.documentation = documentation
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -272,6 +291,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             aCoder.encode(self.returnType, forKey: "returnType")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
