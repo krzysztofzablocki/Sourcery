@@ -95,6 +95,28 @@ class FileParserSubscriptsSpec: QuickSpec {
                     let paramAnnotations = subscripts?.first?.parameters.first?.annotations
                     expect(paramAnnotations).to(equal(["thisIsSubscriptParam": NSNumber(value: true)]))
                 }
+
+                it("extracts generic requirements") {
+                    let subscripts = parse("""
+                                           protocol Subscript: AnyObject {
+                                             subscript(arg1: Int) -> Int? { get set }
+                                             subscript<T: Hashable & Cancellable>(arg1: String) -> T? { get set }
+                                             subscript<T>(with arg1: String) -> T? where T: Cancellable { get }
+                                           }
+                                           """).first?.subscripts
+
+                    expect(subscripts?[0].isGeneric).to(beFalse())
+                    expect(subscripts?[1].isGeneric).to(beTrue())
+                    expect(subscripts?[2].isGeneric).to(beTrue())
+
+                    expect(subscripts?[1].genericParameters.first?.name).to(equal("T"))
+                    expect(subscripts?[1].genericParameters.first?.inheritedTypeName?.name).to(equal("Hashable & Cancellable"))
+
+                    expect(subscripts?[2].genericParameters.first?.name).to(equal("T"))
+                    expect(subscripts?[2].genericRequirements.first?.leftType.name).to(equal("T"))
+                    expect(subscripts?[2].genericRequirements.first?.relationshipSyntax).to(equal(":"))
+                    expect(subscripts?[2].genericRequirements.first?.rightType.typeName.name).to(equal("Cancellable"))
+                }
             }
         }
     }

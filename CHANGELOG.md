@@ -3,6 +3,8 @@
 ## Changes
 - Add support for `typealias`es in EJS templates. ([#1208](https://github.com/krzysztofzablocki/Sourcery/pull/1208))
 - Add support for existential to Automockable Protocol with generic types. ([#1220](https://github.com/krzysztofzablocki/Sourcery/pull/1220))
+- Add support for generic parameters and requirements in subscripts.
+    ([#1242](https://github.com/krzysztofzablocki/Sourcery/pull/1242))
 - Throw throwable error after updating mocks's calls counts and received parameters/invocations.
     ([#1224](https://github.com/krzysztofzablocki/Sourcery/pull/1224))
 - Fix unit tests on Linux ([#1225](https://github.com/krzysztofzablocki/Sourcery/pull/1225))

@@ -1391,6 +1391,26 @@ class StaticMethodProtocolMock: StaticMethodProtocol {
     }
 
 }
+class SubscriptProtocolMock: SubscriptProtocol {
+    //MARK: - Subscript #1
+     subscript(arg: Int) -> String {
+     get { fatalError("Subscripts are not fully supported yet") }
+     set { fatalError("Subscripts are not fully supported yet") }
+    }
+    //MARK: - Subscript #2
+     subscript<T>(arg: T) -> Int {
+     get { fatalError("Subscripts are not fully supported yet") }
+    }
+    //MARK: - Subscript #3
+     subscript<T: Hashable>(arg: T) -> T? {
+     get { fatalError("Subscripts are not fully supported yet") }
+     set { fatalError("Subscripts are not fully supported yet") }
+    }
+    //MARK: - Subscript #4
+     subscript<T>(arg: String) -> T? where T : Cancellable {
+     get { fatalError("Subscripts are not fully supported yet") }
+    }
+}
 class ThrowableProtocolMock: ThrowableProtocol {
 
 

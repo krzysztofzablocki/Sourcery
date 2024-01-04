@@ -1,10 +1,60 @@
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 /// Describes subscript
-@objcMembers
-public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
-    
+public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "parameters":
+                return parameters
+            case "returnTypeName":
+                return returnTypeName
+            case "actualReturnTypeName":
+                return actualReturnTypeName
+            case "returnType":
+                return returnType
+            case "isOptionalReturnType":
+                return isOptionalReturnType
+            case "isImplicitlyUnwrappedOptionalReturnType":
+                return isImplicitlyUnwrappedOptionalReturnType
+            case "unwrappedReturnTypeName":
+                return unwrappedReturnTypeName
+            case "isFinal":
+                return isFinal
+            case "readAccess":
+                return readAccess
+            case "writeAccess":
+                return writeAccess
+            case "isMutable":
+                return isMutable
+            case "annotations":
+                return annotations
+            case "documentation":
+                return documentation
+            case "definedInTypeName":
+                return definedInTypeName
+            case "actualDefinedInTypeName":
+                return actualDefinedInTypeName
+            case "attributes":
+                return attributes
+            case "modifiers":
+                return modifiers
+            case "genericParameters":
+                return genericParameters
+            case "genericRequirements":
+                return genericRequirements
+            case "isGeneric":
+                return isGeneric
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
+
     /// Method parameters
     public var parameters: [MethodParameter]
 
@@ -200,38 +250,38 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { 
+            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else {
                 withVaList(["parameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.parameters = parameters
-            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { 
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else {
                 withVaList(["returnTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
-            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { 
+            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else {
                 withVaList(["readAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.readAccess = readAccess
-            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { 
+            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else {
                 withVaList(["writeAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.writeAccess = writeAccess
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
                 withVaList(["documentation"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -239,13 +289,13 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
              }; self.documentation = documentation
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

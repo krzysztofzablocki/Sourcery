@@ -1,9 +1,26 @@
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 /// Descibes Swift generic requirement
-@objcMembers
-public class GenericRequirement: NSObject, SourceryModel, Diffable {
+public class GenericRequirement: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "leftType":
+                return leftType
+            case "rightType":
+                return rightType
+            case "relationship":
+                return relationship
+            case "relationshipSyntax":
+                return relationshipSyntax
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
 
     public enum Relationship: String {
         case equals
@@ -81,25 +98,25 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable {
 
             /// :nodoc:
             required public init?(coder aDecoder: NSCoder) {
-                guard let leftType: AssociatedType = aDecoder.decode(forKey: "leftType") else { 
+                guard let leftType: AssociatedType = aDecoder.decode(forKey: "leftType") else {
                     withVaList(["leftType"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }
                     fatalError()
                  }; self.leftType = leftType
-                guard let rightType: GenericTypeParameter = aDecoder.decode(forKey: "rightType") else { 
+                guard let rightType: GenericTypeParameter = aDecoder.decode(forKey: "rightType") else {
                     withVaList(["rightType"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }
                     fatalError()
                  }; self.rightType = rightType
-                guard let relationship: String = aDecoder.decode(forKey: "relationship") else { 
+                guard let relationship: String = aDecoder.decode(forKey: "relationship") else {
                     withVaList(["relationship"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }
                     fatalError()
                  }; self.relationship = relationship
-                guard let relationshipSyntax: String = aDecoder.decode(forKey: "relationshipSyntax") else { 
+                guard let relationshipSyntax: String = aDecoder.decode(forKey: "relationshipSyntax") else {
                     withVaList(["relationshipSyntax"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }

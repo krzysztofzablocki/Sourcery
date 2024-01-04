@@ -21,6 +21,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 return typeAttributes
             case "isVariadic":
                 return isVariadic
+            case "asSource":
+                return asSource
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
