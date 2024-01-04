@@ -96,3 +96,4 @@ extension Types: NSCoding {}
 
 extension Variable: NSCoding {}
 
+extension GenericParameter: NSCoding {}

@@ -120,6 +120,14 @@ import {{ import }}
 {% endif %}
 {% endmacro %}
 
+{% macro mockSubscript subscript index %}
+    //MARK: - Subscript #{{ index }}
+    {% call accessLevel variable.readAccess %}subscript{% if subscript.isGeneric %}<{% for genericParameter in subscript.genericParameters %}{{ genericParameter.name }}{% if genericParameter.inheritedTypeName %}: {{ genericParameter.inheritedTypeName.name }}{% endif %}{{ ', ' if not forloop.last }}{% endfor %}>{% endif %}({% for parameter in subscript.parameters %}{{ parameter.asSource }}{{ ', ' if not forloop.last }}{% endfor %}) -> {{ subscript.returnTypeName.name }}{% if subscript.genericRequirements|count != 0 %} where {% for requirement in subscript.genericRequirements %}{{ requirement.leftType.name }} {{ requirement.relationshipSyntax }} {{ requirement.rightType.typeName.name }}{{ ', ' if not forloop.last }}{% endfor %}{% endif %} {
+    {% if subscript.readAccess %} get { fatalError("Subscripts are not fully supported yet") }{% endif %}
+    {% if subscript.writeAccess %} set { fatalError("Subscripts are not fully supported yet") }{% endif %}
+    }
+{% endmacro %}
+
 {% macro resetMethod method %}
         {# for type method which are mocked, a way to reset the invocation, argument, etc #}
         {% if method.isStatic and not method.isInitializer %} //MARK: - {{ method.shortName }}
@@ -286,6 +294,10 @@ import {{ import }}
 
 {% for method in type.allMethods|!definedInExtension %}
     {% call mockMethod method %}
+{% endfor %}
+
+{% for subscript in type.allSubscripts|!definedInExtension %}
+    {% call mockSubscript subscript forloop.counter %}
 {% endfor %}
 }
 {% endif %}{% endfor %}
