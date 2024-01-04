@@ -231,6 +231,7 @@ public protocol ProtocolWithOverrides {
 protocol SubscriptProtocol {
     subscript(arg: Int) -> String { get set }
     subscript<T>(arg: T) -> Int { get }
+    subscript<T>(arg: T) -> String { get async }
     subscript<T: Hashable>(arg: T) -> T? { get set }
-    subscript<T>(arg: String) -> T? where T: Cancellable { get }
+    subscript<T>(arg: String) -> T? where T: Cancellable { get throws }
 }
