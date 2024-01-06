@@ -117,7 +117,7 @@ class FileParserSubscriptsSpec: QuickSpec {
                     expect(subscripts?[2].genericRequirements.first?.relationshipSyntax).to(equal(":"))
                     expect(subscripts?[2].genericRequirements.first?.rightType.typeName.name).to(equal("Cancellable"))
                 }
-
+                
                 it("extracts async and throws") {
                     let subscripts = parse("""
                                            protocol Subscript: AnyObject {
@@ -134,6 +134,21 @@ class FileParserSubscriptsSpec: QuickSpec {
                     expect(subscripts?[0].throws).to(beFalse())
                     expect(subscripts?[1].throws).to(beTrue())
                     expect(subscripts?[2].throws).to(beTrue())
+                }
+                
+                it("extracts optional return type") {
+                    let subscripts = parse("""
+                                           protocol Subscript: AnyObject {
+                                             subscript(arg1: Int) -> Int? { get set }
+                                             subscript(arg2: Int) -> Int! { get }
+                                           }
+                                           """).first?.subscripts
+
+                    expect(subscripts?[0].returnTypeName.name).to(equal("Int?"))
+                    expect(subscripts?[0].returnTypeName.unwrappedTypeName).to(equal("Int"))
+
+                    expect(subscripts?[1].returnTypeName.name).to(equal("Int!"))
+                    expect(subscripts?[1].returnTypeName.unwrappedTypeName).to(equal("Int"))
                 }
             }
         }
