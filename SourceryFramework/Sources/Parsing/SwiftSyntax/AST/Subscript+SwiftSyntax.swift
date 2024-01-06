@@ -79,7 +79,7 @@ extension Subscript {
 
         self.init(
           parameters: node.indices.parameterList.map { MethodParameter($0, annotationsParser: annotationsParser) },
-          returnTypeName: TypeName(node.result.returnType.description.trimmed),
+          returnTypeName: TypeName(node.result.returnType),
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
           isAsync: hadAsync,
           throws: hadThrowable,
