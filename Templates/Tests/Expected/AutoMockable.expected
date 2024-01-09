@@ -10,6 +10,29 @@ import UIKit
 import AppKit
 #endif
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public class AccessLevelProtocolMock: AccessLevelProtocol {
 
     public init() {}
@@ -40,6 +63,7 @@ public class AccessLevelProtocolMock: AccessLevelProtocol {
         }
     }
 
+
 }
 class AnnotatedProtocolMock: AnnotatedProtocol {
 
@@ -62,6 +86,7 @@ class AnnotatedProtocolMock: AnnotatedProtocol {
         sayHelloWithNameStringVoidReceivedInvocations.append(name)
         sayHelloWithNameStringVoidClosure?(name)
     }
+
 
 }
 class AnyProtocolMock: AnyProtocol {
@@ -395,6 +420,7 @@ class AnyProtocolMock: AnyProtocol {
         }
     }
 
+
 }
 class AsyncProtocolMock: AsyncProtocol {
 
@@ -488,6 +514,7 @@ class AsyncProtocolMock: AsyncProtocol {
         try await callAsyncAndThrowVoidParameterIntVoidClosure?(parameter)
     }
 
+
 }
 class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
 
@@ -536,6 +563,7 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
     var firstNameClosure: (() async throws -> String)?
 
 
+
 }
 class AsyncVariablesProtocolMock: AsyncVariablesProtocol {
 
@@ -574,6 +602,7 @@ class AsyncVariablesProtocolMock: AsyncVariablesProtocol {
     }
     var underlyingFirstName: String!
     var firstNameClosure: (() async -> String)?
+
 
 
 }
@@ -617,6 +646,7 @@ class BasicProtocolMock: BasicProtocol {
         saveConfigurationStringVoidClosure?(configuration)
     }
 
+
 }
 class ClosureProtocolMock: ClosureProtocol {
 
@@ -640,6 +670,7 @@ class ClosureProtocolMock: ClosureProtocol {
         setClosureClosureEscapingVoidVoidClosure?(closure)
     }
 
+
 }
 class CurrencyPresenterMock: CurrencyPresenter {
 
@@ -662,6 +693,7 @@ class CurrencyPresenterMock: CurrencyPresenter {
         showSourceCurrencyCurrencyStringVoidReceivedInvocations.append(currency)
         showSourceCurrencyCurrencyStringVoidClosure?(currency)
     }
+
 
 }
 class ExampleVarargMock: ExampleVararg {
@@ -691,6 +723,7 @@ class ExampleVarargMock: ExampleVararg {
         }
     }
 
+
 }
 class ExtendableProtocolMock: ExtendableProtocol {
 
@@ -718,6 +751,7 @@ class ExtendableProtocolMock: ExtendableProtocol {
         reportMessageStringVoidReceivedInvocations.append(message)
         reportMessageStringVoidClosure?(message)
     }
+
 
 }
 class FunctionWithAttributesMock: FunctionWithAttributes {
@@ -785,6 +819,7 @@ class FunctionWithAttributesMock: FunctionWithAttributes {
         }
     }
 
+
 }
 class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
 
@@ -827,6 +862,7 @@ class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
         }
     }
 
+
 }
 class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
 
@@ -850,6 +886,7 @@ class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
         startCarStringOfModelStringVoidClosure?(car, model)
     }
 
+
 }
 class HouseProtocolMock: HouseProtocol {
 
@@ -866,6 +903,7 @@ class HouseProtocolMock: HouseProtocol {
     var f2Publisher: GenericType<Never, any PersonProtocol, Never>?
     var f3Publisher: GenericType<Never, Never, any PersonProtocol>?
     var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>?
+
 
 
 }
@@ -891,6 +929,7 @@ class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOpt
             return implicitReturnStringReturnValue
         }
     }
+
 
 }
 class InitializationProtocolMock: InitializationProtocol {
@@ -935,6 +974,7 @@ class InitializationProtocolMock: InitializationProtocol {
         stopVoidClosure?()
     }
 
+
 }
 class MultiClosureProtocolMock: MultiClosureProtocol {
 
@@ -958,6 +998,7 @@ class MultiClosureProtocolMock: MultiClosureProtocol {
         setClosureNameStringClosureEscapingVoidVoidClosure?(name, closure)
     }
 
+
 }
 class MultiNonEscapingClosureProtocolMock: MultiNonEscapingClosureProtocol {
 
@@ -976,6 +1017,7 @@ class MultiNonEscapingClosureProtocolMock: MultiNonEscapingClosureProtocol {
         executeClosureNameStringClosureVoidVoidCallsCount += 1
         executeClosureNameStringClosureVoidVoidClosure?(name, closure)
     }
+
 
 }
 class NonEscapingClosureProtocolMock: NonEscapingClosureProtocol {
@@ -1025,6 +1067,7 @@ public class ProtocolWithMethodWithGenericParametersMock: ProtocolWithMethodWith
             return executeParamResultIntErrorResultStringErrorReturnValue
         }
     }
+
 
 }
 public class ProtocolWithOverridesMock: ProtocolWithOverrides {
@@ -1195,6 +1238,7 @@ public class ProtocolWithOverridesMock: ProtocolWithOverrides {
         }
     }
 
+
 }
 class ReservedWordsProtocolMock: ReservedWordsProtocol {
 
@@ -1222,6 +1266,7 @@ class ReservedWordsProtocolMock: ReservedWordsProtocol {
             return continueWithMessageStringStringReturnValue
         }
     }
+
 
 }
 class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
@@ -1263,6 +1308,7 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
         startPlaneStringOfModelStringVoidClosure?(plane, model)
     }
 
+
 }
 class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
 
@@ -1285,6 +1331,7 @@ class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
         sendMessageStringVoidReceivedInvocations.append(message)
         sendMessageStringVoidClosure?(message)
     }
+
 
 }
 class SomeProtocolMock: SomeProtocol {
@@ -1382,6 +1429,7 @@ class SomeProtocolMock: SomeProtocol {
         dXSomeStubWithSomeNameProtocolVoidClosure?(x)
     }
 
+
 }
 class StaticMethodProtocolMock: StaticMethodProtocol {
 
@@ -1420,8 +1468,14 @@ class StaticMethodProtocolMock: StaticMethodProtocol {
         }
     }
 
+
 }
 class SubscriptProtocolMock: SubscriptProtocol {
+
+
+
+
+
     //MARK: - Subscript #1
     subscript(arg: Int) -> String {
         get { fatalError("Subscripts are not fully supported yet") }
@@ -1489,6 +1543,7 @@ class ThrowableProtocolMock: ThrowableProtocol {
         try doOrThrowVoidVoidClosure?()
     }
 
+
 }
 class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
 
@@ -1537,6 +1592,7 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
     var firstNameClosure: (() throws -> String)?
 
 
+
 }
 class VariablesProtocolMock: VariablesProtocol {
 
@@ -1554,7 +1610,6 @@ class VariablesProtocolMock: VariablesProtocol {
     var underlyingAge: (Int)!
     var kids: [String] = []
     var universityMarks: [String: Int] = [:]
-
 
 
 
