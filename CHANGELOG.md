@@ -1,4 +1,11 @@
 # Sourcery CHANGELOG
+## 2.1.4
+## Changes
+- Added generic requirements and generic parameters to Subscript ([#1242](https://github.com/krzysztofzablocki/Sourcery/issues/1242))
+- Added isAsync and throws to Subscript ([#1249](https://github.com/krzysztofzablocki/Sourcery/issues/1249))
+- Initialise Subscript's returnTypeName with TypeSyntax, not String ([#1250](https://github.com/krzysztofzablocki/Sourcery/issues/1250))
+- Swifty generated variable names + fixed generated mocks compilation issues due to method generic parameters ([#1252](https://github.com/krzysztofzablocki/Sourcery/issues/1252))
+
 ## 2.1.3
 ## Changes
 - Add support for `typealias`es in EJS templates. ([#1208](https://github.com/krzysztofzablocki/Sourcery/pull/1208))
