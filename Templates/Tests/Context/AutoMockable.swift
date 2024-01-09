@@ -235,3 +235,8 @@ protocol SubscriptProtocol {
     subscript<T: Hashable>(arg: T) -> T? { get set }
     subscript<T>(arg: String) -> T? where T: Cancellable { get throws }
 }
+
+// sourcery: AutoMockable
+public protocol ProtocolWithMethodWithGenericParameters {
+    func execute(param: Result<Int, Error>) -> Result<String, Error>
+}

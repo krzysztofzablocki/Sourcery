@@ -1527,3 +1527,32 @@ class VariablesProtocolMock: VariablesProtocol {
 
 
 }
+class ProtocolWithMethodWithGenericParameters: SomeProtocol {
+
+
+
+
+    //MARK: - execute
+
+    var executeParamResultIntErrorResultStringErrorCallsCount = 0
+    var executeParamResultIntErrorResultStringErrorCalled: Bool {
+        return executeParamResultIntErrorResultStringErrorCallsCount > 0
+    }
+    var executeParamResultIntErrorResultStringErrorReceivedParam: (Result<Int, Error>)?
+    var executeParamResultIntErrorResultStringErrorReceivedInvocations: [(Result<Int, Error>)] = []
+    var executeParamResultIntErrorResultStringErrorReturnValue: Result<String, Error>!
+    var executeParamResultIntErrorResultStringErrorClosure: ((Result<Int, Error>) -> Result<String, Error>)?
+
+    func execute(param: Result<Int, Error>) -> Result<String, Error> {
+        executeParamResultIntErrorResultStringErrorCallsCount += 1
+        executeParamResultIntErrorResultStringErrorReceivedParam = param
+        executeParamResultIntErrorResultStringErrorReceivedInvocations.append(param)
+        if let executeParamResultIntErrorResultStringErrorClosure = executeParamResultIntErrorResultStringErrorClosure {
+            return executeParamResultIntErrorResultStringErrorClosure(param)
+        } else {
+            return executeParamResultIntErrorResultStringErrorReturnValue
+        }
+    }
+
+
+}

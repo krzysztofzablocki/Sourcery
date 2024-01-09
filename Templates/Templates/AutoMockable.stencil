@@ -16,8 +16,12 @@ import {{ import }}
 @testable import {{ import }}
 {% endfor %}
 
-{% macro cleanString string %}{{ string | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | replace:".","_" | replace:"[","" | replace:"]","" | snakeToCamelCase }}{% endmacro %}
-{% macro swiftifyMethodName method %}{% call cleanString method.name | lowerFirstWord %}{% call cleanString method.actualReturnTypeName.name | upperFirstLetter %}{% endmacro %}
+{% macro cleanString string %}{{ string | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | replace:".","_" | replace:"[","" | replace:"]","" | replace:"<","" | replace:">","" | snakeToCamelCase }}{% endmacro %}
+{%- macro swiftifyMethodName method -%}
+    {%- set cleanMethodName %}{% call cleanString method.name %}{% endset %}
+    {%- set cleanMethodReturnTypeName %}{% call cleanString method.actualReturnTypeName.name %}{% endset -%}
+    {{ cleanMethodName | lowerFirstLetter }}{{ cleanMethodReturnTypeName | upperFirstLetter }}
+{%- endmacro -%}
 
 {% macro accessLevel level %}{% if level != 'internal' %}{{ level }} {% endif %}{% endmacro %}
 
