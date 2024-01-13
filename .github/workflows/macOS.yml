@@ -17,17 +17,11 @@ jobs:
   macos_build:
     runs-on: macos-13
     steps:
-    - name: Set Xcode 14.3.1
-      run: sudo xcode-select -s /Applications/Xcode_14.3.1.app/Contents/Developer
-    #- name: Set Xcode 15.0 Beta
-    #  run: sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+    - name: Set Xcode 15.1.0
+      run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
     - name: Print Current Xcode
       run: xcode-select -p
     - uses: actions/checkout@v3
-    - name: Bundle Install
-      run:  bundle install
-    - name: Swift Build
-      run:  swift build
     - name: Run tests
       run: swift test
 
