@@ -17,34 +17,16 @@ jobs:
   linux_build:
     runs-on: ubuntu-latest
     steps:
-    # - name: Setup Swift
-    #   # You may pin to the exact commit or the version.
-    #   # uses: swift-actions/setup-swift@65540b95f51493d65f5e59e97dcef9629ddf11bf
-    #   uses: swift-actions/setup-swift@v1.23.0
-    #   with:
-    #     # Swift version to configure
-    #     swift-version: 5.9 # default is 5.8
-    - name: Setup Swift environment for macOS, Linux and Windows
-      uses: SwiftyLab/setup-swift@v1.4.1
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v1.26.0
       with:
-        swift-version: "5.9"
+        swift-version: "5.9.2"
     - name: Get swift version
       run: swift --version
     - uses: actions/checkout@v3
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
-      with:
-        ruby-version: '3.1'
     - name: Install dependencies
       run:  |
-            sudo apt install libffi-dev
             sudo apt install build-essential
-            sudo apt install libsqlite3-dev
-            sudo apt-get install libncurses5-dev
       shell: bash
-    - name: Bundle Install
-      run:  bundle install
-    - name: Swift Build
-      run:  swift build
     - name: Run tests
       run: swift test
