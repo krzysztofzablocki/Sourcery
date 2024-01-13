@@ -1,4 +1,4 @@
-name: Build for Linux
+name: Release Build for Linux
 
 on:
   workflow_dispatch:
@@ -6,12 +6,12 @@ on:
       ref:
         description: 'Ref to build (branch, tag or SHA)'
         required: false
-        default: 'main'
+        default: 'master'
 
 jobs:
   build:
-    name: Build SwiftFormat for Linux
-    runs-on: ubuntu-20.04
+    name: Build Sourcery for Ubuntu (latest)
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -20,10 +20,10 @@ jobs:
         run: |
           swift build --configuration release --static-swift-stdlib --enable-dead-strip
           SWIFTFORMAT_BIN_PATH=`swift build --configuration release --show-bin-path`
-          mv $SWIFTFORMAT_BIN_PATH/swiftformat "${HOME}/swiftformat_linux"
+          mv $SWIFTFORMAT_BIN_PATH/sourcery_ubuntu "${HOME}/sourcery_ubuntu"
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: swiftformat_linux
-          path: ~/swiftformat_linux
+          name: sourcery_ubuntu
+          path: ~/sourcery_ubuntu
           retention-days: 5

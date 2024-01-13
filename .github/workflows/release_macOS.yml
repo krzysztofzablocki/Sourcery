@@ -1,4 +1,4 @@
-name: Build for Linux
+name: Release Build for macOS
 
 on:
   workflow_dispatch:
@@ -6,13 +6,17 @@ on:
       ref:
         description: 'Ref to build (branch, tag or SHA)'
         required: false
-        default: 'main'
+        default: 'master'
 
 jobs:
   build:
-    name: Build SwiftFormat for Linux
-    runs-on: ubuntu-20.04
+    name: Build Sourcery for macOS
+    runs-on: macos-13
     steps:
+      - name: Set Xcode 15.1.0
+        run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
+      - name: Print Current Xcode
+        run: xcode-select -p
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.ref }}
@@ -20,10 +24,10 @@ jobs:
         run: |
           swift build --configuration release --static-swift-stdlib --enable-dead-strip
           SWIFTFORMAT_BIN_PATH=`swift build --configuration release --show-bin-path`
-          mv $SWIFTFORMAT_BIN_PATH/swiftformat "${HOME}/swiftformat_linux"
+          mv $SWIFTFORMAT_BIN_PATH/sourcery_macOS "${HOME}/sourcery_macOS"
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: swiftformat_linux
-          path: ~/swiftformat_linux
+          name: sourcery_macOS
+          path: ~/sourcery_macOS
           retention-days: 5
