@@ -27,10 +27,10 @@ jobs:
         run: |
           swift build --configuration release --static-swift-stdlib --enable-dead-strip
           SWIFTFORMAT_BIN_PATH=`swift build --configuration release --show-bin-path`
-          mv $SWIFTFORMAT_BIN_PATH/sourcery_macOS "${HOME}/sourcery_macOS"
+          mv $SWIFTFORMAT_BIN_PATH/sourcery "${HOME}/sourcery"
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: sourcery_macOS
-          path: ~/sourcery_macOS
+          name: sourcery
+          path: ~/sourcery
           retention-days: 5
