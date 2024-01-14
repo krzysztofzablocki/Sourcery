@@ -21,7 +21,7 @@ jobs:
           ref: ${{ github.event.inputs.ref }}
       - name: Install dependencies
         run:  |
-            sudo apt install build-essential
+            sudo apt install libcurl4
       - name: Build it
         run: |
           swift build --configuration release --static-swift-stdlib --enable-dead-strip
