@@ -27,11 +27,11 @@ jobs:
         run: |
           BUILD_DIR='build/'
           CLI_DIR='cli/'
-          output_path="#{CLI_DIR}bin/sourcery"
-          swift build --disable-sandbox -c release --arch arm64 --build-path #{BUILD_DIR}
-          swift build --disable-sandbox -c release --arch x86_64 --build-path #{BUILD_DIR}
-          lipo -create -output #{output_path} #{BUILD_DIR}arm64-apple-macosx/release/sourcery #{BUILD_DIR}x86_64-apple-macosx/release/sourcery
-          strip -rSTX #{output_path}
+          output_path="${CLI_DIR}bin/sourcery"
+          swift build --disable-sandbox -c release --arch arm64 --build-path $BUILD_DIR
+          swift build --disable-sandbox -c release --arch x86_64 --build-path $BUILD_DIR
+          lipo -create -output $output_path ${BUILD_DIR}arm64-apple-macosx/release/sourcery ${BUILD_DIR}x86_64-apple-macosx/release/sourcery
+          strip -rSTX ${output_path}
           mv $output_path "${HOME}/sourcery"
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
