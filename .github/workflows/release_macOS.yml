@@ -2,7 +2,7 @@ name: release macOS
 
 on:
   workflow_run:
-    workflows: ["test macOS"]
+    workflows: [test macOS]
     types:
       - completed
   workflow_dispatch:

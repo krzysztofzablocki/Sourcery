@@ -2,7 +2,7 @@ name: release ubuntu
 
 on:
   workflow_run:
-    workflows: ["test ubuntu"]
+    workflows: [test ubuntu]
     types:
       - completed
   workflow_dispatch:
