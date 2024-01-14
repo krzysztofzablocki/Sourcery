@@ -28,7 +28,7 @@ jobs:
           swift-version: "5.9.2"
       - name: Build it
         run: |
-          swift build -c release --static-swift-stdlib --enable-dead-strip --disable-sanbox
+          swift build -c release --static-swift-stdlib --enable-dead-strip --disable-sandbox
           SOURCERY_BIN_PATH=`swift build -c release --show-bin-path`
           mv $SOURCERY_BIN_PATH/sourcery_ubuntu "${HOME}/sourcery_ubuntu"
       - name: 'Upload Artifact'
