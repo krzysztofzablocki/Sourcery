@@ -19,21 +19,18 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.ref }}
-      - name: Install dependencies
-        run:  |
-            sudo apt install libcurl4
       - name: Setup Swift
         uses: swift-actions/setup-swift@v1.26.0
         with:
           swift-version: "5.9.2"
       - name: Build it
         run: |
-          swift build -c release --static-swift-stdlib --enable-dead-strip --disable-sandbox
-          SOURCERY_BIN_PATH=`swift build -c release --show-bin-path`
-          mv $SOURCERY_BIN_PATH/sourcery_ubuntu "${HOME}/sourcery_ubuntu"
+          BUILD_DIR='build/'
+          swift build --disable-sandbox -c release --build-path $BUILD_DIR
+          mv $BUILD_DIR/sourcery "${HOME}/sourcery"
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: sourcery_ubuntu
-          path: ~/sourcery_ubuntu
+          name: sourcery
+          path: ~/sourcery
           retention-days: 5
