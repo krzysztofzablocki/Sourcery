@@ -1,0 +1,88 @@
+name: Release Build for Linux
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to build (branch, tag or SHA)'
+        required: false
+        default: 'master'
+  pull_request:
+    branches:
+      [ master ]
+
+jobs:
+  build:
+    name: Build Sourcery for Ubuntu (latest)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [aarch64]
+        include:
+          - arch: aarch64
+            cpu: cortex-a53
+            base_image: raspios_lite_arm64:latest
+            cpu_info: raspberrypi_zero2_w_arm64_w
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref }}
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1.26.0
+        with:
+          swift-version: "5.9.2"
+      - uses: pguyot/arm-runner-action@v2
+        with:
+          base_image: ${{ matrix.base_image }}
+          cpu: ${{ matrix.cpu }}
+          cpu_info: ${{ matrix.cpu_info }}
+          commands: |
+            BUILD_DIR='${HOME}/build/'
+            swift build --disable-sandbox -c release --build-path $BUILD_DIR
+            mv "${BUILD_DIR}x86_64-unknown-linux-gnu/release/sourcery" "${HOME}/sourcery"
+      
+      # - name: Build it
+      #   run: |
+      #     BUILD_DIR='${HOME}/build/'
+      #     swift build --disable-sandbox -c release --build-path $BUILD_DIR
+      #     mv "${BUILD_DIR}x86_64-unknown-linux-gnu/release/sourcery" "${HOME}/sourcery"
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sourcery
+          path: ~/sourcery
+          retention-days: 5
+
+
+
+
+#           name: Test architecture matrix
+# on: [push, pull_request, workflow_dispatch]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         arch: [armv6l, armv7l, aarch64]
+#         include:
+#         - arch: armv6l
+#           cpu: arm1176
+#           base_image: raspios_lite:latest
+#           cpu_info: raspberrypi_zero_w
+#         - arch: armv7l
+#           cpu: cortex-a7
+#           base_image: raspios_lite:latest
+#           cpu_info: raspberrypi_3b
+#         - arch: aarch64
+#           cpu: cortex-a53
+#           base_image: raspios_lite_arm64:latest
+#           cpu_info: raspberrypi_zero2_w_arm64_w
+#     steps:
+#     - uses: pguyot/arm-runner-action@v2
+#       with:
+#         base_image: ${{ matrix.base_image }}
+#         cpu: ${{ matrix.cpu }}
+#         cpu_info: ${{ matrix.cpu_info }}
+#         commands: |
+#             test `uname -m` = ${{ matrix.arch }}
+#             grep Model /proc/cpuinfo
