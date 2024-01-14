@@ -27,6 +27,7 @@ jobs:
         run: |
           BUILD_DIR='${HOME}/build/'
           swift build --disable-sandbox -c release --build-path $BUILD_DIR
+          ls $BUILD_DIR
           mv "${BUILD_DIR}sourcery" "${HOME}sourcery"
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
