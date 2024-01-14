@@ -1,18 +1,26 @@
-name: ubuntu release
+name: release ubuntu
 
 on:
+  workflow_run:
+    workflows: ["test ubuntu"]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       ref:
         description: 'Ref to build (branch, tag or SHA)'
         required: false
         default: 'master'
+  pull_request:
+    branches:
+      - master
   release:
     types:
       [ created ]
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Sourcery for Ubuntu (latest)
     runs-on: ubuntu-latest
     steps:

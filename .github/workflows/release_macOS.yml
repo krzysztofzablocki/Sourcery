@@ -1,18 +1,26 @@
-name: macOS release
+name: release macOS
 
 on:
+  workflow_run:
+    workflows: ["test macOS"]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       ref:
         description: 'Ref to build (branch, tag or SHA)'
         required: false
         default: 'master'
+  pull_request:
+    branches:
+      - master
   release:
     types:
       [ created ]
-
+      
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Sourcery for macOS
     runs-on: macos-13
     steps:
@@ -40,3 +48,22 @@ jobs:
           name: sourcery
           path: ~/sourcery
           retention-days: 5
+# # cat .github/workflows/tests.yml
+# name: tests
+# on: [workflow_call]  # allow this workflow to be called from other workflows
+# jobs:
+#   ...
+
+# # cat .github/workflows/deploy.yml
+# name: deploy
+# on:
+#   push:
+#     tags:  # trigger the deploy job on tag creation
+#     - *
+# jobs:
+#   tests:
+#     uses: ./.github/workflows/tests.yml  # use the callable tests job to run tests
+#   deploy:
+#     name: deploy
+#     needs: [tests]  # require tests to pass before deploy runs
+#     ...
