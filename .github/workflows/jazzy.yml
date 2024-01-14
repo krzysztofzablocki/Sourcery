@@ -4,9 +4,13 @@
 name: rake docs
 
 on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to build (branch, tag or SHA)'
+        required: false
+        default: 'master'
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
 
 concurrency:
