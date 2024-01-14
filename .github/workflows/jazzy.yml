@@ -28,6 +28,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Update Docs
       run: |
+        brew install sourcekitten
         bundle install
         rake docs
     - uses: EndBug/add-and-commit@v9.1.3
