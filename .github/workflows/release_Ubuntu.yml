@@ -1,4 +1,4 @@
-name: Release Build for Linux
+name: ubuntu release
 
 on:
   workflow_dispatch:
