@@ -32,6 +32,7 @@ jobs:
           ref: ${{ github.event.inputs.ref }}
       - name: Build it
         run: |
+          ls
           CLI_DIR="${HOME}/cli/"
           RESOURCES_DIR="${CLI_DIR}Resources/"
           TEMPLATES_DIR="${CLI_DIR}Templates/"
