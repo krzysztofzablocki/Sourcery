@@ -63,7 +63,7 @@ jobs:
           mkdir -p $TEMPLATES_DIR
           mkdir -p $ARTIFACT_BUNDLE_PATH
 
-          cp -r ./Templates/Templates/* $TEMPLATES_DIR
+          cp -r "./Templates/Templates/" $TEMPLATES_DIR
           cp ./Resources/daemon.gif $RESOURCES_DIR
           cp ./Resources/icon-128.png $RESOURCES_DIR
           cp ./CHANGELOG.md $CLI_DIR
