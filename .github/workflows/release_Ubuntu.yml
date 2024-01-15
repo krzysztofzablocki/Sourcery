@@ -35,7 +35,7 @@ jobs:
       - name: Build it
         id: build
         run: |
-          ls
+          ls -la
           BUILD_DIR="${HOME}/build/"
           swift build --disable-sandbox -c release --build-path $BUILD_DIR
           mv "${BUILD_DIR}x86_64-unknown-linux-gnu/release/sourcery" "${HOME}/sourcery"
@@ -45,14 +45,15 @@ jobs:
           DESCRIPTION=$(lsb_release -d -s | sed "s/ /-/g" | sed "s/./\L&/g")
           SUFFIX=$DESCRIPTION-$CODENAME-$UNAME
           TAG=2.1.4
-          FILENAME="sourcery-${TAG}-${SUFFIX}.tar.xz"
+          FILENAME="sourcery-${TAG}-${SUFFIX}"
+          ls -la
           tar -zcvf $FILENAME "${HOME}/sourcery"
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.build.outputs.FILENAME }}
-          path: "~/${{ steps.build.outputs.FILENAME }}"
+          path: "~/${{ steps.build.outputs.FILENAME }}.tar.xz"
           retention-days: 5
 #$GITHUB_REF_NAME
 #if: ${{ github.event.workflow_run.conclusion == 'success' }}
