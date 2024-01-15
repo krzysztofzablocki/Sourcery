@@ -20,7 +20,6 @@ on:
 
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Sourcery for Ubuntu (latest)
     runs-on: ubuntu-latest
     steps:
@@ -51,3 +50,4 @@ jobs:
           path: ~/$FILENAME
           retention-days: 5
 #$GITHUB_REF_NAME
+if: ${{ github.event.workflow_run.conclusion == 'success' }}

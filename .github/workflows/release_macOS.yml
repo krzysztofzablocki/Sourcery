@@ -20,7 +20,6 @@ on:
       
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Sourcery for macOS
     runs-on: macos-13
     steps:
