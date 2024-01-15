@@ -38,7 +38,7 @@ jobs:
           ls -la
           BUILD_DIR="${HOME}/build/"
           swift build --disable-sandbox -c release --build-path $BUILD_DIR
-          mv "${BUILD_DIR}x86_64-unknown-linux-gnu/release/sourcery" "${HOME}/sourcery"
+          mv "${BUILD_DIR}x86_64-unknown-linux-gnu/release/sourcery" "${BUILD_DIR}/sourcery"
           
           UNAME=$(uname -m)
           CODENAME=$(lsb_release -c -s)
@@ -47,7 +47,10 @@ jobs:
           TAG=2.1.4
           FILENAME="sourcery-${TAG}-${SUFFIX}"
           ls -la
-          tar -zcvf $FILENAME "${HOME}/sourcery"
+          tar -zcvf $FILENAME "${BUILD_DIR}/sourcery"
+
+          ls -la
+
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
