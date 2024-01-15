@@ -1,10 +1,6 @@
 name: release macOS
 
 on:
-  workflow_run:
-    workflows: [test macOS]
-    types:
-      - completed
   workflow_dispatch:
     inputs:
       ref:
@@ -16,8 +12,9 @@ on:
       - '*'
       
 jobs:
+  tests:
+    uses: ./.github/workflows/test_macOS.yml
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Sourcery for macOS
     runs-on: macos-13
     steps:
@@ -95,4 +92,4 @@ jobs:
         with:
           name: ${{ steps.build.outputs.ARTIFACTBUNDLENAME }}
           path: "~/${{ steps.build.outputs.ARTIFACTBUNDLENAME }}"
-          retention-days: 5          
+          retention-days: 5
