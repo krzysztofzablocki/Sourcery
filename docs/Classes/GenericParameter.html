@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Definition Protocol Reference</title>
+    <title>GenericParameter Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Protocol/Definition" class="dashAnchor"></a>
-    <a title="Definition Protocol Reference"></a>
+    <a name="//apple_ref/swift/Class/GenericParameter" class="dashAnchor"></a>
+    <a title="GenericParameter Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Sourcery 2.1.3 Docs</a> (100% documented)</p>
@@ -30,7 +30,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Sourcery Reference</a>
         <img id="carat" src="../img/carat.png" />
-        Definition Protocol Reference
+        GenericParameter Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -255,15 +255,17 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Definition</h1>
+            <h1>GenericParameter</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Definition</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericParameter</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                 </div>
               </div>
-            <p>Describes that the object is defined in a context of some <code><a href="../Classes/Type.html">Type</a></code></p>
+            <p>Descibes Swift generic parameter</p>
 
           </section>
           <section class="section task-group-section">
@@ -272,9 +274,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15SourceryRuntime10DefinitionP17definedInTypeNameAA0fG0CSgvp"></a>
-                    <a name="//apple_ref/swift/Property/definedInTypeName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime10DefinitionP17definedInTypeNameAA0fG0CSgvp">definedInTypeName</a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericParameter(py)name"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericParameter(py)name">name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -282,15 +284,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Reference to type name where the object is defined, 
-nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc</p>
+                        <p>Generic parameter name</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">definedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -300,9 +301,9 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15SourceryRuntime10DefinitionP13definedInTypeAA0F0CSgvp"></a>
-                    <a name="//apple_ref/swift/Property/definedInType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime10DefinitionP13definedInTypeAA0F0CSgvp">definedInType</a>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericParameter(py)inheritedTypeName"></a>
+                    <a name="//apple_ref/swift/Property/inheritedTypeName" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericParameter(py)inheritedTypeName">inheritedTypeName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -310,15 +311,14 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Reference to actual type where the object is defined, 
-nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>class</code> etc or type is unknown</p>
+                        <p>Generic parameter inherited type</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">definedInType</span><span class="p">:</span> <span class="k">Type</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">inheritedTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -328,9 +328,9 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15SourceryRuntime10DefinitionP23actualDefinedInTypeNameAA0gH0CSgvp"></a>
-                    <a name="//apple_ref/swift/Property/actualDefinedInTypeName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15SourceryRuntime10DefinitionP23actualDefinedInTypeNameAA0gH0CSgvp">actualDefinedInTypeName</a>
+                    <a name="/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF"></a>
+                    <a name="//apple_ref/swift/Method/diffAgainst(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF">diffAgainst(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -338,14 +338,39 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a <code><a href="../Protocols/Definition.html#/s:15SourceryRuntime10DefinitionP17definedInTypeNameAA0fG0CSgvp">definedInTypeName</a></code></p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">actualDefinedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">diffAgainst</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/DiffableResult.html">DiffableResult</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)GenericParameter(py)hash"></a>
+                    <a name="//apple_ref/swift/Property/hash" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)GenericParameter(py)hash">hash</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">override</span> <span class="k">var</span> <span class="nv">hash</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
