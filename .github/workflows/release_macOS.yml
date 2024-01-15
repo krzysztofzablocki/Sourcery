@@ -68,19 +68,20 @@ jobs:
           lipo -create -output $path_to_sourcery_binary ${BUILD_DIR}arm64-apple-macosx/release/sourcery ${BUILD_DIR}x86_64-apple-macosx/release/sourcery
           strip -rSTX ${path_to_sourcery_binary}
 
-          chmod a+x $path_to_sourcery_binary
           cp $path_to_sourcery_binary "${ARTIFACT_BUNDLE_PATH}sourcery/bin/"
 
           pushd $CLI_DIR
           TAG=2.1.4
-          FILENAME="sourcery-$TAG"
-          cp -r . "${HOME}/${FILENAME}"
+          FILENAME="sourcery-$TAG.zip"
+          zip -r -X $FILENAME .
+          mv $FILENAME "${HOME}/"
           popd
 
           pushd $ARTIFACT_BUNDLE_PATH
           sed -i '' "s/VERSION/${TAG}/g" ${ARTIFACT_BUNDLE_PATH}/info.json
-          ARTIFACTBUNDLENAME=$FILENAME.artifactbundle
-          cp -r . "${HOME}/${ARTIFACTBUNDLENAME}"
+          ARTIFACTBUNDLENAME=$FILENAME.artifactbundle.zip
+          zip -r -X $ARTIFACTBUNDLENAME .
+          mv $ARTIFACTBUNDLENAME "${HOME}/"
           popd
 
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
