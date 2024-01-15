@@ -70,13 +70,13 @@ jobs:
           pushd $CLI_DIR
           TAG=2.1.4
           FILENAME="sourcery-$TAG"
-          mv . "${HOME}/${FILENAME}"
+          cp -r . "${HOME}/${FILENAME}"
           popd
 
           pushd $ARTIFACT_BUNDLE_PATH
           sed -i '' "s/VERSION/${TAG}/g" ${ARTIFACT_BUNDLE_PATH}/info.json
           ARTIFACTBUNDLENAME=$FILENAME.artifactbundle
-          mv . "${HOME}/${ARTIFACTBUNDLENAME}"
+          cp -r . "${HOME}/${ARTIFACTBUNDLENAME}"
           popd
 
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
