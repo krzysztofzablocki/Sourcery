@@ -1,3 +1,5 @@
+name: Bump Homebrew formula
+
 on:
   workflow_dispatch:
     inputs:
