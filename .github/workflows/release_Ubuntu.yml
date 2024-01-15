@@ -1,10 +1,10 @@
 name: release ubuntu
 
 on:
-  workflow_run:
-    workflows: [test ubuntu]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: [test ubuntu]
+  #   types:
+  #     - completed
   workflow_dispatch:
     inputs:
       ref:
@@ -41,7 +41,7 @@ jobs:
           CODENAME=$(lsb_release -c -s)
           DESCRIPTION=$(lsb_release -d -s | sed "s/ /-/g" | sed "s/./\L&/g")
           SUFFIX=$DESCRIPTION-$CODENAME-$UNAME
-          TAG=$GITHUB_REF_NAME
+          TAG=2.1.4
           FILENAME=sourcery-${TAG}-${SUFFIX}.tar.xz
           tar -zcvf $FILENAME $CLI_DIR
       - name: 'Upload Artifact'
@@ -50,3 +50,4 @@ jobs:
           name: $FILENAME
           path: ~/$FILENAME
           retention-days: 5
+#$GITHUB_REF_NAME

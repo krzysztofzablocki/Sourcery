@@ -1,10 +1,10 @@
 name: release macOS
 
 on:
-  workflow_run:
-    workflows: [test macOS]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: [test macOS]
+  #   types:
+  #     - completed
   workflow_dispatch:
     inputs:
       ref:
@@ -14,9 +14,9 @@ on:
   pull_request:
     branches:
       - master
-  release:
-    types:
-      [ created ]
+  push:
+    tags:
+      - '*'
       
 jobs:
   build:
@@ -33,20 +33,53 @@ jobs:
           ref: ${{ github.event.inputs.ref }}
       - name: Build it
         run: |
+          CLI_DIR='${HOME}/cli/'
+          RESOURCES_DIR='${CLI_DIR}Resources/'
+          TEMPLATES_DIR='${CLI_DIR}Templates/'
           BUILD_DIR='${HOME}/build/'
-          CLI_DIR='${HOME}/bin/'
-          output_path="${CLI_DIR}/sourcery"
-          mkdir -p $CLI_DIR
+          BIN_DIR='${CLI_DIR}bin/'
+          ARTIFACT_BUNDLE_PATH='${HOME}/artifactbundle/'
+
+          path_to_sourcery_binary="${BIN_DIR}/sourcery"
+          mkdir -p $BIN_DIR
+          mkdir -p $RESOURCES_DIR
+          mkdir -p $TEMPLATES_DIR
+          mkdir -p $ARTIFACT_BUNDLE_PATH
+
+          cp -r ./Templates/Templates/* $TEMPLATES_DIR
+          cp ./Resources/daemon.gif $RESOURCES_DIR
+          cp ./Resources/icon-128.png $RESOURCES_DIR
+          cp ./CHANGELOG.md $CLI_DIR
+          cp ./README.md $CLI_DIR
+          cp ./LICENSE $CLI_DIR
+          cp -r ./docs/docsets/Sourcery.docset $CLI_DIR
+          cp -r ./SourceryJS/Resources/ejs.js $BIN_DIR
+          cp -r $CLI_DIR/* "${ARTIFACT_BUNDLE_PATH}bin"
+          cp ./Templates/artifactbundle.info.json.template ${ARTIFACT_BUNDLE_PATH}/info.json
+
           swift build --disable-sandbox -c release --arch arm64 --build-path $BUILD_DIR
           swift build --disable-sandbox -c release --arch x86_64 --build-path $BUILD_DIR
-          lipo -create -output $output_path ${BUILD_DIR}arm64-apple-macosx/release/sourcery ${BUILD_DIR}x86_64-apple-macosx/release/sourcery
-          strip -rSTX ${output_path}
-          mv $output_path "${HOME}/sourcery"
-      - name: 'Upload Artifact'
+          lipo -create -output $path_to_sourcery_binary ${BUILD_DIR}arm64-apple-macosx/release/sourcery ${BUILD_DIR}x86_64-apple-macosx/release/sourcery
+          strip -rSTX ${path_to_sourcery_binary}
+
+          TAG=2.1.4
+          FILENAME="sourcery-$TAG"
+          zip -r $FILENAME.zip $CLI_DIR
+
+          sed -i '' "s/VERSION/${TAG}/g" ${ARTIFACT_BUNDLE_PATH}/info.json
+          ARTIFACTBUNDLENAME=$FILENAME.artifactbundle
+          zip -r $ARTIFACTBUNDLENAME.zip $ARTIFACT_BUNDLE_PATH
+      - name: 'Upload Sourcery Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: sourcery
-          path: ~/sourcery
+          name: $FILENAME
+          path: ~/$FILENAME.zip
+          retention-days: 5
+      - name: 'Upload Bundle Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: $ARTIFACTBUNDLENAME
+          path: ~/$ARTIFACTBUNDLENAME.zip
           retention-days: 5
 # # cat .github/workflows/tests.yml
 # name: tests
@@ -67,3 +100,23 @@ jobs:
 #     name: deploy
 #     needs: [tests]  # require tests to pass before deploy runs
 #     ...
+# The folder structure needed:
+# cli/bin/
+#      |- sourcery
+#      |- ejs.js
+#  |- CHANGELOG.md
+#  |- LICENSE
+#  |- README.md
+#  |- Sourcery.docset
+#  |- Resources/
+#         |- daemon.gif
+#         |- icon-128.png
+#  |- Templates/
+#         |- AutoCases.stencil 
+#         |- AutoCodable.swifttemplate
+#         |- AutoEquatable.stencil
+#         |- AutoHashable.stencil
+#         |- AutoLenses.stencil
+#         |- AutoMockable.stencil
+#         |- Decorator.swifttemplate
+#         |- LinuxMain.stencil
