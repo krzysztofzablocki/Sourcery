@@ -32,6 +32,7 @@ jobs:
         ref: ${{ github.event.inputs.ref }}
     - name: Update Docs
       run: |
+        brew install coreutils
         brew install sourcekitten
         bundle install
         rake docs
