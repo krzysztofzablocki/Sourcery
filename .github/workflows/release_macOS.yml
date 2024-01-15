@@ -73,6 +73,9 @@ jobs:
           ARTIFACTBUNDLENAME=$FILENAME.artifactbundle
           zip -r $ARTIFACTBUNDLENAME.zip $ARTIFACT_BUNDLE_PATH
 
+          mv $FILENAME.zip "${HOME}"
+          mv $ARTIFACTBUNDLENAME.zip "${HOME}"
+
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
           echo "ARTIFACTBUNDLENAME=${ARTIFACTBUNDLENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Sourcery Artifact'
