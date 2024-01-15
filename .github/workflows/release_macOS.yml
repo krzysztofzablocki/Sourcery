@@ -68,6 +68,7 @@ jobs:
           lipo -create -output $path_to_sourcery_binary ${BUILD_DIR}arm64-apple-macosx/release/sourcery ${BUILD_DIR}x86_64-apple-macosx/release/sourcery
           strip -rSTX ${path_to_sourcery_binary}
 
+          chmod a+x $path_to_sourcery_binary
           cp $path_to_sourcery_binary "${ARTIFACT_BUNDLE_PATH}sourcery/bin/"
 
           pushd $CLI_DIR

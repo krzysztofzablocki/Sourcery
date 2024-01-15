@@ -47,6 +47,7 @@ jobs:
           FILENAME="sourcery-${TAG}-${SUFFIX}"
 
           pushd $BUILD_DIR
+          chmod a+x sourcery
           mv sourcery "${HOME}/${FILENAME}"
           popd
           
