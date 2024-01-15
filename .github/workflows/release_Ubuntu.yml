@@ -14,9 +14,9 @@ on:
   pull_request:
     branches:
       - master
-  release:
-    types:
-      [ created ]
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -36,9 +36,17 @@ jobs:
           BUILD_DIR='${HOME}/build/'
           swift build --disable-sandbox -c release --build-path $BUILD_DIR
           mv "${BUILD_DIR}x86_64-unknown-linux-gnu/release/sourcery" "${HOME}/sourcery"
+          
+          UNAME=$(uname -m)
+          CODENAME=$(lsb_release -c -s)
+          DESCRIPTION=$(lsb_release -d -s | sed "s/ /-/g" | sed "s/./\L&/g")
+          SUFFIX=$DESCRIPTION-$CODENAME-$UNAME
+          TAG=$GITHUB_REF_NAME
+          FILENAME=sourcery-${TAG}-${SUFFIX}.tar.xz
+          tar -zcvf $FILENAME $CLI_DIR
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: sourcery
-          path: ~/sourcery
+          name: $FILENAME
+          path: ~/$FILENAME
           retention-days: 5
