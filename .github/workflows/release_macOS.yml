@@ -57,7 +57,7 @@ jobs:
 
           
           cp -r SourceryJS/Resources/ejs.js $BIN_DIR
-          cp -r $CLI_DIR/ "${ARTIFACT_BUNDLE_PATH}bin"
+          cp -r $CLI_DIR/ "${ARTIFACT_BUNDLE_PATH}sourcery"
           cp Templates/artifactbundle.info.json.template ${ARTIFACT_BUNDLE_PATH}/info.json
 
           swift build --disable-sandbox -c release --arch arm64 --build-path $BUILD_DIR
@@ -65,13 +65,19 @@ jobs:
           lipo -create -output $path_to_sourcery_binary ${BUILD_DIR}arm64-apple-macosx/release/sourcery ${BUILD_DIR}x86_64-apple-macosx/release/sourcery
           strip -rSTX ${path_to_sourcery_binary}
 
+          cp $path_to_sourcery_binary "${ARTIFACT_BUNDLE_PATH}sourcery/bin/"
+
+          pushd $CLI_DIR
           TAG=2.1.4
           FILENAME="sourcery-$TAG"
-          zip -r $FILENAME.zip $CLI_DIR
+          zip -r $FILENAME.zip .
+          popd
 
+          pushd $ARTIFACT_BUNDLE_PATH
           sed -i '' "s/VERSION/${TAG}/g" ${ARTIFACT_BUNDLE_PATH}/info.json
           ARTIFACTBUNDLENAME=$FILENAME.artifactbundle
-          zip -r $ARTIFACTBUNDLENAME.zip $ARTIFACT_BUNDLE_PATH
+          zip -r $ARTIFACTBUNDLENAME.zip .
+          popd
 
           mv $FILENAME.zip "${HOME}"
           mv $ARTIFACTBUNDLENAME.zip "${HOME}"
