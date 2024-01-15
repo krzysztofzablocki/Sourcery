@@ -33,10 +33,7 @@ jobs:
       - name: Build it
         id: build
         run: |
-          brew install coreutils
-          brew install sourcekitten
-          bundle install
-          rake docs
+          
           ls
           CLI_DIR="${HOME}/cli/"
           RESOURCES_DIR="${CLI_DIR}Resources/"
@@ -49,7 +46,7 @@ jobs:
           mkdir -p $BIN_DIR
           mkdir -p $RESOURCES_DIR
           mkdir -p $TEMPLATES_DIR
-          mkdir -p $ARTIFACT_BUNDLE_PATH
+          mkdir -p ${ARTIFACT_BUNDLE_PATH}bin
 
           cp -r "Templates/Templates/" $TEMPLATES_DIR
           cp Resources/daemon.gif $RESOURCES_DIR
@@ -58,9 +55,9 @@ jobs:
           cp README.md $CLI_DIR
           cp LICENSE $CLI_DIR
 
-          cp -r docs/docsets/Sourcery.docset $CLI_DIR
+          
           cp -r SourceryJS/Resources/ejs.js $BIN_DIR
-          cp -r $CLI_DIR/* "${ARTIFACT_BUNDLE_PATH}bin"
+          cp -r $CLI_DIR/ "${ARTIFACT_BUNDLE_PATH}bin"
           cp Templates/artifactbundle.info.json.template ${ARTIFACT_BUNDLE_PATH}/info.json
 
           swift build --disable-sandbox -c release --arch arm64 --build-path $BUILD_DIR
@@ -90,3 +87,10 @@ jobs:
           name: ${{ steps.build.outputs.ARTIFACTBUNDLENAME }}
           path: "~/${{ steps.build.outputs.ARTIFACTBUNDLENAME }}.zip"
           retention-days: 5
+
+
+#brew install coreutils
+# brew install sourcekitten
+# bundle install
+# rake docs
+#cp -r docs/docsets/Sourcery.docset $CLI_DIR
