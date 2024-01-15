@@ -70,7 +70,7 @@ jobs:
           pushd $CLI_DIR
           TAG=2.1.4
           FILENAME="sourcery-$TAG"
-          mv . "${HOME}/${$FILENAME}"
+          mv . "${HOME}/${FILENAME}"
           popd
 
           pushd $ARTIFACT_BUNDLE_PATH
