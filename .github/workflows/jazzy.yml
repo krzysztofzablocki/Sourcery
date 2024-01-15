@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 jobs:
-  macos_build:
+  update_docs:
     runs-on: macos-13
     steps:
     - name: Set Xcode 15.1.0
