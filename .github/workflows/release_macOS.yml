@@ -49,6 +49,7 @@ jobs:
       #   with:
       #     ref: ${{ github.event.inputs.ref }}
       - name: Build it
+        id: build
         run: |
           ls
           CLI_DIR="${HOME}/cli/"
@@ -64,17 +65,17 @@ jobs:
           mkdir -p $TEMPLATES_DIR
           mkdir -p $ARTIFACT_BUNDLE_PATH
 
-          cp -r "./Templates/Templates/" $TEMPLATES_DIR
-          cp ./Resources/daemon.gif $RESOURCES_DIR
-          cp ./Resources/icon-128.png $RESOURCES_DIR
-          cp ./CHANGELOG.md $CLI_DIR
-          cp ./README.md $CLI_DIR
-          cp ./LICENSE $CLI_DIR
+          cp -r "Templates/Templates/" $TEMPLATES_DIR
+          cp Resources/daemon.gif $RESOURCES_DIR
+          cp Resources/icon-128.png $RESOURCES_DIR
+          cp CHANGELOG.md $CLI_DIR
+          cp README.md $CLI_DIR
+          cp LICENSE $CLI_DIR
 
-          cp -r ./docs/docsets/Sourcery.docset $CLI_DIR
-          cp -r ./SourceryJS/Resources/ejs.js $BIN_DIR
+          cp -r docs/docsets/Sourcery.docset $CLI_DIR
+          cp -r SourceryJS/Resources/ejs.js $BIN_DIR
           cp -r $CLI_DIR/* "${ARTIFACT_BUNDLE_PATH}bin"
-          cp ./Templates/artifactbundle.info.json.template ${ARTIFACT_BUNDLE_PATH}/info.json
+          cp Templates/artifactbundle.info.json.template ${ARTIFACT_BUNDLE_PATH}/info.json
 
           swift build --disable-sandbox -c release --arch arm64 --build-path $BUILD_DIR
           swift build --disable-sandbox -c release --arch x86_64 --build-path $BUILD_DIR
@@ -88,54 +89,18 @@ jobs:
           sed -i '' "s/VERSION/${TAG}/g" ${ARTIFACT_BUNDLE_PATH}/info.json
           ARTIFACTBUNDLENAME=$FILENAME.artifactbundle
           zip -r $ARTIFACTBUNDLENAME.zip $ARTIFACT_BUNDLE_PATH
+
+          echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
+          echo "ARTIFACTBUNDLENAME=${ARTIFACTBUNDLENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Sourcery Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: $FILENAME
-          path: ~/$FILENAME.zip
+          name: ${{ steps.build.outputs.FILENAME }}
+          path: "~/${{ steps.build.outputs.FILENAME }}.zip"
           retention-days: 5
       - name: 'Upload Bundle Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: $ARTIFACTBUNDLENAME
-          path: ~/$ARTIFACTBUNDLENAME.zip
+          name: ${{ steps.build.outputs.ARTIFACTBUNDLENAME }}
+          path: "~/${{ steps.build.outputs.ARTIFACTBUNDLENAME }}.zip"
           retention-days: 5
-# # cat .github/workflows/tests.yml
-# name: tests
-# on: [workflow_call]  # allow this workflow to be called from other workflows
-# jobs:
-#   ...
-
-# # cat .github/workflows/deploy.yml
-# name: deploy
-# on:
-#   push:
-#     tags:  # trigger the deploy job on tag creation
-#     - *
-# jobs:
-#   tests:
-#     uses: ./.github/workflows/tests.yml  # use the callable tests job to run tests
-#   deploy:
-#     name: deploy
-#     needs: [tests]  # require tests to pass before deploy runs
-#     ...
-# The folder structure needed:
-# cli/bin/
-#      |- sourcery
-#      |- ejs.js
-#  |- CHANGELOG.md
-#  |- LICENSE
-#  |- README.md
-#  |- Sourcery.docset
-#  |- Resources/
-#         |- daemon.gif
-#         |- icon-128.png
-#  |- Templates/
-#         |- AutoCases.stencil 
-#         |- AutoCodable.swifttemplate
-#         |- AutoEquatable.stencil
-#         |- AutoHashable.stencil
-#         |- AutoLenses.stencil
-#         |- AutoMockable.stencil
-#         |- Decorator.swifttemplate
-#         |- LinuxMain.stencil

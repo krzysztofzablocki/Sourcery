@@ -22,6 +22,8 @@ jobs:
   build:
     name: Build Sourcery for Ubuntu (latest)
     runs-on: ubuntu-latest
+    outputs:
+      filename: ${{ steps.build.outputs.filename }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -31,6 +33,7 @@ jobs:
         with:
           swift-version: "5.9.2"
       - name: Build it
+        id: build
         run: |
           ls
           BUILD_DIR="${HOME}/build/"
@@ -44,11 +47,19 @@ jobs:
           TAG=2.1.4
           FILENAME="sourcery-${TAG}-${SUFFIX}.tar.xz"
           tar -zcvf $FILENAME "${HOME}/sourcery"
+          echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: $FILENAME
-          path: ~/$FILENAME
+          name: ${{ steps.build.outputs.FILENAME }}
+          path: "~/${{ steps.build.outputs.FILENAME }}"
           retention-days: 5
 #$GITHUB_REF_NAME
 #if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+
+# - name: Set color
+# id: random-color-generator
+# run: echo "SELECTED_COLOR=green" >> $GITHUB_OUTPUT
+# - name: Get color
+# run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
