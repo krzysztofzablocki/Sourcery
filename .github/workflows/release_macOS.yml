@@ -79,9 +79,6 @@ jobs:
           mv . "${HOME}/${ARTIFACTBUNDLENAME}"
           popd
 
-          mv $FILENAME.zip "${HOME}"
-          mv $ARTIFACTBUNDLENAME.zip "${HOME}"
-
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
           echo "ARTIFACTBUNDLENAME=${ARTIFACTBUNDLENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Sourcery Artifact'
