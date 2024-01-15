@@ -37,6 +37,7 @@ jobs:
         rake docs
   build:
     name: Build Sourcery for macOS
+    needs: [jazzy]
     runs-on: macos-13
     steps:
       - name: Set Xcode 15.1.0
