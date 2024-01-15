@@ -44,11 +44,10 @@ jobs:
           DESCRIPTION=$(lsb_release -d -s | sed "s/ /-/g" | sed "s/./\L&/g")
           SUFFIX=$DESCRIPTION-$CODENAME-$UNAME
           TAG=2.1.4
-          FILENAME="sourcery-${TAG}-${SUFFIX}.tar.xz"
+          FILENAME="sourcery-${TAG}-${SUFFIX}"
 
           pushd $BUILD_DIR
-          tar -zcvf $FILENAME sourcery
-          mv $FILENAME "${HOME}/${FILENAME}"
+          mv sourcery "${HOME}/${FILENAME}"
           popd
           
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT

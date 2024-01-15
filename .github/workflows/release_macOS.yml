@@ -70,13 +70,13 @@ jobs:
           pushd $CLI_DIR
           TAG=2.1.4
           FILENAME="sourcery-$TAG"
-          zip -r $FILENAME.zip .
+          mv . "${HOME}/${$FILENAME}"
           popd
 
           pushd $ARTIFACT_BUNDLE_PATH
           sed -i '' "s/VERSION/${TAG}/g" ${ARTIFACT_BUNDLE_PATH}/info.json
           ARTIFACTBUNDLENAME=$FILENAME.artifactbundle
-          zip -r $ARTIFACTBUNDLENAME.zip .
+          mv . "${HOME}/${ARTIFACTBUNDLENAME}"
           popd
 
           mv $FILENAME.zip "${HOME}"
@@ -88,13 +88,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.build.outputs.FILENAME }}
-          path: "~/${{ steps.build.outputs.FILENAME }}.zip"
+          path: "~/${{ steps.build.outputs.FILENAME }}"
           retention-days: 5
       - name: 'Upload Bundle Artifact'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.build.outputs.ARTIFACTBUNDLENAME }}
-          path: "~/${{ steps.build.outputs.ARTIFACTBUNDLENAME }}.zip"
+          path: "~/${{ steps.build.outputs.ARTIFACTBUNDLENAME }}"
           retention-days: 5
 
 
