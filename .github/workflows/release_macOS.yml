@@ -32,14 +32,14 @@ jobs:
           ref: ${{ github.event.inputs.ref }}
       - name: Build it
         run: |
-          CLI_DIR='${HOME}/cli/'
-          RESOURCES_DIR='${CLI_DIR}Resources/'
-          TEMPLATES_DIR='${CLI_DIR}Templates/'
-          BUILD_DIR='${HOME}/build/'
-          BIN_DIR='${CLI_DIR}bin/'
-          ARTIFACT_BUNDLE_PATH='${HOME}/artifactbundle/'
-
+          CLI_DIR="${HOME}/cli/"
+          RESOURCES_DIR="${CLI_DIR}Resources/"
+          TEMPLATES_DIR="${CLI_DIR}Templates/"
+          BUILD_DIR="${HOME}/build/"
+          BIN_DIR="${CLI_DIR}bin/"
+          ARTIFACT_BUNDLE_PATH="${HOME}/artifactbundle/"
           path_to_sourcery_binary="${BIN_DIR}/sourcery"
+
           mkdir -p $BIN_DIR
           mkdir -p $RESOURCES_DIR
           mkdir -p $TEMPLATES_DIR
