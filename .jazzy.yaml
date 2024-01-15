@@ -6,6 +6,7 @@ github_url: https://github.com/krzysztofzablocki/Sourcery
 copyright: 'Copyright © 2016-2021 Pixle. All rights reserved.'
 readme: About.md
 documentation: guides/*.md
+exclude: ["*_Linux.swift"] 
 
 custom_categories:
   - name: Guides
