@@ -1,25 +1,23 @@
 name: release ubuntu
 
 on:
-  # workflow_run:
-  #   workflows: [test ubuntu]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: [test ubuntu]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       ref:
         description: 'Ref to build (branch, tag or SHA)'
         required: false
         default: 'master'
-  pull_request:
-    branches:
-      - master
-  # push:
-  #   tags:
-  #     - '*'
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Sourcery for Ubuntu (latest)
     runs-on: ubuntu-latest
     outputs:
@@ -43,7 +41,7 @@ jobs:
           CODENAME=$(lsb_release -c -s)
           DESCRIPTION=$(lsb_release -d -s | sed "s/ /-/g" | sed "s/./\L&/g")
           SUFFIX=$DESCRIPTION-$CODENAME-$UNAME
-          TAG=2.1.4
+          TAG=$GITHUB_REF_NAME
           FILENAME="sourcery-${TAG}-${SUFFIX}.tar.xz"
 
           pushd $BUILD_DIR
@@ -58,5 +56,3 @@ jobs:
           name: ${{ steps.build.outputs.FILENAME }}
           path: "~/${{ steps.build.outputs.FILENAME }}"
           retention-days: 5
-#$GITHUB_REF_NAME
-#if: ${{ github.event.workflow_run.conclusion == 'success' }}

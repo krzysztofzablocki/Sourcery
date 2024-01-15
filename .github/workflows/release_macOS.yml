@@ -1,25 +1,23 @@
 name: release macOS
 
 on:
-  # workflow_run:
-  #   workflows: [test macOS]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: [test macOS]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       ref:
         description: 'Ref to build (branch, tag or SHA)'
         required: false
         default: 'master'
-  pull_request:
-    branches:
-      - master
-  # push:
-  #   tags:
-  #     - '*'
+  push:
+    tags:
+      - '*'
       
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build Sourcery for macOS
     runs-on: macos-13
     steps:
@@ -71,7 +69,7 @@ jobs:
           cp $path_to_sourcery_binary "${ARTIFACT_BUNDLE_PATH}sourcery/bin/"
 
           pushd $CLI_DIR
-          TAG=2.1.4
+          TAG=$GITHUB_REF_NAME
           FILENAME="sourcery-$TAG.zip"
           zip -r -X $FILENAME .
           mv $FILENAME "${HOME}/"
