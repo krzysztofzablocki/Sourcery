@@ -46,8 +46,10 @@ jobs:
           TAG=2.1.4
           FILENAME="sourcery-${TAG}-${SUFFIX}.tar.xz"
 
-          tar -zcvf $FILENAME "${BUILD_DIR}/sourcery"
+          pushd $BUILD_DIR
+          tar -zcvf $FILENAME sourcery
           mv $FILENAME "${HOME}/${FILENAME}"
+          popd
           
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Artifact'
