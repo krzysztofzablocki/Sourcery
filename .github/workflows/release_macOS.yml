@@ -19,38 +19,24 @@ on:
   #     - '*'
       
 jobs:
-  jazzy:
-    runs-on: macos-13
-    steps:
-    - name: Set Xcode 15.1.0
-      run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
-    - name: Print Current Xcode
-      run: xcode-select -p
-    # - uses: actions/checkout@v3
-    - uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.inputs.ref }}
-    - name: Update Docs
-      run: |
-        brew install coreutils
-        brew install sourcekitten
-        bundle install
-        rake docs
   build:
     name: Build Sourcery for macOS
-    needs: [jazzy]
     runs-on: macos-13
     steps:
       - name: Set Xcode 15.1.0
         run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
       - name: Print Current Xcode
         run: xcode-select -p
-      # - uses: actions/checkout@v3
-      #   with:
-      #     ref: ${{ github.event.inputs.ref }}
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref }}
       - name: Build it
         id: build
         run: |
+          brew install coreutils
+          brew install sourcekitten
+          bundle install
+          rake docs
           ls
           CLI_DIR="${HOME}/cli/"
           RESOURCES_DIR="${CLI_DIR}Resources/"
