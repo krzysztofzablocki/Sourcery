@@ -45,11 +45,10 @@ jobs:
           SUFFIX=$DESCRIPTION-$CODENAME-$UNAME
           TAG=2.1.4
           FILENAME="sourcery-${TAG}-${SUFFIX}.tar.xz"
-          ls -la
+
           tar -zcvf $FILENAME "${BUILD_DIR}/sourcery"
-
-          ls -la
-
+          mv $FILENAME "${HOME}/${FILENAME}"
+          
           echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
