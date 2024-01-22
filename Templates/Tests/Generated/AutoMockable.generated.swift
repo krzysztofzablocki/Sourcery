@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -47,21 +47,22 @@ public class AccessLevelProtocolMock: AccessLevelProtocol {
 
     //MARK: - loadConfiguration
 
-    public var loadConfigurationCallsCount = 0
-    public var loadConfigurationCalled: Bool {
-        return loadConfigurationCallsCount > 0
+    public var loadConfigurationStringCallsCount = 0
+    public var loadConfigurationStringCalled: Bool {
+        return loadConfigurationStringCallsCount > 0
     }
-    public var loadConfigurationReturnValue: String?
-    public var loadConfigurationClosure: (() -> String?)?
+    public var loadConfigurationStringReturnValue: String?
+    public var loadConfigurationStringClosure: (() -> String?)?
 
     public func loadConfiguration() -> String? {
-        loadConfigurationCallsCount += 1
-        if let loadConfigurationClosure = loadConfigurationClosure {
-            return loadConfigurationClosure()
+        loadConfigurationStringCallsCount += 1
+        if let loadConfigurationStringClosure = loadConfigurationStringClosure {
+            return loadConfigurationStringClosure()
         } else {
-            return loadConfigurationReturnValue
+            return loadConfigurationStringReturnValue
         }
     }
+
 
 }
 class AnnotatedProtocolMock: AnnotatedProtocol {
@@ -71,20 +72,21 @@ class AnnotatedProtocolMock: AnnotatedProtocol {
 
     //MARK: - sayHelloWith
 
-    var sayHelloWithNameCallsCount = 0
-    var sayHelloWithNameCalled: Bool {
-        return sayHelloWithNameCallsCount > 0
+    var sayHelloWithNameStringVoidCallsCount = 0
+    var sayHelloWithNameStringVoidCalled: Bool {
+        return sayHelloWithNameStringVoidCallsCount > 0
     }
-    var sayHelloWithNameReceivedName: (String)?
-    var sayHelloWithNameReceivedInvocations: [(String)] = []
-    var sayHelloWithNameClosure: ((String) -> Void)?
+    var sayHelloWithNameStringVoidReceivedName: (String)?
+    var sayHelloWithNameStringVoidReceivedInvocations: [(String)] = []
+    var sayHelloWithNameStringVoidClosure: ((String) -> Void)?
 
     func sayHelloWith(name: String) {
-        sayHelloWithNameCallsCount += 1
-        sayHelloWithNameReceivedName = name
-        sayHelloWithNameReceivedInvocations.append(name)
-        sayHelloWithNameClosure?(name)
+        sayHelloWithNameStringVoidCallsCount += 1
+        sayHelloWithNameStringVoidReceivedName = name
+        sayHelloWithNameStringVoidReceivedInvocations.append(name)
+        sayHelloWithNameStringVoidClosure?(name)
     }
+
 
 }
 class AnyProtocolMock: AnyProtocol {
@@ -124,299 +126,300 @@ class AnyProtocolMock: AnyProtocol {
 
     //MARK: - f
 
-    var fyzCallsCount = 0
-    var fyzCalled: Bool {
-        return fyzCallsCount > 0
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidCallsCount = 0
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidCalled: Bool {
+        return fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidCallsCount > 0
     }
-    var fyzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
-    var fyzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
-    var fyzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
 
     func f(_ x: (any StubProtocol)?, y: (any StubProtocol)!, z: any StubProtocol) {
-        fyzCallsCount += 1
-        fyzReceivedArguments = (x: x, y: y, z: z)
-        fyzReceivedInvocations.append((x: x, y: y, z: z))
-        fyzClosure?(x, y, z)
+        fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidCallsCount += 1
+        fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedArguments = (x: x, y: y, z: z)
+        fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidReceivedInvocations.append((x: x, y: y, z: z))
+        fXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolVoidClosure?(x, y, z)
     }
 
     //MARK: - j
 
-    var jxyzCallsCount = 0
-    var jxyzCalled: Bool {
-        return jxyzCallsCount > 0
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringCallsCount = 0
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringCalled: Bool {
+        return jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringCallsCount > 0
     }
-    var jxyzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
-    var jxyzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
-    var jxyzReturnValue: String!
-    var jxyzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReturnValue: String!
+    var jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
 
     func j(x: (any StubProtocol)?, y: (any StubProtocol)!, z: any StubProtocol) async -> String {
-        jxyzCallsCount += 1
-        jxyzReceivedArguments = (x: x, y: y, z: z)
-        jxyzReceivedInvocations.append((x: x, y: y, z: z))
-        if let jxyzClosure = jxyzClosure {
-            return await jxyzClosure(x, y, z)
+        jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringCallsCount += 1
+        jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedArguments = (x: x, y: y, z: z)
+        jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReceivedInvocations.append((x: x, y: y, z: z))
+        if let jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringClosure = jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringClosure {
+            return await jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringClosure(x, y, z)
         } else {
-            return jxyzReturnValue
+            return jXAnyStubProtocolYAnyStubProtocolZAnyStubProtocolStringReturnValue
         }
     }
 
     //MARK: - k
 
-    var kxyCallsCount = 0
-    var kxyCalled: Bool {
-        return kxyCallsCount > 0
+    var kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount = 0
+    var kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCalled: Bool {
+        return kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount > 0
     }
-    var kxyClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
+    var kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
 
     func k(x: ((any StubProtocol)?) -> Void, y: (any StubProtocol) -> Void) {
-        kxyCallsCount += 1
-        kxyClosure?(x, y)
+        kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount += 1
+        kXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure?(x, y)
     }
 
     //MARK: - l
 
-    var lxyCallsCount = 0
-    var lxyCalled: Bool {
-        return lxyCallsCount > 0
+    var lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount = 0
+    var lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCalled: Bool {
+        return lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount > 0
     }
-    var lxyClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
+    var lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure: ((((any StubProtocol)?) -> Void, (any StubProtocol) -> Void) -> Void)?
 
     func l(x: ((any StubProtocol)?) -> Void, y: (any StubProtocol) -> Void) {
-        lxyCallsCount += 1
-        lxyClosure?(x, y)
+        lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidCallsCount += 1
+        lXAnyStubProtocolVoidYAnyStubProtocolVoidVoidClosure?(x, y)
     }
 
     //MARK: - m
 
-    var mAnyConfusingArgumentNameCallsCount = 0
-    var mAnyConfusingArgumentNameCalled: Bool {
-        return mAnyConfusingArgumentNameCallsCount > 0
+    var mAnyConfusingArgumentNameAnyStubProtocolVoidCallsCount = 0
+    var mAnyConfusingArgumentNameAnyStubProtocolVoidCalled: Bool {
+        return mAnyConfusingArgumentNameAnyStubProtocolVoidCallsCount > 0
     }
-    var mAnyConfusingArgumentNameReceivedAnyConfusingArgumentName: (any StubProtocol)?
-    var mAnyConfusingArgumentNameReceivedInvocations: [(any StubProtocol)] = []
-    var mAnyConfusingArgumentNameClosure: ((any StubProtocol) -> Void)?
+    var mAnyConfusingArgumentNameAnyStubProtocolVoidReceivedAnyConfusingArgumentName: (any StubProtocol)?
+    var mAnyConfusingArgumentNameAnyStubProtocolVoidReceivedInvocations: [(any StubProtocol)] = []
+    var mAnyConfusingArgumentNameAnyStubProtocolVoidClosure: ((any StubProtocol) -> Void)?
 
     func m(anyConfusingArgumentName: any StubProtocol) {
-        mAnyConfusingArgumentNameCallsCount += 1
-        mAnyConfusingArgumentNameReceivedAnyConfusingArgumentName = anyConfusingArgumentName
-        mAnyConfusingArgumentNameReceivedInvocations.append(anyConfusingArgumentName)
-        mAnyConfusingArgumentNameClosure?(anyConfusingArgumentName)
+        mAnyConfusingArgumentNameAnyStubProtocolVoidCallsCount += 1
+        mAnyConfusingArgumentNameAnyStubProtocolVoidReceivedAnyConfusingArgumentName = anyConfusingArgumentName
+        mAnyConfusingArgumentNameAnyStubProtocolVoidReceivedInvocations.append(anyConfusingArgumentName)
+        mAnyConfusingArgumentNameAnyStubProtocolVoidClosure?(anyConfusingArgumentName)
     }
 
     //MARK: - n
 
-    var nxCallsCount = 0
-    var nxCalled: Bool {
-        return nxCallsCount > 0
+    var nXEscapingAnyStubProtocolVoidVoidCallsCount = 0
+    var nXEscapingAnyStubProtocolVoidVoidCalled: Bool {
+        return nXEscapingAnyStubProtocolVoidVoidCallsCount > 0
     }
-    var nxReceivedX: ((((any StubProtocol)?) -> Void))?
-    var nxReceivedInvocations: [((((any StubProtocol)?) -> Void))] = []
-    var nxClosure: ((@escaping ((any StubProtocol)?) -> Void) -> Void)?
+    var nXEscapingAnyStubProtocolVoidVoidReceivedX: ((((any StubProtocol)?) -> Void))?
+    var nXEscapingAnyStubProtocolVoidVoidReceivedInvocations: [((((any StubProtocol)?) -> Void))] = []
+    var nXEscapingAnyStubProtocolVoidVoidClosure: ((@escaping ((any StubProtocol)?) -> Void) -> Void)?
 
     func n(x: @escaping ((any StubProtocol)?) -> Void) {
-        nxCallsCount += 1
-        nxReceivedX = x
-        nxReceivedInvocations.append(x)
-        nxClosure?(x)
+        nXEscapingAnyStubProtocolVoidVoidCallsCount += 1
+        nXEscapingAnyStubProtocolVoidVoidReceivedX = x
+        nXEscapingAnyStubProtocolVoidVoidReceivedInvocations.append(x)
+        nXEscapingAnyStubProtocolVoidVoidClosure?(x)
     }
 
     //MARK: - p
 
-    var pCallsCount = 0
-    var pCalled: Bool {
-        return pCallsCount > 0
+    var pXAnyStubWithAnyNameProtocolVoidCallsCount = 0
+    var pXAnyStubWithAnyNameProtocolVoidCalled: Bool {
+        return pXAnyStubWithAnyNameProtocolVoidCallsCount > 0
     }
-    var pReceivedX: (any StubWithAnyNameProtocol)?
-    var pReceivedInvocations: [(any StubWithAnyNameProtocol)?] = []
-    var pClosure: (((any StubWithAnyNameProtocol)?) -> Void)?
+    var pXAnyStubWithAnyNameProtocolVoidReceivedX: (any StubWithAnyNameProtocol)?
+    var pXAnyStubWithAnyNameProtocolVoidReceivedInvocations: [(any StubWithAnyNameProtocol)?] = []
+    var pXAnyStubWithAnyNameProtocolVoidClosure: (((any StubWithAnyNameProtocol)?) -> Void)?
 
     func p(_ x: (any StubWithAnyNameProtocol)?) {
-        pCallsCount += 1
-        pReceivedX = x
-        pReceivedInvocations.append(x)
-        pClosure?(x)
+        pXAnyStubWithAnyNameProtocolVoidCallsCount += 1
+        pXAnyStubWithAnyNameProtocolVoidReceivedX = x
+        pXAnyStubWithAnyNameProtocolVoidReceivedInvocations.append(x)
+        pXAnyStubWithAnyNameProtocolVoidClosure?(x)
     }
 
     //MARK: - q
 
-    var qCallsCount = 0
-    var qCalled: Bool {
-        return qCallsCount > 0
+    var qAnyStubProtocolCallsCount = 0
+    var qAnyStubProtocolCalled: Bool {
+        return qAnyStubProtocolCallsCount > 0
     }
-    var qReturnValue: (any StubProtocol)!
-    var qClosure: (() -> any StubProtocol)?
+    var qAnyStubProtocolReturnValue: (any StubProtocol)!
+    var qAnyStubProtocolClosure: (() -> any StubProtocol)?
 
     func q() -> any StubProtocol {
-        qCallsCount += 1
-        if let qClosure = qClosure {
-            return qClosure()
+        qAnyStubProtocolCallsCount += 1
+        if let qAnyStubProtocolClosure = qAnyStubProtocolClosure {
+            return qAnyStubProtocolClosure()
         } else {
-            return qReturnValue
+            return qAnyStubProtocolReturnValue
         }
     }
 
     //MARK: - r
 
-    var rCallsCount = 0
-    var rCalled: Bool {
-        return rCallsCount > 0
+    var rAnyStubProtocolCallsCount = 0
+    var rAnyStubProtocolCalled: Bool {
+        return rAnyStubProtocolCallsCount > 0
     }
-    var rReturnValue: ((any StubProtocol)?)
-    var rClosure: (() -> (any StubProtocol)?)?
+    var rAnyStubProtocolReturnValue: ((any StubProtocol)?)
+    var rAnyStubProtocolClosure: (() -> (any StubProtocol)?)?
 
     func r() -> (any StubProtocol)? {
-        rCallsCount += 1
-        if let rClosure = rClosure {
-            return rClosure()
+        rAnyStubProtocolCallsCount += 1
+        if let rAnyStubProtocolClosure = rAnyStubProtocolClosure {
+            return rAnyStubProtocolClosure()
         } else {
-            return rReturnValue
+            return rAnyStubProtocolReturnValue
         }
     }
 
     //MARK: - s
 
-    var sCallsCount = 0
-    var sCalled: Bool {
-        return sCallsCount > 0
+    var s____AnyStubProtocolCallsCount = 0
+    var s____AnyStubProtocolCalled: Bool {
+        return s____AnyStubProtocolCallsCount > 0
     }
-    var sReturnValue: (() -> any StubProtocol)!
-    var sClosure: (() -> () -> any StubProtocol)?
+    var s____AnyStubProtocolReturnValue: ((() -> any StubProtocol))!
+    var s____AnyStubProtocolClosure: (() -> (() -> any StubProtocol))?
 
-    func s() -> () -> any StubProtocol {
-        sCallsCount += 1
-        if let sClosure = sClosure {
-            return sClosure()
+    func s() -> (() -> any StubProtocol) {
+        s____AnyStubProtocolCallsCount += 1
+        if let s____AnyStubProtocolClosure = s____AnyStubProtocolClosure {
+            return s____AnyStubProtocolClosure()
         } else {
-            return sReturnValue
+            return s____AnyStubProtocolReturnValue
         }
     }
 
     //MARK: - t
 
-    var tCallsCount = 0
-    var tCalled: Bool {
-        return tCallsCount > 0
+    var t____AnyStubProtocolCallsCount = 0
+    var t____AnyStubProtocolCalled: Bool {
+        return t____AnyStubProtocolCallsCount > 0
     }
-    var tReturnValue: ((() -> (any StubProtocol)?))!
-    var tClosure: (() -> (() -> (any StubProtocol)?))?
+    var t____AnyStubProtocolReturnValue: ((() -> (any StubProtocol)?))!
+    var t____AnyStubProtocolClosure: (() -> (() -> (any StubProtocol)?))?
 
     func t() -> (() -> (any StubProtocol)?) {
-        tCallsCount += 1
-        if let tClosure = tClosure {
-            return tClosure()
+        t____AnyStubProtocolCallsCount += 1
+        if let t____AnyStubProtocolClosure = t____AnyStubProtocolClosure {
+            return t____AnyStubProtocolClosure()
         } else {
-            return tReturnValue
+            return t____AnyStubProtocolReturnValue
         }
     }
 
     //MARK: - u
 
-    var uCallsCount = 0
-    var uCalled: Bool {
-        return uCallsCount > 0
+    var u_IntAnyStubProtocolCallsCount = 0
+    var u_IntAnyStubProtocolCalled: Bool {
+        return u_IntAnyStubProtocolCallsCount > 0
     }
-    var uReturnValue: ((Int, () -> (any StubProtocol)?))!
-    var uClosure: (() -> (Int, () -> (any StubProtocol)?))?
+    var u_IntAnyStubProtocolReturnValue: ((Int, () -> (any StubProtocol)?))!
+    var u_IntAnyStubProtocolClosure: (() -> (Int, () -> (any StubProtocol)?))?
 
     func u() -> (Int, () -> (any StubProtocol)?) {
-        uCallsCount += 1
-        if let uClosure = uClosure {
-            return uClosure()
+        u_IntAnyStubProtocolCallsCount += 1
+        if let u_IntAnyStubProtocolClosure = u_IntAnyStubProtocolClosure {
+            return u_IntAnyStubProtocolClosure()
         } else {
-            return uReturnValue
+            return u_IntAnyStubProtocolReturnValue
         }
     }
 
     //MARK: - v
 
-    var vCallsCount = 0
-    var vCalled: Bool {
-        return vCallsCount > 0
+    var v_IntAnyStubProtocolCallsCount = 0
+    var v_IntAnyStubProtocolCalled: Bool {
+        return v_IntAnyStubProtocolCallsCount > 0
     }
-    var vReturnValue: ((Int, (() -> any StubProtocol)?))!
-    var vClosure: (() -> (Int, (() -> any StubProtocol)?))?
+    var v_IntAnyStubProtocolReturnValue: ((Int, (() -> any StubProtocol)?))!
+    var v_IntAnyStubProtocolClosure: (() -> (Int, (() -> any StubProtocol)?))?
 
     func v() -> (Int, (() -> any StubProtocol)?) {
-        vCallsCount += 1
-        if let vClosure = vClosure {
-            return vClosure()
+        v_IntAnyStubProtocolCallsCount += 1
+        if let v_IntAnyStubProtocolClosure = v_IntAnyStubProtocolClosure {
+            return v_IntAnyStubProtocolClosure()
         } else {
-            return vReturnValue
+            return v_IntAnyStubProtocolReturnValue
         }
     }
 
     //MARK: - w
 
-    var wCallsCount = 0
-    var wCalled: Bool {
-        return wCallsCount > 0
+    var w_AnyStubProtocolCallsCount = 0
+    var w_AnyStubProtocolCalled: Bool {
+        return w_AnyStubProtocolCallsCount > 0
     }
-    var wReturnValue: ([(any StubProtocol)?])!
-    var wClosure: (() -> [(any StubProtocol)?])?
+    var w_AnyStubProtocolReturnValue: ([(any StubProtocol)?])!
+    var w_AnyStubProtocolClosure: (() -> [(any StubProtocol)?])?
 
     func w() -> [(any StubProtocol)?] {
-        wCallsCount += 1
-        if let wClosure = wClosure {
-            return wClosure()
+        w_AnyStubProtocolCallsCount += 1
+        if let w_AnyStubProtocolClosure = w_AnyStubProtocolClosure {
+            return w_AnyStubProtocolClosure()
         } else {
-            return wReturnValue
+            return w_AnyStubProtocolReturnValue
         }
     }
 
     //MARK: - x
 
-    var xCallsCount = 0
-    var xCalled: Bool {
-        return xCallsCount > 0
+    var xStringAnyStubProtocolCallsCount = 0
+    var xStringAnyStubProtocolCalled: Bool {
+        return xStringAnyStubProtocolCallsCount > 0
     }
-    var xReturnValue: ([String: (any StubProtocol)?])!
-    var xClosure: (() -> [String: (any StubProtocol)?])?
+    var xStringAnyStubProtocolReturnValue: ([String: (any StubProtocol)?])!
+    var xStringAnyStubProtocolClosure: (() -> [String: (any StubProtocol)?])?
 
     func x() -> [String: (any StubProtocol)?] {
-        xCallsCount += 1
-        if let xClosure = xClosure {
-            return xClosure()
+        xStringAnyStubProtocolCallsCount += 1
+        if let xStringAnyStubProtocolClosure = xStringAnyStubProtocolClosure {
+            return xStringAnyStubProtocolClosure()
         } else {
-            return xReturnValue
+            return xStringAnyStubProtocolReturnValue
         }
     }
 
     //MARK: - y
 
-    var yCallsCount = 0
-    var yCalled: Bool {
-        return yCallsCount > 0
+    var y_AnyStubProtocolAnyStubProtocolCallsCount = 0
+    var y_AnyStubProtocolAnyStubProtocolCalled: Bool {
+        return y_AnyStubProtocolAnyStubProtocolCallsCount > 0
     }
-    var yReturnValue: ((any StubProtocol, (any StubProtocol)?))!
-    var yClosure: (() -> (any StubProtocol, (any StubProtocol)?))?
+    var y_AnyStubProtocolAnyStubProtocolReturnValue: ((any StubProtocol, (any StubProtocol)?))!
+    var y_AnyStubProtocolAnyStubProtocolClosure: (() -> (any StubProtocol, (any StubProtocol)?))?
 
     func y() -> (any StubProtocol, (any StubProtocol)?) {
-        yCallsCount += 1
-        if let yClosure = yClosure {
-            return yClosure()
+        y_AnyStubProtocolAnyStubProtocolCallsCount += 1
+        if let y_AnyStubProtocolAnyStubProtocolClosure = y_AnyStubProtocolAnyStubProtocolClosure {
+            return y_AnyStubProtocolAnyStubProtocolClosure()
         } else {
-            return yReturnValue
+            return y_AnyStubProtocolAnyStubProtocolReturnValue
         }
     }
 
     //MARK: - z
 
-    var zCallsCount = 0
-    var zCalled: Bool {
-        return zCallsCount > 0
+    var zAnyStubProtocol&CustomStringConvertibleCallsCount = 0
+    var zAnyStubProtocol&CustomStringConvertibleCalled: Bool {
+        return zAnyStubProtocol&CustomStringConvertibleCallsCount > 0
     }
-    var zReturnValue: (any StubProtocol & CustomStringConvertible)!
-    var zClosure: (() -> any StubProtocol & CustomStringConvertible)?
+    var zAnyStubProtocol&CustomStringConvertibleReturnValue: (any StubProtocol & CustomStringConvertible)!
+    var zAnyStubProtocol&CustomStringConvertibleClosure: (() -> any StubProtocol & CustomStringConvertible)?
 
     func z() -> any StubProtocol & CustomStringConvertible {
-        zCallsCount += 1
-        if let zClosure = zClosure {
-            return zClosure()
+        zAnyStubProtocol&CustomStringConvertibleCallsCount += 1
+        if let zAnyStubProtocol&CustomStringConvertibleClosure = zAnyStubProtocol&CustomStringConvertibleClosure {
+            return zAnyStubProtocol&CustomStringConvertibleClosure()
         } else {
-            return zReturnValue
+            return zAnyStubProtocol&CustomStringConvertibleReturnValue
         }
     }
+
 
 }
 class AsyncProtocolMock: AsyncProtocol {
@@ -426,90 +429,91 @@ class AsyncProtocolMock: AsyncProtocol {
 
     //MARK: - callAsync
 
-    var callAsyncParameterCallsCount = 0
-    var callAsyncParameterCalled: Bool {
-        return callAsyncParameterCallsCount > 0
+    var callAsyncParameterIntStringCallsCount = 0
+    var callAsyncParameterIntStringCalled: Bool {
+        return callAsyncParameterIntStringCallsCount > 0
     }
-    var callAsyncParameterReceivedParameter: (Int)?
-    var callAsyncParameterReceivedInvocations: [(Int)] = []
-    var callAsyncParameterReturnValue: String!
-    var callAsyncParameterClosure: ((Int) async -> String)?
+    var callAsyncParameterIntStringReceivedParameter: (Int)?
+    var callAsyncParameterIntStringReceivedInvocations: [(Int)] = []
+    var callAsyncParameterIntStringReturnValue: String!
+    var callAsyncParameterIntStringClosure: ((Int) async -> String)?
 
     @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
     func callAsync(parameter: Int) async -> String {
-        callAsyncParameterCallsCount += 1
-        callAsyncParameterReceivedParameter = parameter
-        callAsyncParameterReceivedInvocations.append(parameter)
-        if let callAsyncParameterClosure = callAsyncParameterClosure {
-            return await callAsyncParameterClosure(parameter)
+        callAsyncParameterIntStringCallsCount += 1
+        callAsyncParameterIntStringReceivedParameter = parameter
+        callAsyncParameterIntStringReceivedInvocations.append(parameter)
+        if let callAsyncParameterIntStringClosure = callAsyncParameterIntStringClosure {
+            return await callAsyncParameterIntStringClosure(parameter)
         } else {
-            return callAsyncParameterReturnValue
+            return callAsyncParameterIntStringReturnValue
         }
     }
 
     //MARK: - callAsyncAndThrow
 
-    var callAsyncAndThrowParameterThrowableError: Error?
-    var callAsyncAndThrowParameterCallsCount = 0
-    var callAsyncAndThrowParameterCalled: Bool {
-        return callAsyncAndThrowParameterCallsCount > 0
+    var callAsyncAndThrowParameterIntStringThrowableError: Error?
+    var callAsyncAndThrowParameterIntStringCallsCount = 0
+    var callAsyncAndThrowParameterIntStringCalled: Bool {
+        return callAsyncAndThrowParameterIntStringCallsCount > 0
     }
-    var callAsyncAndThrowParameterReceivedParameter: (Int)?
-    var callAsyncAndThrowParameterReceivedInvocations: [(Int)] = []
-    var callAsyncAndThrowParameterReturnValue: String!
-    var callAsyncAndThrowParameterClosure: ((Int) async throws -> String)?
+    var callAsyncAndThrowParameterIntStringReceivedParameter: (Int)?
+    var callAsyncAndThrowParameterIntStringReceivedInvocations: [(Int)] = []
+    var callAsyncAndThrowParameterIntStringReturnValue: String!
+    var callAsyncAndThrowParameterIntStringClosure: ((Int) async throws -> String)?
 
     func callAsyncAndThrow(parameter: Int) async throws -> String {
-        if let error = callAsyncAndThrowParameterThrowableError {
+        callAsyncAndThrowParameterIntStringCallsCount += 1
+        callAsyncAndThrowParameterIntStringReceivedParameter = parameter
+        callAsyncAndThrowParameterIntStringReceivedInvocations.append(parameter)
+        if let error = callAsyncAndThrowParameterIntStringThrowableError {
             throw error
         }
-        callAsyncAndThrowParameterCallsCount += 1
-        callAsyncAndThrowParameterReceivedParameter = parameter
-        callAsyncAndThrowParameterReceivedInvocations.append(parameter)
-        if let callAsyncAndThrowParameterClosure = callAsyncAndThrowParameterClosure {
-            return try await callAsyncAndThrowParameterClosure(parameter)
+        if let callAsyncAndThrowParameterIntStringClosure = callAsyncAndThrowParameterIntStringClosure {
+            return try await callAsyncAndThrowParameterIntStringClosure(parameter)
         } else {
-            return callAsyncAndThrowParameterReturnValue
+            return callAsyncAndThrowParameterIntStringReturnValue
         }
     }
 
     //MARK: - callAsyncVoid
 
-    var callAsyncVoidParameterCallsCount = 0
-    var callAsyncVoidParameterCalled: Bool {
-        return callAsyncVoidParameterCallsCount > 0
+    var callAsyncVoidParameterIntVoidCallsCount = 0
+    var callAsyncVoidParameterIntVoidCalled: Bool {
+        return callAsyncVoidParameterIntVoidCallsCount > 0
     }
-    var callAsyncVoidParameterReceivedParameter: (Int)?
-    var callAsyncVoidParameterReceivedInvocations: [(Int)] = []
-    var callAsyncVoidParameterClosure: ((Int) async -> Void)?
+    var callAsyncVoidParameterIntVoidReceivedParameter: (Int)?
+    var callAsyncVoidParameterIntVoidReceivedInvocations: [(Int)] = []
+    var callAsyncVoidParameterIntVoidClosure: ((Int) async -> Void)?
 
     func callAsyncVoid(parameter: Int) async {
-        callAsyncVoidParameterCallsCount += 1
-        callAsyncVoidParameterReceivedParameter = parameter
-        callAsyncVoidParameterReceivedInvocations.append(parameter)
-        await callAsyncVoidParameterClosure?(parameter)
+        callAsyncVoidParameterIntVoidCallsCount += 1
+        callAsyncVoidParameterIntVoidReceivedParameter = parameter
+        callAsyncVoidParameterIntVoidReceivedInvocations.append(parameter)
+        await callAsyncVoidParameterIntVoidClosure?(parameter)
     }
 
     //MARK: - callAsyncAndThrowVoid
 
-    var callAsyncAndThrowVoidParameterThrowableError: Error?
-    var callAsyncAndThrowVoidParameterCallsCount = 0
-    var callAsyncAndThrowVoidParameterCalled: Bool {
-        return callAsyncAndThrowVoidParameterCallsCount > 0
+    var callAsyncAndThrowVoidParameterIntVoidThrowableError: Error?
+    var callAsyncAndThrowVoidParameterIntVoidCallsCount = 0
+    var callAsyncAndThrowVoidParameterIntVoidCalled: Bool {
+        return callAsyncAndThrowVoidParameterIntVoidCallsCount > 0
     }
-    var callAsyncAndThrowVoidParameterReceivedParameter: (Int)?
-    var callAsyncAndThrowVoidParameterReceivedInvocations: [(Int)] = []
-    var callAsyncAndThrowVoidParameterClosure: ((Int) async throws -> Void)?
+    var callAsyncAndThrowVoidParameterIntVoidReceivedParameter: (Int)?
+    var callAsyncAndThrowVoidParameterIntVoidReceivedInvocations: [(Int)] = []
+    var callAsyncAndThrowVoidParameterIntVoidClosure: ((Int) async throws -> Void)?
 
     func callAsyncAndThrowVoid(parameter: Int) async throws {
-        if let error = callAsyncAndThrowVoidParameterThrowableError {
+        callAsyncAndThrowVoidParameterIntVoidCallsCount += 1
+        callAsyncAndThrowVoidParameterIntVoidReceivedParameter = parameter
+        callAsyncAndThrowVoidParameterIntVoidReceivedInvocations.append(parameter)
+        if let error = callAsyncAndThrowVoidParameterIntVoidThrowableError {
             throw error
         }
-        callAsyncAndThrowVoidParameterCallsCount += 1
-        callAsyncAndThrowVoidParameterReceivedParameter = parameter
-        callAsyncAndThrowVoidParameterReceivedInvocations.append(parameter)
-        try await callAsyncAndThrowVoidParameterClosure?(parameter)
+        try await callAsyncAndThrowVoidParameterIntVoidClosure?(parameter)
     }
+
 
 }
 class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
@@ -522,10 +526,10 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
 
     var title: String? {
         get async throws {
+            titleCallsCount += 1
             if let error = titleThrowableError {
                 throw error
             }
-            titleCallsCount += 1
             if let titleClosure = titleClosure {
                 return try await titleClosure()
             } else {
@@ -543,10 +547,10 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
 
     var firstName: String {
         get async throws {
+            firstNameCallsCount += 1
             if let error = firstNameThrowableError {
                 throw error
             }
-            firstNameCallsCount += 1
             if let firstNameClosure = firstNameClosure {
                 return try await firstNameClosure()
             } else {
@@ -557,6 +561,7 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
     var underlyingFirstName: String!
     var firstNameThrowableError: Error?
     var firstNameClosure: (() async throws -> String)?
+
 
 
 }
@@ -599,6 +604,7 @@ class AsyncVariablesProtocolMock: AsyncVariablesProtocol {
     var firstNameClosure: (() async -> String)?
 
 
+
 }
 class BasicProtocolMock: BasicProtocol {
 
@@ -607,38 +613,39 @@ class BasicProtocolMock: BasicProtocol {
 
     //MARK: - loadConfiguration
 
-    var loadConfigurationCallsCount = 0
-    var loadConfigurationCalled: Bool {
-        return loadConfigurationCallsCount > 0
+    var loadConfigurationStringCallsCount = 0
+    var loadConfigurationStringCalled: Bool {
+        return loadConfigurationStringCallsCount > 0
     }
-    var loadConfigurationReturnValue: String?
-    var loadConfigurationClosure: (() -> String?)?
+    var loadConfigurationStringReturnValue: String?
+    var loadConfigurationStringClosure: (() -> String?)?
 
     func loadConfiguration() -> String? {
-        loadConfigurationCallsCount += 1
-        if let loadConfigurationClosure = loadConfigurationClosure {
-            return loadConfigurationClosure()
+        loadConfigurationStringCallsCount += 1
+        if let loadConfigurationStringClosure = loadConfigurationStringClosure {
+            return loadConfigurationStringClosure()
         } else {
-            return loadConfigurationReturnValue
+            return loadConfigurationStringReturnValue
         }
     }
 
     //MARK: - save
 
-    var saveConfigurationCallsCount = 0
-    var saveConfigurationCalled: Bool {
-        return saveConfigurationCallsCount > 0
+    var saveConfigurationStringVoidCallsCount = 0
+    var saveConfigurationStringVoidCalled: Bool {
+        return saveConfigurationStringVoidCallsCount > 0
     }
-    var saveConfigurationReceivedConfiguration: (String)?
-    var saveConfigurationReceivedInvocations: [(String)] = []
-    var saveConfigurationClosure: ((String) -> Void)?
+    var saveConfigurationStringVoidReceivedConfiguration: (String)?
+    var saveConfigurationStringVoidReceivedInvocations: [(String)] = []
+    var saveConfigurationStringVoidClosure: ((String) -> Void)?
 
     func save(configuration: String) {
-        saveConfigurationCallsCount += 1
-        saveConfigurationReceivedConfiguration = configuration
-        saveConfigurationReceivedInvocations.append(configuration)
-        saveConfigurationClosure?(configuration)
+        saveConfigurationStringVoidCallsCount += 1
+        saveConfigurationStringVoidReceivedConfiguration = configuration
+        saveConfigurationStringVoidReceivedInvocations.append(configuration)
+        saveConfigurationStringVoidClosure?(configuration)
     }
+
 
 }
 class ClosureProtocolMock: ClosureProtocol {
@@ -648,20 +655,21 @@ class ClosureProtocolMock: ClosureProtocol {
 
     //MARK: - setClosure
 
-    var setClosureCallsCount = 0
-    var setClosureCalled: Bool {
-        return setClosureCallsCount > 0
+    var setClosureClosureEscapingVoidVoidCallsCount = 0
+    var setClosureClosureEscapingVoidVoidCalled: Bool {
+        return setClosureClosureEscapingVoidVoidCallsCount > 0
     }
-    var setClosureReceivedClosure: ((() -> Void))?
-    var setClosureReceivedInvocations: [((() -> Void))] = []
-    var setClosureClosure: ((@escaping () -> Void) -> Void)?
+    var setClosureClosureEscapingVoidVoidReceivedClosure: ((() -> Void))?
+    var setClosureClosureEscapingVoidVoidReceivedInvocations: [((() -> Void))] = []
+    var setClosureClosureEscapingVoidVoidClosure: ((@escaping () -> Void) -> Void)?
 
     func setClosure(_ closure: @escaping () -> Void) {
-        setClosureCallsCount += 1
-        setClosureReceivedClosure = closure
-        setClosureReceivedInvocations.append(closure)
-        setClosureClosure?(closure)
+        setClosureClosureEscapingVoidVoidCallsCount += 1
+        setClosureClosureEscapingVoidVoidReceivedClosure = closure
+        setClosureClosureEscapingVoidVoidReceivedInvocations.append(closure)
+        setClosureClosureEscapingVoidVoidClosure?(closure)
     }
+
 
 }
 class CurrencyPresenterMock: CurrencyPresenter {
@@ -671,20 +679,50 @@ class CurrencyPresenterMock: CurrencyPresenter {
 
     //MARK: - showSourceCurrency
 
-    var showSourceCurrencyCallsCount = 0
-    var showSourceCurrencyCalled: Bool {
-        return showSourceCurrencyCallsCount > 0
+    var showSourceCurrencyCurrencyStringVoidCallsCount = 0
+    var showSourceCurrencyCurrencyStringVoidCalled: Bool {
+        return showSourceCurrencyCurrencyStringVoidCallsCount > 0
     }
-    var showSourceCurrencyReceivedCurrency: (String)?
-    var showSourceCurrencyReceivedInvocations: [(String)] = []
-    var showSourceCurrencyClosure: ((String) -> Void)?
+    var showSourceCurrencyCurrencyStringVoidReceivedCurrency: (String)?
+    var showSourceCurrencyCurrencyStringVoidReceivedInvocations: [(String)] = []
+    var showSourceCurrencyCurrencyStringVoidClosure: ((String) -> Void)?
 
     func showSourceCurrency(_ currency: String) {
-        showSourceCurrencyCallsCount += 1
-        showSourceCurrencyReceivedCurrency = currency
-        showSourceCurrencyReceivedInvocations.append(currency)
-        showSourceCurrencyClosure?(currency)
+        showSourceCurrencyCurrencyStringVoidCallsCount += 1
+        showSourceCurrencyCurrencyStringVoidReceivedCurrency = currency
+        showSourceCurrencyCurrencyStringVoidReceivedInvocations.append(currency)
+        showSourceCurrencyCurrencyStringVoidClosure?(currency)
     }
+
+
+}
+class ExampleVarargMock: ExampleVararg {
+
+
+
+
+    //MARK: - string
+
+    var stringKeyStringArgsCVarArgStringCallsCount = 0
+    var stringKeyStringArgsCVarArgStringCalled: Bool {
+        return stringKeyStringArgsCVarArgStringCallsCount > 0
+    }
+    var stringKeyStringArgsCVarArgStringReceivedArguments: (key: String, args: CVarArg...)?
+    var stringKeyStringArgsCVarArgStringReceivedInvocations: [(key: String, args: CVarArg...)] = []
+    var stringKeyStringArgsCVarArgStringReturnValue: String!
+    var stringKeyStringArgsCVarArgStringClosure: ((String, CVarArg...) -> String)?
+
+    func string(key: String, args: CVarArg...) -> String {
+        stringKeyStringArgsCVarArgStringCallsCount += 1
+        stringKeyStringArgsCVarArgStringReceivedArguments = (key: key, args: args)
+        stringKeyStringArgsCVarArgStringReceivedInvocations.append((key: key, args: args))
+        if let stringKeyStringArgsCVarArgStringClosure = stringKeyStringArgsCVarArgStringClosure {
+            return stringKeyStringArgsCVarArgStringClosure(key, args)
+        } else {
+            return stringKeyStringArgsCVarArgStringReturnValue
+        }
+    }
+
 
 }
 class ExtendableProtocolMock: ExtendableProtocol {
@@ -699,20 +737,21 @@ class ExtendableProtocolMock: ExtendableProtocol {
 
     //MARK: - report
 
-    var reportMessageCallsCount = 0
-    var reportMessageCalled: Bool {
-        return reportMessageCallsCount > 0
+    var reportMessageStringVoidCallsCount = 0
+    var reportMessageStringVoidCalled: Bool {
+        return reportMessageStringVoidCallsCount > 0
     }
-    var reportMessageReceivedMessage: (String)?
-    var reportMessageReceivedInvocations: [(String)] = []
-    var reportMessageClosure: ((String) -> Void)?
+    var reportMessageStringVoidReceivedMessage: (String)?
+    var reportMessageStringVoidReceivedInvocations: [(String)] = []
+    var reportMessageStringVoidClosure: ((String) -> Void)?
 
     func report(message: String) {
-        reportMessageCallsCount += 1
-        reportMessageReceivedMessage = message
-        reportMessageReceivedInvocations.append(message)
-        reportMessageClosure?(message)
+        reportMessageStringVoidCallsCount += 1
+        reportMessageStringVoidReceivedMessage = message
+        reportMessageStringVoidReceivedInvocations.append(message)
+        reportMessageStringVoidClosure?(message)
     }
+
 
 }
 class FunctionWithAttributesMock: FunctionWithAttributes {
@@ -722,63 +761,64 @@ class FunctionWithAttributesMock: FunctionWithAttributes {
 
     //MARK: - callOneAttribute
 
-    var callOneAttributeCallsCount = 0
-    var callOneAttributeCalled: Bool {
-        return callOneAttributeCallsCount > 0
+    var callOneAttributeStringCallsCount = 0
+    var callOneAttributeStringCalled: Bool {
+        return callOneAttributeStringCallsCount > 0
     }
-    var callOneAttributeReturnValue: String!
-    var callOneAttributeClosure: (() -> String)?
+    var callOneAttributeStringReturnValue: String!
+    var callOneAttributeStringClosure: (() -> String)?
 
     @discardableResult
     func callOneAttribute() -> String {
-        callOneAttributeCallsCount += 1
-        if let callOneAttributeClosure = callOneAttributeClosure {
-            return callOneAttributeClosure()
+        callOneAttributeStringCallsCount += 1
+        if let callOneAttributeStringClosure = callOneAttributeStringClosure {
+            return callOneAttributeStringClosure()
         } else {
-            return callOneAttributeReturnValue
+            return callOneAttributeStringReturnValue
         }
     }
 
     //MARK: - callTwoAttributes
 
-    var callTwoAttributesCallsCount = 0
-    var callTwoAttributesCalled: Bool {
-        return callTwoAttributesCallsCount > 0
+    var callTwoAttributesIntCallsCount = 0
+    var callTwoAttributesIntCalled: Bool {
+        return callTwoAttributesIntCallsCount > 0
     }
-    var callTwoAttributesReturnValue: Int!
-    var callTwoAttributesClosure: (() -> Int)?
+    var callTwoAttributesIntReturnValue: Int!
+    var callTwoAttributesIntClosure: (() -> Int)?
 
     @available(macOS 10.15, *)
     @discardableResult
     func callTwoAttributes() -> Int {
-        callTwoAttributesCallsCount += 1
-        if let callTwoAttributesClosure = callTwoAttributesClosure {
-            return callTwoAttributesClosure()
+        callTwoAttributesIntCallsCount += 1
+        if let callTwoAttributesIntClosure = callTwoAttributesIntClosure {
+            return callTwoAttributesIntClosure()
         } else {
-            return callTwoAttributesReturnValue
+            return callTwoAttributesIntReturnValue
         }
     }
 
     //MARK: - callRepeatedAttributes
 
-    var callRepeatedAttributesCallsCount = 0
-    var callRepeatedAttributesCalled: Bool {
-        return callRepeatedAttributesCallsCount > 0
+    var callRepeatedAttributesBoolCallsCount = 0
+    var callRepeatedAttributesBoolCalled: Bool {
+        return callRepeatedAttributesBoolCallsCount > 0
     }
-    var callRepeatedAttributesReturnValue: Bool!
-    var callRepeatedAttributesClosure: (() -> Bool)?
+    var callRepeatedAttributesBoolReturnValue: Bool!
+    var callRepeatedAttributesBoolClosure: (() -> Bool)?
 
     @available(iOS 13.0, *)
     @available(macOS 10.15, *)
     @discardableResult
     func callRepeatedAttributes() -> Bool {
-        callRepeatedAttributesCallsCount += 1
-        if let callRepeatedAttributesClosure = callRepeatedAttributesClosure {
-            return callRepeatedAttributesClosure()
+        callRepeatedAttributesBoolCallsCount += 1
+        if let callRepeatedAttributesBoolClosure = callRepeatedAttributesBoolClosure {
+            return callRepeatedAttributesBoolClosure()
         } else {
-            return callRepeatedAttributesReturnValue
+            return callRepeatedAttributesBoolReturnValue
         }
     }
+
 
 }
 class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
@@ -788,39 +828,40 @@ class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
 
     //MARK: - get
 
-    var getCallsCount = 0
-    var getCalled: Bool {
-        return getCallsCount > 0
+    var get____VoidCallsCount = 0
+    var get____VoidCalled: Bool {
+        return get____VoidCallsCount > 0
     }
-    var getReturnValue: (() -> Void)!
-    var getClosure: (() -> () -> Void)?
+    var get____VoidReturnValue: ((() -> Void))!
+    var get____VoidClosure: (() -> (() -> Void))?
 
-    func get() -> () -> Void {
-        getCallsCount += 1
-        if let getClosure = getClosure {
-            return getClosure()
+    func get() -> (() -> Void) {
+        get____VoidCallsCount += 1
+        if let get____VoidClosure = get____VoidClosure {
+            return get____VoidClosure()
         } else {
-            return getReturnValue
+            return get____VoidReturnValue
         }
     }
 
     //MARK: - getOptional
 
-    var getOptionalCallsCount = 0
-    var getOptionalCalled: Bool {
-        return getOptionalCallsCount > 0
+    var getOptional_____VoidCallsCount = 0
+    var getOptional_____VoidCalled: Bool {
+        return getOptional_____VoidCallsCount > 0
     }
-    var getOptionalReturnValue: (() -> Void)?
-    var getOptionalClosure: (() -> (() -> Void)?)?
+    var getOptional_____VoidReturnValue: ((() -> Void)?)
+    var getOptional_____VoidClosure: (() -> ((() -> Void)?))?
 
-    func getOptional() -> (() -> Void)? {
-        getOptionalCallsCount += 1
-        if let getOptionalClosure = getOptionalClosure {
-            return getOptionalClosure()
+    func getOptional() -> ((() -> Void)?) {
+        getOptional_____VoidCallsCount += 1
+        if let getOptional_____VoidClosure = getOptional_____VoidClosure {
+            return getOptional_____VoidClosure()
         } else {
-            return getOptionalReturnValue
+            return getOptional_____VoidReturnValue
         }
     }
+
 
 }
 class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
@@ -830,20 +871,21 @@ class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
 
     //MARK: - start
 
-    var startCarOfCallsCount = 0
-    var startCarOfCalled: Bool {
-        return startCarOfCallsCount > 0
+    var startCarStringOfModelStringVoidCallsCount = 0
+    var startCarStringOfModelStringVoidCalled: Bool {
+        return startCarStringOfModelStringVoidCallsCount > 0
     }
-    var startCarOfReceivedArguments: (car: String, model: String)?
-    var startCarOfReceivedInvocations: [(car: String, model: String)] = []
-    var startCarOfClosure: ((String, String) -> Void)?
+    var startCarStringOfModelStringVoidReceivedArguments: (car: String, model: String)?
+    var startCarStringOfModelStringVoidReceivedInvocations: [(car: String, model: String)] = []
+    var startCarStringOfModelStringVoidClosure: ((String, String) -> Void)?
 
     func start(car: String, of model: String) {
-        startCarOfCallsCount += 1
-        startCarOfReceivedArguments = (car: car, model: model)
-        startCarOfReceivedInvocations.append((car: car, model: model))
-        startCarOfClosure?(car, model)
+        startCarStringOfModelStringVoidCallsCount += 1
+        startCarStringOfModelStringVoidReceivedArguments = (car: car, model: model)
+        startCarStringOfModelStringVoidReceivedInvocations.append((car: car, model: model))
+        startCarStringOfModelStringVoidClosure?(car, model)
     }
+
 
 }
 class HouseProtocolMock: HouseProtocol {
@@ -863,6 +905,7 @@ class HouseProtocolMock: HouseProtocol {
     var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>?
 
 
+
 }
 class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOptionalReturnValueProtocol {
 
@@ -871,21 +914,22 @@ class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOpt
 
     //MARK: - implicitReturn
 
-    var implicitReturnCallsCount = 0
-    var implicitReturnCalled: Bool {
-        return implicitReturnCallsCount > 0
+    var implicitReturnStringCallsCount = 0
+    var implicitReturnStringCalled: Bool {
+        return implicitReturnStringCallsCount > 0
     }
-    var implicitReturnReturnValue: String!
-    var implicitReturnClosure: (() -> String!)?
+    var implicitReturnStringReturnValue: String!
+    var implicitReturnStringClosure: (() -> String!)?
 
     func implicitReturn() -> String! {
-        implicitReturnCallsCount += 1
-        if let implicitReturnClosure = implicitReturnClosure {
-            return implicitReturnClosure()
+        implicitReturnStringCallsCount += 1
+        if let implicitReturnStringClosure = implicitReturnStringClosure {
+            return implicitReturnStringClosure()
         } else {
-            return implicitReturnReturnValue
+            return implicitReturnStringReturnValue
         }
     }
+
 
 }
 class InitializationProtocolMock: InitializationProtocol {
@@ -895,40 +939,41 @@ class InitializationProtocolMock: InitializationProtocol {
 
     //MARK: - init
 
-    var initIntParameterStringParameterOptionalParameterReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
-    var initIntParameterStringParameterOptionalParameterReceivedInvocations: [(intParameter: Int, stringParameter: String, optionalParameter: String?)] = []
-    var initIntParameterStringParameterOptionalParameterClosure: ((Int, String, String?) -> Void)?
+    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
+    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedInvocations: [(intParameter: Int, stringParameter: String, optionalParameter: String?)] = []
+    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolClosure: ((Int, String, String?) -> Void)?
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
-        initIntParameterStringParameterOptionalParameterReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
-        initIntParameterStringParameterOptionalParameterReceivedInvocations.append((intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter))
-        initIntParameterStringParameterOptionalParameterClosure?(intParameter, stringParameter, optionalParameter)
+        initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
+        initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedInvocations.append((intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter))
+        initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolClosure?(intParameter, stringParameter, optionalParameter)
     }
     //MARK: - start
 
-    var startCallsCount = 0
-    var startCalled: Bool {
-        return startCallsCount > 0
+    var startVoidCallsCount = 0
+    var startVoidCalled: Bool {
+        return startVoidCallsCount > 0
     }
-    var startClosure: (() -> Void)?
+    var startVoidClosure: (() -> Void)?
 
     func start() {
-        startCallsCount += 1
-        startClosure?()
+        startVoidCallsCount += 1
+        startVoidClosure?()
     }
 
     //MARK: - stop
 
-    var stopCallsCount = 0
-    var stopCalled: Bool {
-        return stopCallsCount > 0
+    var stopVoidCallsCount = 0
+    var stopVoidCalled: Bool {
+        return stopVoidCallsCount > 0
     }
-    var stopClosure: (() -> Void)?
+    var stopVoidClosure: (() -> Void)?
 
     func stop() {
-        stopCallsCount += 1
-        stopClosure?()
+        stopVoidCallsCount += 1
+        stopVoidClosure?()
     }
+
 
 }
 class MultiClosureProtocolMock: MultiClosureProtocol {
@@ -938,20 +983,21 @@ class MultiClosureProtocolMock: MultiClosureProtocol {
 
     //MARK: - setClosure
 
-    var setClosureNameCallsCount = 0
-    var setClosureNameCalled: Bool {
-        return setClosureNameCallsCount > 0
+    var setClosureNameStringClosureEscapingVoidVoidCallsCount = 0
+    var setClosureNameStringClosureEscapingVoidVoidCalled: Bool {
+        return setClosureNameStringClosureEscapingVoidVoidCallsCount > 0
     }
-    var setClosureNameReceivedArguments: (name: String, closure: () -> Void)?
-    var setClosureNameReceivedInvocations: [(name: String, closure: () -> Void)] = []
-    var setClosureNameClosure: ((String, @escaping () -> Void) -> Void)?
+    var setClosureNameStringClosureEscapingVoidVoidReceivedArguments: (name: String, closure: () -> Void)?
+    var setClosureNameStringClosureEscapingVoidVoidReceivedInvocations: [(name: String, closure: () -> Void)] = []
+    var setClosureNameStringClosureEscapingVoidVoidClosure: ((String, @escaping () -> Void) -> Void)?
 
     func setClosure(name: String, _ closure: @escaping () -> Void) {
-        setClosureNameCallsCount += 1
-        setClosureNameReceivedArguments = (name: name, closure: closure)
-        setClosureNameReceivedInvocations.append((name: name, closure: closure))
-        setClosureNameClosure?(name, closure)
+        setClosureNameStringClosureEscapingVoidVoidCallsCount += 1
+        setClosureNameStringClosureEscapingVoidVoidReceivedArguments = (name: name, closure: closure)
+        setClosureNameStringClosureEscapingVoidVoidReceivedInvocations.append((name: name, closure: closure))
+        setClosureNameStringClosureEscapingVoidVoidClosure?(name, closure)
     }
+
 
 }
 class MultiNonEscapingClosureProtocolMock: MultiNonEscapingClosureProtocol {
@@ -961,16 +1007,17 @@ class MultiNonEscapingClosureProtocolMock: MultiNonEscapingClosureProtocol {
 
     //MARK: - executeClosure
 
-    var executeClosureNameCallsCount = 0
-    var executeClosureNameCalled: Bool {
-        return executeClosureNameCallsCount > 0
+    var executeClosureNameStringClosureVoidVoidCallsCount = 0
+    var executeClosureNameStringClosureVoidVoidCalled: Bool {
+        return executeClosureNameStringClosureVoidVoidCallsCount > 0
     }
-    var executeClosureNameClosure: ((String, () -> Void) -> Void)?
+    var executeClosureNameStringClosureVoidVoidClosure: ((String, () -> Void) -> Void)?
 
     func executeClosure(name: String, _ closure: () -> Void) {
-        executeClosureNameCallsCount += 1
-        executeClosureNameClosure?(name, closure)
+        executeClosureNameStringClosureVoidVoidCallsCount += 1
+        executeClosureNameStringClosureVoidVoidClosure?(name, closure)
     }
+
 
 }
 class NonEscapingClosureProtocolMock: NonEscapingClosureProtocol {
@@ -980,16 +1027,242 @@ class NonEscapingClosureProtocolMock: NonEscapingClosureProtocol {
 
     //MARK: - executeClosure
 
-    var executeClosureCallsCount = 0
-    var executeClosureCalled: Bool {
-        return executeClosureCallsCount > 0
+    var executeClosureClosureVoidVoidCallsCount = 0
+    var executeClosureClosureVoidVoidCalled: Bool {
+        return executeClosureClosureVoidVoidCallsCount > 0
     }
-    var executeClosureClosure: ((() -> Void) -> Void)?
+    var executeClosureClosureVoidVoidClosure: ((() -> Void) -> Void)?
 
     func executeClosure(_ closure: () -> Void) {
-        executeClosureCallsCount += 1
-        executeClosureClosure?(closure)
+        executeClosureClosureVoidVoidCallsCount += 1
+        executeClosureClosureVoidVoidClosure?(closure)
     }
+
+
+}
+public class ProtocolWithMethodWithGenericParametersMock: ProtocolWithMethodWithGenericParameters {
+
+    public init() {}
+
+
+
+    //MARK: - execute
+
+    public var executeParamResultIntErrorResultStringErrorCallsCount = 0
+    public var executeParamResultIntErrorResultStringErrorCalled: Bool {
+        return executeParamResultIntErrorResultStringErrorCallsCount > 0
+    }
+    public var executeParamResultIntErrorResultStringErrorReceivedParam: (Result<Int, Error>)?
+    public var executeParamResultIntErrorResultStringErrorReceivedInvocations: [(Result<Int, Error>)] = []
+    public var executeParamResultIntErrorResultStringErrorReturnValue: Result<String, Error>!
+    public var executeParamResultIntErrorResultStringErrorClosure: ((Result<Int, Error>) -> Result<String, Error>)?
+
+    public func execute(param: Result<Int, Error>) -> Result<String, Error> {
+        executeParamResultIntErrorResultStringErrorCallsCount += 1
+        executeParamResultIntErrorResultStringErrorReceivedParam = param
+        executeParamResultIntErrorResultStringErrorReceivedInvocations.append(param)
+        if let executeParamResultIntErrorResultStringErrorClosure = executeParamResultIntErrorResultStringErrorClosure {
+            return executeParamResultIntErrorResultStringErrorClosure(param)
+        } else {
+            return executeParamResultIntErrorResultStringErrorReturnValue
+        }
+    }
+
+
+}
+public class ProtocolWithMethodWithInoutParameterMock: ProtocolWithMethodWithInoutParameter {
+
+    public init() {}
+
+
+
+    //MARK: - execute
+
+    public var executeParamInoutStringVoidCallsCount = 0
+    public var executeParamInoutStringVoidCalled: Bool {
+        return executeParamInoutStringVoidCallsCount > 0
+    }
+    public var executeParamInoutStringVoidReceivedParam: (String)?
+    public var executeParamInoutStringVoidReceivedInvocations: [(String)] = []
+    public var executeParamInoutStringVoidClosure: ((inout String) -> Void)?
+
+    public func execute(param: inout String) {
+        executeParamInoutStringVoidCallsCount += 1
+        executeParamInoutStringVoidReceivedParam = param
+        executeParamInoutStringVoidReceivedInvocations.append(param)
+        executeParamInoutStringVoidClosure?(&param)
+    }
+
+
+}
+public class ProtocolWithOverridesMock: ProtocolWithOverrides {
+
+    public init() {}
+
+
+
+    //MARK: - doSomething
+
+    public var doSomethingDataIntStringCallsCount = 0
+    public var doSomethingDataIntStringCalled: Bool {
+        return doSomethingDataIntStringCallsCount > 0
+    }
+    public var doSomethingDataIntStringReceivedData: (Int)?
+    public var doSomethingDataIntStringReceivedInvocations: [(Int)] = []
+    public var doSomethingDataIntStringReturnValue: [String]!
+    public var doSomethingDataIntStringClosure: ((Int) -> [String])?
+
+    public func doSomething(_ data: Int) -> [String] {
+        doSomethingDataIntStringCallsCount += 1
+        doSomethingDataIntStringReceivedData = data
+        doSomethingDataIntStringReceivedInvocations.append(data)
+        if let doSomethingDataIntStringClosure = doSomethingDataIntStringClosure {
+            return doSomethingDataIntStringClosure(data)
+        } else {
+            return doSomethingDataIntStringReturnValue
+        }
+    }
+
+    //MARK: - doSomething
+
+    public var doSomethingDataStringStringCallsCount = 0
+    public var doSomethingDataStringStringCalled: Bool {
+        return doSomethingDataStringStringCallsCount > 0
+    }
+    public var doSomethingDataStringStringReceivedData: (String)?
+    public var doSomethingDataStringStringReceivedInvocations: [(String)] = []
+    public var doSomethingDataStringStringReturnValue: [String]!
+    public var doSomethingDataStringStringClosure: ((String) -> [String])?
+
+    public func doSomething(_ data: String) -> [String] {
+        doSomethingDataStringStringCallsCount += 1
+        doSomethingDataStringStringReceivedData = data
+        doSomethingDataStringStringReceivedInvocations.append(data)
+        if let doSomethingDataStringStringClosure = doSomethingDataStringStringClosure {
+            return doSomethingDataStringStringClosure(data)
+        } else {
+            return doSomethingDataStringStringReturnValue
+        }
+    }
+
+    //MARK: - doSomething
+
+    public var doSomethingDataStringIntCallsCount = 0
+    public var doSomethingDataStringIntCalled: Bool {
+        return doSomethingDataStringIntCallsCount > 0
+    }
+    public var doSomethingDataStringIntReceivedData: (String)?
+    public var doSomethingDataStringIntReceivedInvocations: [(String)] = []
+    public var doSomethingDataStringIntReturnValue: [Int]!
+    public var doSomethingDataStringIntClosure: ((String) -> [Int])?
+
+    public func doSomething(_ data: String) -> [Int] {
+        doSomethingDataStringIntCallsCount += 1
+        doSomethingDataStringIntReceivedData = data
+        doSomethingDataStringIntReceivedInvocations.append(data)
+        if let doSomethingDataStringIntClosure = doSomethingDataStringIntClosure {
+            return doSomethingDataStringIntClosure(data)
+        } else {
+            return doSomethingDataStringIntReturnValue
+        }
+    }
+
+    //MARK: - doSomething
+
+    public var doSomethingDataString_IntStringCallsCount = 0
+    public var doSomethingDataString_IntStringCalled: Bool {
+        return doSomethingDataString_IntStringCallsCount > 0
+    }
+    public var doSomethingDataString_IntStringReceivedData: (String)?
+    public var doSomethingDataString_IntStringReceivedInvocations: [(String)] = []
+    public var doSomethingDataString_IntStringReturnValue: ([Int], [String])!
+    public var doSomethingDataString_IntStringClosure: ((String) -> ([Int], [String]))?
+
+    public func doSomething(_ data: String) -> ([Int], [String]) {
+        doSomethingDataString_IntStringCallsCount += 1
+        doSomethingDataString_IntStringReceivedData = data
+        doSomethingDataString_IntStringReceivedInvocations.append(data)
+        if let doSomethingDataString_IntStringClosure = doSomethingDataString_IntStringClosure {
+            return doSomethingDataString_IntStringClosure(data)
+        } else {
+            return doSomethingDataString_IntStringReturnValue
+        }
+    }
+
+    //MARK: - doSomething
+
+    public var doSomethingDataString_IntAnyThrowableError: Error?
+    public var doSomethingDataString_IntAnyCallsCount = 0
+    public var doSomethingDataString_IntAnyCalled: Bool {
+        return doSomethingDataString_IntAnyCallsCount > 0
+    }
+    public var doSomethingDataString_IntAnyReceivedData: (String)?
+    public var doSomethingDataString_IntAnyReceivedInvocations: [(String)] = []
+    public var doSomethingDataString_IntAnyReturnValue: ([Int], [Any])!
+    public var doSomethingDataString_IntAnyClosure: ((String) throws -> ([Int], [Any]))?
+
+    public func doSomething(_ data: String) throws -> ([Int], [Any]) {
+        doSomethingDataString_IntAnyCallsCount += 1
+        doSomethingDataString_IntAnyReceivedData = data
+        doSomethingDataString_IntAnyReceivedInvocations.append(data)
+        if let error = doSomethingDataString_IntAnyThrowableError {
+            throw error
+        }
+        if let doSomethingDataString_IntAnyClosure = doSomethingDataString_IntAnyClosure {
+            return try doSomethingDataString_IntAnyClosure(data)
+        } else {
+            return doSomethingDataString_IntAnyReturnValue
+        }
+    }
+
+    //MARK: - doSomething
+
+    public var doSomethingDataString_IntStringVoidCallsCount = 0
+    public var doSomethingDataString_IntStringVoidCalled: Bool {
+        return doSomethingDataString_IntStringVoidCallsCount > 0
+    }
+    public var doSomethingDataString_IntStringVoidReceivedData: (String)?
+    public var doSomethingDataString_IntStringVoidReceivedInvocations: [(String)] = []
+    public var doSomethingDataString_IntStringVoidReturnValue: ((([Int], [String]) -> Void))!
+    public var doSomethingDataString_IntStringVoidClosure: ((String) -> (([Int], [String]) -> Void))?
+
+    public func doSomething(_ data: String) -> (([Int], [String]) -> Void) {
+        doSomethingDataString_IntStringVoidCallsCount += 1
+        doSomethingDataString_IntStringVoidReceivedData = data
+        doSomethingDataString_IntStringVoidReceivedInvocations.append(data)
+        if let doSomethingDataString_IntStringVoidClosure = doSomethingDataString_IntStringVoidClosure {
+            return doSomethingDataString_IntStringVoidClosure(data)
+        } else {
+            return doSomethingDataString_IntStringVoidReturnValue
+        }
+    }
+
+    //MARK: - doSomething
+
+    public var doSomethingDataString_IntAnyVoidThrowableError: Error?
+    public var doSomethingDataString_IntAnyVoidCallsCount = 0
+    public var doSomethingDataString_IntAnyVoidCalled: Bool {
+        return doSomethingDataString_IntAnyVoidCallsCount > 0
+    }
+    public var doSomethingDataString_IntAnyVoidReceivedData: (String)?
+    public var doSomethingDataString_IntAnyVoidReceivedInvocations: [(String)] = []
+    public var doSomethingDataString_IntAnyVoidReturnValue: ((([Int], [Any]) -> Void))!
+    public var doSomethingDataString_IntAnyVoidClosure: ((String) throws -> (([Int], [Any]) -> Void))?
+
+    public func doSomething(_ data: String) throws -> (([Int], [Any]) -> Void) {
+        doSomethingDataString_IntAnyVoidCallsCount += 1
+        doSomethingDataString_IntAnyVoidReceivedData = data
+        doSomethingDataString_IntAnyVoidReceivedInvocations.append(data)
+        if let error = doSomethingDataString_IntAnyVoidThrowableError {
+            throw error
+        }
+        if let doSomethingDataString_IntAnyVoidClosure = doSomethingDataString_IntAnyVoidClosure {
+            return try doSomethingDataString_IntAnyVoidClosure(data)
+        } else {
+            return doSomethingDataString_IntAnyVoidReturnValue
+        }
+    }
+
 
 }
 class ReservedWordsProtocolMock: ReservedWordsProtocol {
@@ -999,25 +1272,26 @@ class ReservedWordsProtocolMock: ReservedWordsProtocol {
 
     //MARK: - `continue`
 
-    var continueWithCallsCount = 0
-    var continueWithCalled: Bool {
-        return continueWithCallsCount > 0
+    var continueWithMessageStringStringCallsCount = 0
+    var continueWithMessageStringStringCalled: Bool {
+        return continueWithMessageStringStringCallsCount > 0
     }
-    var continueWithReceivedMessage: (String)?
-    var continueWithReceivedInvocations: [(String)] = []
-    var continueWithReturnValue: String!
-    var continueWithClosure: ((String) -> String)?
+    var continueWithMessageStringStringReceivedMessage: (String)?
+    var continueWithMessageStringStringReceivedInvocations: [(String)] = []
+    var continueWithMessageStringStringReturnValue: String!
+    var continueWithMessageStringStringClosure: ((String) -> String)?
 
     func `continue`(with message: String) -> String {
-        continueWithCallsCount += 1
-        continueWithReceivedMessage = message
-        continueWithReceivedInvocations.append(message)
-        if let continueWithClosure = continueWithClosure {
-            return continueWithClosure(message)
+        continueWithMessageStringStringCallsCount += 1
+        continueWithMessageStringStringReceivedMessage = message
+        continueWithMessageStringStringReceivedInvocations.append(message)
+        if let continueWithMessageStringStringClosure = continueWithMessageStringStringClosure {
+            return continueWithMessageStringStringClosure(message)
         } else {
-            return continueWithReturnValue
+            return continueWithMessageStringStringReturnValue
         }
     }
+
 
 }
 class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
@@ -1027,37 +1301,38 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
 
     //MARK: - start
 
-    var startCarOfCallsCount = 0
-    var startCarOfCalled: Bool {
-        return startCarOfCallsCount > 0
+    var startCarStringOfModelStringVoidCallsCount = 0
+    var startCarStringOfModelStringVoidCalled: Bool {
+        return startCarStringOfModelStringVoidCallsCount > 0
     }
-    var startCarOfReceivedArguments: (car: String, model: String)?
-    var startCarOfReceivedInvocations: [(car: String, model: String)] = []
-    var startCarOfClosure: ((String, String) -> Void)?
+    var startCarStringOfModelStringVoidReceivedArguments: (car: String, model: String)?
+    var startCarStringOfModelStringVoidReceivedInvocations: [(car: String, model: String)] = []
+    var startCarStringOfModelStringVoidClosure: ((String, String) -> Void)?
 
     func start(car: String, of model: String) {
-        startCarOfCallsCount += 1
-        startCarOfReceivedArguments = (car: car, model: model)
-        startCarOfReceivedInvocations.append((car: car, model: model))
-        startCarOfClosure?(car, model)
+        startCarStringOfModelStringVoidCallsCount += 1
+        startCarStringOfModelStringVoidReceivedArguments = (car: car, model: model)
+        startCarStringOfModelStringVoidReceivedInvocations.append((car: car, model: model))
+        startCarStringOfModelStringVoidClosure?(car, model)
     }
 
     //MARK: - start
 
-    var startPlaneOfCallsCount = 0
-    var startPlaneOfCalled: Bool {
-        return startPlaneOfCallsCount > 0
+    var startPlaneStringOfModelStringVoidCallsCount = 0
+    var startPlaneStringOfModelStringVoidCalled: Bool {
+        return startPlaneStringOfModelStringVoidCallsCount > 0
     }
-    var startPlaneOfReceivedArguments: (plane: String, model: String)?
-    var startPlaneOfReceivedInvocations: [(plane: String, model: String)] = []
-    var startPlaneOfClosure: ((String, String) -> Void)?
+    var startPlaneStringOfModelStringVoidReceivedArguments: (plane: String, model: String)?
+    var startPlaneStringOfModelStringVoidReceivedInvocations: [(plane: String, model: String)] = []
+    var startPlaneStringOfModelStringVoidClosure: ((String, String) -> Void)?
 
     func start(plane: String, of model: String) {
-        startPlaneOfCallsCount += 1
-        startPlaneOfReceivedArguments = (plane: plane, model: model)
-        startPlaneOfReceivedInvocations.append((plane: plane, model: model))
-        startPlaneOfClosure?(plane, model)
+        startPlaneStringOfModelStringVoidCallsCount += 1
+        startPlaneStringOfModelStringVoidReceivedArguments = (plane: plane, model: model)
+        startPlaneStringOfModelStringVoidReceivedInvocations.append((plane: plane, model: model))
+        startPlaneStringOfModelStringVoidClosure?(plane, model)
     }
+
 
 }
 class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
@@ -1067,20 +1342,21 @@ class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
 
     //MARK: - send
 
-    var sendMessageCallsCount = 0
-    var sendMessageCalled: Bool {
-        return sendMessageCallsCount > 0
+    var sendMessageStringVoidCallsCount = 0
+    var sendMessageStringVoidCalled: Bool {
+        return sendMessageStringVoidCallsCount > 0
     }
-    var sendMessageReceivedMessage: (String)?
-    var sendMessageReceivedInvocations: [(String)?] = []
-    var sendMessageClosure: ((String?) -> Void)?
+    var sendMessageStringVoidReceivedMessage: (String)?
+    var sendMessageStringVoidReceivedInvocations: [(String)?] = []
+    var sendMessageStringVoidClosure: ((String?) -> Void)?
 
     func send(message: String?) {
-        sendMessageCallsCount += 1
-        sendMessageReceivedMessage = message
-        sendMessageReceivedInvocations.append(message)
-        sendMessageClosure?(message)
+        sendMessageStringVoidCallsCount += 1
+        sendMessageStringVoidReceivedMessage = message
+        sendMessageStringVoidReceivedInvocations.append(message)
+        sendMessageStringVoidClosure?(message)
     }
+
 
 }
 class SomeProtocolMock: SomeProtocol {
@@ -1090,93 +1366,94 @@ class SomeProtocolMock: SomeProtocol {
 
     //MARK: - a
 
-    var ayzCallsCount = 0
-    var ayzCalled: Bool {
-        return ayzCallsCount > 0
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidCallsCount = 0
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidCalled: Bool {
+        return aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidCallsCount > 0
     }
-    var ayzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
-    var ayzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
-    var ayzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) -> Void)?
 
     func a(_ x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) {
-        ayzCallsCount += 1
-        ayzReceivedArguments = (x: x, y: y, z: z)
-        ayzReceivedInvocations.append((x: x, y: y, z: z))
-        ayzClosure?(x, y, z)
+        aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidCallsCount += 1
+        aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedArguments = (x: x, y: y, z: z)
+        aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidReceivedInvocations.append((x: x, y: y, z: z))
+        aXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolVoidClosure?(x, y, z)
     }
 
     //MARK: - b
 
-    var bxyzCallsCount = 0
-    var bxyzCalled: Bool {
-        return bxyzCallsCount > 0
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringCallsCount = 0
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringCalled: Bool {
+        return bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringCallsCount > 0
     }
-    var bxyzReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
-    var bxyzReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
-    var bxyzReturnValue: String!
-    var bxyzClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedArguments: (x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)?
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedInvocations: [(x: (any StubProtocol)?, y: (any StubProtocol)?, z: any StubProtocol)] = []
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReturnValue: String!
+    var bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringClosure: (((any StubProtocol)?, (any StubProtocol)?, any StubProtocol) async -> String)?
 
     func b(x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) async -> String {
-        bxyzCallsCount += 1
-        bxyzReceivedArguments = (x: x, y: y, z: z)
-        bxyzReceivedInvocations.append((x: x, y: y, z: z))
-        if let bxyzClosure = bxyzClosure {
-            return await bxyzClosure(x, y, z)
+        bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringCallsCount += 1
+        bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedArguments = (x: x, y: y, z: z)
+        bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReceivedInvocations.append((x: x, y: y, z: z))
+        if let bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringClosure = bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringClosure {
+            return await bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringClosure(x, y, z)
         } else {
-            return bxyzReturnValue
+            return bXSomeStubProtocolYSomeStubProtocolZSomeStubProtocolStringReturnValue
         }
     }
 
     //MARK: - someConfusingFuncName
 
-    var someConfusingFuncNameXCallsCount = 0
-    var someConfusingFuncNameXCalled: Bool {
-        return someConfusingFuncNameXCallsCount > 0
+    var someConfusingFuncNameXSomeStubProtocolVoidCallsCount = 0
+    var someConfusingFuncNameXSomeStubProtocolVoidCalled: Bool {
+        return someConfusingFuncNameXSomeStubProtocolVoidCallsCount > 0
     }
-    var someConfusingFuncNameXReceivedX: (any StubProtocol)?
-    var someConfusingFuncNameXReceivedInvocations: [(any StubProtocol)] = []
-    var someConfusingFuncNameXClosure: ((any StubProtocol) -> Void)?
+    var someConfusingFuncNameXSomeStubProtocolVoidReceivedX: (any StubProtocol)?
+    var someConfusingFuncNameXSomeStubProtocolVoidReceivedInvocations: [(any StubProtocol)] = []
+    var someConfusingFuncNameXSomeStubProtocolVoidClosure: ((any StubProtocol) -> Void)?
 
     func someConfusingFuncName(x: some StubProtocol) {
-        someConfusingFuncNameXCallsCount += 1
-        someConfusingFuncNameXReceivedX = x
-        someConfusingFuncNameXReceivedInvocations.append(x)
-        someConfusingFuncNameXClosure?(x)
+        someConfusingFuncNameXSomeStubProtocolVoidCallsCount += 1
+        someConfusingFuncNameXSomeStubProtocolVoidReceivedX = x
+        someConfusingFuncNameXSomeStubProtocolVoidReceivedInvocations.append(x)
+        someConfusingFuncNameXSomeStubProtocolVoidClosure?(x)
     }
 
     //MARK: - c
 
-    var cSomeConfusingArgumentNameCallsCount = 0
-    var cSomeConfusingArgumentNameCalled: Bool {
-        return cSomeConfusingArgumentNameCallsCount > 0
+    var cSomeConfusingArgumentNameSomeStubProtocolVoidCallsCount = 0
+    var cSomeConfusingArgumentNameSomeStubProtocolVoidCalled: Bool {
+        return cSomeConfusingArgumentNameSomeStubProtocolVoidCallsCount > 0
     }
-    var cSomeConfusingArgumentNameReceivedSomeConfusingArgumentName: (any StubProtocol)?
-    var cSomeConfusingArgumentNameReceivedInvocations: [(any StubProtocol)] = []
-    var cSomeConfusingArgumentNameClosure: ((any StubProtocol) -> Void)?
+    var cSomeConfusingArgumentNameSomeStubProtocolVoidReceivedSomeConfusingArgumentName: (any StubProtocol)?
+    var cSomeConfusingArgumentNameSomeStubProtocolVoidReceivedInvocations: [(any StubProtocol)] = []
+    var cSomeConfusingArgumentNameSomeStubProtocolVoidClosure: ((any StubProtocol) -> Void)?
 
     func c(someConfusingArgumentName: some StubProtocol) {
-        cSomeConfusingArgumentNameCallsCount += 1
-        cSomeConfusingArgumentNameReceivedSomeConfusingArgumentName = someConfusingArgumentName
-        cSomeConfusingArgumentNameReceivedInvocations.append(someConfusingArgumentName)
-        cSomeConfusingArgumentNameClosure?(someConfusingArgumentName)
+        cSomeConfusingArgumentNameSomeStubProtocolVoidCallsCount += 1
+        cSomeConfusingArgumentNameSomeStubProtocolVoidReceivedSomeConfusingArgumentName = someConfusingArgumentName
+        cSomeConfusingArgumentNameSomeStubProtocolVoidReceivedInvocations.append(someConfusingArgumentName)
+        cSomeConfusingArgumentNameSomeStubProtocolVoidClosure?(someConfusingArgumentName)
     }
 
     //MARK: - d
 
-    var dCallsCount = 0
-    var dCalled: Bool {
-        return dCallsCount > 0
+    var dXSomeStubWithSomeNameProtocolVoidCallsCount = 0
+    var dXSomeStubWithSomeNameProtocolVoidCalled: Bool {
+        return dXSomeStubWithSomeNameProtocolVoidCallsCount > 0
     }
-    var dReceivedX: (any StubWithSomeNameProtocol)?
-    var dReceivedInvocations: [(any StubWithSomeNameProtocol)?] = []
-    var dClosure: (((any StubWithSomeNameProtocol)?) -> Void)?
+    var dXSomeStubWithSomeNameProtocolVoidReceivedX: (any StubWithSomeNameProtocol)?
+    var dXSomeStubWithSomeNameProtocolVoidReceivedInvocations: [(any StubWithSomeNameProtocol)?] = []
+    var dXSomeStubWithSomeNameProtocolVoidClosure: (((any StubWithSomeNameProtocol)?) -> Void)?
 
     func d(_ x: (some StubWithSomeNameProtocol)?) {
-        dCallsCount += 1
-        dReceivedX = x
-        dReceivedInvocations.append(x)
-        dClosure?(x)
+        dXSomeStubWithSomeNameProtocolVoidCallsCount += 1
+        dXSomeStubWithSomeNameProtocolVoidReceivedX = x
+        dXSomeStubWithSomeNameProtocolVoidReceivedInvocations.append(x)
+        dXSomeStubWithSomeNameProtocolVoidClosure?(x)
     }
+
 
 }
 class StaticMethodProtocolMock: StaticMethodProtocol {
@@ -1186,36 +1463,66 @@ class StaticMethodProtocolMock: StaticMethodProtocol {
     static func reset()
     {
          //MARK: - staticFunction
-        staticFunctionCallsCount = 0
-        staticFunctionReceived = nil
-        staticFunctionReceivedInvocations = []
-        staticFunctionClosure = nil
+        staticFunctionStringStringCallsCount = 0
+        staticFunctionStringStringReceived = nil
+        staticFunctionStringStringReceivedInvocations = []
+        staticFunctionStringStringClosure = nil
 
 
     }
 
     //MARK: - staticFunction
 
-    static var staticFunctionCallsCount = 0
-    static var staticFunctionCalled: Bool {
-        return staticFunctionCallsCount > 0
+    static var staticFunctionStringStringCallsCount = 0
+    static var staticFunctionStringStringCalled: Bool {
+        return staticFunctionStringStringCallsCount > 0
     }
-    static var staticFunctionReceived: (String)?
-    static var staticFunctionReceivedInvocations: [(String)] = []
-    static var staticFunctionReturnValue: String!
-    static var staticFunctionClosure: ((String) -> String)?
+    static var staticFunctionStringStringReceived: (String)?
+    static var staticFunctionStringStringReceivedInvocations: [(String)] = []
+    static var staticFunctionStringStringReturnValue: String!
+    static var staticFunctionStringStringClosure: ((String) -> String)?
 
     static func staticFunction(_ : String) -> String {
-        staticFunctionCallsCount += 1
-        staticFunctionReceived = 
-        staticFunctionReceivedInvocations.append()
-        if let staticFunctionClosure = staticFunctionClosure {
-            return staticFunctionClosure()
+        staticFunctionStringStringCallsCount += 1
+        staticFunctionStringStringReceived =
+        staticFunctionStringStringReceivedInvocations.append()
+        if let staticFunctionStringStringClosure = staticFunctionStringStringClosure {
+            return staticFunctionStringStringClosure()
         } else {
-            return staticFunctionReturnValue
+            return staticFunctionStringStringReturnValue
         }
     }
 
+
+}
+class SubscriptProtocolMock: SubscriptProtocol {
+
+
+
+
+
+    //MARK: - Subscript #1
+    subscript(arg: Int) -> String {
+        get { fatalError("Subscripts are not fully supported yet") }
+        set { fatalError("Subscripts are not fully supported yet") }
+    }
+    //MARK: - Subscript #2
+    subscript<T>(arg: T) -> Int {
+        get { fatalError("Subscripts are not fully supported yet") }
+    }
+    //MARK: - Subscript #3
+    subscript<T>(arg: T) -> String {
+        get async { fatalError("Subscripts are not fully supported yet") }
+    }
+    //MARK: - Subscript #4
+    subscript<T: Hashable>(arg: T) -> T? {
+        get { fatalError("Subscripts are not fully supported yet") }
+        set { fatalError("Subscripts are not fully supported yet") }
+    }
+    //MARK: - Subscript #5
+    subscript<T>(arg: String) -> T? where T : Cancellable {
+        get throws { fatalError("Subscripts are not fully supported yet") }
+    }
 }
 class ThrowableProtocolMock: ThrowableProtocol {
 
@@ -1224,42 +1531,43 @@ class ThrowableProtocolMock: ThrowableProtocol {
 
     //MARK: - doOrThrow
 
-    var doOrThrowThrowableError: Error?
-    var doOrThrowCallsCount = 0
-    var doOrThrowCalled: Bool {
-        return doOrThrowCallsCount > 0
+    var doOrThrowStringThrowableError: Error?
+    var doOrThrowStringCallsCount = 0
+    var doOrThrowStringCalled: Bool {
+        return doOrThrowStringCallsCount > 0
     }
-    var doOrThrowReturnValue: String!
-    var doOrThrowClosure: (() throws -> String)?
+    var doOrThrowStringReturnValue: String!
+    var doOrThrowStringClosure: (() throws -> String)?
 
     func doOrThrow() throws -> String {
-        if let error = doOrThrowThrowableError {
+        doOrThrowStringCallsCount += 1
+        if let error = doOrThrowStringThrowableError {
             throw error
         }
-        doOrThrowCallsCount += 1
-        if let doOrThrowClosure = doOrThrowClosure {
-            return try doOrThrowClosure()
+        if let doOrThrowStringClosure = doOrThrowStringClosure {
+            return try doOrThrowStringClosure()
         } else {
-            return doOrThrowReturnValue
+            return doOrThrowStringReturnValue
         }
     }
 
     //MARK: - doOrThrowVoid
 
-    var doOrThrowVoidThrowableError: Error?
-    var doOrThrowVoidCallsCount = 0
-    var doOrThrowVoidCalled: Bool {
-        return doOrThrowVoidCallsCount > 0
+    var doOrThrowVoidVoidThrowableError: Error?
+    var doOrThrowVoidVoidCallsCount = 0
+    var doOrThrowVoidVoidCalled: Bool {
+        return doOrThrowVoidVoidCallsCount > 0
     }
-    var doOrThrowVoidClosure: (() throws -> Void)?
+    var doOrThrowVoidVoidClosure: (() throws -> Void)?
 
     func doOrThrowVoid() throws {
-        if let error = doOrThrowVoidThrowableError {
+        doOrThrowVoidVoidCallsCount += 1
+        if let error = doOrThrowVoidVoidThrowableError {
             throw error
         }
-        doOrThrowVoidCallsCount += 1
-        try doOrThrowVoidClosure?()
+        try doOrThrowVoidVoidClosure?()
     }
+
 
 }
 class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
@@ -1272,10 +1580,10 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
 
     var title: String? {
         get throws {
+            titleCallsCount += 1
             if let error = titleThrowableError {
                 throw error
             }
-            titleCallsCount += 1
             if let titleClosure = titleClosure {
                 return try titleClosure()
             } else {
@@ -1293,10 +1601,10 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
 
     var firstName: String {
         get throws {
+            firstNameCallsCount += 1
             if let error = firstNameThrowableError {
                 throw error
             }
-            firstNameCallsCount += 1
             if let firstNameClosure = firstNameClosure {
                 return try firstNameClosure()
             } else {
@@ -1307,6 +1615,7 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
     var underlyingFirstName: String!
     var firstNameThrowableError: Error?
     var firstNameClosure: (() throws -> String)?
+
 
 
 }
@@ -1328,4 +1637,6 @@ class VariablesProtocolMock: VariablesProtocol {
     var universityMarks: [String: Int] = [:]
 
 
+
 }
+
