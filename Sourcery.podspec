@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.preserve_paths = '*'
   s.exclude_files = '**/file.zip'
 
-  s.subspec 'CLI-Only' do |ss|
-    ss.preserve_paths = 'bin'
+  s.subspec 'CLI-Only' do |subspec|
+    subspec.preserve_paths = "sourcery-#{s.version}/bin"
   end
 end
