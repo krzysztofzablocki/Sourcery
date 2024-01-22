@@ -1,4 +1,9 @@
 # Sourcery CHANGELOG
+## 2.1.5
+## Changes
+- Podspec updates
+- Add support for inout parameter for AutoMockable protocols ([#1261](https://github.com/krzysztofzablocki/Sourcery/pull/1261))
+
 ## 2.1.4
 ## Changes
 - Added generic requirements and generic parameters to Subscript ([#1242](https://github.com/krzysztofzablocki/Sourcery/issues/1242))
