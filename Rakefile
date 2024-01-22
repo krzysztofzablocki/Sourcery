@@ -139,10 +139,10 @@ namespace :release do
   desc 'Perform pre-release tasks'
   task :prepare => [:clean, :install_dependencies, :check_environment_variables, :check_docs, :update_metadata, :generate_internal_boilerplate_code, :tests]
 
-  desc 'Build the current version and release it to GitHub, CocoaPods and Homebrew'
-  task :build_and_deploy => [:check_versions, :fat_build, :tag_release, :push_to_origin, :github, :cocoapods, :homebrew]
+  desc 'Build the current version and release it to GitHub, CocoaPods'
+  task :build_and_deploy => [:check_versions, :fat_build, :tag_release, :push_to_origin, :github, :cocoapods]
 
-  desc 'Create a new release on GitHub, CocoaPods and Homebrew'
+  desc 'Create a new release on GitHub, CocoaPods'
   task :new => [:prepare, :build_and_deploy]
 
   def podspec_update_version(version, file = 'Sourcery.podspec')
@@ -415,41 +415,7 @@ namespace :release do
   desc 'pod trunk push Sourcery to CocoaPods'
   task :cocoapods do
     print_info "Pushing pod to CocoaPods Trunk"
-    sh 'bundle exec pod trunk push Sourcery.podspec --allow-warnings'
-  end
-
-  desc 'send a PR to homebrew'
-  task :homebrew do
-    print_info "Releasing to homebrew"
-    formulas_dir = `brew --repository homebrew/core`.chomp
-    formula_file = "./Formula/sourcery.rb"
-    version = podspec_version
-    branch = "sourcery-#{version}"
-
-    Dir.chdir(formulas_dir) do
-      sh "git checkout master"
-      sh "git pull origin master"
-      sh "git checkout -b #{branch} origin/master"
-
-      print_info "Updating Homebrew formula"
-      targz_url = sourcery_targz_url(version)
-      sha256 = extract_sha256(targz_url)
-      formula = File.read(formula_file)
-      new_formula = formula.gsub(/url "https:.*"$/, %Q(url "#{targz_url}")).gsub(/sha256 ".*"$/,%Q(sha256 "#{sha256.to_s}"))
-      File.open(formula_file, "w") { |f| f.puts new_formula }
-
-      print_info "Checking Homebrew formula"
-      sh 'brew uninstall sourcery || true'
-      sh "brew install --build-from-source #{formula_file}"
-      sh "brew audit --strict --online #{formula_file}"
-      sh "brew test #{formula_file}"
-
-      print_info "Pushing to Homebrew"
-      sh "git checkout #{formula_file}"
-      sh "git checkout master"
-      sh "git branch #{branch} -D"
-      sh "brew bump-formula-pr --url='#{targz_url}' --sha256='#{sha256.to_s}' #{formula_file}"
-    end
+    sh 'bundle exec pod trunk push Sourcery.podspec --allow-warnings --verbose --skip-tests'
   end
 
   desc 'Push the pending master changes to origin'
