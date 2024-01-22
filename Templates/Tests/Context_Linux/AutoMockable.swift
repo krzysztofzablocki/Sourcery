@@ -240,3 +240,8 @@ protocol SubscriptProtocol {
 public protocol ProtocolWithMethodWithGenericParameters {
     func execute(param: Result<Int, Error>) -> Result<String, Error>
 }
+
+// sourcery: AutoMockable
+public protocol ProtocolWithMethodWithInoutParameter {
+    func execute(param: inout String)
+}
