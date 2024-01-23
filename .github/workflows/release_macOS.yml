@@ -15,6 +15,7 @@ jobs:
   tests:
     uses: ./.github/workflows/test_macOS.yml
   build:
+    needs: tests
     name: Build Sourcery for macOS
     runs-on: macos-13
     steps:
