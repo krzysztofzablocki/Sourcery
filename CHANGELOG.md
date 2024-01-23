@@ -1,4 +1,8 @@
 # Sourcery CHANGELOG
+## 2.1.6
+## Changes
+- Podspec updates - set specific version per supported platform
+
 ## 2.1.5
 ## Changes
 - Podspec updates
