@@ -10,7 +10,7 @@ import Foundation
 
 public struct SourceryVersion {
     public let value: String
-    public static let current = SourceryVersion(value: inUnitTests ? "Major.Minor.Patch" : "2.1.5")
+    public static let current = SourceryVersion(value: inUnitTests ? "Major.Minor.Patch" : "2.1.6")
 }
 
 #if canImport(ObjectiveC)
