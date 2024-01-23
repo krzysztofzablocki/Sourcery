@@ -16,7 +16,7 @@ import {{ import }}
 @testable import {{ import }}
 {% endfor %}
 
-{% macro cleanString string %}{{ string | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | replace:".","_" | replace:"[","" | replace:"]","" | replace:"<","" | replace:">","" | snakeToCamelCase }}{% endmacro %}
+{% macro cleanString string %}{{ string | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | replace:".","_" | replace:"[","" | replace:"]","" | replace:"<","" | replace:">","" | replace:"&","" | snakeToCamelCase }}{% endmacro %}
 {%- macro swiftifyMethodName method -%}
     {%- set cleanMethodName %}{% call cleanString method.name %}{% endset %}
     {%- set cleanMethodReturnTypeName %}{% call cleanString method.actualReturnTypeName.name %}{% endset -%}
@@ -28,7 +28,7 @@ import {{ import }}
 {% macro staticSpecifier method %}{% if method.isStatic and not method.isInitializer %}static {% endif %}{% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ThrowableError: Error?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ThrowableError: (any Error)?
 {% endmacro %}
 
 {% macro methodThrowableErrorUsage method %}
