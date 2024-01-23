@@ -15,6 +15,7 @@ jobs:
   tests:
     uses: ./.github/workflows/test_ubuntu.yml
   build:
+    needs: tests
     name: Build Sourcery for Ubuntu (latest)
     runs-on: ubuntu-latest
     outputs:
