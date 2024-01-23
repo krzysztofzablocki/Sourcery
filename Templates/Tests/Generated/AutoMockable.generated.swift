@@ -404,19 +404,19 @@ class AnyProtocolMock: AnyProtocol {
 
     //MARK: - z
 
-    var zAnyStubProtocol&CustomStringConvertibleCallsCount = 0
-    var zAnyStubProtocol&CustomStringConvertibleCalled: Bool {
-        return zAnyStubProtocol&CustomStringConvertibleCallsCount > 0
+    var zAnyStubProtocolCustomStringConvertibleCallsCount = 0
+    var zAnyStubProtocolCustomStringConvertibleCalled: Bool {
+        return zAnyStubProtocolCustomStringConvertibleCallsCount > 0
     }
-    var zAnyStubProtocol&CustomStringConvertibleReturnValue: (any StubProtocol & CustomStringConvertible)!
-    var zAnyStubProtocol&CustomStringConvertibleClosure: (() -> any StubProtocol & CustomStringConvertible)?
+    var zAnyStubProtocolCustomStringConvertibleReturnValue: (any StubProtocol & CustomStringConvertible)!
+    var zAnyStubProtocolCustomStringConvertibleClosure: (() -> any StubProtocol & CustomStringConvertible)?
 
     func z() -> any StubProtocol & CustomStringConvertible {
-        zAnyStubProtocol&CustomStringConvertibleCallsCount += 1
-        if let zAnyStubProtocol&CustomStringConvertibleClosure = zAnyStubProtocol&CustomStringConvertibleClosure {
-            return zAnyStubProtocol&CustomStringConvertibleClosure()
+        zAnyStubProtocolCustomStringConvertibleCallsCount += 1
+        if let zAnyStubProtocolCustomStringConvertibleClosure = zAnyStubProtocolCustomStringConvertibleClosure {
+            return zAnyStubProtocolCustomStringConvertibleClosure()
         } else {
-            return zAnyStubProtocol&CustomStringConvertibleReturnValue
+            return zAnyStubProtocolCustomStringConvertibleReturnValue
         }
     }
 
@@ -452,7 +452,7 @@ class AsyncProtocolMock: AsyncProtocol {
 
     //MARK: - callAsyncAndThrow
 
-    var callAsyncAndThrowParameterIntStringThrowableError: Error?
+    var callAsyncAndThrowParameterIntStringThrowableError: (any Error)?
     var callAsyncAndThrowParameterIntStringCallsCount = 0
     var callAsyncAndThrowParameterIntStringCalled: Bool {
         return callAsyncAndThrowParameterIntStringCallsCount > 0
@@ -495,7 +495,7 @@ class AsyncProtocolMock: AsyncProtocol {
 
     //MARK: - callAsyncAndThrowVoid
 
-    var callAsyncAndThrowVoidParameterIntVoidThrowableError: Error?
+    var callAsyncAndThrowVoidParameterIntVoidThrowableError: (any Error)?
     var callAsyncAndThrowVoidParameterIntVoidCallsCount = 0
     var callAsyncAndThrowVoidParameterIntVoidCalled: Bool {
         return callAsyncAndThrowVoidParameterIntVoidCallsCount > 0
@@ -1191,7 +1191,7 @@ public class ProtocolWithOverridesMock: ProtocolWithOverrides {
 
     //MARK: - doSomething
 
-    public var doSomethingDataString_IntAnyThrowableError: Error?
+    public var doSomethingDataString_IntAnyThrowableError: (any Error)?
     public var doSomethingDataString_IntAnyCallsCount = 0
     public var doSomethingDataString_IntAnyCalled: Bool {
         return doSomethingDataString_IntAnyCallsCount > 0
@@ -1239,7 +1239,7 @@ public class ProtocolWithOverridesMock: ProtocolWithOverrides {
 
     //MARK: - doSomething
 
-    public var doSomethingDataString_IntAnyVoidThrowableError: Error?
+    public var doSomethingDataString_IntAnyVoidThrowableError: (any Error)?
     public var doSomethingDataString_IntAnyVoidCallsCount = 0
     public var doSomethingDataString_IntAnyVoidCalled: Bool {
         return doSomethingDataString_IntAnyVoidCallsCount > 0
@@ -1531,7 +1531,7 @@ class ThrowableProtocolMock: ThrowableProtocol {
 
     //MARK: - doOrThrow
 
-    var doOrThrowStringThrowableError: Error?
+    var doOrThrowStringThrowableError: (any Error)?
     var doOrThrowStringCallsCount = 0
     var doOrThrowStringCalled: Bool {
         return doOrThrowStringCallsCount > 0
@@ -1553,7 +1553,7 @@ class ThrowableProtocolMock: ThrowableProtocol {
 
     //MARK: - doOrThrowVoid
 
-    var doOrThrowVoidVoidThrowableError: Error?
+    var doOrThrowVoidVoidThrowableError: (any Error)?
     var doOrThrowVoidVoidCallsCount = 0
     var doOrThrowVoidVoidCalled: Bool {
         return doOrThrowVoidVoidCallsCount > 0
