@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 protocol AutoMockable {}
 
@@ -128,21 +129,21 @@ protocol AsyncProtocol: AutoMockable {
 protocol FunctionWithAttributes: AutoMockable {
     @discardableResult
     func callOneAttribute() -> String
-    
+
     @discardableResult
     @available(macOS 10.15, *)
     func callTwoAttributes() -> Int
-    
+
     @discardableResult
     @available(iOS 13.0, *)
     @available(macOS 10.15, *)
     func callRepeatedAttributes() -> Bool
 }
 
-public protocol AccessLevelProtocol: AutoMockable {
+protocol AccessLevelProtocol: AutoMockable {
     var company: String? { get set }
     var name: String { get }
-    
+
     func loadConfiguration() -> String?
 }
 
@@ -213,7 +214,7 @@ protocol HouseProtocol: AutoMockable {
 
 // sourcery: AutoMockable
 protocol ExampleVararg {
-    func string(key: String, args: CVarArg...) -> String
+    func string(key: String, args: any CVarArg...) -> String
 }
 
 // sourcery: AutoMockable
@@ -238,10 +239,11 @@ protocol SubscriptProtocol {
 
 // sourcery: AutoMockable
 public protocol ProtocolWithMethodWithGenericParameters {
-    func execute(param: Result<Int, Error>) -> Result<String, Error>
+    func execute(param: Result<Int, any Error>) -> Result<String, any Error>
 }
 
 // sourcery: AutoMockable
 public protocol ProtocolWithMethodWithInoutParameter {
     func execute(param: inout String)
 }
+
