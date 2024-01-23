@@ -1,4 +1,9 @@
 # Sourcery CHANGELOG
+## 2.1.7
+## Changes
+- Podspec updates - set correct filepath for Sourcery
+- Fixed generated AutoMockable compilation issue due to generated variable names containing & character. Added support for existential any for throwable errors. ([#1263](https://github.com/krzysztofzablocki/Sourcery/pull/1263))
+
 ## 2.1.6
 ## Changes
 - Podspec updates - set specific version per supported platform

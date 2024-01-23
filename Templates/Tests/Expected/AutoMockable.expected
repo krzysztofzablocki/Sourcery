@@ -10,6 +10,7 @@ import UIKit
 import AppKit
 #endif
 
+import Combine
 
 
 
@@ -33,28 +34,28 @@ import AppKit
 
 
 
-public class AccessLevelProtocolMock: AccessLevelProtocol {
 
-    public init() {}
+class AccessLevelProtocolMock: AccessLevelProtocol {
 
-    public var company: String?
-    public var name: String {
+
+    var company: String?
+    var name: String {
         get { return underlyingName }
         set(value) { underlyingName = value }
     }
-    public var underlyingName: (String)!
+    var underlyingName: (String)!
 
 
     //MARK: - loadConfiguration
 
-    public var loadConfigurationStringCallsCount = 0
-    public var loadConfigurationStringCalled: Bool {
+    var loadConfigurationStringCallsCount = 0
+    var loadConfigurationStringCalled: Bool {
         return loadConfigurationStringCallsCount > 0
     }
-    public var loadConfigurationStringReturnValue: String?
-    public var loadConfigurationStringClosure: (() -> String?)?
+    var loadConfigurationStringReturnValue: String?
+    var loadConfigurationStringClosure: (() -> String?)?
 
-    public func loadConfiguration() -> String? {
+    func loadConfiguration() -> String? {
         loadConfigurationStringCallsCount += 1
         if let loadConfigurationStringClosure = loadConfigurationStringClosure {
             return loadConfigurationStringClosure()
@@ -92,36 +93,36 @@ class AnnotatedProtocolMock: AnnotatedProtocol {
 class AnyProtocolMock: AnyProtocol {
 
 
-    var a: any StubProtocol {
+    var a: (any StubProtocol) {
         get { return underlyingA }
         set(value) { underlyingA = value }
     }
-    var underlyingA: (any StubProtocol)!
+    var underlyingA: ((any StubProtocol))!
     var b: (any StubProtocol)?
     var c: (any StubProtocol)!
-    var d: (((any StubProtocol)?) -> Void) {
+    var d: ((any StubProtocol)?) -> Void {
         get { return underlyingD }
         set(value) { underlyingD = value }
     }
-    var underlyingD: ((((any StubProtocol)?) -> Void))!
+    var underlyingD: (((any StubProtocol)?) -> Void)!
     var e: [(any StubProtocol)?] = []
-    var g: any StubProtocol {
+    var g: (any StubProtocol) {
         get { return underlyingG }
         set(value) { underlyingG = value }
     }
-    var underlyingG: (any StubProtocol)!
+    var underlyingG: ((any StubProtocol))!
     var h: (any StubProtocol)?
     var i: (any StubProtocol)!
-    var anyConfusingPropertyName: any StubProtocol {
+    var anyConfusingPropertyName: (any StubProtocol) {
         get { return underlyingAnyConfusingPropertyName }
         set(value) { underlyingAnyConfusingPropertyName = value }
     }
-    var underlyingAnyConfusingPropertyName: (any StubProtocol)!
-    var o: any StubWithAnyNameProtocol {
+    var underlyingAnyConfusingPropertyName: ((any StubProtocol))!
+    var o: (any StubWithAnyNameProtocol) {
         get { return underlyingO }
         set(value) { underlyingO = value }
     }
-    var underlyingO: (any StubWithAnyNameProtocol)!
+    var underlyingO: ((any StubWithAnyNameProtocol))!
 
 
     //MARK: - f
@@ -214,9 +215,9 @@ class AnyProtocolMock: AnyProtocol {
     }
     var nXEscapingAnyStubProtocolVoidVoidReceivedX: ((((any StubProtocol)?) -> Void))?
     var nXEscapingAnyStubProtocolVoidVoidReceivedInvocations: [((((any StubProtocol)?) -> Void))] = []
-    var nXEscapingAnyStubProtocolVoidVoidClosure: ((@escaping ((any StubProtocol)?) -> Void) -> Void)?
+    var nXEscapingAnyStubProtocolVoidVoidClosure: ((((any StubProtocol)?) -> Void) -> Void)?
 
-    func n(x: @escaping ((any StubProtocol)?) -> Void) {
+    func n(x: @escaping((any StubProtocol)?) -> Void) {
         nXEscapingAnyStubProtocolVoidVoidCallsCount += 1
         nXEscapingAnyStubProtocolVoidVoidReceivedX = x
         nXEscapingAnyStubProtocolVoidVoidReceivedInvocations.append(x)
@@ -229,8 +230,8 @@ class AnyProtocolMock: AnyProtocol {
     var pXAnyStubWithAnyNameProtocolVoidCalled: Bool {
         return pXAnyStubWithAnyNameProtocolVoidCallsCount > 0
     }
-    var pXAnyStubWithAnyNameProtocolVoidReceivedX: (any StubWithAnyNameProtocol)?
-    var pXAnyStubWithAnyNameProtocolVoidReceivedInvocations: [(any StubWithAnyNameProtocol)?] = []
+    var pXAnyStubWithAnyNameProtocolVoidReceivedX: ((any StubWithAnyNameProtocol)?)?
+    var pXAnyStubWithAnyNameProtocolVoidReceivedInvocations: [((any StubWithAnyNameProtocol)?)?] = []
     var pXAnyStubWithAnyNameProtocolVoidClosure: (((any StubWithAnyNameProtocol)?) -> Void)?
 
     func p(_ x: (any StubWithAnyNameProtocol)?) {
@@ -249,7 +250,7 @@ class AnyProtocolMock: AnyProtocol {
     var qAnyStubProtocolReturnValue: (any StubProtocol)!
     var qAnyStubProtocolClosure: (() -> any StubProtocol)?
 
-    func q() -> any StubProtocol {
+    func q() -> (any StubProtocol) {
         qAnyStubProtocolCallsCount += 1
         if let qAnyStubProtocolClosure = qAnyStubProtocolClosure {
             return qAnyStubProtocolClosure()
@@ -264,7 +265,7 @@ class AnyProtocolMock: AnyProtocol {
     var rAnyStubProtocolCalled: Bool {
         return rAnyStubProtocolCallsCount > 0
     }
-    var rAnyStubProtocolReturnValue: ((any StubProtocol)?)
+    var rAnyStubProtocolReturnValue: (any StubProtocol)?
     var rAnyStubProtocolClosure: (() -> (any StubProtocol)?)?
 
     func r() -> (any StubProtocol)? {
@@ -282,10 +283,10 @@ class AnyProtocolMock: AnyProtocol {
     var s____AnyStubProtocolCalled: Bool {
         return s____AnyStubProtocolCallsCount > 0
     }
-    var s____AnyStubProtocolReturnValue: ((() -> any StubProtocol))!
-    var s____AnyStubProtocolClosure: (() -> (() -> any StubProtocol))?
+    var s____AnyStubProtocolReturnValue: (() -> any StubProtocol)!
+    var s____AnyStubProtocolClosure: (() -> () -> any StubProtocol)?
 
-    func s() -> (() -> any StubProtocol) {
+    func s() -> () -> any StubProtocol {
         s____AnyStubProtocolCallsCount += 1
         if let s____AnyStubProtocolClosure = s____AnyStubProtocolClosure {
             return s____AnyStubProtocolClosure()
@@ -300,10 +301,10 @@ class AnyProtocolMock: AnyProtocol {
     var t____AnyStubProtocolCalled: Bool {
         return t____AnyStubProtocolCallsCount > 0
     }
-    var t____AnyStubProtocolReturnValue: ((() -> (any StubProtocol)?))!
-    var t____AnyStubProtocolClosure: (() -> (() -> (any StubProtocol)?))?
+    var t____AnyStubProtocolReturnValue: (() -> (any StubProtocol)?)!
+    var t____AnyStubProtocolClosure: (() -> () -> (any StubProtocol)?)?
 
-    func t() -> (() -> (any StubProtocol)?) {
+    func t() -> () -> (any StubProtocol)? {
         t____AnyStubProtocolCallsCount += 1
         if let t____AnyStubProtocolClosure = t____AnyStubProtocolClosure {
             return t____AnyStubProtocolClosure()
@@ -318,7 +319,7 @@ class AnyProtocolMock: AnyProtocol {
     var u_IntAnyStubProtocolCalled: Bool {
         return u_IntAnyStubProtocolCallsCount > 0
     }
-    var u_IntAnyStubProtocolReturnValue: ((Int, () -> (any StubProtocol)?))!
+    var u_IntAnyStubProtocolReturnValue: (Int, () -> (any StubProtocol)?)!
     var u_IntAnyStubProtocolClosure: (() -> (Int, () -> (any StubProtocol)?))?
 
     func u() -> (Int, () -> (any StubProtocol)?) {
@@ -336,7 +337,7 @@ class AnyProtocolMock: AnyProtocol {
     var v_IntAnyStubProtocolCalled: Bool {
         return v_IntAnyStubProtocolCallsCount > 0
     }
-    var v_IntAnyStubProtocolReturnValue: ((Int, (() -> any StubProtocol)?))!
+    var v_IntAnyStubProtocolReturnValue: (Int, (() -> any StubProtocol)?)!
     var v_IntAnyStubProtocolClosure: (() -> (Int, (() -> any StubProtocol)?))?
 
     func v() -> (Int, (() -> any StubProtocol)?) {
@@ -354,7 +355,7 @@ class AnyProtocolMock: AnyProtocol {
     var w_AnyStubProtocolCalled: Bool {
         return w_AnyStubProtocolCallsCount > 0
     }
-    var w_AnyStubProtocolReturnValue: ([(any StubProtocol)?])!
+    var w_AnyStubProtocolReturnValue: [(any StubProtocol)?]!
     var w_AnyStubProtocolClosure: (() -> [(any StubProtocol)?])?
 
     func w() -> [(any StubProtocol)?] {
@@ -372,7 +373,7 @@ class AnyProtocolMock: AnyProtocol {
     var xStringAnyStubProtocolCalled: Bool {
         return xStringAnyStubProtocolCallsCount > 0
     }
-    var xStringAnyStubProtocolReturnValue: ([String: (any StubProtocol)?])!
+    var xStringAnyStubProtocolReturnValue: [String: (any StubProtocol)?]!
     var xStringAnyStubProtocolClosure: (() -> [String: (any StubProtocol)?])?
 
     func x() -> [String: (any StubProtocol)?] {
@@ -390,7 +391,7 @@ class AnyProtocolMock: AnyProtocol {
     var y_AnyStubProtocolAnyStubProtocolCalled: Bool {
         return y_AnyStubProtocolAnyStubProtocolCallsCount > 0
     }
-    var y_AnyStubProtocolAnyStubProtocolReturnValue: ((any StubProtocol, (any StubProtocol)?))!
+    var y_AnyStubProtocolAnyStubProtocolReturnValue: (any StubProtocol, (any StubProtocol)?)!
     var y_AnyStubProtocolAnyStubProtocolClosure: (() -> (any StubProtocol, (any StubProtocol)?))?
 
     func y() -> (any StubProtocol, (any StubProtocol)?) {
@@ -411,7 +412,7 @@ class AnyProtocolMock: AnyProtocol {
     var zAnyStubProtocolCustomStringConvertibleReturnValue: (any StubProtocol & CustomStringConvertible)!
     var zAnyStubProtocolCustomStringConvertibleClosure: (() -> any StubProtocol & CustomStringConvertible)?
 
-    func z() -> any StubProtocol & CustomStringConvertible {
+    func z() -> (any StubProtocol & CustomStringConvertible) {
         zAnyStubProtocolCustomStringConvertibleCallsCount += 1
         if let zAnyStubProtocolCustomStringConvertibleClosure = zAnyStubProtocolCustomStringConvertibleClosure {
             return zAnyStubProtocolCustomStringConvertibleClosure()
@@ -538,7 +539,7 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
         }
     }
     var underlyingTitle: String?
-    var titleThrowableError: Error?
+    var titleThrowableError: (any Error)?
     var titleClosure: (() async throws -> String?)?
     var firstNameCallsCount = 0
     var firstNameCalled: Bool {
@@ -559,7 +560,7 @@ class AsyncThrowingVariablesProtocolMock: AsyncThrowingVariablesProtocol {
         }
     }
     var underlyingFirstName: String!
-    var firstNameThrowableError: Error?
+    var firstNameThrowableError: (any Error)?
     var firstNameClosure: (() async throws -> String)?
 
 
@@ -661,7 +662,7 @@ class ClosureProtocolMock: ClosureProtocol {
     }
     var setClosureClosureEscapingVoidVoidReceivedClosure: ((() -> Void))?
     var setClosureClosureEscapingVoidVoidReceivedInvocations: [((() -> Void))] = []
-    var setClosureClosureEscapingVoidVoidClosure: ((@escaping () -> Void) -> Void)?
+    var setClosureClosureEscapingVoidVoidClosure: ((() -> Void) -> Void)?
 
     func setClosure(_ closure: @escaping () -> Void) {
         setClosureClosureEscapingVoidVoidCallsCount += 1
@@ -703,23 +704,23 @@ class ExampleVarargMock: ExampleVararg {
 
     //MARK: - string
 
-    var stringKeyStringArgsCVarArgStringCallsCount = 0
-    var stringKeyStringArgsCVarArgStringCalled: Bool {
-        return stringKeyStringArgsCVarArgStringCallsCount > 0
+    var stringKeyStringArgsAnyCVarArgStringCallsCount = 0
+    var stringKeyStringArgsAnyCVarArgStringCalled: Bool {
+        return stringKeyStringArgsAnyCVarArgStringCallsCount > 0
     }
-    var stringKeyStringArgsCVarArgStringReceivedArguments: (key: String, args: CVarArg...)?
-    var stringKeyStringArgsCVarArgStringReceivedInvocations: [(key: String, args: CVarArg...)] = []
-    var stringKeyStringArgsCVarArgStringReturnValue: String!
-    var stringKeyStringArgsCVarArgStringClosure: ((String, CVarArg...) -> String)?
+    var stringKeyStringArgsAnyCVarArgStringReceivedArguments: (key: String, args: [any CVarArg])?
+    var stringKeyStringArgsAnyCVarArgStringReceivedInvocations: [(key: String, args: [any CVarArg])] = []
+    var stringKeyStringArgsAnyCVarArgStringReturnValue: String!
+    var stringKeyStringArgsAnyCVarArgStringClosure: ((String, [any CVarArg]) -> String)?
 
-    func string(key: String, args: CVarArg...) -> String {
-        stringKeyStringArgsCVarArgStringCallsCount += 1
-        stringKeyStringArgsCVarArgStringReceivedArguments = (key: key, args: args)
-        stringKeyStringArgsCVarArgStringReceivedInvocations.append((key: key, args: args))
-        if let stringKeyStringArgsCVarArgStringClosure = stringKeyStringArgsCVarArgStringClosure {
-            return stringKeyStringArgsCVarArgStringClosure(key, args)
+    func string(key: String, args: any CVarArg...) -> String {
+        stringKeyStringArgsAnyCVarArgStringCallsCount += 1
+        stringKeyStringArgsAnyCVarArgStringReceivedArguments = (key: key, args: args)
+        stringKeyStringArgsAnyCVarArgStringReceivedInvocations.append((key: key, args: args))
+        if let stringKeyStringArgsAnyCVarArgStringClosure = stringKeyStringArgsAnyCVarArgStringClosure {
+            return stringKeyStringArgsAnyCVarArgStringClosure(key, args)
         } else {
-            return stringKeyStringArgsCVarArgStringReturnValue
+            return stringKeyStringArgsAnyCVarArgStringReturnValue
         }
     }
 
@@ -832,10 +833,10 @@ class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
     var get____VoidCalled: Bool {
         return get____VoidCallsCount > 0
     }
-    var get____VoidReturnValue: ((() -> Void))!
-    var get____VoidClosure: (() -> (() -> Void))?
+    var get____VoidReturnValue: (() -> Void)!
+    var get____VoidClosure: (() -> () -> Void)?
 
-    func get() -> (() -> Void) {
+    func get() -> () -> Void {
         get____VoidCallsCount += 1
         if let get____VoidClosure = get____VoidClosure {
             return get____VoidClosure()
@@ -850,10 +851,10 @@ class FunctionWithClosureReturnTypeMock: FunctionWithClosureReturnType {
     var getOptional_____VoidCalled: Bool {
         return getOptional_____VoidCallsCount > 0
     }
-    var getOptional_____VoidReturnValue: ((() -> Void)?)
-    var getOptional_____VoidClosure: (() -> ((() -> Void)?))?
+    var getOptional_____VoidReturnValue: (() -> Void)?
+    var getOptional_____VoidClosure: (() -> (() -> Void)?)?
 
-    func getOptional() -> ((() -> Void)?) {
+    func getOptional() -> (() -> Void)? {
         getOptional_____VoidCallsCount += 1
         if let getOptional_____VoidClosure = getOptional_____VoidClosure {
             return getOptional_____VoidClosure()
@@ -919,7 +920,7 @@ class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOpt
         return implicitReturnStringCallsCount > 0
     }
     var implicitReturnStringReturnValue: String!
-    var implicitReturnStringClosure: (() -> String!)?
+    var implicitReturnStringClosure: (() -> String?)?
 
     func implicitReturn() -> String! {
         implicitReturnStringCallsCount += 1
@@ -989,7 +990,7 @@ class MultiClosureProtocolMock: MultiClosureProtocol {
     }
     var setClosureNameStringClosureEscapingVoidVoidReceivedArguments: (name: String, closure: () -> Void)?
     var setClosureNameStringClosureEscapingVoidVoidReceivedInvocations: [(name: String, closure: () -> Void)] = []
-    var setClosureNameStringClosureEscapingVoidVoidClosure: ((String, @escaping () -> Void) -> Void)?
+    var setClosureNameStringClosureEscapingVoidVoidClosure: ((String, () -> Void) -> Void)?
 
     func setClosure(name: String, _ closure: @escaping () -> Void) {
         setClosureNameStringClosureEscapingVoidVoidCallsCount += 1
@@ -1048,23 +1049,23 @@ public class ProtocolWithMethodWithGenericParametersMock: ProtocolWithMethodWith
 
     //MARK: - execute
 
-    public var executeParamResultIntErrorResultStringErrorCallsCount = 0
-    public var executeParamResultIntErrorResultStringErrorCalled: Bool {
-        return executeParamResultIntErrorResultStringErrorCallsCount > 0
+    public var executeParamResultIntAnyErrorResultStringAnyErrorCallsCount = 0
+    public var executeParamResultIntAnyErrorResultStringAnyErrorCalled: Bool {
+        return executeParamResultIntAnyErrorResultStringAnyErrorCallsCount > 0
     }
-    public var executeParamResultIntErrorResultStringErrorReceivedParam: (Result<Int, Error>)?
-    public var executeParamResultIntErrorResultStringErrorReceivedInvocations: [(Result<Int, Error>)] = []
-    public var executeParamResultIntErrorResultStringErrorReturnValue: Result<String, Error>!
-    public var executeParamResultIntErrorResultStringErrorClosure: ((Result<Int, Error>) -> Result<String, Error>)?
+    public var executeParamResultIntAnyErrorResultStringAnyErrorReceivedParam: (Result<Int, any Error>)?
+    public var executeParamResultIntAnyErrorResultStringAnyErrorReceivedInvocations: [(Result<Int, any Error>)] = []
+    public var executeParamResultIntAnyErrorResultStringAnyErrorReturnValue: Result<String, any Error>!
+    public var executeParamResultIntAnyErrorResultStringAnyErrorClosure: ((Result<Int, any Error>) -> Result<String, any Error>)?
 
-    public func execute(param: Result<Int, Error>) -> Result<String, Error> {
-        executeParamResultIntErrorResultStringErrorCallsCount += 1
-        executeParamResultIntErrorResultStringErrorReceivedParam = param
-        executeParamResultIntErrorResultStringErrorReceivedInvocations.append(param)
-        if let executeParamResultIntErrorResultStringErrorClosure = executeParamResultIntErrorResultStringErrorClosure {
-            return executeParamResultIntErrorResultStringErrorClosure(param)
+    public func execute(param: Result<Int, any Error>) -> Result<String, any Error> {
+        executeParamResultIntAnyErrorResultStringAnyErrorCallsCount += 1
+        executeParamResultIntAnyErrorResultStringAnyErrorReceivedParam = param
+        executeParamResultIntAnyErrorResultStringAnyErrorReceivedInvocations.append(param)
+        if let executeParamResultIntAnyErrorResultStringAnyErrorClosure = executeParamResultIntAnyErrorResultStringAnyErrorClosure {
+            return executeParamResultIntAnyErrorResultStringAnyErrorClosure(param)
         } else {
-            return executeParamResultIntErrorResultStringErrorReturnValue
+            return executeParamResultIntAnyErrorResultStringAnyErrorReturnValue
         }
     }
 
@@ -1084,13 +1085,13 @@ public class ProtocolWithMethodWithInoutParameterMock: ProtocolWithMethodWithIno
     }
     public var executeParamInoutStringVoidReceivedParam: (String)?
     public var executeParamInoutStringVoidReceivedInvocations: [(String)] = []
-    public var executeParamInoutStringVoidClosure: ((inout String) -> Void)?
+    public var executeParamInoutStringVoidClosure: ((String) -> Void)?
 
     public func execute(param: inout String) {
         executeParamInoutStringVoidCallsCount += 1
         executeParamInoutStringVoidReceivedParam = param
         executeParamInoutStringVoidReceivedInvocations.append(param)
-        executeParamInoutStringVoidClosure?(&param)
+        executeParamInoutStringVoidClosure?(param)
     }
 
 
@@ -1223,10 +1224,10 @@ public class ProtocolWithOverridesMock: ProtocolWithOverrides {
     }
     public var doSomethingDataString_IntStringVoidReceivedData: (String)?
     public var doSomethingDataString_IntStringVoidReceivedInvocations: [(String)] = []
-    public var doSomethingDataString_IntStringVoidReturnValue: ((([Int], [String]) -> Void))!
-    public var doSomethingDataString_IntStringVoidClosure: ((String) -> (([Int], [String]) -> Void))?
+    public var doSomethingDataString_IntStringVoidReturnValue: (([Int], [String]) -> Void)!
+    public var doSomethingDataString_IntStringVoidClosure: ((String) -> ([Int], [String]) -> Void)?
 
-    public func doSomething(_ data: String) -> (([Int], [String]) -> Void) {
+    public func doSomething(_ data: String) -> ([Int], [String]) -> Void {
         doSomethingDataString_IntStringVoidCallsCount += 1
         doSomethingDataString_IntStringVoidReceivedData = data
         doSomethingDataString_IntStringVoidReceivedInvocations.append(data)
@@ -1246,10 +1247,10 @@ public class ProtocolWithOverridesMock: ProtocolWithOverrides {
     }
     public var doSomethingDataString_IntAnyVoidReceivedData: (String)?
     public var doSomethingDataString_IntAnyVoidReceivedInvocations: [(String)] = []
-    public var doSomethingDataString_IntAnyVoidReturnValue: ((([Int], [Any]) -> Void))!
-    public var doSomethingDataString_IntAnyVoidClosure: ((String) throws -> (([Int], [Any]) -> Void))?
+    public var doSomethingDataString_IntAnyVoidReturnValue: (([Int], [Any]) -> Void)!
+    public var doSomethingDataString_IntAnyVoidClosure: ((String) throws -> ([Int], [Any]) -> Void)?
 
-    public func doSomething(_ data: String) throws -> (([Int], [Any]) -> Void) {
+    public func doSomething(_ data: String) throws -> ([Int], [Any]) -> Void {
         doSomethingDataString_IntAnyVoidCallsCount += 1
         doSomethingDataString_IntAnyVoidReceivedData = data
         doSomethingDataString_IntAnyVoidReceivedInvocations.append(data)
@@ -1346,8 +1347,8 @@ class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
     var sendMessageStringVoidCalled: Bool {
         return sendMessageStringVoidCallsCount > 0
     }
-    var sendMessageStringVoidReceivedMessage: (String)?
-    var sendMessageStringVoidReceivedInvocations: [(String)?] = []
+    var sendMessageStringVoidReceivedMessage: (String?)?
+    var sendMessageStringVoidReceivedInvocations: [(String?)?] = []
     var sendMessageStringVoidClosure: ((String?) -> Void)?
 
     func send(message: String?) {
@@ -1443,8 +1444,8 @@ class SomeProtocolMock: SomeProtocol {
     var dXSomeStubWithSomeNameProtocolVoidCalled: Bool {
         return dXSomeStubWithSomeNameProtocolVoidCallsCount > 0
     }
-    var dXSomeStubWithSomeNameProtocolVoidReceivedX: (any StubWithSomeNameProtocol)?
-    var dXSomeStubWithSomeNameProtocolVoidReceivedInvocations: [(any StubWithSomeNameProtocol)?] = []
+    var dXSomeStubWithSomeNameProtocolVoidReceivedX: ((any StubWithSomeNameProtocol)?)?
+    var dXSomeStubWithSomeNameProtocolVoidReceivedInvocations: [((any StubWithSomeNameProtocol)?)?] = []
     var dXSomeStubWithSomeNameProtocolVoidClosure: (((any StubWithSomeNameProtocol)?) -> Void)?
 
     func d(_ x: (some StubWithSomeNameProtocol)?) {
@@ -1592,7 +1593,7 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
         }
     }
     var underlyingTitle: String?
-    var titleThrowableError: Error?
+    var titleThrowableError: (any Error)?
     var titleClosure: (() throws -> String?)?
     var firstNameCallsCount = 0
     var firstNameCalled: Bool {
@@ -1613,7 +1614,7 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
         }
     }
     var underlyingFirstName: String!
-    var firstNameThrowableError: Error?
+    var firstNameThrowableError: (any Error)?
     var firstNameClosure: (() throws -> String)?
 
 
