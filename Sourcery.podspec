@@ -20,10 +20,10 @@ Pod::Spec.new do |s|
   s.social_media_url = "https://twitter.com/merowing_"
 
   s.source       = { :http => "https://github.com/krzysztofzablocki/Sourcery/releases/download/#{s.version}/sourcery-#{s.version}.zip" }
-  s.preserve_paths = '*'
+  s.preserve_paths = 'sourcery-#{s.version}/*'
   s.exclude_files = '**/file.zip'
 
   s.subspec 'CLI-Only' do |subspec|
-    subspec.preserve_paths = "sourcery-#{s.version}/bin"
+    subspec.preserve_paths = "bin"
   end
 end
