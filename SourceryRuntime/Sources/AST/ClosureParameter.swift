@@ -21,6 +21,9 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter type, if known
     public var type: Type?
 
+    /// Parameter if the argument has a variadic type or not
+    public var isVariadic: Bool
+
     /// Parameter type attributes, i.e. `@escaping`
     public var typeAttributes: AttributeList {
         return typeName.attributes
@@ -34,7 +37,8 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
 
     /// :nodoc:
     public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
-                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
+                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, 
+                isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
@@ -42,10 +46,11 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
         self.defaultValue = defaultValue
         self.annotations = annotations
         self.`inout` = isInout
+        self.isVariadic = isVariadic
     }
 
     public var asSource: String {
-        let typeInfo = "\(`inout` ? "inout " : "")\(typeName.asSource)"
+        let typeInfo = "\(`inout` ? "inout " : "")\(typeName.asSource)\(isVariadic ? "..." : "")"
         if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
             return typeInfo
         }
@@ -68,6 +73,7 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
         hasher.combine(self.name)
         hasher.combine(self.typeName)
         hasher.combine(self.`inout`)
+        hasher.combine(self.isVariadic)
         hasher.combine(self.defaultValue)
         hasher.combine(self.annotations)
         return hasher.finalize()
@@ -94,6 +100,7 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
         if self.name != rhs.name { return false }
         if self.typeName != rhs.typeName { return false }
         if self.`inout` != rhs.`inout` { return false }
+        if self.isVariadic != rhs.isVariadic { return false }
         if self.defaultValue != rhs.defaultValue { return false }
         if self.annotations != rhs.annotations { return false }
         return true
@@ -112,6 +119,7 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
                     fatalError()
                  }; self.typeName = typeName
                 self.`inout` = aDecoder.decode(forKey: "`inout`")
+                self.isVariadic = aDecoder.decode(forKey: "isVariadic")
                 self.type = aDecoder.decode(forKey: "type")
                 self.defaultValue = aDecoder.decode(forKey: "defaultValue")
                 guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
@@ -128,6 +136,7 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
                 aCoder.encode(self.name, forKey: "name")
                 aCoder.encode(self.typeName, forKey: "typeName")
                 aCoder.encode(self.`inout`, forKey: "`inout`")
+                aCoder.encode(self.isVariadic, forKey: "isVariadic")
                 aCoder.encode(self.type, forKey: "type")
                 aCoder.encode(self.defaultValue, forKey: "defaultValue")
                 aCoder.encode(self.annotations, forKey: "annotations")
