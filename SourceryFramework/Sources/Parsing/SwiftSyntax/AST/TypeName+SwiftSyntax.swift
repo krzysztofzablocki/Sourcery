@@ -140,7 +140,8 @@ extension TypeName {
                   argumentLabel: firstName,
                   name: node.secondName?.text.trimmed ?? firstName,
                   typeName: typeName,
-                  isInout: specifiers.isInOut
+                  isInout: specifiers.isInOut,
+                  isVariadic: node.type.as(PackExpansionTypeSyntax.self)?.ellipsis != nil
                 )
             }
             let returnTypeName = TypeName(typeIdentifier.returnType)

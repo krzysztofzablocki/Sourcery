@@ -27,6 +27,8 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return isVoid
             case "isClosure":
                 return isClosure
+            case "closure":
+                return closure
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
