@@ -1,9 +1,28 @@
 import Foundation
 
 // sourcery: skipDiffing
-#if canImport(ObjectiveC)
-@objcMembers
-public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
+#if !canImport(ObjectiveC)
+public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+        case "argumentLabel":
+            return argumentLabel
+        case "name":
+            return name
+        case "typeName":
+            return typeName
+        case "inout":
+            return `inout`
+        case "type":
+            return type
+        case "isVariadic":
+            return isVariadic
+        case "defaultValue":
+            return defaultValue
+        default:
+            fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
     /// Parameter external name
     public var argumentLabel: String?
 
