@@ -10,7 +10,6 @@ import UIKit
 import AppKit
 #endif
 
-import Combine
 
 
 
@@ -34,28 +33,28 @@ import Combine
 
 
 
+public class AccessLevelProtocolMock: AccessLevelProtocol {
 
-class AccessLevelProtocolMock: AccessLevelProtocol {
+    public init() {}
 
-
-    var company: String?
-    var name: String {
+    public var company: String?
+    public var name: String {
         get { return underlyingName }
         set(value) { underlyingName = value }
     }
-    var underlyingName: (String)!
+    public var underlyingName: (String)!
 
 
     //MARK: - loadConfiguration
 
-    var loadConfigurationStringCallsCount = 0
-    var loadConfigurationStringCalled: Bool {
+    public var loadConfigurationStringCallsCount = 0
+    public var loadConfigurationStringCalled: Bool {
         return loadConfigurationStringCallsCount > 0
     }
-    var loadConfigurationStringReturnValue: String?
-    var loadConfigurationStringClosure: (() -> String?)?
+    public var loadConfigurationStringReturnValue: String?
+    public var loadConfigurationStringClosure: (() -> (String)?)?
 
-    func loadConfiguration() -> String? {
+    public func loadConfiguration() -> String? {
         loadConfigurationStringCallsCount += 1
         if let loadConfigurationStringClosure = loadConfigurationStringClosure {
             return loadConfigurationStringClosure()
@@ -214,7 +213,7 @@ class AnyProtocolMock: AnyProtocol {
         return nXEscapingAnyStubProtocolVoidVoidCallsCount > 0
     }
     var nXEscapingAnyStubProtocolVoidVoidReceivedX: ((((any StubProtocol)?) -> Void))?
-    var nXEscapingAnyStubProtocolVoidVoidReceivedInvocations: [((((any StubProtocol)?) -> Void))] = []
+    var nXEscapingAnyStubProtocolVoidVoidReceivedInvocations: [(((any StubProtocol)?) -> Void)] = []
     var nXEscapingAnyStubProtocolVoidVoidClosure: ((((any StubProtocol)?) -> Void) -> Void)?
 
     func n(x: @escaping((any StubProtocol)?) -> Void) {
@@ -231,7 +230,7 @@ class AnyProtocolMock: AnyProtocol {
         return pXAnyStubWithAnyNameProtocolVoidCallsCount > 0
     }
     var pXAnyStubWithAnyNameProtocolVoidReceivedX: ((any StubWithAnyNameProtocol)?)?
-    var pXAnyStubWithAnyNameProtocolVoidReceivedInvocations: [((any StubWithAnyNameProtocol)?)?] = []
+    var pXAnyStubWithAnyNameProtocolVoidReceivedInvocations: [((any StubWithAnyNameProtocol)?)] = []
     var pXAnyStubWithAnyNameProtocolVoidClosure: (((any StubWithAnyNameProtocol)?) -> Void)?
 
     func p(_ x: (any StubWithAnyNameProtocol)?) {
@@ -320,7 +319,7 @@ class AnyProtocolMock: AnyProtocol {
         return u_IntAnyStubProtocolCallsCount > 0
     }
     var u_IntAnyStubProtocolReturnValue: (Int, () -> (any StubProtocol)?)!
-    var u_IntAnyStubProtocolClosure: (() -> (Int, () -> (any StubProtocol)?))?
+    var u_IntAnyStubProtocolClosure: (() -> (Int, () -> (any StubProtocol)))?
 
     func u() -> (Int, () -> (any StubProtocol)?) {
         u_IntAnyStubProtocolCallsCount += 1
@@ -338,7 +337,7 @@ class AnyProtocolMock: AnyProtocol {
         return v_IntAnyStubProtocolCallsCount > 0
     }
     var v_IntAnyStubProtocolReturnValue: (Int, (() -> any StubProtocol)?)!
-    var v_IntAnyStubProtocolClosure: (() -> (Int, (() -> any StubProtocol)?))?
+    var v_IntAnyStubProtocolClosure: (() -> (Int, (() -> any StubProtocol)))?
 
     func v() -> (Int, (() -> any StubProtocol)?) {
         v_IntAnyStubProtocolCallsCount += 1
@@ -356,7 +355,7 @@ class AnyProtocolMock: AnyProtocol {
         return w_AnyStubProtocolCallsCount > 0
     }
     var w_AnyStubProtocolReturnValue: [(any StubProtocol)?]!
-    var w_AnyStubProtocolClosure: (() -> [(any StubProtocol)?])?
+    var w_AnyStubProtocolClosure: (() -> [(any StubProtocol)])?
 
     func w() -> [(any StubProtocol)?] {
         w_AnyStubProtocolCallsCount += 1
@@ -374,7 +373,7 @@ class AnyProtocolMock: AnyProtocol {
         return xStringAnyStubProtocolCallsCount > 0
     }
     var xStringAnyStubProtocolReturnValue: [String: (any StubProtocol)?]!
-    var xStringAnyStubProtocolClosure: (() -> [String: (any StubProtocol)?])?
+    var xStringAnyStubProtocolClosure: (() -> [String: (any StubProtocol)])?
 
     func x() -> [String: (any StubProtocol)?] {
         xStringAnyStubProtocolCallsCount += 1
@@ -392,7 +391,7 @@ class AnyProtocolMock: AnyProtocol {
         return y_AnyStubProtocolAnyStubProtocolCallsCount > 0
     }
     var y_AnyStubProtocolAnyStubProtocolReturnValue: (any StubProtocol, (any StubProtocol)?)!
-    var y_AnyStubProtocolAnyStubProtocolClosure: (() -> (any StubProtocol, (any StubProtocol)?))?
+    var y_AnyStubProtocolAnyStubProtocolClosure: (() -> (any StubProtocol, (any StubProtocol)))?
 
     func y() -> (any StubProtocol, (any StubProtocol)?) {
         y_AnyStubProtocolAnyStubProtocolCallsCount += 1
@@ -619,7 +618,7 @@ class BasicProtocolMock: BasicProtocol {
         return loadConfigurationStringCallsCount > 0
     }
     var loadConfigurationStringReturnValue: String?
-    var loadConfigurationStringClosure: (() -> String?)?
+    var loadConfigurationStringClosure: (() -> (String)?)?
 
     func loadConfiguration() -> String? {
         loadConfigurationStringCallsCount += 1
@@ -661,7 +660,7 @@ class ClosureProtocolMock: ClosureProtocol {
         return setClosureClosureEscapingVoidVoidCallsCount > 0
     }
     var setClosureClosureEscapingVoidVoidReceivedClosure: ((() -> Void))?
-    var setClosureClosureEscapingVoidVoidReceivedInvocations: [((() -> Void))] = []
+    var setClosureClosureEscapingVoidVoidReceivedInvocations: [(() -> Void)] = []
     var setClosureClosureEscapingVoidVoidClosure: ((() -> Void) -> Void)?
 
     func setClosure(_ closure: @escaping () -> Void) {
@@ -920,7 +919,7 @@ class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOpt
         return implicitReturnStringCallsCount > 0
     }
     var implicitReturnStringReturnValue: String!
-    var implicitReturnStringClosure: (() -> String?)?
+    var implicitReturnStringClosure: (() -> (String)?)?
 
     func implicitReturn() -> String! {
         implicitReturnStringCallsCount += 1
@@ -940,9 +939,9 @@ class InitializationProtocolMock: InitializationProtocol {
 
     //MARK: - init
 
-    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: String?)?
-    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedInvocations: [(intParameter: Int, stringParameter: String, optionalParameter: String?)] = []
-    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolClosure: ((Int, String, String?) -> Void)?
+    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedArguments: (intParameter: Int, stringParameter: String, optionalParameter: (String)?)?
+    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedInvocations: [(intParameter: Int, stringParameter: String, optionalParameter: (String)?)] = []
+    var initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolClosure: ((Int, String, (String)?) -> Void)?
 
     required init(intParameter: Int, stringParameter: String, optionalParameter: String?) {
         initIntParameterIntStringParameterStringOptionalParameterStringInitializationProtocolReceivedArguments = (intParameter: intParameter, stringParameter: stringParameter, optionalParameter: optionalParameter)
@@ -1071,27 +1070,103 @@ public class ProtocolWithMethodWithGenericParametersMock: ProtocolWithMethodWith
 
 
 }
-public class ProtocolWithMethodWithInoutParameterMock: ProtocolWithMethodWithInoutParameter {
-
-    public init() {}
+class ProtocolWithMethodWithInoutParameterMock: ProtocolWithMethodWithInoutParameter {
 
 
 
-    //MARK: - execute
 
-    public var executeParamInoutStringVoidCallsCount = 0
-    public var executeParamInoutStringVoidCalled: Bool {
-        return executeParamInoutStringVoidCallsCount > 0
+    //MARK: - executeString
+
+    var executeStringParamInoutStringVoidCallsCount = 0
+    var executeStringParamInoutStringVoidCalled: Bool {
+        return executeStringParamInoutStringVoidCallsCount > 0
     }
-    public var executeParamInoutStringVoidReceivedParam: (String)?
-    public var executeParamInoutStringVoidReceivedInvocations: [(String)] = []
-    public var executeParamInoutStringVoidClosure: ((String) -> Void)?
+    var executeStringParamInoutStringVoidReceivedParam: (String)?
+    var executeStringParamInoutStringVoidReceivedInvocations: [(String)] = []
+    var executeStringParamInoutStringVoidClosure: ((inout String) -> Void)?
 
-    public func execute(param: inout String) {
-        executeParamInoutStringVoidCallsCount += 1
-        executeParamInoutStringVoidReceivedParam = param
-        executeParamInoutStringVoidReceivedInvocations.append(param)
-        executeParamInoutStringVoidClosure?(param)
+    func executeString(param: inout String) {
+        executeStringParamInoutStringVoidCallsCount += 1
+        executeStringParamInoutStringVoidReceivedParam = param
+        executeStringParamInoutStringVoidReceivedInvocations.append(param)
+        executeStringParamInoutStringVoidClosure?(&param)
+    }
+
+    //MARK: - executeOptionalString
+
+    var executeOptionalStringParamInoutStringVoidCallsCount = 0
+    var executeOptionalStringParamInoutStringVoidCalled: Bool {
+        return executeOptionalStringParamInoutStringVoidCallsCount > 0
+    }
+    var executeOptionalStringParamInoutStringVoidReceivedParam: ((String)?)?
+    var executeOptionalStringParamInoutStringVoidReceivedInvocations: [((String)?)] = []
+    var executeOptionalStringParamInoutStringVoidClosure: ((inout (String)?) -> Void)?
+
+    func executeOptionalString(param: inout (String)?) {
+        executeOptionalStringParamInoutStringVoidCallsCount += 1
+        executeOptionalStringParamInoutStringVoidReceivedParam = param
+        executeOptionalStringParamInoutStringVoidReceivedInvocations.append(param)
+        executeOptionalStringParamInoutStringVoidClosure?(&param)
+    }
+
+    //MARK: - executeProtocol
+
+    var executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidCallsCount = 0
+    var executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidCalled: Bool {
+        return executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidCallsCount > 0
+    }
+    var executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedParam: (any StubWithSomeNameProtocol)?
+    var executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedInvocations: [(any StubWithSomeNameProtocol)] = []
+    var executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidClosure: ((inout any StubWithSomeNameProtocol) -> Void)?
+
+    func executeProtocol(param: inout any StubWithSomeNameProtocol) {
+        executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidCallsCount += 1
+        executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedParam = param
+        executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedInvocations.append(param)
+        executeProtocolParamInoutAnyStubWithSomeNameProtocolVoidClosure?(&param)
+    }
+
+    //MARK: - executeOptionalProtocol
+
+    var executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidCallsCount = 0
+    var executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidCalled: Bool {
+        return executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidCallsCount > 0
+    }
+    var executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedParam: ((any StubWithSomeNameProtocol)?)?
+    var executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedInvocations: [((any StubWithSomeNameProtocol)?)] = []
+    var executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidClosure: ((inout (any StubWithSomeNameProtocol)?) -> Void)?
+
+    func executeOptionalProtocol(param: inout (any StubWithSomeNameProtocol)?) {
+        executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidCallsCount += 1
+        executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedParam = param
+        executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidReceivedInvocations.append(param)
+        executeOptionalProtocolParamInoutAnyStubWithSomeNameProtocolVoidClosure?(&param)
+    }
+
+    //MARK: - executeCompletion
+
+    var executeCompletionParamInoutStringVoidVoidCallsCount = 0
+    var executeCompletionParamInoutStringVoidVoidCalled: Bool {
+        return executeCompletionParamInoutStringVoidVoidCallsCount > 0
+    }
+    var executeCompletionParamInoutStringVoidVoidClosure: ((inout (String) -> Void) -> Void)?
+
+    func executeCompletion(param: inout (String) -> Void) {
+        executeCompletionParamInoutStringVoidVoidCallsCount += 1
+        executeCompletionParamInoutStringVoidVoidClosure?(&param)
+    }
+
+    //MARK: - executeOptionalCompletion
+
+    var executeOptionalCompletionParamInoutStringVoidVoidCallsCount = 0
+    var executeOptionalCompletionParamInoutStringVoidVoidCalled: Bool {
+        return executeOptionalCompletionParamInoutStringVoidVoidCallsCount > 0
+    }
+    var executeOptionalCompletionParamInoutStringVoidVoidClosure: ((inout ((String) -> Void)?) -> Void)?
+
+    func executeOptionalCompletion(param: inout ((String) -> Void)?) {
+        executeOptionalCompletionParamInoutStringVoidVoidCallsCount += 1
+        executeOptionalCompletionParamInoutStringVoidVoidClosure?(&param)
     }
 
 
@@ -1347,11 +1422,11 @@ class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
     var sendMessageStringVoidCalled: Bool {
         return sendMessageStringVoidCallsCount > 0
     }
-    var sendMessageStringVoidReceivedMessage: (String?)?
-    var sendMessageStringVoidReceivedInvocations: [(String?)?] = []
-    var sendMessageStringVoidClosure: ((String?) -> Void)?
+    var sendMessageStringVoidReceivedMessage: ((String)?)?
+    var sendMessageStringVoidReceivedInvocations: [((String)?)] = []
+    var sendMessageStringVoidClosure: (((String)?) -> Void)?
 
-    func send(message: String?) {
+    func send(message: (String)?) {
         sendMessageStringVoidCallsCount += 1
         sendMessageStringVoidReceivedMessage = message
         sendMessageStringVoidReceivedInvocations.append(message)
@@ -1445,7 +1520,7 @@ class SomeProtocolMock: SomeProtocol {
         return dXSomeStubWithSomeNameProtocolVoidCallsCount > 0
     }
     var dXSomeStubWithSomeNameProtocolVoidReceivedX: ((any StubWithSomeNameProtocol)?)?
-    var dXSomeStubWithSomeNameProtocolVoidReceivedInvocations: [((any StubWithSomeNameProtocol)?)?] = []
+    var dXSomeStubWithSomeNameProtocolVoidReceivedInvocations: [((any StubWithSomeNameProtocol)?)] = []
     var dXSomeStubWithSomeNameProtocolVoidClosure: (((any StubWithSomeNameProtocol)?) -> Void)?
 
     func d(_ x: (some StubWithSomeNameProtocol)?) {

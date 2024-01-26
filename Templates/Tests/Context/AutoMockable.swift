@@ -140,7 +140,8 @@ protocol FunctionWithAttributes: AutoMockable {
     func callRepeatedAttributes() -> Bool
 }
 
-protocol AccessLevelProtocol: AutoMockable {
+// sourcery: AutoMockable
+public protocol AccessLevelProtocol {
     var company: String? { get set }
     var name: String { get }
 
@@ -245,5 +246,10 @@ public protocol ProtocolWithMethodWithGenericParameters {
 // sourcery: AutoMockable
 public protocol ProtocolWithMethodWithInoutParameter {
     func execute(param: inout String)
+    func executeWithOptionalParam(param: inout String?)
+    func executeWithProtocol(param: inout (any StubWithSomeNameProtocol))
+    func executeOptionalProtocol(param: inout (any StubWithSomeNameProtocol)?)
+    func executeWithCompletion(param: inout (String) -> Void)
+    func executeWithOptionalCompletion(param: inout ((String) -> Void)?)
 }
 
