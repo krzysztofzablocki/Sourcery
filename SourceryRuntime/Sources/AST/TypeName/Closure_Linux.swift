@@ -1,10 +1,42 @@
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 import Foundation
-
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 /// Describes closure type
-@objcMembers
-public final class ClosureType: NSObject, SourceryModel, Diffable {
 
+public final class ClosureType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "parameters":
+                return parameters
+            case "returnTypeName":
+                return returnTypeName
+            case "actualReturnTypeName":
+                return actualReturnTypeName
+            case "returnType":
+                return returnType
+            case "isOptionalReturnType":
+                return isOptionalReturnType
+            case "isImplicitlyUnwrappedOptionalReturnType":
+                return isImplicitlyUnwrappedOptionalReturnType
+            case "unwrappedReturnTypeName":
+                return unwrappedReturnTypeName
+            case "isAsync":
+                return isAsync
+            case "asyncKeyword":
+                return asyncKeyword
+            case "throws":
+                return `throws`
+            case "throwsOrRethrowsKeyword":
+                return throwsOrRethrowsKeyword
+            default:
+                fatalError("unable to lookup: \(member) in \(self)")
+        }
+    }
     /// Type name used in declaration with stripped whitespaces and new lines
     public let name: String
 
