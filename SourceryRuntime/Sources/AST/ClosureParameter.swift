@@ -1,7 +1,7 @@
+#if canImport(ObjectiveC)
 import Foundation
 
 // sourcery: skipDiffing
-#if canImport(ObjectiveC)
 @objcMembers
 public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
     /// Parameter external name

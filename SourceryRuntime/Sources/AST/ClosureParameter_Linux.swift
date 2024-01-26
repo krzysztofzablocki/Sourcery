@@ -1,7 +1,11 @@
+#if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 // sourcery: skipDiffing
-#if !canImport(ObjectiveC)
 public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
@@ -168,3 +172,4 @@ extension Array where Element == ClosureParameter {
         "(\(map { $0.asSource }.joined(separator: ", ")))"
     }
 }
+#endif
