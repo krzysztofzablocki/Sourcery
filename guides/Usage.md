@@ -23,6 +23,7 @@ $ ./sourcery --sources <sources path> --templates <templates path> --output <out
 - `--version` - Display the current version of Sourcery
 - `--help` - Display help information.
 - `--cacheBasePath` - Path to Sourcery internal cache (available only in configuration file)
+- `--parseDocumentation`  [default: false] - Include documentation comments for all declarations.
 
 Use `--help` to see the list of all available options.
 
