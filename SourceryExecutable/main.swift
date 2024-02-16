@@ -223,7 +223,7 @@ func runCLI() {
             }
 
             if keepAlive.isEmpty {
-                Log.info("Processing time \(currentTimestamp() - start) seconds")
+                Log.info(String(format: "Processing time %.2f seconds", currentTimestamp() - start))
             } else {
                 RunLoop.current.run()
                 _ = keepAlive
@@ -396,7 +396,7 @@ func runCLI() {
             }
 
             if keepAlive.isEmpty {
-                Log.info("Processing time \(currentTimestamp() - start) seconds")
+                Log.info(String(format: "Processing time %.2f seconds", currentTimestamp() - start))
             } else {
                 RunLoop.current.run()
                 _ = keepAlive
