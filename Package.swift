@@ -265,7 +265,7 @@ var dependencies: [Package.Dependency] = [
 ]
 
 #if !canImport(ObjectiveC)
-dependencies.append(.package(url: "https://github.com/apple/swift-crypto", from: "2.2.3"))
+dependencies.append(.package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"))
 #endif
 
 let package = Package(
