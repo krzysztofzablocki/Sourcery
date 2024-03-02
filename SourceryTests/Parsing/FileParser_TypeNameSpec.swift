@@ -131,6 +131,14 @@ class TypeNameSpec: QuickSpec {
                 }
             }
 
+            context("given set type") {
+                context("as name") {
+                    it("reports set correctly") {
+                        expect(variableTypeName("Set<Int>").isSet).to(beTrue())
+                    }
+                }
+            }
+
             context("given closure type") {
                 it("reports closure correctly") {
                     expect(variableTypeName("() -> ()").isClosure).to(beTrue())

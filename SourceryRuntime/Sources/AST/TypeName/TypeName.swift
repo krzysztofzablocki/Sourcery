@@ -19,6 +19,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 array: ArrayType? = nil,
                 dictionary: DictionaryType? = nil,
                 closure: ClosureType? = nil,
+                set: SetType? = nil,
                 generic: GenericType? = nil,
                 isProtocolComposition: Bool = false) {
 
@@ -47,7 +48,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         self.isOptional = isOptional || isImplicitlyUnwrappedOptional
         self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
         self.isProtocolComposition = isProtocolComposition
-
+        self.set = set
         self.attributes = attributes
         self.modifiers = []
         super.init()
@@ -127,6 +128,14 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
     /// Closure type data
     public var closure: ClosureType?
 
+    /// Whether type is a Set
+    public var isSet: Bool {
+        actualTypeName?.set != nil || set != nil
+    }
+
+    /// Set type data
+    public var set: SetType?
+
     /// Prints typename as it would appear on definition
     public var asSource: String {
         // TODO: TBR special treatment
@@ -182,6 +191,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: castObject.array))
         results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: castObject.dictionary))
         results.append(contentsOf: DiffableResult(identifier: "closure").trackDifference(actual: self.closure, expected: castObject.closure))
+        results.append(contentsOf: DiffableResult(identifier: "set").trackDifference(actual: self.set, expected: castObject.set))
         return results
     }
 
@@ -196,6 +206,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         hasher.combine(self.array)
         hasher.combine(self.dictionary)
         hasher.combine(self.closure)
+        hasher.combine(self.set)
         return hasher.finalize()
     }
 
@@ -211,6 +222,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         if self.array != rhs.array { return false }
         if self.dictionary != rhs.dictionary { return false }
         if self.closure != rhs.closure { return false }
+        if self.set != rhs.set { return false }
         return true
     }
 
@@ -251,6 +263,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
             self.array = aDecoder.decode(forKey: "array")
             self.dictionary = aDecoder.decode(forKey: "dictionary")
             self.closure = aDecoder.decode(forKey: "closure")
+            self.set = aDecoder.decode(forKey: "set")
         }
 
         /// :nodoc:
@@ -268,6 +281,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
             aCoder.encode(self.array, forKey: "array")
             aCoder.encode(self.dictionary, forKey: "dictionary")
             aCoder.encode(self.closure, forKey: "closure")
+            aCoder.encode(self.set, forKey: "set")
         }
 // sourcery:end
 

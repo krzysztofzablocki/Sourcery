@@ -260,6 +260,105 @@ public extension Array {
 }
 
 """),
+    .init(name: "Set.swift", content:
+"""
+import Foundation
+
+/// Describes set type
+public final class SetType: NSObject, SourceryModel, Diffable {
+    /// Type name used in declaration
+    public var name: String
+
+    /// Array element type name
+    public var elementTypeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Array element type, if known
+    public var elementType: Type?
+
+    /// :nodoc:
+    public init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
+        self.name = name
+        self.elementTypeName = elementTypeName
+        self.elementType = elementType
+    }
+
+    /// Returns array as generic type
+    public var asGeneric: GenericType {
+        GenericType(name: "Set", typeParameters: [
+            .init(typeName: elementTypeName)
+        ])
+    }
+
+    public var asSource: String {
+        "[\\(elementTypeName.asSource)]"
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
+        string += "asGeneric = \\(String(describing: self.asGeneric)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? SetType else {
+            results.append("Incorrect type <expected: SetType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elementTypeName)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? SetType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elementTypeName != rhs.elementTypeName { return false }
+        return true
+    }
+
+// sourcery:inline:SetType.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else {
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else {
+                withVaList(["elementTypeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.elementTypeName = elementTypeName
+            self.elementType = aDecoder.decode(forKey: "elementType")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.elementTypeName, forKey: "elementTypeName")
+            aCoder.encode(self.elementType, forKey: "elementType")
+        }
+// sourcery:end
+}
+
+"""),
     .init(name: "Array.swift", content:
 """
 import Foundation
@@ -1240,6 +1339,7 @@ public enum Composer {
                         array: type.array,
                         dictionary: type.dictionary,
                         closure: type.closure,
+                        set: type.set,
                         generic: type.generic,
                         isProtocolComposition: type.isProtocolComposition
                     )
@@ -3524,6 +3624,8 @@ extension Type: TypeAutoJSExport {}
     var dictionary: DictionaryType? { get }
     var isClosure: Bool { get }
     var closure: ClosureType? { get }
+    var set: SetType? { get }
+    var isSet: Bool { get }
     var asSource: String { get }
     var description: String { get }
     var debugDescription: String { get }
@@ -6974,6 +7076,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 array: ArrayType? = nil,
                 dictionary: DictionaryType? = nil,
                 closure: ClosureType? = nil,
+                set: SetType? = nil,
                 generic: GenericType? = nil,
                 isProtocolComposition: Bool = false) {
 
@@ -7002,7 +7105,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         self.isOptional = isOptional || isImplicitlyUnwrappedOptional
         self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
         self.isProtocolComposition = isProtocolComposition
-
+        self.set = set
         self.attributes = attributes
         self.modifiers = []
         super.init()
@@ -7082,6 +7185,14 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
     /// Closure type data
     public var closure: ClosureType?
 
+    /// Whether type is a Set
+    public var isSet: Bool {
+        actualTypeName?.set != nil || set != nil
+    }
+
+    /// Set type data
+    public var set: SetType?
+
     /// Prints typename as it would appear on definition
     public var asSource: String {
         // TODO: TBR special treatment
@@ -7137,6 +7248,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: castObject.array))
         results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: castObject.dictionary))
         results.append(contentsOf: DiffableResult(identifier: "closure").trackDifference(actual: self.closure, expected: castObject.closure))
+        results.append(contentsOf: DiffableResult(identifier: "set").trackDifference(actual: self.set, expected: castObject.set))
         return results
     }
 
@@ -7151,6 +7263,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         hasher.combine(self.array)
         hasher.combine(self.dictionary)
         hasher.combine(self.closure)
+        hasher.combine(self.set)
         return hasher.finalize()
     }
 
@@ -7166,6 +7279,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         if self.array != rhs.array { return false }
         if self.dictionary != rhs.dictionary { return false }
         if self.closure != rhs.closure { return false }
+        if self.set != rhs.set { return false }
         return true
     }
 
@@ -7206,6 +7320,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
             self.array = aDecoder.decode(forKey: "array")
             self.dictionary = aDecoder.decode(forKey: "dictionary")
             self.closure = aDecoder.decode(forKey: "closure")
+            self.set = aDecoder.decode(forKey: "set")
         }
 
         /// :nodoc:
@@ -7223,6 +7338,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
             aCoder.encode(self.array, forKey: "array")
             aCoder.encode(self.dictionary, forKey: "dictionary")
             aCoder.encode(self.closure, forKey: "closure")
+            aCoder.encode(self.set, forKey: "set")
         }
 // sourcery:end
 
@@ -7409,6 +7525,8 @@ extension AssociatedValue {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -7427,6 +7545,8 @@ extension ClosureParameter {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -7445,6 +7565,8 @@ extension MethodParameter {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -7463,6 +7585,8 @@ extension TupleElement {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -7481,6 +7605,8 @@ extension Typealias {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -7499,6 +7625,8 @@ extension Variable {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
