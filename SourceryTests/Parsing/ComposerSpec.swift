@@ -718,7 +718,7 @@ class ParserComposerSpec: QuickSpec {
                           TypeName.buildSet(of: .buildTuple(.Int, .Int)).set
                         ))
                         expect(variables?[2].typeName.set).to(equal(
-                          TypeName.buildSet(of: .buildArray(of: .Int)).set
+                          TypeName.buildSet(of: .buildSet(of: .Int)).set
                         ))
                         expect(variables?[3].typeName.set).to(equal(
                           TypeName.buildSet(of: .buildClosure(TypeName(name: "()"))).set
