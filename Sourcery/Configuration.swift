@@ -170,7 +170,7 @@ public struct Package {
         }
         let path = Path(packageRootPath, relativeTo: relativePath)
         
-        let packagePath = try AbsolutePath(validating: path.string)
+        let packagePath = try Basics.AbsolutePath(validating: path.string)
         let observability = ObservabilitySystem { Log.verbose("\($0): \($1)") }
         let workspace = try Workspace(forRootPackage: packagePath)
 
