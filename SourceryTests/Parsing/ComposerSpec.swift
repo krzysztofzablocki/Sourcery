@@ -707,6 +707,25 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given generic set type") {
+                    it("extracts element type properly") {
+                        let types = parse("struct Foo { var set: Set<Int>; var setOfTuples: Set<(Int, Int)>; var setOfSets: Set<Set<Int>>, var setOfClosures: Set<() -> ()> }")
+                        let variables = types.first?.variables
+                        expect(variables?[0].typeName.set).to(equal(
+                          TypeName.buildSet(of: .Int).set
+                        ))
+                        expect(variables?[1].typeName.set).to(equal(
+                          TypeName.buildSet(of: .buildTuple(.Int, .Int)).set
+                        ))
+                        expect(variables?[2].typeName.set).to(equal(
+                          TypeName.buildSet(of: .buildArray(of: .Int)).set
+                        ))
+                        expect(variables?[3].typeName.set).to(equal(
+                          TypeName.buildSet(of: .buildClosure(TypeName(name: "()"))).set
+                        ))
+                    }
+                }
+
                 context("given generic dictionary type") {
                     it("extracts key type properly") {
                         let types = parse("struct Foo { var dictionary: Dictionary<Int, String>; var dictionaryOfArrays: Dictionary<[Int], [String]>; var dictonaryOfDictionaries: Dictionary<Int, [Int: String]>; var dictionaryOfTuples: Dictionary<Int, (String, String)>; var dictionaryOfClosures: Dictionary<Int, () -> ()> }")
