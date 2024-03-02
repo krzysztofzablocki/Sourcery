@@ -51,6 +51,11 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
             }
 
+            it("can report set type via KVC") {
+                let sut = {{ type.name }}(typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
+            }
+
             it("can report dictionary type via KVC") {
                 let sut = {{ type.name }}(typeName: typeName("[Int: Int]"))
                 expect(sut.value(forKeyPath: "isDictionary") as? Bool).to(equal(true))

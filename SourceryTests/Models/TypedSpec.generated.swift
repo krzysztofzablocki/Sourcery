@@ -51,6 +51,11 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
             }
 
+            it("can report set type via KVC") {
+                let sut = AssociatedValue(typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
+            }
+
             it("can report dictionary type via KVC") {
                 let sut = AssociatedValue(typeName: typeName("[Int: Int]"))
                 expect(sut.value(forKeyPath: "isDictionary") as? Bool).to(equal(true))
@@ -101,6 +106,11 @@ class TypedSpec: QuickSpec {
             it("can report array type via KVC") {
                 let sut = ClosureParameter(typeName: typeName("[Int]"))
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
+            }
+
+            it("can report set type via KVC") {
+                let sut = ClosureParameter(typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
             }
 
             it("can report dictionary type via KVC") {
@@ -154,6 +164,11 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
             }
 
+            it("can report set type via KVC") {
+                let sut = MethodParameter(typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
+            }
+
             it("can report dictionary type via KVC") {
                 let sut = MethodParameter(typeName: typeName("[Int: Int]"))
                 expect(sut.value(forKeyPath: "isDictionary") as? Bool).to(equal(true))
@@ -203,6 +218,11 @@ class TypedSpec: QuickSpec {
             it("can report array type via KVC") {
                 let sut = TupleElement(typeName: typeName("[Int]"))
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
+            }
+
+            it("can report set type via KVC") {
+                let sut = TupleElement(typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
             }
 
             it("can report dictionary type via KVC") {
@@ -257,6 +277,11 @@ class TypedSpec: QuickSpec {
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
             }
 
+            it("can report set type via KVC") {
+                let sut = Typealias(typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
+            }
+
             it("can report dictionary type via KVC") {
                 let sut = Typealias(typeName: typeName("[Int: Int]"))
                 expect(sut.value(forKeyPath: "isDictionary") as? Bool).to(equal(true))
@@ -306,6 +331,11 @@ class TypedSpec: QuickSpec {
             it("can report array type via KVC") {
                 let sut = Variable(typeName: typeName("[Int]"))
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
+            }
+
+            it("can report set type via KVC") {
+                let sut = Variable(typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
             }
 
             it("can report dictionary type via KVC") {

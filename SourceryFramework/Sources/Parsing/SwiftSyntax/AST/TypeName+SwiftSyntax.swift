@@ -45,6 +45,10 @@ extension TypeName {
                     let valueTypeName = generic!.typeParameters[1].typeName
                     let dictionary = DictionaryType(name: "Dictionary<\(keyTypeName.asSource), \(valueTypeName.asSource)>", valueTypeName: valueTypeName, keyTypeName: keyTypeName)
                     self.init(name: dictionary.name, dictionary: dictionary, generic: dictionary.asGeneric)
+                case ("Set", 1?):
+                    let elementTypeName = generic!.typeParameters[0].typeName
+                    let set = SetType(name: "Set<\(elementTypeName.asSource)>", elementTypeName: elementTypeName)
+                    self.init(name: set.name, set: set, generic: set.asGeneric)
                 default:
                     self.init(name: typeIdentifier.sourcerySafeTypeIdentifier, generic: generic)
                 }
@@ -72,6 +76,7 @@ extension TypeName {
                       array: type.array,
                       dictionary: type.dictionary,
                       closure: type.closure,
+                      set: type.set,
                       generic: type.generic,
                       isProtocolComposition: type.isProtocolComposition
             )
@@ -85,6 +90,7 @@ extension TypeName {
                       array: type.array,
                       dictionary: type.dictionary,
                       closure: type.closure,
+                      set: type.set,
                       generic: type.generic,
                       isProtocolComposition: type.isProtocolComposition
             )
@@ -122,6 +128,7 @@ extension TypeName {
                           array: type.array,
                           dictionary: type.dictionary,
                           closure: type.closure,
+                          set: type.set,
                           generic: type.generic,
                           isProtocolComposition: type.isProtocolComposition
                 )
@@ -169,6 +176,7 @@ extension TypeName {
                       array: type.array,
                       dictionary: type.dictionary,
                       closure: type.closure,
+                      set: type.set,
                       generic: type.generic,
                       isProtocolComposition: type.isProtocolComposition
             )
