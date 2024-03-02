@@ -101,6 +101,7 @@ extension SourceryMethod {
                                       array: returnTypeName.array,
                                       dictionary: returnTypeName.dictionary,
                                       closure: returnTypeName.closure,
+                                      set: returnTypeName.set,
                                       generic: returnTypeName.generic
             )
         }

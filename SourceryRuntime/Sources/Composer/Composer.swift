@@ -115,6 +115,7 @@ public enum Composer {
                         array: type.array,
                         dictionary: type.dictionary,
                         closure: type.closure,
+                        set: type.set,
                         generic: type.generic,
                         isProtocolComposition: type.isProtocolComposition
                     )

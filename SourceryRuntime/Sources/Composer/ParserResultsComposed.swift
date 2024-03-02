@@ -336,6 +336,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array,
                                                    dictionary: lookupName.dictionary,
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: lookupName.generic
                 )
             }
@@ -359,6 +360,7 @@ internal struct ParserResultsComposed {
                                                    array: array,
                                                    dictionary: lookupName.dictionary,
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: typeName.generic
                 )
             }
@@ -386,6 +388,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array,
                                                    dictionary: dictionary,
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: dictionary.asGeneric
                 )
             }
@@ -411,6 +414,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array,
                                                    dictionary: lookupName.dictionary,
                                                    closure: closure,
+                                                   set: lookupName.set,
                                                    generic: lookupName.generic
                 )
             }
@@ -446,6 +450,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array, // TODO: asArray
                                                    dictionary: lookupName.dictionary, // TODO: asDictionary
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: generic
                 )
             }
@@ -483,6 +488,8 @@ internal struct ParserResultsComposed {
         dictionary?.name = aliased.name
         let array = typeName.array.map { ArrayType(name: $0.name, elementTypeName: $0.elementTypeName, elementType: $0.elementType) }
         array?.name = aliased.name
+        let set = typeName.set.map { SetType(name: $0.name, elementTypeName: $0.elementTypeName, elementType: $0.elementType) }
+        set?.name = aliased.name
 
         return TypeName(name: aliased.name,
                         isOptional: typeName.isOptional,
@@ -491,6 +498,7 @@ internal struct ParserResultsComposed {
                         array: aliased.typealias?.typeName.array ?? array,
                         dictionary: aliased.typealias?.typeName.dictionary ?? dictionary,
                         closure: aliased.typealias?.typeName.closure ?? typeName.closure,
+                        set: aliased.typealias?.typeName.set ?? set,
                         generic: aliased.typealias?.typeName.generic ?? generic
         )
     }
