@@ -172,6 +172,9 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// :nodoc:
     public var __parserData: Any?
 
+    /// list of generic requirements
+    public var genericRequirements: [GenericRequirement]
+
     /// :nodoc:
     public init(name: String,
                 selectorName: String? = nil,
@@ -188,8 +191,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
-                definedInTypeName: TypeName? = nil) {
-
+                definedInTypeName: TypeName? = nil,
+                genericRequirements: [GenericRequirement] = []) {
         self.name = name
         self.selectorName = selectorName ?? name
         self.parameters = parameters
@@ -206,6 +209,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         self.annotations = annotations
         self.documentation = documentation
         self.definedInTypeName = definedInTypeName
+        self.genericRequirements = genericRequirements
     }
 
     /// :nodoc:
@@ -226,7 +230,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string += "documentation = \(String(describing: self.documentation)), "
         string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
         string += "attributes = \(String(describing: self.attributes)), "
-        string += "modifiers = \(String(describing: self.modifiers))"
+        string += "modifiers = \(String(describing: self.modifiers)), "
+        string += "genericRequirements = \(String(describing: self.genericRequirements))"
         return string
     }
 
@@ -252,6 +257,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
         return results
     }
 
@@ -273,6 +279,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         hasher.combine(self.definedInTypeName)
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
+        hasher.combine(self.genericRequirements)
         return hasher.finalize()
     }
 
@@ -295,6 +302,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.definedInTypeName != rhs.definedInTypeName { return false }
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
         return true
     }
 
@@ -365,6 +373,12 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 }
                 fatalError()
              }; self.modifiers = modifiers
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
+                withVaList(["genericRequirements"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericRequirements = genericRequirements
         }
 
         /// :nodoc:
@@ -387,6 +401,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             aCoder.encode(self.definedInType, forKey: "definedInType")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
+            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
         }
 // sourcery:end
 }
