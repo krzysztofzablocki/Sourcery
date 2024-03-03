@@ -460,6 +460,32 @@ internal struct ParserResultsComposed {
             typeName.actualTypeName = aliasedName
         }
 
+        if let genericRequirements = containingType?.genericRequirements {
+            let relevantRequirements = genericRequirements.filter {
+                // matched type against a generic requirement name
+                // thus type should be replaced with a protocol composition
+                $0.leftType.name == typeName.name
+            }
+            if relevantRequirements.count > 1 {
+                // compose protocols into `ProtocolComposition` and generate TypeName
+                var implements: [String: Type] = [:]
+                relevantRequirements.forEach {
+                    implements[$0.rightType.typeName.name] = $0.rightType.type
+                }
+                let composedProtocols = ProtocolComposition(
+                    inheritedTypes: relevantRequirements.map { $0.rightType.typeName.unwrappedTypeName },
+                    composedTypes: relevantRequirements.compactMap { $0.rightType.type },
+                    implements: implements
+                )
+                typeName.actualTypeName = TypeName(name: "(\(composedProtocols.composedTypeNames.map { $0.name }.joined(separator: " & "))", isProtocolComposition: true)
+                return composedProtocols
+            } else if let protocolRequirement = relevantRequirements.first {
+                // create TypeName off a single generic's protocol requirement
+                typeName.actualTypeName = TypeName(name: "(\(protocolRequirement.rightType.typeName))")
+                return protocolRequirement.rightType.type
+            }
+        }
+
         let finalLookup = typeName.actualTypeName ?? typeName
         let resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
 

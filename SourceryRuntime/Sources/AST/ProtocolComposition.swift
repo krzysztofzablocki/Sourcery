@@ -34,7 +34,8 @@ public final class ProtocolComposition: Type {
                 annotations: [String: NSObject] = [:],
                 isGeneric: Bool = false,
                 composedTypeNames: [TypeName] = [],
-                composedTypes: [Type]? = nil) {
+                composedTypes: [Type]? = nil,
+                implements: [String: Type] = [:]) {
         self.composedTypeNames = composedTypeNames
         self.composedTypes = composedTypes
         super.init(
@@ -49,7 +50,8 @@ public final class ProtocolComposition: Type {
             containedTypes: containedTypes,
             typealiases: typealiases,
             annotations: annotations,
-            isGeneric: isGeneric
+            isGeneric: isGeneric,
+            implements: implements
         )
     }
 

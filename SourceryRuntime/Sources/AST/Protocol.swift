@@ -28,7 +28,7 @@ public final class Protocol: Type {
     }
 
     /// list of generic requirements
-    public var genericRequirements: [GenericRequirement] {
+    public override var genericRequirements: [GenericRequirement] {
         didSet {
             isGeneric = !associatedTypes.isEmpty || !genericRequirements.isEmpty
         }
@@ -50,8 +50,8 @@ public final class Protocol: Type {
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
-                documentation: [String] = []) {
-        self.genericRequirements = genericRequirements
+                documentation: [String] = [],
+                implements: [String: Type] = [:]) {
         self.associatedTypes = associatedTypes
         super.init(
             name: name,
@@ -64,11 +64,13 @@ public final class Protocol: Type {
             inheritedTypes: inheritedTypes,
             containedTypes: containedTypes,
             typealiases: typealiases,
+            genericRequirements: genericRequirements,
             attributes: attributes,
             modifiers: modifiers,
             annotations: annotations,
             documentation: documentation,
-            isGeneric: !associatedTypes.isEmpty || !genericRequirements.isEmpty
+            isGeneric: !associatedTypes.isEmpty || !genericRequirements.isEmpty,
+            implements: implements
         )
     }
 
@@ -78,7 +80,6 @@ public final class Protocol: Type {
         string += ", "
         string += "kind = \(String(describing: self.kind)), "
         string += "associatedTypes = \(String(describing: self.associatedTypes)), "
-        string += "genericRequirements = \(String(describing: self.genericRequirements))"
         return string
     }
 
@@ -89,7 +90,6 @@ public final class Protocol: Type {
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "associatedTypes").trackDifference(actual: self.associatedTypes, expected: castObject.associatedTypes))
-        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
         results.append(contentsOf: super.diffAgainst(castObject))
         return results
     }
@@ -97,7 +97,6 @@ public final class Protocol: Type {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.associatedTypes)
-        hasher.combine(self.genericRequirements)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
@@ -106,7 +105,6 @@ public final class Protocol: Type {
     public override func isEqual(_ object: Any?) -> Bool {
         guard let rhs = object as? Protocol else { return false }
         if self.associatedTypes != rhs.associatedTypes { return false }
-        if self.genericRequirements != rhs.genericRequirements { return false }
         return super.isEqual(rhs)
     }
 
@@ -120,12 +118,6 @@ public final class Protocol: Type {
                 }
                 fatalError()
              }; self.associatedTypes = associatedTypes
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
-                withVaList(["genericRequirements"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.genericRequirements = genericRequirements
             super.init(coder: aDecoder)
         }
 
@@ -133,7 +125,6 @@ public final class Protocol: Type {
         override public func encode(with aCoder: NSCoder) {
             super.encode(with: aCoder)
             aCoder.encode(self.associatedTypes, forKey: "associatedTypes")
-            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
         }
 // sourcery:end
 }

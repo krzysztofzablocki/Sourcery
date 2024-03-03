@@ -24,11 +24,13 @@ public final class Class: Type {
                          inheritedTypes: [String] = [],
                          containedTypes: [Type] = [],
                          typealiases: [Typealias] = [],
+                         genericRequirements: [GenericRequirement] = [],
                          attributes: AttributeList = [:],
                          modifiers: [SourceryModifier] = [],
                          annotations: [String: NSObject] = [:],
                          documentation: [String] = [],
-                         isGeneric: Bool = false) {
+                         isGeneric: Bool = false,
+                         implements: [String: Type] = [:]) {
         super.init(
             name: name,
             parent: parent,
@@ -40,11 +42,13 @@ public final class Class: Type {
             inheritedTypes: inheritedTypes,
             containedTypes: containedTypes,
             typealiases: typealiases,
+            genericRequirements: genericRequirements,
             attributes: attributes,
             modifiers: modifiers,
             annotations: annotations,
             documentation: documentation,
-            isGeneric: isGeneric
+            isGeneric: isGeneric,
+            implements: implements
         )
     }
 

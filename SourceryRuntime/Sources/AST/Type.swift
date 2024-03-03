@@ -49,7 +49,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     // sourcery: forceEquality
     /// Kind of type declaration, i.e. `enum`, `struct`, `class`, `protocol` or `extension`
-    public var kind: String { return isExtension ? "extension" : "unknown" }
+    public var kind: String { isExtension ? "extension" : "unknown" }
 
     /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
     public let accessLevel: String
@@ -287,7 +287,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     // sourcery: skipEquality, skipDescription
     /// Protocols this type implements
-    public var implements = [String: Type]()
+    public var implements: [String: Type] = [:]
 
     /// Contained types
     public var containedTypes: [Type] {
@@ -352,6 +352,13 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         }
     }
 
+    /// list of generic requirements
+    public var genericRequirements: [GenericRequirement] {
+        didSet {
+            isGeneric = isGeneric || !genericRequirements.isEmpty
+        }
+    }
+
     /// File name where the type was defined
     public var fileName: String?
 
@@ -366,12 +373,13 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
                 inheritedTypes: [String] = [],
                 containedTypes: [Type] = [],
                 typealiases: [Typealias] = [],
+                genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
-                isGeneric: Bool = false) {
-
+                isGeneric: Bool = false,
+                implements: [String: Type] = [:]) {
         self.localName = name
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
@@ -388,7 +396,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         self.annotations = annotations
         self.documentation = documentation
         self.isGeneric = isGeneric
-
+        self.genericRequirements = genericRequirements
+        self.implements = implements
         super.init()
         containedTypes.forEach {
             containedType[$0.localName] = $0
@@ -450,7 +459,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         string += "parentTypes = \(String(describing: self.parentTypes)), "
         string += "attributes = \(String(describing: self.attributes)), "
         string += "modifiers = \(String(describing: self.modifiers)), "
-        string += "fileName = \(String(describing: self.fileName))"
+        string += "fileName = \(String(describing: self.fileName)), "
+        string += "genericRequirements = \(String(describing: self.genericRequirements))"
         return string
     }
 
@@ -480,6 +490,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         results.append(contentsOf: DiffableResult(identifier: "fileName").trackDifference(actual: self.fileName, expected: castObject.fileName))
+        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
         return results
     }
 
@@ -505,6 +516,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         hasher.combine(self.fileName)
+        hasher.combine(self.genericRequirements)
         hasher.combine(kind)
         return hasher.finalize()
     }
@@ -533,6 +545,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         if self.modifiers != rhs.modifiers { return false }
         if self.fileName != rhs.fileName { return false }
         if self.kind != rhs.kind { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
         return true
     }
 
@@ -561,7 +574,13 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
                 fatalError()
              }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
-            guard let localName: String = aDecoder.decode(forKey: "localName") else { 
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
+                withVaList(["genericRequirements"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericRequirements = genericRequirements
+            guard let localName: String = aDecoder.decode(forKey: "localName") else {
                 withVaList(["localName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -690,6 +709,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.path, forKey: "path")
             aCoder.encode(self.fileName, forKey: "fileName")
+            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
         }
 // sourcery:end
 
