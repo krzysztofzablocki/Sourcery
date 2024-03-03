@@ -425,8 +425,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
-                isGeneric: Bool = false) {
-
+                isGeneric: Bool = false,
+                implements: [String: Type] = [:]) {
         self.localName = name
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
@@ -444,6 +444,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
         self.documentation = documentation
         self.isGeneric = isGeneric
         self.genericRequirements = genericRequirements
+        self.implements = implements
         super.init()
         containedTypes.forEach {
             containedType[$0.localName] = $0
