@@ -125,7 +125,7 @@ class GeneratorSpec: QuickSpec {
                 expect(generate("Found {{ types.implementing.NSObject.count|default:\"0\" }} types")).to(equal("Found 0 types"))
                 expect(generate("Found {{ types.implementing.Bar.count|default:\"0\" }} types")).to(equal("Found 0 types"))
 
-                expect(generate("{{ types.all|implements:\"KnownProtocol\"|count }}")).to(equal("8"))
+                expect(generate("{{ types.all|implements:\"KnownProtocol\"|count }}")).to(equal("7"))
             }
 
             it("feeds types.inheriting specific class") {
