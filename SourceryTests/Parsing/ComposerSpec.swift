@@ -628,16 +628,104 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given generic custom type") {
+                    context("given generic's protocol requirements") {
+                        context("given type's variables' generic type") {
+                            it("extracts generic requirement correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable {
+                                    let value: T
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.instanceVariables.first?.type?.implements["Equatable"]).toNot(beNil())
+                            }
+
+                            it("extracts generic requirement as protocol composition correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable, T: Codable {
+                                    let value: T
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.instanceVariables.first?.type?.implements["Equatable"]).toNot(beNil())
+                                expect(generic?.instanceVariables.first?.type?.implements["Codable"]).toNot(beNil())
+                            }
+                        }
+                        context("given type's methods' generic return type") {
+                            it("extracts generic requirement correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable {
+                                    enum MyEnum: Equatable, String { case abc, def }
+                                    func method() -> T { return MyEnum.abc }
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.returnType?.implements["Equatable"]).toNot(beNil())
+                            }
+
+                            it("extracts generic requirement as protocol composition correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable, T: Codable {
+                                    enum MyEnum: Equatable, Codable, String { case abc, def }
+                                    func method() -> T { return MyEnum.abc }
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.returnType?.implements["Equatable"]).toNot(beNil())
+                                expect(generic?.methods.first?.returnType?.implements["Codable"]).toNot(beNil())
+                            }
+                        }
+
+                        context("given type's methods' generic argument type") {
+                            it("extracts generic requirement correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable {
+                                    func method(_ arg: T) {}
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                            }
+
+                            it("extracts generic requirement as protocol composition correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable, T: Codable {
+                                    func method(_ arg: T) {}
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                                expect(generic?.methods.first?.parameters.first?.type?.implements["Codable"]).toNot(beNil())
+                            }
+                        }
+                    }
+                }
+
                 context("given tuple type") {
                     it("extracts elements properly") {
                         let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int) -> Int, tuple: (Int, Int))}")
                         let variable = types.first?.variables.first
                         let tuple = variable?.typeName.tuple
-
-                        let stringToFloatDictGeneric = GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "Float"))])
                         let stringToFloatDictGenericLiteral = GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "Float"))])
-
-                        let stringToFloatDict = DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName(name: "Float"), keyTypeName: TypeName(name: "String"))
                         let stringToFloatDictLiteral = DictionaryType(name: "[String: Float]", valueTypeName: TypeName(name: "Float"), keyTypeName: TypeName(name: "String"))
 
                         expect(tuple?.elements[0]).to(equal(TupleElement(name: "a", typeName: TypeName(name: "Int"))))
