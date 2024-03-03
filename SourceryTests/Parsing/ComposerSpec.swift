@@ -196,6 +196,7 @@ class ParserComposerSpec: QuickSpec {
                             expect(fooBar?.returnType?.implements["Equatable"]).toNot(beNil())
                             expect(fooBar?.returnType?.implements["Codable"]).toNot(beNil())
                             expect(fooBar?.returnType?.genericRequirements).toNot(beNil())
+                            expect(fooBar?.returnType?.isGeneric).to(beTrue())
                             expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("Equatable"))
                             expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("Codable"))
                             expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("&"))

@@ -486,6 +486,7 @@ internal struct ParserResultsComposed {
                 }
                 let composedProtocols = ProtocolComposition(
                     inheritedTypes: relevantRequirements.map { $0.rightType.typeName.unwrappedTypeName },
+                    isGeneric: true,
                     composedTypes: relevantRequirements.compactMap { $0.rightType.type },
                     implements: implements
                 )
