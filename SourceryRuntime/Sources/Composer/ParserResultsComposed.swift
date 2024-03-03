@@ -295,7 +295,7 @@ internal struct ParserResultsComposed {
         return modules[moduleName]?[typeName]
     }
 
-    func resolveType(typeName: TypeName, containingType: Type?) -> Type? {
+    func resolveType(typeName: TypeName, containingType: Type?, method: Method? = nil) -> Type? {
         let resolveTypeWithName = { (typeName: TypeName) -> Type? in
             return self.resolveType(typeName: typeName, containingType: containingType)
         }
@@ -460,11 +460,23 @@ internal struct ParserResultsComposed {
             typeName.actualTypeName = aliasedName
         }
 
-        if let genericRequirements = containingType?.genericRequirements {
+        let hasGenericRequirements = containingType?.genericRequirements.isEmpty == false
+        || (method != nil && method?.genericRequirements.isEmpty == false)
+
+        if hasGenericRequirements {
+            // we should consider if we are looking up return type of a method with generic constraints
+            // where `typeName` passed would include `... where ...` suffix
+            let typeNameForLookup = typeName.name.split(separator: " ").first!
+            let genericRequirements: [GenericRequirement]
+            if let requirements = containingType?.genericRequirements, !requirements.isEmpty {
+                genericRequirements = requirements
+            } else {
+                genericRequirements = method?.genericRequirements ?? []
+            }
             let relevantRequirements = genericRequirements.filter {
                 // matched type against a generic requirement name
                 // thus type should be replaced with a protocol composition
-                $0.leftType.name == typeName.name
+                $0.leftType.name == typeNameForLookup
             }
             if relevantRequirements.count > 1 {
                 // compose protocols into `ProtocolComposition` and generate TypeName
@@ -474,10 +486,11 @@ internal struct ParserResultsComposed {
                 }
                 let composedProtocols = ProtocolComposition(
                     inheritedTypes: relevantRequirements.map { $0.rightType.typeName.unwrappedTypeName },
+                    isGeneric: true,
                     composedTypes: relevantRequirements.compactMap { $0.rightType.type },
                     implements: implements
                 )
-                typeName.actualTypeName = TypeName(name: "(\(composedProtocols.composedTypeNames.map { $0.name }.joined(separator: " & "))", isProtocolComposition: true)
+                typeName.actualTypeName = TypeName(name: "(\(relevantRequirements.map { $0.rightType.typeName.unwrappedTypeName }.joined(separator: " & ")))", isProtocolComposition: true)
                 return composedProtocols
             } else if let protocolRequirement = relevantRequirements.first {
                 // create TypeName off a single generic's protocol requirement
