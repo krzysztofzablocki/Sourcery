@@ -152,6 +152,68 @@ class ParserComposerSpec: QuickSpec {
                                               """)
                             assertMethods(types)
                         }
+
+                        it("extracts method generic requirements properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                  func fooBar<T>(bar: T) where T: Equatable { }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                            expect(fooBar?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                            expect(fooBar?.parameters.first?.type?.implements["Codable"]).to(beNil())
+                            expect(fooBar?.parameters.first?.type?.genericRequirements).toNot(beNil())
+                        }
+
+                        it("extracts multiple method generic requirements properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                  func fooBar<T>(bar: T) where T: Equatable, T: Codable { }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                            expect(fooBar?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                            expect(fooBar?.parameters.first?.type?.implements["Codable"]).toNot(beNil())
+                            expect(fooBar?.parameters.first?.type?.genericRequirements).toNot(beNil())
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(contain("Equatable"))
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(contain("Codable"))
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(contain("&"))
+                        }
+
+                        it("extracts multiple method generic requirements on return type properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                enum TestEnum: String, Codable, Equatable { case abc, def }
+                                                func fooBar<T>(bar: T) -> T where T: Equatable, T: Codable { TestEnum.abc as! T }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.returnType?.implements["Equatable"]).toNot(beNil())
+                            expect(fooBar?.returnType?.implements["Codable"]).toNot(beNil())
+                            expect(fooBar?.returnType?.genericRequirements).toNot(beNil())
+                            expect(fooBar?.returnType?.isGeneric).to(beTrue())
+                            expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("Equatable"))
+                            expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("Codable"))
+                            expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("&"))
+                        }
+
+                        it("extracts method generic requirements without protocol properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                  func fooBar<T>(bar: T) { }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                            expect(fooBar?.parameters.first?.type).to(beNil())
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(equal("T"))
+                        }
                     }
 
                     context("given initializer") {

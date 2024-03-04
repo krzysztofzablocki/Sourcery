@@ -88,9 +88,16 @@ extension SourceryMethod {
         if let generics = genericParameterClause?.genericParameterList {
             fullName = funcName + "<\(generics.description.trimmed)>"
         }
-
+        var genericRequirements: [GenericRequirement] = []
         if let genericWhereClause = genericWhereClause {
-            // TODO: add generic requirement to method
+            genericRequirements = genericWhereClause.requirementList.compactMap { requirement in
+                if let sameType = requirement.body.as(SameTypeRequirementSyntax.self) {
+                    return GenericRequirement(sameType)
+                } else if let conformanceType = requirement.body.as(ConformanceRequirementSyntax.self) {
+                    return GenericRequirement(conformanceType)
+                }
+                return nil
+            }
             // TODO: TBR
             returnTypeName = TypeName(name: returnTypeName.name + " \(genericWhereClause.withoutTrivia().description.trimmed)",
                                       unwrappedTypeName: returnTypeName.unwrappedTypeName,
@@ -135,7 +142,8 @@ extension SourceryMethod {
           modifiers: modifiers.map(SourceryModifier.init),
           annotations: annotations,
           documentation: documentation,
-          definedInTypeName: typeName
+          definedInTypeName: typeName,
+          genericRequirements: genericRequirements
         )
     }
 

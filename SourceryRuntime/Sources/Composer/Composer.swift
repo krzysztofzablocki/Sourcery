@@ -27,12 +27,16 @@ public enum Composer {
             return composed.resolveType(typeName: typeName, containingType: containingType)
         }
 
+        let methodResolveType = { (typeName: TypeName, containingType: Type?, method: Method) -> Type? in
+            return composed.resolveType(typeName: typeName, containingType: containingType, method: method)
+        }
+
         composed.types.parallelPerform { type in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
             }
             type.methods.forEach {
-                resolveMethodTypes($0, of: type, resolve: resolveType)
+                resolveMethodTypes($0, of: type, resolve: methodResolveType)
             }
             type.subscripts.forEach {
                 resolveSubscriptTypes($0, of: type, resolve: resolveType)
@@ -52,7 +56,7 @@ public enum Composer {
         }
 
         composed.functions.parallelPerform { function in
-            resolveMethodTypes(function, of: nil, resolve: resolveType)
+            resolveMethodTypes(function, of: nil, resolve: methodResolveType)
         }
 
         updateTypeRelationships(types: composed.types)
@@ -65,6 +69,7 @@ public enum Composer {
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
+    typealias MethodArgumentTypeResolver = (TypeName, Type?, Method) -> Type?
 
     private static func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
@@ -88,9 +93,9 @@ public enum Composer {
         }
     }
 
-    private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type?, resolve: TypeResolver) {
+    private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type?, resolve: MethodArgumentTypeResolver) {
         method.parameters.forEach { parameter in
-            parameter.type = resolve(parameter.typeName, type)
+            parameter.type = resolve(parameter.typeName, type, method)
         }
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
@@ -98,7 +103,7 @@ public enum Composer {
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
         var definedInType: Type?
         if let definedInTypeName = method.definedInTypeName {
-            definedInType = resolve(definedInTypeName, type)
+            definedInType = resolve(definedInTypeName, type, method)
         }
 
         guard !method.returnTypeName.isVoid else { return }
@@ -124,7 +129,7 @@ public enum Composer {
                 }
             }
         } else {
-            method.returnType = resolve(method.returnTypeName, type)
+            method.returnType = resolve(method.returnTypeName, type, method)
         }
     }
 
