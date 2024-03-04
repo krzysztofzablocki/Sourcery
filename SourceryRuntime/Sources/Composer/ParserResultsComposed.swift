@@ -499,9 +499,24 @@ internal struct ParserResultsComposed {
             }
         }
 
+        // try to peek into typealias, maybe part of the typeName is a composed identifier from a type and typealias
+        // i.e.
+        // enum Module {
+        //   typealias ID = MyView
+        // }
+        // class MyView {
+        //   class ID: String {}
+        // }
+        //
+        // let variable: Module.ID.ID // should be resolved as MyView.ID type
         let finalLookup = typeName.actualTypeName ?? typeName
-        let resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
-
+        var resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
+        for alias in resolvedTypealiases {
+            /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested
+            if resolvedIdentifier.contains(alias.value.name) {
+                resolvedIdentifier.replace(alias.value.name, with: alias.value.typeName.name)
+            }
+        }
         // should we cache resolved typenames?
         return unique[resolvedIdentifier]
     }
