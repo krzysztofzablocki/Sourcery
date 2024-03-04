@@ -202,6 +202,13 @@ public enum Composer {
     }
 
     private static func findBaseType(for type: Type, name: String, typesByName: [String: Type]) -> Type? {
+        // special case to check if the type is based on one of the recognized types
+        // and the superclass has a generic constraint in `name` part of the `TypeName`
+        var name = name
+        if name.contains("<") && name.contains(">") {
+            let parts = name.split(separator: "<")
+            name = String(parts.first!)
+        }
         if let baseType = typesByName[name] {
             return baseType
         }
