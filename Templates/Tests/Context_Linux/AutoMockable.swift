@@ -213,6 +213,13 @@ protocol HouseProtocol: AutoMockable {
     var f4Publisher: GenericType<any PersonProtocol, any PersonProtocol, any PersonProtocol>? { get }
 }
 
+protocol FunctionWithNullableCompletionThatHasNullableAnyParameterProtocol: AutoMockable {
+    func add(
+        _ request: Int,
+         withCompletionHandler completionHandler: (((any Error)?) -> Void)?
+    )
+}
+
 // sourcery: AutoMockable
 protocol ExampleVararg {
     func string(key: String, args: any CVarArg...) -> String
@@ -246,6 +253,7 @@ public protocol ProtocolWithMethodWithGenericParameters {
 // sourcery: AutoMockable
 public protocol ProtocolWithMethodWithInoutParameter {
     func execute(param: inout String)
+	func execute(param: inout String, bar: Int)
     func executeWithOptionalParam(param: inout String?)
     func executeWithProtocol(param: inout (any StubWithSomeNameProtocol))
     func executeOptionalProtocol(param: inout (any StubWithSomeNameProtocol)?)

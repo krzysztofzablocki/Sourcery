@@ -82,11 +82,17 @@ import {{ import }}
         {% endfor -%}
     {% endset %}
     {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName param.isVariadic false %}{{ ')' if param.isClosure }})?{% endfor %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedInvocations{% for param in method.parameters %}: [({% call existentialClosureVariableTypeName param.typeName param.isVariadic false %})]{% endfor %} = []
+        
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName param.isVariadic false %}{{ ')' if param.isClosure }})?{% endfor %}
+
+
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName param.isVariadic false %}){{ ')' if param.isClosure }}{%if param.typeName.isOptional%}?{%endif%}]{% endfor %} = []
+
+
     {% elif not method.parameters.count == 0 and not hasNonEscapingClosures %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic false %}{% else %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic false %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})?
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic false %}{% else %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic false %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})] = []
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName| replace:"inout ","" param.isVariadic false %}{% else %}{% call existentialClosureVariableTypeName param.typeName| replace:"inout ","" param.isVariadic false %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName| replace:"inout ","" param.isVariadic false %}{% else %}{% call existentialClosureVariableTypeName param.typeName| replace:"inout ","" param.isVariadic false %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})] = []    
+
     {% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReturnValue: {{ '(' if method.returnTypeName.isClosure and not method.isOptionalReturnType }}{% call existentialVariableTypeName method.returnTypeName %}{{ ')' if method.returnTypeName.isClosure and not method.isOptionalReturnType }}{{ '!' if not method.isOptionalReturnType }}
@@ -237,19 +243,30 @@ import {{ import }}
 {%- endmacro %}
 {# Swift does not support closures with variadic parameters. That is why existentialClosureVariableTypeName.isVariadic should be false when typeName is a closure #}
 {# canBeMarkedInout tells whether it is allowed to add inout keyword #}
-{% macro existentialClosureVariableTypeName typeName isVariadic canBeMarkedInout -%}
-    {%- if typeName.isClosure -%}
-        {%- if typeName|contains:"inout " -%}inout {% endif -%}
-        {%- if typeName|contains:"any " or typeName|contains:"some " -%}
-            {{ '(' if typeName.isImplicitlyUnwrappedOptional or typeName.isOptional }}(
-            {%- for param in typeName.closure.parameters -%}
-                {%- call existentialClosureVariableTypeName param.typeName false true -%}{{ ' ,' if not forloop.last }}
-            {%- endfor -%}
-            ) -> {% call existentialClosureVariableTypeName typeName.closure.returnTypeName false false -%}
-            {{ ')?' if typeName.isImplicitlyUnwrappedOptional or typeName.isOptional }}
+{% macro existentialClosureVariableTypeName typeName isVariadic keepInout -%}
+    {% set name %}
+        {%- if keepInout -%}
+            {{ typeName }}
         {%- else -%}
-            {{ typeName.unwrappedTypeName | replace:"?","" | replace:"!","" }}{{ '?' if typeName.isImplicitlyUnwrappedOptional or typeName.isOptional }}
+            {{ typeName | replace:"inout ","" }}
         {%- endif -%}
+    {% endset %}
+    {%- if typeName|contains:"any " and typeName|contains:"!" -%}
+        {{ name | replace:"any","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
+        ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"any " and typeName|contains:"?" -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
+        {{ name | replace:"some","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif isVariadic -%}
+        {{ name }}...
     {%- else -%}
         {%- if isVariadic -%}[{%- endif -%}
         {%- if typeName.unwrappedTypeName|hasPrefix:"any " or typeName.unwrappedTypeName|hasPrefix:"some " -%}
@@ -261,6 +278,7 @@ import {{ import }}
         {%- if isVariadic -%}]{%- endif -%}
     {%- endif -%}
 {%- endmacro %}
+
 {# Swift does not support closures with variadic parameters. That is why existentialParameterTypeName.isVariadic should be false when typeName is a closure #}
 {% macro existentialParameterTypeName typeName isVariadic -%}
     {%- if typeName.isClosure -%}
@@ -277,6 +295,24 @@ import {{ import }}
     {%- elif typeName.unwrappedTypeName|hasPrefix:"any " or typeName.unwrappedTypeName|hasPrefix:"some " -%}
         {%- if typeName|contains:"inout " -%}inout {% endif -%}
         {{ '(' if typeName.isImplicitlyUnwrappedOptional or typeName.isOptional }}{{ typeName.unwrappedTypeName | replace:"?","" | replace:"!","" }}{% if typeName.isImplicitlyUnwrappedOptional %})!{% elif typeName.isOptional %})?{% endif %}
+    {%- if typeName|contains:"any " and typeName|contains:"?," and typeName|contains:">?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?,",")?," }}
+    {%- elif typeName|contains:"any " and typeName|contains:"!" -%}
+        {{ typeName | replace:"any","(any" | replace:"!",")!" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
+        ({{ typeName.unwrappedTypeName | replace:"any","(any" | replace:"?",")?" }})?
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
+        {{ typeName | replace:"some","(some" | replace:"!",")!" }}
+    {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ typeName | replace:"some","(some" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName.isOptional -%}
+        {{ typeName | replace:"some","(some" | replace:"?",")?" }}
+    {%- elif isVariadic -%}
+        {{ typeName }}...
     {%- else -%}
         {%- if typeName|contains:"inout " -%}inout {% endif -%}{{ '(' if typeName.isImplicitlyUnwrappedOptional or typeName.isOptional }}{{ typeName.unwrappedTypeName | replace:"?","" | replace:"!","" }}{% if typeName.isImplicitlyUnwrappedOptional %})!{% elif typeName.isOptional %})?{% endif %}
     {%- endif -%}
