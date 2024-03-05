@@ -17,6 +17,12 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
     /// module in which this typealias was declared
     public var module: String?
 
+    /// typealias annotations
+    public var annotations: Annotations = [:]
+
+    /// typealias documentation
+    public var documentation: Documentation = []
+
     // sourcery: skipEquality, skipDescription
     public var parent: Type? {
         didSet {
@@ -37,13 +43,15 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         }
     }
 
-    public init(aliasName: String = "", typeName: TypeName, accessLevel: AccessLevel = .internal, parent: Type? = nil, module: String? = nil) {
+    public init(aliasName: String = "", typeName: TypeName, accessLevel: AccessLevel = .internal, parent: Type? = nil, module: String? = nil, annotations: [String: NSObject] = [:], documentation: [String] = []) {
         self.aliasName = aliasName
         self.typeName = typeName
         self.accessLevel = accessLevel.rawValue
         self.parent = parent
         self.parentName = parent?.name
         self.module = module
+        self.annotations = annotations
+        self.documentation = documentation
     }
 
     /// :nodoc:
@@ -54,7 +62,9 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         string += "module = \(String(describing: self.module)), "
         string += "accessLevel = \(String(describing: self.accessLevel)), "
         string += "parentName = \(String(describing: self.parentName)), "
-        string += "name = \(String(describing: self.name))"
+        string += "name = \(String(describing: self.name)), "
+        string += "annotations = \(String(describing: self.annotations)), "
+        string += "documentation = \(String(describing: self.documentation)), "
         return string
     }
 
@@ -69,6 +79,8 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         return results
     }
 
@@ -79,6 +91,8 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         hasher.combine(self.module)
         hasher.combine(self.accessLevel)
         hasher.combine(self.parentName)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
         return hasher.finalize()
     }
 
@@ -90,6 +104,8 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         if self.module != rhs.module { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.parentName != rhs.parentName { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.annotations != rhs.annotations { return false }
         return true
     }
     
@@ -118,6 +134,18 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
                 }
                 fatalError()
              }; self.accessLevel = accessLevel
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
+                withVaList(["annotations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
+                withVaList(["documentation"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.documentation = documentation
             self.parentName = aDecoder.decode(forKey: "parentName")
         }
 
@@ -130,6 +158,8 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.parentName, forKey: "parentName")
+            aCoder.encode(self.documentation, forKey: "documentation")
+            aCoder.encode(self.annotations, forKey: "annotations")
         }
 // sourcery:end
 }
