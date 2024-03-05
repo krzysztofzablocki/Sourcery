@@ -1,4 +1,9 @@
 # Sourcery CHANGELOG
+## 2.1.8
+## Changes
+- Fix: Function with completion as parameter that contains itself an optional any parameter produces wrong mock ([#1290](https://github.com/krzysztofzablocki/Sourcery/pull/1290))
+- Fix: Function with inout parameter when function has more than one parameter produces wrong mock ([#1290](https://github.com/krzysztofzablocki/Sourcery/pull/1290))
+
 ## 2.1.7
 ## Changes
 - Podspec updates - set correct filepath for Sourcery
