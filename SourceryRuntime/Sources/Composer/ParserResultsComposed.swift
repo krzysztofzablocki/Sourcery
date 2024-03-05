@@ -518,6 +518,21 @@ internal struct ParserResultsComposed {
             }
         }
         // should we cache resolved typenames?
+        if unique[resolvedIdentifier] == nil {
+            // peek into typealiases, if any of them contain the same typeName
+            // this is done after the initial attempt in order to prioritise local (recognized) types first
+            // before even trying to substitute the requested type with any typealias
+            for alias in resolvedTypealiases {
+                /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested,
+                /// ignoring namespacing
+                if resolvedIdentifier == alias.value.aliasName {
+                    resolvedIdentifier = alias.value.typeName.name
+                    typeName.actualTypeName = alias.value.typeName
+                    break
+                }
+            }
+        }
+
         return unique[resolvedIdentifier]
     }
 

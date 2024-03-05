@@ -192,6 +192,14 @@ public enum Composer {
         types.forEach { typesByName[$0.globalName] = $0 }
 
         var processed = [String: Bool]()
+        for type in typesByName.values where !type.typealiases.isEmpty {
+            for alias in type.typealiases {
+                let actualTypeName = alias.value.typeName.name
+                let registeredType = typesByName[actualTypeName]
+                let nameToBeAdded = alias.value.name
+                typesByName[nameToBeAdded] = registeredType
+            }
+        }
         types.forEach { type in
             if let type = type as? Class, let supertype = type.inheritedTypes.first.flatMap({ typesByName[$0] }) as? Class {
                 type.supertype = supertype
