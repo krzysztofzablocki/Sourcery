@@ -888,6 +888,26 @@ class FunctionWithMultilineDeclarationMock: FunctionWithMultilineDeclaration {
 
 
 }
+class FunctionWithNullableCompletionThatHasNullableAnyParameterProtocolMock: FunctionWithNullableCompletionThatHasNullableAnyParameterProtocol {
+
+
+
+
+    //MARK: - add
+
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount = 0
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCalled: Bool {
+        return addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount > 0
+    }
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure: ((Int, ((((any Error)?) -> Void))?) -> Void)?
+
+    func add(_ request: Int, withCompletionHandler completionHandler: ((((any Error)?) -> Void))?) {
+        addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount += 1
+        addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure?(request, completionHandler)
+    }
+
+
+}
 class HouseProtocolMock: HouseProtocol {
 
 
@@ -1167,6 +1187,23 @@ class ProtocolWithMethodWithInoutParameterMock: ProtocolWithMethodWithInoutParam
     func executeOptionalCompletion(param: inout ((String) -> Void)?) {
         executeOptionalCompletionParamInoutStringVoidVoidCallsCount += 1
         executeOptionalCompletionParamInoutStringVoidVoidClosure?(&param)
+    }
+
+    //MARK: - execute
+
+    public var executeParamInoutStringBarIntVoidCallsCount = 0
+    public var executeParamInoutStringBarIntVoidCalled: Bool {
+        return executeParamInoutStringBarIntVoidCallsCount > 0
+    }
+    public var executeParamInoutStringBarIntVoidReceivedArguments: (param: String, bar: Int)?
+    public var executeParamInoutStringBarIntVoidReceivedInvocations: [(param: String, bar: Int)] = []
+    public var executeParamInoutStringBarIntVoidClosure: ((inout String, Int) -> Void)?
+
+    public func execute(param: inout String, bar: Int) {
+        executeParamInoutStringBarIntVoidCallsCount += 1
+        executeParamInoutStringBarIntVoidReceivedArguments = (param: param, bar: bar)
+        executeParamInoutStringBarIntVoidReceivedInvocations.append((param: param, bar: bar))
+        executeParamInoutStringBarIntVoidClosure?(&param, bar)
     }
 
 
