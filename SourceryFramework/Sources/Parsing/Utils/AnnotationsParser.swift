@@ -146,7 +146,13 @@ public struct AnnotationsParser {
 
         for line in lines[0..<lineNumber-1].reversed() {
             if line.type == .documentationComment {
-                documentation.append(line.content.trimmingCharacters(in: .whitespaces).trimmingPrefix("///").trimmingPrefix("/**").trimmingPrefix(" "))
+                var clearedLine = line.content.trimmingCharacters(in: .whitespaces)
+                clearedLine = clearedLine.trimmingPrefix("///")
+                clearedLine = clearedLine.trimmingPrefix("/**")
+                clearedLine = clearedLine.trimmingSuffix("*/")
+                clearedLine = clearedLine.trimmingPrefix(" ")
+                clearedLine = clearedLine.trimmingSuffix(" ")
+                documentation.append(clearedLine)
             }
             if line.type != .comment && line.type != .documentationComment && line.type != .macros && line.type != .propertyWrapper {
                 break
@@ -155,7 +161,6 @@ public struct AnnotationsParser {
 
         return documentation.reversed()
     }
-
 
     func inlineFrom(line lineInfo: (line: Int, character: Int), stop: inout Bool) -> Annotations {
         let sourceLine = lines[lineInfo.line - 1]
@@ -215,16 +220,57 @@ public struct AnnotationsParser {
     private static func parse(contents: String) -> [Line] {
         var annotationsBlock: Annotations?
         var fileAnnotationsBlock = Annotations()
+
+        class MultilineCommentStack {
+            private var lines: [String] = []
+            var hasOpenedComment: Bool {
+                !lines.isEmpty && lines.last?.contains("*/") == false
+            }
+            func reset() {
+                lines.removeAll()
+            }
+            func push(_ line: String) {
+                lines.append(line)
+            }
+            func contains(_ line: String) -> Bool {
+                lines.contains(line)
+            }
+        }
+        let multilineCommentStack = MultilineCommentStack()
         return StringView(contents).lines
                 .map { line in
                     let content = line.content.trimmingCharacters(in: .whitespaces)
                     var annotations = Annotations()
-                    let isComment = content.hasPrefix("//") || content.hasPrefix("/*") || content.hasPrefix("*")
-                    let isDocumentationComment = content.hasPrefix("///") || content.hasPrefix("/**")
+                    var isComment = content.hasPrefix("//") || content.hasPrefix("/*") && !content.hasPrefix("/**") || content.hasPrefix("*") && !content.hasPrefix("*/")
+                    let isClosingMultilineDocumentationComment = (content.contains("*/") && multilineCommentStack.hasOpenedComment)
+                    let isOpeningMultilineDocumentationComment = content.hasPrefix("/**")
+                    let isDocumentationComment = content.hasPrefix("///") || isOpeningMultilineDocumentationComment || isClosingMultilineDocumentationComment
                     let isPropertyWrapper = content.isPropertyWrapper
                     let isMacros = content.hasPrefix("#")
                     var type = Line.LineType.other
-                    if isDocumentationComment {
+                    if isOpeningMultilineDocumentationComment {
+                        multilineCommentStack.push(content)
+                        if content == "/**" {
+                            // ignoring the actual token which indicates the start of a multiline comment
+                            // but not stopping traversal of comments by setting the type to `comment`
+                            type = .comment
+                            isComment = true
+                        } else {
+                            type = .documentationComment
+                        }
+                    } else if isClosingMultilineDocumentationComment {
+                        if content == "*/" {
+                            // ignoring the actual token which indicates the start of a multiline comment
+                            // but not stopping traversal of comments by setting the type to `comment`
+                            type = .comment
+                            isComment = true
+                        } else {
+                            type = .documentationComment
+                        }
+                        multilineCommentStack.reset()
+                    } else if multilineCommentStack.hasOpenedComment {
+                        type = .documentationComment
+                    } else if isDocumentationComment {
                         type = .documentationComment
                     } else if isComment {
                         type = .comment
