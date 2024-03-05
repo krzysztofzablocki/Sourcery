@@ -513,11 +513,26 @@ internal struct ParserResultsComposed {
         var resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
         for alias in resolvedTypealiases {
             /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested
-            if resolvedIdentifier.contains(alias.value.name) {
-                resolvedIdentifier.replace(alias.value.name, with: alias.value.typeName.name)
+            if resolvedIdentifier.contains(alias.value.name), let range = resolvedIdentifier.range(of: alias.value.name) {
+                resolvedIdentifier = resolvedIdentifier.replacingCharacters(in: range, with: alias.value.typeName.name)
             }
         }
         // should we cache resolved typenames?
+        if unique[resolvedIdentifier] == nil {
+            // peek into typealiases, if any of them contain the same typeName
+            // this is done after the initial attempt in order to prioritise local (recognized) types first
+            // before even trying to substitute the requested type with any typealias
+            for alias in resolvedTypealiases {
+                /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested,
+                /// ignoring namespacing
+                if resolvedIdentifier == alias.value.aliasName {
+                    resolvedIdentifier = alias.value.typeName.name
+                    typeName.actualTypeName = alias.value.typeName
+                    break
+                }
+            }
+        }
+
         return unique[resolvedIdentifier]
     }
 
