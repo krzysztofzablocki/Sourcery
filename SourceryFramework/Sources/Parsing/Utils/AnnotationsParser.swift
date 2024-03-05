@@ -77,7 +77,7 @@ public struct AnnotationsParser {
 
     func documentation(from node: IdentifierSyntax) -> Documentation {
         guard parseDocumentation else {
-            return  []
+            return []
         }
         return documentationFrom(
           location: findLocation(syntax: node.identifier)

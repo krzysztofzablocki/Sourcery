@@ -207,6 +207,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
         let modifiers = node.modifiers?.map(Modifier.init) ?? []
         let baseModifiers = modifiers.baseModifiers(parent: visitingType)
         let annotations = annotationsParser.annotations(from: node)
+        let documentation = annotationsParser.documentation(from: node)
 
         if let composition = processPossibleProtocolComposition(for: typeName.name, localName: localName, annotations: annotations, accessLevel: baseModifiers.readAccess) {
             if let visitingType = visitingType {
@@ -223,7 +224,8 @@ class SyntaxTreeCollector: SyntaxVisitor {
           typeName: typeName,
           accessLevel: baseModifiers.readAccess,
           parent: visitingType,
-          module: module
+          module: module,
+          documentation: documentation
         )
 
         // TODO: add generic requirements
