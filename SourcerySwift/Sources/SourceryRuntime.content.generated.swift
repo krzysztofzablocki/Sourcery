@@ -4869,7 +4869,7 @@ internal struct ParserResultsComposed {
         return modules[moduleName]?[typeName]
     }
 
-    func resolveType(typeName: TypeName, containingType: Type?) -> Type? {
+    func resolveType(typeName: TypeName, containingType: Type?, method: Method? = nil) -> Type? {
         let resolveTypeWithName = { (typeName: TypeName) -> Type? in
             return self.resolveType(typeName: typeName, containingType: containingType)
         }
@@ -4910,6 +4910,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array,
                                                    dictionary: lookupName.dictionary,
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: lookupName.generic
                 )
             }
@@ -4933,6 +4934,7 @@ internal struct ParserResultsComposed {
                                                    array: array,
                                                    dictionary: lookupName.dictionary,
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: typeName.generic
                 )
             }
@@ -4960,6 +4962,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array,
                                                    dictionary: dictionary,
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: dictionary.asGeneric
                 )
             }
@@ -4985,6 +4988,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array,
                                                    dictionary: lookupName.dictionary,
                                                    closure: closure,
+                                                   set: lookupName.set,
                                                    generic: lookupName.generic
                 )
             }
@@ -5020,6 +5024,7 @@ internal struct ParserResultsComposed {
                                                    array: lookupName.array, // TODO: asArray
                                                    dictionary: lookupName.dictionary, // TODO: asDictionary
                                                    closure: lookupName.closure,
+                                                   set: lookupName.set,
                                                    generic: generic
                 )
             }
@@ -5029,10 +5034,79 @@ internal struct ParserResultsComposed {
             typeName.actualTypeName = aliasedName
         }
 
-        let finalLookup = typeName.actualTypeName ?? typeName
-        let resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
+        let hasGenericRequirements = containingType?.genericRequirements.isEmpty == false
+        || (method != nil && method?.genericRequirements.isEmpty == false)
 
+        if hasGenericRequirements {
+            // we should consider if we are looking up return type of a method with generic constraints
+            // where `typeName` passed would include `... where ...` suffix
+            let typeNameForLookup = typeName.name.split(separator: " ").first!
+            let genericRequirements: [GenericRequirement]
+            if let requirements = containingType?.genericRequirements, !requirements.isEmpty {
+                genericRequirements = requirements
+            } else {
+                genericRequirements = method?.genericRequirements ?? []
+            }
+            let relevantRequirements = genericRequirements.filter {
+                // matched type against a generic requirement name
+                // thus type should be replaced with a protocol composition
+                $0.leftType.name == typeNameForLookup
+            }
+            if relevantRequirements.count > 1 {
+                // compose protocols into `ProtocolComposition` and generate TypeName
+                var implements: [String: Type] = [:]
+                relevantRequirements.forEach {
+                    implements[$0.rightType.typeName.name] = $0.rightType.type
+                }
+                let composedProtocols = ProtocolComposition(
+                    inheritedTypes: relevantRequirements.map { $0.rightType.typeName.unwrappedTypeName },
+                    isGeneric: true,
+                    composedTypes: relevantRequirements.compactMap { $0.rightType.type },
+                    implements: implements
+                )
+                typeName.actualTypeName = TypeName(name: "(\\(relevantRequirements.map { $0.rightType.typeName.unwrappedTypeName }.joined(separator: " & ")))", isProtocolComposition: true)
+                return composedProtocols
+            } else if let protocolRequirement = relevantRequirements.first {
+                // create TypeName off a single generic's protocol requirement
+                typeName.actualTypeName = TypeName(name: "(\\(protocolRequirement.rightType.typeName))")
+                return protocolRequirement.rightType.type
+            }
+        }
+
+        // try to peek into typealias, maybe part of the typeName is a composed identifier from a type and typealias
+        // i.e.
+        // enum Module {
+        //   typealias ID = MyView
+        // }
+        // class MyView {
+        //   class ID: String {}
+        // }
+        //
+        // let variable: Module.ID.ID // should be resolved as MyView.ID type
+        let finalLookup = typeName.actualTypeName ?? typeName
+        var resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
+        for alias in resolvedTypealiases {
+            /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested
+            if resolvedIdentifier.contains(alias.value.name) {
+                resolvedIdentifier.replace(alias.value.name, with: alias.value.typeName.name)
+            }
+        }
         // should we cache resolved typenames?
+        if unique[resolvedIdentifier] == nil {
+            // peek into typealiases, if any of them contain the same typeName
+            // this is done after the initial attempt in order to prioritise local (recognized) types first
+            // before even trying to substitute the requested type with any typealias
+            for alias in resolvedTypealiases {
+                /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested,
+                /// ignoring namespacing
+                if resolvedIdentifier == alias.value.aliasName {
+                    resolvedIdentifier = alias.value.typeName.name
+                    typeName.actualTypeName = alias.value.typeName
+                    break
+                }
+            }
+        }
+
         return unique[resolvedIdentifier]
     }
 
@@ -5057,6 +5131,8 @@ internal struct ParserResultsComposed {
         dictionary?.name = aliased.name
         let array = typeName.array.map { ArrayType(name: $0.name, elementTypeName: $0.elementTypeName, elementType: $0.elementType) }
         array?.name = aliased.name
+        let set = typeName.set.map { SetType(name: $0.name, elementTypeName: $0.elementTypeName, elementType: $0.elementType) }
+        set?.name = aliased.name
 
         return TypeName(name: aliased.name,
                         isOptional: typeName.isOptional,
@@ -5065,6 +5141,7 @@ internal struct ParserResultsComposed {
                         array: aliased.typealias?.typeName.array ?? array,
                         dictionary: aliased.typealias?.typeName.dictionary ?? dictionary,
                         closure: aliased.typealias?.typeName.closure ?? typeName.closure,
+                        set: aliased.typealias?.typeName.set ?? set,
                         generic: aliased.typealias?.typeName.generic ?? generic
         )
     }
