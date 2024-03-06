@@ -279,7 +279,7 @@ public struct AnnotationsParser {
                     } else if isMacros {
                         type = .macros
                     }
-                    if isComment {
+                    if isComment || (type == .documentationComment) {
                         switch searchForAnnotations(commentLine: content) {
                         case let .begin(items):
                             type = .blockStart
