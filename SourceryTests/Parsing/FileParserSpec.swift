@@ -466,6 +466,49 @@ class FileParserSpec: QuickSpec {
                             """, parseDocumentation: true))
                         .to(equal([expectedType]))
                     }
+
+                    it("extracts documentation correctly if there is a directive and an attribute on preceeding line") {
+                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"], attributes: ["MainActor": [Attribute(name: "MainActor")]])
+                        expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
+                        expectedType.documentation = ["doc", "comment", "baz"]
+
+                        expect(parse("""
+                            /// doc
+                            // sourcery: thirdLine = 4543
+                            /// comment
+                            // firstLine
+                            ///baz
+                            #warning("a warning")
+                            @MainActor
+                            class Foo: TestProtocol { }
+                            """, parseDocumentation: true))
+                        .to(equal([expectedType]))
+                    }
+
+                    it("extracts documentation correctly if there is a directive and multiline comments") {
+                        let expectedType = Class(name: "Foo", accessLevel: .internal, isExtension: false, variables: [], inheritedTypes: ["TestProtocol"], attributes: ["MainActor": [Attribute(name: "MainActor")]])
+                        expectedType.annotations["thirdLine"] = NSNumber(value: 4543)
+                        expectedType.documentation = ["doc", "This is a documentation comment", "This is another documentation comment", "This is another another documentation comment", "This is yet another documentation comment"]
+
+                        let parsedType = parse("""
+                            /// doc
+                            // sourcery: thirdLine = 4543
+                            /* This is not a documentation comment */
+                            /** This is a documentation comment */
+                            /**
+                             This is another documentation comment
+                            */
+                            /** This is another another documentation comment
+                            */
+                            /**
+                              This is yet another documentation comment */
+                            #warning("a warning")
+                            @MainActor
+                            class Foo: TestProtocol { }
+                            """, parseDocumentation: true)
+                        expect(parsedType)
+                        .to(equal([expectedType]))
+                    }
                 }
 
                 context("given typealias") {
@@ -673,41 +716,48 @@ class FileParserSpec: QuickSpec {
                     context("given enum cases annotations") {
 
                         it("extracts cases with annotations properly") {
-                            expect(parse("""
+                            let parsedTypes = parse("""
                                          enum Foo {
                                              // sourcery:begin: block
                                              // sourcery: first, second=\"value\"
-                                             case optionA(/* sourcery: first, second = \"value\" */Int)
-                                             // sourcery: third
+                                             case optionA(/* sourcery: first, third = \"value\" */Int)
+                                             // sourcery: fourth
                                              case optionB
                                              case optionC
                                              // sourcery:end
                                          }
-                                         """))
-                                .to(equal([
-                                    Enum(name: "Foo", cases: [
-                                        EnumCase(name: "optionA", associatedValues: [
-                                            AssociatedValue(name: nil, typeName: TypeName(name: "Int"), annotations: [
-                                                "first": NSNumber(value: true),
-                                                "second": "value" as NSString,
-                                                "block": NSNumber(value: true)
-                                                ])
-                                            ], annotations: [
-                                                "block": NSNumber(value: true),
-                                                "first": NSNumber(value: true),
-                                                "second": "value" as NSString
-                                            ]
-                                        ),
-                                        EnumCase(name: "optionB", annotations: [
-                                            "block": NSNumber(value: true),
-                                            "third": NSNumber(value: true)
-                                            ]
-                                        ),
-                                        EnumCase(name: "optionC", annotations: [
+                                         """)
+                            let expectedTypes = [
+                                Enum(name: "Foo", cases: [
+                                    EnumCase(name: "optionA", associatedValues: [
+                                        AssociatedValue(name: nil, typeName: TypeName(name: "Int"), annotations: [
+                                            "first": NSNumber(value: true),
+                                            "third": "value" as NSString,
                                             "block": NSNumber(value: true)
                                             ])
+                                        ], annotations: [
+                                            "block": NSNumber(value: true),
+                                            "first": NSNumber(value: true),
+                                            "second": "value" as NSString
+                                        ]
+                                    ),
+                                    EnumCase(name: "optionB", annotations: [
+                                        "block": NSNumber(value: true),
+                                        "fourth": NSNumber(value: true)
+                                        ]
+                                    ),
+                                    EnumCase(name: "optionC", annotations: [
+                                        "block": NSNumber(value: true)
                                         ])
-                                    ]))
+                                    ])
+                                ]
+
+                            expect((parsedTypes.first! as! Enum).cases[0].annotations).to(equal((expectedTypes.first!).cases[0].annotations))
+                            expect((parsedTypes.first! as! Enum).cases[1].annotations).to(equal((expectedTypes.first!).cases[1].annotations))
+                            expect((parsedTypes.first! as! Enum).cases[2].annotations).to(equal((expectedTypes.first!).cases[2].annotations))
+
+                            expect(parsedTypes)
+                                .to(equal(expectedTypes))
                         }
 
                         it("extracts cases with inline annotations properly") {
