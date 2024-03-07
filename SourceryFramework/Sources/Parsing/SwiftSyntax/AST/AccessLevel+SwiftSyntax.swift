@@ -4,15 +4,17 @@ import SwiftSyntax
 extension AccessLevel {
     init?(_ modifier: Modifier) {
         switch modifier.tokenKind {
-        case .publicKeyword:
+        case .keyword(.public):
             self = .public
-        case .privateKeyword:
+        case .keyword(.package):
+          self = .package
+        case .keyword(.private):
             self = .private
-        case .fileprivateKeyword:
+        case .keyword(.fileprivate):
             self = .fileprivate
-        case .internalKeyword:
+        case .keyword(.internal):
             self = .internal
-        case .contextualKeyword("open"), .identifier("open"):
+        case .keyword(.open), .identifier("open"):
             self = .open
         default:
             return nil
