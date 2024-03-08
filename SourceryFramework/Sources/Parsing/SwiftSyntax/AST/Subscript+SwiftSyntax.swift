@@ -4,7 +4,7 @@ import SourceryRuntime
 
 extension Subscript {
     convenience init(_ node: SubscriptDeclSyntax, parent: Type, annotationsParser: AnnotationsParser) {
-        let modifiers = node.modifiers?.map(Modifier.init) ?? []
+        let modifiers = node.modifiers.map(Modifier.init)
         let baseModifiers = modifiers.baseModifiers(parent: parent)
         let parentAccess = AccessLevel(rawValue: parent.accessLevel) ?? .internal
 
@@ -23,18 +23,25 @@ extension Subscript {
                 case set
             }
 
-            let computeAccessors = Set(block.accessors.compactMap { accessor -> Kind? in
-                let kindRaw = accessor.accessorKind.text.trimmed
-                if kindRaw == "get" {
-                    return Kind.get(isAsync: accessor.fixedAsyncKeyword != nil, throws: accessor.fixedThrowsKeyword != nil)
-                }
+          let computeAccessors: Set<Kind>
+          switch block.accessors {
+          case .getter:
+            computeAccessors = [.get(isAsync: false, throws: false)]
 
-                if kindRaw == "set" {
-                    return Kind.set
-                }
+            case .accessors(let accessors):
+              computeAccessors = Set(accessors.compactMap { accessor -> Kind? in
+                  let kindRaw = accessor.accessorKind.text.trimmed
+                  if kindRaw == "get" {
+                    return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsSpecifier != nil)
+                  }
 
-                return nil
-            })
+                  if kindRaw == "set" {
+                      return Kind.set
+                  }
+
+                  return nil
+              })
+            }
 
             if !computeAccessors.isEmpty {
                 if !computeAccessors.contains(Kind.set) {
