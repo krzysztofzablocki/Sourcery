@@ -123,7 +123,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
 
     public override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         startVisitingType(node) { parent in
-            let modifiers = node.modifiers?.map(Modifier.init) ?? []
+            let modifiers = node.modifiers.map(Modifier.init)
             let base = modifiers.baseModifiers(parent: nil)
 
             return Type(
@@ -204,7 +204,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
     public override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
         let localName = node.identifier.text.trimmed
         let typeName = TypeName(node.initializer.value)
-        let modifiers = node.modifiers?.map(Modifier.init) ?? []
+        let modifiers = node.modifiers.map(Modifier.init)
         let baseModifiers = modifiers.baseModifiers(parent: visitingType)
         let annotations = annotationsParser.annotations(from: node)
         let documentation = annotationsParser.documentation(from: node)
