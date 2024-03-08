@@ -20,14 +20,11 @@ extension EnumCase {
                       externalName = name ?? "\(idx)"
                   }
 
-                  var collectedAnnotations = Annotations()
-                  if let typeSyntax = param.type {
-                      collectedAnnotations = annotationsParser.annotations(fromToken: typeSyntax)
-                  }
+                  let collectedAnnotations = annotationsParser.annotations(fromToken: param.type)
 
                   return AssociatedValue(localName: name,
                                          externalName: externalName,
-                                         typeName: param.type.map { TypeName($0) } ?? TypeName.unknown(description: parent.description.trimmed),
+                                         typeName: TypeName(param.type) ?? TypeName.unknown(description: parent.description.trimmed),
                                          type: nil,
                                          defaultValue: defaultValue,
                                          annotations: collectedAnnotations
@@ -35,8 +32,8 @@ extension EnumCase {
               }
         }
 
-        let rawValue: String? = {
-            var value = node.rawValue?.withEqual(nil).withTrailingTrivia(.zero).description.trimmed
+        let rawValue: String? = { () -> String? in
+            var value = node.rawValue?.value.withoutTrivia().description.trimmed
             if let unwrapped = value, unwrapped.hasPrefix("\""), unwrapped.hasSuffix("\""), unwrapped.count > 2 {
                 let substring = unwrapped[unwrapped.index(after: unwrapped.startIndex) ..< unwrapped.index(before: unwrapped.endIndex)]
                 value = String(substring)
@@ -44,9 +41,9 @@ extension EnumCase {
             return value
         }()
 
-        let modifiers = parent.modifiers?.map(Modifier.init) ?? []
+        let modifiers = parent.modifiers.map(Modifier.init)
         let indirect = modifiers.contains(where: {
-            $0.tokenKind == TokenKind.contextualKeyword("indirect")
+            $0.tokenKind == .keyword(.indirect)
         })
 
         self.init(

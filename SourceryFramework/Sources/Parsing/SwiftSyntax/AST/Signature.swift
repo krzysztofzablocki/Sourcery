@@ -17,8 +17,8 @@ public struct Signature {
     public init(_ node: FunctionSignatureSyntax, annotationsParser: AnnotationsParser) {
         self.init(parameters: node.input.parameterList,
                   output: node.output.map { TypeName($0.returnType) },
-                  asyncKeyword: node.asyncOrReasyncKeyword?.text,
-                  throwsOrRethrowsKeyword: node.throwsOrRethrowsKeyword?.description.trimmed,
+                  asyncKeyword: node.effectSpecifiers?.asyncSpecifier?.text,
+                  throwsOrRethrowsKeyword: node.effectSpecifiers?.throwsSpecifier?.description.trimmed,
                   annotationsParser: annotationsParser
         )
     }

@@ -148,12 +148,12 @@ extension TypeName {
                   name: node.secondName?.text.trimmed ?? firstName,
                   typeName: typeName,
                   isInout: specifiers.isInOut,
-                  isVariadic: node.type.as(PackExpansionTypeSyntax.self)?.ellipsis != nil
+                  isVariadic: node.ellipsis != nil
                 )
             }
-            let returnTypeName = TypeName(typeIdentifier.returnType)
-            let asyncKeyword = typeIdentifier.fixedAsyncKeyword.map { $0.text.trimmed }
-            let throwsOrRethrows = typeIdentifier.fixedThrowsOrRethrowsKeyword.map { $0.text.trimmed }
+            let returnTypeName = TypeName(typeIdentifier.returnClause.type)
+            let asyncKeyword = typeIdentifier.effectSpecifiers?.asyncSpecifier.map { $0.text.trimmed }
+            let throwsOrRethrows = typeIdentifier.effectSpecifiers?.throwsSpecifier.map { $0.text.trimmed }
             let name = "\(elements.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrows != nil ? " \(throwsOrRethrows!)" : "") -> \(returnTypeName.asSource)"
             self.init(
                 name: name,
@@ -199,7 +199,7 @@ extension TypeName {
 
         var isInOut = false
         if let typeIdentifier = type.as(AttributedTypeSyntax.self), let specifier = typeIdentifier.specifier {
-            if specifier.tokenKind == .inoutKeyword {
+            if specifier.tokenKind == .keyword(.inout) {
                 isInOut = true
             } else {
                 assertionFailure("Unhandled specifier")

@@ -4,7 +4,7 @@ import SwiftSyntax
 
 extension Actor {
     convenience init(_ node: ActorDeclSyntax, parent: Type?, annotationsParser: AnnotationsParser) {
-        let modifiers = node.modifiers?.map(Modifier.init) ?? []
+        let modifiers = node.modifiers.map(Modifier.init) ?? []
 
         self.init(
           name: node.identifier.text.trimmingCharacters(in: .whitespaces),
