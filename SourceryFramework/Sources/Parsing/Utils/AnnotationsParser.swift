@@ -40,12 +40,12 @@ public struct AnnotationsParser {
     private let lines: [Line]
     private let contents: String
     private var parseDocumentation: Bool
-    internal var sourceLocationConverter: SourceLocationConverter?
+    internal var sourceLocationConverter: SourceLocationConverter
 
     /// Initializes parser
     ///
     /// - Parameter contents: Contents to parse
-    init(contents: String, parseDocumentation: Bool = false, sourceLocationConverter: SourceLocationConverter? = nil) {
+    init(contents: String, parseDocumentation: Bool = false, sourceLocationConverter: SourceLocationConverter) {
         self.parseDocumentation = parseDocumentation
         self.lines = AnnotationsParser.parse(contents: contents)
         self.sourceLocationConverter = sourceLocationConverter
@@ -95,7 +95,7 @@ public struct AnnotationsParser {
 
     // TODO: once removing SourceKitten just kill this optionality
     private func findLocation(syntax: SyntaxProtocol) -> SwiftSyntax.SourceLocation {
-        return sourceLocationConverter!.location(for: syntax.positionAfterSkippingLeadingTrivia)
+        return sourceLocationConverter.location(for: syntax.positionAfterSkippingLeadingTrivia)
     }
 
     private func from(location: SwiftSyntax.SourceLocation) -> Annotations {
@@ -166,7 +166,7 @@ public struct AnnotationsParser {
         let sourceLine = lines[lineInfo.line - 1]
         let utf8View = sourceLine.content.utf8
         let startIndex = utf8View.startIndex
-        let endIndex = sourceLine.content.utf8.index(startIndex, offsetBy: (lineInfo.character - 1))
+        let endIndex = utf8View.index(startIndex, offsetBy: (lineInfo.character - 1))
         let utf8Slice = utf8View[startIndex ..< endIndex]
         let relevantContent = String(decoding: utf8Slice, as: UTF8.self)
         var prefix = relevantContent.trimmingCharacters(in: .whitespaces)

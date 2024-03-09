@@ -43,7 +43,10 @@ class AnnotationsParserSpec: QuickSpec {
             }
             describe("parse(content:)") {
                 func parse(_ content: String) -> Annotations {
-                    return AnnotationsParser(contents: content).all
+                    let tree = Parser.parse(source: content)
+                    let fileName = "in-memory"
+                    let sourceLocationConverter = SourceLocationConverter(file: fileName, tree: tree)
+                    return AnnotationsParser(contents: content, sourceLocationConverter: sourceLocationConverter).all
                 }
 
                 it("extracts inline annotations") {
