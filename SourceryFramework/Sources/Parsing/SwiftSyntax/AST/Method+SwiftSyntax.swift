@@ -29,7 +29,7 @@ extension SourceryMethod {
             parameters: signature.input.parameterList,
             output: nil,
             asyncKeyword: nil,
-            throwsOrRethrowsKeyword: signature.throwsOrRethrowsKeyword?.description.trimmed,
+            throwsOrRethrowsKeyword: signature.effectSpecifiers?.throwsSpecifier?.description.trimmed,
             annotationsParser: annotationsParser
           ),
           modifiers: node.modifiers,
