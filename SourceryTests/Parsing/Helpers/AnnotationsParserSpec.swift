@@ -14,6 +14,7 @@ import Foundation
 #endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
+import SwiftSyntax
 
 class AnnotationsParserSpec: QuickSpec {
     override func spec() {
