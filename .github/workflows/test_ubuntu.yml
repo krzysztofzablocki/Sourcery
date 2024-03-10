@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: Setup Swift
-      uses: swift-actions/setup-swift@v1.26.0
+      uses: YOCKOW/Action-setup-swift@main
       with:
         swift-version: "5.9.2"
     - name: Get swift version
