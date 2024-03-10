@@ -93,7 +93,6 @@ public struct AnnotationsParser {
         )
     }
 
-    // TODO: once removing SourceKitten just kill this optionality
     private func findLocation(syntax: SyntaxProtocol) -> SwiftSyntax.SourceLocation {
         return sourceLocationConverter.location(for: syntax.positionAfterSkippingLeadingTrivia)
     }
