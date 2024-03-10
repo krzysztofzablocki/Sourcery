@@ -6,7 +6,7 @@ extension EnumCase {
 
     convenience init(_ node: EnumCaseElementSyntax, parent: EnumCaseDeclSyntax, annotationsParser: AnnotationsParser) {
         var associatedValues: [AssociatedValue] = []
-        if let paramList = node.associatedValue?.parameterList {
+        if let paramList = node.parameterClause?.parameters {
             let hasManyValues = paramList.count > 1
             associatedValues = paramList
               .enumerated()
@@ -14,7 +14,7 @@ extension EnumCase {
                   let name = param.firstName?.text.trimmed.nilIfNotValidParameterName
                   let secondName = param.secondName?.text.trimmed
 
-                  let defaultValue = param.defaultArgument?.value.description.trimmed
+                  let defaultValue = param.defaultValue?.value.description.trimmed
                   var externalName: String? = secondName
                   if externalName == nil, hasManyValues {
                       externalName = name ?? "\(idx)"
@@ -24,7 +24,7 @@ extension EnumCase {
 
                   return AssociatedValue(localName: name,
                                          externalName: externalName,
-                                         typeName: TypeName(param.type) ?? TypeName.unknown(description: parent.description.trimmed),
+                                         typeName: TypeName(param.type),
                                          type: nil,
                                          defaultValue: defaultValue,
                                          annotations: collectedAnnotations
@@ -47,7 +47,7 @@ extension EnumCase {
         })
 
         self.init(
-          name: node.identifier.text.trimmed,
+          name: node.name.text.trimmed,
           rawValue: rawValue,
           associatedValues: associatedValues,
           annotations: annotationsParser.annotations(from: node),

@@ -7,7 +7,7 @@ extension SourceryMethod {
         self.init(
           node: node,
           parent: parent,
-          identifier: node.identifier.text.trimmed,
+          identifier: node.name.text.trimmed,
           typeName: typeName,
           signature: Signature(node.signature, annotationsParser: annotationsParser),
           modifiers: node.modifiers,
@@ -26,7 +26,7 @@ extension SourceryMethod {
           identifier: "init\(node.optionalMark?.text.trimmed ?? "")",
           typeName: typeName,
           signature: Signature(
-            parameters: signature.input.parameterList,
+            parameters: signature.parameterClause.parameters,
             output: nil,
             asyncKeyword: nil,
             throwsOrRethrowsKeyword: signature.effectSpecifiers?.throwsSpecifier?.description.trimmed,
@@ -61,7 +61,7 @@ extension SourceryMethod {
       identifier: String,
       typeName: TypeName?,
       signature: Signature,
-      modifiers: ModifierListSyntax?,
+      modifiers: DeclModifierListSyntax?,
       attributes: AttributeListSyntax?,
       genericParameterClause: GenericParameterClauseSyntax?,
       genericWhereClause: GenericWhereClauseSyntax?,
@@ -85,15 +85,15 @@ extension SourceryMethod {
 
         let funcName = identifier.last == "?" ? String(identifier.dropLast()) : identifier
         var fullName = identifier
-        if let generics = genericParameterClause?.genericParameterList {
+        if let generics = genericParameterClause?.parameters {
             fullName = funcName + "<\(generics.description.trimmed)>"
         }
         var genericRequirements: [GenericRequirement] = []
         if let genericWhereClause = genericWhereClause {
-            genericRequirements = genericWhereClause.requirementList.compactMap { requirement in
-                if let sameType = requirement.body.as(SameTypeRequirementSyntax.self) {
+            genericRequirements = genericWhereClause.requirements.compactMap { requirement in
+                if let sameType = requirement.requirement.as(SameTypeRequirementSyntax.self) {
                     return GenericRequirement(sameType)
-                } else if let conformanceType = requirement.body.as(ConformanceRequirementSyntax.self) {
+                } else if let conformanceType = requirement.requirement.as(ConformanceRequirementSyntax.self) {
                     return GenericRequirement(conformanceType)
                 }
                 return nil

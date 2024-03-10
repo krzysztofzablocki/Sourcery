@@ -16,8 +16,7 @@ extension Subscript {
         var hadThrowable = false
 
         if let block = node
-          .accessor?
-          .as(AccessorBlockSyntax.self) {
+          .accessorBlock {
             enum Kind: Hashable {
                 case get(isAsync: Bool, throws: Bool)
                 case set
@@ -30,7 +29,7 @@ extension Subscript {
 
             case .accessors(let accessors):
               computeAccessors = Set(accessors.compactMap { accessor -> Kind? in
-                  let kindRaw = accessor.accessorKind.text.trimmed
+                  let kindRaw = accessor.accessorSpecifier.text.trimmed
                   if kindRaw == "get" {
                     return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsSpecifier != nil)
                   }
@@ -59,7 +58,7 @@ extension Subscript {
                     }
                 }
             }
-        } else if node.accessor != nil {
+        } else if node.accessorBlock != nil {
             hadGetter = true
         }
 
@@ -71,22 +70,22 @@ extension Subscript {
             readAccess = parentAccess
         }
 
-        let genericParameters = node.genericParameterClause?.genericParameterList.compactMap { parameter in
+        let genericParameters = node.genericParameterClause?.parameters.compactMap { parameter in
             return GenericParameter(parameter)
         } ?? []
 
-        let genericRequirements: [GenericRequirement] = node.genericWhereClause?.requirementList.compactMap { requirement in
-            if let sameType = requirement.body.as(SameTypeRequirementSyntax.self) {
+        let genericRequirements: [GenericRequirement] = node.genericWhereClause?.requirements.compactMap { requirement in
+            if let sameType = requirement.requirement.as(SameTypeRequirementSyntax.self) {
                 return GenericRequirement(sameType)
-            } else if let conformanceType = requirement.body.as(ConformanceRequirementSyntax.self) {
+            } else if let conformanceType = requirement.requirement.as(ConformanceRequirementSyntax.self) {
                 return GenericRequirement(conformanceType)
             }
             return nil
         } ?? []
 
         self.init(
-          parameters: node.indices.parameterList.map { MethodParameter($0, annotationsParser: annotationsParser) },
-          returnTypeName: TypeName(node.result.returnType),
+          parameters: node.parameterClause.parameters.map { MethodParameter($0, annotationsParser: annotationsParser) },
+          returnTypeName: TypeName(node.returnClause.type),
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
           isAsync: hadAsync,
           throws: hadThrowable,
@@ -94,8 +93,8 @@ extension Subscript {
           genericRequirements: genericRequirements,
           attributes: Attribute.from(node.attributes),
           modifiers: modifiers.map(SourceryModifier.init),
-          annotations: node.firstToken.map { annotationsParser.annotations(fromToken: $0) } ?? [:],
-          documentation: node.firstToken.map { annotationsParser.documentation(fromToken: $0) } ?? [],
+          annotations: node.firstToken(viewMode: .sourceAccurate).map { annotationsParser.annotations(fromToken: $0) } ?? [:],
+          documentation: node.firstToken(viewMode: .sourceAccurate).map { annotationsParser.documentation(fromToken: $0) } ?? [],
           definedInTypeName: TypeName(parent.name)
         )
     }

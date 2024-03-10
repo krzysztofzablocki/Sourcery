@@ -21,7 +21,6 @@ class GeneratorSpec: QuickSpec {
                 let fooType = Class(name: "Foo", variables: [Variable(name: "intValue", typeName: TypeName(name: "Int"))], inheritedTypes: ["NSObject", "Decodable", "AlternativeProtocol"])
                 let fooSubclassType = Class(name: "FooSubclass", inheritedTypes: ["Foo", "ProtocolBasedOnKnownProtocol"], annotations: ["foo": NSNumber(value: 2), "smth": ["bar": NSNumber(value: 2)] as NSObject])
                 let barType = Struct(name: "Bar", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
-                let fooBarBuzzType = Struct(name: "FooBarBuzz", inheritedTypes: ["KnownProtocol", "Decodable"], annotations: ["bar": NSNumber(value: true)])
 
                 let complexType = Struct(name: "Complex", accessLevel: .public, isExtension: false, variables: [])
                 let fooVar = Variable(name: "foo", typeName: TypeName(name: "Foo"), accessLevel: (read: .public, write: .private), isComputed: false, definedInTypeName: TypeName(name: "Complex"))
