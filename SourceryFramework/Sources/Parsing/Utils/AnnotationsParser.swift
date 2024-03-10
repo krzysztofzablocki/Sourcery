@@ -138,33 +138,6 @@ public struct AnnotationsParser {
         return annotations
     }
 
-    private func from(location: SwiftSyntax.SourceLocation) -> Annotations {
-        var stop = false
-        var annotations = inlineFrom(line: (location.line, location.column), stop: &stop)
-        guard !stop else { return annotations }
-
-        let reversedArray = lines[0..<location.line-1].reversed()
-        for line in reversedArray {
-            line.annotations.forEach { annotation in
-                AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
-            }
-
-            if line.type != .comment
-                && line.type != .documentationComment
-                && line.type != .macros
-                && line.type != .propertyWrapper
-            {
-                break
-            }
-        }
-
-        lines[location.line-1].annotations.forEach { annotation in
-            AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
-        }
-
-        return annotations
-    }
-
     private func documentationFrom(location: SwiftSyntax.SourceLocation) -> Documentation {
       guard parseDocumentation else {
             return []
