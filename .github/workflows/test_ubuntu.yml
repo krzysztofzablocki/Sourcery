@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   linux_build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - name: Setup Swift
       uses: swift-actions/setup-swift@v1.26.0
