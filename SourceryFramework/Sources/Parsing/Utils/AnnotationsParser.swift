@@ -18,7 +18,7 @@ public struct AnnotationsParser {
         case file(Annotations)
     }
 
-    struct Line {
+    private struct Line {
         enum LineType {
             case propertyWrapper
             case macros
@@ -37,7 +37,7 @@ public struct AnnotationsParser {
         let blockAnnotations: Annotations
     }
 
-    let lines: [AnnotationsParser.Line]
+    private let lines: [AnnotationsParser.Line]
     private let contents: String
     private var parseDocumentation: Bool
     internal var sourceLocationConverter: SourceLocationConverter
@@ -246,7 +246,7 @@ public struct AnnotationsParser {
         return (annotations, shouldUsePositionBeforeTrailing)
     }
 
-    static func parse(contents: String) -> [Line] {
+    private static func parse(contents: String) -> [Line] {
         var annotationsBlock: Annotations?
         var fileAnnotationsBlock = Annotations()
 
