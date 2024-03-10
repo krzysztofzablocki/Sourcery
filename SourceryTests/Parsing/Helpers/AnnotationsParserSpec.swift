@@ -14,6 +14,8 @@ import Foundation
 #endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
+import SwiftParser
+import SwiftSyntax
 
 class AnnotationsParserSpec: QuickSpec {
     override func spec() {
@@ -43,7 +45,10 @@ class AnnotationsParserSpec: QuickSpec {
             }
             describe("parse(content:)") {
                 func parse(_ content: String) -> Annotations {
-                    return AnnotationsParser(contents: content).all
+                    let tree = Parser.parse(source: content)
+                    let fileName = "in-memory"
+                    let sourceLocationConverter = SourceLocationConverter(fileName: fileName, tree: tree)
+                    return AnnotationsParser(contents: content, sourceLocationConverter: sourceLocationConverter).all
                 }
 
                 it("extracts inline annotations") {
@@ -73,6 +78,23 @@ class AnnotationsParserSpec: QuickSpec {
                                                "// sourcery: thirdProperty = -3\n" +
                                                "// sourcery: placeholder = \"geo:37.332112,-122.0329753?q=1 Infinite Loop\"\n" +
                                                "var name: Int { return 2 }")
+                    expect(result).to(equal(annotations))
+                }
+
+                it("extracts suffix annotations, both block and inline") {
+                    let annotations = ["anAnnotation": "PARAM A ONLY" as NSString,
+                                       "testAnnotation": "PARAM B ONLY" as NSString,
+                                       "anotherAnnotation": "PARAM C ONLY" as NSString]
+
+                    let result = parse("""
+                        class Foo {
+                            func bar(paramA: String, // sourcery: anAnnotation = "PARAM A ONLY"
+                                /* sourcery: testAnnotation="PARAM B ONLY"*/ paramB: String,
+                                paramC: String,  // sourcery: anotherAnnotation = "PARAM C ONLY"
+                                paramD: String
+                            ) {}
+                        }
+                    """)
                     expect(result).to(equal(annotations))
                 }
 

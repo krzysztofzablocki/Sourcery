@@ -494,6 +494,26 @@ class FileParserMethodsSpec: QuickSpec {
                         ]))
                 }
 
+                it("extracts parameter inline prefix and suffix annotations") {
+                    let parsed = parse("""
+                                            class Foo {
+                                                func foo(paramA: String, // sourcery: anAnnotation = "PARAM A AND METHOD ONLY"
+                                                    /* sourcery: testAnnotation="PARAM B ONLY"*/ paramB: String,
+                                                    paramC: String,  // sourcery: anotherAnnotation = "PARAM C ONLY"
+                                                    paramD: String
+                                                ) {}
+                                            }
+                                        """)
+                    expect(parsed).to(equal([
+                        Class(name: "Foo", methods: [
+                            Method(name: "foo(paramA: String, paramB: String, paramC: String, paramD: String)", selectorName: "foo(paramA:paramB:paramC:paramD:)", parameters: [
+                                MethodParameter(name: "paramA", typeName: TypeName(name: "String"), annotations: ["anAnnotation": "PARAM A AND METHOD ONLY" as NSString]),
+                                MethodParameter(name: "paramB", typeName: TypeName(name: "String"), annotations: ["testAnnotation": "PARAM B ONLY" as NSString]),
+                                MethodParameter(name: "paramC", typeName: TypeName(name: "String"), annotations: ["anotherAnnotation": "PARAM C ONLY" as NSString]),
+                                MethodParameter(name: "paramD", typeName: TypeName(name: "String"), annotations: [:]),
+                            ], annotations: ["anAnnotation": "PARAM A AND METHOD ONLY" as NSString], definedInTypeName: TypeName(name: "Foo"))
+                        ])]))
+                }
             }
         }
     }
