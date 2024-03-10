@@ -6,24 +6,24 @@ extension Class {
     convenience init(_ node: ClassDeclSyntax, parent: Type?, annotationsParser: AnnotationsParser) {
         let modifiers = node.modifiers.map(Modifier.init)
 
-        let genericRequirements: [GenericRequirement] = node.genericWhereClause?.requirementList.compactMap { requirement in
-            if let sameType = requirement.body.as(SameTypeRequirementSyntax.self) {
+        let genericRequirements: [GenericRequirement] = node.genericWhereClause?.requirements.compactMap { requirement in
+            if let sameType = requirement.requirement.as(SameTypeRequirementSyntax.self) {
                 return GenericRequirement(sameType)
-            } else if let conformanceType = requirement.body.as(ConformanceRequirementSyntax.self) {
+            } else if let conformanceType = requirement.requirement.as(ConformanceRequirementSyntax.self) {
                 return GenericRequirement(conformanceType)
             }
             return nil
         } ?? []
 
         self.init(
-          name: node.identifier.text.trimmingCharacters(in: .whitespaces),
+          name: node.name.text.trimmingCharacters(in: .whitespaces),
           parent: parent,
           accessLevel: modifiers.lazy.compactMap(AccessLevel.init).first ?? .default(for: parent),
           isExtension: false,
           variables: [],
           methods: [],
           subscripts: [],
-          inheritedTypes: node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? [],
+          inheritedTypes: node.inheritanceClause?.inheritedTypes.map { $0.type.description.trimmed } ?? [],
           containedTypes: [],
           typealiases: [],
           genericRequirements: genericRequirements,
@@ -31,7 +31,7 @@ extension Class {
           modifiers: modifiers.map(SourceryModifier.init),
           annotations: annotationsParser.annotations(from: node),
           documentation: annotationsParser.documentation(from: node),
-          isGeneric: node.genericParameterClause?.genericParameterList.isEmpty == false
+          isGeneric: node.genericParameterClause?.parameters.isEmpty == false
         )
     }
 }

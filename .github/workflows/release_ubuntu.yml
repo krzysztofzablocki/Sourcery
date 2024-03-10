@@ -19,7 +19,7 @@ jobs:
   build:
     needs: [docs, tests]
     name: Build Sourcery for Ubuntu (latest)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       filename: ${{ steps.build.outputs.filename }}
     steps:
@@ -27,7 +27,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref }}
       - name: Setup Swift
-        uses: swift-actions/setup-swift@v1.26.0
+        uses: YOCKOW/Action-setup-swift@main
         with:
           swift-version: "5.9.2"
       - name: Build it

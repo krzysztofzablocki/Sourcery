@@ -20,8 +20,7 @@ extension Variable {
         var hadThrowable = false
 
         if let block = node
-          .accessor?
-          .as(AccessorBlockSyntax.self) {
+            .accessorBlock {
             enum Kind: Hashable {
                 case get(isAsync: Bool, throws: Bool)
                 case set
@@ -34,7 +33,7 @@ extension Variable {
 
             case .accessors(let accessors):
               computeAccessors = Set(accessors.compactMap { accessor -> Kind? in
-                  let kindRaw = accessor.accessorKind.text.trimmed
+                  let kindRaw = accessor.accessorSpecifier.text.trimmed
                   if kindRaw == "get" {
                     return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsSpecifier != nil)
                   }
@@ -63,7 +62,7 @@ extension Variable {
                     }
                 }
             }
-        } else if node.accessor != nil {
+        } else if node.accessorBlock != nil {
             hadGetter = true
         }
 

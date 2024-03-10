@@ -14,6 +14,7 @@ import Foundation
 #endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
+import SwiftParser
 import SwiftSyntax
 
 class AnnotationsParserSpec: QuickSpec {
@@ -46,7 +47,7 @@ class AnnotationsParserSpec: QuickSpec {
                 func parse(_ content: String) -> Annotations {
                     let tree = Parser.parse(source: content)
                     let fileName = "in-memory"
-                    let sourceLocationConverter = SourceLocationConverter(file: fileName, tree: tree)
+                    let sourceLocationConverter = SourceLocationConverter(fileName: fileName, tree: tree)
                     return AnnotationsParser(contents: content, sourceLocationConverter: sourceLocationConverter).all
                 }
 
