@@ -40,7 +40,7 @@ extension ProtocolDeclSyntax: IdentifierSyntax {}
 
 extension FunctionDeclSyntax: IdentifierSyntax {}
 
-extension TypealiasDeclSyntax: IdentifierSyntax {}
+extension TypeAliasDeclSyntax: IdentifierSyntax {}
 
 extension OperatorDeclSyntax: IdentifierSyntax {}
 

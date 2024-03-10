@@ -324,7 +324,6 @@ class FileParserMethodsSpec: QuickSpec {
                     func assertMethods(_ types: [Type]) {
                         let fooType = types.first(where: { $0.name == "Foo" })
                         let foo = fooType?.methods.first
-                        let fooBar = fooType?.methods.last
 
 //                        expect(foo?.name).to(equal("foo<T: Equatable>()"))
 //                        expect(foo?.selectorName).to(equal("foo"))
