@@ -81,6 +81,23 @@ class AnnotationsParserSpec: QuickSpec {
                     expect(result).to(equal(annotations))
                 }
 
+                it("extracts suffix annotations, both block and inline") {
+                    let annotations = ["anAnnotation": "PARAM A ONLY" as NSString,
+                                       "testAnnotation": "PARAM B ONLY" as NSString,
+                                       "anotherAnnotation": "PARAM C ONLY" as NSString]
+
+                    let result = parse("""
+                        class Foo {
+                            func bar(paramA: String, // sourcery: anAnnotation = "PARAM A ONLY"
+                                /* sourcery: testAnnotation="PARAM B ONLY"*/ paramB: String,
+                                paramC: String,  // sourcery: anotherAnnotation = "PARAM C ONLY"
+                                paramD: String
+                            ) {}
+                        }
+                    """)
+                    expect(result).to(equal(annotations))
+                }
+
                 it("extracts repeated annotations into array") {
                     let parsedAnnotations = parse("// sourcery: implements = \"Service1\"\n// sourcery: implements = \"Service2\"")
                     expect(parsedAnnotations["implements"] as? [String]).to(equal(["Service1", "Service2"]))
