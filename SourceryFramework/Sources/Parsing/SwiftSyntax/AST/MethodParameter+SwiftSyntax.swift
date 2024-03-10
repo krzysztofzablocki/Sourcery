@@ -18,8 +18,8 @@ extension MethodParameter {
           name: node.secondName?.text.trimmed ?? firstName ?? "",
           typeName: typeName,
           type: nil,
-          defaultValue: node.defaultArgument?.value.description.trimmed,
-          annotations: node.firstToken.map { annotationsParser.annotations(fromToken: $0) } ?? [:],
+          defaultValue: node.defaultValue?.value.description.trimmed,
+          annotations: node.firstToken(viewMode: .sourceAccurate).map { annotationsParser.annotations(fromToken: $0) } ?? [:],
           isInout: specifiers.isInOut,
           isVariadic: node.ellipsis != nil
         )

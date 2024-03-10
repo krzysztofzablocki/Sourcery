@@ -43,7 +43,7 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
         // Syntax walking
         let tree = Parser.parse(source: contents)
         let fileName = path ?? "in-memory"
-        let sourceLocationConverter = SourceLocationConverter(file: fileName, tree: tree)
+        let sourceLocationConverter = SourceLocationConverter(fileName: fileName, tree: tree)
         let collector = SyntaxTreeCollector(
           file: fileName,
           module: module,
