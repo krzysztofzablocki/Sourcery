@@ -161,28 +161,29 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "typeName = \(String(describing: self.typeName)), "
-        string += "isComputed = \(String(describing: self.isComputed)), "
-        string += "isAsync = \(String(describing: self.isAsync)), "
-        string += "`throws` = \(String(describing: self.`throws`)), "
-        string += "isStatic = \(String(describing: self.isStatic)), "
-        string += "readAccess = \(String(describing: self.readAccess)), "
-        string += "writeAccess = \(String(describing: self.writeAccess)), "
-        string += "accessLevel = \(String(describing: self.accessLevel)), "
-        string += "isMutable = \(String(describing: self.isMutable)), "
-        string += "defaultValue = \(String(describing: self.defaultValue)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "documentation = \(String(describing: self.documentation)), "
-        string += "attributes = \(String(describing: self.attributes)), "
-        string += "modifiers = \(String(describing: self.modifiers)), "
-        string += "isFinal = \(String(describing: self.isFinal)), "
-        string += "isLazy = \(String(describing: self.isLazy)), "
-        string += "isDynamic = \(String(describing: self.isDynamic)), "
-        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("typeName = \(String(describing: self.typeName)), ")
+        string.append("isComputed = \(String(describing: self.isComputed)), ")
+        string.append("isAsync = \(String(describing: self.isAsync)), ")
+        string.append("`throws` = \(String(describing: self.`throws`)), ")
+        string.append("isStatic = \(String(describing: self.isStatic)), ")
+        string.append("readAccess = \(String(describing: self.readAccess)), ")
+        string.append("writeAccess = \(String(describing: self.writeAccess)), ")
+        string.append("accessLevel = \(String(describing: self.accessLevel)), ")
+        string.append("isMutable = \(String(describing: self.isMutable)), ")
+        string.append("defaultValue = \(String(describing: self.defaultValue)), ")
+        string.append("annotations = \(String(describing: self.annotations)), ")
+        string.append("documentation = \(String(describing: self.documentation)), ")
+        string.append("attributes = \(String(describing: self.attributes)), ")
+        string.append("modifiers = \(String(describing: self.modifiers)), ")
+        string.append("isFinal = \(String(describing: self.isFinal)), ")
+        string.append("isLazy = \(String(describing: self.isLazy)), ")
+        string.append("isDynamic = \(String(describing: self.isDynamic)), ")
+        string.append("definedInTypeName = \(String(describing: self.definedInTypeName)), ")
+        string.append("actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName))")
         return string
     }
 
@@ -209,6 +210,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

@@ -130,6 +130,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string.append("name = \(String(describing: self.name)), ")
@@ -179,6 +180,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

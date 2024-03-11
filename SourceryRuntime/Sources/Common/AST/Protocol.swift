@@ -76,6 +76,7 @@ public final class Protocol: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string.append(", ")
@@ -95,6 +96,8 @@ public final class Protocol: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.associatedTypes)

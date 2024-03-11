@@ -62,13 +62,14 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "localName = \(String(describing: self.localName)), "
-        string += "externalName = \(String(describing: self.externalName)), "
-        string += "typeName = \(String(describing: self.typeName)), "
-        string += "defaultValue = \(String(describing: self.defaultValue)), "
-        string += "annotations = \(String(describing: self.annotations))"
+        string.append("localName = \(String(describing: self.localName)), ")
+        string.append("externalName = \(String(describing: self.externalName)), ")
+        string.append("typeName = \(String(describing: self.typeName)), ")
+        string.append("defaultValue = \(String(describing: self.defaultValue)), ")
+        string.append("annotations = \(String(describing: self.annotations))")
         return string
     }
 
@@ -86,6 +87,8 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.localName)

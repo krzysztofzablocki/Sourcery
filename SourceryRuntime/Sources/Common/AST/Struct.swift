@@ -58,6 +58,7 @@ public final class Struct: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string += ", "
@@ -75,6 +76,8 @@ public final class Struct: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(super.hash)

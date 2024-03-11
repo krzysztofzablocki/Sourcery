@@ -61,6 +61,8 @@ public class DiffableResult: NSObject, AutoEquatable {
 
     var isEmpty: Bool { return results.isEmpty }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.identifier)

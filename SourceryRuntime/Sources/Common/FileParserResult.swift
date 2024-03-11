@@ -55,18 +55,19 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "path = \(String(describing: self.path)), "
-        string += "module = \(String(describing: self.module)), "
-        string += "types = \(String(describing: self.types)), "
-        string += "functions = \(String(describing: self.functions)), "
-        string += "typealiases = \(String(describing: self.typealiases)), "
-        string += "inlineRanges = \(String(describing: self.inlineRanges)), "
-        string += "inlineIndentations = \(String(describing: self.inlineIndentations)), "
-        string += "modifiedDate = \(String(describing: self.modifiedDate)), "
-        string += "sourceryVersion = \(String(describing: self.sourceryVersion)), "
-        string += "isEmpty = \(String(describing: self.isEmpty))"
+        string.append("path = \(String(describing: self.path)), ")
+        string.append("module = \(String(describing: self.module)), ")
+        string.append("types = \(String(describing: self.types)), ")
+        string.append("functions = \(String(describing: self.functions)), ")
+        string.append("typealiases = \(String(describing: self.typealiases)), ")
+        string.append("inlineRanges = \(String(describing: self.inlineRanges)), ")
+        string.append("inlineIndentations = \(String(describing: self.inlineIndentations)), ")
+        string.append("modifiedDate = \(String(describing: self.modifiedDate)), ")
+        string.append("sourceryVersion = \(String(describing: self.sourceryVersion)), ")
+        string.append("isEmpty = \(String(describing: self.isEmpty))")
         return string
     }
 
@@ -88,6 +89,8 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.path)

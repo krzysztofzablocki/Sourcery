@@ -56,6 +56,7 @@ public final class ProtocolComposition: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string += ", "
@@ -75,6 +76,8 @@ public final class ProtocolComposition: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.composedTypeNames)

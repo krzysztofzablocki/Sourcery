@@ -38,6 +38,8 @@ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJS
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

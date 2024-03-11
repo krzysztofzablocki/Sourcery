@@ -22,10 +22,11 @@ public final class AssociatedType: NSObject, SourceryModel {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "typeName = \(String(describing: self.typeName))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("typeName = \(String(describing: self.typeName))")
         return string
     }
 
@@ -40,6 +41,8 @@ public final class AssociatedType: NSObject, SourceryModel {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

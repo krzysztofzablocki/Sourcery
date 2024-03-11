@@ -18,10 +18,11 @@ public final class GenericParameter: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "inheritedTypeName = \(String(describing: self.inheritedTypeName))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("inheritedTypeName = \(String(describing: self.inheritedTypeName))")
         return string
     }
 
@@ -36,6 +37,8 @@ public final class GenericParameter: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

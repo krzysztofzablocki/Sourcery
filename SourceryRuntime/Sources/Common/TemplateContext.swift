@@ -72,13 +72,14 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "parserResult = \(String(describing: self.parserResult)), "
-        string += "functions = \(String(describing: self.functions)), "
-        string += "types = \(String(describing: self.types)), "
-        string += "argument = \(String(describing: self.argument)), "
-        string += "stencilContext = \(String(describing: self.stencilContext))"
+        string.append("parserResult = \(String(describing: self.parserResult)), ")
+        string.append("functions = \(String(describing: self.functions)), ")
+        string.append("types = \(String(describing: self.types)), ")
+        string.append("argument = \(String(describing: self.argument)), ")
+        string.append("stencilContext = \(String(describing: self.stencilContext))")
         return string
     }
 
@@ -95,6 +96,8 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.parserResult)

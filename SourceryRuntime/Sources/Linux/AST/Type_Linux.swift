@@ -469,41 +469,42 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "module = \(String(describing: self.module)), "
-        string += "imports = \(String(describing: self.imports)), "
-        string += "allImports = \(String(describing: self.allImports)), "
-        string += "typealiases = \(String(describing: self.typealiases)), "
-        string += "isExtension = \(String(describing: self.isExtension)), "
-        string += "kind = \(String(describing: self.kind)), "
-        string += "accessLevel = \(String(describing: self.accessLevel)), "
-        string += "name = \(String(describing: self.name)), "
-        string += "isUnknownExtension = \(String(describing: self.isUnknownExtension)), "
-        string += "isGeneric = \(String(describing: self.isGeneric)), "
-        string += "localName = \(String(describing: self.localName)), "
-        string += "rawVariables = \(String(describing: self.rawVariables)), "
-        string += "rawMethods = \(String(describing: self.rawMethods)), "
-        string += "rawSubscripts = \(String(describing: self.rawSubscripts)), "
-        string += "initializers = \(String(describing: self.initializers)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "documentation = \(String(describing: self.documentation)), "
-        string += "staticVariables = \(String(describing: self.staticVariables)), "
-        string += "staticMethods = \(String(describing: self.staticMethods)), "
-        string += "classMethods = \(String(describing: self.classMethods)), "
-        string += "instanceVariables = \(String(describing: self.instanceVariables)), "
-        string += "instanceMethods = \(String(describing: self.instanceMethods)), "
-        string += "computedVariables = \(String(describing: self.computedVariables)), "
-        string += "storedVariables = \(String(describing: self.storedVariables)), "
-        string += "inheritedTypes = \(String(describing: self.inheritedTypes)), "
-        string += "inherits = \(String(describing: self.inherits)), "
-        string += "containedTypes = \(String(describing: self.containedTypes)), "
-        string += "parentName = \(String(describing: self.parentName)), "
-        string += "parentTypes = \(String(describing: self.parentTypes)), "
-        string += "attributes = \(String(describing: self.attributes)), "
-        string += "modifiers = \(String(describing: self.modifiers)), "
-        string += "fileName = \(String(describing: self.fileName)), "
-        string += "genericRequirements = \(String(describing: self.genericRequirements))"
+        string.append("module = \(String(describing: self.module)), ")
+        string.append("imports = \(String(describing: self.imports)), ")
+        string.append("allImports = \(String(describing: self.allImports)), ")
+        string.append("typealiases = \(String(describing: self.typealiases)), ")
+        string.append("isExtension = \(String(describing: self.isExtension)), ")
+        string.append("kind = \(String(describing: self.kind)), ")
+        string.append("accessLevel = \(String(describing: self.accessLevel)), ")
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("isUnknownExtension = \(String(describing: self.isUnknownExtension)), ")
+        string.append("isGeneric = \(String(describing: self.isGeneric)), ")
+        string.append("localName = \(String(describing: self.localName)), ")
+        string.append("rawVariables = \(String(describing: self.rawVariables)), ")
+        string.append("rawMethods = \(String(describing: self.rawMethods)), ")
+        string.append("rawSubscripts = \(String(describing: self.rawSubscripts)), ")
+        string.append("initializers = \(String(describing: self.initializers)), ")
+        string.append("annotations = \(String(describing: self.annotations)), ")
+        string.append("documentation = \(String(describing: self.documentation)), ")
+        string.append("staticVariables = \(String(describing: self.staticVariables)), ")
+        string.append("staticMethods = \(String(describing: self.staticMethods)), ")
+        string.append("classMethods = \(String(describing: self.classMethods)), ")
+        string.append("instanceVariables = \(String(describing: self.instanceVariables)), ")
+        string.append("instanceMethods = \(String(describing: self.instanceMethods)), ")
+        string.append("computedVariables = \(String(describing: self.computedVariables)), ")
+        string.append("storedVariables = \(String(describing: self.storedVariables)), ")
+        string.append("inheritedTypes = \(String(describing: self.inheritedTypes)), ")
+        string.append("inherits = \(String(describing: self.inherits)), ")
+        string.append("containedTypes = \(String(describing: self.containedTypes)), ")
+        string.append("parentName = \(String(describing: self.parentName)), ")
+        string.append("parentTypes = \(String(describing: self.parentTypes)), ")
+        string.append("attributes = \(String(describing: self.attributes)), ")
+        string.append("modifiers = \(String(describing: self.modifiers)), ")
+        string.append("fileName = \(String(describing: self.fileName)), ")
+        string.append("genericRequirements = \(String(describing: self.genericRequirements))")
         return string
     }
 
@@ -537,6 +538,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.module)

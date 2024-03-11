@@ -47,6 +47,7 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string.append("name = \(String(describing: self.name)), ")
@@ -74,6 +75,8 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

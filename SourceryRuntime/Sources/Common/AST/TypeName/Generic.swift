@@ -39,6 +39,8 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

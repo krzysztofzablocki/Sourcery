@@ -55,6 +55,7 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string.append("aliasName = \(String(describing: self.aliasName)), ")
@@ -84,6 +85,8 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.aliasName)

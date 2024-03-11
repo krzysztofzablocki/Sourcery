@@ -24,10 +24,11 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "elements = \(String(describing: self.elements))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("elements = \(String(describing: self.elements))")
         return string
     }
 
@@ -42,6 +43,8 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -110,11 +113,12 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "typeName = \(String(describing: self.typeName)), "
-        string += "asSource = \(String(describing: self.asSource))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("typeName = \(String(describing: self.typeName)), ")
+        string.append("asSource = \(String(describing: self.asSource))")
         return string
     }
 
@@ -129,6 +133,8 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

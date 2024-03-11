@@ -131,6 +131,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string.append("parameters = \(String(describing: self.parameters)), ")
@@ -176,6 +177,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.parameters)

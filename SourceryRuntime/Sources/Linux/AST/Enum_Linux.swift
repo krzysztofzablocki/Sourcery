@@ -101,12 +101,13 @@ public final class Enum: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
-        string += ", "
-        string += "cases = \(String(describing: self.cases)), "
-        string += "rawTypeName = \(String(describing: self.rawTypeName)), "
-        string += "hasAssociatedValues = \(String(describing: self.hasAssociatedValues))"
+        string.append(", ")
+        string.append("cases = \(String(describing: self.cases)), ")
+        string.append("rawTypeName = \(String(describing: self.rawTypeName)), ")
+        string.append("hasAssociatedValues = \(String(describing: self.hasAssociatedValues))")
         return string
     }
 
@@ -122,6 +123,8 @@ public final class Enum: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.cases)

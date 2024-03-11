@@ -36,12 +36,13 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "leftType = \(String(describing: self.leftType)), "
-        string += "rightType = \(String(describing: self.rightType)), "
-        string += "relationship = \(String(describing: self.relationship)), "
-        string += "relationshipSyntax = \(String(describing: self.relationshipSyntax))"
+        string.append("leftType = \(String(describing: self.leftType)), ")
+        string.append("rightType = \(String(describing: self.rightType)), ")
+        string.append("relationship = \(String(describing: self.relationship)), ")
+        string.append("relationshipSyntax = \(String(describing: self.relationshipSyntax))")
         return string
     }
 
@@ -58,6 +59,8 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.leftType)

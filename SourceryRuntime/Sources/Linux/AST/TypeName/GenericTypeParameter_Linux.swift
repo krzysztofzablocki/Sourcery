@@ -28,9 +28,10 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable, Dyna
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "typeName = \(String(describing: self.typeName))"
+        string.append("typeName = \(String(describing: self.typeName))")
         return string
     }
 
@@ -44,6 +45,8 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable, Dyna
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.typeName)

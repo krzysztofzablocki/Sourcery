@@ -98,17 +98,18 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, DynamicMember
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "parameters = \(String(describing: self.parameters)), "
-        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
-        string += "isAsync = \(String(describing: self.isAsync)), "
-        string += "asyncKeyword = \(String(describing: self.asyncKeyword)), "
-        string += "`throws` = \(String(describing: self.`throws`)), "
-        string += "throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword)), "
-        string += "asSource = \(String(describing: self.asSource))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("parameters = \(String(describing: self.parameters)), ")
+        string.append("returnTypeName = \(String(describing: self.returnTypeName)), ")
+        string.append("actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), ")
+        string.append("isAsync = \(String(describing: self.isAsync)), ")
+        string.append("asyncKeyword = \(String(describing: self.asyncKeyword)), ")
+        string.append("`throws` = \(String(describing: self.`throws`)), ")
+        string.append("throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword)), ")
+        string.append("asSource = \(String(describing: self.asSource))")
         return string
     }
 
@@ -128,6 +129,8 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, DynamicMember
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

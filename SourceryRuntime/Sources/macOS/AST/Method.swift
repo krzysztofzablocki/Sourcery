@@ -213,6 +213,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string.append("name = \(String(describing: self.name)), ")
@@ -261,6 +262,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

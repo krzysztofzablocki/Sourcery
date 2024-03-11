@@ -48,10 +48,11 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "types = \(String(describing: self.types)), "
-        string += "typealiases = \(String(describing: self.typealiases))"
+        string.append("types = \(String(describing: self.types)), ")
+        string.append("typealiases = \(String(describing: self.typealiases))")
         return string
     }
 
@@ -66,6 +67,8 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.types)

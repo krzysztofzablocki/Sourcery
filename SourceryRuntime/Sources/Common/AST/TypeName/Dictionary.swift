@@ -44,13 +44,14 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "valueTypeName = \(String(describing: self.valueTypeName)), "
-        string += "keyTypeName = \(String(describing: self.keyTypeName)), "
-        string += "asGeneric = \(String(describing: self.asGeneric)), "
-        string += "asSource = \(String(describing: self.asSource))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("valueTypeName = \(String(describing: self.valueTypeName)), ")
+        string.append("keyTypeName = \(String(describing: self.keyTypeName)), ")
+        string.append("asGeneric = \(String(describing: self.asGeneric)), ")
+        string.append("asSource = \(String(describing: self.asSource))")
         return string
     }
 
@@ -66,6 +67,8 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)

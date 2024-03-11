@@ -425,6 +425,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         let type: Type.Type = Swift.type(of: self)
         var string = "\(type): "
@@ -494,6 +495,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.module)

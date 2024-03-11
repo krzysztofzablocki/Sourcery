@@ -54,6 +54,7 @@ public final class Actor: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string.append(", ")
@@ -72,6 +73,8 @@ public final class Actor: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(super.hash)

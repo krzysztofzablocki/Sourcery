@@ -77,6 +77,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
         string.append("argumentLabel = \(String(describing: self.argumentLabel)), ")
@@ -107,6 +108,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.argumentLabel)
