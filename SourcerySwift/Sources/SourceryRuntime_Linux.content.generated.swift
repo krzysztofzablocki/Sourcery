@@ -11,6 +11,7 @@ import Foundation
 
 /// :nodoc:
 public enum AccessLevel: String {
+    case `package` = "package"
     case `internal` = "internal"
     case `private` = "private"
     case `fileprivate` = "fileprivate"
@@ -20,94 +21,22 @@ public enum AccessLevel: String {
 }
 
 """),
-    .init(name: "GenericParameter.swift", content:
-"""
-import Foundation
-
-/// Descibes Swift generic parameter
-public final class GenericParameter: NSObject, SourceryModel, Diffable {
-
-    /// Generic parameter name
-    public var name: String
-
-    /// Generic parameter inherited type
-    public var inheritedTypeName: TypeName?
-
-    /// :nodoc:
-    public init(name: String, inheritedTypeName: TypeName? = nil) {
-        self.name = name
-        self.inheritedTypeName = inheritedTypeName
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "inheritedTypeName = \\(String(describing: self.inheritedTypeName))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? GenericParameter else {
-            results.append("Incorrect type <expected: GenericParameter, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "inheritedTypeName").trackDifference(actual: self.inheritedTypeName, expected: castObject.inheritedTypeName))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.inheritedTypeName)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericParameter else { return false }
-        if self.name != rhs.name { return false }
-        if self.inheritedTypeName != rhs.inheritedTypeName { return false }
-        return true
-    }
-
-// sourcery:inline:GenericParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            self.inheritedTypeName = aDecoder.decode(forKey: "inheritedTypeName")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.inheritedTypeName, forKey: "inheritedTypeName")
-        }
-
-// sourcery:end
-}
-"""),
     .init(name: "Actor.swift", content:
 """
 import Foundation
 
 // sourcery: skipDescription
 /// Descibes Swift actor
+#if canImport(ObjectiveC)
+@objc(SwiftActor) @objcMembers
+#endif
 public final class Actor: Type {
     /// Returns "actor"
     public override var kind: String { return "actor" }
 
     /// Whether type is final
     public var isFinal: Bool {
-        return modifiers.contains { $0.name == "final" }
+        modifiers.contains { $0.name == "final" }
     }
 
     /// :nodoc:
@@ -152,9 +81,9 @@ public final class Actor: Type {
     /// :nodoc:
     override public var description: String {
         var string = super.description
-        string += ", "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "isFinal = \\(String(describing: self.isFinal))"
+        string.append(", ")
+        string.append("kind = \\(String(describing: self.kind)), ")
+        string.append("isFinal = \\(String(describing: self.isFinal))")
         return string
     }
 
@@ -192,7 +121,7 @@ public final class Actor: Type {
             super.encode(with: aCoder)
         }
 // sourcery:end
-
+    
 }
 
 """),
@@ -262,110 +191,14 @@ public extension Array {
 }
 
 """),
-    .init(name: "Set.swift", content:
-"""
-import Foundation
-
-/// Describes set type
-public final class SetType: NSObject, SourceryModel, Diffable {
-    /// Type name used in declaration
-    public var name: String
-
-    /// Array element type name
-    public var elementTypeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Array element type, if known
-    public var elementType: Type?
-
-    /// :nodoc:
-    public init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
-        self.name = name
-        self.elementTypeName = elementTypeName
-        self.elementType = elementType
-    }
-
-    /// Returns array as generic type
-    public var asGeneric: GenericType {
-        GenericType(name: "Set", typeParameters: [
-            .init(typeName: elementTypeName)
-        ])
-    }
-
-    public var asSource: String {
-        "[\\(elementTypeName.asSource)]"
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
-        string += "asGeneric = \\(String(describing: self.asGeneric)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? SetType else {
-            results.append("Incorrect type <expected: SetType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.elementTypeName)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? SetType else { return false }
-        if self.name != rhs.name { return false }
-        if self.elementTypeName != rhs.elementTypeName { return false }
-        return true
-    }
-
-// sourcery:inline:SetType.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else {
-                withVaList(["elementTypeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.elementTypeName = elementTypeName
-            self.elementType = aDecoder.decode(forKey: "elementType")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.elementTypeName, forKey: "elementTypeName")
-            aCoder.encode(self.elementType, forKey: "elementType")
-        }
-// sourcery:end
-}
-
-"""),
     .init(name: "Array.swift", content:
 """
 import Foundation
 
 /// Describes array type
+#if canImport(ObjectiveC)
+@objcMembers 
+#endif
 public final class ArrayType: NSObject, SourceryModel, Diffable {
     /// Type name used in declaration
     public var name: String
@@ -398,10 +231,10 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
     /// :nodoc:
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "elementTypeName = \\(String(describing: self.elementTypeName)), "
-        string += "asGeneric = \\(String(describing: self.asGeneric)), "
-        string += "asSource = \\(String(describing: self.asSource))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("elementTypeName = \\(String(describing: self.elementTypeName)), ")
+        string.append("asGeneric = \\(String(describing: self.asGeneric)), ")
+        string.append("asSource = \\(String(describing: self.asSource))")
         return string
     }
 
@@ -435,13 +268,13 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else {
+            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else { 
                 withVaList(["elementTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -460,111 +293,14 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
 }
 
 """),
-    .init(name: "NSException_Linux.swift", content:
-"""
-import Foundation
-
-public class NSException {
-    static func raise(_ name: String, format: String, arguments: CVaListPointer) {
-        fatalError ("\\(name) exception: \\(NSString(format: format, arguments: arguments))")
-    }
-
-    static func raise(_ name: String) {
-        fatalError("\\(name) exception")
-    }
-}
-
-public extension NSExceptionName {
-    static var parseErrorException = "parseErrorException"
-}
-
-"""),
-    .init(name: "AssociatedType.swift", content:
-"""
-import Foundation
-
-/// Describes Swift AssociatedType
-public final class AssociatedType: NSObject, SourceryModel {
-    /// Associated type name
-    public let name: String
-
-    /// Associated type type constraint name, if specified
-    public let typeName: TypeName?
-
-    // sourcery: skipEquality, skipDescription
-    /// Associated type constrained type, if known, i.e. if the type is declared in the scanned sources.
-    public var type: Type?
-
-    /// :nodoc:
-    public init(name: String, typeName: TypeName? = nil, type: Type? = nil) {
-        self.name = name
-        self.typeName = typeName
-        self.type = type
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? AssociatedType else {
-            results.append("Incorrect type <expected: AssociatedType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? AssociatedType else { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        return true
-    }
-
-// sourcery:inline:AssociatedType.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            self.typeName = aDecoder.decode(forKey: "typeName")
-            self.type = aDecoder.decode(forKey: "type")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-        }
-// sourcery:end
-}
-
-"""),
     .init(name: "Attribute.swift", content:
 """
 import Foundation
 
 /// Describes Swift attribute
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, Diffable {
 
     /// Attribute name
@@ -623,6 +359,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         case final
         case open
         case lazy
+        case `package` = "package"
         case `public` = "public"
         case `internal` = "internal"
         case `private` = "private"
@@ -747,19 +484,19 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else {
+            guard let arguments: [String: NSObject] = aDecoder.decode(forKey: "arguments") else { 
                 withVaList(["arguments"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.arguments = arguments
-            guard let _description: String = aDecoder.decode(forKey: "_description") else {
+            guard let _description: String = aDecoder.decode(forKey: "_description") else { 
                 withVaList(["_description"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -778,18 +515,6 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 }
 
 """),
-    .init(name: "AutoHashable.generated.swift", content:
-"""
-// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
-// swiftlint:disable all
-
-
-// MARK: - AutoHashable for classes, protocols, structs
-
-// MARK: - AutoHashable for Enums
-
-"""),
     .init(name: "BytesRange.swift", content:
 """
 //
@@ -800,6 +525,9 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 import Foundation
 
 /// :nodoc:
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public final class BytesRange: NSObject, SourceryModel, Diffable {
 
     public let offset: Int64
@@ -870,13 +598,16 @@ public final class BytesRange: NSObject, SourceryModel, Diffable {
 import Foundation
 // sourcery: skipDescription
 /// Descibes Swift class
+#if canImport(ObjectiveC)
+@objc(SwiftClass) @objcMembers
+#endif
 public final class Class: Type {
     /// Returns "class"
     public override var kind: String { return "class" }
 
-    /// Whether type is final
+    /// Whether type is final 
     public var isFinal: Bool {
-        return modifiers.contains { $0.name == "final" }
+        modifiers.contains { $0.name == "final" }
     }
 
     /// :nodoc:
@@ -921,9 +652,9 @@ public final class Class: Type {
     /// :nodoc:
     override public var description: String {
         var string = super.description
-        string += ", "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "isFinal = \\(String(describing: self.isFinal))"
+        string.append(", ")
+        string.append("kind = \\(String(describing: self.kind)), ")
+        string.append("isFinal = \\(String(describing: self.isFinal))")
         return string
     }
 
@@ -965,282 +696,6 @@ public final class Class: Type {
 }
 
 """),
-    .init(name: "Closure.swift", content:
-"""
-import Foundation
-
-/// Describes closure type
-public final class ClosureType: NSObject, SourceryModel, Diffable {
-
-    /// Type name used in declaration with stripped whitespaces and new lines
-    public let name: String
-
-    /// List of closure parameters
-    public let parameters: [ClosureParameter]
-
-    /// Return value type name
-    public let returnTypeName: TypeName
-
-    /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
-    public var actualReturnTypeName: TypeName {
-        return returnTypeName.actualTypeName ?? returnTypeName
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Actual return value type, if known
-    public var returnType: Type?
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether return value type is optional
-    public var isOptionalReturnType: Bool {
-        return returnTypeName.isOptional
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether return value type is implicitly unwrapped optional
-    public var isImplicitlyUnwrappedOptionalReturnType: Bool {
-        return returnTypeName.isImplicitlyUnwrappedOptional
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Return value type name without attributes and optional type information
-    public var unwrappedReturnTypeName: String {
-        return returnTypeName.unwrappedTypeName
-    }
-
-    /// Whether method is async method
-    public let isAsync: Bool
-
-    /// async keyword
-    public let asyncKeyword: String?
-
-    /// Whether closure throws
-    public let `throws`: Bool
-
-    /// throws or rethrows keyword
-    public let throwsOrRethrowsKeyword: String?
-
-    /// :nodoc:
-    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil) {
-        self.name = name
-        self.parameters = parameters
-        self.returnTypeName = returnTypeName
-        self.returnType = returnType
-        self.asyncKeyword = asyncKeyword
-        self.isAsync = asyncKeyword != nil
-        self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
-        self.`throws` = throwsOrRethrowsKeyword != nil
-    }
-
-    public var asSource: String {
-        "\\(parameters.asSource)\\(asyncKeyword != nil ? " \\(asyncKeyword!)" : "")\\(throwsOrRethrowsKeyword != nil ? " \\(throwsOrRethrowsKeyword!)" : "") -> \\(returnTypeName.asSource)"
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
-        string += "isAsync = \\(String(describing: self.isAsync)), "
-        string += "asyncKeyword = \\(String(describing: self.asyncKeyword)), "
-        string += "`throws` = \\(String(describing: self.`throws`)), "
-        string += "throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? ClosureType else {
-            results.append("Incorrect type <expected: ClosureType, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
-        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
-        results.append(contentsOf: DiffableResult(identifier: "asyncKeyword").trackDifference(actual: self.asyncKeyword, expected: castObject.asyncKeyword))
-        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
-        results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.parameters)
-        hasher.combine(self.returnTypeName)
-        hasher.combine(self.isAsync)
-        hasher.combine(self.asyncKeyword)
-        hasher.combine(self.`throws`)
-        hasher.combine(self.throwsOrRethrowsKeyword)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? ClosureType else { return false }
-        if self.name != rhs.name { return false }
-        if self.parameters != rhs.parameters { return false }
-        if self.returnTypeName != rhs.returnTypeName { return false }
-        if self.isAsync != rhs.isAsync { return false }
-        if self.asyncKeyword != rhs.asyncKeyword { return false }
-        if self.`throws` != rhs.`throws` { return false }
-        if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
-        return true
-    }
-
-// sourcery:inline:ClosureType.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            guard let parameters: [ClosureParameter] = aDecoder.decode(forKey: "parameters") else {
-                withVaList(["parameters"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.parameters = parameters
-            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else {
-                withVaList(["returnTypeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.returnTypeName = returnTypeName
-            self.returnType = aDecoder.decode(forKey: "returnType")
-            self.isAsync = aDecoder.decode(forKey: "isAsync")
-            self.asyncKeyword = aDecoder.decode(forKey: "asyncKeyword")
-            self.`throws` = aDecoder.decode(forKey: "`throws`")
-            self.throwsOrRethrowsKeyword = aDecoder.decode(forKey: "throwsOrRethrowsKeyword")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.parameters, forKey: "parameters")
-            aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
-            aCoder.encode(self.returnType, forKey: "returnType")
-            aCoder.encode(self.isAsync, forKey: "isAsync")
-            aCoder.encode(self.asyncKeyword, forKey: "asyncKeyword")
-            aCoder.encode(self.`throws`, forKey: "`throws`")
-            aCoder.encode(self.throwsOrRethrowsKeyword, forKey: "throwsOrRethrowsKeyword")
-        }
-// sourcery:end
-
-}
-
-"""),
-    .init(name: "Coding.generated.swift", content:
-"""
-// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
-// swiftlint:disable vertical_whitespace trailing_newline
-
-import Foundation
-
-
-extension NSCoder {
-
-    @nonobjc func decode(forKey: String) -> String? {
-        return self.maybeDecode(forKey: forKey) as String?
-    }
-
-    @nonobjc func decode(forKey: String) -> TypeName? {
-        return self.maybeDecode(forKey: forKey) as TypeName?
-    }
-
-    @nonobjc func decode(forKey: String) -> AccessLevel? {
-        return self.maybeDecode(forKey: forKey) as AccessLevel?
-    }
-
-    @nonobjc func decode(forKey: String) -> Bool {
-        return self.decodeBool(forKey: forKey)
-    }
-
-    @nonobjc func decode(forKey: String) -> Int {
-        return self.decodeInteger(forKey: forKey)
-    }
-
-    func decode<E>(forKey: String) -> E? {
-        return maybeDecode(forKey: forKey) as E?
-    }
-
-    fileprivate func maybeDecode<E>(forKey: String) -> E? {
-        guard let object = self.decodeObject(forKey: forKey) else {
-            return nil
-        }
-
-        return object as? E
-    }
-
-}
-
-extension ArrayType: NSCoding {}
-
-extension AssociatedType: NSCoding {}
-
-extension AssociatedValue: NSCoding {}
-
-extension Attribute: NSCoding {}
-
-extension BytesRange: NSCoding {}
-
-
-extension ClosureParameter: NSCoding {}
-
-extension ClosureType: NSCoding {}
-
-extension DictionaryType: NSCoding {}
-
-
-extension EnumCase: NSCoding {}
-
-extension FileParserResult: NSCoding {}
-
-extension GenericRequirement: NSCoding {}
-
-extension GenericType: NSCoding {}
-
-extension GenericTypeParameter: NSCoding {}
-
-extension GenericParameter: NSCoding {}
-
-extension Import: NSCoding {}
-
-extension Method: NSCoding {}
-
-extension MethodParameter: NSCoding {}
-
-extension Modifier: NSCoding {}
-
-
-
-
-extension Subscript: NSCoding {}
-
-extension TupleElement: NSCoding {}
-
-extension TupleType: NSCoding {}
-
-extension Type: NSCoding {}
-
-extension TypeName: NSCoding {}
-
-extension Typealias: NSCoding {}
-
-extension Types: NSCoding {}
-
-extension Variable: NSCoding {}
-
-
-"""),
     .init(name: "Composer.swift", content:
 """
 //
@@ -1272,12 +727,16 @@ public enum Composer {
             return composed.resolveType(typeName: typeName, containingType: containingType)
         }
 
+        let methodResolveType = { (typeName: TypeName, containingType: Type?, method: Method) -> Type? in
+            return composed.resolveType(typeName: typeName, containingType: containingType, method: method)
+        }
+
         composed.types.parallelPerform { type in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
             }
             type.methods.forEach {
-                resolveMethodTypes($0, of: type, resolve: resolveType)
+                resolveMethodTypes($0, of: type, resolve: methodResolveType)
             }
             type.subscripts.forEach {
                 resolveSubscriptTypes($0, of: type, resolve: resolveType)
@@ -1297,7 +756,7 @@ public enum Composer {
         }
 
         composed.functions.parallelPerform { function in
-            resolveMethodTypes(function, of: nil, resolve: resolveType)
+            resolveMethodTypes(function, of: nil, resolve: methodResolveType)
         }
 
         updateTypeRelationships(types: composed.types)
@@ -1310,6 +769,7 @@ public enum Composer {
     }
 
     typealias TypeResolver = (TypeName, Type?) -> Type?
+    typealias MethodArgumentTypeResolver = (TypeName, Type?, Method) -> Type?
 
     private static func resolveVariableTypes(_ variable: Variable, of type: Type, resolve: TypeResolver) {
         variable.type = resolve(variable.typeName, type)
@@ -1333,9 +793,9 @@ public enum Composer {
         }
     }
 
-    private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type?, resolve: TypeResolver) {
+    private static func resolveMethodTypes(_ method: SourceryMethod, of type: Type?, resolve: MethodArgumentTypeResolver) {
         method.parameters.forEach { parameter in
-            parameter.type = resolve(parameter.typeName, type)
+            parameter.type = resolve(parameter.typeName, type, method)
         }
 
         /// The actual `definedInType` is assigned in `uniqueTypes` but we still
@@ -1343,7 +803,7 @@ public enum Composer {
         /// @see https://github.com/krzysztofzablocki/Sourcery/pull/374
         var definedInType: Type?
         if let definedInTypeName = method.definedInTypeName {
-            definedInType = resolve(definedInTypeName, type)
+            definedInType = resolve(definedInTypeName, type, method)
         }
 
         guard !method.returnTypeName.isVoid else { return }
@@ -1369,7 +829,7 @@ public enum Composer {
                 }
             }
         } else {
-            method.returnType = resolve(method.returnTypeName, type)
+            method.returnType = resolve(method.returnTypeName, type, method)
         }
     }
 
@@ -1442,6 +902,13 @@ public enum Composer {
     }
 
     private static func findBaseType(for type: Type, name: String, typesByName: [String: Type]) -> Type? {
+        // special case to check if the type is based on one of the recognized types
+        // and the superclass has a generic constraint in `name` part of the `TypeName`
+        var name = name
+        if name.contains("<") && name.contains(">") {
+            let parts = name.split(separator: "<")
+            name = String(parts.first!)
+        }
         if let baseType = typesByName[name] {
             return baseType
         }
@@ -1517,6 +984,9 @@ public protocol Definition: AnyObject {
 import Foundation
 
 /// Describes dictionary type
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public final class DictionaryType: NSObject, SourceryModel, Diffable {
     /// Type name used in declaration
     public var name: String
@@ -1600,20 +1070,20 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let valueTypeName: TypeName = aDecoder.decode(forKey: "valueTypeName") else {
+            guard let valueTypeName: TypeName = aDecoder.decode(forKey: "valueTypeName") else { 
                 withVaList(["valueTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.valueTypeName = valueTypeName
             self.valueType = aDecoder.decode(forKey: "valueType")
-            guard let keyTypeName: TypeName = aDecoder.decode(forKey: "keyTypeName") else {
+            guard let keyTypeName: TypeName = aDecoder.decode(forKey: "keyTypeName") else { 
                 withVaList(["keyTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -1674,6 +1144,9 @@ extension NSRange: Diffable {
     }
 }
 
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public class DiffableResult: NSObject, AutoEquatable {
     // sourcery: skipEquality
     private var results: [String]
@@ -1696,9 +1169,24 @@ public class DiffableResult: NSObject, AutoEquatable {
 
     var isEmpty: Bool { return results.isEmpty }
 
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.identifier)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? DiffableResult else { return false }
+        if self.identifier != rhs.identifier { return false }
+        return true
+    }
+
     public override var description: String {
         guard !results.isEmpty else { return "" }
-        return "\\(identifier.flatMap { "\\($0) " } ?? "")" + results.joined(separator: "\\n")
+        var description = "\\(identifier.flatMap { "\\($0) " } ?? "")"
+        description.append(results.joined(separator: "\\n"))
+        return description
     }
 }
 
@@ -1719,7 +1207,9 @@ public extension DiffableResult {
     /// :nodoc:
     @discardableResult func trackDifference<T: Equatable>(actual: T?, expected: T?) -> DiffableResult {
         if actual != expected {
-            let result = DiffableResult(results: ["<expected: \\(expected.map({ "\\($0)" }) ?? "nil"), received: \\(actual.map({ "\\($0)" }) ?? "nil")>"])
+            let expected = expected.map({ "\\($0)" }) ?? "nil"
+            let actual = actual.map({ "\\($0)" }) ?? "nil"
+            let result = DiffableResult(results: ["<expected: \\(expected), received: \\(actual)>"])
             append(contentsOf: result)
         }
         return self
@@ -1854,429 +1344,6 @@ public typealias Documentation = [String]
 /// Describes a declaration with documentation, i.e. type, method, variable, enum case
 public protocol Documented {
     var documentation: Documentation { get }
-}
-
-"""),
-    .init(name: "EnumCase.swift", content:
-"""
-import Foundation
-
-/// Defines enum case
-public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable {
-
-    /// Enum case name
-    public let name: String
-
-    /// Enum case raw value, if any
-    public let rawValue: String?
-
-    /// Enum case associated values
-    public let associatedValues: [AssociatedValue]
-
-    /// Enum case annotations
-    public var annotations: Annotations = [:]
-
-    public var documentation: Documentation = []
-
-    /// Whether enum case is indirect
-    public let indirect: Bool
-
-    /// Whether enum case has associated value
-    public var hasAssociatedValue: Bool {
-        return !associatedValues.isEmpty
-    }
-
-    // Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    public var __parserData: Any?
-
-    /// :nodoc:
-    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], documentation: [String] = [], indirect: Bool = false) {
-        self.name = name
-        self.rawValue = rawValue
-        self.associatedValues = associatedValues
-        self.annotations = annotations
-        self.documentation = documentation
-        self.indirect = indirect
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "rawValue = \\(String(describing: self.rawValue)), "
-        string += "associatedValues = \\(String(describing: self.associatedValues)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "indirect = \\(String(describing: self.indirect)), "
-        string += "hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? EnumCase else {
-            results.append("Incorrect type <expected: EnumCase, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: castObject.rawValue))
-        results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: castObject.associatedValues))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
-        results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.rawValue)
-        hasher.combine(self.associatedValues)
-        hasher.combine(self.annotations)
-        hasher.combine(self.documentation)
-        hasher.combine(self.indirect)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? EnumCase else { return false }
-        if self.name != rhs.name { return false }
-        if self.rawValue != rhs.rawValue { return false }
-        if self.associatedValues != rhs.associatedValues { return false }
-        if self.annotations != rhs.annotations { return false }
-        if self.documentation != rhs.documentation { return false }
-        if self.indirect != rhs.indirect { return false }
-        return true
-    }
-
-// sourcery:inline:EnumCase.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            self.rawValue = aDecoder.decode(forKey: "rawValue")
-            guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else {
-                withVaList(["associatedValues"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.associatedValues = associatedValues
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
-                withVaList(["annotations"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
-                withVaList(["documentation"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.documentation = documentation
-            self.indirect = aDecoder.decode(forKey: "indirect")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.rawValue, forKey: "rawValue")
-            aCoder.encode(self.associatedValues, forKey: "associatedValues")
-            aCoder.encode(self.annotations, forKey: "annotations")
-            aCoder.encode(self.documentation, forKey: "documentation")
-            aCoder.encode(self.indirect, forKey: "indirect")
-        }
-// sourcery:end
-}
-
-"""),
-    .init(name: "AssociatedValue.swift", content:
-"""
-//
-// Created by Krzysztof Zablocki on 13/09/2016.
-// Copyright (c) 2016 Pixle. All rights reserved.
-//
-
-import Foundation
-
-/// Defines enum case associated value
-public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable {
-
-    /// Associated value local name.
-    /// This is a name to be used to construct enum case value
-    public let localName: String?
-
-    /// Associated value external name.
-    /// This is a name to be used to access value in value-bindig
-    public let externalName: String?
-
-    /// Associated value type name
-    public let typeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Associated value type, if known
-    public var type: Type?
-
-    /// Associated value default value
-    public let defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
-        self.localName = localName
-        self.externalName = externalName
-        self.typeName = typeName
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-    }
-
-    convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
-        self.init(localName: name, externalName: name, typeName: typeName, type: type, defaultValue: defaultValue, annotations: annotations)
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "localName = \\(String(describing: self.localName)), "
-        string += "externalName = \\(String(describing: self.externalName)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? AssociatedValue else {
-            results.append("Incorrect type <expected: AssociatedValue, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
-        results.append(contentsOf: DiffableResult(identifier: "externalName").trackDifference(actual: self.externalName, expected: castObject.externalName))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.localName)
-        hasher.combine(self.externalName)
-        hasher.combine(self.typeName)
-        hasher.combine(self.defaultValue)
-        hasher.combine(self.annotations)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? AssociatedValue else { return false }
-        if self.localName != rhs.localName { return false }
-        if self.externalName != rhs.externalName { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.defaultValue != rhs.defaultValue { return false }
-        if self.annotations != rhs.annotations { return false }
-        return true
-    }
-
-// sourcery:inline:AssociatedValue.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            self.localName = aDecoder.decode(forKey: "localName")
-            self.externalName = aDecoder.decode(forKey: "externalName")
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
-                withVaList(["typeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
-            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
-                withVaList(["annotations"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.annotations = annotations
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.localName, forKey: "localName")
-            aCoder.encode(self.externalName, forKey: "externalName")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-            aCoder.encode(self.defaultValue, forKey: "defaultValue")
-            aCoder.encode(self.annotations, forKey: "annotations")
-        }
-// sourcery:end
-
-}
-
-"""),
-    .init(name: "Enum.swift", content:
-"""
-import Foundation
-
-/// Defines Swift enum
-public final class Enum: Type {
-
-    // sourcery: skipDescription
-    /// Returns "enum"
-    public override var kind: String { return "enum" }
-
-    /// Enum cases
-    public var cases: [EnumCase]
-
-    /**
-     Enum raw value type name, if any. This type is removed from enum's `based` and `inherited` types collections.
-
-        - important: Unless raw type is specified explicitly via type alias RawValue it will be set to the first type in the inheritance chain.
-     So if your enum does not have raw value but implements protocols you'll have to specify conformance to these protocols via extension to get enum with nil raw value type and all based and inherited types.
-     */
-    public var rawTypeName: TypeName? {
-        didSet {
-            if let rawTypeName = rawTypeName {
-                hasRawType = true
-                if let index = inheritedTypes.firstIndex(of: rawTypeName.name) {
-                    inheritedTypes.remove(at: index)
-                }
-                if based[rawTypeName.name] != nil {
-                    based[rawTypeName.name] = nil
-                }
-            } else {
-                hasRawType = false
-            }
-        }
-    }
-
-    // sourcery: skipDescription, skipEquality
-    /// :nodoc:
-    public private(set) var hasRawType: Bool
-
-    // sourcery: skipDescription, skipEquality
-    /// Enum raw value type, if known
-    public var rawType: Type?
-
-    // sourcery: skipEquality, skipDescription, skipCoding
-    /// Names of types or protocols this type inherits from, including unknown (not scanned) types
-    public override var based: [String: String] {
-        didSet {
-            if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
-                based[rawTypeName.name] = nil
-            }
-        }
-    }
-
-    /// Whether enum contains any associated values
-    public var hasAssociatedValues: Bool {
-        return cases.contains(where: { $0.hasAssociatedValue })
-    }
-
-    /// :nodoc:
-    public init(name: String = "",
-                parent: Type? = nil,
-                accessLevel: AccessLevel = .internal,
-                isExtension: Bool = false,
-                inheritedTypes: [String] = [],
-                rawTypeName: TypeName? = nil,
-                cases: [EnumCase] = [],
-                variables: [Variable] = [],
-                methods: [Method] = [],
-                containedTypes: [Type] = [],
-                typealiases: [Typealias] = [],
-                attributes: AttributeList = [:],
-                modifiers: [SourceryModifier] = [],
-                annotations: [String: NSObject] = [:],
-                documentation: [String] = [],
-                isGeneric: Bool = false) {
-
-        self.cases = cases
-        self.rawTypeName = rawTypeName
-        self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
-
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric)
-
-        if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
-            self.inheritedTypes.remove(at: index)
-        }
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = super.description
-        string += ", "
-        string += "cases = \\(String(describing: self.cases)), "
-        string += "rawTypeName = \\(String(describing: self.rawTypeName)), "
-        string += "hasAssociatedValues = \\(String(describing: self.hasAssociatedValues))"
-        return string
-    }
-
-    override public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Enum else {
-            results.append("Incorrect type <expected: Enum, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: castObject.cases))
-        results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
-        results.append(contentsOf: super.diffAgainst(castObject))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.cases)
-        hasher.combine(self.rawTypeName)
-        hasher.combine(super.hash)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Enum else { return false }
-        if self.cases != rhs.cases { return false }
-        if self.rawTypeName != rhs.rawTypeName { return false }
-        return super.isEqual(rhs)
-    }
-
-// sourcery:inline:Enum.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let cases: [EnumCase] = aDecoder.decode(forKey: "cases") else {
-                withVaList(["cases"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.cases = cases
-            self.rawTypeName = aDecoder.decode(forKey: "rawTypeName")
-            self.hasRawType = aDecoder.decode(forKey: "hasRawType")
-            self.rawType = aDecoder.decode(forKey: "rawType")
-            super.init(coder: aDecoder)
-        }
-
-        /// :nodoc:
-        override public func encode(with aCoder: NSCoder) {
-            super.encode(with: aCoder)
-            aCoder.encode(self.cases, forKey: "cases")
-            aCoder.encode(self.rawTypeName, forKey: "rawTypeName")
-            aCoder.encode(self.hasRawType, forKey: "hasRawType")
-            aCoder.encode(self.rawType, forKey: "rawType")
-        }
-// sourcery:end
 }
 
 """),
@@ -2473,29 +1540,37 @@ public extension String {
             defer {
                 i = self.index(i, offsetBy: offset)
             }
-            let currentlyScanned = self[i..<(self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) ?? self.endIndex)]
-            if let openString = between.open.first(where: { String(self[i...]).starts(with: $0) }) {
-                if !(boundingCharactersCount == 0 && String(self[i]) == delimiter) {
+            var currentlyScannedEnd: Index = self.endIndex
+            if let endIndex = self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) {
+                currentlyScannedEnd = endIndex
+            }
+            let currentlyScanned: String = String(self[i..<currentlyScannedEnd])
+            if let openString = between.open.first(where: { self[i...].starts(with: $0) }) {
+                if !((boundingCharactersCount == 0) as Bool && (String(self[i]) == delimiter) as Bool) {
                     boundingCharactersCount += 1
                 }
                 offset = openString.count
-            } else if let closeString = between.close.first(where: { String(self[i...]).starts(with: $0) }) {
+            } else if let closeString = between.close.first(where: { self[i...].starts(with: $0) }) {
                 // do not count `->`
-                if !(self[i] == ">" && item.last == "-") {
+                if !((self[i] == ">") as Bool && (item.last == "-") as Bool) {
                     boundingCharactersCount = max(0, boundingCharactersCount - 1)
                 }
                 offset = closeString.count
             }
-            if self[i] == "\\"" {
+            if (self[i] == "\\"") as Bool {
                 quotesCount += 1
             }
 
-            if currentlyScanned == delimiter && boundingCharactersCount == 0 && quotesCount % 2 == 0 {
+            let currentIsDelimiter = (currentlyScanned == delimiter) as Bool
+            let boundingCountIsZero = (boundingCharactersCount == 0) as Bool
+            let hasEvenQuotes = (quotesCount % 2 == 0) as Bool
+            if currentIsDelimiter && boundingCountIsZero && hasEvenQuotes {
                 items.append(item)
                 item = ""
                 i = self.index(i, offsetBy: delimiter.count - 1)
             } else {
-                item += self[i..<self.index(i, offsetBy: offset)]
+                let endIndex: Index = self.index(i, offsetBy: offset)
+                item += self[i..<endIndex]
             }
         }
         items.append(item)
@@ -2525,6 +1600,9 @@ import Foundation
 
 // sourcery: skipJSExport
 /// :nodoc:
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public final class FileParserResult: NSObject, SourceryModel, Diffable {
     public let path: String?
     public let module: String?
@@ -2635,43 +1713,43 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
         required public init?(coder aDecoder: NSCoder) {
             self.path = aDecoder.decode(forKey: "path")
             self.module = aDecoder.decode(forKey: "module")
-            guard let types: [Type] = aDecoder.decode(forKey: "types") else {
+            guard let types: [Type] = aDecoder.decode(forKey: "types") else { 
                 withVaList(["types"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.types = types
-            guard let functions: [SourceryMethod] = aDecoder.decode(forKey: "functions") else {
+            guard let functions: [SourceryMethod] = aDecoder.decode(forKey: "functions") else { 
                 withVaList(["functions"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.functions = functions
-            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else {
+            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { 
                 withVaList(["typealiases"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.typealiases = typealiases
-            guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else {
+            guard let inlineRanges: [String: NSRange] = aDecoder.decode(forKey: "inlineRanges") else { 
                 withVaList(["inlineRanges"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.inlineRanges = inlineRanges
-            guard let inlineIndentations: [String: String] = aDecoder.decode(forKey: "inlineIndentations") else {
+            guard let inlineIndentations: [String: String] = aDecoder.decode(forKey: "inlineIndentations") else { 
                 withVaList(["inlineIndentations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.inlineIndentations = inlineIndentations
-            guard let modifiedDate: Date = aDecoder.decode(forKey: "modifiedDate") else {
+            guard let modifiedDate: Date = aDecoder.decode(forKey: "modifiedDate") else { 
                 withVaList(["modifiedDate"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.modifiedDate = modifiedDate
-            guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else {
+            guard let sourceryVersion: String = aDecoder.decode(forKey: "sourceryVersion") else { 
                 withVaList(["sourceryVersion"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -2700,6 +1778,9 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
 import Foundation
 
 /// Descibes Swift generic type
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffable {
     /// The name of the base type, i.e. `Array` for `Array<Int>`
     public var name: String
@@ -2748,19 +1829,19 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
         if self.name != rhs.name { return false }
         if self.typeParameters != rhs.typeParameters { return false }
         return true
-    }
+    }   
 
 // sourcery:inline:GenericType.AutoCoding
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let typeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "typeParameters") else {
+            guard let typeParameters: [GenericTypeParameter] = aDecoder.decode(forKey: "typeParameters") else { 
                 withVaList(["typeParameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -2777,201 +1858,15 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
 // sourcery:end
 }
 
-/// Descibes Swift generic type parameter
-public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {
-
-    /// Generic parameter type name
-    public var typeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Generic parameter type, if known
-    public var type: Type?
-
-    /// :nodoc:
-    public init(typeName: TypeName, type: Type? = nil) {
-        self.typeName = typeName
-        self.type = type
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "typeName = \\(String(describing: self.typeName))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? GenericTypeParameter else {
-            results.append("Incorrect type <expected: GenericTypeParameter, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.typeName)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericTypeParameter else { return false }
-        if self.typeName != rhs.typeName { return false }
-        return true
-    }
-
-// sourcery:inline:GenericTypeParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
-                withVaList(["typeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-        }
-
-// sourcery:end
-}
-
-"""),
-    .init(name: "GenericRequirement.swift", content:
-"""
-import Foundation
-
-/// modifier can be thing like `private`, `class`, `nonmutating`
-/// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
-public class GenericRequirement: NSObject, SourceryModel, Diffable {
-
-    public enum Relationship: String {
-        case equals
-        case conformsTo
-
-        var syntax: String {
-            switch self {
-            case .equals:
-                return "=="
-            case .conformsTo:
-                return ":"
-            }
-        }
-    }
-
-    public var leftType: AssociatedType
-    public let rightType: GenericTypeParameter
-
-    /// relationship name
-    public let relationship: String
-
-    /// Syntax e.g. `==` or `:`
-    public let relationshipSyntax: String
-
-    public init(leftType: AssociatedType, rightType: GenericTypeParameter, relationship: Relationship) {
-        self.leftType = leftType
-        self.rightType = rightType
-        self.relationship = relationship.rawValue
-        self.relationshipSyntax = relationship.syntax
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "leftType = \\(String(describing: self.leftType)), "
-        string += "rightType = \\(String(describing: self.rightType)), "
-        string += "relationship = \\(String(describing: self.relationship)), "
-        string += "relationshipSyntax = \\(String(describing: self.relationshipSyntax))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? GenericRequirement else {
-            results.append("Incorrect type <expected: GenericRequirement, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "leftType").trackDifference(actual: self.leftType, expected: castObject.leftType))
-        results.append(contentsOf: DiffableResult(identifier: "rightType").trackDifference(actual: self.rightType, expected: castObject.rightType))
-        results.append(contentsOf: DiffableResult(identifier: "relationship").trackDifference(actual: self.relationship, expected: castObject.relationship))
-        results.append(contentsOf: DiffableResult(identifier: "relationshipSyntax").trackDifference(actual: self.relationshipSyntax, expected: castObject.relationshipSyntax))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.leftType)
-        hasher.combine(self.rightType)
-        hasher.combine(self.relationship)
-        hasher.combine(self.relationshipSyntax)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? GenericRequirement else { return false }
-        if self.leftType != rhs.leftType { return false }
-        if self.rightType != rhs.rightType { return false }
-        if self.relationship != rhs.relationship { return false }
-        if self.relationshipSyntax != rhs.relationshipSyntax { return false }
-        return true
-    }
-
-    // sourcery:inline:GenericRequirement.AutoCoding
-
-            /// :nodoc:
-            required public init?(coder aDecoder: NSCoder) {
-                guard let leftType: AssociatedType = aDecoder.decode(forKey: "leftType") else {
-                withVaList(["leftType"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.leftType = leftType
-                guard let rightType: GenericTypeParameter = aDecoder.decode(forKey: "rightType") else {
-                withVaList(["rightType"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.rightType = rightType
-                guard let relationship: String = aDecoder.decode(forKey: "relationship") else {
-                withVaList(["relationship"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.relationship = relationship
-                guard let relationshipSyntax: String = aDecoder.decode(forKey: "relationshipSyntax") else {
-                withVaList(["relationshipSyntax"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.relationshipSyntax = relationshipSyntax
-            }
-
-            /// :nodoc:
-            public func encode(with aCoder: NSCoder) {
-                aCoder.encode(self.leftType, forKey: "leftType")
-                aCoder.encode(self.rightType, forKey: "rightType")
-                aCoder.encode(self.relationship, forKey: "relationship")
-                aCoder.encode(self.relationshipSyntax, forKey: "relationshipSyntax")
-            }
-    // sourcery:end
-}
-
 """),
     .init(name: "Import.swift", content:
 """
 import Foundation
 
 /// Defines import type
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
     /// Import kind, e.g. class, struct in `import class Module.ClassName`
     public var kind: String?
@@ -3038,7 +1933,7 @@ public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.kind = aDecoder.decode(forKey: "kind")
-            guard let path: String = aDecoder.decode(forKey: "path") else {
+            guard let path: String = aDecoder.decode(forKey: "path") else { 
                 withVaList(["path"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -3058,6 +1953,7 @@ public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
 """),
     .init(name: "Log.swift", content:
 """
+//import Darwin
 import Foundation
 
 /// :nodoc:
@@ -3133,781 +2029,6 @@ public enum Log {
 extension String: Error {}
 
 """),
-    .init(name: "MethodParameter.swift", content:
-"""
-import Foundation
-
-/// Describes method parameter
-public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable {
-
-    /// Parameter external name
-    public var argumentLabel: String?
-
-    // Note: although method parameter can have no name, this property is not optional,
-    // this is so to maintain compatibility with existing templates.
-    /// Parameter internal name
-    public let name: String
-
-    /// Parameter type name
-    public let typeName: TypeName
-
-    /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
-
-    /// Is this variadic parameter?
-    public let isVariadic: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Parameter type, if known
-    public var type: Type?
-
-    /// Parameter type attributes, i.e. `@escaping`
-    public var typeAttributes: AttributeList {
-        return typeName.attributes
-    }
-
-    /// Method parameter default value expression
-    public var defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = argumentLabel
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-        self.isVariadic = isVariadic
-    }
-
-    /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = name
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-        self.isVariadic = isVariadic
-    }
-
-    public var asSource: String {
-        let typeSuffix = ": \\(`inout` ? "inout " : "")\\(typeName.asSource)\\(defaultValue.map { " = \\($0)" } ?? "")" + (isVariadic ? "..." : "")
-        guard argumentLabel != name else {
-            return name + typeSuffix
-        }
-
-        let labels = [argumentLabel ?? "_", name.nilIfEmpty]
-          .compactMap { $0 }
-          .joined(separator: " ")
-
-        return (labels.nilIfEmpty ?? "_") + typeSuffix
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "`inout` = \\(String(describing: self.`inout`)), "
-        string += "isVariadic = \\(String(describing: self.isVariadic)), "
-        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? MethodParameter else {
-            results.append("Incorrect type <expected: MethodParameter, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "argumentLabel").trackDifference(actual: self.argumentLabel, expected: castObject.argumentLabel))
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
-        results.append(contentsOf: DiffableResult(identifier: "isVariadic").trackDifference(actual: self.isVariadic, expected: castObject.isVariadic))
-        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.argumentLabel)
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        hasher.combine(self.`inout`)
-        hasher.combine(self.isVariadic)
-        hasher.combine(self.defaultValue)
-        hasher.combine(self.annotations)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? MethodParameter else { return false }
-        if self.argumentLabel != rhs.argumentLabel { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.`inout` != rhs.`inout` { return false }
-        if self.isVariadic != rhs.isVariadic { return false }
-        if self.defaultValue != rhs.defaultValue { return false }
-        if self.annotations != rhs.annotations { return false }
-        return true
-    }
-
-// sourcery:inline:MethodParameter.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
-                withVaList(["typeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.typeName = typeName
-            self.`inout` = aDecoder.decode(forKey: "`inout`")
-            self.isVariadic = aDecoder.decode(forKey: "isVariadic")
-            self.type = aDecoder.decode(forKey: "type")
-            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
-                withVaList(["annotations"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.annotations = annotations
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.`inout`, forKey: "`inout`")
-            aCoder.encode(self.isVariadic, forKey: "isVariadic")
-            aCoder.encode(self.type, forKey: "type")
-            aCoder.encode(self.defaultValue, forKey: "defaultValue")
-            aCoder.encode(self.annotations, forKey: "annotations")
-        }
-// sourcery:end
-}
-
-extension Array where Element == MethodParameter {
-    public var asSource: String {
-        "(\\(map { $0.asSource }.joined(separator: ", ")))"
-    }
-}
-
-"""),
-    .init(name: "ClosureParameter.swift", content:
-"""
-import Foundation
-
-// sourcery: skipDiffing
-public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated {
-    /// Parameter external name
-    public var argumentLabel: String?
-
-    /// Parameter internal name
-    public let name: String?
-
-    /// Parameter type name
-    public let typeName: TypeName
-
-    /// Parameter flag whether it's inout or not
-    public let `inout`: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Parameter type, if known
-    public var type: Type?
-
-    /// Parameter type attributes, i.e. `@escaping`
-    public var typeAttributes: AttributeList {
-        return typeName.attributes
-    }
-
-    /// Method parameter default value expression
-    public var defaultValue: String?
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public var annotations: Annotations = [:]
-
-    /// :nodoc:
-    public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
-                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false) {
-        self.typeName = typeName
-        self.argumentLabel = argumentLabel
-        self.name = name
-        self.type = type
-        self.defaultValue = defaultValue
-        self.annotations = annotations
-        self.`inout` = isInout
-    }
-
-    public var asSource: String {
-        let typeInfo = "\\(`inout` ? "inout " : "")\\(typeName.asSource)"
-        if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
-            return typeInfo
-        }
-
-        let typeSuffix = ": \\(typeInfo)"
-        guard argumentLabel != name else {
-            return name ?? "" + typeSuffix
-        }
-
-        let labels = [argumentLabel ?? "_", name?.nilIfEmpty]
-          .compactMap { $0 }
-          .joined(separator: " ")
-
-        return (labels.nilIfEmpty ?? "_") + typeSuffix
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.argumentLabel)
-        hasher.combine(self.name)
-        hasher.combine(self.typeName)
-        hasher.combine(self.`inout`)
-        hasher.combine(self.defaultValue)
-        hasher.combine(self.annotations)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "`inout` = \\(String(describing: self.`inout`)), "
-        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "asSource = \\(String(describing: self.asSource))"
-        return string
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? ClosureParameter else { return false }
-        if self.argumentLabel != rhs.argumentLabel { return false }
-        if self.name != rhs.name { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.`inout` != rhs.`inout` { return false }
-        if self.defaultValue != rhs.defaultValue { return false }
-        if self.annotations != rhs.annotations { return false }
-        return true
-    }
-
-    // sourcery:inline:ClosureParameter.AutoCoding
-
-            /// :nodoc:
-            required public init?(coder aDecoder: NSCoder) {
-                self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-                self.name = aDecoder.decode(forKey: "name")
-                guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
-                withVaList(["typeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.typeName = typeName
-                self.`inout` = aDecoder.decode(forKey: "`inout`")
-                self.type = aDecoder.decode(forKey: "type")
-                self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-                guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
-                withVaList(["annotations"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.annotations = annotations
-            }
-
-            /// :nodoc:
-            public func encode(with aCoder: NSCoder) {
-                aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
-                aCoder.encode(self.name, forKey: "name")
-                aCoder.encode(self.typeName, forKey: "typeName")
-                aCoder.encode(self.`inout`, forKey: "`inout`")
-                aCoder.encode(self.type, forKey: "type")
-                aCoder.encode(self.defaultValue, forKey: "defaultValue")
-                aCoder.encode(self.annotations, forKey: "annotations")
-            }
-
-    // sourcery:end
-}
-
-extension Array where Element == ClosureParameter {
-    public var asSource: String {
-        "(\\(map { $0.asSource }.joined(separator: ", ")))"
-    }
-}
-
-"""),
-    .init(name: "Method.swift", content:
-"""
-import Foundation
-
-/// :nodoc:
-public typealias SourceryMethod = Method
-
-/// Describes method
-public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
-    public subscript(dynamicMember member: String) -> Any? {
-        switch member {
-            case "definedInType":
-                return definedInType
-            case "shortName":
-                return shortName
-            case "name":
-                return name
-            case "selectorName":
-                return selectorName
-            case "callName":
-                return callName
-            case "parameters":
-                return parameters
-            case "throws":
-                return `throws`
-            case "isInitializer":
-                return isInitializer
-            case "accessLevel":
-                return accessLevel
-            case "isStatic":
-                return isStatic
-            case "returnTypeName":
-                return returnTypeName
-            case "isAsync":
-                return isAsync
-            case "attributes":
-                return attributes
-            case "isOptionalReturnType":
-                return isOptionalReturnType
-            case "actualReturnTypeName":
-                return actualReturnTypeName
-            case "isDynamic":
-                return isDynamic
-            case "genericRequirements":
-                return genericRequirements
-            default:
-                fatalError("unable to lookup: \\(member) in \\(self)")
-        }
-    }
-
-    /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
-    public let name: String
-
-    /// Method name including arguments names, i.e. `foo(bar:)`
-    public var selectorName: String
-
-    // sourcery: skipEquality, skipDescription
-    /// Method name without arguments names and parenthesis, i.e. `foo<T>`
-    public var shortName: String {
-        return name.range(of: "(").map({ String(name[..<$0.lowerBound]) }) ?? name
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Method name without arguments names, parenthesis and generic types, i.e. `foo` (can be used to generate code for method call)
-    public var callName: String {
-        return shortName.range(of: "<").map({ String(shortName[..<$0.lowerBound]) }) ?? shortName
-    }
-
-    /// Method parameters
-    public var parameters: [MethodParameter]
-
-    /// Return value type name used in declaration, including generic constraints, i.e. `where T: Equatable`
-    public var returnTypeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
-    public var actualReturnTypeName: TypeName {
-        return returnTypeName.actualTypeName ?? returnTypeName
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Actual return value type, if known
-    public var returnType: Type?
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether return value type is optional
-    public var isOptionalReturnType: Bool {
-        return returnTypeName.isOptional || isFailableInitializer
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether return value type is implicitly unwrapped optional
-    public var isImplicitlyUnwrappedOptionalReturnType: Bool {
-        return returnTypeName.isImplicitlyUnwrappedOptional
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Return value type name without attributes and optional type information
-    public var unwrappedReturnTypeName: String {
-        return returnTypeName.unwrappedTypeName
-    }
-
-    /// Whether method is async method
-    public let isAsync: Bool
-
-    /// Whether method throws
-    public let `throws`: Bool
-
-    /// Whether method rethrows
-    public let `rethrows`: Bool
-
-    /// Method access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
-    public let accessLevel: String
-
-    /// Whether method is a static method
-    public let isStatic: Bool
-
-    /// Whether method is a class method
-    public let isClass: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is an initializer
-    public var isInitializer: Bool {
-        return selectorName.hasPrefix("init(") || selectorName == "init"
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is an deinitializer
-    public var isDeinitializer: Bool {
-        return selectorName == "deinit"
-    }
-
-    /// Whether method is a failable initializer
-    public let isFailableInitializer: Bool
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is a convenience initializer
-    public var isConvenienceInitializer: Bool {
-        modifiers.contains { $0.name == Attribute.Identifier.convenience.rawValue }
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is required
-    public var isRequired: Bool {
-        modifiers.contains { $0.name == Attribute.Identifier.required.rawValue }
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is final
-    public var isFinal: Bool {
-        modifiers.contains { $0.name == Attribute.Identifier.final.rawValue }
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is mutating
-    public var isMutating: Bool {
-        modifiers.contains { $0.name == Attribute.Identifier.mutating.rawValue }
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is generic
-    public var isGeneric: Bool {
-        shortName.hasSuffix(">")
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is optional (in an Objective-C protocol)
-    public var isOptional: Bool {
-        modifiers.contains { $0.name == Attribute.Identifier.optional.rawValue }
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is nonisolated (this modifier only applies to actor methods)
-    public var isNonisolated: Bool {
-        modifiers.contains { $0.name == Attribute.Identifier.nonisolated.rawValue }
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether method is dynamic
-    public var isDynamic: Bool {
-        modifiers.contains { $0.name == Attribute.Identifier.dynamic.rawValue }
-    }
-
-    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
-    public let annotations: Annotations
-
-    public let documentation: Documentation
-
-    /// Reference to type name where the method is defined,
-    /// nil if defined outside of any `enum`, `struct`, `class` etc
-    public let definedInTypeName: TypeName?
-
-    // sourcery: skipEquality, skipDescription
-    /// Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
-    public var actualDefinedInTypeName: TypeName? {
-        return definedInTypeName?.actualTypeName ?? definedInTypeName
-    }
-
-    // sourcery: skipEquality, skipDescription
-    /// Reference to actual type where the object is defined,
-    /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown
-    public var definedInType: Type?
-
-    /// Method attributes, i.e. `@discardableResult`
-    public let attributes: AttributeList
-
-    /// Method modifiers, i.e. `private`
-    public let modifiers: [SourceryModifier]
-
-    // Underlying parser data, never to be used by anything else
-    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
-    /// :nodoc:
-    public var __parserData: Any?
-
-    /// list of generic requirements
-    public var genericRequirements: [GenericRequirement]
-
-    /// :nodoc:
-    public init(name: String,
-                selectorName: String? = nil,
-                parameters: [MethodParameter] = [],
-                returnTypeName: TypeName = TypeName(name: "Void"),
-                isAsync: Bool = false,
-                throws: Bool = false,
-                rethrows: Bool = false,
-                accessLevel: AccessLevel = .internal,
-                isStatic: Bool = false,
-                isClass: Bool = false,
-                isFailableInitializer: Bool = false,
-                attributes: AttributeList = [:],
-                modifiers: [SourceryModifier] = [],
-                annotations: [String: NSObject] = [:],
-                documentation: [String] = [],
-                definedInTypeName: TypeName? = nil,
-                genericRequirements: [GenericRequirement] = []) {
-        self.name = name
-        self.selectorName = selectorName ?? name
-        self.parameters = parameters
-        self.returnTypeName = returnTypeName
-        self.isAsync = isAsync
-        self.throws = `throws`
-        self.rethrows = `rethrows`
-        self.accessLevel = accessLevel.rawValue
-        self.isStatic = isStatic
-        self.isClass = isClass
-        self.isFailableInitializer = isFailableInitializer
-        self.attributes = attributes
-        self.modifiers = modifiers
-        self.annotations = annotations
-        self.documentation = documentation
-        self.definedInTypeName = definedInTypeName
-        self.genericRequirements = genericRequirements
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "selectorName = \\(String(describing: self.selectorName)), "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "isAsync = \\(String(describing: self.isAsync)), "
-        string += "`throws` = \\(String(describing: self.`throws`)), "
-        string += "`rethrows` = \\(String(describing: self.`rethrows`)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "isStatic = \\(String(describing: self.isStatic)), "
-        string += "isClass = \\(String(describing: self.isClass)), "
-        string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
-        string += "genericRequirements = \\(String(describing: self.genericRequirements))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Method else {
-            results.append("Incorrect type <expected: Method, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: castObject.selectorName))
-        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
-        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
-        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
-        results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
-        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
-        results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
-        results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: castObject.isClass))
-        results.append(contentsOf: DiffableResult(identifier: "isFailableInitializer").trackDifference(actual: self.isFailableInitializer, expected: castObject.isFailableInitializer))
-        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
-        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
-        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
-        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
-        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.selectorName)
-        hasher.combine(self.parameters)
-        hasher.combine(self.returnTypeName)
-        hasher.combine(self.isAsync)
-        hasher.combine(self.`throws`)
-        hasher.combine(self.`rethrows`)
-        hasher.combine(self.accessLevel)
-        hasher.combine(self.isStatic)
-        hasher.combine(self.isClass)
-        hasher.combine(self.isFailableInitializer)
-        hasher.combine(self.annotations)
-        hasher.combine(self.documentation)
-        hasher.combine(self.definedInTypeName)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        hasher.combine(self.genericRequirements)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Method else { return false }
-        if self.name != rhs.name { return false }
-        if self.selectorName != rhs.selectorName { return false }
-        if self.parameters != rhs.parameters { return false }
-        if self.returnTypeName != rhs.returnTypeName { return false }
-        if self.isAsync != rhs.isAsync { return false }
-        if self.`throws` != rhs.`throws` { return false }
-        if self.`rethrows` != rhs.`rethrows` { return false }
-        if self.accessLevel != rhs.accessLevel { return false }
-        if self.isStatic != rhs.isStatic { return false }
-        if self.isClass != rhs.isClass { return false }
-        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
-        if self.annotations != rhs.annotations { return false }
-        if self.documentation != rhs.documentation { return false }
-        if self.definedInTypeName != rhs.definedInTypeName { return false }
-        if self.attributes != rhs.attributes { return false }
-        if self.modifiers != rhs.modifiers { return false }
-        if self.genericRequirements != rhs.genericRequirements { return false }
-        return true
-    }
-
-// sourcery:inline:Method.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else {
-                withVaList(["selectorName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.selectorName = selectorName
-            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else {
-                withVaList(["parameters"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.parameters = parameters
-            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else {
-                withVaList(["returnTypeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.returnTypeName = returnTypeName
-            self.returnType = aDecoder.decode(forKey: "returnType")
-            self.isAsync = aDecoder.decode(forKey: "isAsync")
-            self.`throws` = aDecoder.decode(forKey: "`throws`")
-            self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
-            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else {
-                withVaList(["accessLevel"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.accessLevel = accessLevel
-            self.isStatic = aDecoder.decode(forKey: "isStatic")
-            self.isClass = aDecoder.decode(forKey: "isClass")
-            self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
-                withVaList(["annotations"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
-                withVaList(["documentation"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.documentation = documentation
-            self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
-            self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
-                withVaList(["attributes"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
-                withVaList(["modifiers"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.modifiers = modifiers
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
-                withVaList(["genericRequirements"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.genericRequirements = genericRequirements
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.selectorName, forKey: "selectorName")
-            aCoder.encode(self.parameters, forKey: "parameters")
-            aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
-            aCoder.encode(self.returnType, forKey: "returnType")
-            aCoder.encode(self.isAsync, forKey: "isAsync")
-            aCoder.encode(self.`throws`, forKey: "`throws`")
-            aCoder.encode(self.`rethrows`, forKey: "`rethrows`")
-            aCoder.encode(self.accessLevel, forKey: "accessLevel")
-            aCoder.encode(self.isStatic, forKey: "isStatic")
-            aCoder.encode(self.isClass, forKey: "isClass")
-            aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
-            aCoder.encode(self.annotations, forKey: "annotations")
-            aCoder.encode(self.documentation, forKey: "documentation")
-            aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
-            aCoder.encode(self.definedInType, forKey: "definedInType")
-            aCoder.encode(self.attributes, forKey: "attributes")
-            aCoder.encode(self.modifiers, forKey: "modifiers")
-            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
-        }
-// sourcery:end
-}
-
-"""),
     .init(name: "Modifier.swift", content:
 """
 import Foundation
@@ -3915,6 +2036,9 @@ import Foundation
 public typealias SourceryModifier = Modifier
 /// modifier can be thing like `private`, `class`, `nonmutating`
 /// if a declaration has modifier like `private(set)` it's name will be `private` and detail will be `set`
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJSExport, Diffable {
 
     /// The declaration modifier name.
@@ -3966,12 +2090,12 @@ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJS
 
             /// :nodoc:
             required public init?(coder aDecoder: NSCoder) {
-                guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
+                guard let name: String = aDecoder.decode(forKey: "name") else { 
+                    withVaList(["name"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.name = name
                 self.detail = aDecoder.decode(forKey: "detail")
             }
 
@@ -3982,7 +2106,6 @@ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJS
             }
     // sourcery:end
 }
-
 
 """),
     .init(name: "ParserResultsComposed.swift", content:
@@ -4064,37 +2187,42 @@ internal struct ParserResultsComposed {
         }
     }
 
+    // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
+    private mutating func rewriteChildren(of type: Type) {
+        // child is never an extension so no need to check
+        for child in type.containedTypes {
+            typeMap[child.globalName] = child
+            rewriteChildren(of: child)
+        }
+    }
+
     private mutating func unifyTypes() -> [Type] {
         /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
         parsedTypes
             .filter { $0.isExtension }
-            .forEach {
-                let oldName = $0.globalName
+            .forEach { (type: Type) in
+                let oldName = type.globalName
 
-                if $0.parent == nil, $0.localName.contains(".") {
-                    resolveExtensionOfNestedType($0)
+                let hasDotInLocalName = type.localName.contains(".") as Bool
+                if let _ = type.parent, hasDotInLocalName {
+                    resolveExtensionOfNestedType(type)
                 }
 
-                if let resolved = resolveGlobalName(for: oldName, containingType: $0.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
-                    $0.localName = resolved.replacingOccurrences(of: "\\($0.module != nil ? "\\($0.module!)." : "")", with: "")
+                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                    var moduleName: String = ""
+                    if let module = type.module {
+                        moduleName = "\\(module)."
+                    }
+                    type.localName = resolved.replacingOccurrences(of: moduleName, with: "")
                 } else {
                     return
                 }
 
                 // nothing left to do
-                guard oldName != $0.globalName else {
+                guard oldName != type.globalName else {
                     return
                 }
-
-                // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
-                func rewriteChildren(of type: Type) {
-                    // child is never an extension so no need to check
-                    for child in type.containedTypes {
-                        typeMap[child.globalName] = child
-                        rewriteChildren(of: child)
-                    }
-                }
-                rewriteChildren(of: $0)
+                rewriteChildren(of: type)
             }
 
         // extend all types with their extensions
@@ -4609,6 +2737,9 @@ import Foundation
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public final class Protocol: Type {
 
     /// Returns "protocol"
@@ -4621,6 +2752,7 @@ public final class Protocol: Type {
         }
     }
 
+    // sourcery: skipCoding
     /// list of generic requirements
     public override var genericRequirements: [GenericRequirement] {
         didSet {
@@ -4671,9 +2803,9 @@ public final class Protocol: Type {
     /// :nodoc:
     override public var description: String {
         var string = super.description
-        string += ", "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "associatedTypes = \\(String(describing: self.associatedTypes)), "
+        string.append(", ")
+        string.append("kind = \\(String(describing: self.kind)), ")
+        string.append("associatedTypes = \\(String(describing: self.associatedTypes)), ")
         return string
     }
 
@@ -4706,7 +2838,7 @@ public final class Protocol: Type {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let associatedTypes: [String: AssociatedType] = aDecoder.decode(forKey: "associatedTypes") else {
+            guard let associatedTypes: [String: AssociatedType] = aDecoder.decode(forKey: "associatedTypes") else { 
                 withVaList(["associatedTypes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -4731,8 +2863,10 @@ public final class Protocol: Type {
 
 import Foundation
 
-// sourcery: skipJSExport
 /// Describes a Swift [protocol composition](https://docs.swift.org/swift-book/ReferenceManual/Types.html#ID454).
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
@@ -4819,7 +2953,7 @@ public final class ProtocolComposition: Type {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let composedTypeNames: [TypeName] = aDecoder.decode(forKey: "composedTypeNames") else {
+            guard let composedTypeNames: [TypeName] = aDecoder.decode(forKey: "composedTypeNames") else { 
                 withVaList(["composedTypeNames"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -4840,6 +2974,108 @@ public final class ProtocolComposition: Type {
 }
 
 """),
+    .init(name: "Set.swift", content:
+"""
+import Foundation
+
+/// Describes set type
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
+public final class SetType: NSObject, SourceryModel, Diffable {
+    /// Type name used in declaration
+    public var name: String
+
+    /// Array element type name
+    public var elementTypeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Array element type, if known
+    public var elementType: Type?
+
+    /// :nodoc:
+    public init(name: String, elementTypeName: TypeName, elementType: Type? = nil) {
+        self.name = name
+        self.elementTypeName = elementTypeName
+        self.elementType = elementType
+    }
+
+    /// Returns array as generic type
+    public var asGeneric: GenericType {
+        GenericType(name: "Set", typeParameters: [
+            .init(typeName: elementTypeName)
+        ])
+    }
+
+    public var asSource: String {
+        "[\\(elementTypeName.asSource)]"
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("elementTypeName = \\(String(describing: self.elementTypeName)), ")
+        string.append("asGeneric = \\(String(describing: self.asGeneric)), ")
+        string.append("asSource = \\(String(describing: self.asSource))")
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? SetType else {
+            results.append("Incorrect type <expected: SetType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "elementTypeName").trackDifference(actual: self.elementTypeName, expected: castObject.elementTypeName))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.elementTypeName)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? SetType else { return false }
+        if self.name != rhs.name { return false }
+        if self.elementTypeName != rhs.elementTypeName { return false }
+        return true
+    }
+
+// sourcery:inline:SetType.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else { 
+                withVaList(["elementTypeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.elementTypeName = elementTypeName
+            self.elementType = aDecoder.decode(forKey: "elementType")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.elementTypeName, forKey: "elementTypeName")
+            aCoder.encode(self.elementType, forKey: "elementType")
+        }
+// sourcery:end
+}
+
+"""),
     .init(name: "Struct.swift", content:
 """
 //
@@ -4854,6 +3090,9 @@ import Foundation
 
 // sourcery: skipDescription
 /// Describes Swift struct
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
 public final class Struct: Type {
 
     /// Returns "struct"
@@ -4943,12 +3182,2381 @@ public final class Struct: Type {
 }
 
 """),
-    .init(name: "Subscript.swift", content:
-#"""
+    .init(name: "TemplateContext.swift", content:
+"""
+//
+// Created by Krzysztof Zablocki on 31/12/2016.
+// Copyright (c) 2016 Pixle. All rights reserved.
+//
+
+import Foundation
+
+/// :nodoc:
+// sourcery: skipCoding
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
+public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable {
+    // sourcery: skipJSExport
+    public let parserResult: FileParserResult?
+    public let functions: [SourceryMethod]
+    public let types: Types
+    public let argument: [String: NSObject]
+
+    // sourcery: skipDescription
+    public var type: [String: Type] {
+        return types.typesByName
+    }
+
+    public init(parserResult: FileParserResult?, types: Types, functions: [SourceryMethod], arguments: [String: NSObject]) {
+        self.parserResult = parserResult
+        self.types = types
+        self.functions = functions
+        self.argument = arguments
+    }
+
+    /// :nodoc:
+    required public init?(coder aDecoder: NSCoder) {
+        guard let parserResult: FileParserResult = aDecoder.decode(forKey: "parserResult") else { 
+                withVaList(["parserResult"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found. FileParserResults are required for template context that needs persisting.", arguments: arguments)
+                }
+                fatalError()
+             }
+        guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else { 
+                withVaList(["argument"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }
+
+        // if we want to support multiple cycles of encode / decode we need deep copy because composer changes reference types
+        let fileParserResultCopy: FileParserResult? = nil
+//      fileParserResultCopy = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(NSKeyedArchiver.archivedData(withRootObject: parserResult)) as? FileParserResult
+
+        let composed = Composer.uniqueTypesAndFunctions(parserResult)
+        self.types = .init(types: composed.types, typealiases: composed.typealiases)
+        self.functions = composed.functions
+
+        self.parserResult = fileParserResultCopy
+        self.argument = argument
+    }
+
+    /// :nodoc:
+    public func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.parserResult, forKey: "parserResult")
+        aCoder.encode(self.argument, forKey: "argument")
+    }
+
+    public var stencilContext: [String: Any] {
+        return [
+            "types": types,
+            "functions": functions,
+            "type": types.typesByName,
+            "argument": argument
+        ]
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "parserResult = \\(String(describing: self.parserResult)), "
+        string += "functions = \\(String(describing: self.functions)), "
+        string += "types = \\(String(describing: self.types)), "
+        string += "argument = \\(String(describing: self.argument)), "
+        string += "stencilContext = \\(String(describing: self.stencilContext))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TemplateContext else {
+            results.append("Incorrect type <expected: TemplateContext, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "parserResult").trackDifference(actual: self.parserResult, expected: castObject.parserResult))
+        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.parserResult)
+        hasher.combine(self.functions)
+        hasher.combine(self.types)
+        hasher.combine(self.argument)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TemplateContext else { return false }
+        if self.parserResult != rhs.parserResult { return false }
+        if self.functions != rhs.functions { return false }
+        if self.types != rhs.types { return false }
+        if self.argument != rhs.argument { return false }
+        return true
+    }
+
+    // sourcery: skipDescription, skipEquality
+    public var jsContext: [String: Any] {
+        return [
+            "types": [
+                "all": types.all,
+                "protocols": types.protocols,
+                "classes": types.classes,
+                "structs": types.structs,
+                "enums": types.enums,
+                "extensions": types.extensions,
+                "based": types.based,
+                "inheriting": types.inheriting,
+                "implementing": types.implementing,
+                "protocolCompositions": types.protocolCompositions
+            ] as [String : Any],
+            "functions": functions,
+            "type": types.typesByName,
+            "argument": argument
+        ]
+    }
+
+}
+
+extension ProcessInfo {
+    /// :nodoc:
+    public var context: TemplateContext! {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: arguments[1]) as? TemplateContext
+    }
+}
+
+"""),
+    .init(name: "Typealias.swift", content:
+"""
+import Foundation
+
+/// :nodoc:
+#if canImport(ObjectiveC)
+@objcMembers
+#endif
+public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
+    // New typealias name
+    public let aliasName: String
+
+    // Target name
+    public let typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    public var type: Type?
+
+    /// module in which this typealias was declared
+    public var module: String?
+
+    /// typealias annotations
+    public var annotations: Annotations = [:]
+
+    /// typealias documentation
+    public var documentation: Documentation = []
+
+    // sourcery: skipEquality, skipDescription
+    public var parent: Type? {
+        didSet {
+            parentName = parent?.name
+        }
+    }
+
+    /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
+    public let accessLevel: String
+
+    var parentName: String?
+
+    public var name: String {
+        if let parentName = parent?.name {
+            return "\\(module != nil ? "\\(module!)." : "")\\(parentName).\\(aliasName)"
+        } else {
+            return "\\(module != nil ? "\\(module!)." : "")\\(aliasName)"
+        }
+    }
+
+    public init(aliasName: String = "", typeName: TypeName, accessLevel: AccessLevel = .internal, parent: Type? = nil, module: String? = nil, annotations: [String: NSObject] = [:], documentation: [String] = []) {
+        self.aliasName = aliasName
+        self.typeName = typeName
+        self.accessLevel = accessLevel.rawValue
+        self.parent = parent
+        self.parentName = parent?.name
+        self.module = module
+        self.annotations = annotations
+        self.documentation = documentation
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string.append("aliasName = \\(String(describing: self.aliasName)), ")
+        string.append("typeName = \\(String(describing: self.typeName)), ")
+        string.append("module = \\(String(describing: self.module)), ")
+        string.append("accessLevel = \\(String(describing: self.accessLevel)), ")
+        string.append("parentName = \\(String(describing: self.parentName)), ")
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("documentation = \\(String(describing: self.documentation)), ")
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Typealias else {
+            results.append("Incorrect type <expected: Typealias, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: castObject.aliasName))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.aliasName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.module)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.parentName)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Typealias else { return false }
+        if self.aliasName != rhs.aliasName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.module != rhs.module { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.parentName != rhs.parentName { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+    
+// sourcery:inline:Typealias.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else { 
+                withVaList(["aliasName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.aliasName = aliasName
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
+                withVaList(["typeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+            self.module = aDecoder.decode(forKey: "module")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+                withVaList(["annotations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
+                withVaList(["documentation"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.documentation = documentation
+            self.parent = aDecoder.decode(forKey: "parent")
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
+                withVaList(["accessLevel"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.accessLevel = accessLevel
+            self.parentName = aDecoder.decode(forKey: "parentName")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.aliasName, forKey: "aliasName")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.module, forKey: "module")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
+            aCoder.encode(self.parent, forKey: "parent")
+            aCoder.encode(self.accessLevel, forKey: "accessLevel")
+            aCoder.encode(self.parentName, forKey: "parentName")
+        }
+// sourcery:end
+}
+
+"""),
+    .init(name: "Typed.swift", content:
+"""
+import Foundation
+
+/// Descibes typed declaration, i.e. variable, method parameter, tuple element, enum case associated value
+public protocol Typed {
+
+    // sourcery: skipEquality, skipDescription
+    /// Type, if known
+    var type: Type? { get }
+
+    // sourcery: skipEquality, skipDescription
+    /// Type name
+    var typeName: TypeName { get }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether type is optional
+    var isOptional: Bool { get }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether type is implicitly unwrapped optional
+    var isImplicitlyUnwrappedOptional: Bool { get }
+
+    // sourcery: skipEquality, skipDescription
+    /// Type name without attributes and optional type information
+    var unwrappedTypeName: String { get }
+}
+
+"""),
+    .init(name: "AssociatedType_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Describes Swift AssociatedType
+public final class AssociatedType: NSObject, SourceryModel, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "typeName":
+                return typeName
+            case "type":
+                return type
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+
+    /// Associated type name
+    public let name: String
+
+    /// Associated type type constraint name, if specified
+    public let typeName: TypeName?
+
+    // sourcery: skipEquality, skipDescription
+    /// Associated type constrained type, if known, i.e. if the type is declared in the scanned sources.
+    public var type: Type?
+
+    /// :nodoc:
+    public init(name: String, typeName: TypeName? = nil, type: Type? = nil) {
+        self.name = name
+        self.typeName = typeName
+        self.type = type
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedType else {
+            results.append("Incorrect type <expected: AssociatedType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedType else { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+// sourcery:inline:AssociatedType.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            self.typeName = aDecoder.decode(forKey: "typeName")
+            self.type = aDecoder.decode(forKey: "type")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+        }
+// sourcery:end
+}
+#endif
+
+"""),
+    .init(name: "AssociatedValue_Linux.swift", content:
+"""
+//
+// Created by Krzysztof Zablocki on 13/09/2016.
+// Copyright (c) 2016 Pixle. All rights reserved.
+//
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Defines enum case associated value
+public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Typed, Annotated, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "externalName":
+                return externalName
+            case "localName":
+                return localName
+            case "typeName":
+                return typeName
+            case "type":
+                return type
+            case "defaultValue":
+                return defaultValue
+            case "annotations":
+                return annotations
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+
+    /// Associated value local name.
+    /// This is a name to be used to construct enum case value
+    public let localName: String?
+
+    /// Associated value external name.
+    /// This is a name to be used to access value in value-bindig
+    public let externalName: String?
+
+    /// Associated value type name
+    public let typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Associated value type, if known
+    public var type: Type?
+
+    /// Associated value default value
+    public let defaultValue: String?
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public var annotations: Annotations = [:]
+
+    /// :nodoc:
+    public init(localName: String?, externalName: String?, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+        self.localName = localName
+        self.externalName = externalName
+        self.typeName = typeName
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+    }
+
+    convenience init(name: String? = nil, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:]) {
+        self.init(localName: name, externalName: name, typeName: typeName, type: type, defaultValue: defaultValue, annotations: annotations)
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "localName = \\(String(describing: self.localName)), "
+        string += "externalName = \\(String(describing: self.externalName)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "annotations = \\(String(describing: self.annotations))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? AssociatedValue else {
+            results.append("Incorrect type <expected: AssociatedValue, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "localName").trackDifference(actual: self.localName, expected: castObject.localName))
+        results.append(contentsOf: DiffableResult(identifier: "externalName").trackDifference(actual: self.externalName, expected: castObject.externalName))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.localName)
+        hasher.combine(self.externalName)
+        hasher.combine(self.typeName)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? AssociatedValue else { return false }
+        if self.localName != rhs.localName { return false }
+        if self.externalName != rhs.externalName { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+// sourcery:inline:AssociatedValue.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            self.localName = aDecoder.decode(forKey: "localName")
+            self.externalName = aDecoder.decode(forKey: "externalName")
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
+                withVaList(["typeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+                withVaList(["annotations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.annotations = annotations
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.localName, forKey: "localName")
+            aCoder.encode(self.externalName, forKey: "externalName")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.defaultValue, forKey: "defaultValue")
+            aCoder.encode(self.annotations, forKey: "annotations")
+        }
+// sourcery:end
+
+}
+#endif
+
+"""),
+    .init(name: "ClosureParameter_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+// sourcery: skipDiffing
+public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+        case "argumentLabel":
+            return argumentLabel
+        case "name":
+            return name
+        case "typeName":
+            return typeName
+        case "inout":
+            return `inout`
+        case "type":
+            return type
+        case "isVariadic":
+            return isVariadic
+        case "defaultValue":
+            return defaultValue
+        default:
+            fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+    /// Parameter external name
+    public var argumentLabel: String?
+
+    /// Parameter internal name
+    public let name: String?
+
+    /// Parameter type name
+    public let typeName: TypeName
+
+    /// Parameter flag whether it's inout or not
+    public let `inout`: Bool
+
+    // sourcery: skipEquality, skipDescription
+    /// Parameter type, if known
+    public var type: Type?
+
+    /// Parameter if the argument has a variadic type or not
+    public let isVariadic: Bool
+
+    /// Parameter type attributes, i.e. `@escaping`
+    public var typeAttributes: AttributeList {
+        return typeName.attributes
+    }
+
+    /// Method parameter default value expression
+    public var defaultValue: String?
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public var annotations: Annotations = [:]
+
+    /// :nodoc:
+    public init(argumentLabel: String? = nil, name: String? = nil, typeName: TypeName, type: Type? = nil,
+                defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, 
+                isVariadic: Bool = false) {
+        self.typeName = typeName
+        self.argumentLabel = argumentLabel
+        self.name = name
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+        self.`inout` = isInout
+        self.isVariadic = isVariadic
+    }
+
+    public var asSource: String {
+        let typeInfo = "\\(`inout` ? "inout " : "")\\(typeName.asSource)\\(isVariadic ? "..." : "")"
+        if argumentLabel?.nilIfNotValidParameterName == nil, name?.nilIfNotValidParameterName == nil {
+            return typeInfo
+        }
+
+        let typeSuffix = ": \\(typeInfo)"
+        guard argumentLabel != name else {
+            return name ?? "" + typeSuffix
+        }
+
+        let labels = [argumentLabel ?? "_", name?.nilIfEmpty]
+          .compactMap { $0 }
+          .joined(separator: " ")
+
+        return (labels.nilIfEmpty ?? "_") + typeSuffix
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.isVariadic)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "`inout` = \\(String(describing: self.`inout`)), "
+        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.isVariadic != rhs.isVariadic { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+    // sourcery:inline:ClosureParameter.AutoCoding
+
+            /// :nodoc:
+            required public init?(coder aDecoder: NSCoder) {
+                self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
+                self.name = aDecoder.decode(forKey: "name")
+                guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
+                    withVaList(["typeName"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.typeName = typeName
+                self.`inout` = aDecoder.decode(forKey: "`inout`")
+                self.type = aDecoder.decode(forKey: "type")
+                self.isVariadic = aDecoder.decode(forKey: "isVariadic")
+                self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+                guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+                    withVaList(["annotations"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.annotations = annotations
+            }
+
+            /// :nodoc:
+            public func encode(with aCoder: NSCoder) {
+                aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+                aCoder.encode(self.name, forKey: "name")
+                aCoder.encode(self.typeName, forKey: "typeName")
+                aCoder.encode(self.`inout`, forKey: "`inout`")
+                aCoder.encode(self.type, forKey: "type")
+                aCoder.encode(self.isVariadic, forKey: "isVariadic")
+                aCoder.encode(self.defaultValue, forKey: "defaultValue")
+                aCoder.encode(self.annotations, forKey: "annotations")
+            }
+
+    // sourcery:end
+}
+
+extension Array where Element == ClosureParameter {
+    public var asSource: String {
+        "(\\(map { $0.asSource }.joined(separator: ", ")))"
+    }
+}
+#endif
+
+"""),
+    .init(name: "Closure_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Describes closure type
+public final class ClosureType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "parameters":
+                return parameters
+            case "returnTypeName":
+                return returnTypeName
+            case "actualReturnTypeName":
+                return actualReturnTypeName
+            case "returnType":
+                return returnType
+            case "isOptionalReturnType":
+                return isOptionalReturnType
+            case "isImplicitlyUnwrappedOptionalReturnType":
+                return isImplicitlyUnwrappedOptionalReturnType
+            case "unwrappedReturnTypeName":
+                return unwrappedReturnTypeName
+            case "isAsync":
+                return isAsync
+            case "asyncKeyword":
+                return asyncKeyword
+            case "throws":
+                return `throws`
+            case "throwsOrRethrowsKeyword":
+                return throwsOrRethrowsKeyword
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+    /// Type name used in declaration with stripped whitespaces and new lines
+    public let name: String
+
+    /// List of closure parameters
+    public let parameters: [ClosureParameter]
+
+    /// Return value type name
+    public let returnTypeName: TypeName
+
+    /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
+    public var actualReturnTypeName: TypeName {
+        return returnTypeName.actualTypeName ?? returnTypeName
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Actual return value type, if known
+    public var returnType: Type?
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether return value type is optional
+    public var isOptionalReturnType: Bool {
+        return returnTypeName.isOptional
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether return value type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptionalReturnType: Bool {
+        return returnTypeName.isImplicitlyUnwrappedOptional
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Return value type name without attributes and optional type information
+    public var unwrappedReturnTypeName: String {
+        return returnTypeName.unwrappedTypeName
+    }
+    
+    /// Whether method is async method
+    public let isAsync: Bool
+
+    /// async keyword
+    public let asyncKeyword: String?
+
+    /// Whether closure throws
+    public let `throws`: Bool
+
+    /// throws or rethrows keyword
+    public let throwsOrRethrowsKeyword: String?
+
+    /// :nodoc:
+    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil) {
+        self.name = name
+        self.parameters = parameters
+        self.returnTypeName = returnTypeName
+        self.returnType = returnType
+        self.asyncKeyword = asyncKeyword
+        self.isAsync = asyncKeyword != nil
+        self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
+        self.`throws` = throwsOrRethrowsKeyword != nil
+    }
+
+    public var asSource: String {
+        "\\(parameters.asSource)\\(asyncKeyword != nil ? " \\(asyncKeyword!)" : "")\\(throwsOrRethrowsKeyword != nil ? " \\(throwsOrRethrowsKeyword!)" : "") -> \\(returnTypeName.asSource)"
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "parameters = \\(String(describing: self.parameters)), "
+        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
+        string += "isAsync = \\(String(describing: self.isAsync)), "
+        string += "asyncKeyword = \\(String(describing: self.asyncKeyword)), "
+        string += "`throws` = \\(String(describing: self.`throws`)), "
+        string += "throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? ClosureType else {
+            results.append("Incorrect type <expected: ClosureType, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
+        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
+        results.append(contentsOf: DiffableResult(identifier: "asyncKeyword").trackDifference(actual: self.asyncKeyword, expected: castObject.asyncKeyword))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.asyncKeyword)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.throwsOrRethrowsKeyword)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? ClosureType else { return false }
+        if self.name != rhs.name { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.asyncKeyword != rhs.asyncKeyword { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
+        return true
+    }
+
+// sourcery:inline:ClosureType.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            guard let parameters: [ClosureParameter] = aDecoder.decode(forKey: "parameters") else { 
+                withVaList(["parameters"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.parameters = parameters
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { 
+                withVaList(["returnTypeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.returnTypeName = returnTypeName
+            self.returnType = aDecoder.decode(forKey: "returnType")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.asyncKeyword = aDecoder.decode(forKey: "asyncKeyword")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.throwsOrRethrowsKeyword = aDecoder.decode(forKey: "throwsOrRethrowsKeyword")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.parameters, forKey: "parameters")
+            aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
+            aCoder.encode(self.returnType, forKey: "returnType")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.asyncKeyword, forKey: "asyncKeyword")
+            aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.throwsOrRethrowsKeyword, forKey: "throwsOrRethrowsKeyword")
+        }
+// sourcery:end
+
+}
+#endif
+
+"""),
+    .init(name: "DynamicMemberLookup_Linux.swift", content:
+"""
+//
+// Stencil
+// Copyright © 2022 Stencil
+// MIT Licence
+//
+
+#if !canImport(ObjectiveC)
+/// Marker protocol so we can know which types support `@dynamicMemberLookup`. Add this to your own types that support
+/// lookup by String.
+public protocol DynamicMemberLookup {
+  /// Get a value for a given `String` key
+  subscript(dynamicMember member: String) -> Any? { get }
+}
+
+public extension DynamicMemberLookup where Self: RawRepresentable {
+  /// Get a value for a given `String` key
+  subscript(dynamicMember member: String) -> Any? {
+    switch member {
+    case "rawValue":
+      return rawValue
+    default:
+      return nil
+    }
+  }
+}
+#endif
+
+"""),
+    .init(name: "EnumCase_Linux.swift", content:
+"""
+//
+// Created by Krzysztof Zablocki on 13/09/2016.
+// Copyright (c) 2016 Pixle. All rights reserved.
+//
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Defines enum case
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "hasAssociatedValue":
+                return hasAssociatedValue
+            case "associatedValues":
+                return associatedValues
+            case "indirect":
+                return indirect
+            case "annotations":
+                return annotations
+            case "rawValue":
+                return rawValue
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+    /// Enum case name
+    public let name: String
+
+    /// Enum case raw value, if any
+    public let rawValue: String?
+
+    /// Enum case associated values
+    public let associatedValues: [AssociatedValue]
+
+    /// Enum case annotations
+    public var annotations: Annotations = [:]
+
+    public var documentation: Documentation = []
+
+    /// Whether enum case is indirect
+    public let indirect: Bool
+
+    /// Whether enum case has associated value
+    public var hasAssociatedValue: Bool {
+        return !associatedValues.isEmpty
+    }
+
+    // Underlying parser data, never to be used by anything else
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    /// :nodoc:
+    public var __parserData: Any?
+
+    /// :nodoc:
+    public init(name: String, rawValue: String? = nil, associatedValues: [AssociatedValue] = [], annotations: [String: NSObject] = [:], documentation: [String] = [], indirect: Bool = false) {
+        self.name = name
+        self.rawValue = rawValue
+        self.associatedValues = associatedValues
+        self.annotations = annotations
+        self.documentation = documentation
+        self.indirect = indirect
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "rawValue = \\(String(describing: self.rawValue)), "
+        string += "associatedValues = \\(String(describing: self.associatedValues)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
+        string += "indirect = \\(String(describing: self.indirect)), "
+        string += "hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? EnumCase else {
+            results.append("Incorrect type <expected: EnumCase, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "rawValue").trackDifference(actual: self.rawValue, expected: castObject.rawValue))
+        results.append(contentsOf: DiffableResult(identifier: "associatedValues").trackDifference(actual: self.associatedValues, expected: castObject.associatedValues))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
+        results.append(contentsOf: DiffableResult(identifier: "indirect").trackDifference(actual: self.indirect, expected: castObject.indirect))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.rawValue)
+        hasher.combine(self.associatedValues)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        hasher.combine(self.indirect)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? EnumCase else { return false }
+        if self.name != rhs.name { return false }
+        if self.rawValue != rhs.rawValue { return false }
+        if self.associatedValues != rhs.associatedValues { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.indirect != rhs.indirect { return false }
+        return true
+    }
+
+// sourcery:inline:EnumCase.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            self.rawValue = aDecoder.decode(forKey: "rawValue")
+            guard let associatedValues: [AssociatedValue] = aDecoder.decode(forKey: "associatedValues") else { 
+                withVaList(["associatedValues"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.associatedValues = associatedValues
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+                withVaList(["annotations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
+                withVaList(["documentation"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.documentation = documentation
+            self.indirect = aDecoder.decode(forKey: "indirect")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.rawValue, forKey: "rawValue")
+            aCoder.encode(self.associatedValues, forKey: "associatedValues")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
+            aCoder.encode(self.indirect, forKey: "indirect")
+        }
+// sourcery:end
+}
+#endif
+
+"""),
+    .init(name: "Enum_Linux.swift", content:
+"""
+//
+// Created by Krzysztof Zablocki on 13/09/2016.
+// Copyright (c) 2016 Pixle. All rights reserved.
+//
+
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Defines Swift enum
+public final class Enum: Type {
+    public override subscript(dynamicMember member: String) -> Any? {
+        switch member {
+        case "cases":
+            return cases
+        case "hasAssociatedValues":
+            return hasAssociatedValues
+        default:
+            return super[dynamicMember: member]
+        }
+    }
+
+    // sourcery: skipDescription
+    /// Returns "enum"
+    public override var kind: String { return "enum" }
+
+    /// Enum cases
+    public var cases: [EnumCase]
+
+    /**
+     Enum raw value type name, if any. This type is removed from enum's `based` and `inherited` types collections.
+
+        - important: Unless raw type is specified explicitly via type alias RawValue it will be set to the first type in the inheritance chain.
+     So if your enum does not have raw value but implements protocols you'll have to specify conformance to these protocols via extension to get enum with nil raw value type and all based and inherited types.
+     */
+    public var rawTypeName: TypeName? {
+        didSet {
+            if let rawTypeName = rawTypeName {
+                hasRawType = true
+                if let index = inheritedTypes.firstIndex(of: rawTypeName.name) {
+                    inheritedTypes.remove(at: index)
+                }
+                if based[rawTypeName.name] != nil {
+                    based[rawTypeName.name] = nil
+                }
+            } else {
+                hasRawType = false
+            }
+        }
+    }
+
+    // sourcery: skipDescription, skipEquality
+    /// :nodoc:
+    public private(set) var hasRawType: Bool
+
+    // sourcery: skipDescription, skipEquality
+    /// Enum raw value type, if known
+    public var rawType: Type?
+
+    // sourcery: skipEquality, skipDescription, skipCoding
+    /// Names of types or protocols this type inherits from, including unknown (not scanned) types
+    public override var based: [String: String] {
+        didSet {
+            if let rawTypeName = rawTypeName, based[rawTypeName.name] != nil {
+                based[rawTypeName.name] = nil
+            }
+        }
+    }
+
+    /// Whether enum contains any associated values
+    public var hasAssociatedValues: Bool {
+        return cases.contains(where: { $0.hasAssociatedValue })
+    }
+
+    /// :nodoc:
+    public init(name: String = "",
+                parent: Type? = nil,
+                accessLevel: AccessLevel = .internal,
+                isExtension: Bool = false,
+                inheritedTypes: [String] = [],
+                rawTypeName: TypeName? = nil,
+                cases: [EnumCase] = [],
+                variables: [Variable] = [],
+                methods: [Method] = [],
+                containedTypes: [Type] = [],
+                typealiases: [Typealias] = [],
+                attributes: AttributeList = [:],
+                modifiers: [SourceryModifier] = [],
+                annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
+                isGeneric: Bool = false) {
+
+        self.cases = cases
+        self.rawTypeName = rawTypeName
+        self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
+
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric)
+
+        if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
+            self.inheritedTypes.remove(at: index)
+        }
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = super.description
+        string += ", "
+        string += "cases = \\(String(describing: self.cases)), "
+        string += "rawTypeName = \\(String(describing: self.rawTypeName)), "
+        string += "hasAssociatedValues = \\(String(describing: self.hasAssociatedValues))"
+        return string
+    }
+
+    override public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Enum else {
+            results.append("Incorrect type <expected: Enum, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "cases").trackDifference(actual: self.cases, expected: castObject.cases))
+        results.append(contentsOf: DiffableResult(identifier: "rawTypeName").trackDifference(actual: self.rawTypeName, expected: castObject.rawTypeName))
+        results.append(contentsOf: super.diffAgainst(castObject))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.cases)
+        hasher.combine(self.rawTypeName)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Enum else { return false }
+        if self.cases != rhs.cases { return false }
+        if self.rawTypeName != rhs.rawTypeName { return false }
+        return super.isEqual(rhs)
+    }
+
+// sourcery:inline:Enum.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let cases: [EnumCase] = aDecoder.decode(forKey: "cases") else { 
+                withVaList(["cases"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.cases = cases
+            self.rawTypeName = aDecoder.decode(forKey: "rawTypeName")
+            self.hasRawType = aDecoder.decode(forKey: "hasRawType")
+            self.rawType = aDecoder.decode(forKey: "rawType")
+            super.init(coder: aDecoder)
+        }
+
+        /// :nodoc:
+        override public func encode(with aCoder: NSCoder) {
+            super.encode(with: aCoder)
+            aCoder.encode(self.cases, forKey: "cases")
+            aCoder.encode(self.rawTypeName, forKey: "rawTypeName")
+            aCoder.encode(self.hasRawType, forKey: "hasRawType")
+            aCoder.encode(self.rawType, forKey: "rawType")
+        }
+// sourcery:end
+}
+#endif
+
+"""),
+    .init(name: "GenericParameter_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Descibes Swift generic parameter
+public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "inheritedTypeName":
+                return inheritedTypeName
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+
+    /// Generic parameter name
+    public var name: String
+
+    /// Generic parameter inherited type
+    public var inheritedTypeName: TypeName?
+
+    /// :nodoc:
+    public init(name: String, inheritedTypeName: TypeName? = nil) {
+        self.name = name
+        self.inheritedTypeName = inheritedTypeName
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "inheritedTypeName = \\(String(describing: self.inheritedTypeName))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericParameter else {
+            results.append("Incorrect type <expected: GenericParameter, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "inheritedTypeName").trackDifference(actual: self.inheritedTypeName, expected: castObject.inheritedTypeName))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.inheritedTypeName)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericParameter else { return false }
+        if self.name != rhs.name { return false }
+        if self.inheritedTypeName != rhs.inheritedTypeName { return false }
+        return true
+    }
+
+// sourcery:inline:GenericParameter.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            self.inheritedTypeName = aDecoder.decode(forKey: "inheritedTypeName")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.inheritedTypeName, forKey: "inheritedTypeName")
+        }
+
+// sourcery:end
+}
+#endif
+
+"""),
+    .init(name: "GenericRequirement_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Descibes Swift generic requirement
+public class GenericRequirement: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "leftType":
+                return leftType
+            case "rightType":
+                return rightType
+            case "relationship":
+                return relationship
+            case "relationshipSyntax":
+                return relationshipSyntax
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+
+    public enum Relationship: String {
+        case equals
+        case conformsTo
+
+        var syntax: String {
+            switch self {
+            case .equals:
+                return "=="
+            case .conformsTo:
+                return ":"
+            }
+        }
+    }
+
+    public var leftType: AssociatedType
+    public let rightType: GenericTypeParameter
+
+    /// relationship name
+    public let relationship: String
+
+    /// Syntax e.g. `==` or `:`
+    public let relationshipSyntax: String
+
+    public init(leftType: AssociatedType, rightType: GenericTypeParameter, relationship: Relationship) {
+        self.leftType = leftType
+        self.rightType = rightType
+        self.relationship = relationship.rawValue
+        self.relationshipSyntax = relationship.syntax
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "leftType = \\(String(describing: self.leftType)), "
+        string += "rightType = \\(String(describing: self.rightType)), "
+        string += "relationship = \\(String(describing: self.relationship)), "
+        string += "relationshipSyntax = \\(String(describing: self.relationshipSyntax))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericRequirement else {
+            results.append("Incorrect type <expected: GenericRequirement, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "leftType").trackDifference(actual: self.leftType, expected: castObject.leftType))
+        results.append(contentsOf: DiffableResult(identifier: "rightType").trackDifference(actual: self.rightType, expected: castObject.rightType))
+        results.append(contentsOf: DiffableResult(identifier: "relationship").trackDifference(actual: self.relationship, expected: castObject.relationship))
+        results.append(contentsOf: DiffableResult(identifier: "relationshipSyntax").trackDifference(actual: self.relationshipSyntax, expected: castObject.relationshipSyntax))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.leftType)
+        hasher.combine(self.rightType)
+        hasher.combine(self.relationship)
+        hasher.combine(self.relationshipSyntax)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericRequirement else { return false }
+        if self.leftType != rhs.leftType { return false }
+        if self.rightType != rhs.rightType { return false }
+        if self.relationship != rhs.relationship { return false }
+        if self.relationshipSyntax != rhs.relationshipSyntax { return false }
+        return true
+    }
+
+    // sourcery:inline:GenericRequirement.AutoCoding
+
+            /// :nodoc:
+            required public init?(coder aDecoder: NSCoder) {
+                guard let leftType: AssociatedType = aDecoder.decode(forKey: "leftType") else { 
+                    withVaList(["leftType"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.leftType = leftType
+                guard let rightType: GenericTypeParameter = aDecoder.decode(forKey: "rightType") else { 
+                    withVaList(["rightType"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.rightType = rightType
+                guard let relationship: String = aDecoder.decode(forKey: "relationship") else { 
+                    withVaList(["relationship"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.relationship = relationship
+                guard let relationshipSyntax: String = aDecoder.decode(forKey: "relationshipSyntax") else { 
+                    withVaList(["relationshipSyntax"]) { arguments in
+                        NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                    }
+                    fatalError()
+                 }; self.relationshipSyntax = relationshipSyntax
+            }
+
+            /// :nodoc:
+            public func encode(with aCoder: NSCoder) {
+                aCoder.encode(self.leftType, forKey: "leftType")
+                aCoder.encode(self.rightType, forKey: "rightType")
+                aCoder.encode(self.relationship, forKey: "relationship")
+                aCoder.encode(self.relationshipSyntax, forKey: "relationshipSyntax")
+            }
+    // sourcery:end
+}
+#endif
+
+"""),
+    .init(name: "GenericTypeParameter_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Descibes Swift generic type parameter
+public final class GenericTypeParameter: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "typeName":
+                return typeName
+            case "type":
+                return type
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+
+    /// Generic parameter type name
+    public var typeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Generic parameter type, if known
+    public var type: Type?
+
+    /// :nodoc:
+    public init(typeName: TypeName, type: Type? = nil) {
+        self.typeName = typeName
+        self.type = type
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "typeName = \\(String(describing: self.typeName))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? GenericTypeParameter else {
+            results.append("Incorrect type <expected: GenericTypeParameter, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.typeName)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? GenericTypeParameter else { return false }
+        if self.typeName != rhs.typeName { return false }
+        return true
+    }
+
+// sourcery:inline:GenericTypeParameter.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
+                withVaList(["typeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typeName = typeName
+            self.type = aDecoder.decode(forKey: "type")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.type, forKey: "type")
+        }
+
+// sourcery:end
+}
+#endif
+
+"""),
+    .init(name: "MethodParameter_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Describes method parameter
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "argumentLabel":
+                return argumentLabel
+            case "name":
+                return name
+            case "typeName":
+                return typeName
+            case "isClosure":
+                return isClosure
+            case "typeAttributes":
+                return typeAttributes
+            case "isVariadic":
+                return isVariadic
+            case "asSource":
+                return asSource
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+    /// Parameter external name
+    public var argumentLabel: String?
+
+    // Note: although method parameter can have no name, this property is not optional,
+    // this is so to maintain compatibility with existing templates.
+    /// Parameter internal name
+    public let name: String
+
+    /// Parameter type name
+    public let typeName: TypeName
+
+    /// Parameter flag whether it's inout or not
+    public let `inout`: Bool
+    
+    /// Is this variadic parameter?
+    public let isVariadic: Bool
+
+    // sourcery: skipEquality, skipDescription
+    /// Parameter type, if known
+    public var type: Type?
+
+    /// Parameter type attributes, i.e. `@escaping`
+    public var typeAttributes: AttributeList {
+        return typeName.attributes
+    }
+
+    /// Method parameter default value expression
+    public var defaultValue: String?
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public var annotations: Annotations = [:]
+
+    /// :nodoc:
+    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+        self.typeName = typeName
+        self.argumentLabel = argumentLabel
+        self.name = name
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+        self.`inout` = isInout
+        self.isVariadic = isVariadic
+    }
+
+    /// :nodoc:
+    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+        self.typeName = typeName
+        self.argumentLabel = name
+        self.name = name
+        self.type = type
+        self.defaultValue = defaultValue
+        self.annotations = annotations
+        self.`inout` = isInout
+        self.isVariadic = isVariadic
+    }
+
+    public var asSource: String {
+        let typeSuffix = ": \\(`inout` ? "inout " : "")\\(typeName.asSource)\\(defaultValue.map { " = \\($0)" } ?? "")" + (isVariadic ? "..." : "")
+        guard argumentLabel != name else {
+            return name + typeSuffix
+        }
+
+        let labels = [argumentLabel ?? "_", name.nilIfEmpty]
+          .compactMap { $0 }
+          .joined(separator: " ")
+
+        return (labels.nilIfEmpty ?? "_") + typeSuffix
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
+        string += "name = \\(String(describing: self.name)), "
+        string += "typeName = \\(String(describing: self.typeName)), "
+        string += "`inout` = \\(String(describing: self.`inout`)), "
+        string += "isVariadic = \\(String(describing: self.isVariadic)), "
+        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
+        string += "defaultValue = \\(String(describing: self.defaultValue)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "asSource = \\(String(describing: self.asSource))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? MethodParameter else {
+            results.append("Incorrect type <expected: MethodParameter, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "argumentLabel").trackDifference(actual: self.argumentLabel, expected: castObject.argumentLabel))
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
+        results.append(contentsOf: DiffableResult(identifier: "`inout`").trackDifference(actual: self.`inout`, expected: castObject.`inout`))
+        results.append(contentsOf: DiffableResult(identifier: "isVariadic").trackDifference(actual: self.isVariadic, expected: castObject.isVariadic))
+        results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.argumentLabel)
+        hasher.combine(self.name)
+        hasher.combine(self.typeName)
+        hasher.combine(self.`inout`)
+        hasher.combine(self.isVariadic)
+        hasher.combine(self.defaultValue)
+        hasher.combine(self.annotations)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? MethodParameter else { return false }
+        if self.argumentLabel != rhs.argumentLabel { return false }
+        if self.name != rhs.name { return false }
+        if self.typeName != rhs.typeName { return false }
+        if self.`inout` != rhs.`inout` { return false }
+        if self.isVariadic != rhs.isVariadic { return false }
+        if self.defaultValue != rhs.defaultValue { return false }
+        if self.annotations != rhs.annotations { return false }
+        return true
+    }
+
+// sourcery:inline:MethodParameter.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
+                withVaList(["typeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.typeName = typeName
+            self.`inout` = aDecoder.decode(forKey: "`inout`")
+            self.isVariadic = aDecoder.decode(forKey: "isVariadic")
+            self.type = aDecoder.decode(forKey: "type")
+            self.defaultValue = aDecoder.decode(forKey: "defaultValue")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+                withVaList(["annotations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.annotations = annotations
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.typeName, forKey: "typeName")
+            aCoder.encode(self.`inout`, forKey: "`inout`")
+            aCoder.encode(self.isVariadic, forKey: "isVariadic")
+            aCoder.encode(self.type, forKey: "type")
+            aCoder.encode(self.defaultValue, forKey: "defaultValue")
+            aCoder.encode(self.annotations, forKey: "annotations")
+        }
+// sourcery:end
+}
+
+extension Array where Element == MethodParameter {
+    public var asSource: String {
+        "(\\(map { $0.asSource }.joined(separator: ", ")))"
+    }
+}
+#endif
+
+"""),
+    .init(name: "Method_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// :nodoc:
+public typealias SourceryMethod = Method
+
+/// Describes method
+public final class Method: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "definedInType":
+                return definedInType
+            case "shortName":
+                return shortName
+            case "name":
+                return name
+            case "selectorName":
+                return selectorName
+            case "callName":
+                return callName
+            case "parameters":
+                return parameters
+            case "throws":
+                return `throws`
+            case "isInitializer":
+                return isInitializer
+            case "accessLevel":
+                return accessLevel
+            case "isStatic":
+                return isStatic
+            case "returnTypeName":
+                return returnTypeName
+            case "isAsync":
+                return isAsync
+            case "attributes":
+                return attributes
+            case "isOptionalReturnType":
+                return isOptionalReturnType
+            case "actualReturnTypeName":
+                return actualReturnTypeName
+            case "isDynamic":
+                return isDynamic
+            case "genericRequirements":
+                return genericRequirements
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+
+    /// Full method name, including generic constraints, i.e. `foo<T>(bar: T)`
+    public let name: String
+
+    /// Method name including arguments names, i.e. `foo(bar:)`
+    public var selectorName: String
+
+    // sourcery: skipEquality, skipDescription
+    /// Method name without arguments names and parenthesis, i.e. `foo<T>`
+    public var shortName: String {
+        return name.range(of: "(").map({ String(name[..<$0.lowerBound]) }) ?? name
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Method name without arguments names, parenthesis and generic types, i.e. `foo` (can be used to generate code for method call)
+    public var callName: String {
+        return shortName.range(of: "<").map({ String(shortName[..<$0.lowerBound]) }) ?? shortName
+    }
+
+    /// Method parameters
+    public var parameters: [MethodParameter]
+
+    /// Return value type name used in declaration, including generic constraints, i.e. `where T: Equatable`
+    public var returnTypeName: TypeName
+
+    // sourcery: skipEquality, skipDescription
+    /// Actual return value type name if declaration uses typealias, otherwise just a `returnTypeName`
+    public var actualReturnTypeName: TypeName {
+        return returnTypeName.actualTypeName ?? returnTypeName
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Actual return value type, if known
+    public var returnType: Type?
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether return value type is optional
+    public var isOptionalReturnType: Bool {
+        return returnTypeName.isOptional || isFailableInitializer
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether return value type is implicitly unwrapped optional
+    public var isImplicitlyUnwrappedOptionalReturnType: Bool {
+        return returnTypeName.isImplicitlyUnwrappedOptional
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Return value type name without attributes and optional type information
+    public var unwrappedReturnTypeName: String {
+        return returnTypeName.unwrappedTypeName
+    }
+
+    /// Whether method is async method
+    public let isAsync: Bool
+
+    /// Whether method throws
+    public let `throws`: Bool
+
+    /// Whether method rethrows
+    public let `rethrows`: Bool
+
+    /// Method access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
+    public let accessLevel: String
+
+    /// Whether method is a static method
+    public let isStatic: Bool
+
+    /// Whether method is a class method
+    public let isClass: Bool
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is an initializer
+    public var isInitializer: Bool {
+        return selectorName.hasPrefix("init(") || selectorName == "init"
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is an deinitializer
+    public var isDeinitializer: Bool {
+        return selectorName == "deinit"
+    }
+
+    /// Whether method is a failable initializer
+    public let isFailableInitializer: Bool
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is a convenience initializer
+    public var isConvenienceInitializer: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.convenience.rawValue }
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is required
+    public var isRequired: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.required.rawValue }
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is final
+    public var isFinal: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.final.rawValue }
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is mutating
+    public var isMutating: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.mutating.rawValue }
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is generic
+    public var isGeneric: Bool {
+        shortName.hasSuffix(">")
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is optional (in an Objective-C protocol)
+    public var isOptional: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.optional.rawValue }
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is nonisolated (this modifier only applies to actor methods)
+    public var isNonisolated: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.nonisolated.rawValue }
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Whether method is dynamic
+    public var isDynamic: Bool {
+        modifiers.contains { $0.name == Attribute.Identifier.dynamic.rawValue }
+    }
+
+    /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
+    public let annotations: Annotations
+
+    public let documentation: Documentation
+
+    /// Reference to type name where the method is defined,
+    /// nil if defined outside of any `enum`, `struct`, `class` etc
+    public let definedInTypeName: TypeName?
+
+    // sourcery: skipEquality, skipDescription
+    /// Reference to actual type name where the method is defined if declaration uses typealias, otherwise just a `definedInTypeName`
+    public var actualDefinedInTypeName: TypeName? {
+        return definedInTypeName?.actualTypeName ?? definedInTypeName
+    }
+
+    // sourcery: skipEquality, skipDescription
+    /// Reference to actual type where the object is defined,
+    /// nil if defined outside of any `enum`, `struct`, `class` etc or type is unknown
+    public var definedInType: Type?
+
+    /// Method attributes, i.e. `@discardableResult`
+    public let attributes: AttributeList
+
+    /// Method modifiers, i.e. `private`
+    public let modifiers: [SourceryModifier]
+
+    // Underlying parser data, never to be used by anything else
+    // sourcery: skipEquality, skipDescription, skipCoding, skipJSExport
+    /// :nodoc:
+    public var __parserData: Any?
+
+    /// list of generic requirements
+    public var genericRequirements: [GenericRequirement]
+
+    /// :nodoc:
+    public init(name: String,
+                selectorName: String? = nil,
+                parameters: [MethodParameter] = [],
+                returnTypeName: TypeName = TypeName(name: "Void"),
+                isAsync: Bool = false,
+                throws: Bool = false,
+                rethrows: Bool = false,
+                accessLevel: AccessLevel = .internal,
+                isStatic: Bool = false,
+                isClass: Bool = false,
+                isFailableInitializer: Bool = false,
+                attributes: AttributeList = [:],
+                modifiers: [SourceryModifier] = [],
+                annotations: [String: NSObject] = [:],
+                documentation: [String] = [],
+                definedInTypeName: TypeName? = nil,
+                genericRequirements: [GenericRequirement] = []) {
+        self.name = name
+        self.selectorName = selectorName ?? name
+        self.parameters = parameters
+        self.returnTypeName = returnTypeName
+        self.isAsync = isAsync
+        self.throws = `throws`
+        self.rethrows = `rethrows`
+        self.accessLevel = accessLevel.rawValue
+        self.isStatic = isStatic
+        self.isClass = isClass
+        self.isFailableInitializer = isFailableInitializer
+        self.attributes = attributes
+        self.modifiers = modifiers
+        self.annotations = annotations
+        self.documentation = documentation
+        self.definedInTypeName = definedInTypeName
+        self.genericRequirements = genericRequirements
+    }
+
+    /// :nodoc:
+    override public var description: String {
+        var string = "\\(Swift.type(of: self)): "
+        string += "name = \\(String(describing: self.name)), "
+        string += "selectorName = \\(String(describing: self.selectorName)), "
+        string += "parameters = \\(String(describing: self.parameters)), "
+        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
+        string += "isAsync = \\(String(describing: self.isAsync)), "
+        string += "`throws` = \\(String(describing: self.`throws`)), "
+        string += "`rethrows` = \\(String(describing: self.`rethrows`)), "
+        string += "accessLevel = \\(String(describing: self.accessLevel)), "
+        string += "isStatic = \\(String(describing: self.isStatic)), "
+        string += "isClass = \\(String(describing: self.isClass)), "
+        string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
+        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "modifiers = \\(String(describing: self.modifiers))"
+        string += "genericRequirements = \\(String(describing: self.genericRequirements))"
+        return string
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? Method else {
+            results.append("Incorrect type <expected: Method, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "selectorName").trackDifference(actual: self.selectorName, expected: castObject.selectorName))
+        results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
+        results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
+        results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
+        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
+        results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
+        results.append(contentsOf: DiffableResult(identifier: "isClass").trackDifference(actual: self.isClass, expected: castObject.isClass))
+        results.append(contentsOf: DiffableResult(identifier: "isFailableInitializer").trackDifference(actual: self.isFailableInitializer, expected: castObject.isFailableInitializer))
+        results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
+        results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.selectorName)
+        hasher.combine(self.parameters)
+        hasher.combine(self.returnTypeName)
+        hasher.combine(self.isAsync)
+        hasher.combine(self.`throws`)
+        hasher.combine(self.`rethrows`)
+        hasher.combine(self.accessLevel)
+        hasher.combine(self.isStatic)
+        hasher.combine(self.isClass)
+        hasher.combine(self.isFailableInitializer)
+        hasher.combine(self.annotations)
+        hasher.combine(self.documentation)
+        hasher.combine(self.definedInTypeName)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.genericRequirements)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? Method else { return false }
+        if self.name != rhs.name { return false }
+        if self.selectorName != rhs.selectorName { return false }
+        if self.parameters != rhs.parameters { return false }
+        if self.returnTypeName != rhs.returnTypeName { return false }
+        if self.isAsync != rhs.isAsync { return false }
+        if self.`throws` != rhs.`throws` { return false }
+        if self.`rethrows` != rhs.`rethrows` { return false }
+        if self.accessLevel != rhs.accessLevel { return false }
+        if self.isStatic != rhs.isStatic { return false }
+        if self.isClass != rhs.isClass { return false }
+        if self.isFailableInitializer != rhs.isFailableInitializer { return false }
+        if self.annotations != rhs.annotations { return false }
+        if self.documentation != rhs.documentation { return false }
+        if self.definedInTypeName != rhs.definedInTypeName { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.genericRequirements != rhs.genericRequirements { return false }
+        return true
+    }
+
+// sourcery:inline:Method.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { 
+                withVaList(["selectorName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.selectorName = selectorName
+            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { 
+                withVaList(["parameters"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.parameters = parameters
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { 
+                withVaList(["returnTypeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.returnTypeName = returnTypeName
+            self.returnType = aDecoder.decode(forKey: "returnType")
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
+                withVaList(["accessLevel"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.accessLevel = accessLevel
+            self.isStatic = aDecoder.decode(forKey: "isStatic")
+            self.isClass = aDecoder.decode(forKey: "isClass")
+            self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+                withVaList(["annotations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
+                withVaList(["documentation"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.documentation = documentation
+            self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
+            self.definedInType = aDecoder.decode(forKey: "definedInType")
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
+                withVaList(["attributes"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.attributes = attributes
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
+                withVaList(["modifiers"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.modifiers = modifiers
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
+                withVaList(["genericRequirements"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericRequirements = genericRequirements
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.selectorName, forKey: "selectorName")
+            aCoder.encode(self.parameters, forKey: "parameters")
+            aCoder.encode(self.returnTypeName, forKey: "returnTypeName")
+            aCoder.encode(self.returnType, forKey: "returnType")
+            aCoder.encode(self.isAsync, forKey: "isAsync")
+            aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.`rethrows`, forKey: "`rethrows`")
+            aCoder.encode(self.accessLevel, forKey: "accessLevel")
+            aCoder.encode(self.isStatic, forKey: "isStatic")
+            aCoder.encode(self.isClass, forKey: "isClass")
+            aCoder.encode(self.isFailableInitializer, forKey: "isFailableInitializer")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
+            aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
+            aCoder.encode(self.definedInType, forKey: "definedInType")
+            aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.modifiers, forKey: "modifiers")
+            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
+        }
+// sourcery:end
+}
+#endif
+
+"""),
+    .init(name: "NSException_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
+import Foundation
+
+public class NSException {
+    static func raise(_ name: String, format: String, arguments: CVaListPointer) {
+        fatalError ("\\(name) exception: \\(NSString(format: format, arguments: arguments))")
+    }
+
+    static func raise(_ name: String) {
+        fatalError("\\(name) exception")
+    }
+}
+
+public extension NSExceptionName {
+    static var parseErrorException = "parseErrorException"
+}
+#endif
+
+"""),
+    .init(name: "Subscript_Linux.swift", content:
+"""
+#if !canImport(ObjectiveC)
 import Foundation
 
 /// Describes subscript
-public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable {
+public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "parameters":
+                return parameters
+            case "returnTypeName":
+                return returnTypeName
+            case "actualReturnTypeName":
+                return actualReturnTypeName
+            case "returnType":
+                return returnType
+            case "isOptionalReturnType":
+                return isOptionalReturnType
+            case "isImplicitlyUnwrappedOptionalReturnType":
+                return isImplicitlyUnwrappedOptionalReturnType
+            case "unwrappedReturnTypeName":
+                return unwrappedReturnTypeName
+            case "isFinal":
+                return isFinal
+            case "readAccess":
+                return readAccess
+            case "writeAccess":
+                return writeAccess
+            case "isAsync":
+                return isAsync
+            case "throws":
+                return `throws`
+            case "isMutable":
+                return isMutable
+            case "annotations":
+                return annotations
+            case "documentation":
+                return documentation
+            case "definedInTypeName":
+                return definedInTypeName
+            case "actualDefinedInTypeName":
+                return actualDefinedInTypeName
+            case "attributes":
+                return attributes
+            case "modifiers":
+                return modifiers
+            case "genericParameters":
+                return genericParameters
+            case "genericRequirements":
+                return genericRequirements
+            case "isGeneric":
+                return isGeneric
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
 
     /// Method parameters
     public var parameters: [MethodParameter]
@@ -5078,32 +5686,32 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
 
     /// :nodoc:
     override public var description: String {
-        var string = "\(Swift.type(of: self)): "
-        string += "parameters = \(String(describing: self.parameters)), "
-        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
-        string += "isFinal = \(String(describing: self.isFinal)), "
-        string += "readAccess = \(String(describing: self.readAccess)), "
-        string += "writeAccess = \(String(describing: self.writeAccess)), "
-        string += "isAsync = \(String(describing: self.isAsync)), "
-        string += "`throws` = \(String(describing: self.throws)), "
-        string += "isMutable = \(String(describing: self.isMutable)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "documentation = \(String(describing: self.documentation)), "
-        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
-        string += "genericParameters = \(String(describing: self.genericParameters)), "
-        string += "genericRequirements = \(String(describing: self.genericRequirements)), "
-        string += "isGeneric = \(String(describing: self.isGeneric)), "
-        string += "attributes = \(String(describing: self.attributes)), "
-        string += "modifiers = \(String(describing: self.modifiers))"
+        var string = "\\(Swift.type(of: self)): "
+        string += "parameters = \\(String(describing: self.parameters)), "
+        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
+        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
+        string += "isFinal = \\(String(describing: self.isFinal)), "
+        string += "readAccess = \\(String(describing: self.readAccess)), "
+        string += "writeAccess = \\(String(describing: self.writeAccess)), "
+        string += "isAsync = \\(String(describing: self.isAsync)), "
+        string += "`throws` = \\(String(describing: self.throws)), "
+        string += "isMutable = \\(String(describing: self.isMutable)), "
+        string += "annotations = \\(String(describing: self.annotations)), "
+        string += "documentation = \\(String(describing: self.documentation)), "
+        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
+        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName)), "
+        string += "genericParameters = \\(String(describing: self.genericParameters)), "
+        string += "genericRequirements = \\(String(describing: self.genericRequirements)), "
+        string += "isGeneric = \\(String(describing: self.isGeneric)), "
+        string += "attributes = \\(String(describing: self.attributes)), "
+        string += "modifiers = \\(String(describing: self.modifiers))"
         return string
     }
 
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
         guard let castObject = object as? Subscript else {
-            results.append("Incorrect type <expected: Subscript, received: \(Swift.type(of: object))>")
+            results.append("Incorrect type <expected: Subscript, received: \\(Swift.type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "parameters").trackDifference(actual: self.parameters, expected: castObject.parameters))
@@ -5163,71 +5771,71 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else {
+            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { 
                 withVaList(["parameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.parameters = parameters
-            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else {
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { 
                 withVaList(["returnTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.returnTypeName = returnTypeName
             self.returnType = aDecoder.decode(forKey: "returnType")
-            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else {
+            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { 
                 withVaList(["readAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.readAccess = readAccess
-            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else {
+            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { 
                 withVaList(["writeAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.writeAccess = writeAccess
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
+            self.isAsync = aDecoder.decode(forKey: "isAsync")
+            self.`throws` = aDecoder.decode(forKey: "`throws`")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
                 withVaList(["documentation"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.documentation = documentation
-            self.isAsync = aDecoder.decode(forKey: "isAsync")
-            self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.modifiers = modifiers
-            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else {
+            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else { 
                 withVaList(["genericParameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
-            }; self.genericParameters = genericParameters
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
+             }; self.genericParameters = genericParameters
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
                 withVaList(["genericRequirements"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
-            }; self.genericRequirements = genericRequirements
+             }; self.genericRequirements = genericRequirements
         }
 
         /// :nodoc:
@@ -5243,422 +5851,32 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
             aCoder.encode(self.definedInType, forKey: "definedInType")
-            aCoder.encode(self.genericParameters, forKey: "genericParameters")
-            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
+            aCoder.encode(self.genericParameters, forKey: "genericParameters")
+            aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
         }
 // sourcery:end
 
 }
-
-"""#),
-    .init(name: "TemplateContext.swift", content:
-"""
-//
-// Created by Krzysztof Zablocki on 31/12/2016.
-// Copyright (c) 2016 Pixle. All rights reserved.
-//
-
-import Foundation
-
-/// :nodoc:
-// sourcery: skipCoding
-public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable {
-    // sourcery: skipJSExport
-    public let parserResult: FileParserResult?
-    public let functions: [SourceryMethod]
-    public let types: Types
-    public let argument: [String: NSObject]
-
-    // sourcery: skipDescription
-    public var type: [String: Type] {
-        return types.typesByName
-    }
-
-    public init(parserResult: FileParserResult?, types: Types, functions: [SourceryMethod], arguments: [String: NSObject]) {
-        self.parserResult = parserResult
-        self.types = types
-        self.functions = functions
-        self.argument = arguments
-    }
-
-    /// :nodoc:
-    required public init?(coder aDecoder: NSCoder) {
-        guard let parserResult: FileParserResult = aDecoder.decode(forKey: "parserResult") else {
-                withVaList(["parserResult"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found. FileParserResults are required for template context that needs persisting.", arguments: arguments)
-                }
-                fatalError()
-             }
-        guard let argument: [String: NSObject] = aDecoder.decode(forKey: "argument") else {
-                withVaList(["argument"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }
-
-        // if we want to support multiple cycles of encode / decode we need deep copy because composer changes reference types
-        let fileParserResultCopy: FileParserResult? = nil
-//      fileParserResultCopy = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(NSKeyedArchiver.archivedData(withRootObject: parserResult)) as? FileParserResult
-
-        let composed = Composer.uniqueTypesAndFunctions(parserResult)
-        self.types = .init(types: composed.types, typealiases: composed.typealiases)
-        self.functions = composed.functions
-
-        self.parserResult = fileParserResultCopy
-        self.argument = argument
-    }
-
-    /// :nodoc:
-    public func encode(with aCoder: NSCoder) {
-        aCoder.encode(self.parserResult, forKey: "parserResult")
-        aCoder.encode(self.argument, forKey: "argument")
-    }
-
-    public var stencilContext: [String: Any] {
-        return [
-            "types": types,
-            "functions": functions,
-            "type": types.typesByName,
-            "argument": argument
-        ]
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "parserResult = \\(String(describing: self.parserResult)), "
-        string += "functions = \\(String(describing: self.functions)), "
-        string += "types = \\(String(describing: self.types)), "
-        string += "argument = \\(String(describing: self.argument)), "
-        string += "stencilContext = \\(String(describing: self.stencilContext))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? TemplateContext else {
-            results.append("Incorrect type <expected: TemplateContext, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "parserResult").trackDifference(actual: self.parserResult, expected: castObject.parserResult))
-        results.append(contentsOf: DiffableResult(identifier: "functions").trackDifference(actual: self.functions, expected: castObject.functions))
-        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
-        results.append(contentsOf: DiffableResult(identifier: "argument").trackDifference(actual: self.argument, expected: castObject.argument))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.parserResult)
-        hasher.combine(self.functions)
-        hasher.combine(self.types)
-        hasher.combine(self.argument)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TemplateContext else { return false }
-        if self.parserResult != rhs.parserResult { return false }
-        if self.functions != rhs.functions { return false }
-        if self.types != rhs.types { return false }
-        if self.argument != rhs.argument { return false }
-        return true
-    }
-
-    // sourcery: skipDescription, skipEquality
-    public var jsContext: [String: Any] {
-        return [
-            "types": [
-                "all": types.all,
-                "protocols": types.protocols,
-                "classes": types.classes,
-                "structs": types.structs,
-                "enums": types.enums,
-                "extensions": types.extensions,
-                "based": types.based,
-                "inheriting": types.inheriting,
-                "implementing": types.implementing
-            ] as [String : Any],
-            "functions": functions,
-            "type": types.typesByName,
-            "argument": argument
-        ]
-    }
-
-}
-
-extension ProcessInfo {
-    /// :nodoc:
-    public var context: TemplateContext! {
-        return NSKeyedUnarchiver.unarchiveObject(withFile: arguments[1]) as? TemplateContext
-    }
-}
+#endif
 
 """),
-    .init(name: "Types.swift", content:
+    .init(name: "Tuple_Linux.swift", content:
 """
-import Foundation
-
-// sourcery: skipJSExport
-/// Collection of scanned types for accessing in templates
-public final class Types: NSObject, SourceryModel, Diffable {
-
-    /// :nodoc:
-    public let types: [Type]
-
-    /// All known typealiases
-    public let typealiases: [Typealias]
-
-    /// :nodoc:
-    public init(types: [Type], typealiases: [Typealias] = []) {
-        self.types = types
-        self.typealiases = typealiases
-    }
-
-    /// :nodoc:
-    override public var description: String {
-        var string = "\\(Swift.type(of: self)): "
-        string += "types = \\(String(describing: self.types)), "
-        string += "typealiases = \\(String(describing: self.typealiases))"
-        return string
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? Types else {
-            results.append("Incorrect type <expected: Types, received: \\(Swift.type(of: object))>")
-            return results
-        }
-        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
-        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
-        return results
-    }
-
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.types)
-        hasher.combine(self.typealiases)
-        return hasher.finalize()
-    }
-
-    /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Types else { return false }
-        if self.types != rhs.types { return false }
-        if self.typealiases != rhs.typealiases { return false }
-        return true
-    }
-
-// sourcery:inline:Types.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let types: [Type] = aDecoder.decode(forKey: "types") else {
-                withVaList(["types"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.types = types
-            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else {
-                withVaList(["typealiases"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.typealiases = typealiases
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.types, forKey: "types")
-            aCoder.encode(self.typealiases, forKey: "typealiases")
-        }
-// sourcery:end
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// :nodoc:
-    public lazy internal(set) var typesByName: [String: Type] = {
-        var typesByName = [String: Type]()
-        self.types.forEach { typesByName[$0.globalName] = $0 }
-        return typesByName
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// :nodoc:
-    public lazy internal(set) var typesaliasesByName: [String: Typealias] = {
-        var typesaliasesByName = [String: Typealias]()
-        self.typealiases.forEach { typesaliasesByName[$0.name] = $0 }
-        return typesaliasesByName
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known types, excluding protocols or protocol compositions.
-    public lazy internal(set) var all: [Type] = {
-        return self.types.filter { !($0 is Protocol || $0 is ProtocolComposition) }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known protocols
-    public lazy internal(set) var protocols: [Protocol] = {
-        return self.types.compactMap { $0 as? Protocol }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known protocol compositions
-    public lazy internal(set) var protocolCompositions: [ProtocolComposition] = {
-        return self.types.compactMap { $0 as? ProtocolComposition }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known classes
-    public lazy internal(set) var classes: [Class] = {
-        return self.all.compactMap { $0 as? Class }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known structs
-    public lazy internal(set) var structs: [Struct] = {
-        return self.all.compactMap { $0 as? Struct }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known enums
-    public lazy internal(set) var enums: [Enum] = {
-        return self.all.compactMap { $0 as? Enum }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// All known extensions
-    public lazy internal(set) var extensions: [Type] = {
-        return self.all.compactMap { $0.isExtension ? $0 : nil }
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// Types based on any other type, grouped by its name, even if they are not known.
-    /// `types.based.MyType` returns list of types based on `MyType`
-    public lazy internal(set) var based: TypesCollection = {
-        TypesCollection(
-            types: self.types,
-            collection: { Array($0.based.keys) }
-        )
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// Classes inheriting from any known class, grouped by its name.
-    /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
-    public lazy internal(set) var inheriting: TypesCollection = {
-        TypesCollection(
-            types: self.types,
-            collection: { Array($0.inherits.keys) },
-            validate: { type in
-                guard type is Class else {
-                    throw "\\(type.name) is not a class and should be used with `implementing` or `based`"
-                }
-            })
-    }()
-
-    // sourcery: skipDescription, skipEquality, skipCoding
-    /// Types implementing known protocol, grouped by its name.
-    /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
-    public lazy internal(set) var implementing: TypesCollection = {
-        TypesCollection(
-            types: self.types,
-            collection: { Array($0.implements.keys) },
-            validate: { type in
-                guard type is Protocol else {
-                    throw "\\(type.name) is a class and should be used with `inheriting` or `based`"
-                }
-        })
-    }()
-}
-
-"""),
-    .init(name: "TypesCollection.swift", content:
-"""
-import Foundation
-
-/// :nodoc:
-public class TypesCollection: NSObject, AutoJSExport {
-
-    // sourcery:begin: skipJSExport
-    let all: [Type]
-    let types: [String: [Type]]
-    let validate: ((Type) throws -> Void)?
-    // sourcery:end
-
-    init(types: [Type], collection: (Type) -> [String], validate: ((Type) throws -> Void)? = nil) {
-        self.all = types
-        var content = [String: [Type]]()
-        self.all.forEach { type in
-            collection(type).forEach { name in
-                var list = content[name] ?? [Type]()
-                list.append(type)
-                content[name] = list
-            }
-        }
-        self.types = content
-        self.validate = validate
-    }
-
-    public func types(forKey key: String) throws -> [Type] {
-        // In some configurations, the types are keyed by "ModuleName.TypeName"
-        var longKey: String?
-
-        if let validate = validate {
-            guard let type = all.first(where: { $0.name == key }) else {
-                throw "Unknown type \\(key), should be used with `based`"
-            }
-
-            try validate(type)
-
-            if let module = type.module {
-                longKey = [module, type.name].joined(separator: ".")
-            }
-        }
-
-        // If we find the types directly, return them
-        if let types = types[key] {
-            return types
-        }
-
-        // if we find a types for the longKey, return them
-        if let longKey = longKey, let types = types[longKey] {
-            return types
-        }
-
-        return []
-    }
-
-    /// :nodoc:
-    public func value(forKey key: String) -> Any? {
-        do {
-            return try types(forKey: key)
-        } catch {
-            Log.error(error)
-            return nil
-        }
-    }
-
-    /// :nodoc:
-    public subscript(_ key: String) -> [Type] {
-        do {
-            return try types(forKey: key)
-        } catch {
-            Log.error(error)
-            return []
-        }
-    }
-}
-
-"""),
-    .init(name: "Tuple.swift", content:
-"""
+#if !canImport(ObjectiveC)
 import Foundation
 
 /// Describes tuple type
-public final class TupleType: NSObject, SourceryModel, Diffable {
+public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "elements":
+                return elements
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
 
     /// Type name used in declaration
     public var name: String
@@ -5716,13 +5934,13 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else {
+            guard let elements: [TupleElement] = aDecoder.decode(forKey: "elements") else { 
                 withVaList(["elements"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -5739,7 +5957,19 @@ public final class TupleType: NSObject, SourceryModel, Diffable {
 }
 
 /// Describes tuple type element
-public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
+public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "name":
+                return name
+            case "typeName":
+                return typeName
+            case "type":
+                return type
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
 
     /// Tuple element name
     public let name: String?
@@ -5803,7 +6033,7 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable {
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.name = aDecoder.decode(forKey: "name")
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
                 withVaList(["typeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -5830,22 +6060,362 @@ extension Array where Element == TupleElement {
         "(\\(map { $0.typeName.asSource }.joined(separator: ", ")))"
     }
 }
+#endif
 
 """),
-    .init(name: "Type.swift", content:
+    .init(name: "TypeName_Linux.swift", content:
+"""
+//
+// Created by Krzysztof Zabłocki on 25/12/2016.
+// Copyright (c) 2016 Pixle. All rights reserved.
+//
+#if !canImport(ObjectiveC)
+import Foundation
+
+/// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "tuple":
+                return tuple
+            case "name":
+                return name
+            case "isOptional":
+                return isOptional
+            case "unwrappedTypeName":
+                return unwrappedTypeName
+            case "isProtocolComposition":
+                return isProtocolComposition
+            case "isVoid":
+                return isVoid
+            case "isClosure":
+                return isClosure
+            case "closure":
+                return closure
+            case "set":
+                return set
+            case "isSet":
+                return isSet
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
+
+    /// :nodoc:
+    public init(name: String,
+                actualTypeName: TypeName? = nil,
+                unwrappedTypeName: String? = nil,
+                attributes: AttributeList = [:],
+                isOptional: Bool = false,
+                isImplicitlyUnwrappedOptional: Bool = false,
+                tuple: TupleType? = nil,
+                array: ArrayType? = nil,
+                dictionary: DictionaryType? = nil,
+                closure: ClosureType? = nil,
+                set: SetType? = nil,
+                generic: GenericType? = nil,
+                isProtocolComposition: Bool = false) {
+
+        let optionalSuffix: String
+        // TODO: TBR
+        if !name.hasPrefix("Optional<") && !name.contains(" where ") {
+            if isOptional {
+                optionalSuffix = "?"
+            } else if isImplicitlyUnwrappedOptional {
+                optionalSuffix = "!"
+            } else {
+                optionalSuffix = ""
+            }
+        } else {
+            optionalSuffix = ""
+        }
+
+        self.name = name + optionalSuffix
+        self.actualTypeName = actualTypeName
+        self.unwrappedTypeName = unwrappedTypeName ?? name
+        self.tuple = tuple
+        self.array = array
+        self.dictionary = dictionary
+        self.closure = closure
+        self.generic = generic
+        self.isOptional = isOptional || isImplicitlyUnwrappedOptional
+        self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
+        self.isProtocolComposition = isProtocolComposition
+        self.set = set
+        self.attributes = attributes
+        self.modifiers = []
+        super.init()
+    }
+
+    /// Type name used in declaration
+    public var name: String
+
+    /// The generics of this TypeName
+    public var generic: GenericType?
+
+    /// Whether this TypeName is generic
+    public var isGeneric: Bool {
+        actualTypeName?.generic != nil || generic != nil
+    }
+
+    /// Whether this TypeName is protocol composition
+    public var isProtocolComposition: Bool
+
+    // sourcery: skipEquality
+    /// Actual type name if given type name is a typealias
+    public var actualTypeName: TypeName?
+
+    /// Type name attributes, i.e. `@escaping`
+    public var attributes: AttributeList
+
+    /// Modifiers, i.e. `escaping`
+    public var modifiers: [SourceryModifier]
+
+    // sourcery: skipEquality
+    /// Whether type is optional
+    public let isOptional: Bool
+
+    // sourcery: skipEquality
+    /// Whether type is implicitly unwrapped optional
+    public let isImplicitlyUnwrappedOptional: Bool
+
+    // sourcery: skipEquality
+    /// Type name without attributes and optional type information
+    public var unwrappedTypeName: String
+
+    // sourcery: skipEquality
+    /// Whether type is void (`Void` or `()`)
+    public var isVoid: Bool {
+        return name == "Void" || name == "()" || unwrappedTypeName == "Void"
+    }
+
+    /// Whether type is a tuple
+    public var isTuple: Bool {
+        actualTypeName?.tuple != nil || tuple != nil
+    }
+
+    /// Tuple type data
+    public var tuple: TupleType?
+
+    /// Whether type is an array
+    public var isArray: Bool {
+        actualTypeName?.array != nil || array != nil
+    }
+
+    /// Array type data
+    public var array: ArrayType?
+
+    /// Whether type is a dictionary
+    public var isDictionary: Bool {
+        actualTypeName?.dictionary != nil || dictionary != nil
+    }
+
+    /// Dictionary type data
+    public var dictionary: DictionaryType?
+
+    /// Whether type is a closure
+    public var isClosure: Bool {
+        actualTypeName?.closure != nil || closure != nil
+    }
+
+    /// Closure type data
+    public var closure: ClosureType?
+
+    /// Whether type is a Set
+    public var isSet: Bool {
+        actualTypeName?.set != nil || set != nil
+    }
+
+    /// Set type data
+    public var set: SetType?
+
+    /// Prints typename as it would appear on definition
+    public var asSource: String {
+        // TODO: TBR special treatment
+        let specialTreatment = isOptional && name.hasPrefix("Optional<")
+
+        var description = (
+          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
+          modifiers.map({ $0.asSource }) +
+          [specialTreatment ? name : unwrappedTypeName]
+        ).joined(separator: " ")
+
+        if let _ = self.dictionary { // array and dictionary cases are covered by the unwrapped type name
+//            description.append(dictionary.asSource)
+        } else if let _ = self.array {
+//            description.append(array.asSource)
+        } else if let _ = self.generic {
+//            let arguments = generic.typeParameters
+//              .map({ $0.typeName.asSource })
+//              .joined(separator: ", ")
+//            description.append("<\\(arguments)>")
+        }
+        if !specialTreatment {
+            if isImplicitlyUnwrappedOptional {
+                description.append("!")
+            } else if isOptional {
+                description.append("?")
+            }
+        }
+
+        return description
+    }
+
+    public override var description: String {
+       (
+          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
+          modifiers.map({ $0.asSource }) +
+          [name]
+        ).joined(separator: " ")
+    }
+
+    public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? TypeName else {
+            results.append("Incorrect type <expected: TypeName, received: \\(Swift.type(of: object))>")
+            return results
+        }
+        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
+        results.append(contentsOf: DiffableResult(identifier: "generic").trackDifference(actual: self.generic, expected: castObject.generic))
+        results.append(contentsOf: DiffableResult(identifier: "isProtocolComposition").trackDifference(actual: self.isProtocolComposition, expected: castObject.isProtocolComposition))
+        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
+        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
+        results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: castObject.tuple))
+        results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: castObject.array))
+        results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: castObject.dictionary))
+        results.append(contentsOf: DiffableResult(identifier: "closure").trackDifference(actual: self.closure, expected: castObject.closure))
+        results.append(contentsOf: DiffableResult(identifier: "set").trackDifference(actual: self.set, expected: castObject.set))
+        return results
+    }
+
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(self.name)
+        hasher.combine(self.generic)
+        hasher.combine(self.isProtocolComposition)
+        hasher.combine(self.attributes)
+        hasher.combine(self.modifiers)
+        hasher.combine(self.tuple)
+        hasher.combine(self.array)
+        hasher.combine(self.dictionary)
+        hasher.combine(self.closure)
+        hasher.combine(self.set)
+        return hasher.finalize()
+    }
+
+    /// :nodoc:
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? TypeName else { return false }
+        if self.name != rhs.name { return false }
+        if self.generic != rhs.generic { return false }
+        if self.isProtocolComposition != rhs.isProtocolComposition { return false }
+        if self.attributes != rhs.attributes { return false }
+        if self.modifiers != rhs.modifiers { return false }
+        if self.tuple != rhs.tuple { return false }
+        if self.array != rhs.array { return false }
+        if self.dictionary != rhs.dictionary { return false }
+        if self.closure != rhs.closure { return false }
+        if self.set != rhs.set { return false }
+        return true
+    }
+
+// sourcery:inline:TypeName.AutoCoding
+
+        /// :nodoc:
+        required public init?(coder aDecoder: NSCoder) {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
+                withVaList(["name"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.name = name
+            self.generic = aDecoder.decode(forKey: "generic")
+            self.isProtocolComposition = aDecoder.decode(forKey: "isProtocolComposition")
+            self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
+                withVaList(["attributes"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.attributes = attributes
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
+                withVaList(["modifiers"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.modifiers = modifiers
+            self.isOptional = aDecoder.decode(forKey: "isOptional")
+            self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
+            guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { 
+                withVaList(["unwrappedTypeName"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.unwrappedTypeName = unwrappedTypeName
+            self.tuple = aDecoder.decode(forKey: "tuple")
+            self.array = aDecoder.decode(forKey: "array")
+            self.dictionary = aDecoder.decode(forKey: "dictionary")
+            self.closure = aDecoder.decode(forKey: "closure")
+            self.set = aDecoder.decode(forKey: "set")
+        }
+
+        /// :nodoc:
+        public func encode(with aCoder: NSCoder) {
+            aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.generic, forKey: "generic")
+            aCoder.encode(self.isProtocolComposition, forKey: "isProtocolComposition")
+            aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
+            aCoder.encode(self.attributes, forKey: "attributes")
+            aCoder.encode(self.modifiers, forKey: "modifiers")
+            aCoder.encode(self.isOptional, forKey: "isOptional")
+            aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
+            aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
+            aCoder.encode(self.tuple, forKey: "tuple")
+            aCoder.encode(self.array, forKey: "array")
+            aCoder.encode(self.dictionary, forKey: "dictionary")
+            aCoder.encode(self.closure, forKey: "closure")
+            aCoder.encode(self.set, forKey: "set")
+        }
+// sourcery:end
+
+    // sourcery: skipEquality, skipDescription
+    /// :nodoc:
+    public override var debugDescription: String {
+        return name
+    }
+
+    public convenience init(_ description: String) {
+        self.init(name: description, actualTypeName: nil)
+    }
+}
+
+extension TypeName {
+    public static func unknown(description: String?, attributes: AttributeList = [:]) -> TypeName {
+        if let description = description {
+            Log.astWarning("Unknown type, please add type attribution to \\(description)")
+        } else {
+            Log.astWarning("Unknown type, please add type attribution")
+        }
+        return TypeName(name: "UnknownTypeSoAddTypeAttributionToVariable", attributes: attributes)
+    }
+}
+#endif
+
+"""),
+    .init(name: "Type_Linux.swift", content:
 """
 //
 // Created by Krzysztof Zablocki on 11/09/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-
+#if !canImport(ObjectiveC)
 import Foundation
 
 /// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
+public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "implements":
@@ -5890,7 +6460,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
                 return genericRequirements
             default:
                 fatalError("unable to lookup: \\(member) in \\(self)")
-        }
+        }   
     }
 
     /// :nodoc:
@@ -6433,51 +7003,45 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.module = aDecoder.decode(forKey: "module")
-            guard let imports: [Import] = aDecoder.decode(forKey: "imports") else {
+            guard let imports: [Import] = aDecoder.decode(forKey: "imports") else { 
                 withVaList(["imports"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.imports = imports
-            guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else {
+            guard let typealiases: [String: Typealias] = aDecoder.decode(forKey: "typealiases") else { 
                 withVaList(["typealiases"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
-            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else {
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
-                withVaList(["genericRequirements"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.genericRequirements = genericRequirements
-            guard let localName: String = aDecoder.decode(forKey: "localName") else {
+            guard let localName: String = aDecoder.decode(forKey: "localName") else { 
                 withVaList(["localName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.localName = localName
-            guard let rawVariables: [Variable] = aDecoder.decode(forKey: "rawVariables") else {
+            guard let rawVariables: [Variable] = aDecoder.decode(forKey: "rawVariables") else { 
                 withVaList(["rawVariables"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.rawVariables = rawVariables
-            guard let rawMethods: [Method] = aDecoder.decode(forKey: "rawMethods") else {
+            guard let rawMethods: [Method] = aDecoder.decode(forKey: "rawMethods") else { 
                 withVaList(["rawMethods"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.rawMethods = rawMethods
-            guard let rawSubscripts: [Subscript] = aDecoder.decode(forKey: "rawSubscripts") else {
+            guard let rawSubscripts: [Subscript] = aDecoder.decode(forKey: "rawSubscripts") else { 
                 withVaList(["rawSubscripts"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -6485,55 +7049,55 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
              }; self.rawSubscripts = rawSubscripts
             self.bodyBytesRange = aDecoder.decode(forKey: "bodyBytesRange")
             self.completeDeclarationRange = aDecoder.decode(forKey: "completeDeclarationRange")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
                 withVaList(["documentation"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.documentation = documentation
-            guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else {
+            guard let inheritedTypes: [String] = aDecoder.decode(forKey: "inheritedTypes") else { 
                 withVaList(["inheritedTypes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.inheritedTypes = inheritedTypes
-            guard let based: [String: String] = aDecoder.decode(forKey: "based") else {
+            guard let based: [String: String] = aDecoder.decode(forKey: "based") else { 
                 withVaList(["based"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.based = based
-            guard let basedTypes: [String: Type] = aDecoder.decode(forKey: "basedTypes") else {
+            guard let basedTypes: [String: Type] = aDecoder.decode(forKey: "basedTypes") else { 
                 withVaList(["basedTypes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.basedTypes = basedTypes
-            guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else {
+            guard let inherits: [String: Type] = aDecoder.decode(forKey: "inherits") else { 
                 withVaList(["inherits"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.inherits = inherits
-            guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else {
+            guard let implements: [String: Type] = aDecoder.decode(forKey: "implements") else { 
                 withVaList(["implements"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.implements = implements
-            guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else {
+            guard let containedTypes: [Type] = aDecoder.decode(forKey: "containedTypes") else { 
                 withVaList(["containedTypes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.containedTypes = containedTypes
-            guard let containedType: [String: Type] = aDecoder.decode(forKey: "containedType") else {
+            guard let containedType: [String: Type] = aDecoder.decode(forKey: "containedType") else { 
                 withVaList(["containedType"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -6542,19 +7106,25 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
             self.parentName = aDecoder.decode(forKey: "parentName")
             self.parent = aDecoder.decode(forKey: "parent")
             self.supertype = aDecoder.decode(forKey: "supertype")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.modifiers = modifiers
             self.path = aDecoder.decode(forKey: "path")
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
+                withVaList(["genericRequirements"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericRequirements = genericRequirements
             self.fileName = aDecoder.decode(forKey: "fileName")
         }
 
@@ -6587,8 +7157,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.path, forKey: "path")
-            aCoder.encode(self.fileName, forKey: "fileName")
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
+            aCoder.encode(self.fileName, forKey: "fileName")
         }
 // sourcery:end
 
@@ -6603,629 +7173,351 @@ extension Type {
         return !isNotClass && !isExtension
     }
 }
+#endif
 
 """),
-    .init(name: "TypeName.swift", content:
+    .init(name: "TypesCollection_Linux.swift", content:
 """
 //
-// Created by Krzysztof Zabłocki on 25/12/2016.
+// Created by Krzysztof Zablocki on 31/12/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-
+#if !canImport(ObjectiveC)
 import Foundation
 
-/// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable {
+/// :nodoc:
+public class TypesCollection: NSObject, AutoJSExport, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        return try? types(forKey: member)
+    }
 
-    /// :nodoc:
-    public init(name: String,
-                actualTypeName: TypeName? = nil,
-                unwrappedTypeName: String? = nil,
-                attributes: AttributeList = [:],
-                isOptional: Bool = false,
-                isImplicitlyUnwrappedOptional: Bool = false,
-                tuple: TupleType? = nil,
-                array: ArrayType? = nil,
-                dictionary: DictionaryType? = nil,
-                closure: ClosureType? = nil,
-                set: SetType? = nil,
-                generic: GenericType? = nil,
-                isProtocolComposition: Bool = false) {
+    // sourcery:begin: skipJSExport
+    let all: [Type]
+    let types: [String: [Type]]
+    let validate: ((Type) throws -> Void)?
+    // sourcery:end
 
-        let optionalSuffix: String
-        // TODO: TBR
-        if !name.hasPrefix("Optional<") && !name.contains(" where ") {
-            if isOptional {
-                optionalSuffix = "?"
-            } else if isImplicitlyUnwrappedOptional {
-                optionalSuffix = "!"
-            } else {
-                optionalSuffix = ""
+    init(types: [Type], collection: (Type) -> [String], validate: ((Type) throws -> Void)? = nil) {
+        self.all = types
+        var content = [String: [Type]]()
+        self.all.forEach { type in
+            collection(type).forEach { name in
+                var list = content[name] ?? [Type]()
+                list.append(type)
+                content[name] = list
             }
-        } else {
-            optionalSuffix = ""
         }
-
-        self.name = name + optionalSuffix
-        self.actualTypeName = actualTypeName
-        self.unwrappedTypeName = unwrappedTypeName ?? name
-        self.tuple = tuple
-        self.array = array
-        self.dictionary = dictionary
-        self.closure = closure
-        self.generic = generic
-        self.isOptional = isOptional || isImplicitlyUnwrappedOptional
-        self.isImplicitlyUnwrappedOptional = isImplicitlyUnwrappedOptional
-        self.isProtocolComposition = isProtocolComposition
-        self.set = set
-        self.attributes = attributes
-        self.modifiers = []
-        super.init()
+        self.types = content
+        self.validate = validate
     }
 
-    /// Type name used in declaration
-    public var name: String
+    public func types(forKey key: String) throws -> [Type] {
+        // In some configurations, the types are keyed by "ModuleName.TypeName"
+        var longKey: String?
 
-    /// The generics of this TypeName
-    public var generic: GenericType?
+        if let validate = validate {
+            guard let type = all.first(where: { $0.name == key }) else {
+                throw "Unknown type \\(key), should be used with `based`"
+            }
 
-    /// Whether this TypeName is generic
-    public var isGeneric: Bool {
-        actualTypeName?.generic != nil || generic != nil
-    }
+            try validate(type)
 
-    /// Whether this TypeName is protocol composition
-    public var isProtocolComposition: Bool
-
-    // sourcery: skipEquality
-    /// Actual type name if given type name is a typealias
-    public var actualTypeName: TypeName?
-
-    /// Type name attributes, i.e. `@escaping`
-    public var attributes: AttributeList
-
-    /// Modifiers, i.e. `escaping`
-    public var modifiers: [SourceryModifier]
-
-    // sourcery: skipEquality
-    /// Whether type is optional
-    public let isOptional: Bool
-
-    // sourcery: skipEquality
-    /// Whether type is implicitly unwrapped optional
-    public let isImplicitlyUnwrappedOptional: Bool
-
-    // sourcery: skipEquality
-    /// Type name without attributes and optional type information
-    public var unwrappedTypeName: String
-
-    // sourcery: skipEquality
-    /// Whether type is void (`Void` or `()`)
-    public var isVoid: Bool {
-        return name == "Void" || name == "()" || unwrappedTypeName == "Void"
-    }
-
-    /// Whether type is a tuple
-    public var isTuple: Bool {
-        actualTypeName?.tuple != nil || tuple != nil
-    }
-
-    /// Tuple type data
-    public var tuple: TupleType?
-
-    /// Whether type is an array
-    public var isArray: Bool {
-        actualTypeName?.array != nil || array != nil
-    }
-
-    /// Array type data
-    public var array: ArrayType?
-
-    /// Whether type is a dictionary
-    public var isDictionary: Bool {
-        actualTypeName?.dictionary != nil || dictionary != nil
-    }
-
-    /// Dictionary type data
-    public var dictionary: DictionaryType?
-
-    /// Whether type is a closure
-    public var isClosure: Bool {
-        actualTypeName?.closure != nil || closure != nil
-    }
-
-    /// Closure type data
-    public var closure: ClosureType?
-
-    /// Whether type is a Set
-    public var isSet: Bool {
-        actualTypeName?.set != nil || set != nil
-    }
-
-    /// Set type data
-    public var set: SetType?
-
-    /// Prints typename as it would appear on definition
-    public var asSource: String {
-        // TODO: TBR special treatment
-        let specialTreatment = isOptional && name.hasPrefix("Optional<")
-
-        var description = (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
-          modifiers.map({ $0.asSource }) +
-          [specialTreatment ? name : unwrappedTypeName]
-        ).joined(separator: " ")
-
-        if let _ = self.dictionary { // array and dictionary cases are covered by the unwrapped type name
-//            description.append(dictionary.asSource)
-        } else if let _ = self.array {
-//            description.append(array.asSource)
-        } else if let _ = self.generic {
-//            let arguments = generic.typeParameters
-//              .map({ $0.typeName.asSource })
-//              .joined(separator: ", ")
-//            description.append("<\\(arguments)>")
-        }
-        if !specialTreatment {
-            if isImplicitlyUnwrappedOptional {
-                description.append("!")
-            } else if isOptional {
-                description.append("?")
+            if let module = type.module {
+                longKey = [module, type.name].joined(separator: ".")
             }
         }
 
-        return description
-    }
-
-    public override var description: String {
-       (
-          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
-          modifiers.map({ $0.asSource }) +
-          [name]
-        ).joined(separator: " ")
-    }
-
-    public func diffAgainst(_ object: Any?) -> DiffableResult {
-        let results = DiffableResult()
-        guard let castObject = object as? TypeName else {
-            results.append("Incorrect type <expected: TypeName, received: \\(Swift.type(of: object))>")
-            return results
+        // If we find the types directly, return them
+        if let types = types[key] {
+            return types
         }
-        results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
-        results.append(contentsOf: DiffableResult(identifier: "generic").trackDifference(actual: self.generic, expected: castObject.generic))
-        results.append(contentsOf: DiffableResult(identifier: "isProtocolComposition").trackDifference(actual: self.isProtocolComposition, expected: castObject.isProtocolComposition))
-        results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
-        results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
-        results.append(contentsOf: DiffableResult(identifier: "tuple").trackDifference(actual: self.tuple, expected: castObject.tuple))
-        results.append(contentsOf: DiffableResult(identifier: "array").trackDifference(actual: self.array, expected: castObject.array))
-        results.append(contentsOf: DiffableResult(identifier: "dictionary").trackDifference(actual: self.dictionary, expected: castObject.dictionary))
-        results.append(contentsOf: DiffableResult(identifier: "closure").trackDifference(actual: self.closure, expected: castObject.closure))
-        results.append(contentsOf: DiffableResult(identifier: "set").trackDifference(actual: self.set, expected: castObject.set))
-        return results
-    }
 
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(self.name)
-        hasher.combine(self.generic)
-        hasher.combine(self.isProtocolComposition)
-        hasher.combine(self.attributes)
-        hasher.combine(self.modifiers)
-        hasher.combine(self.tuple)
-        hasher.combine(self.array)
-        hasher.combine(self.dictionary)
-        hasher.combine(self.closure)
-        hasher.combine(self.set)
-        return hasher.finalize()
+        // if we find a types for the longKey, return them
+        if let longKey = longKey, let types = types[longKey] {
+            return types
+        }
+
+        return []
     }
 
     /// :nodoc:
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? TypeName else { return false }
-        if self.name != rhs.name { return false }
-        if self.generic != rhs.generic { return false }
-        if self.isProtocolComposition != rhs.isProtocolComposition { return false }
-        if self.attributes != rhs.attributes { return false }
-        if self.modifiers != rhs.modifiers { return false }
-        if self.tuple != rhs.tuple { return false }
-        if self.array != rhs.array { return false }
-        if self.dictionary != rhs.dictionary { return false }
-        if self.closure != rhs.closure { return false }
-        if self.set != rhs.set { return false }
-        return true
+    public func value(forKey key: String) -> Any? {
+        do {
+            return try types(forKey: key)
+        } catch {
+            Log.error(error)
+            return nil
+        }
     }
 
-// sourcery:inline:TypeName.AutoCoding
-
-        /// :nodoc:
-        required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
-                withVaList(["name"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.name = name
-            self.generic = aDecoder.decode(forKey: "generic")
-            self.isProtocolComposition = aDecoder.decode(forKey: "isProtocolComposition")
-            self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
-                withVaList(["attributes"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
-                withVaList(["modifiers"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.modifiers = modifiers
-            self.isOptional = aDecoder.decode(forKey: "isOptional")
-            self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
-            guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else {
-                withVaList(["unwrappedTypeName"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.unwrappedTypeName = unwrappedTypeName
-            self.tuple = aDecoder.decode(forKey: "tuple")
-            self.array = aDecoder.decode(forKey: "array")
-            self.dictionary = aDecoder.decode(forKey: "dictionary")
-            self.closure = aDecoder.decode(forKey: "closure")
-            self.set = aDecoder.decode(forKey: "set")
-        }
-
-        /// :nodoc:
-        public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.generic, forKey: "generic")
-            aCoder.encode(self.isProtocolComposition, forKey: "isProtocolComposition")
-            aCoder.encode(self.actualTypeName, forKey: "actualTypeName")
-            aCoder.encode(self.attributes, forKey: "attributes")
-            aCoder.encode(self.modifiers, forKey: "modifiers")
-            aCoder.encode(self.isOptional, forKey: "isOptional")
-            aCoder.encode(self.isImplicitlyUnwrappedOptional, forKey: "isImplicitlyUnwrappedOptional")
-            aCoder.encode(self.unwrappedTypeName, forKey: "unwrappedTypeName")
-            aCoder.encode(self.tuple, forKey: "tuple")
-            aCoder.encode(self.array, forKey: "array")
-            aCoder.encode(self.dictionary, forKey: "dictionary")
-            aCoder.encode(self.closure, forKey: "closure")
-            aCoder.encode(self.set, forKey: "set")
-        }
-// sourcery:end
-
-    // sourcery: skipEquality, skipDescription
     /// :nodoc:
-    public override var debugDescription: String {
-        return name
-    }
-
-    public convenience init(_ description: String) {
-        self.init(name: description, actualTypeName: nil)
-    }
-}
-
-extension TypeName {
-    public static func unknown(description: String?, attributes: AttributeList = [:]) -> TypeName {
-        if let description = description {
-            Log.astWarning("Unknown type, please add type attribution to \\(description)")
-        } else {
-            Log.astWarning("Unknown type, please add type attribution")
+    public subscript(_ key: String) -> [Type] {
+        do {
+            return try types(forKey: key)
+        } catch {
+            Log.error(error)
+            return []
         }
-        return TypeName(name: "UnknownTypeSoAddTypeAttributionToVariable", attributes: attributes)
     }
 }
+#endif
 
 """),
-    .init(name: "Typealias.swift", content:
+    .init(name: "Types_Linux.swift", content:
 """
+//
+// Created by Krzysztof Zablocki on 31/12/2016.
+// Copyright (c) 2016 Pixle. All rights reserved.
+//
+#if !canImport(ObjectiveC)
 import Foundation
 
 // sourcery: skipJSExport
-/// :nodoc:
-public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
-    // New typealias name
-    public let aliasName: String
-
-    // Target name
-    public let typeName: TypeName
-
-    // sourcery: skipEquality, skipDescription
-    public var type: Type?
-
-    /// module in which this typealias was declared
-    public var module: String?
-
-    // sourcery: skipEquality, skipDescription
-    public var parent: Type? {
-        didSet {
-            parentName = parent?.name
+/// Collection of scanned types for accessing in templates
+public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "types":
+                return types
+            case "enums":
+                return enums
+            case "all":
+                return all
+            case "protocols":
+                return protocols
+            case "classes":
+                return classes
+            case "structs":
+                return structs
+            case "extensions":
+                return extensions
+            case "implementing":
+                return implementing
+            case "inheriting":
+                return inheriting
+            case "based":
+                return based
+            default:
+                fatalError("unable to lookup: \\(member) in \\(self)")
         }
     }
 
-    /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
-    public let accessLevel: String
+    /// :nodoc:
+    public let types: [Type]
 
-    var parentName: String?
+    /// All known typealiases
+    public let typealiases: [Typealias]
 
-    public var name: String {
-        if let parentName = parent?.name {
-            return "\\(module != nil ? "\\(module!)." : "")\\(parentName).\\(aliasName)"
-        } else {
-            return "\\(module != nil ? "\\(module!)." : "")\\(aliasName)"
-        }
-    }
-
-    public init(aliasName: String = "", typeName: TypeName, accessLevel: AccessLevel = .internal, parent: Type? = nil, module: String? = nil) {
-        self.aliasName = aliasName
-        self.typeName = typeName
-        self.accessLevel = accessLevel.rawValue
-        self.parent = parent
-        self.parentName = parent?.name
-        self.module = module
+    /// :nodoc:
+    public init(types: [Type], typealiases: [Typealias] = []) {
+        self.types = types
+        self.typealiases = typealiases
     }
 
     /// :nodoc:
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "aliasName = \\(String(describing: self.aliasName)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "module = \\(String(describing: self.module)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "parentName = \\(String(describing: self.parentName)), "
-        string += "name = \\(String(describing: self.name))"
+        string += "types = \\(String(describing: self.types)), "
+        string += "typealiases = \\(String(describing: self.typealiases))"
         return string
     }
 
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let castObject = object as? Typealias else {
-            results.append("Incorrect type <expected: Typealias, received: \\(Swift.type(of: object))>")
+        guard let castObject = object as? Types else {
+            results.append("Incorrect type <expected: Types, received: \\(Swift.type(of: object))>")
             return results
         }
-        results.append(contentsOf: DiffableResult(identifier: "aliasName").trackDifference(actual: self.aliasName, expected: castObject.aliasName))
-        results.append(contentsOf: DiffableResult(identifier: "typeName").trackDifference(actual: self.typeName, expected: castObject.typeName))
-        results.append(contentsOf: DiffableResult(identifier: "module").trackDifference(actual: self.module, expected: castObject.module))
-        results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
-        results.append(contentsOf: DiffableResult(identifier: "parentName").trackDifference(actual: self.parentName, expected: castObject.parentName))
+        results.append(contentsOf: DiffableResult(identifier: "types").trackDifference(actual: self.types, expected: castObject.types))
+        results.append(contentsOf: DiffableResult(identifier: "typealiases").trackDifference(actual: self.typealiases, expected: castObject.typealiases))
         return results
     }
 
     public override var hash: Int {
         var hasher = Hasher()
-        hasher.combine(self.aliasName)
-        hasher.combine(self.typeName)
-        hasher.combine(self.module)
-        hasher.combine(self.accessLevel)
-        hasher.combine(self.parentName)
+        hasher.combine(self.types)
+        hasher.combine(self.typealiases)
         return hasher.finalize()
     }
 
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? Typealias else { return false }
-        if self.aliasName != rhs.aliasName { return false }
-        if self.typeName != rhs.typeName { return false }
-        if self.module != rhs.module { return false }
-        if self.accessLevel != rhs.accessLevel { return false }
-        if self.parentName != rhs.parentName { return false }
+        guard let rhs = object as? Types else { return false }
+        if self.types != rhs.types { return false }
+        if self.typealiases != rhs.typealiases { return false }
         return true
     }
 
-// sourcery:inline:Typealias.AutoCoding
+// sourcery:inline:Types.AutoCoding
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let aliasName: String = aDecoder.decode(forKey: "aliasName") else {
-                withVaList(["aliasName"]) { arguments in
+            guard let types: [Type] = aDecoder.decode(forKey: "types") else { 
+                withVaList(["types"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
-             }; self.aliasName = aliasName
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
-                withVaList(["typeName"]) { arguments in
+             }; self.types = types
+            guard let typealiases: [Typealias] = aDecoder.decode(forKey: "typealiases") else { 
+                withVaList(["typealiases"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
-             }; self.typeName = typeName
-            self.type = aDecoder.decode(forKey: "type")
-            self.module = aDecoder.decode(forKey: "module")
-            self.parent = aDecoder.decode(forKey: "parent")
-            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else {
-                withVaList(["accessLevel"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.accessLevel = accessLevel
-            self.parentName = aDecoder.decode(forKey: "parentName")
+             }; self.typealiases = typealiases
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
-            aCoder.encode(self.aliasName, forKey: "aliasName")
-            aCoder.encode(self.typeName, forKey: "typeName")
-            aCoder.encode(self.type, forKey: "type")
-            aCoder.encode(self.module, forKey: "module")
-            aCoder.encode(self.parent, forKey: "parent")
-            aCoder.encode(self.accessLevel, forKey: "accessLevel")
-            aCoder.encode(self.parentName, forKey: "parentName")
+            aCoder.encode(self.types, forKey: "types")
+            aCoder.encode(self.typealiases, forKey: "typealiases")
         }
 // sourcery:end
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// :nodoc:
+    public lazy internal(set) var typesByName: [String: Type] = {
+        var typesByName = [String: Type]()
+        self.types.forEach { typesByName[$0.globalName] = $0 }
+        return typesByName
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// :nodoc:
+    public lazy internal(set) var typesaliasesByName: [String: Typealias] = {
+        var typesaliasesByName = [String: Typealias]()
+        self.typealiases.forEach { typesaliasesByName[$0.name] = $0 }
+        return typesaliasesByName
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known types, excluding protocols or protocol compositions.
+    public lazy internal(set) var all: [Type] = {
+        return self.types.filter { !($0 is Protocol || $0 is ProtocolComposition) }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known protocols
+    public lazy internal(set) var protocols: [Protocol] = {
+        return self.types.compactMap { $0 as? Protocol }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known protocol compositions
+    public lazy internal(set) var protocolCompositions: [ProtocolComposition] = {
+        return self.types.compactMap { $0 as? ProtocolComposition }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known classes
+    public lazy internal(set) var classes: [Class] = {
+        return self.all.compactMap { $0 as? Class }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known structs
+    public lazy internal(set) var structs: [Struct] = {
+        return self.all.compactMap { $0 as? Struct }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known enums
+    public lazy internal(set) var enums: [Enum] = {
+        return self.all.compactMap { $0 as? Enum }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// All known extensions
+    public lazy internal(set) var extensions: [Type] = {
+        return self.all.compactMap { $0.isExtension ? $0 : nil }
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// Types based on any other type, grouped by its name, even if they are not known.
+    /// `types.based.MyType` returns list of types based on `MyType`
+    public lazy internal(set) var based: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.based.keys) }
+        )
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// Classes inheriting from any known class, grouped by its name.
+    /// `types.inheriting.MyClass` returns list of types inheriting from `MyClass`
+    public lazy internal(set) var inheriting: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.inherits.keys) },
+            validate: { type in
+                guard type is Class else {
+                    throw "\\(type.name) is not a class and should be used with `implementing` or `based`"
+                }
+            })
+    }()
+
+    // sourcery: skipDescription, skipEquality, skipCoding
+    /// Types implementing known protocol, grouped by its name.
+    /// `types.implementing.MyProtocol` returns list of types implementing `MyProtocol`
+    public lazy internal(set) var implementing: TypesCollection = {
+        TypesCollection(
+            types: self.types,
+            collection: { Array($0.implements.keys) },
+            validate: { type in
+                guard type is Protocol else {
+                    throw "\\(type.name) is a class and should be used with `inheriting` or `based`"
+                }
+        })
+    }()
 }
+#endif
 
 """),
-    .init(name: "Typed.generated.swift", content:
-"""
-// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
-// DO NOT EDIT
-// swiftlint:disable vertical_whitespace
-
-
-extension AssociatedValue {
-    /// Whether type is optional. Shorthand for `typeName.isOptional`
-    public var isOptional: Bool { return typeName.isOptional }
-    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
-    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
-    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
-    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
-    public var isTuple: Bool { return typeName.isTuple }
-    /// Whether type is a closure. Shorthand for `typeName.isClosure`
-    public var isClosure: Bool { return typeName.isClosure }
-    /// Whether type is an array. Shorthand for `typeName.isArray`
-    public var isArray: Bool { return typeName.isArray }
-    /// Whether type is a set. Shorthand for `typeName.isSet`
-    public var isSet: Bool { return typeName.isSet }
-    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
-    public var isDictionary: Bool { return typeName.isDictionary }
-}
-extension ClosureParameter {
-    /// Whether type is optional. Shorthand for `typeName.isOptional`
-    public var isOptional: Bool { return typeName.isOptional }
-    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
-    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
-    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
-    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
-    public var isTuple: Bool { return typeName.isTuple }
-    /// Whether type is a closure. Shorthand for `typeName.isClosure`
-    public var isClosure: Bool { return typeName.isClosure }
-    /// Whether type is an array. Shorthand for `typeName.isArray`
-    public var isArray: Bool { return typeName.isArray }
-    /// Whether type is a set. Shorthand for `typeName.isSet`
-    public var isSet: Bool { return typeName.isSet }
-    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
-    public var isDictionary: Bool { return typeName.isDictionary }
-}
-extension MethodParameter {
-    /// Whether type is optional. Shorthand for `typeName.isOptional`
-    public var isOptional: Bool { return typeName.isOptional }
-    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
-    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
-    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
-    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
-    public var isTuple: Bool { return typeName.isTuple }
-    /// Whether type is a closure. Shorthand for `typeName.isClosure`
-    public var isClosure: Bool { return typeName.isClosure }
-    /// Whether type is an array. Shorthand for `typeName.isArray`
-    public var isArray: Bool { return typeName.isArray }
-    /// Whether type is a set. Shorthand for `typeName.isSet`
-    public var isSet: Bool { return typeName.isSet }
-    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
-    public var isDictionary: Bool { return typeName.isDictionary }
-}
-extension TupleElement {
-    /// Whether type is optional. Shorthand for `typeName.isOptional`
-    public var isOptional: Bool { return typeName.isOptional }
-    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
-    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
-    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
-    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
-    public var isTuple: Bool { return typeName.isTuple }
-    /// Whether type is a closure. Shorthand for `typeName.isClosure`
-    public var isClosure: Bool { return typeName.isClosure }
-    /// Whether type is an array. Shorthand for `typeName.isArray`
-    public var isArray: Bool { return typeName.isArray }
-    /// Whether type is a set. Shorthand for `typeName.isSet`
-    public var isSet: Bool { return typeName.isSet }
-    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
-    public var isDictionary: Bool { return typeName.isDictionary }
-}
-extension Typealias {
-    /// Whether type is optional. Shorthand for `typeName.isOptional`
-    public var isOptional: Bool { return typeName.isOptional }
-    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
-    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
-    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
-    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
-    public var isTuple: Bool { return typeName.isTuple }
-    /// Whether type is a closure. Shorthand for `typeName.isClosure`
-    public var isClosure: Bool { return typeName.isClosure }
-    /// Whether type is an array. Shorthand for `typeName.isArray`
-    public var isArray: Bool { return typeName.isArray }
-    /// Whether type is a set. Shorthand for `typeName.isSet`
-    public var isSet: Bool { return typeName.isSet }
-    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
-    public var isDictionary: Bool { return typeName.isDictionary }
-}
-extension Variable {
-    /// Whether type is optional. Shorthand for `typeName.isOptional`
-    public var isOptional: Bool { return typeName.isOptional }
-    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
-    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
-    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
-    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
-    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
-    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
-    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
-    public var isTuple: Bool { return typeName.isTuple }
-    /// Whether type is a closure. Shorthand for `typeName.isClosure`
-    public var isClosure: Bool { return typeName.isClosure }
-    /// Whether type is an array. Shorthand for `typeName.isArray`
-    public var isArray: Bool { return typeName.isArray }
-    /// Whether type is a set. Shorthand for `typeName.isSet`
-    public var isSet: Bool { return typeName.isSet }
-    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
-    public var isDictionary: Bool { return typeName.isDictionary }
-}
-
-"""),
-    .init(name: "Typed.swift", content:
-"""
-import Foundation
-
-/// Descibes typed declaration, i.e. variable, method parameter, tuple element, enum case associated value
-public protocol Typed {
-
-    // sourcery: skipEquality, skipDescription
-    /// Type, if known
-    var type: Type? { get }
-
-    // sourcery: skipEquality, skipDescription
-    /// Type name
-    var typeName: TypeName { get }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether type is optional
-    var isOptional: Bool { get }
-
-    // sourcery: skipEquality, skipDescription
-    /// Whether type is implicitly unwrapped optional
-    var isImplicitlyUnwrappedOptional: Bool { get }
-
-    // sourcery: skipEquality, skipDescription
-    /// Type name without attributes and optional type information
-    var unwrappedTypeName: String { get }
-}
-
-"""),
-    .init(name: "Variable.swift", content:
+    .init(name: "Variable_Linux.swift", content:
 """
 //
 // Created by Krzysztof Zablocki on 13/09/2016.
 // Copyright (c) 2016 Pixle. All rights reserved.
 //
-
+#if !canImport(ObjectiveC)
 import Foundation
 
 /// :nodoc:
 public typealias SourceryVariable = Variable
 
 /// Defines variable
-public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable {
+public final class Variable: NSObject, SourceryModel, Typed, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+    public subscript(dynamicMember member: String) -> Any? {
+        switch member {
+        case "readAccess":
+            return readAccess
+        case "annotations":
+            return annotations
+        case "isOptional":
+            return isOptional
+        case "name":
+            return name
+        case "typeName":
+            return typeName
+        case "type":
+            return type
+        case "definedInType":
+            return definedInType
+        case "isStatic":
+            return isStatic
+        case "isAsync":
+            return isAsync
+        case "throws":
+            return `throws`
+        case "isArray":
+            return isArray
+        case "isDictionary":
+            return isDictionary
+        case "isDynamic":
+            return isDynamic
+        default:
+            fatalError("unable to lookup: \\(member) in \\(self)")
+        }
+    }
 
     /// Variable name
     public let name: String
@@ -7240,10 +7532,10 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 
     /// Whether variable is computed and not stored
     public let isComputed: Bool
-
+    
     /// Whether variable is async
     public let isAsync: Bool
-
+    
     /// Whether variable throws
     public let `throws`: Bool
 
@@ -7436,13 +7728,13 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
                 withVaList(["typeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -7453,38 +7745,38 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.isStatic = aDecoder.decode(forKey: "isStatic")
-            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else {
+            guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { 
                 withVaList(["readAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.readAccess = readAccess
-            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else {
+            guard let writeAccess: String = aDecoder.decode(forKey: "writeAccess") else { 
                 withVaList(["writeAccess"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.writeAccess = writeAccess
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
                 withVaList(["documentation"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.documentation = documentation
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -7515,6 +7807,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         }
 // sourcery:end
 }
+#endif
 
 """),
 ]
