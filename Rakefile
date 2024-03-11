@@ -93,8 +93,8 @@ end
 
 desc "Update internal boilerplate code"
 task :generate_internal_boilerplate_code => [:build, :run_sourcery] do
-  sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/macOS\"  > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
-  sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/Linux\"  > \"SourcerySwift/Sources/SourceryRuntime_Linux.content.generated.swift\""
+  sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/macOS\" "true" > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
+  sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/Linux\" "false" > \"SourcerySwift/Sources/SourceryRuntime_Linux.content.generated.swift\""
   generated_files = `git status --porcelain`
                       .split("\n")
                       .select { |item| item.include?('.generated.') }

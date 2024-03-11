@@ -96,7 +96,7 @@ func main() {
         exit(1)
     }
     let foldersPaths = CommandLine.arguments[1]
-    let isForDarwinPlatform = Bool(CommandLine.arguments[2])
+    let isForDarwinPlatform = Bool(CommandLine.arguments[2]) ?? false
     let folders = foldersPaths.split(separator: ",").map(String.init)
 
     do {
