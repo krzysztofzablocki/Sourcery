@@ -72,7 +72,7 @@ def build_framework(fat_library)
 
   # Export the build products and clean up
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
-  sh %Q(rm -fr #{BUILD_DIR})
+  #sh %Q(rm -fr #{BUILD_DIR})
 end
 
 task :build do
