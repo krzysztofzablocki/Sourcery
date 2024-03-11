@@ -1,12 +1,15 @@
-// Generated using Sourcery 2.1.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
+
 #if canImport(JavaScriptCore)
 import JavaScriptCore
 
 @objc protocol ActorAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -48,6 +51,7 @@ import JavaScriptCore
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -59,6 +63,8 @@ extension Actor: ActorAutoJSExport {}
     var elementType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension ArrayType: ArrayTypeAutoJSExport {}
@@ -67,6 +73,8 @@ extension ArrayType: ArrayTypeAutoJSExport {}
     var name: String { get }
     var typeName: TypeName? { get }
     var type: Type? { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension AssociatedType: AssociatedTypeAutoJSExport {}
@@ -78,6 +86,8 @@ extension AssociatedType: AssociatedTypeAutoJSExport {}
     var type: Type? { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
+    var description: String { get }
+    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -90,6 +100,7 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
     var arguments: [String: NSObject] { get }
     var asSource: String { get }
     var description: String { get }
+    var hash: Int { get }
 }
 
 extension Attribute: AttributeAutoJSExport {}
@@ -97,6 +108,8 @@ extension Attribute: AttributeAutoJSExport {}
 @objc protocol BytesRangeAutoJSExport: JSExport {
     var offset: Int64 { get }
     var length: Int64 { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension BytesRange: BytesRangeAutoJSExport {}
@@ -104,6 +117,8 @@ extension BytesRange: BytesRangeAutoJSExport {}
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -145,6 +160,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -156,10 +172,13 @@ extension Class: ClassAutoJSExport {}
     var typeName: TypeName { get }
     var `inout`: Bool { get }
     var type: Type? { get }
+    var isVariadic: Bool { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
     var asSource: String { get }
+    var hash: Int { get }
+    var description: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -181,6 +200,8 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
     var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension ClosureType: ClosureTypeAutoJSExport {}
@@ -193,6 +214,8 @@ extension ClosureType: ClosureTypeAutoJSExport {}
     var keyType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension DictionaryType: DictionaryTypeAutoJSExport {}
@@ -205,6 +228,8 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawType: Type? { get }
     var based: [String: String] { get }
     var hasAssociatedValues: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -245,6 +270,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -258,16 +284,29 @@ extension Enum: EnumAutoJSExport {}
     var documentation: Documentation { get }
     var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension EnumCase: EnumCaseAutoJSExport {}
 
+
+@objc protocol GenericParameterAutoJSExport: JSExport {
+    var name: String { get }
+    var inheritedTypeName: TypeName? { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension GenericParameter: GenericParameterAutoJSExport {}
 
 @objc protocol GenericRequirementAutoJSExport: JSExport {
     var leftType: AssociatedType { get }
     var rightType: GenericTypeParameter { get }
     var relationship: String { get }
     var relationshipSyntax: String { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension GenericRequirement: GenericRequirementAutoJSExport {}
@@ -277,6 +316,7 @@ extension GenericRequirement: GenericRequirementAutoJSExport {}
     var typeParameters: [GenericTypeParameter] { get }
     var asSource: String { get }
     var description: String { get }
+    var hash: Int { get }
 }
 
 extension GenericType: GenericTypeAutoJSExport {}
@@ -284,6 +324,8 @@ extension GenericType: GenericTypeAutoJSExport {}
 @objc protocol GenericTypeParameterAutoJSExport: JSExport {
     var typeName: TypeName { get }
     var type: Type? { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
@@ -293,6 +335,7 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var path: String { get }
     var description: String { get }
     var moduleName: String { get }
+    var hash: Int { get }
 }
 
 extension Import: ImportAutoJSExport {}
@@ -325,6 +368,7 @@ extension Import: ImportAutoJSExport {}
     var isGeneric: Bool { get }
     var isOptional: Bool { get }
     var isNonisolated: Bool { get }
+    var isDynamic: Bool { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
     var definedInTypeName: TypeName? { get }
@@ -332,6 +376,9 @@ extension Import: ImportAutoJSExport {}
     var definedInType: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -347,6 +394,8 @@ extension Method: MethodAutoJSExport {}
     var defaultValue: String? { get }
     var annotations: Annotations { get }
     var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -358,6 +407,7 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var detail: String? { get }
     var asSource: String { get }
+    var hash: Int { get }
 }
 
 extension Modifier: ModifierAutoJSExport {}
@@ -366,6 +416,8 @@ extension Modifier: ModifierAutoJSExport {}
     var kind: String { get }
     var associatedTypes: [String: AssociatedType] { get }
     var genericRequirements: [GenericRequirement] { get }
+    var description: String { get }
+    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -416,6 +468,8 @@ extension Protocol: ProtocolAutoJSExport {}
     var kind: String { get }
     var composedTypeNames: [TypeName] { get }
     var composedTypes: [Type]? { get }
+    var description: String { get }
+    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -457,15 +511,30 @@ extension Protocol: ProtocolAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
 extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
 
+@objc protocol SetTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var elementTypeName: TypeName { get }
+    var elementType: Type? { get }
+    var asGeneric: GenericType { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension SetType: SetTypeAutoJSExport {}
+
 
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
+    var description: String { get }
+    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -507,6 +576,7 @@ extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -523,6 +593,8 @@ extension Struct: StructAutoJSExport {}
     var isFinal: Bool { get }
     var readAccess: String { get }
     var writeAccess: String { get }
+    var isAsync: Bool { get }
+    var `throws`: Bool { get }
     var isMutable: Bool { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
@@ -531,6 +603,11 @@ extension Struct: StructAutoJSExport {}
     var definedInType: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericParameters: [GenericParameter] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var isGeneric: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension Subscript: SubscriptAutoJSExport {}
@@ -541,6 +618,8 @@ extension Subscript: SubscriptAutoJSExport {}
     var argument: [String: NSObject] { get }
     var type: [String: Type] { get }
     var stencilContext: [String: Any] { get }
+    var description: String { get }
+    var hash: Int { get }
     var jsContext: [String: Any] { get }
 }
 
@@ -551,6 +630,8 @@ extension TemplateContext: TemplateContextAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -561,6 +642,8 @@ extension TupleElement: TupleElementAutoJSExport {}
 @objc protocol TupleTypeAutoJSExport: JSExport {
     var name: String { get }
     var elements: [TupleElement] { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension TupleType: TupleTypeAutoJSExport {}
@@ -608,7 +691,10 @@ extension TupleType: TupleTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
+    var description: String { get }
+    var hash: Int { get }
 }
 
 extension Type: TypeAutoJSExport {}
@@ -633,8 +719,11 @@ extension Type: TypeAutoJSExport {}
     var dictionary: DictionaryType? { get }
     var isClosure: Bool { get }
     var closure: ClosureType? { get }
+    var isSet: Bool { get }
+    var set: SetType? { get }
     var asSource: String { get }
     var description: String { get }
+    var hash: Int { get }
     var debugDescription: String { get }
 }
 
@@ -645,10 +734,14 @@ extension TypeName: TypeNameAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var module: String? { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
     var parent: Type? { get }
     var accessLevel: String { get }
     var parentName: String? { get }
     var name: String { get }
+    var description: String { get }
+    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -680,9 +773,12 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var modifiers: [SourceryModifier] { get }
     var isFinal: Bool { get }
     var isLazy: Bool { get }
+    var isDynamic: Bool { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
+    var description: String { get }
+    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
