@@ -137,8 +137,8 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, 
                     fatalError()
                  }; self.typeName = typeName
                 self.`inout` = aDecoder.decode(forKey: "`inout`")
-                self.isVariadic = aDecoder.decode(forKey: "isVariadic")
                 self.type = aDecoder.decode(forKey: "type")
+                self.isVariadic = aDecoder.decode(forKey: "isVariadic")
                 self.defaultValue = aDecoder.decode(forKey: "defaultValue")
                 guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                     withVaList(["annotations"]) { arguments in
@@ -154,8 +154,8 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, 
                 aCoder.encode(self.name, forKey: "name")
                 aCoder.encode(self.typeName, forKey: "typeName")
                 aCoder.encode(self.`inout`, forKey: "`inout`")
-                aCoder.encode(self.isVariadic, forKey: "isVariadic")
                 aCoder.encode(self.type, forKey: "type")
+                aCoder.encode(self.isVariadic, forKey: "isVariadic")
                 aCoder.encode(self.defaultValue, forKey: "defaultValue")
                 aCoder.encode(self.annotations, forKey: "annotations")
             }

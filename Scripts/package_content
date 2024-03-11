@@ -5,6 +5,7 @@
 /// Example: $0 Sources/SourceryRuntime > file.swift
 /// Options:
 ///   FOLDERS: the paths where the Swift files to merge are, separated with comma ","
+///   isForDarwinPlatform: if true, the generated code will be compilable on Darwin platforms
 ///   -h: Display this help message
 import Foundation
 
@@ -90,11 +91,16 @@ func main() {
         print("Missing folderPath argument")
         exit(1)
     }
+    guard CommandLine.arguments.count > 2 else {
+        print("Missing isForDarwinPlatform argument")
+        exit(1)
+    }
     let foldersPaths = CommandLine.arguments[1]
+    let isForDarwinPlatform = Bool(CommandLine.arguments[2])
     let folders = foldersPaths.split(separator: ",").map(String.init)
 
     do {
-        try package(folders: folders)
+        try package(folders: folders, isForDarwinPlatform: isForDarwinPlatform)
     } catch {
         print("Failed with error: \(error)")
         exit(1)

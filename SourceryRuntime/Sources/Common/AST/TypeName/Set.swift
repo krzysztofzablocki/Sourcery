@@ -73,13 +73,13 @@ public final class SetType: NSObject, SourceryModel, Diffable {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else {
+            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else { 
                 withVaList(["elementTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

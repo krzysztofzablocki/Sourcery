@@ -64,7 +64,7 @@ public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicM
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

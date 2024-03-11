@@ -412,7 +412,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 }
                 fatalError()
              }; self.modifiers = modifiers
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
                 withVaList(["genericRequirements"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

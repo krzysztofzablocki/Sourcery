@@ -94,25 +94,25 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable, DynamicMembe
 
             /// :nodoc:
             required public init?(coder aDecoder: NSCoder) {
-                guard let leftType: AssociatedType = aDecoder.decode(forKey: "leftType") else {
+                guard let leftType: AssociatedType = aDecoder.decode(forKey: "leftType") else { 
                     withVaList(["leftType"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }
                     fatalError()
                  }; self.leftType = leftType
-                guard let rightType: GenericTypeParameter = aDecoder.decode(forKey: "rightType") else {
+                guard let rightType: GenericTypeParameter = aDecoder.decode(forKey: "rightType") else { 
                     withVaList(["rightType"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }
                     fatalError()
                  }; self.rightType = rightType
-                guard let relationship: String = aDecoder.decode(forKey: "relationship") else {
+                guard let relationship: String = aDecoder.decode(forKey: "relationship") else { 
                     withVaList(["relationship"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }
                     fatalError()
                  }; self.relationship = relationship
-                guard let relationshipSyntax: String = aDecoder.decode(forKey: "relationshipSyntax") else {
+                guard let relationshipSyntax: String = aDecoder.decode(forKey: "relationshipSyntax") else { 
                     withVaList(["relationshipSyntax"]) { arguments in
                         NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                     }

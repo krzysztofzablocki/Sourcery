@@ -617,13 +617,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 fatalError()
              }; self.accessLevel = accessLevel
             self.isGeneric = aDecoder.decode(forKey: "isGeneric")
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
-                withVaList(["genericRequirements"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.genericRequirements = genericRequirements
-            guard let localName: String = aDecoder.decode(forKey: "localName") else {
+            guard let localName: String = aDecoder.decode(forKey: "localName") else { 
                 withVaList(["localName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -719,6 +713,12 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
                 fatalError()
              }; self.modifiers = modifiers
             self.path = aDecoder.decode(forKey: "path")
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
+                withVaList(["genericRequirements"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericRequirements = genericRequirements
             self.fileName = aDecoder.decode(forKey: "fileName")
         }
 
@@ -751,8 +751,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.path, forKey: "path")
-            aCoder.encode(self.fileName, forKey: "fileName")
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
+            aCoder.encode(self.fileName, forKey: "fileName")
         }
 // sourcery:end
 

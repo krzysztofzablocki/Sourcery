@@ -52,7 +52,7 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable {
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
                 withVaList(["typeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

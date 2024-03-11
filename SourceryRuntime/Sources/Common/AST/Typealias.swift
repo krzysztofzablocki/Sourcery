@@ -127,6 +127,18 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
              }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.module = aDecoder.decode(forKey: "module")
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+                withVaList(["annotations"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.annotations = annotations
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
+                withVaList(["documentation"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.documentation = documentation
             self.parent = aDecoder.decode(forKey: "parent")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
@@ -134,18 +146,6 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
                 }
                 fatalError()
              }; self.accessLevel = accessLevel
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
-                withVaList(["annotations"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
-                withVaList(["documentation"]) { arguments in
-                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
-                }
-                fatalError()
-             }; self.documentation = documentation
             self.parentName = aDecoder.decode(forKey: "parentName")
         }
 
@@ -155,11 +155,11 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.module, forKey: "module")
+            aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.parent, forKey: "parent")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.parentName, forKey: "parentName")
-            aCoder.encode(self.documentation, forKey: "documentation")
-            aCoder.encode(self.annotations, forKey: "annotations")
         }
 // sourcery:end
 }

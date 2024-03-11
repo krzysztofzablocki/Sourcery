@@ -27,6 +27,7 @@ public final class Protocol: Type {
         }
     }
 
+    // sourcery: skipCoding
     /// list of generic requirements
     public override var genericRequirements: [GenericRequirement] {
         didSet {
