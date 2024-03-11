@@ -137,6 +137,7 @@ class DryOutputSpec: QuickSpec {
                 expect(outputInterceptor.result).to(equal(expectedResult))
             }
 
+#if canImport(ObjectiveC)
             it("supports different ways for code generation") {
                 let templatePath = Stubs.templateDirectory + Path("GenerationWays.stencil")
                 let sourcePath = Stubs.sourceForDryRun + Path("Base.swift")
@@ -238,7 +239,6 @@ guard lhs.bar == rhs.bar else { return false }
 """
                     ))
 
-#if canImport(ObjectiveC)
                 expect(outputInterceptor.result(byOutputType: .init(id: "Generated/EqEnum+TemplateName.generated.swift", subType: .path)).value)
                     .to(equal("""
 // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
@@ -256,8 +256,9 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
 }
 
 """))
-#endif
+
             } // supports different ways for code generation: end
+#endif
         }
 
         // MARK: - DryOutput + SwiftTemplate
