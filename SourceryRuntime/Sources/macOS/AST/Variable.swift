@@ -4,7 +4,6 @@
 //
 #if canImport(ObjectiveC)
 import Foundation
-import Stencil
 
 /// :nodoc:
 public typealias SourceryVariable = Variable

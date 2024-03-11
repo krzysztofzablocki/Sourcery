@@ -5763,7 +5763,6 @@ extension Array where Element == TupleElement {
 //
 #if canImport(ObjectiveC)
 import Foundation
-import Stencil
 
 /// :nodoc:
 public typealias AttributeList = [String: [Attribute]]
@@ -7095,7 +7094,6 @@ public class TypesCollection: NSObject, AutoJSExport {
 //
 #if canImport(ObjectiveC)
 import Foundation
-import Stencil
 
 /// :nodoc:
 public typealias SourceryVariable = Variable
