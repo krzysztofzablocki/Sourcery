@@ -7810,5 +7810,1045 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 #endif
 
 """),
+    .init(name: "AutoHashable.generated.swift", content:
+"""
+// Generated using Sourcery 1.3.1 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+// swiftlint:disable all
+
+
+// MARK: - AutoHashable for classes, protocols, structs
+
+// MARK: - AutoHashable for Enums
+
+"""),
+    .init(name: "Coding.generated.swift", content:
+"""
+// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+// swiftlint:disable vertical_whitespace trailing_newline
+
+import Foundation
+
+
+extension NSCoder {
+
+    @nonobjc func decode(forKey: String) -> String? {
+        return self.maybeDecode(forKey: forKey) as String?
+    }
+
+    @nonobjc func decode(forKey: String) -> TypeName? {
+        return self.maybeDecode(forKey: forKey) as TypeName?
+    }
+
+    @nonobjc func decode(forKey: String) -> AccessLevel? {
+        return self.maybeDecode(forKey: forKey) as AccessLevel?
+    }
+
+    @nonobjc func decode(forKey: String) -> Bool {
+        return self.decodeBool(forKey: forKey)
+    }
+
+    @nonobjc func decode(forKey: String) -> Int {
+        return self.decodeInteger(forKey: forKey)
+    }
+
+    func decode<E>(forKey: String) -> E? {
+        return maybeDecode(forKey: forKey) as E?
+    }
+
+    fileprivate func maybeDecode<E>(forKey: String) -> E? {
+        guard let object = self.decodeObject(forKey: forKey) else {
+            return nil
+        }
+
+        return object as? E
+    }
+
+}
+
+extension ArrayType: NSCoding {}
+
+extension AssociatedType: NSCoding {}
+
+extension AssociatedValue: NSCoding {}
+
+extension Attribute: NSCoding {}
+
+extension BytesRange: NSCoding {}
+
+
+extension ClosureParameter: NSCoding {}
+
+extension ClosureType: NSCoding {}
+
+extension DictionaryType: NSCoding {}
+
+
+extension EnumCase: NSCoding {}
+
+extension FileParserResult: NSCoding {}
+
+extension GenericParameter: NSCoding {}
+
+extension GenericRequirement: NSCoding {}
+
+extension GenericType: NSCoding {}
+
+extension GenericTypeParameter: NSCoding {}
+
+extension Import: NSCoding {}
+
+extension Method: NSCoding {}
+
+extension MethodParameter: NSCoding {}
+
+extension Modifier: NSCoding {}
+
+
+
+extension SetType: NSCoding {}
+
+
+extension Subscript: NSCoding {}
+
+extension TupleElement: NSCoding {}
+
+extension TupleType: NSCoding {}
+
+extension Type: NSCoding {}
+
+extension TypeName: NSCoding {}
+
+extension Typealias: NSCoding {}
+
+extension Types: NSCoding {}
+
+extension Variable: NSCoding {}
+
+
+"""),
+    .init(name: "JSExport.generated.swift", content:
+"""
+// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+// swiftlint:disable vertical_whitespace trailing_newline
+
+#if canImport(JavaScriptCore)
+import JavaScriptCore
+
+@objc protocol ActorAutoJSExport: JSExport {
+    var kind: String { get }
+    var isFinal: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var fileName: String? { get }
+}
+
+extension Actor: ActorAutoJSExport {}
+
+@objc protocol ArrayTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var elementTypeName: TypeName { get }
+    var elementType: Type? { get }
+    var asGeneric: GenericType { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension ArrayType: ArrayTypeAutoJSExport {}
+
+@objc protocol AssociatedTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var typeName: TypeName? { get }
+    var type: Type? { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension AssociatedType: AssociatedTypeAutoJSExport {}
+
+@objc protocol AssociatedValueAutoJSExport: JSExport {
+    var localName: String? { get }
+    var externalName: String? { get }
+    var typeName: TypeName { get }
+    var type: Type? { get }
+    var defaultValue: String? { get }
+    var annotations: Annotations { get }
+    var description: String { get }
+    var hash: Int { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension AssociatedValue: AssociatedValueAutoJSExport {}
+
+@objc protocol AttributeAutoJSExport: JSExport {
+    var name: String { get }
+    var arguments: [String: NSObject] { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension Attribute: AttributeAutoJSExport {}
+
+@objc protocol BytesRangeAutoJSExport: JSExport {
+    var offset: Int64 { get }
+    var length: Int64 { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension BytesRange: BytesRangeAutoJSExport {}
+
+@objc protocol ClassAutoJSExport: JSExport {
+    var kind: String { get }
+    var isFinal: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var fileName: String? { get }
+}
+
+extension Class: ClassAutoJSExport {}
+
+@objc protocol ClosureParameterAutoJSExport: JSExport {
+    var argumentLabel: String? { get }
+    var name: String? { get }
+    var typeName: TypeName { get }
+    var `inout`: Bool { get }
+    var type: Type? { get }
+    var isVariadic: Bool { get }
+    var typeAttributes: AttributeList { get }
+    var defaultValue: String? { get }
+    var annotations: Annotations { get }
+    var asSource: String { get }
+    var hash: Int { get }
+    var description: String { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension ClosureParameter: ClosureParameterAutoJSExport {}
+
+@objc protocol ClosureTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var parameters: [ClosureParameter] { get }
+    var returnTypeName: TypeName { get }
+    var actualReturnTypeName: TypeName { get }
+    var returnType: Type? { get }
+    var isOptionalReturnType: Bool { get }
+    var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
+    var unwrappedReturnTypeName: String { get }
+    var isAsync: Bool { get }
+    var asyncKeyword: String? { get }
+    var `throws`: Bool { get }
+    var throwsOrRethrowsKeyword: String? { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension ClosureType: ClosureTypeAutoJSExport {}
+
+@objc protocol DictionaryTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var valueTypeName: TypeName { get }
+    var valueType: Type? { get }
+    var keyTypeName: TypeName { get }
+    var keyType: Type? { get }
+    var asGeneric: GenericType { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension DictionaryType: DictionaryTypeAutoJSExport {}
+
+@objc protocol EnumAutoJSExport: JSExport {
+    var kind: String { get }
+    var cases: [EnumCase] { get }
+    var rawTypeName: TypeName? { get }
+    var hasRawType: Bool { get }
+    var rawType: Type? { get }
+    var based: [String: String] { get }
+    var hasAssociatedValues: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var fileName: String? { get }
+}
+
+extension Enum: EnumAutoJSExport {}
+
+@objc protocol EnumCaseAutoJSExport: JSExport {
+    var name: String { get }
+    var rawValue: String? { get }
+    var associatedValues: [AssociatedValue] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var indirect: Bool { get }
+    var hasAssociatedValue: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension EnumCase: EnumCaseAutoJSExport {}
+
+
+@objc protocol GenericParameterAutoJSExport: JSExport {
+    var name: String { get }
+    var inheritedTypeName: TypeName? { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension GenericParameter: GenericParameterAutoJSExport {}
+
+@objc protocol GenericRequirementAutoJSExport: JSExport {
+    var leftType: AssociatedType { get }
+    var rightType: GenericTypeParameter { get }
+    var relationship: String { get }
+    var relationshipSyntax: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension GenericRequirement: GenericRequirementAutoJSExport {}
+
+@objc protocol GenericTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var typeParameters: [GenericTypeParameter] { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension GenericType: GenericTypeAutoJSExport {}
+
+@objc protocol GenericTypeParameterAutoJSExport: JSExport {
+    var typeName: TypeName { get }
+    var type: Type? { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
+
+@objc protocol ImportAutoJSExport: JSExport {
+    var kind: String? { get }
+    var path: String { get }
+    var description: String { get }
+    var moduleName: String { get }
+    var hash: Int { get }
+}
+
+extension Import: ImportAutoJSExport {}
+
+@objc protocol MethodAutoJSExport: JSExport {
+    var name: String { get }
+    var selectorName: String { get }
+    var shortName: String { get }
+    var callName: String { get }
+    var parameters: [MethodParameter] { get }
+    var returnTypeName: TypeName { get }
+    var actualReturnTypeName: TypeName { get }
+    var returnType: Type? { get }
+    var isOptionalReturnType: Bool { get }
+    var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
+    var unwrappedReturnTypeName: String { get }
+    var isAsync: Bool { get }
+    var `throws`: Bool { get }
+    var `rethrows`: Bool { get }
+    var accessLevel: String { get }
+    var isStatic: Bool { get }
+    var isClass: Bool { get }
+    var isInitializer: Bool { get }
+    var isDeinitializer: Bool { get }
+    var isFailableInitializer: Bool { get }
+    var isConvenienceInitializer: Bool { get }
+    var isRequired: Bool { get }
+    var isFinal: Bool { get }
+    var isMutating: Bool { get }
+    var isGeneric: Bool { get }
+    var isOptional: Bool { get }
+    var isNonisolated: Bool { get }
+    var isDynamic: Bool { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var definedInTypeName: TypeName? { get }
+    var actualDefinedInTypeName: TypeName? { get }
+    var definedInType: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension Method: MethodAutoJSExport {}
+
+@objc protocol MethodParameterAutoJSExport: JSExport {
+    var argumentLabel: String? { get }
+    var name: String { get }
+    var typeName: TypeName { get }
+    var `inout`: Bool { get }
+    var isVariadic: Bool { get }
+    var type: Type? { get }
+    var typeAttributes: AttributeList { get }
+    var defaultValue: String? { get }
+    var annotations: Annotations { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension MethodParameter: MethodParameterAutoJSExport {}
+
+@objc protocol ModifierAutoJSExport: JSExport {
+    var name: String { get }
+    var detail: String? { get }
+    var asSource: String { get }
+    var hash: Int { get }
+}
+
+extension Modifier: ModifierAutoJSExport {}
+
+@objc protocol ProtocolAutoJSExport: JSExport {
+    var kind: String { get }
+    var associatedTypes: [String: AssociatedType] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var description: String { get }
+    var hash: Int { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var fileName: String? { get }
+}
+
+extension Protocol: ProtocolAutoJSExport {}
+
+@objc protocol ProtocolCompositionAutoJSExport: JSExport {
+    var kind: String { get }
+    var composedTypeNames: [TypeName] { get }
+    var composedTypes: [Type]? { get }
+    var description: String { get }
+    var hash: Int { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var fileName: String? { get }
+}
+
+extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
+
+@objc protocol SetTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var elementTypeName: TypeName { get }
+    var elementType: Type? { get }
+    var asGeneric: GenericType { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension SetType: SetTypeAutoJSExport {}
+
+
+
+@objc protocol StructAutoJSExport: JSExport {
+    var kind: String { get }
+    var description: String { get }
+    var hash: Int { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var fileName: String? { get }
+}
+
+extension Struct: StructAutoJSExport {}
+
+@objc protocol SubscriptAutoJSExport: JSExport {
+    var parameters: [MethodParameter] { get }
+    var returnTypeName: TypeName { get }
+    var actualReturnTypeName: TypeName { get }
+    var returnType: Type? { get }
+    var isOptionalReturnType: Bool { get }
+    var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
+    var unwrappedReturnTypeName: String { get }
+    var isFinal: Bool { get }
+    var readAccess: String { get }
+    var writeAccess: String { get }
+    var isAsync: Bool { get }
+    var `throws`: Bool { get }
+    var isMutable: Bool { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var definedInTypeName: TypeName? { get }
+    var actualDefinedInTypeName: TypeName? { get }
+    var definedInType: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericParameters: [GenericParameter] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var isGeneric: Bool { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension Subscript: SubscriptAutoJSExport {}
+
+@objc protocol TemplateContextAutoJSExport: JSExport {
+    var functions: [SourceryMethod] { get }
+    var types: Types { get }
+    var argument: [String: NSObject] { get }
+    var type: [String: Type] { get }
+    var stencilContext: [String: Any] { get }
+    var description: String { get }
+    var hash: Int { get }
+    var jsContext: [String: Any] { get }
+}
+
+extension TemplateContext: TemplateContextAutoJSExport {}
+
+@objc protocol TupleElementAutoJSExport: JSExport {
+    var name: String? { get }
+    var typeName: TypeName { get }
+    var type: Type? { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension TupleElement: TupleElementAutoJSExport {}
+
+@objc protocol TupleTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var elements: [TupleElement] { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension TupleType: TupleTypeAutoJSExport {}
+
+@objc protocol TypeAutoJSExport: JSExport {
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var kind: String { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var fileName: String? { get }
+    var description: String { get }
+    var hash: Int { get }
+}
+
+extension Type: TypeAutoJSExport {}
+
+@objc protocol TypeNameAutoJSExport: JSExport {
+    var name: String { get }
+    var generic: GenericType? { get }
+    var isGeneric: Bool { get }
+    var isProtocolComposition: Bool { get }
+    var actualTypeName: TypeName? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+    var isVoid: Bool { get }
+    var isTuple: Bool { get }
+    var tuple: TupleType? { get }
+    var isArray: Bool { get }
+    var array: ArrayType? { get }
+    var isDictionary: Bool { get }
+    var dictionary: DictionaryType? { get }
+    var isClosure: Bool { get }
+    var closure: ClosureType? { get }
+    var isSet: Bool { get }
+    var set: SetType? { get }
+    var asSource: String { get }
+    var description: String { get }
+    var hash: Int { get }
+    var debugDescription: String { get }
+}
+
+extension TypeName: TypeNameAutoJSExport {}
+
+@objc protocol TypealiasAutoJSExport: JSExport {
+    var aliasName: String { get }
+    var typeName: TypeName { get }
+    var type: Type? { get }
+    var module: String? { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var parent: Type? { get }
+    var accessLevel: String { get }
+    var parentName: String? { get }
+    var name: String { get }
+    var description: String { get }
+    var hash: Int { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension Typealias: TypealiasAutoJSExport {}
+
+
+@objc protocol TypesCollectionAutoJSExport: JSExport {
+}
+
+extension TypesCollection: TypesCollectionAutoJSExport {}
+
+@objc protocol VariableAutoJSExport: JSExport {
+    var name: String { get }
+    var typeName: TypeName { get }
+    var type: Type? { get }
+    var isComputed: Bool { get }
+    var isAsync: Bool { get }
+    var `throws`: Bool { get }
+    var isStatic: Bool { get }
+    var readAccess: String { get }
+    var writeAccess: String { get }
+    var isMutable: Bool { get }
+    var defaultValue: String? { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var isFinal: Bool { get }
+    var isLazy: Bool { get }
+    var isDynamic: Bool { get }
+    var definedInTypeName: TypeName? { get }
+    var actualDefinedInTypeName: TypeName? { get }
+    var definedInType: Type? { get }
+    var description: String { get }
+    var hash: Int { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension Variable: VariableAutoJSExport {}
+
+
+#endif
+"""),
+    .init(name: "Typed.generated.swift", content:
+"""
+// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
+// swiftlint:disable vertical_whitespace
+
+
+extension AssociatedValue {
+    /// Whether type is optional. Shorthand for `typeName.isOptional`
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure. Shorthand for `typeName.isClosure`
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array. Shorthand for `typeName.isArray`
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
+    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
+    public var isDictionary: Bool { return typeName.isDictionary }
+}
+extension ClosureParameter {
+    /// Whether type is optional. Shorthand for `typeName.isOptional`
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure. Shorthand for `typeName.isClosure`
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array. Shorthand for `typeName.isArray`
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
+    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
+    public var isDictionary: Bool { return typeName.isDictionary }
+}
+extension MethodParameter {
+    /// Whether type is optional. Shorthand for `typeName.isOptional`
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure. Shorthand for `typeName.isClosure`
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array. Shorthand for `typeName.isArray`
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
+    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
+    public var isDictionary: Bool { return typeName.isDictionary }
+}
+extension TupleElement {
+    /// Whether type is optional. Shorthand for `typeName.isOptional`
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure. Shorthand for `typeName.isClosure`
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array. Shorthand for `typeName.isArray`
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
+    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
+    public var isDictionary: Bool { return typeName.isDictionary }
+}
+extension Typealias {
+    /// Whether type is optional. Shorthand for `typeName.isOptional`
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure. Shorthand for `typeName.isClosure`
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array. Shorthand for `typeName.isArray`
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
+    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
+    public var isDictionary: Bool { return typeName.isDictionary }
+}
+extension Variable {
+    /// Whether type is optional. Shorthand for `typeName.isOptional`
+    public var isOptional: Bool { return typeName.isOptional }
+    /// Whether type is implicitly unwrapped optional. Shorthand for `typeName.isImplicitlyUnwrappedOptional`
+    public var isImplicitlyUnwrappedOptional: Bool { return typeName.isImplicitlyUnwrappedOptional }
+    /// Type name without attributes and optional type information. Shorthand for `typeName.unwrappedTypeName`
+    public var unwrappedTypeName: String { return typeName.unwrappedTypeName }
+    /// Actual type name if declaration uses typealias, otherwise just a `typeName`. Shorthand for `typeName.actualTypeName`
+    public var actualTypeName: TypeName? { return typeName.actualTypeName ?? typeName }
+    /// Whether type is a tuple. Shorthand for `typeName.isTuple`
+    public var isTuple: Bool { return typeName.isTuple }
+    /// Whether type is a closure. Shorthand for `typeName.isClosure`
+    public var isClosure: Bool { return typeName.isClosure }
+    /// Whether type is an array. Shorthand for `typeName.isArray`
+    public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
+    /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
+    public var isDictionary: Bool { return typeName.isDictionary }
+}
+
+"""),
 ]
 #endif
