@@ -1,10 +1,10 @@
 import Foundation
 
-/// Describes set type
+/// Describes array type
 #if canImport(ObjectiveC)
-@objcMembers
+@objcMembers 
 #endif
-public final class SetType: NSObject, SourceryModel, Diffable {
+public final class ArrayType: NSObject, SourceryModel, Diffable {
     /// Type name used in declaration
     public var name: String
 
@@ -24,7 +24,7 @@ public final class SetType: NSObject, SourceryModel, Diffable {
 
     /// Returns array as generic type
     public var asGeneric: GenericType {
-        GenericType(name: "Set", typeParameters: [
+        GenericType(name: "Array", typeParameters: [
             .init(typeName: elementTypeName)
         ])
     }
@@ -36,17 +36,17 @@ public final class SetType: NSObject, SourceryModel, Diffable {
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "elementTypeName = \(String(describing: self.elementTypeName)), "
-        string += "asGeneric = \(String(describing: self.asGeneric)), "
-        string += "asSource = \(String(describing: self.asSource))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("elementTypeName = \(String(describing: self.elementTypeName)), ")
+        string.append("asGeneric = \(String(describing: self.asGeneric)), ")
+        string.append("asSource = \(String(describing: self.asSource))")
         return string
     }
 
     public func diffAgainst(_ object: Any?) -> DiffableResult {
         let results = DiffableResult()
-        guard let castObject = object as? SetType else {
-            results.append("Incorrect type <expected: SetType, received: \(Swift.type(of: object))>")
+        guard let castObject = object as? ArrayType else {
+            results.append("Incorrect type <expected: ArrayType, received: \(Swift.type(of: object))>")
             return results
         }
         results.append(contentsOf: DiffableResult(identifier: "name").trackDifference(actual: self.name, expected: castObject.name))
@@ -63,23 +63,23 @@ public final class SetType: NSObject, SourceryModel, Diffable {
 
     /// :nodoc:
     public override func isEqual(_ object: Any?) -> Bool {
-        guard let rhs = object as? SetType else { return false }
+        guard let rhs = object as? ArrayType else { return false }
         if self.name != rhs.name { return false }
         if self.elementTypeName != rhs.elementTypeName { return false }
         return true
     }
 
-// sourcery:inline:SetType.AutoCoding
+// sourcery:inline:ArrayType.AutoCoding
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else {
+            guard let elementTypeName: TypeName = aDecoder.decode(forKey: "elementTypeName") else { 
                 withVaList(["elementTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

@@ -133,24 +133,24 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "parameters = \(String(describing: self.parameters)), "
-        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), "
-        string += "isFinal = \(String(describing: self.isFinal)), "
-        string += "readAccess = \(String(describing: self.readAccess)), "
-        string += "writeAccess = \(String(describing: self.writeAccess)), "
-        string += "isAsync = \(String(describing: self.isAsync)), "
-        string += "`throws` = \(String(describing: self.throws)), "
-        string += "isMutable = \(String(describing: self.isMutable)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "documentation = \(String(describing: self.documentation)), "
-        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), "
-        string += "genericParameters = \(String(describing: self.genericParameters)), "
-        string += "genericRequirements = \(String(describing: self.genericRequirements)), "
-        string += "isGeneric = \(String(describing: self.isGeneric)), "
-        string += "attributes = \(String(describing: self.attributes)), "
-        string += "modifiers = \(String(describing: self.modifiers))"
+        string.append("parameters = \(String(describing: self.parameters)), ")
+        string.append("returnTypeName = \(String(describing: self.returnTypeName)), ")
+        string.append("actualReturnTypeName = \(String(describing: self.actualReturnTypeName)), ")
+        string.append("isFinal = \(String(describing: self.isFinal)), ")
+        string.append("readAccess = \(String(describing: self.readAccess)), ")
+        string.append("writeAccess = \(String(describing: self.writeAccess)), ")
+        string.append("isAsync = \(String(describing: self.isAsync)), ")
+        string.append("`throws` = \(String(describing: self.throws)), ")
+        string.append("isMutable = \(String(describing: self.isMutable)), ")
+        string.append("annotations = \(String(describing: self.annotations)), ")
+        string.append("documentation = \(String(describing: self.documentation)), ")
+        string.append("definedInTypeName = \(String(describing: self.definedInTypeName)), ")
+        string.append("actualDefinedInTypeName = \(String(describing: self.actualDefinedInTypeName)), ")
+        string.append("genericParameters = \(String(describing: self.genericParameters)), ")
+        string.append("genericRequirements = \(String(describing: self.genericRequirements)), ")
+        string.append("isGeneric = \(String(describing: self.isGeneric)), ")
+        string.append("attributes = \(String(describing: self.attributes)), ")
+        string.append("modifiers = \(String(describing: self.modifiers))")
         return string
     }
 

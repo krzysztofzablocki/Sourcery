@@ -1,5 +1,6 @@
 sources:
- - SourceryRuntime/Sources
+ - SourceryRuntime/Sources/Common
+ - SourceryRuntime/Sources/Linux
 templates:
  - Sourcery/Templates
 output:

@@ -11,7 +11,7 @@ public final class Actor: Type {
 
     /// Whether type is final
     public var isFinal: Bool {
-        return modifiers.contains { $0.name == "final" }
+        modifiers.contains { $0.name == "final" }
     }
 
     /// :nodoc:
@@ -56,9 +56,9 @@ public final class Actor: Type {
     /// :nodoc:
     override public var description: String {
         var string = super.description
-        string += ", "
-        string += "kind = \(String(describing: self.kind)), "
-        string += "isFinal = \(String(describing: self.isFinal))"
+        string.append(", ")
+        string.append("kind = \(String(describing: self.kind)), ")
+        string.append("isFinal = \(String(describing: self.isFinal))")
         return string
     }
 

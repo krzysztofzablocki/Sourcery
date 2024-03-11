@@ -49,13 +49,13 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "rawValue = \(String(describing: self.rawValue)), "
-        string += "associatedValues = \(String(describing: self.associatedValues)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "documentation = \(String(describing: self.documentation)), "
-        string += "indirect = \(String(describing: self.indirect)), "
-        string += "hasAssociatedValue = \(String(describing: self.hasAssociatedValue))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("rawValue = \(String(describing: self.rawValue)), ")
+        string.append("associatedValues = \(String(describing: self.associatedValues)), ")
+        string.append("annotations = \(String(describing: self.annotations)), ")
+        string.append("documentation = \(String(describing: self.documentation)), ")
+        string.append("indirect = \(String(describing: self.indirect)), ")
+        string.append("hasAssociatedValue = \(String(describing: self.hasAssociatedValue))")
         return string
     }
 

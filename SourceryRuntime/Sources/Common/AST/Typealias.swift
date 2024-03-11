@@ -57,14 +57,14 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "aliasName = \(String(describing: self.aliasName)), "
-        string += "typeName = \(String(describing: self.typeName)), "
-        string += "module = \(String(describing: self.module)), "
-        string += "accessLevel = \(String(describing: self.accessLevel)), "
-        string += "parentName = \(String(describing: self.parentName)), "
-        string += "name = \(String(describing: self.name)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "documentation = \(String(describing: self.documentation)), "
+        string.append("aliasName = \(String(describing: self.aliasName)), ")
+        string.append("typeName = \(String(describing: self.typeName)), ")
+        string.append("module = \(String(describing: self.module)), ")
+        string.append("accessLevel = \(String(describing: self.accessLevel)), ")
+        string.append("parentName = \(String(describing: self.parentName)), ")
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("annotations = \(String(describing: self.annotations)), ")
+        string.append("documentation = \(String(describing: self.documentation)), ")
         return string
     }
 

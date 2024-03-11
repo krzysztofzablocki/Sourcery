@@ -1,0 +1,7 @@
+sources:
+ - SourceryRuntime/Sources/Common
+ - SourceryRuntime/Sources/macOS
+templates:
+ - Sourcery/Templates
+output:
+ SourceryRuntime/Sources/Generated
