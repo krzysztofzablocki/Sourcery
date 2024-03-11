@@ -4,10 +4,6 @@
 //
 #if !canImport(ObjectiveC)
 import Foundation
-// For DynamicMemberLookup we need to import Stencil,
-// however, this is different from SourceryRuntime.content.generated.swift, because
-// it cannot reference Stencil
-import Stencil
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
 public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, DynamicMemberLookup {
