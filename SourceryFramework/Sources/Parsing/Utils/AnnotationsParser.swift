@@ -170,35 +170,35 @@ public struct AnnotationsParser {
         return documentation.reversed()
     }
 
+    private func findPrefix(position: (line: Int, character: Int), shouldStartFromStart: Bool) -> (String, Line) {
+        let sourceLine = lines[position.line - 1]
+        let utf8View = sourceLine.content.utf8
+        var startIndex: String.UTF8View.Index
+        var endIndex: String.UTF8View.Index
+        guard utf8View.count > position.character else {
+            return ("", sourceLine)
+        }
+        if shouldStartFromStart {
+            startIndex = utf8View.index(utf8View.startIndex, offsetBy: (position.character - 1))
+            endIndex = utf8View.endIndex
+        } else {
+            startIndex = utf8View.startIndex
+            endIndex = utf8View.index(startIndex, offsetBy: (position.character - 1))
+        }
+        let utf8Slice = utf8View[startIndex ..< endIndex]
+        let relevantContent = String(decoding: utf8Slice, as: UTF8.self)
+        return (relevantContent.trimmingCharacters(in: .whitespaces), sourceLine)
+    }
+
     func inlineFrom(positionAfterLeadingTrivia: (line: Int, character: Int), positionBeforeTrailingTrivia: (line: Int, character: Int), stop: inout Bool) -> (Annotations, Bool) {
         var shouldUsePositionBeforeTrailing = false
         var position: (line: Int, character: Int) = positionAfterLeadingTrivia
         // first try checking for annotations in the beginning of the line (i.e. `positionAfterLeadingTrivia`)
         // next, try checking for annotations in the end of the line (i.e. `positionBeforeTrailingTrivia`)
-        let findPrefix: (((line: Int, character: Int), Bool) -> (String, Line)) = { position, shouldStart in
-            let sourceLine = lines[position.line - 1]
-            let utf8View = sourceLine.content.utf8
-            var startIndex: String.UTF8View.Index
-            var endIndex: String.UTF8View.Index
-            guard utf8View.count > position.character else {
-                return ("", sourceLine)
-            }
-            if shouldUsePositionBeforeTrailing {
-                startIndex = utf8View.index(utf8View.startIndex, offsetBy: (position.character - 1))
-                endIndex = utf8View.endIndex
-            } else {
-                startIndex = utf8View.startIndex
-                endIndex = utf8View.index(startIndex, offsetBy: (position.character - 1))
-            }
-            let utf8Slice = utf8View[startIndex ..< endIndex]
-            let relevantContent = String(decoding: utf8Slice, as: UTF8.self)
-            return (relevantContent.trimmingCharacters(in: .whitespaces), sourceLine)
-        }
-
-        var (prefix, sourceLine) = findPrefix(positionAfterLeadingTrivia, shouldUsePositionBeforeTrailing)
+        var (prefix, sourceLine) = findPrefix(position: positionAfterLeadingTrivia, shouldStartFromStart: shouldUsePositionBeforeTrailing)
         if prefix.isEmpty {
             shouldUsePositionBeforeTrailing = true
-            (prefix, sourceLine) = findPrefix(positionBeforeTrailingTrivia, shouldUsePositionBeforeTrailing)
+            (prefix, sourceLine) = findPrefix(position: positionBeforeTrailingTrivia, shouldStartFromStart: shouldUsePositionBeforeTrailing)
             if shouldUsePositionBeforeTrailing {
                 position = positionBeforeTrailingTrivia
             }
@@ -225,7 +225,8 @@ public struct AnnotationsParser {
             for annotation in AnnotationsParser.parse(contents: comment)[0].annotations {
                 AnnotationsParser.append(key: annotation.key, value: annotation.value, to: &annotations)
             }
-            prefix = prefix[..<commentStart.lowerBound].trimmingCharacters(in: .whitespaces)
+            let leftover: Substring = prefix[..<commentStart.lowerBound]
+            prefix = leftover.trimmingCharacters(in: .whitespaces)
         }
 
         if (inlineCommentFound || isInsideCaseDefinition) && !prefix.isEmpty {
@@ -240,7 +241,15 @@ public struct AnnotationsParser {
             let previousLine = lines[position.line - 2]
             let content = previousLine.content.trimmingCharacters(in: .whitespaces)
             
-            guard previousLine.type == .comment || previousLine.type == .documentationComment || previousLine.type == .propertyWrapper || previousLine.type == .macros, content.hasPrefix("//") || content.hasSuffix("*/") || content.hasPrefix("@") || content.hasPrefix("#") else {
+            let hasSpecificType: Bool = (previousLine.type == .comment) as Bool
+            || (previousLine.type == .documentationComment) as Bool
+            || (previousLine.type == .propertyWrapper) as Bool
+            || (previousLine.type == .macros) as Bool
+            let hasSpecificPrefix: Bool = content.hasPrefix("//") as Bool
+            || (content.hasSuffix("*/")) as Bool
+            || (content.hasPrefix("@")) as Bool
+            || (content.hasPrefix("#")) as Bool
+            guard hasSpecificType && hasSpecificPrefix else {
                 stop = true
                 return (annotations, shouldUsePositionBeforeTrailing)
             }

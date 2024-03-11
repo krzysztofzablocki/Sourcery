@@ -215,23 +215,23 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "name = \(String(describing: self.name)), "
-        string += "selectorName = \(String(describing: self.selectorName)), "
-        string += "parameters = \(String(describing: self.parameters)), "
-        string += "returnTypeName = \(String(describing: self.returnTypeName)), "
-        string += "isAsync = \(String(describing: self.isAsync)), "
-        string += "`throws` = \(String(describing: self.`throws`)), "
-        string += "`rethrows` = \(String(describing: self.`rethrows`)), "
-        string += "accessLevel = \(String(describing: self.accessLevel)), "
-        string += "isStatic = \(String(describing: self.isStatic)), "
-        string += "isClass = \(String(describing: self.isClass)), "
-        string += "isFailableInitializer = \(String(describing: self.isFailableInitializer)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "documentation = \(String(describing: self.documentation)), "
-        string += "definedInTypeName = \(String(describing: self.definedInTypeName)), "
-        string += "attributes = \(String(describing: self.attributes)), "
-        string += "modifiers = \(String(describing: self.modifiers)), "
-        string += "genericRequirements = \(String(describing: self.genericRequirements))"
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("selectorName = \(String(describing: self.selectorName)), ")
+        string.append("parameters = \(String(describing: self.parameters)), ")
+        string.append("returnTypeName = \(String(describing: self.returnTypeName)), ")
+        string.append("isAsync = \(String(describing: self.isAsync)), ")
+        string.append("`throws` = \(String(describing: self.`throws`)), ")
+        string.append("`rethrows` = \(String(describing: self.`rethrows`)), ")
+        string.append("accessLevel = \(String(describing: self.accessLevel)), ")
+        string.append("isStatic = \(String(describing: self.isStatic)), ")
+        string.append("isClass = \(String(describing: self.isClass)), ")
+        string.append("isFailableInitializer = \(String(describing: self.isFailableInitializer)), ")
+        string.append("annotations = \(String(describing: self.annotations)), ")
+        string.append("documentation = \(String(describing: self.documentation)), ")
+        string.append("definedInTypeName = \(String(describing: self.definedInTypeName)), ")
+        string.append("attributes = \(String(describing: self.attributes)), ")
+        string.append("modifiers = \(String(describing: self.modifiers)), ")
+        string.append("genericRequirements = \(String(describing: self.genericRequirements))")
         return string
     }
 

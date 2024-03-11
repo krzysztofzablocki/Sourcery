@@ -77,9 +77,9 @@ public final class Protocol: Type {
     /// :nodoc:
     override public var description: String {
         var string = super.description
-        string += ", "
-        string += "kind = \(String(describing: self.kind)), "
-        string += "associatedTypes = \(String(describing: self.associatedTypes)), "
+        string.append(", ")
+        string.append("kind = \(String(describing: self.kind)), ")
+        string.append("associatedTypes = \(String(describing: self.associatedTypes)), ")
         return string
     }
 

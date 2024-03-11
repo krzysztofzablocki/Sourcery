@@ -76,15 +76,15 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     /// :nodoc:
     override public var description: String {
         var string = "\(Swift.type(of: self)): "
-        string += "argumentLabel = \(String(describing: self.argumentLabel)), "
-        string += "name = \(String(describing: self.name)), "
-        string += "typeName = \(String(describing: self.typeName)), "
-        string += "`inout` = \(String(describing: self.`inout`)), "
-        string += "isVariadic = \(String(describing: self.isVariadic)), "
-        string += "typeAttributes = \(String(describing: self.typeAttributes)), "
-        string += "defaultValue = \(String(describing: self.defaultValue)), "
-        string += "annotations = \(String(describing: self.annotations)), "
-        string += "asSource = \(String(describing: self.asSource))"
+        string.append("argumentLabel = \(String(describing: self.argumentLabel)), ")
+        string.append("name = \(String(describing: self.name)), ")
+        string.append("typeName = \(String(describing: self.typeName)), ")
+        string.append("`inout` = \(String(describing: self.`inout`)), ")
+        string.append("isVariadic = \(String(describing: self.isVariadic)), ")
+        string.append("typeAttributes = \(String(describing: self.typeAttributes)), ")
+        string.append("defaultValue = \(String(describing: self.defaultValue)), ")
+        string.append("annotations = \(String(describing: self.annotations)), ")
+        string.append("asSource = \(String(describing: self.asSource))")
         return string
     }
 

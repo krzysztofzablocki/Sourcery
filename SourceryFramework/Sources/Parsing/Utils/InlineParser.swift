@@ -55,13 +55,16 @@ public enum TemplateAnnotationsParser {
                 length: endLineRange.location - startLineRange.location
             )
             if aggregate {
-                var ranges = annotatedRanges[name] ?? []
+                var ranges: [(range: NSRange, indentation: String)] = []
+                if let annotated = annotatedRanges[name] {
+                    ranges = annotated
+                }
                 ranges.append((range: range, indentation: indentation))
                 annotatedRanges[name] = ranges
             } else {
                 annotatedRanges[name] = [(range: range, indentation: indentation)]
             }
-            let rangeToBeRemoved = !forceParse.contains(where: { name.hasSuffix("." + $0) || name == $0 })
+            let rangeToBeRemoved = !forceParse.contains(where: { name.hasSuffix(".\($0)") || name == $0 })
             if rangeToBeRemoved {
                 rangesToReplace.insert(range)
             }

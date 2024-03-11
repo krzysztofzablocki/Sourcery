@@ -75,6 +75,15 @@ internal struct ParserResultsComposed {
         }
     }
 
+    // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
+    private mutating func rewriteChildren(of type: Type) {
+        // child is never an extension so no need to check
+        for child in type.containedTypes {
+            typeMap[child.globalName] = child
+            rewriteChildren(of: child)
+        }
+    }
+
     private mutating func unifyTypes() -> [Type] {
         /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
         parsedTypes
@@ -95,15 +104,6 @@ internal struct ParserResultsComposed {
                 // nothing left to do
                 guard oldName != $0.globalName else {
                     return
-                }
-
-                // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
-                func rewriteChildren(of type: Type) {
-                    // child is never an extension so no need to check
-                    for child in type.containedTypes {
-                        typeMap[child.globalName] = child
-                        rewriteChildren(of: child)
-                    }
                 }
                 rewriteChildren(of: $0)
             }

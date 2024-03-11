@@ -76,7 +76,9 @@ public class DiffableResult: NSObject, AutoEquatable {
 
     public override var description: String {
         guard !results.isEmpty else { return "" }
-        return "\(identifier.flatMap { "\($0) " } ?? "")" + results.joined(separator: "\n")
+        var description = "\(identifier.flatMap { "\($0) " } ?? "")"
+        description.append(results.joined(separator: "\n"))
+        return description
     }
 }
 
@@ -97,7 +99,9 @@ public extension DiffableResult {
     /// :nodoc:
     @discardableResult func trackDifference<T: Equatable>(actual: T?, expected: T?) -> DiffableResult {
         if actual != expected {
-            let result = DiffableResult(results: ["<expected: \(expected.map({ "\($0)" }) ?? "nil"), received: \(actual.map({ "\($0)" }) ?? "nil")>"])
+            let expected = expected.map({ "\($0)" }) ?? "nil"
+            let actual = actual.map({ "\($0)" }) ?? "nil"
+            let result = DiffableResult(results: ["<expected: \(expected), received: \(actual)>"])
             append(contentsOf: result)
         }
         return self
