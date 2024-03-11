@@ -324,22 +324,21 @@ class FileParserMethodsSpec: QuickSpec {
                     func assertMethods(_ types: [Type]) {
                         let fooType = types.first(where: { $0.name == "Foo" })
                         let foo = fooType?.methods.first
+                        let fooBar = fooType?.methods.last
 
-//                        expect(foo?.name).to(equal("foo<T: Equatable>()"))
-//                        expect(foo?.selectorName).to(equal("foo"))
-//                        expect(foo?.shortName).to(equal("foo<T: Equatable>"))
-//                        expect(foo?.callName).to(equal("foo"))
+                        expect(foo?.shortName).to(equal("foo<T: Equatable>"))
+                        expect(foo?.callName).to(equal("foo"))
                         expect(foo?.returnTypeName).to(equal(TypeName(name: "Bar? where \nT: Equatable")))
-//                        expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
-//                        expect(foo?.definedInTypeName).to(equal(TypeName(name: "Foo")))
-//
-//                        expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
-//                        expect(fooBar?.selectorName).to(equal("fooBar(bar:)"))
-//                        expect(fooBar?.shortName).to(equal("fooBar<T>"))
-//                        expect(fooBar?.callName).to(equal("fooBar"))
-//                        expect(fooBar?.returnTypeName).to(equal(TypeName(name: "Void where T: Equatable")))
-//                        expect(fooBar?.unwrappedReturnTypeName).to(equal("Void"))
-//                        expect(fooBar?.definedInTypeName).to(equal(TypeName(name: "Foo")))
+                        expect(foo?.unwrappedReturnTypeName).to(equal("Bar"))
+                        expect(foo?.definedInTypeName).to(equal(TypeName(name: "Foo")))
+
+                        expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                        expect(fooBar?.selectorName).to(equal("fooBar(bar:)"))
+                        expect(fooBar?.shortName).to(equal("fooBar<T>"))
+                        expect(fooBar?.callName).to(equal("fooBar"))
+                        expect(fooBar?.returnTypeName).to(equal(TypeName(name: "Void where T: Equatable")))
+                        expect(fooBar?.unwrappedReturnTypeName).to(equal("Void"))
+                        expect(fooBar?.definedInTypeName).to(equal(TypeName(name: "Foo")))
                     }
 
                     it("extracts class method properly") {
