@@ -85,7 +85,7 @@ func main() {
         exit(1)
     }
     let foldersPaths = CommandLine.arguments[1]
-    let folders = foldersPaths.split(separator: ",")
+    let folders = foldersPaths.split(separator: ",").map(String.init)
 
     do {
         try package(folders: folders)
