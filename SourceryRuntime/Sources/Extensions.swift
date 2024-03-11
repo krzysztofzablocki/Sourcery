@@ -189,8 +189,11 @@ public extension String {
             defer {
                 i = self.index(i, offsetBy: offset)
             }
-            let currentlyScannedEnd: Index = self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) ?? self.endIndex
-            let currentlyScanned = self[i..<currentlyScannedEnd]
+            var currentlyScannedEnd: Index = self.endIndex
+            if let endIndex = self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) {
+                currentlyScannedEnd = endIndex
+            }
+            let currentlyScanned: String = String(self[i..<currentlyScannedEnd])
             if let openString = between.open.first(where: { self[i...].starts(with: $0) }) {
                 if !((boundingCharactersCount == 0) as Bool && (String(self[i]) == delimiter) as Bool) {
                     boundingCharactersCount += 1
@@ -207,7 +210,10 @@ public extension String {
                 quotesCount += 1
             }
 
-            if (currentlyScanned == delimiter) as Bool && (boundingCharactersCount == 0) as Bool && (quotesCount % 2 == 0) as Bool {
+            let currentIsDelimiter = (currentlyScanned == delimiter) as Bool
+            let boundingCountIsZero = (boundingCharactersCount == 0) as Bool
+            let hasEvenQuotes = (quotesCount % 2 == 0) as Bool
+            if currentIsDelimiter && boundingCountIsZero && hasEvenQuotes {
                 items.append(item)
                 item = ""
                 i = self.index(i, offsetBy: delimiter.count - 1)

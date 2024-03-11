@@ -61,7 +61,10 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     }
 
     public var asSource: String {
-        let typeSuffix = ": \(`inout` ? "inout " : "")\(typeName.asSource)\(defaultValue.map { " = \($0)" } ?? "")" + (isVariadic ? "..." : "")
+        let values: String = defaultValue.map { " = \($0)" } ?? ""
+        let variadicity: String = isVariadic ? "..." : ""
+        let inoutness: String = `inout` ? "inout " : ""
+        let typeSuffix = ": \(inoutness)\(typeName.asSource)\(values)\(variadicity)"
         guard argumentLabel != name else {
             return name + typeSuffix
         }

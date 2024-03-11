@@ -427,7 +427,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     /// :nodoc:
     override public var description: String {
-        var string = "\(Swift.type(of: self)): "
+        let type: Type.Type = Swift.type(of: self)
+        var string = "\(type): "
         string.append("module = \(String(describing: self.module)), ")
         string.append("imports = \(String(describing: self.imports)), ")
         string.append("allImports = \(String(describing: self.allImports)), ")
