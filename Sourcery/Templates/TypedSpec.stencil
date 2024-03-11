@@ -28,6 +28,7 @@ class TypedSpec: QuickSpec {
                 return variable?.typeName ?? TypeName(name: "")
             }
 
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect({{ type.name }}(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
                 expect({{ type.name }}(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -68,6 +69,7 @@ class TypedSpec: QuickSpec {
                 sut.typeName.actualTypeName = typeName("Int")
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(typeName("Int")))
             }
+#endif
         }
         {% endfor %}
     }
