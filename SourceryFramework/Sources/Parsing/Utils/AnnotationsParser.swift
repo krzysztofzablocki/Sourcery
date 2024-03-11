@@ -180,6 +180,9 @@ public struct AnnotationsParser {
             let utf8View = sourceLine.content.utf8
             var startIndex: String.UTF8View.Index
             var endIndex: String.UTF8View.Index
+            guard utf8View.count > position.character else {
+                return ("", sourceLine)
+            }
             if shouldUsePositionBeforeTrailing {
                 startIndex = utf8View.index(utf8View.startIndex, offsetBy: (position.character - 1))
                 endIndex = utf8View.endIndex
