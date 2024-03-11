@@ -56,8 +56,8 @@ def build_framework(fat_library)
   print_info "Building project (fat: #{fat_library})"
 
   # Prepare the export directory
-  sh %Q(rm -fr #{CLI_DIR})
-  sh %Q(mkdir -p "#{CLI_DIR}bin")
+  #sh %Q(rm -fr #{CLI_DIR})
+  #sh %Q(mkdir -p "#{CLI_DIR}bin")
   output_path="#{CLI_DIR}bin/sourcery"
 
   if fat_library
@@ -87,12 +87,14 @@ end
 
 task :run_sourcery do
   print_info "Generating internal boilerplate code"
-  sh "#{CLI_DIR}bin/sourcery"
+  sh "#{CLI_DIR}bin/sourcery --config .sourcery-macOS.yml"
+  sh "#{CLI_DIR}bin/sourcery --config .sourcery-ubuntu.yml"
 end
 
 desc "Update internal boilerplate code"
-task :generate_internal_boilerplate_code => [:fat_build, :run_sourcery, :clean] do
-  sh "Scripts/package_content \"SourceryRuntime/Sources\"  > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
+task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
+  sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/Generated,SourceryRuntime/Sources/macOS\"  > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
+  sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/Generated,SourceryRuntime/Sources/Linux\"  > \"SourcerySwift/Sources/SourceryRuntime_Linux.content.generated.swift\""
   generated_files = `git status --porcelain`
                       .split("\n")
                       .select { |item| item.include?('.generated.') }
