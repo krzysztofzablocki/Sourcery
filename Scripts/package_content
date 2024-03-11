@@ -40,7 +40,12 @@ extension String {
     }
 }
 
-func package(folders folderPaths: [String]) throws {
+func package(folders folderPaths: [String], isForDarwinPlatform: Bool) throws {
+    if !isForDarwinPlatform {
+        print("#if !canImport(ObjectiveC)")
+    } else {
+        print("#if canImport(ObjectiveC)")
+    }
     print("let sourceryRuntimeFiles: [FolderSynchronizer.File] = [")
     for folderPath in folderPaths {
         let folderURL = URL(fileURLWithPath: folderPath)
@@ -73,6 +78,7 @@ func package(folders folderPaths: [String]) throws {
         }
     }
     print("]")
+    print("#endif")
 }
 
 func main() {
