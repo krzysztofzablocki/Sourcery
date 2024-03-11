@@ -79,6 +79,7 @@ public final class Actor: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string.append(", ")
@@ -97,6 +98,8 @@ public final class Actor: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(super.hash)
@@ -229,6 +232,7 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string.append("name = \\(String(describing: self.name)), ")
@@ -249,6 +253,8 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -463,6 +469,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -543,6 +551,7 @@ public final class BytesRange: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string += "offset = \\(String(describing: self.offset)), "
@@ -561,6 +570,8 @@ public final class BytesRange: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.offset)
@@ -650,6 +661,7 @@ public final class Class: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string.append(", ")
@@ -668,6 +680,8 @@ public final class Class: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(super.hash)
@@ -1027,13 +1041,14 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "valueTypeName = \\(String(describing: self.valueTypeName)), "
-        string += "keyTypeName = \\(String(describing: self.keyTypeName)), "
-        string += "asGeneric = \\(String(describing: self.asGeneric)), "
-        string += "asSource = \\(String(describing: self.asSource))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("valueTypeName = \\(String(describing: self.valueTypeName)), ")
+        string.append("keyTypeName = \\(String(describing: self.keyTypeName)), ")
+        string.append("asGeneric = \\(String(describing: self.asGeneric)), ")
+        string.append("asSource = \\(String(describing: self.asSource))")
         return string
     }
 
@@ -1049,6 +1064,8 @@ public final class DictionaryType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -1169,6 +1186,8 @@ public class DiffableResult: NSObject, AutoEquatable {
 
     var isEmpty: Bool { return results.isEmpty }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.identifier)
@@ -1645,18 +1664,19 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "path = \\(String(describing: self.path)), "
-        string += "module = \\(String(describing: self.module)), "
-        string += "types = \\(String(describing: self.types)), "
-        string += "functions = \\(String(describing: self.functions)), "
-        string += "typealiases = \\(String(describing: self.typealiases)), "
-        string += "inlineRanges = \\(String(describing: self.inlineRanges)), "
-        string += "inlineIndentations = \\(String(describing: self.inlineIndentations)), "
-        string += "modifiedDate = \\(String(describing: self.modifiedDate)), "
-        string += "sourceryVersion = \\(String(describing: self.sourceryVersion)), "
-        string += "isEmpty = \\(String(describing: self.isEmpty))"
+        string.append("path = \\(String(describing: self.path)), ")
+        string.append("module = \\(String(describing: self.module)), ")
+        string.append("types = \\(String(describing: self.types)), ")
+        string.append("functions = \\(String(describing: self.functions)), ")
+        string.append("typealiases = \\(String(describing: self.typealiases)), ")
+        string.append("inlineRanges = \\(String(describing: self.inlineRanges)), ")
+        string.append("inlineIndentations = \\(String(describing: self.inlineIndentations)), ")
+        string.append("modifiedDate = \\(String(describing: self.modifiedDate)), ")
+        string.append("sourceryVersion = \\(String(describing: self.sourceryVersion)), ")
+        string.append("isEmpty = \\(String(describing: self.isEmpty))")
         return string
     }
 
@@ -1678,6 +1698,8 @@ public final class FileParserResult: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.path)
@@ -1816,6 +1838,8 @@ public final class GenericType: NSObject, SourceryModelWithoutDescription, Diffa
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -1913,6 +1937,8 @@ public class Import: NSObject, SourceryModelWithoutDescription, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.kind)
@@ -2071,6 +2097,8 @@ public class Modifier: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJS
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -2801,6 +2829,7 @@ public final class Protocol: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string.append(", ")
@@ -2820,6 +2849,8 @@ public final class Protocol: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.associatedTypes)
@@ -2916,6 +2947,7 @@ public final class ProtocolComposition: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string += ", "
@@ -2935,6 +2967,8 @@ public final class ProtocolComposition: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.composedTypeNames)
@@ -3012,6 +3046,7 @@ public final class SetType: NSObject, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string.append("name = \\(String(describing: self.name)), ")
@@ -3032,6 +3067,8 @@ public final class SetType: NSObject, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -3138,6 +3175,7 @@ public final class Struct: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
         string += ", "
@@ -3155,6 +3193,8 @@ public final class Struct: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(super.hash)
@@ -3258,13 +3298,14 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "parserResult = \\(String(describing: self.parserResult)), "
-        string += "functions = \\(String(describing: self.functions)), "
-        string += "types = \\(String(describing: self.types)), "
-        string += "argument = \\(String(describing: self.argument)), "
-        string += "stencilContext = \\(String(describing: self.stencilContext))"
+        string.append("parserResult = \\(String(describing: self.parserResult)), ")
+        string.append("functions = \\(String(describing: self.functions)), ")
+        string.append("types = \\(String(describing: self.types)), ")
+        string.append("argument = \\(String(describing: self.argument)), ")
+        string.append("stencilContext = \\(String(describing: self.stencilContext))")
         return string
     }
 
@@ -3281,6 +3322,8 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.parserResult)
@@ -3390,6 +3433,7 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
         string.append("aliasName = \\(String(describing: self.aliasName)), ")
@@ -3419,6 +3463,8 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.aliasName)
@@ -3567,10 +3613,11 @@ public final class AssociatedType: NSObject, SourceryModel, DynamicMemberLookup 
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("typeName = \\(String(describing: self.typeName))")
         return string
     }
 
@@ -3585,6 +3632,8 @@ public final class AssociatedType: NSObject, SourceryModel, DynamicMemberLookup 
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -3691,13 +3740,14 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "localName = \\(String(describing: self.localName)), "
-        string += "externalName = \\(String(describing: self.externalName)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations))"
+        string.append("localName = \\(String(describing: self.localName)), ")
+        string.append("externalName = \\(String(describing: self.externalName)), ")
+        string.append("typeName = \\(String(describing: self.typeName)), ")
+        string.append("defaultValue = \\(String(describing: self.defaultValue)), ")
+        string.append("annotations = \\(String(describing: self.annotations))")
         return string
     }
 
@@ -3715,6 +3765,8 @@ public final class AssociatedValue: NSObject, SourceryModel, AutoDescription, Ty
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.localName)
@@ -3862,6 +3914,8 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, 
         return (labels.nilIfEmpty ?? "_") + typeSuffix
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.argumentLabel)
@@ -3875,16 +3929,17 @@ public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, 
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "`inout` = \\(String(describing: self.`inout`)), "
-        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "asSource = \\(String(describing: self.asSource))"
+        string.append("argumentLabel = \\(String(describing: self.argumentLabel)), ")
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("typeName = \\(String(describing: self.typeName)), ")
+        string.append("`inout` = \\(String(describing: self.`inout`)), ")
+        string.append("typeAttributes = \\(String(describing: self.typeAttributes)), ")
+        string.append("defaultValue = \\(String(describing: self.defaultValue)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("asSource = \\(String(describing: self.asSource))")
         return string
     }
 
@@ -4050,17 +4105,18 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, DynamicMember
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
-        string += "isAsync = \\(String(describing: self.isAsync)), "
-        string += "asyncKeyword = \\(String(describing: self.asyncKeyword)), "
-        string += "`throws` = \\(String(describing: self.`throws`)), "
-        string += "throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), "
-        string += "asSource = \\(String(describing: self.asSource))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("parameters = \\(String(describing: self.parameters)), ")
+        string.append("returnTypeName = \\(String(describing: self.returnTypeName)), ")
+        string.append("actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), ")
+        string.append("isAsync = \\(String(describing: self.isAsync)), ")
+        string.append("asyncKeyword = \\(String(describing: self.asyncKeyword)), ")
+        string.append("`throws` = \\(String(describing: self.`throws`)), ")
+        string.append("throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), ")
+        string.append("asSource = \\(String(describing: self.asSource))")
         return string
     }
 
@@ -4080,6 +4136,8 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, DynamicMember
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -4248,15 +4306,16 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "rawValue = \\(String(describing: self.rawValue)), "
-        string += "associatedValues = \\(String(describing: self.associatedValues)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "indirect = \\(String(describing: self.indirect)), "
-        string += "hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("rawValue = \\(String(describing: self.rawValue)), ")
+        string.append("associatedValues = \\(String(describing: self.associatedValues)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("documentation = \\(String(describing: self.documentation)), ")
+        string.append("indirect = \\(String(describing: self.indirect)), ")
+        string.append("hasAssociatedValue = \\(String(describing: self.hasAssociatedValue))")
         return string
     }
 
@@ -4275,6 +4334,8 @@ public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -4449,12 +4510,13 @@ public final class Enum: Type {
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = super.description
-        string += ", "
-        string += "cases = \\(String(describing: self.cases)), "
-        string += "rawTypeName = \\(String(describing: self.rawTypeName)), "
-        string += "hasAssociatedValues = \\(String(describing: self.hasAssociatedValues))"
+        string.append(", ")
+        string.append("cases = \\(String(describing: self.cases)), ")
+        string.append("rawTypeName = \\(String(describing: self.rawTypeName)), ")
+        string.append("hasAssociatedValues = \\(String(describing: self.hasAssociatedValues))")
         return string
     }
 
@@ -4470,6 +4532,8 @@ public final class Enum: Type {
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.cases)
@@ -4546,10 +4610,11 @@ public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicM
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "inheritedTypeName = \\(String(describing: self.inheritedTypeName))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("inheritedTypeName = \\(String(describing: self.inheritedTypeName))")
         return string
     }
 
@@ -4564,6 +4629,8 @@ public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicM
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -4656,12 +4723,13 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable, DynamicMembe
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "leftType = \\(String(describing: self.leftType)), "
-        string += "rightType = \\(String(describing: self.rightType)), "
-        string += "relationship = \\(String(describing: self.relationship)), "
-        string += "relationshipSyntax = \\(String(describing: self.relationshipSyntax))"
+        string.append("leftType = \\(String(describing: self.leftType)), ")
+        string.append("rightType = \\(String(describing: self.rightType)), ")
+        string.append("relationship = \\(String(describing: self.relationship)), ")
+        string.append("relationshipSyntax = \\(String(describing: self.relationshipSyntax))")
         return string
     }
 
@@ -4678,6 +4746,8 @@ public class GenericRequirement: NSObject, SourceryModel, Diffable, DynamicMembe
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.leftType)
@@ -4771,9 +4841,10 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable, Dyna
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "typeName = \\(String(describing: self.typeName))"
+        string.append("typeName = \\(String(describing: self.typeName))")
         return string
     }
 
@@ -4787,6 +4858,8 @@ public final class GenericTypeParameter: NSObject, SourceryModel, Diffable, Dyna
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.typeName)
@@ -4921,17 +4994,18 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "argumentLabel = \\(String(describing: self.argumentLabel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "`inout` = \\(String(describing: self.`inout`)), "
-        string += "isVariadic = \\(String(describing: self.isVariadic)), "
-        string += "typeAttributes = \\(String(describing: self.typeAttributes)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "asSource = \\(String(describing: self.asSource))"
+        string.append("argumentLabel = \\(String(describing: self.argumentLabel)), ")
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("typeName = \\(String(describing: self.typeName)), ")
+        string.append("`inout` = \\(String(describing: self.`inout`)), ")
+        string.append("isVariadic = \\(String(describing: self.isVariadic)), ")
+        string.append("typeAttributes = \\(String(describing: self.typeAttributes)), ")
+        string.append("defaultValue = \\(String(describing: self.defaultValue)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("asSource = \\(String(describing: self.asSource))")
         return string
     }
 
@@ -4951,6 +5025,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.argumentLabel)
@@ -5283,25 +5359,26 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "selectorName = \\(String(describing: self.selectorName)), "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "isAsync = \\(String(describing: self.isAsync)), "
-        string += "`throws` = \\(String(describing: self.`throws`)), "
-        string += "`rethrows` = \\(String(describing: self.`rethrows`)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "isStatic = \\(String(describing: self.isStatic)), "
-        string += "isClass = \\(String(describing: self.isClass)), "
-        string += "isFailableInitializer = \\(String(describing: self.isFailableInitializer)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
-        string += "genericRequirements = \\(String(describing: self.genericRequirements))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("selectorName = \\(String(describing: self.selectorName)), ")
+        string.append("parameters = \\(String(describing: self.parameters)), ")
+        string.append("returnTypeName = \\(String(describing: self.returnTypeName)), ")
+        string.append("isAsync = \\(String(describing: self.isAsync)), ")
+        string.append("`throws` = \\(String(describing: self.`throws`)), ")
+        string.append("`rethrows` = \\(String(describing: self.`rethrows`)), ")
+        string.append("accessLevel = \\(String(describing: self.accessLevel)), ")
+        string.append("isStatic = \\(String(describing: self.isStatic)), ")
+        string.append("isClass = \\(String(describing: self.isClass)), ")
+        string.append("isFailableInitializer = \\(String(describing: self.isFailableInitializer)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("documentation = \\(String(describing: self.documentation)), ")
+        string.append("definedInTypeName = \\(String(describing: self.definedInTypeName)), ")
+        string.append("attributes = \\(String(describing: self.attributes)), ")
+        string.append("modifiers = \\(String(describing: self.modifiers))")
+        string.append("genericRequirements = \\(String(describing: self.genericRequirements))")
         return string
     }
 
@@ -5331,6 +5408,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -5685,26 +5764,27 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "parameters = \\(String(describing: self.parameters)), "
-        string += "returnTypeName = \\(String(describing: self.returnTypeName)), "
-        string += "actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), "
-        string += "isFinal = \\(String(describing: self.isFinal)), "
-        string += "readAccess = \\(String(describing: self.readAccess)), "
-        string += "writeAccess = \\(String(describing: self.writeAccess)), "
-        string += "isAsync = \\(String(describing: self.isAsync)), "
-        string += "`throws` = \\(String(describing: self.throws)), "
-        string += "isMutable = \\(String(describing: self.isMutable)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName)), "
-        string += "genericParameters = \\(String(describing: self.genericParameters)), "
-        string += "genericRequirements = \\(String(describing: self.genericRequirements)), "
-        string += "isGeneric = \\(String(describing: self.isGeneric)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers))"
+        string.append("parameters = \\(String(describing: self.parameters)), ")
+        string.append("returnTypeName = \\(String(describing: self.returnTypeName)), ")
+        string.append("actualReturnTypeName = \\(String(describing: self.actualReturnTypeName)), ")
+        string.append("isFinal = \\(String(describing: self.isFinal)), ")
+        string.append("readAccess = \\(String(describing: self.readAccess)), ")
+        string.append("writeAccess = \\(String(describing: self.writeAccess)), ")
+        string.append("isAsync = \\(String(describing: self.isAsync)), ")
+        string.append("`throws` = \\(String(describing: self.throws)), ")
+        string.append("isMutable = \\(String(describing: self.isMutable)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("documentation = \\(String(describing: self.documentation)), ")
+        string.append("definedInTypeName = \\(String(describing: self.definedInTypeName)), ")
+        string.append("actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName)), ")
+        string.append("genericParameters = \\(String(describing: self.genericParameters)), ")
+        string.append("genericRequirements = \\(String(describing: self.genericRequirements)), ")
+        string.append("isGeneric = \\(String(describing: self.isGeneric)), ")
+        string.append("attributes = \\(String(describing: self.attributes)), ")
+        string.append("modifiers = \\(String(describing: self.modifiers))")
         return string
     }
 
@@ -5730,6 +5810,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.parameters)
@@ -5897,10 +5979,11 @@ public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLo
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "elements = \\(String(describing: self.elements))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("elements = \\(String(describing: self.elements))")
         return string
     }
 
@@ -5915,6 +5998,8 @@ public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLo
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -5994,11 +6079,12 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, Dynam
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "asSource = \\(String(describing: self.asSource))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("typeName = \\(String(describing: self.typeName)), ")
+        string.append("asSource = \\(String(describing: self.asSource))")
         return string
     }
 
@@ -6013,6 +6099,8 @@ public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, Dynam
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -6288,6 +6376,8 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -6875,41 +6965,42 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "module = \\(String(describing: self.module)), "
-        string += "imports = \\(String(describing: self.imports)), "
-        string += "allImports = \\(String(describing: self.allImports)), "
-        string += "typealiases = \\(String(describing: self.typealiases)), "
-        string += "isExtension = \\(String(describing: self.isExtension)), "
-        string += "kind = \\(String(describing: self.kind)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "name = \\(String(describing: self.name)), "
-        string += "isUnknownExtension = \\(String(describing: self.isUnknownExtension)), "
-        string += "isGeneric = \\(String(describing: self.isGeneric)), "
-        string += "localName = \\(String(describing: self.localName)), "
-        string += "rawVariables = \\(String(describing: self.rawVariables)), "
-        string += "rawMethods = \\(String(describing: self.rawMethods)), "
-        string += "rawSubscripts = \\(String(describing: self.rawSubscripts)), "
-        string += "initializers = \\(String(describing: self.initializers)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "staticVariables = \\(String(describing: self.staticVariables)), "
-        string += "staticMethods = \\(String(describing: self.staticMethods)), "
-        string += "classMethods = \\(String(describing: self.classMethods)), "
-        string += "instanceVariables = \\(String(describing: self.instanceVariables)), "
-        string += "instanceMethods = \\(String(describing: self.instanceMethods)), "
-        string += "computedVariables = \\(String(describing: self.computedVariables)), "
-        string += "storedVariables = \\(String(describing: self.storedVariables)), "
-        string += "inheritedTypes = \\(String(describing: self.inheritedTypes)), "
-        string += "inherits = \\(String(describing: self.inherits)), "
-        string += "containedTypes = \\(String(describing: self.containedTypes)), "
-        string += "parentName = \\(String(describing: self.parentName)), "
-        string += "parentTypes = \\(String(describing: self.parentTypes)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers)), "
-        string += "fileName = \\(String(describing: self.fileName)), "
-        string += "genericRequirements = \\(String(describing: self.genericRequirements))"
+        string.append("module = \\(String(describing: self.module)), ")
+        string.append("imports = \\(String(describing: self.imports)), ")
+        string.append("allImports = \\(String(describing: self.allImports)), ")
+        string.append("typealiases = \\(String(describing: self.typealiases)), ")
+        string.append("isExtension = \\(String(describing: self.isExtension)), ")
+        string.append("kind = \\(String(describing: self.kind)), ")
+        string.append("accessLevel = \\(String(describing: self.accessLevel)), ")
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("isUnknownExtension = \\(String(describing: self.isUnknownExtension)), ")
+        string.append("isGeneric = \\(String(describing: self.isGeneric)), ")
+        string.append("localName = \\(String(describing: self.localName)), ")
+        string.append("rawVariables = \\(String(describing: self.rawVariables)), ")
+        string.append("rawMethods = \\(String(describing: self.rawMethods)), ")
+        string.append("rawSubscripts = \\(String(describing: self.rawSubscripts)), ")
+        string.append("initializers = \\(String(describing: self.initializers)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("documentation = \\(String(describing: self.documentation)), ")
+        string.append("staticVariables = \\(String(describing: self.staticVariables)), ")
+        string.append("staticMethods = \\(String(describing: self.staticMethods)), ")
+        string.append("classMethods = \\(String(describing: self.classMethods)), ")
+        string.append("instanceVariables = \\(String(describing: self.instanceVariables)), ")
+        string.append("instanceMethods = \\(String(describing: self.instanceMethods)), ")
+        string.append("computedVariables = \\(String(describing: self.computedVariables)), ")
+        string.append("storedVariables = \\(String(describing: self.storedVariables)), ")
+        string.append("inheritedTypes = \\(String(describing: self.inheritedTypes)), ")
+        string.append("inherits = \\(String(describing: self.inherits)), ")
+        string.append("containedTypes = \\(String(describing: self.containedTypes)), ")
+        string.append("parentName = \\(String(describing: self.parentName)), ")
+        string.append("parentTypes = \\(String(describing: self.parentTypes)), ")
+        string.append("attributes = \\(String(describing: self.attributes)), ")
+        string.append("modifiers = \\(String(describing: self.modifiers)), ")
+        string.append("fileName = \\(String(describing: self.fileName)), ")
+        string.append("genericRequirements = \\(String(describing: self.genericRequirements))")
         return string
     }
 
@@ -6943,6 +7034,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Dyn
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.module)
@@ -7315,10 +7408,11 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "types = \\(String(describing: self.types)), "
-        string += "typealiases = \\(String(describing: self.typealiases))"
+        string.append("types = \\(String(describing: self.types)), ")
+        string.append("typealiases = \\(String(describing: self.typealiases))")
         return string
     }
 
@@ -7333,6 +7427,8 @@ public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.types)
@@ -7637,28 +7733,29 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
     }
 
     /// :nodoc:
+    // sourcery: skipJSExport
     override public var description: String {
         var string = "\\(Swift.type(of: self)): "
-        string += "name = \\(String(describing: self.name)), "
-        string += "typeName = \\(String(describing: self.typeName)), "
-        string += "isComputed = \\(String(describing: self.isComputed)), "
-        string += "isAsync = \\(String(describing: self.isAsync)), "
-        string += "`throws` = \\(String(describing: self.`throws`)), "
-        string += "isStatic = \\(String(describing: self.isStatic)), "
-        string += "readAccess = \\(String(describing: self.readAccess)), "
-        string += "writeAccess = \\(String(describing: self.writeAccess)), "
-        string += "accessLevel = \\(String(describing: self.accessLevel)), "
-        string += "isMutable = \\(String(describing: self.isMutable)), "
-        string += "defaultValue = \\(String(describing: self.defaultValue)), "
-        string += "annotations = \\(String(describing: self.annotations)), "
-        string += "documentation = \\(String(describing: self.documentation)), "
-        string += "attributes = \\(String(describing: self.attributes)), "
-        string += "modifiers = \\(String(describing: self.modifiers)), "
-        string += "isFinal = \\(String(describing: self.isFinal)), "
-        string += "isLazy = \\(String(describing: self.isLazy)), "
-        string += "isDynamic = \\(String(describing: self.isDynamic)), "
-        string += "definedInTypeName = \\(String(describing: self.definedInTypeName)), "
-        string += "actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName))"
+        string.append("name = \\(String(describing: self.name)), ")
+        string.append("typeName = \\(String(describing: self.typeName)), ")
+        string.append("isComputed = \\(String(describing: self.isComputed)), ")
+        string.append("isAsync = \\(String(describing: self.isAsync)), ")
+        string.append("`throws` = \\(String(describing: self.`throws`)), ")
+        string.append("isStatic = \\(String(describing: self.isStatic)), ")
+        string.append("readAccess = \\(String(describing: self.readAccess)), ")
+        string.append("writeAccess = \\(String(describing: self.writeAccess)), ")
+        string.append("accessLevel = \\(String(describing: self.accessLevel)), ")
+        string.append("isMutable = \\(String(describing: self.isMutable)), ")
+        string.append("defaultValue = \\(String(describing: self.defaultValue)), ")
+        string.append("annotations = \\(String(describing: self.annotations)), ")
+        string.append("documentation = \\(String(describing: self.documentation)), ")
+        string.append("attributes = \\(String(describing: self.attributes)), ")
+        string.append("modifiers = \\(String(describing: self.modifiers)), ")
+        string.append("isFinal = \\(String(describing: self.isFinal)), ")
+        string.append("isLazy = \\(String(describing: self.isLazy)), ")
+        string.append("isDynamic = \\(String(describing: self.isDynamic)), ")
+        string.append("definedInTypeName = \\(String(describing: self.definedInTypeName)), ")
+        string.append("actualDefinedInTypeName = \\(String(describing: self.actualDefinedInTypeName))")
         return string
     }
 
@@ -7685,6 +7782,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         return results
     }
 
+    /// :nodoc:
+    // sourcery: skipJSExport
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
@@ -7940,8 +8039,6 @@ import JavaScriptCore
 @objc protocol ActorAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -7995,8 +8092,6 @@ extension Actor: ActorAutoJSExport {}
     var elementType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension ArrayType: ArrayTypeAutoJSExport {}
@@ -8005,8 +8100,6 @@ extension ArrayType: ArrayTypeAutoJSExport {}
     var name: String { get }
     var typeName: TypeName? { get }
     var type: Type? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension AssociatedType: AssociatedTypeAutoJSExport {}
@@ -8018,8 +8111,6 @@ extension AssociatedType: AssociatedTypeAutoJSExport {}
     var type: Type? { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -8032,7 +8123,6 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
     var arguments: [String: NSObject] { get }
     var asSource: String { get }
     var description: String { get }
-    var hash: Int { get }
 }
 
 extension Attribute: AttributeAutoJSExport {}
@@ -8040,8 +8130,6 @@ extension Attribute: AttributeAutoJSExport {}
 @objc protocol BytesRangeAutoJSExport: JSExport {
     var offset: Int64 { get }
     var length: Int64 { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension BytesRange: BytesRangeAutoJSExport {}
@@ -8049,8 +8137,6 @@ extension BytesRange: BytesRangeAutoJSExport {}
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -8109,8 +8195,6 @@ extension Class: ClassAutoJSExport {}
     var defaultValue: String? { get }
     var annotations: Annotations { get }
     var asSource: String { get }
-    var hash: Int { get }
-    var description: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -8132,8 +8216,6 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension ClosureType: ClosureTypeAutoJSExport {}
@@ -8146,8 +8228,6 @@ extension ClosureType: ClosureTypeAutoJSExport {}
     var keyType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension DictionaryType: DictionaryTypeAutoJSExport {}
@@ -8160,8 +8240,6 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawType: Type? { get }
     var based: [String: String] { get }
     var hasAssociatedValues: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -8216,8 +8294,6 @@ extension Enum: EnumAutoJSExport {}
     var documentation: Documentation { get }
     var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension EnumCase: EnumCaseAutoJSExport {}
@@ -8226,8 +8302,6 @@ extension EnumCase: EnumCaseAutoJSExport {}
 @objc protocol GenericParameterAutoJSExport: JSExport {
     var name: String { get }
     var inheritedTypeName: TypeName? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericParameter: GenericParameterAutoJSExport {}
@@ -8237,8 +8311,6 @@ extension GenericParameter: GenericParameterAutoJSExport {}
     var rightType: GenericTypeParameter { get }
     var relationship: String { get }
     var relationshipSyntax: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericRequirement: GenericRequirementAutoJSExport {}
@@ -8248,7 +8320,6 @@ extension GenericRequirement: GenericRequirementAutoJSExport {}
     var typeParameters: [GenericTypeParameter] { get }
     var asSource: String { get }
     var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericType: GenericTypeAutoJSExport {}
@@ -8256,8 +8327,6 @@ extension GenericType: GenericTypeAutoJSExport {}
 @objc protocol GenericTypeParameterAutoJSExport: JSExport {
     var typeName: TypeName { get }
     var type: Type? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
@@ -8267,7 +8336,6 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var path: String { get }
     var description: String { get }
     var moduleName: String { get }
-    var hash: Int { get }
 }
 
 extension Import: ImportAutoJSExport {}
@@ -8309,8 +8377,6 @@ extension Import: ImportAutoJSExport {}
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var genericRequirements: [GenericRequirement] { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -8326,8 +8392,6 @@ extension Method: MethodAutoJSExport {}
     var defaultValue: String? { get }
     var annotations: Annotations { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -8339,7 +8403,6 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var detail: String? { get }
     var asSource: String { get }
-    var hash: Int { get }
 }
 
 extension Modifier: ModifierAutoJSExport {}
@@ -8348,8 +8411,6 @@ extension Modifier: ModifierAutoJSExport {}
     var kind: String { get }
     var associatedTypes: [String: AssociatedType] { get }
     var genericRequirements: [GenericRequirement] { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -8400,8 +8461,6 @@ extension Protocol: ProtocolAutoJSExport {}
     var kind: String { get }
     var composedTypeNames: [TypeName] { get }
     var composedTypes: [Type]? { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -8455,8 +8514,6 @@ extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
     var elementType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension SetType: SetTypeAutoJSExport {}
@@ -8465,8 +8522,6 @@ extension SetType: SetTypeAutoJSExport {}
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -8538,8 +8593,6 @@ extension Struct: StructAutoJSExport {}
     var genericParameters: [GenericParameter] { get }
     var genericRequirements: [GenericRequirement] { get }
     var isGeneric: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension Subscript: SubscriptAutoJSExport {}
@@ -8550,8 +8603,6 @@ extension Subscript: SubscriptAutoJSExport {}
     var argument: [String: NSObject] { get }
     var type: [String: Type] { get }
     var stencilContext: [String: Any] { get }
-    var description: String { get }
-    var hash: Int { get }
     var jsContext: [String: Any] { get }
 }
 
@@ -8562,8 +8613,6 @@ extension TemplateContext: TemplateContextAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -8574,8 +8623,6 @@ extension TupleElement: TupleElementAutoJSExport {}
 @objc protocol TupleTypeAutoJSExport: JSExport {
     var name: String { get }
     var elements: [TupleElement] { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension TupleType: TupleTypeAutoJSExport {}
@@ -8625,8 +8672,6 @@ extension TupleType: TupleTypeAutoJSExport {}
     var modifiers: [SourceryModifier] { get }
     var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension Type: TypeAutoJSExport {}
@@ -8655,7 +8700,6 @@ extension Type: TypeAutoJSExport {}
     var set: SetType? { get }
     var asSource: String { get }
     var description: String { get }
-    var hash: Int { get }
     var debugDescription: String { get }
 }
 
@@ -8672,8 +8716,6 @@ extension TypeName: TypeNameAutoJSExport {}
     var accessLevel: String { get }
     var parentName: String? { get }
     var name: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -8709,8 +8751,6 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }

@@ -56,8 +56,8 @@ def build_framework(fat_library)
   print_info "Building project (fat: #{fat_library})"
 
   # Prepare the export directory
-  sh %Q(rm -fr #{CLI_DIR})
-  sh %Q(mkdir -p "#{CLI_DIR}bin")
+  #sh %Q(rm -fr #{CLI_DIR})
+  #sh %Q(mkdir -p "#{CLI_DIR}bin")
   output_path="#{CLI_DIR}bin/sourcery"
 
   if fat_library
@@ -72,7 +72,7 @@ def build_framework(fat_library)
 
   # Export the build products and clean up
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
-  sh %Q(rm -fr #{BUILD_DIR})
+  #sh %Q(rm -fr #{BUILD_DIR})
 end
 
 task :build do
@@ -92,7 +92,7 @@ task :run_sourcery do
 end
 
 desc "Update internal boilerplate code"
-task :generate_internal_boilerplate_code => [:build, :run_sourcery, :clean] do
+task :generate_internal_boilerplate_code => [:build, :run_sourcery] do
   sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/macOS,SourceryRuntime/Sources/Generated\" \"true\" > \"SourcerySwift/Sources/SourceryRuntime.content.generated.swift\""
   sh "Scripts/package_content \"SourceryRuntime/Sources/Common,SourceryRuntime/Sources/Linux,SourceryRuntime/Sources/Generated\" \"false\" > \"SourcerySwift/Sources/SourceryRuntime_Linux.content.generated.swift\""
   generated_files = `git status --porcelain`

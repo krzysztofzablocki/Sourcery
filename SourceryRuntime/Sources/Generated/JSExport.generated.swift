@@ -8,8 +8,6 @@ import JavaScriptCore
 @objc protocol ActorAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -63,8 +61,6 @@ extension Actor: ActorAutoJSExport {}
     var elementType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension ArrayType: ArrayTypeAutoJSExport {}
@@ -73,8 +69,6 @@ extension ArrayType: ArrayTypeAutoJSExport {}
     var name: String { get }
     var typeName: TypeName? { get }
     var type: Type? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension AssociatedType: AssociatedTypeAutoJSExport {}
@@ -86,8 +80,6 @@ extension AssociatedType: AssociatedTypeAutoJSExport {}
     var type: Type? { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -100,7 +92,6 @@ extension AssociatedValue: AssociatedValueAutoJSExport {}
     var arguments: [String: NSObject] { get }
     var asSource: String { get }
     var description: String { get }
-    var hash: Int { get }
 }
 
 extension Attribute: AttributeAutoJSExport {}
@@ -108,8 +99,6 @@ extension Attribute: AttributeAutoJSExport {}
 @objc protocol BytesRangeAutoJSExport: JSExport {
     var offset: Int64 { get }
     var length: Int64 { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension BytesRange: BytesRangeAutoJSExport {}
@@ -117,8 +106,6 @@ extension BytesRange: BytesRangeAutoJSExport {}
 @objc protocol ClassAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -177,8 +164,6 @@ extension Class: ClassAutoJSExport {}
     var defaultValue: String? { get }
     var annotations: Annotations { get }
     var asSource: String { get }
-    var hash: Int { get }
-    var description: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -200,8 +185,6 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension ClosureType: ClosureTypeAutoJSExport {}
@@ -214,8 +197,6 @@ extension ClosureType: ClosureTypeAutoJSExport {}
     var keyType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension DictionaryType: DictionaryTypeAutoJSExport {}
@@ -228,8 +209,6 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var rawType: Type? { get }
     var based: [String: String] { get }
     var hasAssociatedValues: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -284,8 +263,6 @@ extension Enum: EnumAutoJSExport {}
     var documentation: Documentation { get }
     var indirect: Bool { get }
     var hasAssociatedValue: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension EnumCase: EnumCaseAutoJSExport {}
@@ -294,8 +271,6 @@ extension EnumCase: EnumCaseAutoJSExport {}
 @objc protocol GenericParameterAutoJSExport: JSExport {
     var name: String { get }
     var inheritedTypeName: TypeName? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericParameter: GenericParameterAutoJSExport {}
@@ -305,8 +280,6 @@ extension GenericParameter: GenericParameterAutoJSExport {}
     var rightType: GenericTypeParameter { get }
     var relationship: String { get }
     var relationshipSyntax: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericRequirement: GenericRequirementAutoJSExport {}
@@ -316,7 +289,6 @@ extension GenericRequirement: GenericRequirementAutoJSExport {}
     var typeParameters: [GenericTypeParameter] { get }
     var asSource: String { get }
     var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericType: GenericTypeAutoJSExport {}
@@ -324,8 +296,6 @@ extension GenericType: GenericTypeAutoJSExport {}
 @objc protocol GenericTypeParameterAutoJSExport: JSExport {
     var typeName: TypeName { get }
     var type: Type? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
@@ -335,7 +305,6 @@ extension GenericTypeParameter: GenericTypeParameterAutoJSExport {}
     var path: String { get }
     var description: String { get }
     var moduleName: String { get }
-    var hash: Int { get }
 }
 
 extension Import: ImportAutoJSExport {}
@@ -377,8 +346,6 @@ extension Import: ImportAutoJSExport {}
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var genericRequirements: [GenericRequirement] { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -394,8 +361,6 @@ extension Method: MethodAutoJSExport {}
     var defaultValue: String? { get }
     var annotations: Annotations { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -407,7 +372,6 @@ extension MethodParameter: MethodParameterAutoJSExport {}
     var name: String { get }
     var detail: String? { get }
     var asSource: String { get }
-    var hash: Int { get }
 }
 
 extension Modifier: ModifierAutoJSExport {}
@@ -416,8 +380,6 @@ extension Modifier: ModifierAutoJSExport {}
     var kind: String { get }
     var associatedTypes: [String: AssociatedType] { get }
     var genericRequirements: [GenericRequirement] { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -468,8 +430,6 @@ extension Protocol: ProtocolAutoJSExport {}
     var kind: String { get }
     var composedTypeNames: [TypeName] { get }
     var composedTypes: [Type]? { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -523,8 +483,6 @@ extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
     var elementType: Type? { get }
     var asGeneric: GenericType { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension SetType: SetTypeAutoJSExport {}
@@ -533,8 +491,6 @@ extension SetType: SetTypeAutoJSExport {}
 
 @objc protocol StructAutoJSExport: JSExport {
     var kind: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -606,8 +562,6 @@ extension Struct: StructAutoJSExport {}
     var genericParameters: [GenericParameter] { get }
     var genericRequirements: [GenericRequirement] { get }
     var isGeneric: Bool { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension Subscript: SubscriptAutoJSExport {}
@@ -618,8 +572,6 @@ extension Subscript: SubscriptAutoJSExport {}
     var argument: [String: NSObject] { get }
     var type: [String: Type] { get }
     var stencilContext: [String: Any] { get }
-    var description: String { get }
-    var hash: Int { get }
     var jsContext: [String: Any] { get }
 }
 
@@ -630,8 +582,6 @@ extension TemplateContext: TemplateContextAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var asSource: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -642,8 +592,6 @@ extension TupleElement: TupleElementAutoJSExport {}
 @objc protocol TupleTypeAutoJSExport: JSExport {
     var name: String { get }
     var elements: [TupleElement] { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension TupleType: TupleTypeAutoJSExport {}
@@ -693,8 +641,6 @@ extension TupleType: TupleTypeAutoJSExport {}
     var modifiers: [SourceryModifier] { get }
     var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
-    var description: String { get }
-    var hash: Int { get }
 }
 
 extension Type: TypeAutoJSExport {}
@@ -723,7 +669,6 @@ extension Type: TypeAutoJSExport {}
     var set: SetType? { get }
     var asSource: String { get }
     var description: String { get }
-    var hash: Int { get }
     var debugDescription: String { get }
 }
 
@@ -740,8 +685,6 @@ extension TypeName: TypeNameAutoJSExport {}
     var accessLevel: String { get }
     var parentName: String? { get }
     var name: String { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
@@ -777,8 +720,6 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
-    var description: String { get }
-    var hash: Int { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
     var unwrappedTypeName: String { get }
