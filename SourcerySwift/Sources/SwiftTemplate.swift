@@ -242,7 +242,7 @@ open class SwiftTemplate {
             "swift",
             "build",
             "-c", "release",
-            "-Onone",
+            "-Xswiftc", "-Onone",
             "-Xswiftc", "-suppress-warnings",
             "--disable-sandbox"
         ]
@@ -251,7 +251,7 @@ open class SwiftTemplate {
             "swift",
             "build",
             "-c", "release",
-            "-Onone",
+            "-Xswiftc", "-Onone",
             "-Xswiftc", "-suppress-warnings",
             "--disable-sandbox"
         ]
