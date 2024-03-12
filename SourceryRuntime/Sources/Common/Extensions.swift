@@ -189,37 +189,29 @@ public extension String {
             defer {
                 i = self.index(i, offsetBy: offset)
             }
-            var currentlyScannedEnd: Index = self.endIndex
-            if let endIndex = self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) {
-                currentlyScannedEnd = endIndex
-            }
-            let currentlyScanned: String = String(self[i..<currentlyScannedEnd])
-            if let openString = between.open.first(where: { self[i...].starts(with: $0) }) {
-                if !((boundingCharactersCount == 0) as Bool && (String(self[i]) == delimiter) as Bool) {
+            let currentlyScanned = self[i..<(self.index(i, offsetBy: delimiter.count, limitedBy: self.endIndex) ?? self.endIndex)]
+            if let openString = between.open.first(where: { String(self[i...]).starts(with: $0) }) {
+                if !(boundingCharactersCount == 0 && String(self[i]) == delimiter) {
                     boundingCharactersCount += 1
                 }
                 offset = openString.count
-            } else if let closeString = between.close.first(where: { self[i...].starts(with: $0) }) {
+            } else if let closeString = between.close.first(where: { String(self[i...]).starts(with: $0) }) {
                 // do not count `->`
-                if !((self[i] == ">") as Bool && (item.last == "-") as Bool) {
+                if !(self[i] == ">" && item.last == "-") {
                     boundingCharactersCount = max(0, boundingCharactersCount - 1)
                 }
                 offset = closeString.count
             }
-            if (self[i] == "\"") as Bool {
+            if self[i] == "\"" {
                 quotesCount += 1
             }
 
-            let currentIsDelimiter = (currentlyScanned == delimiter) as Bool
-            let boundingCountIsZero = (boundingCharactersCount == 0) as Bool
-            let hasEvenQuotes = (quotesCount % 2 == 0) as Bool
-            if currentIsDelimiter && boundingCountIsZero && hasEvenQuotes {
+            if currentlyScanned == delimiter && boundingCharactersCount == 0 && quotesCount % 2 == 0 {
                 items.append(item)
                 item = ""
                 i = self.index(i, offsetBy: delimiter.count - 1)
             } else {
-                let endIndex: Index = self.index(i, offsetBy: offset)
-                item += self[i..<endIndex]
+                item += self[i..<self.index(i, offsetBy: offset)]
             }
         }
         items.append(item)
