@@ -10,6 +10,7 @@ import Stencil
 #else
 // This is not supposed to work at all, since in Stencil there is a protocol conformance check against `DynamicMemberLookup`,
 // and, of course, a substitute with the "same name" but in `Sourcery` will never satisfy that check.
+// Here, we are just mimicking `Stencil.DynamicMemberLookup` to showcase what is happening within the `Sourcery` during runtime.
 
 /// Marker protocol so we can know which types support `@dynamicMemberLookup`. Add this to your own types that support
 /// lookup by String.
