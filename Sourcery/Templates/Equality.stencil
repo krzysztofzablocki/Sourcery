@@ -1,0 +1,31 @@
+// swiftlint:disable vertical_whitespace
+
+
+{% for type in types.implementing.AutoEquatable|class %}
+extension {{ type.name }} {
+    /// :nodoc:
+    {{ type.accessLevel }} override func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? {{ type.name }} else { return false }
+        {% for variable in type.storedVariables|!annotated:"skipEquality" %}if self.{{ variable.name }} != rhs.{{ variable.name }} { return false }
+        {% endfor %}
+        {% for variable in type.computedVariables|annotated:"forceEquality" %}if self.{{ variable.name }} != rhs.{{ variable.name }} { return false }
+        {% endfor %}
+        {% if type.inheritedTypes.first == "NSObject" %}return true{% else %}return super.isEqual(rhs){% endif %}
+    }
+}
+{% endfor %}
+
+{% for type in types.implementing.AutoEquatable|class %}
+// MARK: - {{ type.name }} AutoHashable
+extension {{ type.name }} {
+    {{ type.accessLevel }} override var hash: Int {
+        var hasher = Hasher()
+        {% for variable in type.storedVariables|!annotated:"skipEquality" %}hasher.combine(self.{{ variable.name }})
+        {% endfor %}
+        {% for variable in type.computedVariables|annotated:"forceEquality" %}hasher.combine({{ variable.name }})
+        {% endfor %}
+        {% if not type.inheritedTypes.first == "NSObject" %}hasher.combine(super.hash){% endif %}
+        return hasher.finalize()
+    }
+}
+{% endfor %}

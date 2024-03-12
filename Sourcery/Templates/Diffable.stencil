@@ -1,0 +1,16 @@
+import Foundation
+
+{% for type in types.implementing.AutoDiffable|!protocol|!annotated:"skipDiffing" %}
+extension {{ type.name }}{% if not type.supertype.implements.AutoDiffable %}: Diffable{% endif %} {
+    {% if type.based.Type %}override {% else %}@objc {% endif %}public func diffAgainst(_ object: Any?) -> DiffableResult {
+        let results = DiffableResult()
+        guard let castObject = object as? {{ type.name }} else {
+            results.append("Incorrect type <expected: {{ type.name }}, received: \(Swift.type(of: object))>")
+            return results
+        }
+        {% for variable in type.storedVariables|!annotated:"skipEquality" %}results.append(contentsOf: DiffableResult(identifier: "{{ variable.name }}").trackDifference(actual: self.{{ variable.name }}, expected: castObject.{{ variable.name }}))
+        {% endfor %}
+        {% if type.supertype.implements.AutoDiffable %}results.append(contentsOf: super.diffAgainst(castObject))
+        return results{% else %}return results{% endif %}
+    }
+}{% endfor %}
