@@ -88,29 +88,33 @@ internal struct ParserResultsComposed {
         /// Resolve actual names of extensions, as they could have been done on typealias and note updated child names in uniques if needed
         parsedTypes
             .filter { $0.isExtension }
-            .forEach { (type: Type) in
-                let oldName = type.globalName
+            .forEach {
+                let oldName = $0.globalName
 
-                let hasDotInLocalName = type.localName.contains(".") as Bool
-                if let _ = type.parent, hasDotInLocalName {
-                    resolveExtensionOfNestedType(type)
+                if $0.parent == nil, $0.localName.contains(".") {
+                    resolveExtensionOfNestedType($0)
                 }
 
-                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
-                    var moduleName: String = ""
-                    if let module = type.module {
-                        moduleName = "\(module)."
-                    }
-                    type.localName = resolved.replacingOccurrences(of: moduleName, with: "")
+                if let resolved = resolveGlobalName(for: oldName, containingType: $0.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                    $0.localName = resolved.replacingOccurrences(of: "\($0.module != nil ? "\($0.module!)." : "")", with: "")
                 } else {
                     return
                 }
 
                 // nothing left to do
-                guard oldName != type.globalName else {
+                guard oldName != $0.globalName else {
                     return
                 }
-                rewriteChildren(of: type)
+
+                // if it had contained types, they might have been fully defined and so their name has to be noted in uniques
+                func rewriteChildren(of type: Type) {
+                    // child is never an extension so no need to check
+                    for child in type.containedTypes {
+                        typeMap[child.globalName] = child
+                        rewriteChildren(of: child)
+                    }
+                }
+                rewriteChildren(of: $0)
             }
 
         // extend all types with their extensions
