@@ -143,17 +143,12 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         // TODO: TBR special treatment
         let specialTreatment: Bool = isOptional && name.hasPrefix("Optional<")
 
-//        let attributeValues: [Attribute] = attributes.flatMap { $0.value }
-//        let attributeValuesUnsorted: [String] = attributeValues.map { $0.asSource }
-//        var attributes: [String] = attributeValuesUnsorted.sorted()
-//        attributes.append(contentsOf: modifiers.map({ $0.asSource }))
-//        attributes.append(contentsOf: [specialTreatment ? name : unwrappedTypeName])
-//        var description = attributes.joined(separator: " ")
-        var description = (
-                   attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
-                   modifiers.map({ $0.asSource }) +
-                   [specialTreatment ? name : unwrappedTypeName]
-                 ).joined(separator: " ")
+        let attributeValues: [Attribute] = attributes.flatMap { $0.value }
+        let attributeValuesUnsorted: [String] = attributeValues.map { $0.asSource }
+        var attributes: [String] = attributeValuesUnsorted.sorted()
+        attributes.append(contentsOf: modifiers.map({ $0.asSource }))
+        attributes.append(contentsOf: [specialTreatment ? name : unwrappedTypeName])
+        var description = attributes.joined(separator: " ")
 
 //        if let _ = self.dictionary { // array and dictionary cases are covered by the unwrapped type name
 //            description.append(dictionary.asSource)
