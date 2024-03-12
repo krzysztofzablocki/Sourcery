@@ -4,13 +4,9 @@
 //
 #if !canImport(ObjectiveC)
 import Foundation
-// For DynamicMemberLookup we need to import Stencil,
-// however, this is different from SourceryRuntime.content.generated.swift, because
-// it cannot reference Stencil
-import Stencil
 
 /// Defines enum case
-public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable, Stencil.DynamicMemberLookup {
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable, DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":
