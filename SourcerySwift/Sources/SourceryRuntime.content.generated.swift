@@ -6790,8 +6790,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
         return results
     }
 
-    /// :nodoc:
-    // sourcery: skipJSExport
+    
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(self.name)
