@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Quick
 import Nimble
@@ -27,6 +27,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
+
 #if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(AssociatedValue(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -140,6 +141,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
+
 #if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(MethodParameter(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -196,6 +198,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
+
 #if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(TupleElement(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
@@ -309,6 +312,7 @@ class TypedSpec: QuickSpec {
                 let variable = result?.types.first?.variables.first
                 return variable?.typeName ?? TypeName(name: "")
             }
+
 #if canImport(ObjectiveC)
             it("can report optional via KVC") {
                 expect(Variable(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))

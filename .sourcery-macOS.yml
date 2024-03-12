@@ -1,0 +1,10 @@
+sources:
+ - SourceryRuntime/Sources/Common
+ - SourceryRuntime/Sources/macOS
+templates:
+ - Sourcery/Templates/Coding.stencil
+ - Sourcery/Templates/JSExport.ejs
+ - Sourcery/Templates/Typed.stencil
+ - Sourcery/Templates/TypedSpec.stencil
+output:
+ SourceryRuntime/Sources/Generated

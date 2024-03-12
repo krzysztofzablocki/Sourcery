@@ -17,6 +17,8 @@ extension {{ type.name }} {
     {{ type.accessLevel }} var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     {{ type.accessLevel }} var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    {{ type.accessLevel }} var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     {{ type.accessLevel }} var isDictionary: Bool { return typeName.isDictionary }
 }{% endfor %}
