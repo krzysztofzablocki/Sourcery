@@ -6,7 +6,7 @@
 import Foundation
 
 /// Describes name of the type used in typed declaration (variable, method parameter or return value etc.)
-public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, DynamicMemberLookup {
+public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "tuple":

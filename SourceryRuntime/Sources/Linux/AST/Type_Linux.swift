@@ -9,7 +9,7 @@ import Foundation
 public typealias AttributeList = [String: [Attribute]]
 
 /// Defines Swift type
-public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, DynamicMemberLookup {
+public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "implements":

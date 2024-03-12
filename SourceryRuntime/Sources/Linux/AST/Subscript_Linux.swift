@@ -2,7 +2,7 @@
 import Foundation
 
 /// Describes subscript
-public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, DynamicMemberLookup {
+public final class Subscript: NSObject, SourceryModel, Annotated, Documented, Definition, Diffable, SourceryDynamicMemberLookup {
 
     public subscript(dynamicMember member: String) -> Any? {
         switch member {

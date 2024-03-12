@@ -2,7 +2,7 @@
 import Foundation
 
 // sourcery: skipDiffing
-public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, DynamicMemberLookup {
+public final class ClosureParameter: NSObject, SourceryModel, Typed, Annotated, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
         case "argumentLabel":

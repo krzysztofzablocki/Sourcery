@@ -2,7 +2,7 @@
 import Foundation
 
 /// Descibes Swift generic requirement
-public class GenericRequirement: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+public class GenericRequirement: NSObject, SourceryModel, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "leftType":

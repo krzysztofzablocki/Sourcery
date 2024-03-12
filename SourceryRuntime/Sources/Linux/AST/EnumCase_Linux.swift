@@ -6,7 +6,7 @@
 import Foundation
 
 /// Defines enum case
-public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable, DynamicMemberLookup {
+public final class EnumCase: NSObject, SourceryModel, AutoDescription, Annotated, Documented, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":

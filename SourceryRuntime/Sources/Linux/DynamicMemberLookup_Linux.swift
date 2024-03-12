@@ -5,11 +5,17 @@
 //
 
 #if !canImport(ObjectiveC)
+#if canImport(Stencil)
+import Stencil
+#else
+// This is not supposed to work at all, since in Stencil there is a protocol conformance check against `DynamicMemberLookup`,
+// and, of course, a substitute with the "same name" but in `Sourcery` will never satisfy that check.
+
 /// Marker protocol so we can know which types support `@dynamicMemberLookup`. Add this to your own types that support
 /// lookup by String.
 public protocol DynamicMemberLookup {
-  /// Get a value for a given `String` key
-  subscript(dynamicMember member: String) -> Any? { get }
+    /// Get a value for a given `String` key
+    subscript(dynamicMember member: String) -> Any? { get }
 }
 
 public extension DynamicMemberLookup where Self: RawRepresentable {
@@ -23,4 +29,8 @@ public extension DynamicMemberLookup where Self: RawRepresentable {
     }
   }
 }
+#endif
+
+public protocol SourceryDynamicMemberLookup: DynamicMemberLookup {}
+
 #endif

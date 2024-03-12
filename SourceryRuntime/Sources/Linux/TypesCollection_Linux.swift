@@ -6,7 +6,7 @@
 import Foundation
 
 /// :nodoc:
-public class TypesCollection: NSObject, AutoJSExport, DynamicMemberLookup {
+public class TypesCollection: NSObject, AutoJSExport, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         return try? types(forKey: member)
     }

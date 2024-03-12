@@ -7,7 +7,7 @@ import Foundation
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+public final class Types: NSObject, SourceryModel, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "types":

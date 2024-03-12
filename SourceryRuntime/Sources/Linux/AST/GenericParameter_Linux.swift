@@ -2,7 +2,7 @@
 import Foundation
 
 /// Descibes Swift generic parameter
-public final class GenericParameter: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+public final class GenericParameter: NSObject, SourceryModel, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":

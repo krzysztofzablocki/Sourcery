@@ -2,7 +2,7 @@
 import Foundation
 
 /// Describes method parameter
-public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable, DynamicMemberLookup {
+public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "argumentLabel":

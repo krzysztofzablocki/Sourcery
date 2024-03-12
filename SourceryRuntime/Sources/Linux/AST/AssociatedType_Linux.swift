@@ -2,7 +2,7 @@
 import Foundation
 
 /// Describes Swift AssociatedType
-public final class AssociatedType: NSObject, SourceryModel, DynamicMemberLookup {
+public final class AssociatedType: NSObject, SourceryModel, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":

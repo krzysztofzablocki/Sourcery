@@ -2,7 +2,7 @@
 import Foundation
 
 /// Describes tuple type
-public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+public final class TupleType: NSObject, SourceryModel, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "elements":
@@ -94,7 +94,7 @@ public final class TupleType: NSObject, SourceryModel, Diffable, DynamicMemberLo
 }
 
 /// Describes tuple type element
-public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, DynamicMemberLookup {
+public final class TupleElement: NSObject, SourceryModel, Typed, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":

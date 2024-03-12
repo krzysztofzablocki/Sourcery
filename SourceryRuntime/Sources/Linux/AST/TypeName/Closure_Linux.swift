@@ -2,7 +2,7 @@
 import Foundation
 
 /// Describes closure type
-public final class ClosureType: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "name":
