@@ -2,6 +2,9 @@ sources:
  - SourceryRuntime/Sources/Common
  - SourceryRuntime/Sources/Linux
 templates:
- - Sourcery/Templates
+ - Sourcery/Templates/Coding.stencil
+ - Sourcery/Templates/JSExport.ejs
+ - Sourcery/Templates/Typed.stencil
+ - Sourcery/Templates/TypedSpec.stencil
 output:
  SourceryRuntime/Sources/Generated
