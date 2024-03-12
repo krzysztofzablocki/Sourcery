@@ -56,8 +56,8 @@ def build_framework(fat_library)
   print_info "Building project (fat: #{fat_library})"
 
   # Prepare the export directory
-  #sh %Q(rm -fr #{CLI_DIR})
-  #sh %Q(mkdir -p "#{CLI_DIR}bin")
+  sh %Q(rm -fr #{CLI_DIR})
+  sh %Q(mkdir -p "#{CLI_DIR}bin")
   output_path="#{CLI_DIR}bin/sourcery"
 
   if fat_library
@@ -72,7 +72,7 @@ def build_framework(fat_library)
 
   # Export the build products and clean up
   sh %Q(cp SourceryJS/Resources/ejs.js #{CLI_DIR}bin)
-  #sh %Q(rm -fr #{BUILD_DIR})
+  sh %Q(rm -fr #{BUILD_DIR})
 end
 
 task :build do
