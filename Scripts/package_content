@@ -4,7 +4,8 @@
 ///   Merge all Swift files contained in FOLDER into swift code that can be used by the FolderSynchronizer.
 /// Example: $0 Sources/SourceryRuntime > file.swift
 /// Options:
-///   FOLDER: the path where the Swift files to merge are
+///   FOLDERS: the paths where the Swift files to merge are, separated with comma ","
+///   isForDarwinPlatform: if true, the generated code will be compilable on Darwin platforms
 ///   -h: Display this help message
 import Foundation
 
@@ -40,37 +41,45 @@ extension String {
     }
 }
 
-func package(folder folderPath: String) throws {
-    print("let sourceryRuntimeFiles: [FolderSynchronizer.File] = [")
-    let folderURL = URL(fileURLWithPath: folderPath)
-
-    guard let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) else {
-        print("Unable to retrieve file enumerator")
-        exit(1)
+func package(folders folderPaths: [String], isForDarwinPlatform: Bool) throws {
+    if !isForDarwinPlatform {
+        print("#if !canImport(ObjectiveC)")
+    } else {
+        print("#if canImport(ObjectiveC)")
     }
-    var files = [URL]()
-    for case let fileURL as URL in enumerator {
-        do {
-            let fileAttributes = try fileURL.resourceValues(forKeys:[.isRegularFileKey])
-            if fileAttributes.isRegularFile! {
-                files.append(fileURL)
+    print("let sourceryRuntimeFiles: [FolderSynchronizer.File] = [")
+    for folderPath in folderPaths {
+        let folderURL = URL(fileURLWithPath: folderPath)
+
+        guard let enumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsPackageDescendants]) else {
+            print("Unable to retrieve file enumerator")
+            exit(1)
+        }
+        var files = [URL]()
+        for case let fileURL as URL in enumerator {
+            do {
+                let fileAttributes = try fileURL.resourceValues(forKeys:[.isRegularFileKey])
+                if fileAttributes.isRegularFile! {
+                    files.append(fileURL)
+                }
+            } catch { 
+                print(error, fileURL) 
             }
-        } catch { 
-            print(error, fileURL) 
+        }
+        
+        try files
+        .sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
+        .forEach { sourceFileURL in
+            print("    .init(name: \"\(sourceFileURL.lastPathComponent)\", content:")
+            print("\"\"\"")
+            let content = try String(contentsOf: sourceFileURL, encoding: .utf8)
+                .escapedSwiftTokens()
+            print(content)
+            print("\"\"\"),")
         }
     }
-    
-    try files
-      .sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
-      .forEach { sourceFileURL in
-          print("    .init(name: \"\(sourceFileURL.lastPathComponent)\", content:")
-          print("\"\"\"")
-          let content = try String(contentsOf: sourceFileURL, encoding: .utf8)
-            .escapedSwiftTokens()
-          print(content)
-          print("\"\"\"),")
-      }
     print("]")
+    print("#endif")
 }
 
 func main() {
@@ -82,10 +91,16 @@ func main() {
         print("Missing folderPath argument")
         exit(1)
     }
-    let folder = CommandLine.arguments[1]
+    guard CommandLine.arguments.count > 2 else {
+        print("Missing isForDarwinPlatform argument")
+        exit(1)
+    }
+    let foldersPaths = CommandLine.arguments[1]
+    let isForDarwinPlatform = Bool(CommandLine.arguments[2]) ?? false
+    let folders = foldersPaths.split(separator: ",").map(String.init)
 
     do {
-        try package(folder: folder)
+        try package(folders: folders, isForDarwinPlatform: isForDarwinPlatform)
     } catch {
         print("Failed with error: \(error)")
         exit(1)
