@@ -1,5 +1,6 @@
 // swiftlint:disable vertical_whitespace trailing_newline
 
+#if canImport(JavaScriptCore)
 import JavaScriptCore
 
 <%_ for (type of types.implementing.AutoJSExport) { -%>
@@ -15,3 +16,4 @@ import JavaScriptCore
 extension <%= type.name %>: <%= type.name %>AutoJSExport {}
 <%_ } %>
 <%_ } %>
+#endif
