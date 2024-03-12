@@ -4,10 +4,14 @@
 //
 #if !canImport(ObjectiveC)
 import Foundation
+// For DynamicMemberLookup we need to import Stencil,
+// however, this is different from SourceryRuntime.content.generated.swift, because
+// it cannot reference Stencil
+import Stencil
 
 // sourcery: skipJSExport
 /// Collection of scanned types for accessing in templates
-public final class Types: NSObject, SourceryModel, Diffable, DynamicMemberLookup {
+public final class Types: NSObject, SourceryModel, Diffable, Stencil.DynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
             case "types":
