@@ -405,7 +405,7 @@ extension Sourcery {
         let uniqueTypeStart = currentTimestamp()
 
         // ! All files have been scanned, time to join extensions with base class
-        let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
+        let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult, serial: serialParse)
 
 
         let filesThatHadToBeParsed = allResults
