@@ -24,9 +24,9 @@ public extension Array {
         }
     }
 
-    func parallelPerform(transform: (Element) -> Void) {
+    func parallelPerform(_ work: (Element) -> Void) {
         DispatchQueue.concurrentPerform(iterations: count) { idx in
-            transform(self[idx])
+            work(self[idx])
         }
     }
 }
