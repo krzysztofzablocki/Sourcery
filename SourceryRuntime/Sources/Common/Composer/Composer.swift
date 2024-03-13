@@ -19,8 +19,9 @@ public enum Composer {
     /// - filters out any private types and extensions
     ///
     /// - Parameter parserResult: Result of parsing source code.
+    /// - Parameter serial: Whether to process results serially instead of concurrently
     /// - Returns: Final types and extensions of unknown types.
-    public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
+    public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult, serial: Bool = false) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
         let composed = ParserResultsComposed(parserResult: parserResult)
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
@@ -31,7 +32,7 @@ public enum Composer {
             return composed.resolveType(typeName: typeName, containingType: containingType, method: method)
         }
 
-        composed.types.parallelPerform { type in
+        let processType = { (type: Type) in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
             }
@@ -55,8 +56,16 @@ public enum Composer {
             }
         }
 
-        composed.functions.parallelPerform { function in
+        let processFunction = { (function: SourceryMethod) in
             resolveMethodTypes(function, of: nil, resolve: methodResolveType)
+        }
+
+        if serial {
+            composed.types.forEach(processType)
+            composed.functions.forEach(processFunction)
+        } else {
+            composed.types.parallelPerform(processType)
+            composed.functions.parallelPerform(processFunction)
         }
 
         updateTypeRelationships(types: composed.types)

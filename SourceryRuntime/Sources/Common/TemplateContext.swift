@@ -48,7 +48,7 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
         let fileParserResultCopy: FileParserResult? = nil
 //      fileParserResultCopy = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(NSKeyedArchiver.archivedData(withRootObject: parserResult)) as? FileParserResult
 
-        let composed = Composer.uniqueTypesAndFunctions(parserResult)
+        let composed = Composer.uniqueTypesAndFunctions(parserResult, serial: false)
         self.types = .init(types: composed.types, typealiases: composed.typealiases)
         self.functions = composed.functions
 
