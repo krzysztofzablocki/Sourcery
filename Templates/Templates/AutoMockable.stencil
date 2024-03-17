@@ -59,7 +59,7 @@ import {{ import }}
 {% macro closureReturnTypeName method %}{% if method.isOptionalReturnType %}{{ method.unwrappedReturnTypeName }}?{% else %}{{ method.returnTypeName }}{% endif %}{% endmacro %}
 
 {% macro methodClosureDeclaration method %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call methodClosureName method %}: (({% for param in method.parameters %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic true %}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call existentialVariableTypeName method.returnTypeName %}{% endif %})?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call methodClosureName method %}: ({% for param in method.parameters %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic true %}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call existentialVariableTypeName method.returnTypeName %}{% endif %})?
 {% endmacro %}
 
 {% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ '&' if param.typeName.name | hasPrefix:"inout " }}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
@@ -272,7 +272,7 @@ import {{ import }}
     {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
         ({{ typeName.unwrappedTypeName | replace:"any","(any" | replace:"?",")?" }})?
     {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
-        {{ typeName | replace:"any","(any" | replace:"?",")?" }}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }})
     {%- elif typeName|contains:"any " and typeName.isOptional -%}
         {{ typeName | replace:"any","(any" | replace:"?",")?" }}
     {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
