@@ -12,12 +12,10 @@ on:
       - '*'
 
 jobs:
-  docs:
-    uses: ./.github/workflows/jazzy.yml
   tests:
     uses: ./.github/workflows/test_ubuntu.yml
   build:
-    needs: [docs, tests]
+    needs: [tests]
     name: Build Sourcery for Ubuntu (latest)
     runs-on: ubuntu-22.04
     outputs:

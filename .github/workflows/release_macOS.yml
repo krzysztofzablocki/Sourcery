@@ -12,12 +12,10 @@ on:
       - '*'
       
 jobs:
-  docs:
-    uses: ./.github/workflows/jazzy.yml
   tests:
     uses: ./.github/workflows/test_macOS.yml
   build:
-    needs: [docs, tests]
+    needs: [tests]
     name: Build Sourcery for macOS
     runs-on: macos-13
     steps:
