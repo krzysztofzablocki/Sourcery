@@ -725,6 +725,70 @@ class ExampleVarargMock: ExampleVararg {
 
 
 }
+class ExampleVarargFourMock: ExampleVarargFour {
+
+
+
+
+    //MARK: - toto
+
+    var totoArgStringAnyCollectionVoidVoidCallsCount = 0
+    var totoArgStringAnyCollectionVoidVoidCalled: Bool {
+        return totoArgStringAnyCollectionVoidVoidCallsCount > 0
+    }
+    var totoArgStringAnyCollectionVoidVoidClosure: (((String, any Collection...) -> Void) -> Void)?
+
+    func toto(arg: ((String, any Collection...) -> Void)) {
+        totoArgStringAnyCollectionVoidVoidCallsCount += 1
+        totoArgStringAnyCollectionVoidVoidClosure?(arg)
+    }
+
+
+}
+class ExampleVarargThreeMock: ExampleVarargThree {
+
+
+
+
+    //MARK: - toto
+
+    var totoArgStringAnyCollectionAnyCollectionVoidCallsCount = 0
+    var totoArgStringAnyCollectionAnyCollectionVoidCalled: Bool {
+        return totoArgStringAnyCollectionAnyCollectionVoidCallsCount > 0
+    }
+    var totoArgStringAnyCollectionAnyCollectionVoidClosure: (((String, any Collection...) -> any Collection) -> Void)?
+
+    func toto(arg: ((String, any Collection...) -> any Collection)) {
+        totoArgStringAnyCollectionAnyCollectionVoidCallsCount += 1
+        totoArgStringAnyCollectionAnyCollectionVoidClosure?(arg)
+    }
+
+
+}
+class ExampleVarargTwoMock: ExampleVarargTwo {
+
+
+
+
+    //MARK: - toto
+
+    var totoArgsAnyStubWithSomeNameProtocolVoidCallsCount = 0
+    var totoArgsAnyStubWithSomeNameProtocolVoidCalled: Bool {
+        return totoArgsAnyStubWithSomeNameProtocolVoidCallsCount > 0
+    }
+    var totoArgsAnyStubWithSomeNameProtocolVoidReceivedArgs: ([(any StubWithSomeNameProtocol)])?
+    var totoArgsAnyStubWithSomeNameProtocolVoidReceivedInvocations: [([(any StubWithSomeNameProtocol)])] = []
+    var totoArgsAnyStubWithSomeNameProtocolVoidClosure: (([(any StubWithSomeNameProtocol)]) -> Void)?
+
+    func toto(args: any StubWithSomeNameProtocol...) {
+        totoArgsAnyStubWithSomeNameProtocolVoidCallsCount += 1
+        totoArgsAnyStubWithSomeNameProtocolVoidReceivedArgs = args
+        totoArgsAnyStubWithSomeNameProtocolVoidReceivedInvocations.append(args)
+        totoArgsAnyStubWithSomeNameProtocolVoidClosure?(args)
+    }
+
+
+}
 class ExtendableProtocolMock: ExtendableProtocol {
 
 
