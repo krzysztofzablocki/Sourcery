@@ -168,42 +168,42 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
             self.argumentLabel = aDecoder.decode(forKey: "argumentLabel")
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else {
+            guard let typeName: TypeName = aDecoder.decode(forKey: "typeName") else { 
                 withVaList(["typeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.typeName = typeName
-            self.index = aDecoder.decode(forKey: "index")
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.isVariadic = aDecoder.decode(forKey: "isVariadic")
             self.type = aDecoder.decode(forKey: "type")
             self.defaultValue = aDecoder.decode(forKey: "defaultValue")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
+            self.index = aDecoder.decode(forKey: "index")
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
             aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.index, forKey: "index")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.`inout`, forKey: "`inout`")
             aCoder.encode(self.isVariadic, forKey: "isVariadic")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.index, forKey: "index")
         }
 // sourcery:end
 }

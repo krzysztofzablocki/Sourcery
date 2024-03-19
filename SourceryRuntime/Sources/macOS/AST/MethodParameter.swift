@@ -159,7 +159,6 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 }
                 fatalError()
              }; self.typeName = typeName
-            self.index = aDecoder.decode(forKey: "index")
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.isVariadic = aDecoder.decode(forKey: "isVariadic")
             self.type = aDecoder.decode(forKey: "type")
@@ -170,19 +169,20 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 }
                 fatalError()
              }; self.annotations = annotations
+            self.index = aDecoder.decode(forKey: "index")
         }
 
         /// :nodoc:
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
             aCoder.encode(self.name, forKey: "name")
-            aCoder.encode(self.index, forKey: "index")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.`inout`, forKey: "`inout`")
             aCoder.encode(self.isVariadic, forKey: "isVariadic")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.index, forKey: "index")
         }
 // sourcery:end
 }
