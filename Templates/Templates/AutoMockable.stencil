@@ -239,6 +239,7 @@ import {{ import }}
         {{ typeName }}
     {%- endif -%}
 {%- endmacro %}
+{# Swift does not support closures with variadic parameters of existential types as arguments. That is why existentialClosureVariableTypeName.isVariadic should be false when typeName is a closure #}
 {% macro existentialClosureVariableTypeName typeName isVariadic keepInout -%}
     {% set name %}
         {%- if keepInout -%}
@@ -263,6 +264,8 @@ import {{ import }}
         {{ name | replace:"some","(any" | replace:"?",")?" }}
     {%- elif typeName|contains:"some " and typeName|contains:"?" -%}
         {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif isVariadic and typeName|contains:"any " -%}
+        [({{ name }})]
     {%- elif isVariadic -%}
         {{ name }}...
     {%- else -%}
@@ -321,6 +324,8 @@ import {{ import }}
         {{ typeName | replace:"some","(some" | replace:"?",")?" }}
     {%- elif isVariadic -%}
         {{ typeName }}...
+    {%- elif typeName.isClosure and typeName.closure.parameters.count > 0 and typeName.closure.parameters.last.isVariadic -%}
+        {{ typeName }})
     {%- else -%}
         {{ typeName }}
     {%- endif -%}
