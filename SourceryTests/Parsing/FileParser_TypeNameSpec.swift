@@ -30,7 +30,7 @@ class TypeNameSpec: QuickSpec {
                     func myFunc(_ arg: \(functionArgumentType)) {}
                   }
                   """
-                guard let parser = try? makeParser(for: wrappedCode) else { fail(); return MethodParameter(name: "", typeName: TypeName(name: "")) }
+                guard let parser = try? makeParser(for: wrappedCode) else { fail(); return MethodParameter(name: "", index: 0, typeName: TypeName(name: "")) }
                 let result = try? parser.parse()
                 let methodParameter = result?.types.first?.methods.first?.parameters.first
                 return methodParameter

@@ -2,7 +2,7 @@ import SwiftSyntax
 import SourceryRuntime
 
 extension MethodParameter {
-    convenience init(_ node: FunctionParameterSyntax, annotationsParser: AnnotationsParser) {
+    convenience init(_ node: FunctionParameterSyntax, index: Int, annotationsParser: AnnotationsParser) {
         let firstName = node.firstName.text.trimmed.nilIfNotValidParameterName
 
         let typeName = TypeName(node.type)
@@ -16,6 +16,7 @@ extension MethodParameter {
         self.init(
           argumentLabel: firstName,
           name: node.secondName?.text.trimmed ?? firstName ?? "",
+          index: index,
           typeName: typeName,
           type: nil,
           defaultValue: node.defaultValue?.value.description.trimmed,

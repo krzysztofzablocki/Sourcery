@@ -37,8 +37,8 @@ class FileParserSubscriptsSpec: QuickSpec {
                     expect(subscripts?.first).to(equal(
                         Subscript(
                             parameters: [
-                                MethodParameter(argumentLabel: nil, name: "index", typeName: TypeName(name: "Int")),
-                                MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName(name: "String"))
+                                MethodParameter(argumentLabel: nil, name: "index", index: 0, typeName: TypeName(name: "Int")),
+                                MethodParameter(argumentLabel: "a", name: "a", index: 1, typeName: TypeName(name: "String"))
                             ],
                             returnTypeName: TypeName(name: "Int"),
                             accessLevel: (.private, .private),
@@ -54,7 +54,7 @@ class FileParserSubscriptsSpec: QuickSpec {
                     expect(subscripts?.last).to(equal(
                         Subscript(
                             parameters: [
-                                MethodParameter(argumentLabel: "b", name: "b", typeName: TypeName(name: "Int"))
+                                MethodParameter(argumentLabel: "b", name: "b", index: 0, typeName: TypeName(name: "Int"))
                             ],
                             returnTypeName: TypeName(name: "String"),
                             accessLevel: (.public, .private),

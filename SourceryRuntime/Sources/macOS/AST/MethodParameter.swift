@@ -36,11 +36,15 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: Annotations = [:]
 
+    /// Method parameter index in the argument list
+    public var index: Int
+
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", index: Int, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
+        self.index = index
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
@@ -49,10 +53,11 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+    public init(name: String = "", index: Int, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
+        self.index = index
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
@@ -88,7 +93,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         string.append("typeAttributes = \(String(describing: self.typeAttributes)), ")
         string.append("defaultValue = \(String(describing: self.defaultValue)), ")
         string.append("annotations = \(String(describing: self.annotations)), ")
-        string.append("asSource = \(String(describing: self.asSource))")
+        string.append("asSource = \(String(describing: self.asSource)), ")
+        string.append("index = \(String(describing: self.index))")
         return string
     }
 
@@ -105,6 +111,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         results.append(contentsOf: DiffableResult(identifier: "isVariadic").trackDifference(actual: self.isVariadic, expected: castObject.isVariadic))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "index").trackDifference(actual: self.index, expected: castObject.index))
         return results
     }
 
@@ -152,6 +159,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 }
                 fatalError()
              }; self.typeName = typeName
+            self.index = aDecoder.decode(forKey: "index")
             self.`inout` = aDecoder.decode(forKey: "`inout`")
             self.isVariadic = aDecoder.decode(forKey: "isVariadic")
             self.type = aDecoder.decode(forKey: "type")
@@ -168,6 +176,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         public func encode(with aCoder: NSCoder) {
             aCoder.encode(self.argumentLabel, forKey: "argumentLabel")
             aCoder.encode(self.name, forKey: "name")
+            aCoder.encode(self.index, forKey: "index")
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.`inout`, forKey: "`inout`")
             aCoder.encode(self.isVariadic, forKey: "isVariadic")

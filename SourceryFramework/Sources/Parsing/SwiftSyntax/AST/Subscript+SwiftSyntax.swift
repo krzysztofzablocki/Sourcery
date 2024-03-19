@@ -83,8 +83,12 @@ extension Subscript {
             return nil
         } ?? []
 
+        var parameters: [MethodParameter] = []
+        for (idx, param) in node.parameterClause.parameters.enumerated() {
+            parameters.append(MethodParameter(param, index: idx, annotationsParser: annotationsParser))
+        }
         self.init(
-          parameters: node.parameterClause.parameters.map { MethodParameter($0, annotationsParser: annotationsParser) },
+          parameters: parameters,
           returnTypeName: TypeName(node.returnClause.type),
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
           isAsync: hadAsync,

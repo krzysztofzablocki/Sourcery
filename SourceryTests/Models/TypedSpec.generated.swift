@@ -144,40 +144,40 @@ class TypedSpec: QuickSpec {
 
 #if canImport(ObjectiveC)
             it("can report optional via KVC") {
-                expect(MethodParameter(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(MethodParameter(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect(MethodParameter(typeName: typeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
-                expect(MethodParameter(typeName: typeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
-                expect(MethodParameter(typeName: typeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+                expect(MethodParameter(index: 0, typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(MethodParameter(index: 0, typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect(MethodParameter(index: 0, typeName: typeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect(MethodParameter(index: 0, typeName: typeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+                expect(MethodParameter(index: 0, typeName: typeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
             }
 
             it("can report tuple type via KVC") {
-                let sut = MethodParameter(typeName: typeName("(Int, Int)"))
+                let sut = MethodParameter(index: 0, typeName: typeName("(Int, Int)"))
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 
             it("can report closure type via KVC") {
-                let sut = MethodParameter(typeName: typeName("(Int) -> (Int)"))
+                let sut = MethodParameter(index: 0, typeName: typeName("(Int) -> (Int)"))
                 expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
             }
 
             it("can report array type via KVC") {
-                let sut = MethodParameter(typeName: typeName("[Int]"))
+                let sut = MethodParameter(index: 0, typeName: typeName("[Int]"))
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
             }
 
             it("can report set type via KVC") {
-                let sut = MethodParameter(typeName: typeName("Set<Int>"))
+                let sut = MethodParameter(index: 0, typeName: typeName("Set<Int>"))
                 expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
             }
 
             it("can report dictionary type via KVC") {
-                let sut = MethodParameter(typeName: typeName("[Int: Int]"))
+                let sut = MethodParameter(index: 0, typeName: typeName("[Int: Int]"))
                 expect(sut.value(forKeyPath: "isDictionary") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
-                let sut = MethodParameter(typeName: typeName("Alias"))
+                let sut = MethodParameter(index: 0, typeName: typeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(typeName("Alias")))
 
                 sut.typeName.actualTypeName = typeName("Int")
