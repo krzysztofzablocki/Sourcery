@@ -1,8 +1,30 @@
 # Sourcery CHANGELOG
 ## 2.1.8
 ## Changes
-- Fix: Function with completion as parameter that contains itself an optional any parameter produces wrong mock ([#1290](https://github.com/krzysztofzablocki/Sourcery/pull/1290))
-- Fix: Function with inout parameter when function has more than one parameter produces wrong mock ([#1290](https://github.com/krzysztofzablocki/Sourcery/pull/1290))
+- ClosureParameter isVariadic Support by @art-divin in ([#1268](https://github.com/krzysztofzablocki/Sourcery/pull/1268))
+- Update Usage.md to include --parseDocumentation option by @MarcoEidinger in ([#1272](https://github.com/krzysztofzablocki/Sourcery/pull/1272))
+- Format processing time log message by @MontakOleg in ([#1274](https://github.com/krzysztofzablocki/Sourcery/pull/1274))
+- Fixed swift-package-manager version by @art-divin in ([#1280](https://github.com/krzysztofzablocki/Sourcery/pull/1280))
+- Added isSet to TypeName by @art-divin in ([#1281](https://github.com/krzysztofzablocki/Sourcery/pull/1281))
+- chore(deps): bump nokogiri from 1.15.4 to 1.16.2 by @dependabot in ([#1273](https://github.com/krzysztofzablocki/Sourcery/pull/1273))
+- Implement GenericRequirement support for member type disambiguation by @art-divin in ([#1283](https://github.com/krzysztofzablocki/Sourcery/pull/1283))
+- Add generic requirements to Method by @art-divin in ([#1284](https://github.com/krzysztofzablocki/Sourcery/pull/1284))
+- Recognize subclasses with generics by @art-divin in ([#1287](https://github.com/krzysztofzablocki/Sourcery/pull/1287))
+- Implemented typealias unboxing during type resolution by @art-divin in ([#1288](https://github.com/krzysztofzablocki/Sourcery/pull/1288))
+- Added documentation to typealias by @art-divin in ([#1289](https://github.com/krzysztofzablocki/Sourcery/pull/1289))
+- Fix: Function with completion as parameter that contains itself an optional any parameter produces wrong mock by @paul1893 in ([#1290](https://github.com/krzysztofzablocki/Sourcery/pull/1290))
+- Fix: Function with inout parameter when function has more than one parameter produces wrong mock by @paul1893 in ([#1291](https://github.com/krzysztofzablocki/Sourcery/pull/1291))
+- Substitute underlying type from typealias by @art-divin in ([#1292](https://github.com/krzysztofzablocki/Sourcery/pull/1292))
+- Added support for multiline documentation comments by @art-divin in ([#1293](https://github.com/krzysztofzablocki/Sourcery/pull/1293))
+- Update SwiftSyntax dependency to 510.0.0 by @calda in ([#1294](https://github.com/krzysztofzablocki/Sourcery/pull/1294))
+- Resolved all SwiftSyntax Warnings by @art-divin in ([#1295](https://github.com/krzysztofzablocki/Sourcery/pull/1295))
+- Trailing Annotation Parsing by @art-divin in ([#1296](https://github.com/krzysztofzablocki/Sourcery/pull/1296))
+- Fixed Crash in AnnotationParser by @art-divin in ([#1297](https://github.com/krzysztofzablocki/Sourcery/pull/1297))
+- Disabled Optimization During Generated Code Verification by @art-divin in ([#1300](https://github.com/krzysztofzablocki/Sourcery/pull/1300))
+- Adjusted file structure to accommodate two generated files by @art-divin in ([#1299](https://github.com/krzysztofzablocki/Sourcery/pull/1299))
+- Expand --serialParse flag to also apply to Composer.uniqueTypesAndFunctions by @calda in ([#1301](https://github.com/krzysztofzablocki/Sourcery/pull/1301))
+- Make AutoMockable Generate Compilable Swift Code by @art-divin in ([#1304](https://github.com/krzysztofzablocki/Sourcery/pull/1304))
+- Fix Closure Parameter CVarArg with Existential by @art-divin in ([#1305](https://github.com/krzysztofzablocki/Sourcery/pull/1305))
 
 ## 2.1.7
 ## Changes
