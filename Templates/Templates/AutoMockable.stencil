@@ -44,8 +44,8 @@ import {{ import }}
         {% endfor -%}
     {% endset %}
     {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
-        {% call swiftifyMethodName method %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
-        {% call swiftifyMethodName method %}ReceivedInvocations.append({% for param in method.parameters %}{{ param.name }}){% endfor %}
+        {% call swiftifyMethodName method %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{% endfor %}
+        {% call swiftifyMethodName method %}ReceivedInvocations.append({% for param in method.parameters %}{% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}){% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 and not hasNonEscapingClosures %}
         {% call swiftifyMethodName method %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
@@ -62,7 +62,7 @@ import {{ import }}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call methodClosureName method %}: ({% for param in method.parameters %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic true %}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call existentialVariableTypeName method.returnTypeName %}{% endif %})?
 {% endmacro %}
 
-{% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ '&' if param.typeName.name | hasPrefix:"inout " }}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
+{% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ '&' if param.typeName.name | hasPrefix:"inout " }}{% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
 
 {% macro mockMethod method %}
     //MARK: - {{ method.shortName }}
@@ -287,7 +287,7 @@ import {{ import }}
         {{ typeName }}
     {%- endif -%}
 {%- endmacro %}
-{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {{ param.name }}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
+{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 %}({% endif %}{% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
 
 {% for type in types.protocols where type.based.AutoMockable or type|annotated:"AutoMockable" %}{% if type.name != "AutoMockable" %}
 {% call accessLevel type.accessLevel %}class {{ type.name }}Mock: {{ type.name }} {
