@@ -8,7 +8,11 @@
 
 import Foundation
 
-protocol AutoMockable {}
+public protocol AutoMockable {}
+protocol StubProtocol {}
+protocol StubWithAnyNameProtocol {}
+protocol StubWithSomeNameProtocol {}
+protocol PersonProtocol {}
 
 protocol BasicProtocol: AutoMockable {
     func loadConfiguration() -> String?
@@ -154,9 +158,6 @@ protocol StaticMethodProtocol: AutoMockable {
     static func staticFunction(_: String) -> String
 }
 
-protocol StubProtocol {}
-protocol StubWithAnyNameProtocol {}
-
 protocol AnyProtocol: AutoMockable {
     var a: any StubProtocol { get }
     var b: (any StubProtocol)? { get }
@@ -187,8 +188,6 @@ protocol AnyProtocol: AutoMockable {
     func z() -> any StubProtocol & CustomStringConvertible
 }
 
-protocol StubWithSomeNameProtocol {}
-
 protocol SomeProtocol: AutoMockable {
     func a(_ x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol)
     func b(x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) async -> String
@@ -197,7 +196,6 @@ protocol SomeProtocol: AutoMockable {
     func d(_ x: (some StubWithSomeNameProtocol)?)
 }
 
-protocol PersonProtocol {}
 class GenericType<A, B, C>{}
 
 protocol HouseProtocol: AutoMockable {
@@ -225,6 +223,21 @@ protocol FunctionWithNullableCompletionThatHasNullableAnyParameterProtocol: Auto
 // sourcery: AutoMockable
 protocol ExampleVararg {
     func string(key: String, args: CVarArg...) -> String
+}
+
+// sourcery: AutoMockable
+protocol ExampleVarargTwo {
+  func toto(args: any StubWithSomeNameProtocol...)
+}
+
+// sourcery: AutoMockable
+protocol ExampleVarargThree {
+    func toto(arg: ((String, any Collection...) -> any Collection))
+}
+
+// sourcery: AutoMockable
+protocol ExampleVarargFour {
+    func toto(arg: ((String, any Collection...) -> Void))
 }
 
 // sourcery: AutoMockable
