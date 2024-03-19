@@ -248,7 +248,9 @@ import {{ import }}
         {{ name | replace:"any","(any" | replace:"!",")?" }}
     {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
         ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
-    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" and typeName.closure.parameters.count > 1 -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" | replace:") ->",")) ->" }}
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" and typeName.closure.parameters.count > 1 -%}
         {{ name | replace:"any","(any" | replace:"?",")?" }}
     {%- elif typeName|contains:"any " and typeName|contains:"?" -%}
         {{ name | replace:"any","(any" | replace:"?",")?" }}
@@ -271,8 +273,12 @@ import {{ import }}
         {{ typeName | replace:"any","(any" | replace:"!",")!" }}
     {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
         ({{ typeName.unwrappedTypeName | replace:"any","(any" | replace:"?",")?" }})?
-    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName.closure.parameters.count > 1 and typeName.closure.returnTypeName.name|contains:"any " and typeName|contains:"?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" | replace:") ->",")) ->" }})
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName.closure.returnTypeName.name|contains:"any " and typeName|contains:"?" -%}
         {{ typeName | replace:"any","(any" | replace:"?",")?" }})
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }}
     {%- elif typeName|contains:"any " and typeName.isOptional -%}
         {{ typeName | replace:"any","(any" | replace:"?",")?" }}
     {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
