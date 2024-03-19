@@ -1,5 +1,11 @@
 # Releasing Sourcery
 
+## Note
+
+See https://github.com/krzysztofzablocki/Sourcery/issues/1247#issuecomment-1892571851 for the exact, step by step guide how to release a new version.
+
+# Releasing Sourcery (Deprecated)
+
 There're no hard rules about when to release Sourcery. Release bug fixes frequently, features not so frequently and breaking API changes rarely.
 
 Following the [Semantic Versioning](http://semver.org/):
