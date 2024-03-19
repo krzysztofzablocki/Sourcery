@@ -186,9 +186,9 @@ public extension Array {
         }
     }
 
-    func parallelPerform(transform: (Element) -> Void) {
+    func parallelPerform(_ work: (Element) -> Void) {
         DispatchQueue.concurrentPerform(iterations: count) { idx in
-            transform(self[idx])
+            work(self[idx])
         }
     }
 }
@@ -733,8 +733,9 @@ public enum Composer {
     /// - filters out any private types and extensions
     ///
     /// - Parameter parserResult: Result of parsing source code.
+    /// - Parameter serial: Whether to process results serially instead of concurrently
     /// - Returns: Final types and extensions of unknown types.
-    public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
+    public static func uniqueTypesAndFunctions(_ parserResult: FileParserResult, serial: Bool = false) -> (types: [Type], functions: [SourceryMethod], typealiases: [Typealias]) {
         let composed = ParserResultsComposed(parserResult: parserResult)
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
@@ -745,7 +746,7 @@ public enum Composer {
             return composed.resolveType(typeName: typeName, containingType: containingType, method: method)
         }
 
-        composed.types.parallelPerform { type in
+        let processType = { (type: Type) in
             type.variables.forEach {
                 resolveVariableTypes($0, of: type, resolve: resolveType)
             }
@@ -769,8 +770,16 @@ public enum Composer {
             }
         }
 
-        composed.functions.parallelPerform { function in
+        let processFunction = { (function: SourceryMethod) in
             resolveMethodTypes(function, of: nil, resolve: methodResolveType)
+        }
+
+        if serial {
+            composed.types.forEach(processType)
+            composed.functions.forEach(processFunction)
+        } else {
+            composed.types.parallelPerform(processType)
+            composed.functions.parallelPerform(processFunction)
         }
 
         updateTypeRelationships(types: composed.types)
@@ -3274,7 +3283,7 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
         let fileParserResultCopy: FileParserResult? = nil
 //      fileParserResultCopy = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(NSKeyedArchiver.archivedData(withRootObject: parserResult)) as? FileParserResult
 
-        let composed = Composer.uniqueTypesAndFunctions(parserResult)
+        let composed = Composer.uniqueTypesAndFunctions(parserResult, serial: false)
         self.types = .init(types: composed.types, typealiases: composed.typealiases)
         self.functions = composed.functions
 
@@ -4931,6 +4940,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 return isVariadic
             case "asSource":
                 return asSource
+            case "index":
+                return index
             default:
                 fatalError("unable to lookup: \\(member) in \\(self)")
         }
@@ -4948,7 +4959,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
 
     /// Parameter flag whether it's inout or not
     public let `inout`: Bool
-    
+
     /// Is this variadic parameter?
     public let isVariadic: Bool
 
@@ -4967,11 +4978,15 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     /// Annotations, that were created with // sourcery: annotation1, other = "annotation value", alterantive = 2
     public var annotations: Annotations = [:]
 
+    /// Method parameter index in the argument list
+    public var index: Int
+
     /// :nodoc:
-    public init(argumentLabel: String?, name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+    public init(argumentLabel: String?, name: String = "", index: Int, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = argumentLabel
         self.name = name
+        self.index = index
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
@@ -4980,10 +4995,11 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     }
 
     /// :nodoc:
-    public init(name: String = "", typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
+    public init(name: String = "", index: Int, typeName: TypeName, type: Type? = nil, defaultValue: String? = nil, annotations: [String: NSObject] = [:], isInout: Bool = false, isVariadic: Bool = false) {
         self.typeName = typeName
         self.argumentLabel = name
         self.name = name
+        self.index = index
         self.type = type
         self.defaultValue = defaultValue
         self.annotations = annotations
@@ -4992,7 +5008,10 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
     }
 
     public var asSource: String {
-        let typeSuffix = ": \\(`inout` ? "inout " : "")\\(typeName.asSource)\\(defaultValue.map { " = \\($0)" } ?? "")" + (isVariadic ? "..." : "")
+        let values: String = defaultValue.map { " = \\($0)" } ?? ""
+        let variadicity: String = isVariadic ? "..." : ""
+        let inoutness: String = `inout` ? "inout " : ""
+        let typeSuffix = ": \\(inoutness)\\(typeName.asSource)\\(values)\\(variadicity)"
         guard argumentLabel != name else {
             return name + typeSuffix
         }
@@ -5016,7 +5035,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         string.append("typeAttributes = \\(String(describing: self.typeAttributes)), ")
         string.append("defaultValue = \\(String(describing: self.defaultValue)), ")
         string.append("annotations = \\(String(describing: self.annotations)), ")
-        string.append("asSource = \\(String(describing: self.asSource))")
+        string.append("asSource = \\(String(describing: self.asSource)), ")
+        string.append("index = \\(String(describing: self.index))")
         return string
     }
 
@@ -5033,6 +5053,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
         results.append(contentsOf: DiffableResult(identifier: "isVariadic").trackDifference(actual: self.isVariadic, expected: castObject.isVariadic))
         results.append(contentsOf: DiffableResult(identifier: "defaultValue").trackDifference(actual: self.defaultValue, expected: castObject.defaultValue))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
+        results.append(contentsOf: DiffableResult(identifier: "index").trackDifference(actual: self.index, expected: castObject.index))
         return results
     }
 
@@ -5090,6 +5111,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 }
                 fatalError()
              }; self.annotations = annotations
+            self.index = aDecoder.decode(forKey: "index")
         }
 
         /// :nodoc:
@@ -5102,6 +5124,7 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.defaultValue, forKey: "defaultValue")
             aCoder.encode(self.annotations, forKey: "annotations")
+            aCoder.encode(self.index, forKey: "index")
         }
 // sourcery:end
 }
@@ -7934,7 +7957,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8040,7 +8063,7 @@ extension Variable: NSCoding {}
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8402,6 +8425,7 @@ extension Method: MethodAutoJSExport {}
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
+    var index: Int { get }
     var asSource: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -8774,7 +8798,7 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 

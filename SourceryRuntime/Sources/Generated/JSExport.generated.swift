@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -360,6 +360,7 @@ extension Method: MethodAutoJSExport {}
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
+    var index: Int { get }
     var asSource: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
