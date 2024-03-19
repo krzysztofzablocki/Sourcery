@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -707,8 +707,8 @@ class ExampleVarargMock: ExampleVararg {
     var stringKeyStringArgsCVarArgStringCalled: Bool {
         return stringKeyStringArgsCVarArgStringCallsCount > 0
     }
-    var stringKeyStringArgsCVarArgStringReceivedArguments: (key: String, args: CVarArg...)?
-    var stringKeyStringArgsCVarArgStringReceivedInvocations: [(key: String, args: CVarArg...)] = []
+    var stringKeyStringArgsCVarArgStringReceivedArguments: (key: String, args: [CVarArg])?
+    var stringKeyStringArgsCVarArgStringReceivedInvocations: [(key: String, args: [CVarArg])] = []
     var stringKeyStringArgsCVarArgStringReturnValue: String!
     var stringKeyStringArgsCVarArgStringClosure: ((String, CVarArg...) -> String)?
 
@@ -939,7 +939,7 @@ class ImplicitlyUnwrappedOptionalReturnValueProtocolMock: ImplicitlyUnwrappedOpt
         return implicitReturnStringCallsCount > 0
     }
     var implicitReturnStringReturnValue: String!
-    var implicitReturnStringClosure: (() -> String!)?
+    var implicitReturnStringClosure: (() -> String)?
 
     func implicitReturn() -> String! {
         implicitReturnStringCallsCount += 1
@@ -1016,6 +1016,26 @@ class MultiClosureProtocolMock: MultiClosureProtocol {
         setClosureNameStringClosureEscapingVoidVoidReceivedArguments = (name: name, closure: closure)
         setClosureNameStringClosureEscapingVoidVoidReceivedInvocations.append((name: name, closure: closure))
         setClosureNameStringClosureEscapingVoidVoidClosure?(name, closure)
+    }
+
+
+}
+class MultiExistentialArgumentsClosureProtocolMock: MultiExistentialArgumentsClosureProtocol {
+
+
+
+
+    //MARK: - execute
+
+    var executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCallsCount = 0
+    var executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCalled: Bool {
+        return executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCallsCount > 0
+    }
+    var executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidClosure: ((((any StubWithSomeNameProtocol)?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol)?) -> Void)?
+
+    func execute(completion: (((any StubWithSomeNameProtocol)?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol)?)) {
+        executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCallsCount += 1
+        executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidClosure?(completion)
     }
 
 
@@ -1519,12 +1539,12 @@ class StaticMethodProtocolMock: StaticMethodProtocol {
     static var staticFunctionStringStringReturnValue: String!
     static var staticFunctionStringStringClosure: ((String) -> String)?
 
-    static func staticFunction(_ : String) -> String {
+    static func staticFunction(_ arg0: String) -> String {
         staticFunctionStringStringCallsCount += 1
-        staticFunctionStringStringReceived = 
-        staticFunctionStringStringReceivedInvocations.append()
+        staticFunctionStringStringReceived = arg0
+        staticFunctionStringStringReceivedInvocations.append(arg0)
         if let staticFunctionStringStringClosure = staticFunctionStringStringClosure {
-            return staticFunctionStringStringClosure()
+            return staticFunctionStringStringClosure(arg0)
         } else {
             return staticFunctionStringStringReturnValue
         }
