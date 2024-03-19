@@ -269,6 +269,35 @@ import {{ import }}
         {{ name|replace:"some ","any " }}
     {%- endif -%}
 {%- endmacro %}
+{# Swift does not support tuples with variadic parameters. That is why existentialClosureVariableTypeName.isVariadic should be false when typeName is a closure #}
+{% macro existentialClosureTupleVariableTypeName typeName isVariadic keepInout -%}
+    {% set name %}
+        {%- if keepInout -%}
+            {{ typeName }}
+        {%- else -%}
+            {{ typeName | replace:"inout ","" }}
+        {%- endif -%}
+    {% endset %}
+    {%- if typeName|contains:"any " and typeName|contains:"!" -%}
+        {{ name | replace:"any","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
+        ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"any " and typeName|contains:"?" -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
+        {{ name | replace:"some","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif isVariadic -%}
+        [{{ name }}]
+    {%- else -%}
+        {{ name|replace:"some ","any " }}
+    {%- endif -%}
+{%- endmacro %}
 {% macro existentialParameterTypeName typeName isVariadic -%}
     {%- if typeName|contains:"any " and typeName|contains:"?," and typeName|contains:">?" -%}
         {{ typeName | replace:"any","(any" | replace:"?,",")?," }}
