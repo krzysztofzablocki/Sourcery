@@ -24,7 +24,13 @@ public struct Signature {
     }
 
     public init(parameters: FunctionParameterListSyntax?, output: TypeName?, asyncKeyword: String?, throwsOrRethrowsKeyword: String?, annotationsParser: AnnotationsParser) {
-        input = parameters?.map { MethodParameter($0, annotationsParser: annotationsParser) } ?? []
+        var methodParameters: [MethodParameter] = []
+        if let parameters {
+            for (idx, param) in parameters.enumerated() {
+                methodParameters.append(MethodParameter(param, index: idx, annotationsParser: annotationsParser))
+            }
+        }
+        input = methodParameters
         self.output = output
         self.asyncKeyword = asyncKeyword
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword

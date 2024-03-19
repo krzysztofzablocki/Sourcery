@@ -34,8 +34,8 @@ class FileParserMethodsSpec: QuickSpec {
                     """)[0].methods
 
                     expect(methods[0]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
-                        MethodParameter(name: "some", typeName: TypeName(name: "Int")),
-                        MethodParameter(name: "anotherSome", typeName: TypeName(name: "inout String"), isInout: true)
+                        MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int")),
+                        MethodParameter(name: "anotherSome", index: 1, typeName: TypeName(name: "inout String"), isInout: true)
                     ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))
                 }
                 
@@ -49,8 +49,8 @@ class FileParserMethodsSpec: QuickSpec {
                     )[0].methods.first
                     
                     expect(method).to(equal(Method(name: "fooInOut(some: Int, anotherSome: (inout String) -> Void)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
-                        MethodParameter(name: "some", typeName: TypeName(name: "Int")),
-                        MethodParameter(name: "anotherSome", typeName: TypeName.buildClosure(ClosureParameter(typeName: TypeName.String, isInout: true), returnTypeName: .Void))
+                        MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int")),
+                        MethodParameter(name: "anotherSome", index: 1, typeName: TypeName.buildClosure(ClosureParameter(typeName: TypeName.String, isInout: true), returnTypeName: .Void))
                     ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
                 }
                 
@@ -64,8 +64,8 @@ class FileParserMethodsSpec: QuickSpec {
                     )[0].methods.first
                     
                     expect(method).to(equal(Method(name: "fooAsync(some: Int, anotherSome: (String) async -> Void)", selectorName: "fooAsync(some:anotherSome:)", parameters: [
-                        MethodParameter(name: "some", typeName: TypeName(name: "Int")),
-                        MethodParameter(name: "anotherSome", typeName: TypeName(name: "(String) async -> Void", closure: ClosureType(name: "(String) async -> Void", parameters: [ClosureParameter(typeName: TypeName(name: "String"))], returnTypeName: .Void, asyncKeyword: "async")))
+                        MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int")),
+                        MethodParameter(name: "anotherSome", index: 1, typeName: TypeName(name: "(String) async -> Void", closure: ClosureType(name: "(String) async -> Void", parameters: [ClosureParameter(typeName: TypeName(name: "String"))], returnTypeName: .Void, asyncKeyword: "async")))
                     ], returnTypeName: .Void, definedInTypeName: TypeName(name: "Foo"))))
                 }
 
@@ -91,7 +91,7 @@ class FileParserMethodsSpec: QuickSpec {
                                             Method(name: "setClosure(_ closure: @escaping () -> Void)",
                                                    selectorName: "setClosure(_:)",
                                                    parameters: [
-                                                    MethodParameter(argumentLabel: nil, name: "closure", typeName: .buildClosure(TypeName(name: "Void"), attributes: ["escaping": [Attribute(name: "escaping")]]), type: nil, defaultValue: nil, annotations: [:], isInout: false)
+                                                    MethodParameter(argumentLabel: nil, name: "closure", index: 0, typeName: .buildClosure(TypeName(name: "Void"), attributes: ["escaping": [Attribute(name: "escaping")]]), type: nil, defaultValue: nil, annotations: [:], isInout: false)
                                                    ],
                                                    returnTypeName: TypeName(name: "Void"),
                                                    attributes: [:],
@@ -111,7 +111,7 @@ class FileParserMethodsSpec: QuickSpec {
                     """)[0].methods
                     expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName(name: "Foo"), throws: true, isStatic: true, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[1]).to(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
-                        MethodParameter(name: "some", typeName: TypeName(name: "Int"))
+                        MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int"))
                         ], returnTypeName: TypeName(name: "Bar"), throws: true, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[2]).to(equal(Method(name: "foo()", selectorName: "foo", returnTypeName: TypeName(name: "Foo"), attributes: ["discardableResult": [Attribute(name: "discardableResult")]], definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[3]).to(equal(Method(name: "fooBar()", selectorName: "fooBar", returnTypeName: TypeName(name: "Void"), throws: false, rethrows: true, definedInTypeName: TypeName(name: "Foo"))))
@@ -119,8 +119,8 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(methods[5]).to(equal(Method(name: "fooAsync()", selectorName: "fooAsync", returnTypeName: TypeName(name: "Void"), isAsync: true, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[6]).to(equal(Method(name: "barAsync()", selectorName: "barAsync", returnTypeName: TypeName(name: "Void"), isAsync: true, throws: true, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[7]).to(equal(Method(name: "fooInOut(some: Int, anotherSome: inout String)", selectorName: "fooInOut(some:anotherSome:)", parameters: [
-                        MethodParameter(name: "some", typeName: TypeName(name: "Int")),
-                        MethodParameter(name: "anotherSome", typeName: TypeName(name: "inout String"), isInout: true)
+                        MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int")),
+                        MethodParameter(name: "anotherSome", index: 1, typeName: TypeName(name: "inout String"), isInout: true)
                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))
                 }
 
@@ -183,7 +183,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo(bar: Int) {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(bar: Int)", selectorName: "foo(bar:)", parameters: [
-                                    MethodParameter(name: "bar", typeName: TypeName(name: "Int"))], definedInTypeName: TypeName(name: "Foo"))
+                                    MethodParameter(name: "bar", index: 0, typeName: TypeName(name: "Int"))], definedInTypeName: TypeName(name: "Foo"))
                                 ])
                             ]))
                     }
@@ -192,7 +192,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo(bar: Int...) {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(bar: Int...)", selectorName: "foo(bar:)", parameters: [
-                                        MethodParameter(name: "bar", typeName: TypeName(name: "Int"), isVariadic: true)], definedInTypeName: TypeName(name: "Foo"))
+                                        MethodParameter(name: "bar", index: 0, typeName: TypeName(name: "Int"), isVariadic: true)], definedInTypeName: TypeName(name: "Foo"))
                                 ])
                             ]))
                     }
@@ -202,7 +202,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(type).to(equal(
                             Protocol(name: "Foo", methods: [
                                 Method(name: "someMethod(aValue: Set<Int>)", selectorName: "someMethod(aValue:)", parameters: [
-                                    MethodParameter(name: "aValue", typeName: .buildSet(of: .Int))], definedInTypeName: TypeName(name: "Foo"))
+                                    MethodParameter(name: "aValue", index: 0, typeName: .buildSet(of: .Int))], definedInTypeName: TypeName(name: "Foo"))
                                 ])
                             ))
                     }
@@ -211,8 +211,8 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo( bar:   Int,   foo : String  ) {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(bar: Int, foo: String)", selectorName: "foo(bar:foo:)", parameters: [
-                                    MethodParameter(name: "bar", typeName: TypeName(name: "Int")),
-                                    MethodParameter(name: "foo", typeName: TypeName(name: "String"))
+                                    MethodParameter(name: "bar", index: 0, typeName: TypeName(name: "Int")),
+                                    MethodParameter(name: "foo", index: 1, typeName: TypeName(name: "String"))
                                     ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))
                                 ])
                             ]))
@@ -223,12 +223,12 @@ class FileParserMethodsSpec: QuickSpec {
                             .to(equal([
                                 Class(name: "Foo", methods: [
                                     Method(name: "foo(bar: [String: String], foo: (String, String) -> Void, other: Optional<String>)", selectorName: "foo(bar:foo:other:)", parameters: [
-                                        MethodParameter(name: "bar", typeName: TypeName(name: "[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName(name: "String"), keyTypeName: TypeName(name: "String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "String"))]))),
-                                        MethodParameter(name: "foo", typeName: TypeName(name: "(String, String) -> Void", closure: ClosureType(name: "(String, String) -> Void", parameters: [
+                                        MethodParameter(name: "bar", index: 0, typeName: TypeName(name: "[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName(name: "String"), keyTypeName: TypeName(name: "String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "String"))]))),
+                                        MethodParameter(name: "foo", index: 1, typeName: TypeName(name: "(String, String) -> Void", closure: ClosureType(name: "(String, String) -> Void", parameters: [
                                             ClosureParameter(typeName: TypeName(name: "String")),
                                             ClosureParameter(typeName: TypeName(name: "String"))
                                             ], returnTypeName: TypeName(name: "Void")))),
-                                        MethodParameter(name: "other", typeName: TypeName(name: "Optional<String>"))
+                                        MethodParameter(name: "other", index: 2, typeName: TypeName(name: "Optional<String>"))
                                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))
                                     ])
                                 ]))
@@ -238,9 +238,9 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo(bar Bar: Int, _ foo: Int, fooBar: (_ a: Int, _ b: Int) -> ()) {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(bar Bar: Int, _ foo: Int, fooBar: (_ a: Int, _ b: Int) -> ())", selectorName: "foo(bar:_:fooBar:)", parameters: [
-                                    MethodParameter(argumentLabel: "bar", name: "Bar", typeName: TypeName(name: "Int")),
-                                    MethodParameter(argumentLabel: nil, name: "foo", typeName: TypeName(name: "Int")),
-                                    MethodParameter(name: "fooBar", typeName: TypeName(name: "(_ a: Int, _ b: Int) -> ()", closure: ClosureType(name: "(_ a: Int, _ b: Int) -> ()", parameters: [
+                                    MethodParameter(argumentLabel: "bar", name: "Bar", index: 0, typeName: TypeName(name: "Int")),
+                                    MethodParameter(argumentLabel: nil, name: "foo", index: 1, typeName: TypeName(name: "Int")),
+                                    MethodParameter(name: "fooBar", index: 2, typeName: TypeName(name: "(_ a: Int, _ b: Int) -> ()", closure: ClosureType(name: "(_ a: Int, _ b: Int) -> ()", parameters: [
                                         ClosureParameter(argumentLabel: nil, name: "a", typeName: TypeName(name: "Int")),
                                         ClosureParameter(argumentLabel: nil, name: "b", typeName: TypeName(name: "Int"))
                                         ], returnTypeName: TypeName(name: "()"))))
@@ -253,7 +253,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo(a: Int) { let handler = { (b:Int) in } } }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(a: Int)", selectorName: "foo(a:)", parameters: [
-                                    MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName(name: "Int"))
+                                    MethodParameter(argumentLabel: "a", name: "a", index: 0, typeName: TypeName(name: "Int"))
                                     ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))
                                 ])
                             ]))
@@ -264,7 +264,7 @@ class FileParserMethodsSpec: QuickSpec {
                         expect(parse("class Foo { func foo(a: inout Int) {} }")).to(equal([
                             Class(name: "Foo", methods: [
                                 Method(name: "foo(a: inout Int)", selectorName: "foo(a:)", parameters: [
-                                    MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName(name: "inout Int"), isInout: true)
+                                    MethodParameter(argumentLabel: "a", name: "a", index: 0, typeName: TypeName(name: "inout Int"), isInout: true)
                                     ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))
                                 ])
                             ]))
@@ -275,7 +275,7 @@ class FileParserMethodsSpec: QuickSpec {
                             expect(parse("class Foo { func foo(a: Int? = nil) {} }")).to(equal([
                                 Class(name: "Foo", methods: [
                                     Method(name: "foo(a: Int? = nil)", selectorName: "foo(a:)", parameters: [
-                                        MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName(name: "Int?"), defaultValue: "nil")
+                                        MethodParameter(argumentLabel: "a", name: "a", index: 0, typeName: TypeName(name: "Int?"), defaultValue: "nil")
                                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))
                                     ])
                                 ]))
@@ -285,7 +285,7 @@ class FileParserMethodsSpec: QuickSpec {
                             expect(parse("class Foo { func foo(a: Int? = \n\t{ return nil } \n\t ) {} }")).to(equal([
                                 Class(name: "Foo", methods: [
                                     Method(name: "foo(a: Int? = { return nil })", selectorName: "foo(a:)", parameters: [
-                                        MethodParameter(argumentLabel: "a", name: "a", typeName: TypeName(name: "Int?"), defaultValue: "{ return nil }")
+                                        MethodParameter(argumentLabel: "a", name: "a", index: 0, typeName: TypeName(name: "Int?"), defaultValue: "{ return nil }")
                                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))
                                     ])
                                 ]))
@@ -307,12 +307,12 @@ class FileParserMethodsSpec: QuickSpec {
                                 Class(name: "Foo", methods: [
                                     Method(name: "foo(bar: [String: String], foo: (String, String) -> Void, other: Optional<String>)",
                                            selectorName: "foo(bar:foo:other:)", parameters: [
-                                        MethodParameter(name: "bar", typeName: TypeName(name: "[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName(name: "String"), keyTypeName: TypeName(name: "String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "String"))]))),
-                                        MethodParameter(name: "foo", typeName: TypeName(name: "(String, String) -> Void", closure: ClosureType(name: "(String, String) -> Void", parameters: [
+                                        MethodParameter(name: "bar", index: 0, typeName: TypeName(name: "[String: String]", dictionary: DictionaryType(name: "[String: String]", valueTypeName: TypeName(name: "String"), keyTypeName: TypeName(name: "String")), generic: GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "String"))]))),
+                                        MethodParameter(name: "foo", index: 1, typeName: TypeName(name: "(String, String) -> Void", closure: ClosureType(name: "(String, String) -> Void", parameters: [
                                             ClosureParameter(typeName: TypeName(name: "String")),
                                             ClosureParameter(typeName: TypeName(name: "String"))
                                             ], returnTypeName: TypeName(name: "Void")))),
-                                        MethodParameter(name: "other", typeName: TypeName(name: "Optional<String>"))
+                                        MethodParameter(name: "other", index: 2, typeName: TypeName(name: "Optional<String>"))
                                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))
                                     ])
                                 ]))
@@ -468,12 +468,12 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(parse("class Foo {\n //sourcery: foo\nfunc foo(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) {}\n//sourcery: bar\nfunc bar(\n// sourcery: annotationA\na: Int,\n// sourcery: annotationB\nb: Int) {} }")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "foo(a: Int, b: Int)", selectorName: "foo(a:b:)", parameters: [
-                                MethodParameter(name: "a", typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true)]),
-                                MethodParameter(name: "b", typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true)])
+                                MethodParameter(name: "a", index: 0, typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true)]),
+                                MethodParameter(name: "b", index: 1, typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true)])
                                 ], annotations: ["foo": NSNumber(value: true)], definedInTypeName: TypeName(name: "Foo")),
                             Method(name: "bar(a: Int, b: Int)", selectorName: "bar(a:b:)", parameters: [
-                                MethodParameter(name: "a", typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true)]),
-                                MethodParameter(name: "b", typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true)])
+                                MethodParameter(name: "a", index: 0, typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true)]),
+                                MethodParameter(name: "b", index: 1, typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true)])
                                 ], annotations: ["bar": NSNumber(value: true)], definedInTypeName: TypeName(name: "Foo"))
                             ])
                         ]))
@@ -483,12 +483,12 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(parse("class Foo {\n//sourcery:begin:func\n //sourcery: foo\nfunc foo(/* sourcery: annotationA */a: Int, /* sourcery: annotationB*/b: Int) {}\n//sourcery: bar\nfunc bar(/* sourcery: annotationA */a: Int, /* sourcery: annotationB*/b: Int) {}\n//sourcery:end}")).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "foo(a: Int, b: Int)", selectorName: "foo(a:b:)", parameters: [
-                                MethodParameter(name: "a", typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true), "func": NSNumber(value: true)]),
-                                MethodParameter(name: "b", typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true), "func": NSNumber(value: true)])
+                                MethodParameter(name: "a", index: 0, typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true), "func": NSNumber(value: true)]),
+                                MethodParameter(name: "b", index: 1, typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true), "func": NSNumber(value: true)])
                                 ], annotations: ["foo": NSNumber(value: true), "func": NSNumber(value: true)], definedInTypeName: TypeName(name: "Foo")),
                             Method(name: "bar(a: Int, b: Int)", selectorName: "bar(a:b:)", parameters: [
-                                MethodParameter(name: "a", typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true), "func": NSNumber(value: true)]),
-                                MethodParameter(name: "b", typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true), "func": NSNumber(value: true)])
+                                MethodParameter(name: "a", index: 0, typeName: TypeName(name: "Int"), annotations: ["annotationA": NSNumber(value: true), "func": NSNumber(value: true)]),
+                                MethodParameter(name: "b", index: 1, typeName: TypeName(name: "Int"), annotations: ["annotationB": NSNumber(value: true), "func": NSNumber(value: true)])
                                 ], annotations: ["bar": NSNumber(value: true), "func": NSNumber(value: true)], definedInTypeName: TypeName(name: "Foo"))
                             ])
                         ]))
@@ -507,10 +507,10 @@ class FileParserMethodsSpec: QuickSpec {
                     expect(parsed).to(equal([
                         Class(name: "Foo", methods: [
                             Method(name: "foo(paramA: String, paramB: String, paramC: String, paramD: String)", selectorName: "foo(paramA:paramB:paramC:paramD:)", parameters: [
-                                MethodParameter(name: "paramA", typeName: TypeName(name: "String"), annotations: ["anAnnotation": "PARAM A AND METHOD ONLY" as NSString]),
-                                MethodParameter(name: "paramB", typeName: TypeName(name: "String"), annotations: ["testAnnotation": "PARAM B ONLY" as NSString]),
-                                MethodParameter(name: "paramC", typeName: TypeName(name: "String"), annotations: ["anotherAnnotation": "PARAM C ONLY" as NSString]),
-                                MethodParameter(name: "paramD", typeName: TypeName(name: "String"), annotations: [:]),
+                                MethodParameter(name: "paramA", index: 0, typeName: TypeName(name: "String"), annotations: ["anAnnotation": "PARAM A AND METHOD ONLY" as NSString]),
+                                MethodParameter(name: "paramB", index: 1, typeName: TypeName(name: "String"), annotations: ["testAnnotation": "PARAM B ONLY" as NSString]),
+                                MethodParameter(name: "paramC", index: 2, typeName: TypeName(name: "String"), annotations: ["anotherAnnotation": "PARAM C ONLY" as NSString]),
+                                MethodParameter(name: "paramD", index: 3, typeName: TypeName(name: "String"), annotations: [:]),
                             ], annotations: ["anAnnotation": "PARAM A AND METHOD ONLY" as NSString], definedInTypeName: TypeName(name: "Foo"))
                         ])]))
                 }

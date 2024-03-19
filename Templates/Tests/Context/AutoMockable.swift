@@ -83,6 +83,10 @@ protocol MultiNonEscapingClosureProtocol: AutoMockable {
     func executeClosure(name: String, _ closure: () -> Void)
 }
 
+protocol MultiExistentialArgumentsClosureProtocol: AutoMockable {
+    func execute(completion: ((any StubWithSomeNameProtocol)?, any StubWithSomeNameProtocol) -> (any StubWithSomeNameProtocol)?)
+}
+
 /// sourcery: AutoMockable
 protocol AnnotatedProtocol {
     func sayHelloWith(name: String)

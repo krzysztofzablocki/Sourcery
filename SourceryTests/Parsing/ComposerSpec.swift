@@ -434,11 +434,13 @@ class ParserComposerSpec: QuickSpec {
                         beforeEach {
                             method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
                                             parameters: [MethodParameter(name: "bar",
+                                                                         index: 0,
                                                                          typeName: TypeName(name: "String"))],
                                             returnTypeName: TypeName(name: "Void"),
                                             definedInTypeName: TypeName(name: "Foo"))
                             defaultedMethod = Method(name: "fooMethod(bar: String = \"Baz\")", selectorName: "fooMethod(bar:)",
                                                      parameters: [MethodParameter(name: "bar",
+                                                                                  index: 0,
                                                                                   typeName: TypeName(name: "String"),
                                                                                   defaultValue: "\"Baz\"")],
                                                      returnTypeName: TypeName(name: "Void"),
@@ -569,6 +571,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 definedInTypeName: TypeName(name: "Foo"))],
                                                            methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
+                                                                                                         index: 0,
                                                                                                          typeName: TypeName(name: "String"))],
                                                                             returnTypeName: TypeName(name: "Foo?"),
                                                                             isStatic: true,
@@ -593,7 +596,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isStatic: false,
                                                                                 definedInTypeName: TypeName(name: "Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName(name: "RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", index: 0, typeName: TypeName(name: "RawValue"))],
                                                                             returnTypeName: TypeName(name: "Foo?"),
                                                                             isStatic: true,
                                                                             isFailableInitializer: true,
@@ -617,7 +620,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isStatic: false,
                                                                                 definedInTypeName: TypeName(name: "Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName(name: "RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", index: 0, typeName: TypeName(name: "RawValue"))],
                                                                             returnTypeName: TypeName(name: "Foo?"),
                                                                             isStatic: true,
                                                                             isFailableInitializer: true,
@@ -1382,7 +1385,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given method parameter") {
                         it("replaces method parameter type alias with actual type") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName(name: "FooAlias", actualTypeName: TypeName(name: "Foo")), type: Class(name: "Foo"))
+                            let expectedMethodParameter = MethodParameter(name: "foo", index: 0, typeName: TypeName(name: "FooAlias", actualTypeName: TypeName(name: "Foo")), type: Class(name: "Foo"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: FooAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -1398,7 +1401,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName(name: "Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName(name: "Int"))
                                 ])
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName(name: "(FooAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
+                            let expectedMethodParameter = MethodParameter(name: "foo", index: 0, typeName: TypeName(name: "(FooAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: (FooAlias, Int)) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -1415,7 +1418,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName(name: "Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName(name: "Int"))
                                 ])
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName(name: "GlobalAlias", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
+                            let expectedMethodParameter = MethodParameter(name: "foo", index: 0, typeName: TypeName(name: "GlobalAlias", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some(foo: GlobalAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
