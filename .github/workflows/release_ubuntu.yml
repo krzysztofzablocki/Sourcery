@@ -25,7 +25,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref }}
       - name: Setup Swift
-        uses: YOCKOW/Action-setup-swift@main
+        uses: swift-actions/setup-swift@v2
         with:
           swift-version: "5.9.2"
       - name: Build it
