@@ -63,20 +63,26 @@ open class SwiftTemplate {
 
         var includedFiles: [Path] = []
         var outputFile = [String]()
+        outputFile.append(
+"""
+var bufferStr = ""
+"""
+        )
         for command in commands {
             switch command {
             case let .includeFile(path):
                 includedFiles.append(path)
             case let .output(code):
-                outputFile.append("print(\"\\(" + code + ")\", terminator: \"\");")
+                outputFile.append("bufferStr.append(\"\\(" + code + ")\");")
             case let .controlFlow(code):
                 outputFile.append("\(code)")
             case let .outputEncoded(code):
                 if !code.isEmpty {
-                    outputFile.append(("print(\"") + code.stringEncoded + "\", terminator: \"\");")
+                    outputFile.append(("bufferStr.append(\"") + code.stringEncoded + "\");")
                 }
             }
         }
+        outputFile.append("print(\"\\(bufferStr)\", terminator: \"\");")
 
         let contents = outputFile.joined(separator: "\n")
         let code = """
@@ -259,7 +265,6 @@ open class SwiftTemplate {
         let compilationResult = try Process.runCommand(path: "/usr/bin/env",
                                                        arguments: arguments,
                                                        currentDirectoryPath: buildDir)
-
         if compilationResult.exitCode != EXIT_SUCCESS {
             throw [compilationResult.output, compilationResult.error]
                 .filter { !$0.isEmpty }
