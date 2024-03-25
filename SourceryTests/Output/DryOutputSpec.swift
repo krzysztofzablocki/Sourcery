@@ -119,7 +119,7 @@ class DryOutputSpec: QuickSpec {
                 outputDir = Stubs.cleanTemporarySourceryDir()
 
                 let templatePath = Stubs.templateDirectory + Path("Include.stencil")
-                let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
+                let expectedResult = "// Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery\n" +
                 "// DO NOT EDIT\n" +
                 "partial template content\n"
 
@@ -191,7 +191,7 @@ guard lhs.n == rhs.n else { return false }
                 expect(templatePathResult)
                     .to(equal(
 """
-// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swiftlint:disable file_length
@@ -241,7 +241,7 @@ guard lhs.bar == rhs.bar else { return false }
 #if canImport(ObjectiveC)
                 expect(outputInterceptor.result(byOutputType: .init(id: "Generated/EqEnum+TemplateName.generated.swift", subType: .path)).value)
                     .to(equal("""
-// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // MARK: - EqEnum AutoEquatable
 extension EqEnum: Equatable {}

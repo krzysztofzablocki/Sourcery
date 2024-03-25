@@ -1,4 +1,4 @@
-// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // Typealiases in BarBaz
 // - name 'List', type '[FooBarBaz]'

@@ -136,7 +136,7 @@ class SourcerySpecTests: QuickSpec {
 
                     it("removes code from within generated template") {
                         let expectedResult = """
-                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
                             // DO NOT EDIT
 
                             // Line One
@@ -162,7 +162,7 @@ class SourcerySpecTests: QuickSpec {
                         expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                         let expectedResult = """
-                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
                             // DO NOT EDIT
 
                             // Line One
@@ -966,7 +966,7 @@ class SourcerySpecTests: QuickSpec {
 
                     it("replaces placeholder with generated code") {
                         let expectedResult = """
-                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
                             // DO NOT EDIT
                             extension Foo {
                             var property = 2
@@ -983,7 +983,7 @@ class SourcerySpecTests: QuickSpec {
 
                     it("removes code from within generated template") {
                         let expectedResult = """
-                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
                             // DO NOT EDIT
 
                             // Line One
@@ -1028,7 +1028,7 @@ class SourcerySpecTests: QuickSpec {
                             """, in: templatePath)
 
                         let expectedResult = """
-                            // Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
                             // DO NOT EDIT
                             extension Foo {
                             var property1 = 1
