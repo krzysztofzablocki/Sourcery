@@ -292,7 +292,7 @@ class StencilTemplateSpec: QuickSpec {
                 outputDir = Stubs.cleanTemporarySourceryDir()
 
                 let templatePath = Stubs.templateDirectory + Path("Include.stencil")
-                let expectedResult = "// Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery\n" +
+                let expectedResult = "// Generated using Sourcery Major.Minor.Patch — https://github.com/krzysztofzablocki/Sourcery\n" +
                     "// DO NOT EDIT\n" +
                 "partial template content\n"
 
