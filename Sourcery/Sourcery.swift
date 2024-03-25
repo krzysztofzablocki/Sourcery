@@ -19,8 +19,15 @@ import XcodeProj
 public class Sourcery {
     public static let version: String = SourceryVersion.current.value
     public static let generationMarker: String = "// Generated using Sourcery"
-    public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
-        + "// DO NOT EDIT\n"
+    private (set) public lazy var generationHeader = {
+        var prefix = Sourcery.generationMarker
+        if !hideVersionHeader {
+            prefix += " \(Sourcery.version)"
+        }
+        var header = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
+            + "// DO NOT EDIT\n"
+        return header
+    }()
 
     enum Error: Swift.Error {
         case containsMergeConflictMarkers
@@ -34,6 +41,7 @@ public class Sourcery {
     fileprivate let buildPath: Path?
     fileprivate let prune: Bool
     fileprivate let serialParse: Bool
+    fileprivate var hideVersionHeader: Bool
 
     fileprivate var status = ""
     fileprivate var templatesPaths = Paths(include: [])
@@ -47,7 +55,7 @@ public class Sourcery {
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
     /// Creates Sourcery processor
-  public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, buildPath: Path? = nil, prune: Bool = false, serialParse: Bool = false, arguments: [String: NSObject] = [:]) {
+  public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, buildPath: Path? = nil, prune: Bool = false, serialParse: Bool = false, hideVersionHeader: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
@@ -56,6 +64,7 @@ public class Sourcery {
         self.buildPath = buildPath
         self.prune = prune
         self.serialParse = serialParse
+        self.hideVersionHeader = hideVersionHeader
     }
 
     /// Processes source files and generates corresponding code.
@@ -613,7 +622,7 @@ extension Sourcery {
         let resultIsEmpty = result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         var result = result
         if !resultIsEmpty, outputPath.extension == "swift" {
-            result = Sourcery.generationHeader + result
+            result = self.generationHeader + result
         }
 
         if isDryRun {

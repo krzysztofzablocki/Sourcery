@@ -148,6 +148,25 @@ class SourcerySpecTests: QuickSpec {
                         expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
                     }
 
+                    context("with hide version from header enabled") {
+                        beforeEach {
+                            expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, hideVersionHeader: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        }
+                        it("removes version information from within generated template") {
+                        let expectedResult = """
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            // Line One
+                            """
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                        }
+                    }
+
                     it("does not remove code from within generated template when missing origin") {
                         update(code: """
                             class Foo {
@@ -1132,14 +1151,14 @@ class SourcerySpecTests: QuickSpec {
 
                     it("re-generates on template change") {
                         updateTemplate(code: "Found {{ types.enums.count }} Enums")
-
-                        expect { watcher = try Sourcery(watcherEnabled: true, cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [tmpTemplate]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        let sourcery = Sourcery(watcherEnabled: true, cacheDisabled: true)
+                        expect { watcher = try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [tmpTemplate]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                         // ! Change the template
                         updateTemplate(code: "Found {{ types.all.count }} Types")
 
                         let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate)).read(.utf8)) }
-                        expect(result()).toEventually(contain("\(Sourcery.generationHeader)Found 3 Types"))
+                        expect(result()).toEventually(contain("\(sourcery.generationHeader)Found 3 Types"))
 
                         _ = watcher
                     }
