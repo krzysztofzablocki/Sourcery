@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Quick
 import Nimble
