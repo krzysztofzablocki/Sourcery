@@ -19,15 +19,7 @@ import XcodeProj
 public class Sourcery {
     public static let version: String = SourceryVersion.current.value
     public static let generationMarker: String = "// Generated using Sourcery"
-    private (set) public lazy var generationHeader = {
-        var prefix = Sourcery.generationMarker
-        if !hideVersionHeader {
-            prefix += " \(Sourcery.version)"
-        }
-        var header = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
-            + "// DO NOT EDIT\n"
-        return header
-    }()
+    public let generationHeader: String
 
     enum Error: Swift.Error {
         case containsMergeConflictMarkers
@@ -65,6 +57,13 @@ public class Sourcery {
         self.prune = prune
         self.serialParse = serialParse
         self.hideVersionHeader = hideVersionHeader
+
+        var prefix = Sourcery.generationMarker
+        if !hideVersionHeader {
+          prefix += " \(Sourcery.version)"
+        }
+        self.generationHeader = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
+        + "// DO NOT EDIT\n"
     }
 
     /// Processes source files and generates corresponding code.
