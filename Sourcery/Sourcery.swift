@@ -622,7 +622,7 @@ extension Sourcery {
         let resultIsEmpty = result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         var result = result
         if !resultIsEmpty, outputPath.extension == "swift" {
-            result = self.generationHeader + result
+            result = generationHeader + result
         }
 
         if isDryRun {
