@@ -174,7 +174,7 @@ class SwiftTemplateTests: QuickSpec {
                     }
                     .to(throwError(closure: { (error) in
                         let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
-                        expect("\(error)").to(contain("\(path):10:11: error: missing argument for parameter #1 in call\nprint(\"\\( )\", terminator: \"\");\n          ^\n"))
+                        expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call\nsourceryBuffer.append(\"\\( )\");\n                          ^\n"))
                     }))
             }
 
@@ -194,7 +194,7 @@ class SwiftTemplateTests: QuickSpec {
                     try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
-                        expect("\(error)").to(contain("\(templatePath): SwiftTemplate/main.swift:10: Fatal error: Template not implemented"))
+                        expect("\(error)").to(contain("\(templatePath): SwiftTemplate/main.swift:11: Fatal error: Template not implemented"))
                     }))
             }
 

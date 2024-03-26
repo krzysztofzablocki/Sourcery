@@ -63,26 +63,28 @@ open class SwiftTemplate {
 
         var includedFiles: [Path] = []
         var outputFile = [String]()
-        outputFile.append(
-"""
-var bufferStr = ""
-"""
-        )
+        var hasContents = false
         for command in commands {
             switch command {
             case let .includeFile(path):
                 includedFiles.append(path)
             case let .output(code):
-                outputFile.append("bufferStr.append(\"\\(" + code + ")\");")
+                outputFile.append("sourceryBuffer.append(\"\\(" + code + ")\");")
+                hasContents = true
             case let .controlFlow(code):
                 outputFile.append("\(code)")
+                hasContents = true
             case let .outputEncoded(code):
                 if !code.isEmpty {
-                    outputFile.append(("bufferStr.append(\"") + code.stringEncoded + "\");")
+                    outputFile.append(("sourceryBuffer.append(\"") + code.stringEncoded + "\");")
+                    hasContents = true
                 }
             }
         }
-        outputFile.append("print(\"\\(bufferStr)\", terminator: \"\");")
+        if hasContents {
+            outputFile.insert("var sourceryBuffer = \"\";", at: 0)
+        }
+        outputFile.append("print(\"\\(sourceryBuffer)\", terminator: \"\");")
 
         let contents = outputFile.joined(separator: "\n")
         let code = """
