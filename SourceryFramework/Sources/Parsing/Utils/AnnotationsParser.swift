@@ -199,8 +199,10 @@ public struct AnnotationsParser {
         if prefix.isEmpty {
             shouldUsePositionBeforeTrailing = true
             (prefix, sourceLine) = findPrefix(positionBeforeTrailingTrivia, shouldUsePositionBeforeTrailing)
-            if shouldUsePositionBeforeTrailing {
+            if shouldUsePositionBeforeTrailing && !prefix.isEmpty {
                 position = positionBeforeTrailingTrivia
+            } else {
+                shouldUsePositionBeforeTrailing = false
             }
         }
         guard !prefix.isEmpty else { return ([:], shouldUsePositionBeforeTrailing) }
