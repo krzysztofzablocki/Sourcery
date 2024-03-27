@@ -456,6 +456,20 @@ class FileParserMethodsSpec: QuickSpec {
                         ]))
                 }
 
+                it("extracts method annotations from initializers") {
+                    expect(parse("""
+                    class Foo {
+                        // sourcery: annotation
+                        init() {
+                        }
+                    }
+                    """)).to(equal([
+                        Class(name: "Foo", methods: [
+                                Method(name: "init()", selectorName: "init", returnTypeName: TypeName(name: "Foo"), isStatic: true, annotations: ["annotation": NSNumber(value: true)], definedInTypeName: TypeName(name: "Foo"))
+                            ])
+                        ]))
+                }
+
                 it("extracts method inline annotations") {
                     expect(parse("class Foo {\n /* sourcery: annotation */func foo() {} }")).to(equal([
                         Class(name: "Foo", methods: [
