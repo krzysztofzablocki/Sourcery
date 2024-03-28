@@ -1590,6 +1590,39 @@ class ParserComposerSpec: QuickSpec {
                             ]))
                         }
 
+                        it("should deconstruct compositions of class and protocol for implements") {
+                            let expectedProtocol = Protocol(name: "Foo")
+                            let type = parse("protocol Foo {}; class Bar {}; class Implements: Bar & Foo {}").last as? Class
+
+                            expect(type?.implements).to(equal([
+                                expectedProtocol.name: expectedProtocol
+                            ]))
+                        }
+
+                        it("should deconstruct compositions of class and protocol for based") {
+                            let expectedProtocol = Protocol(name: "Foo")
+                            let expectedClass = Class(name: "Bar")
+                            let expectedProtocolComposition = ProtocolComposition(name: "Bar & Foo", inheritedTypes: ["Bar", "Foo"], composedTypeNames: [TypeName(name: "Bar"), TypeName(name: "Foo")], composedTypes: [expectedClass, expectedProtocol])
+
+                            let type = parse("protocol Foo {}; class Bar {}; class Implements: Bar & Foo {}").last as? Class
+
+                            expect(type?.based).to(equal([
+                                expectedClass.name: expectedClass.name,
+                                expectedProtocol.name: expectedProtocol.name,
+                                expectedProtocolComposition.name: expectedProtocolComposition.name
+                            ]))
+                        }
+
+                        it("should deconstruct compositions of class and protocol for inherits") {
+                            let expectedClass = Class(name: "Bar")
+
+                            let type = parse("protocol Foo {}; class Bar {}; class Implements: Bar & Foo {}").last as? Class
+
+                            expect(type?.inherits).to(equal([
+                                expectedClass.name: expectedClass
+                            ]))
+                        }
+
                         it("should deconstruct compositions of protocols and classes for implements and inherits") {
                             let expectedProtocol = Protocol(name: "Foo")
                             let expectedClass = Class(name: "Bar")
@@ -1599,8 +1632,7 @@ class ParserComposerSpec: QuickSpec {
                             let type = parse("typealias GlobalComposition = Foo & Bar; protocol Foo {}; class Bar {}; class Implements: GlobalComposition {}").last as? Class
 
                             expect(type?.implements).to(equal([
-                                expectedProtocol.name: expectedProtocol,
-                                expectedProtocolComposition.name: expectedProtocolComposition
+                                expectedProtocol.name: expectedProtocol
                             ]))
 
                             expect(type?.inherits).to(equal([

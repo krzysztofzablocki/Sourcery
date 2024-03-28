@@ -210,7 +210,7 @@ public enum Composer {
         }
     }
 
-    private static func findBaseType(for type: Type, name: String, typesByName: [String: Type]) -> Type? {
+    internal static func findBaseType(for type: Type, name: String, typesByName: [String: Type]) -> Type? {
         // special case to check if the type is based on one of the recognized types
         // and the superclass has a generic constraint in `name` part of the `TypeName`
         var name = name
@@ -229,7 +229,16 @@ public enum Composer {
                 return baseType
             }
         }
-        return nil
+        guard name.contains("&") else { return nil }
+        // this can happen for a type which consists of mutliple types composed together (i.e. (A & B))
+        let nameComponents = name.components(separatedBy: "&").map { $0.trimmingCharacters(in: .whitespaces) }
+        let types: [Type] = nameComponents.compactMap {
+            typesByName[$0]
+        }
+        let typeNames = types.map {
+            TypeName(name: $0.name)
+        }
+        return ProtocolComposition(name: name, inheritedTypes: types.map { $0.globalName }, composedTypeNames: typeNames, composedTypes: types)
     }
 
     private static func updateTypeRelationship(for type: Type, typesByName: [String: Type], processed: inout [String: Bool]) {
@@ -240,29 +249,42 @@ public enum Composer {
                 processed[globalName] = true
                 updateTypeRelationship(for: baseType, typesByName: typesByName, processed: &processed)
             }
-
-            baseType.based.keys.forEach { type.based[$0] = $0 }
-            baseType.basedTypes.forEach { type.basedTypes[$0.key] = $0.value }
-            baseType.inherits.forEach { type.inherits[$0.key] = $0.value }
-            baseType.implements.forEach { type.implements[$0.key] = $0.value }
-
-            if baseType is Class {
-                type.inherits[globalName] = baseType
-            } else if let baseProtocol = baseType as? SourceryProtocol {
-                type.implements[globalName] = baseProtocol
-                if let extendingProtocol = type as? SourceryProtocol {
-                    baseProtocol.associatedTypes.forEach {
-                        if extendingProtocol.associatedTypes[$0.key] == nil {
-                            extendingProtocol.associatedTypes[$0.key] = $0.value
-                        }
-                    }
+            copyTypeRelationships(from: baseType, to: type)
+            if let composedType = baseType as? ProtocolComposition {
+                let implements = composedType.composedTypes?.filter({ $0 is SourceryProtocol })
+                implements?.forEach { updateInheritsAndImplements(from: $0, to: type) }
+                if implements?.count == composedType.composedTypes?.count
+                    || composedType.composedTypes == nil
+                    || composedType.composedTypes?.isEmpty == true
+                {
+                    type.implements[globalName] = baseType
                 }
-            } else if baseType is ProtocolComposition {
-                // TODO: associated types?
-                type.implements[globalName] = baseType
+            } else {
+                updateInheritsAndImplements(from: baseType, to: type)
             }
-
             type.basedTypes[globalName] = baseType
         }
+    }
+
+    private static func updateInheritsAndImplements(from baseType: Type, to type: Type) {
+        if baseType is Class {
+            type.inherits[baseType.name] = baseType
+        } else if let `protocol` = baseType as? SourceryProtocol {
+            type.implements[baseType.name] = baseType
+            if let extendingProtocol = type as? SourceryProtocol {
+                `protocol`.associatedTypes.forEach {
+                    if extendingProtocol.associatedTypes[$0.key] == nil {
+                        extendingProtocol.associatedTypes[$0.key] = $0.value
+                    }
+                }
+            }
+        }
+    }
+
+    private static func copyTypeRelationships(from baseType: Type, to type: Type) {
+        baseType.based.keys.forEach { type.based[$0] = $0 }
+        baseType.basedTypes.forEach { type.basedTypes[$0.key] = $0.value }
+        baseType.inherits.forEach { type.inherits[$0.key] = $0.value }
+        baseType.implements.forEach { type.implements[$0.key] = $0.value }
     }
 }
