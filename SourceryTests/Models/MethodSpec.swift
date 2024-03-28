@@ -60,6 +60,10 @@ class MethodSpec: QuickSpec {
                 expect(Method(name: "foo()").isGeneric).to(beFalse())
             }
 
+            it("reports distributed method") {
+                expect(Method(name: "foo()", modifiers: [.init(name: "distributed")]).isDistributed).to(beTrue())
+            }
+
             it("has correct access level") {
                 expect(Method(name: "foo<T>()", accessLevel: .package).accessLevel == AccessLevel.package.rawValue).to(beTrue())
                 expect(Method(name: "foo<T>()", accessLevel: .open).accessLevel == AccessLevel.package.rawValue).to(beFalse())

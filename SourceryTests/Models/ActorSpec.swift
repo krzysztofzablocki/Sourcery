@@ -13,7 +13,7 @@ class ActorSpec: QuickSpec {
             var sut: Type?
 
             beforeEach {
-                sut = Actor(name: "Foo", variables: [], inheritedTypes: [])
+                sut = Actor(name: "Foo", variables: [], inheritedTypes: [], modifiers: [.init(name: "distributed")])
             }
 
             afterEach {
@@ -22,6 +22,10 @@ class ActorSpec: QuickSpec {
 
             it("reports kind as actor") {
                 expect(sut?.kind).to(equal("actor"))
+            }
+
+            it("reports is distributed as true") {
+                expect((sut as? Actor)?.isDistributed).to(beTrue())
             }
         }
     }
