@@ -102,6 +102,11 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// Whether method is async method
     public let isAsync: Bool
 
+    /// Whether method is distributed
+    public var isDistributed: Bool {
+        modifiers.contains(where: { $0.name == "distributed" })
+    }
+
     /// Whether method throws
     public let `throws`: Bool
 
@@ -270,7 +275,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("documentation = \(String(describing: self.documentation)), ")
         string.append("definedInTypeName = \(String(describing: self.definedInTypeName)), ")
         string.append("attributes = \(String(describing: self.attributes)), ")
-        string.append("modifiers = \(String(describing: self.modifiers))")
+        string.append("modifiers = \(String(describing: self.modifiers)), ")
         string.append("genericRequirements = \(String(describing: self.genericRequirements))")
         return string
     }
@@ -333,6 +338,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
         if self.isAsync != rhs.isAsync { return false }
+        if self.isDistributed != rhs.isDistributed { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.`rethrows` != rhs.`rethrows` { return false }
         if self.accessLevel != rhs.accessLevel { return false }

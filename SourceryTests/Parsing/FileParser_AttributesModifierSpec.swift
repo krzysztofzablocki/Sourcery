@@ -130,6 +130,8 @@ class FileParserAttributesSpec: QuickSpec {
                 expect(parse("actor Foo { nonisolated func bar() {} }").first?.methods.first?.isNonisolated).to(beTrue())
 
                 expect(parse("actor Foo { func bar() {} }").first?.methods.first?.isNonisolated).to(beFalse())
+                expect(parse("actor Foo { distributed func bar() {} }").first?.methods.first?.isDistributed).to(beTrue())
+                expect((parse("distributed actor Foo { distributed func bar() {} }").first as? Actor)?.isDistributed).to(beTrue())
             }
 
             it("extracts method parameter attributes") {

@@ -14,6 +14,11 @@ public final class Actor: Type {
         modifiers.contains { $0.name == "final" }
     }
 
+    /// Whether method is distributed method
+    public var isDistributed: Bool {
+        modifiers.contains(where: { $0.name == "distributed" })
+    }
+
     /// :nodoc:
     public override init(name: String = "",
                          parent: Type? = nil,
@@ -59,7 +64,8 @@ public final class Actor: Type {
         var string = super.description
         string.append(", ")
         string.append("kind = \(String(describing: self.kind)), ")
-        string.append("isFinal = \(String(describing: self.isFinal))")
+        string.append("isFinal = \(String(describing: self.isFinal)), ")
+        string.append("isDistributed = \(String(describing: self.isDistributed))")
         return string
     }
 

@@ -8,6 +8,7 @@ import JavaScriptCore
 @objc protocol ActorAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
+    var isDistributed: Bool { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -322,6 +323,7 @@ extension Import: ImportAutoJSExport {}
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
     var unwrappedReturnTypeName: String { get }
     var isAsync: Bool { get }
+    var isDistributed: Bool { get }
     var `throws`: Bool { get }
     var `rethrows`: Bool { get }
     var accessLevel: String { get }

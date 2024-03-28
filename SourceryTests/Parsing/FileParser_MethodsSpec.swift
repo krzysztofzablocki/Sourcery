@@ -152,6 +152,20 @@ class FileParserMethodsSpec: QuickSpec {
                         ]))
                 }
 
+                context("extracts distirbuted modifier") {
+                    it("as item in modifiers") {
+                        let method = parseFunctions("distributed func foo() {}")
+                        expect(method).to(equal([
+                            Method(name: "foo()", selectorName: "foo", parameters: [], modifiers: [.init(name: "distributed")])
+                        ]))
+                    }
+
+                    it("and reports isDistributed correctly") {
+                        let method = parseFunctions("distributed func foo() {}")
+                        expect(method.first?.isDistributed).to(beTrue())
+                    }
+                }
+
                 it("extracts static method properly") {
                     expect(parse("class Foo { static func foo() {} }")).to(equal([
                         Class(name: "Foo", methods: [
