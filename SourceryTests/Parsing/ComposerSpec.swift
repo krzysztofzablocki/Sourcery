@@ -1626,8 +1626,6 @@ class ParserComposerSpec: QuickSpec {
                         it("should deconstruct compositions of protocols and classes for implements and inherits") {
                             let expectedProtocol = Protocol(name: "Foo")
                             let expectedClass = Class(name: "Bar")
-                            let expectedProtocolComposition = ProtocolComposition(name: "GlobalComposition", inheritedTypes: ["Foo", "Bar"], composedTypeNames: [TypeName(name: "Foo"), TypeName(name: "Bar")])
-                            expectedProtocolComposition.inherits = ["Bar": expectedClass]
 
                             let type = parse("typealias GlobalComposition = Foo & Bar; protocol Foo {}; class Bar {}; class Implements: GlobalComposition {}").last as? Class
 
