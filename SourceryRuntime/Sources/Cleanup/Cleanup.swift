@@ -5,7 +5,13 @@
 
 import Foundation
 
-
+extension Protocol {
+    public override func cleanUp() {
+        super.cleanUp()
+        self.associatedTypes = [:]
+        self.genericRequirements = []
+    }
+}
 
 extension Type {
     

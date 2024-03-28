@@ -17,12 +17,6 @@ public typealias SourceryProtocol = Protocol
 #endif
 public final class Protocol: Type {
 
-    public override func cleanUp() {
-        super.cleanUp()
-        self.associatedTypes = [:]
-        self.genericRequirements = []
-    }
-    
     /// Returns "protocol"
     public override var kind: String { return "protocol" }
 
