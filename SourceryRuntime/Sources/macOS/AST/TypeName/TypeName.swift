@@ -160,13 +160,6 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
 //              .joined(separator: ", ")
 //            description.append("<\(arguments)>")
 //        }
-        if !specialTreatment {
-            if isImplicitlyUnwrappedOptional {
-                description.append("!")
-            } else if isOptional {
-                description.append("?")
-            }
-        }
 
         return description
     }
