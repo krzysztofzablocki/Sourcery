@@ -605,7 +605,7 @@ This is a breaking change for template code like this:
 - Fixed removing back ticks in types names
 - Fixed creating output folder if it does not exist
 - Fixed inferring variable types with closures and improved inferring types of enum default values
-- Fixed enum cases with empty parenthesis not having () associated value
+- Fixed enum cases with empty parentheses not having () associated value
 
 ## 0.10.1
 
