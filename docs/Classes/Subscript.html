@@ -17,7 +17,7 @@
     <a title="Subscript Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Sourcery 2.0.1 Docs</a> (100% documented)</p>
+        <p><a href="../index.html">Sourcery 2.1.8 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="../search.json">
@@ -172,6 +172,9 @@
                 <a href="../Classes/DiffableResult.html">DiffableResult</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/GenericParameter.html">GenericParameter</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
               <li class="nav-group-task">
@@ -182,6 +185,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/Modifier.html">Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SetType.html">SetType</a>
               </li>
             </ul>
           </li>
@@ -200,10 +206,19 @@
                 <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/StringProtocol.html">StringProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Typealias.html">Typealias</a>
               </li>
             </ul>
           </li>
@@ -248,7 +263,8 @@
                 <div class="language">
                   
                   <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Subscript</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Definition.html">Definition</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Subscript</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="../Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Definition.html">Definition</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Subscript</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                 </div>
               </div>
@@ -532,6 +548,60 @@ For immutable variables this value is empty string</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)isAsync"></a>
+                    <a name="//apple_ref/swift/Property/isAsync" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)isAsync">isAsync</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether subscript is async</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">isAsync</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)throws"></a>
+                    <a name="//apple_ref/swift/Property/throws" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)throws">throws</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether subscript throws</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">let</span> <span class="err">`</span><span class="k">throws</span><span class="err">`</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)isMutable"></a>
                     <a name="//apple_ref/swift/Property/isMutable" class="dashAnchor"></a>
                     <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)isMutable">isMutable</a>
@@ -740,6 +810,150 @@ nil if defined outside of any <code>enum</code>, <code>struct</code>, <code>clas
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">modifiers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime0A8Modifiera">SourceryModifier</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)genericParameters"></a>
+                    <a name="//apple_ref/swift/Property/genericParameters" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)genericParameters">genericParameters</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>list of generic parameters</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">genericParameters</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/GenericParameter.html">GenericParameter</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)genericRequirements"></a>
+                    <a name="//apple_ref/swift/Property/genericRequirements" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)genericRequirements">genericRequirements</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>list of generic requirements</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">genericRequirements</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/GenericRequirement.html">GenericRequirement</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@SourceryRuntime@objc(cs)Subscript(py)isGeneric"></a>
+                    <a name="//apple_ref/swift/Property/isGeneric" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@SourceryRuntime@objc(cs)Subscript(py)isGeneric">isGeneric</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether subscript is generic or not</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isGeneric</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15SourceryRuntime9SubscriptC10parameters14returnTypeName11accessLevel7isAsync6throws17genericParameters0M12Requirements10attributes9modifiers11annotations13documentation09definedInfG0ACSayAA15MethodParameterCG_AA0fG0CAA06AccessI0O4read_AV5writetS2bSayAA07GenericW0CGSayAA18GenericRequirementCGSDySSSayAA9AttributeCGGSayAA8ModifierCGSDySSSo8NSObjectCGSaySSGATSgtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(parameters:returnTypeName:accessLevel:isAsync:throws:genericParameters:genericRequirements:attributes:modifiers:annotations:documentation:definedInTypeName:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15SourceryRuntime9SubscriptC10parameters14returnTypeName11accessLevel7isAsync6throws17genericParameters0M12Requirements10attributes9modifiers11annotations13documentation09definedInfG0ACSayAA15MethodParameterCG_AA0fG0CAA06AccessI0O4read_AV5writetS2bSayAA07GenericW0CGSayAA18GenericRequirementCGSDySSSayAA9AttributeCGGSayAA8ModifierCGSDySSSo8NSObjectCGSaySSGATSgtcfc">init(parameters:<wbr>returnTypeName:<wbr>accessLevel:<wbr>isAsync:<wbr>throws:<wbr>genericParameters:<wbr>genericRequirements:<wbr>attributes:<wbr>modifiers:<wbr>annotations:<wbr>documentation:<wbr>definedInTypeName:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">parameters</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/MethodParameter.html">MethodParameter</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+            <span class="nv">returnTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">,</span>
+            <span class="nv">accessLevel</span><span class="p">:</span> <span class="p">(</span><span class="nv">read</span><span class="p">:</span> <span class="kt">AccessLevel</span><span class="p">,</span> <span class="nv">write</span><span class="p">:</span> <span class="kt">AccessLevel</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="kd">internal</span><span class="p">,</span> <span class="o">.</span><span class="kd">internal</span><span class="p">),</span>
+            <span class="nv">isAsync</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="err">`</span><span class="k">throws</span><span class="err">`</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nv">genericParameters</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/GenericParameter.html">GenericParameter</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+            <span class="nv">genericRequirements</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/GenericRequirement.html">GenericRequirement</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+            <span class="nv">attributes</span><span class="p">:</span> <span class="kt">AttributeList</span> <span class="o">=</span> <span class="p">[:],</span>
+            <span class="nv">modifiers</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Other%20Typealiases.html#/s:15SourceryRuntime0A8Modifiera">SourceryModifier</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+            <span class="nv">annotations</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">]</span> <span class="o">=</span> <span class="p">[:],</span>
+            <span class="nv">documentation</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+            <span class="nv">definedInTypeName</span><span class="p">:</span> <span class="kt"><a href="../Classes/TypeName.html">TypeName</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF"></a>
+                    <a name="//apple_ref/swift/Method/diffAgainst(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15SourceryRuntime8DiffableP11diffAgainstyAA0C6ResultCypSgF">diffAgainst(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">diffAgainst</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/DiffableResult.html">DiffableResult</a></span></code></pre>
 
                         </div>
                       </div>

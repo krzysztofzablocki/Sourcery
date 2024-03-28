@@ -11,14 +11,15 @@ import SourceryRuntime
 import SourceryJS
 import SourcerySwift
 import SourceryStencil
+#if canImport(ObjectiveC)
 import TryCatch
+#endif
 import XcodeProj
 
 public class Sourcery {
     public static let version: String = SourceryVersion.current.value
     public static let generationMarker: String = "// Generated using Sourcery"
-    public static let generationHeader = "\(Sourcery.generationMarker) \(Sourcery.version) — https://github.com/krzysztofzablocki/Sourcery\n"
-        + "// DO NOT EDIT\n"
+    public let generationHeader: String
 
     enum Error: Swift.Error {
         case containsMergeConflictMarkers
@@ -32,6 +33,7 @@ public class Sourcery {
     fileprivate let buildPath: Path?
     fileprivate let prune: Bool
     fileprivate let serialParse: Bool
+    fileprivate var hideVersionHeader: Bool
 
     fileprivate var status = ""
     fileprivate var templatesPaths = Paths(include: [])
@@ -45,7 +47,7 @@ public class Sourcery {
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
     /// Creates Sourcery processor
-  public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, buildPath: Path? = nil, prune: Bool = false, serialParse: Bool = false, arguments: [String: NSObject] = [:]) {
+  public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, buildPath: Path? = nil, prune: Bool = false, serialParse: Bool = false, hideVersionHeader: Bool = false, arguments: [String: NSObject] = [:]) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
@@ -54,6 +56,14 @@ public class Sourcery {
         self.buildPath = buildPath
         self.prune = prune
         self.serialParse = serialParse
+        self.hideVersionHeader = hideVersionHeader
+
+        var prefix = Sourcery.generationMarker
+        if !hideVersionHeader {
+          prefix += " \(Sourcery.version)"
+        }
+        self.generationHeader = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
+        + "// DO NOT EDIT\n"
     }
 
     /// Processes source files and generates corresponding code.
@@ -77,8 +87,11 @@ public class Sourcery {
         case let .sources(paths):
             watchPaths = paths
         case let .projects(projects):
-            watchPaths = Paths(include: projects.map({ $0.root }),
-                               exclude: projects.flatMap({ $0.exclude }))
+            watchPaths = Paths(include: projects.map(\.root),
+                               exclude: projects.flatMap(\.exclude))
+        case let .packages(packages):
+            watchPaths = Paths(include: packages.flatMap({ $0.targets.map(\.root) }),
+                               exclude: packages.flatMap({ $0.targets.flatMap(\.excludes) }))
         }
 
         let process: (Source) throws -> ParsingResult = { source in
@@ -106,6 +119,11 @@ public class Sourcery {
                     }
                 }
                 result = try self.parse(from: paths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
+            case let .packages(packages):
+                let paths: [Path] = packages.flatMap({ $0.targets.map(\.root) })
+                let excludePaths: [Path] = packages.flatMap({ $0.targets.flatMap(\.excludes) })
+                let modules = packages.flatMap({ $0.targets.map(\.name) })
+                result = try self.parse(from: paths, exclude: excludePaths, forceParse: forceParse, parseDocumentation: parseDocumentation, modules: modules, requiresFileParserCopy: hasSwiftTemplates)
             }
 
             try self.generate(source: source, templatePaths: templatesPaths, output: output, parsingResult: &result, forceParse: forceParse, baseIndentation: baseIndentation)
@@ -128,7 +146,7 @@ public class Sourcery {
         }
 
         Log.info("Starting watching sources.")
-
+#if canImport(ObjectiveC)
         let sourceWatchers = topPaths(from: watchPaths.allPaths).map({ watchPath in
             return FolderWatcher.Local(path: watchPath.string) { events in
                 let eventPaths: [Path] = events
@@ -181,6 +199,9 @@ public class Sourcery {
         })
 
         return Array([sourceWatchers, templateWatchers].joined())
+#else
+        return []
+#endif
     }
 
     private func topPaths(from paths: [Path]) -> [Path] {
@@ -229,18 +250,25 @@ public class Sourcery {
         }
     }
 
-    fileprivate func templates(from: Paths) throws -> [Template] {
+    private func templatePaths(from: Paths) -> [Path] {
+        return from.allPaths.filter { $0.isTemplateFile }
+    }
+
+}
+
+#if canImport(ObjectiveC)
+private extension Sourcery {
+    func templates(from: Paths) throws -> [Template] {
         return try templatePaths(from: from).compactMap {
             if $0.extension == "sourcerytemplate" {
                 let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
                 switch template.instance.kind {
                 case .ejs:
-                    guard EJSTemplate.ejsPath != nil else {
+                    guard let ejsPath = EJSTemplate.ejsPath else {
                         Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
                         return nil
                     }
-                    return try JavaScriptTemplate(path: $0, templateString: template.instance.content)
-
+                    return try JavaScriptTemplate(path: $0, templateString: template.instance.content, ejsPath: ejsPath)
                 case .stencil:
                     return try StencilTemplate(path: $0, templateString: template.instance.content)
                 }
@@ -248,22 +276,34 @@ public class Sourcery {
                 let cachePath = cachesDir(sourcePath: $0)
                 return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
             } else if $0.extension == "ejs" {
-                guard EJSTemplate.ejsPath != nil else {
+                guard let ejsPath = EJSTemplate.ejsPath else {
                     Log.warning("Skipping template \($0). JavaScript templates require EJS path to be set manually when using Sourcery built with Swift Package Manager. Use `--ejsPath` command line argument to set it.")
                     return nil
                 }
-                return try JavaScriptTemplate(path: $0)
+                return try JavaScriptTemplate(path: $0, ejsPath: ejsPath)
             } else {
                 return try StencilTemplate(path: $0)
             }
         }
     }
-
-    private func templatePaths(from: Paths) -> [Path] {
-        return from.allPaths.filter { $0.isTemplateFile }
-    }
-
 }
+#else
+private extension Sourcery {
+    func templates(from: Paths) throws -> [Template] {
+        return try templatePaths(from: from).compactMap {
+            if $0.extension == "sourcerytemplate" {
+                let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
+                return try StencilTemplate(path: $0, templateString: template.instance.content)
+            } else if $0.extension == "swifttemplate" {
+                let cachePath = cachesDir(sourcePath: $0)
+                return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
+            } else {
+                return try StencilTemplate(path: $0)
+            }
+        }
+    }
+}
+#endif
 
 // MARK: - Parsing
 
@@ -375,7 +415,7 @@ extension Sourcery {
         let uniqueTypeStart = currentTimestamp()
 
         // ! All files have been scanned, time to join extensions with base class
-        let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult)
+        let (types, functions, typealiases) = Composer.uniqueTypesAndFunctions(parserResult, serial: serialParse)
 
 
         let filesThatHadToBeParsed = allResults
@@ -399,7 +439,7 @@ extension Sourcery {
         }
 
         let path = parser.path
-        let artifactsPath = cachesPath + "\(path.string.hash).srf"
+        let artifactsPath = cachesPath + "\(path.string.sha256()?.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? "\(path.string.hash)").srf"
 
         guard
             artifactsPath.exists,
@@ -425,8 +465,9 @@ extension Sourcery {
 
     private func load(artifacts: String, modifiedDate: Date, path: Path) -> FileParserResult? {
         var unarchivedResult: FileParserResult?
-        SwiftTryCatch.try({
 
+#if canImport(ObjectiveC)
+        SwiftTryCatch.try({
             // this deprecation can't be removed atm, new API is 10x slower
             if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
                 if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
@@ -436,6 +477,14 @@ extension Sourcery {
         }, catch: { _ in
             Log.warning("Failed to unarchive cache for \(path.string) due to error, re-parsing file")
         }, finallyBlock: {})
+#else
+            // this deprecation can't be removed atm, new API is 10x slower
+            if let unarchived = NSKeyedUnarchiver.unarchiveObject(withFile: artifacts) as? FileParserResult {
+                if unarchived.sourceryVersion == Sourcery.version, unarchived.modifiedDate == modifiedDate {
+                    unarchivedResult = unarchived
+                }
+            }
+#endif
 
         return unarchivedResult
     }
@@ -574,7 +623,7 @@ extension Sourcery {
         let resultIsEmpty = result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         var result = result
         if !resultIsEmpty, outputPath.extension == "swift" {
-            result = Sourcery.generationHeader + result
+            result = generationHeader + result
         }
 
         if isDryRun {
@@ -621,6 +670,7 @@ extension Sourcery {
         }
 
         var result: String = ""
+#if canImport(ObjectiveC)
         SwiftTryCatch.try({
             do {
                 result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
@@ -630,6 +680,13 @@ extension Sourcery {
         }, catch: { error in
             result = error?.description ?? ""
         }, finallyBlock: {})
+#else
+        do {
+                result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
+            } catch {
+                Log.error(error)
+            }
+#endif
 
         return try processRanges(in: parsingResult, result: result, outputPath: outputPath, forceParse: forceParse, baseIndentation: baseIndentation)
     }

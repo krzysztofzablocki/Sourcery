@@ -5,7 +5,7 @@ import SwiftSyntax
 extension Attribute {
     convenience init(_ attribute: AttributeSyntax) {
         var arguments = [String: NSObject]()
-        attribute.argument?.description
+        attribute.arguments?.description
           .split(separator: ",")
           .enumerated()
           .forEach { (idx, part) in
@@ -16,37 +16,18 @@ extension Attribute {
               case 1:
                   arguments["\(idx)"] = components[0].replacingOccurrences(of: "\"", with: "").trimmed as NSString
               default:
-                  Log.astError("Unrecognized attribute format \(attribute.argument?.description ?? "")")
+                  Log.astError("Unrecognized attribute format \(attribute.arguments?.description ?? "")")
                   return
               }
           }
 
-        self.init(name: attribute.attributeName.text.trimmed, arguments: arguments, description: attribute.withoutTrivia().description.trimmed)
-    }
-
-    convenience init(_ attribute: CustomAttributeSyntax) {
-        let nameText = attribute.tokens(viewMode: .fixedUp)
-            .first(where: \.tokenKind.isIdentifier)?
-            .text
-            .trimmed ?? ""
-
-        let arguments = attribute.argumentList?
-            .enumerated()
-            .reduce(into: [String: NSObject]()) { arguments, indexAndSyntax in
-                let (index, syntax) = indexAndSyntax
-                let (key, value) = syntax.keyAndValue
-                arguments[key ?? "\(index)"] = value as NSString
-            } ?? [:]
-
-        self.init(name: nameText, arguments: arguments, description: attribute.withoutTrivia().description.trimmed)
+        self.init(name: attribute.attributeName.description.trimmed, arguments: arguments,  description: attribute.withoutTrivia().description.trimmed)
     }
 
     static func from(_ attributes: AttributeListSyntax?) -> AttributeList {
         let array = attributes?
           .compactMap { syntax -> Attribute? in
             if let syntax = syntax.as(AttributeSyntax.self) {
-                return Attribute(syntax)
-            } else if let syntax = syntax.as(CustomAttributeSyntax.self) {
                 return Attribute(syntax)
             } else {
                 return nil
@@ -84,7 +65,7 @@ private extension TokenKind {
     }
 }
 
-private extension TupleExprElementSyntax {
+private extension LabeledExprSyntax {
     /// Returns key and value strings for a tuple element. If the tuple does not have an argument label,
     /// `nil` will be returned for the key.
     var keyAndValue: (key: String?, value: String) {

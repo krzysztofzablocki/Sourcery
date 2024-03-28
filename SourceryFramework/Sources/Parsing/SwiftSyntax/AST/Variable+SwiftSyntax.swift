@@ -20,25 +20,31 @@ extension Variable {
         var hadThrowable = false
 
         if let block = node
-          .accessor?
-          .as(AccessorBlockSyntax.self) {
+            .accessorBlock {
             enum Kind: Hashable {
                 case get(isAsync: Bool, throws: Bool)
                 case set
             }
 
-            let computeAccessors = Set(block.accessors.compactMap { accessor -> Kind? in
-                let kindRaw = accessor.accessorKind.text.trimmed
-                if kindRaw == "get" {
-                    return Kind.get(isAsync: accessor.fixedAsyncKeyword != nil, throws: accessor.fixedThrowsKeyword != nil)
-                }
-                
-                if kindRaw == "set" {
-                    return Kind.set
-                }
-                
-                return nil
-            })
+            let computeAccessors: Set<Kind>
+            switch block.accessors {
+            case .getter:
+              computeAccessors = [.get(isAsync: false, throws: false)]
+
+            case .accessors(let accessors):
+              computeAccessors = Set(accessors.compactMap { accessor -> Kind? in
+                  let kindRaw = accessor.accessorSpecifier.text.trimmed
+                  if kindRaw == "get" {
+                    return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsSpecifier != nil)
+                  }
+
+                  if kindRaw == "set" {
+                      return Kind.set
+                  }
+
+                  return nil
+              })
+            }
 
             if !computeAccessors.isEmpty {
                 if !computeAccessors.contains(Kind.set) {
@@ -56,17 +62,28 @@ extension Variable {
                     }
                 }
             }
-        } else if node.accessor != nil {
+        } else if node.accessorBlock != nil {
             hadGetter = true
         }
 
-        let isComputed = node.initializer == nil && hadGetter && !(visitingType is SourceryProtocol)
+        let isVisitingTypeSourceryProtocol = visitingType is SourceryProtocol
+        let isComputed = node.initializer == nil && hadGetter && !isVisitingTypeSourceryProtocol
         let isAsync = hadAsync
         let `throws` = hadThrowable
-        let isWritable = variableNode.letOrVarKeyword.tokens(viewMode: .fixedUp).contains { $0.tokenKind == .varKeyword } && (!isComputed || hadSetter)
+        let isWritable = variableNode.bindingSpecifier.tokens(viewMode: .fixedUp).contains { $0.tokenKind == .keyword(.var) } && (!isComputed || hadSetter)
 
-        let typeName = node.typeAnnotation.map { TypeName($0.type) } ??
-          node.initializer.flatMap { Self.inferType($0.value.description.trimmed) }
+        var typeName: TypeName? = node.typeAnnotation.map { TypeName($0.type) } ??
+        node.initializer.flatMap { Self.inferType($0.value.description.trimmed) }
+        if !isVisitingTypeSourceryProtocol {
+            // we are in a custom type, which may contain other types
+            // in order to assign correct type to the variable, we need to match
+            // all of the contained types against the variable type
+            if let matchingContainedType = visitingType?.containedTypes.first(where: {
+                $0.localName == typeName?.name
+            }) {
+                typeName = TypeName(matchingContainedType.name)
+            }
+        }
 
         self.init(
           name: node.pattern.withoutTrivia().description.trimmed,
@@ -80,8 +97,8 @@ extension Variable {
           defaultValue: node.initializer?.value.description.trimmingCharacters(in: .whitespacesAndNewlines),
           attributes: Attribute.from(variableNode.attributes),
           modifiers: modifiers.map(SourceryModifier.init),
-          annotations: annotationParser.annotations(fromToken: variableNode.letOrVarKeyword),
-          documentation: annotationParser.documentation(fromToken: variableNode.letOrVarKeyword),
+          annotations: annotationParser.annotations(fromToken: variableNode.bindingSpecifier),
+          documentation: annotationParser.documentation(fromToken: variableNode.bindingSpecifier),
           definedInTypeName: visitingType.map { TypeName($0.name) }
         )
     }
@@ -89,7 +106,7 @@ extension Variable {
     static func from(_ variableNode: VariableDeclSyntax, visitingType: Type?,
                      annotationParser: AnnotationsParser) -> [Variable] {
 
-        let modifiers = variableNode.modifiers?.map(Modifier.init) ?? []
+        let modifiers = variableNode.modifiers.map(Modifier.init)
         let baseModifiers = modifiers.baseModifiers(parent: visitingType)
 
         return variableNode.bindings.map { (node: PatternBindingSyntax) -> Variable in

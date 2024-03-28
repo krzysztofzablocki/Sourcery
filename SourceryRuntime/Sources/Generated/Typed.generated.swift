@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
@@ -18,6 +18,8 @@ extension AssociatedValue {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -36,6 +38,8 @@ extension ClosureParameter {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -54,6 +58,8 @@ extension MethodParameter {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -72,6 +78,8 @@ extension TupleElement {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -90,6 +98,8 @@ extension Typealias {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }
@@ -108,6 +118,8 @@ extension Variable {
     public var isClosure: Bool { return typeName.isClosure }
     /// Whether type is an array. Shorthand for `typeName.isArray`
     public var isArray: Bool { return typeName.isArray }
+    /// Whether type is a set. Shorthand for `typeName.isSet`
+    public var isSet: Bool { return typeName.isSet }
     /// Whether type is a dictionary. Shorthand for `typeName.isDictionary`
     public var isDictionary: Bool { return typeName.isDictionary }
 }

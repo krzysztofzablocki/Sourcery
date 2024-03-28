@@ -5,10 +5,10 @@ import Nimble
 
 class CodableContextTests: QuickSpec {
     override func spec() {
-
+#if canImport(ObjectiveC)
         let encoder: JSONEncoder = {
             let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             return encoder
         }()
 
@@ -24,9 +24,9 @@ class CodableContextTests: QuickSpec {
                     let encoded = try! encoder.encode(value)
                     expect(String(data: encoded, encoding: .utf8)).to(equal("""
                     {
-                      "type" : "someCase",
                       "id" : 0,
-                      "name" : "a"
+                      "name" : "a",
+                      "type" : "someCase"
                     }
                     """
                     ))
@@ -73,14 +73,15 @@ class CodableContextTests: QuickSpec {
                     let value = AssociatedValuesEnumNoCaseKey.someCase(id: 0, name: "a")
 
                     let encoded = try! encoder.encode(value)
-                    expect(String(data: encoded, encoding: .utf8)).to(equal("""
-                    {
-                      "someCase" : {
-                        "id" : 0,
-                        "name" : "a"
-                      }
-                    }
-                    """
+                    expect(String(data: encoded, encoding: .utf8)).to(equal(
+"""
+{
+  "someCase" : {
+    "id" : 0,
+    "name" : "a"
+  }
+}
+"""
                     ))
 
                     let decoded = try! decoder.decode(AssociatedValuesEnumNoCaseKey.self, from: encoded)
@@ -131,5 +132,6 @@ class CodableContextTests: QuickSpec {
                 }
             }
         }
+#endif
     }
 }

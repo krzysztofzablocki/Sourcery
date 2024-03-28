@@ -170,8 +170,14 @@ private extension RandomAccessCollection {
 }
 
 // swiftlint:disable:next line_length
-// https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/swift/grammar/line-break
-private let newlinesCharacterSet = CharacterSet(charactersIn: "\u{000A}\u{000D}")
+// According to https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/swift/grammar/line-break
+// there are 3 types of line breaks:
+// line-break → U+000A
+// line-break → U+000D
+// line-break → U+000D followed by U+000A
+private let carriageReturnCharacter = "\u{000D}"
+private let lineFeedCharacter = "\u{000A}"
+private let newlinesCharacters = carriageReturnCharacter + lineFeedCharacter
 
 /// Structure that precalculates lines for the specified string and then uses this information for
 /// ByteRange to NSRange and NSRange to ByteRange operations
@@ -200,6 +206,37 @@ public struct StringView {
         self.init(nsstring as String, nsstring)
     }
 
+    // parses the given string into lines. Lines are split using
+    //
+    /*
+     //sourcery: Annotation\n
+     @MainActor\r\n
+     protocol Something {\r\n
+       var variable: Bool { get }\r\n
+     }\n
+
+     First iteration:
+
+     [
+      "//sourcery: Annotation\n",
+      "@MainActor",
+      "protocol Something {",
+      "  var variable: Bool { get }",
+      "}\n"
+     ]
+
+     Second iteration:
+
+     [
+      "//sourcery: Annotation",
+      "",
+      "@MainActor",
+      "protocol Something {",
+      "  var variable: Bool { get }",
+      "}",
+      ""
+     ]
+     */
     private init(_ string: String, _ nsString: NSString) {
         self.string = string
         self.nsString = nsString
@@ -211,12 +248,15 @@ public struct StringView {
         var utf16CountSoFar = 0
         var bytesSoFar: ByteCount = 0
         var lines = [Line]()
-        let lineContents = string.components(separatedBy: newlinesCharacterSet)
+
+        let lineContents = string.components(separatedBy: newlinesCharacters)
+            .expandComponents(splitBy: lineFeedCharacter)
+
         // Be compatible with `NSString.getLineStart(_:end:contentsEnd:forRange:)`
         let endsWithNewLineCharacter: Bool
         if let lastChar = utf16View.last,
             let lastCharScalar = UnicodeScalar(lastChar) {
-            endsWithNewLineCharacter = newlinesCharacterSet.contains(lastCharScalar)
+            endsWithNewLineCharacter = newlinesCharacters.contains(Character(lastCharScalar))
         } else {
             endsWithNewLineCharacter = false
         }
@@ -487,4 +527,10 @@ public struct StringView {
         }
     }
 
+}
+
+private extension Array where Element == String {
+    func expandComponents(splitBy separator: String) -> [String] {
+        flatMap { $0.components(separatedBy: separator) }
+    }
 }

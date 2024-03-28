@@ -17,7 +17,7 @@
     <a title="Types  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 2.0.1 Docs</a> (100% documented)</p>
+        <p><a href="index.html">Sourcery 2.1.8 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -172,6 +172,9 @@
                 <a href="Classes/DiffableResult.html">DiffableResult</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/GenericParameter.html">GenericParameter</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
               <li class="nav-group-task">
@@ -182,6 +185,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/Modifier.html">Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/SetType.html">SetType</a>
               </li>
             </ul>
           </li>
@@ -200,10 +206,19 @@
                 <a href="Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
+                <a href="Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/StringProtocol.html">StringProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Typealias.html">Typealias</a>
               </li>
             </ul>
           </li>
@@ -271,7 +286,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Types</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Types</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Types</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -300,7 +316,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">class</span> <span class="k">Type</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="k">Type</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -446,7 +463,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">EnumCase</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">EnumCase</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">EnumCase</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -475,7 +493,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedValue</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedValue</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt">AutoDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AssociatedValue</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -505,6 +524,7 @@
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
 <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">AssociatedType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AssociatedType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -533,7 +553,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Variable</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Variable</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Variable</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -563,7 +584,8 @@
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objc(SwiftMethod)</span>
 <span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Method</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Method</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -592,7 +614,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="kt">MethodParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">MethodParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MethodParameter</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -621,7 +644,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Subscript</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Subscript</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Annotated.html">Annotated</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Documented.html">Documented</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Definition.html">Definition</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Subscript</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -650,7 +674,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypeName</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span><span class="p">,</span> <span class="kt">LosslessStringConvertible</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TypeName</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span><span class="p">,</span> <span class="kt">LosslessStringConvertible</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TypeName</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -679,7 +704,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TupleType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -708,7 +734,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleElement</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TupleElement</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Typed.html">Typed</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TupleElement</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -737,7 +764,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ArrayType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ArrayType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ArrayType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -766,7 +794,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">DictionaryType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">DictionaryType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">DictionaryType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -795,7 +824,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ClosureType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">ClosureType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ClosureType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -824,7 +854,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericType</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModelWithoutDescription</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericType</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -853,7 +884,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericTypeParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">GenericTypeParameter</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">SourceryModel</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GenericTypeParameter</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>
@@ -882,7 +914,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objcMembers</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="kt">Attribute</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">AutoCoding</span><span class="p">,</span> <span class="kt">AutoEquatable</span><span class="p">,</span> <span class="kt">AutoDiffable</span><span class="p">,</span> <span class="kt">AutoJSExport</span></code></pre>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">Attribute</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">AutoCoding</span><span class="p">,</span> <span class="kt">AutoEquatable</span><span class="p">,</span> <span class="kt">AutoDiffable</span><span class="p">,</span> <span class="kt">AutoJSExport</span><span class="p">,</span> <span class="kt"><a href="Protocols/Diffable.html">Diffable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Attribute</span><span class="p">:</span> <span class="kt">NSCoding</span></code></pre>
 
                         </div>
                       </div>

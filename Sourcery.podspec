@@ -1,8 +1,12 @@
 Pod::Spec.new do |s|
 
   s.name         = "Sourcery"
-  s.version      = "2.0.2"
+  s.version      = "2.1.8"
   s.summary      = "A tool that brings meta-programming to Swift, allowing you to code generate Swift code."
+  s.ios.deployment_target = '12'
+  s.osx.deployment_target = '10.15'
+  s.tvos.deployment_target = '12'
+  s.watchos.deployment_target = '4'
 
   s.description  = <<-DESC
                  A tool that brings meta-programming to Swift, allowing you to code generate Swift code.
@@ -19,7 +23,7 @@ Pod::Spec.new do |s|
   s.preserve_paths = '*'
   s.exclude_files = '**/file.zip'
 
-  s.subspec 'CLI-Only' do |ss|
-    ss.preserve_paths = 'bin'
+  s.subspec 'CLI-Only' do |subspec|
+    subspec.preserve_paths = "bin"
   end
 end

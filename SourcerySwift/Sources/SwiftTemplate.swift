@@ -63,27 +63,35 @@ open class SwiftTemplate {
 
         var includedFiles: [Path] = []
         var outputFile = [String]()
+        var hasContents = false
         for command in commands {
             switch command {
             case let .includeFile(path):
                 includedFiles.append(path)
             case let .output(code):
-                outputFile.append("print(\"\\(" + code + ")\", terminator: \"\");")
+                outputFile.append("sourceryBuffer.append(\"\\(" + code + ")\");")
+                hasContents = true
             case let .controlFlow(code):
                 outputFile.append("\(code)")
+                hasContents = true
             case let .outputEncoded(code):
                 if !code.isEmpty {
-                    outputFile.append(("print(\"") + code.stringEncoded + "\", terminator: \"\");")
+                    outputFile.append(("sourceryBuffer.append(\"") + code.stringEncoded + "\");")
+                    hasContents = true
                 }
             }
         }
+        if hasContents {
+            outputFile.insert("var sourceryBuffer = \"\";", at: 0)
+        }
+        outputFile.append("print(\"\\(sourceryBuffer)\", terminator: \"\");")
 
         let contents = outputFile.joined(separator: "\n")
         let code = """
         import Foundation
         import SourceryRuntime
 
-        let context = ProcessInfo().context!
+        let context = ProcessInfo.processInfo.context!
         let types = context.types
         let functions = context.functions
         let type = context.types.typesByName
@@ -235,20 +243,30 @@ open class SwiftTemplate {
         try includedFiles.forEach { includedFile in
             try includedFile.copy(templateFilesDir + Path(includedFile.lastComponent))
         }
-
+#if os(macOS)
         let arguments = [
             "xcrun",
             "--sdk", "macosx",
             "swift",
             "build",
             "-c", "release",
+            "-Xswiftc", "-Onone",
             "-Xswiftc", "-suppress-warnings",
             "--disable-sandbox"
         ]
+#else
+        let arguments = [
+            "swift",
+            "build",
+            "-c", "release",
+            "-Xswiftc", "-Onone",
+            "-Xswiftc", "-suppress-warnings",
+            "--disable-sandbox"
+        ]
+#endif
         let compilationResult = try Process.runCommand(path: "/usr/bin/env",
                                                        arguments: arguments,
                                                        currentDirectoryPath: buildDir)
-
         if compilationResult.exitCode != EXIT_SUCCESS {
             throw [compilationResult.output, compilationResult.error]
                 .filter { !$0.isEmpty }
@@ -282,7 +300,7 @@ open class SwiftTemplate {
         var contents = code
 
         // For every included file, make sure that the path and modification date are included in the key
-        let files = (includedFiles + buildDir.allPaths).map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
+        let files = includedFiles.map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
         for file in files {
             let hash = (try? file.read().sha256().base64EncodedString()) ?? ""
             contents += "\n// \(file.string)-\(hash)"
@@ -380,6 +398,12 @@ struct FolderSynchronizer {
     struct File {
         let name: String
         let content: String
+
+        init(name: String, content: String) {
+            assert(name.isEmpty == false)
+            self.name = name
+            self.content = content
+        }
     }
 
     func sync(files: [File], to dir: Path) throws {

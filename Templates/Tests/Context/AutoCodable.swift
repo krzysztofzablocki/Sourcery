@@ -6,11 +6,13 @@
 //  Copyright © 2018 Pixle. All rights reserved.
 //
 
+#if canImport(ObjectiveC)
 import Foundation
 
 protocol AutoDecodable: Swift.Decodable {}
 protocol AutoEncodable: Swift.Encodable {}
 protocol AutoCodable: AutoDecodable, AutoEncodable {}
+
 
 public struct CustomKeyDecodable: AutoDecodable {
     let stringValue: String
@@ -157,3 +159,4 @@ enum AssociatedValuesEnumNoCaseKey: AutoCodable, Equatable {
     case mixCase(Int, name: String)
     case anotherCase
 }
+#endif

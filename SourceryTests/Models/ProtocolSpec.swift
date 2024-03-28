@@ -24,6 +24,10 @@ class ProtocolSpec: QuickSpec {
                 expect(sut?.kind).to(equal("protocol"))
             }
 
+            it("supports package access level") {
+                expect(Protocol(name: "Foo", accessLevel: .package).accessLevel == AccessLevel.package.rawValue).to(beTrue())
+                expect(Protocol(name: "Foo", accessLevel: .internal).accessLevel == AccessLevel.package.rawValue).to(beFalse())
+            }
         }
     }
 }

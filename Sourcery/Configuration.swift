@@ -3,7 +3,11 @@ import XcodeProj
 import PathKit
 import Yams
 import SourceryRuntime
-import QuartzCore
+import Basics
+import TSCBasic
+import Workspace
+import PackageModel
+import SourceryFramework
 
 public struct Project {
     public let file: XcodeProj
@@ -150,9 +154,64 @@ extension Path {
     }
 }
 
+public struct Package {
+    public let root: Path
+    public let targets: [Target]
+
+    public struct Target {
+        let name: String
+        let root: Path
+        let excludes: [Path]
+    }
+
+    public init(dict: [String: Any], relativePath: Path) throws {
+        guard let packageRootPath = dict["path"] as? String else {
+            throw Configuration.Error.invalidSources(message: "Package file directory path is not provided. Expected string.")
+        }
+        let path = Path(packageRootPath, relativeTo: relativePath)
+        
+        let packagePath = try Basics.AbsolutePath(validating: path.string)
+        let observability = ObservabilitySystem { Log.verbose("\($0): \($1)") }
+        let workspace = try Workspace(forRootPackage: packagePath)
+
+        var manifestResult: Result<Manifest, Error>?
+        let semaphore = DispatchSemaphore(value: 0)
+        workspace.loadRootManifest(at: packagePath, observabilityScope: observability.topScope, completion: { result in
+            manifestResult = result
+            semaphore.signal()
+        })
+        semaphore.wait()
+        
+        guard let manifest = try manifestResult?.get() else{
+            throw Configuration.Error.invalidSources(message: "Unable to load manifest")
+        }
+        self.root = path
+        let targetNames: [String]
+        if let targets = dict["target"] as? [String] {
+            targetNames = targets
+        } else if let target = dict["target"] as? String {
+            targetNames = [target]
+        } else {
+            throw Configuration.Error.invalidSources(message: "'target' key is missing. Expected object or array of objects.")
+        }
+        let sourcesPath = Path("Sources", relativeTo: path)
+        self.targets = manifest.targets.compactMap({ target in
+            guard targetNames.contains(target.name) else {
+                return nil
+            }
+            let rootPath = target.path.map { Path($0, relativeTo: path) } ?? Path(target.name, relativeTo: sourcesPath)
+            let excludePaths = target.exclude.map { path in
+                Path(path, relativeTo: rootPath)
+            }
+            return Target(name: target.name, root: rootPath, excludes: excludePaths)
+        })
+    }
+}
+
 public enum Source {
     case projects([Project])
     case sources(Paths)
+    case packages([Package])
 
     public init(dict: [String: Any], relativePath: Path) throws {
         if let projects = (dict["project"] as? [[String: Any]]) ?? (dict["project"] as? [String: Any]).map({ [$0] }) {
@@ -164,8 +223,11 @@ public enum Source {
             } catch {
                 throw Configuration.Error.invalidSources(message: "\(error)")
             }
+        } else if let packages = (dict["package"] as? [[String: Any]]) ?? (dict["package"] as? [String: Any]).map({ [$0] }) {
+            guard !packages.isEmpty else { throw Configuration.Error.invalidSources(message: "No packages provided.") }
+            self = try .packages(packages.map({ try Package(dict: $0, relativePath: relativePath) }))
         } else {
-            throw Configuration.Error.invalidSources(message: "'sources' or 'project' key are missing.")
+            throw Configuration.Error.invalidSources(message: "'sources', 'project' or 'package' key are missing.")
         }
     }
 
@@ -175,6 +237,8 @@ public enum Source {
             return paths.allPaths.isEmpty
         case let .projects(projects):
             return projects.isEmpty
+        case let .packages(packages):
+            return packages.isEmpty
         }
     }
 }
@@ -360,9 +424,9 @@ public enum Configurations {
             throw Configuration.Error.invalidFormat(message: "Expected dictionary.")
         }
 
-        let start = CFAbsoluteTimeGetCurrent()
+        let start = currentTimestamp()
         defer {
-            Log.benchmark("Resolving configurations took \(CFAbsoluteTimeGetCurrent() - start)")
+            Log.benchmark("Resolving configurations took \(currentTimestamp() - start)")
         }
 
         if let configurations = dict["configurations"] as? [[String: Any]] {

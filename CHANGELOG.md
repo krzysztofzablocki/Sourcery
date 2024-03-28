@@ -1,8 +1,91 @@
 # Sourcery CHANGELOG
+## 2.1.8
+## Changes
+- ClosureParameter isVariadic Support by @art-divin in ([#1268](https://github.com/krzysztofzablocki/Sourcery/pull/1268))
+- Update Usage.md to include --parseDocumentation option by @MarcoEidinger in ([#1272](https://github.com/krzysztofzablocki/Sourcery/pull/1272))
+- Format processing time log message by @MontakOleg in ([#1274](https://github.com/krzysztofzablocki/Sourcery/pull/1274))
+- Fixed swift-package-manager version by @art-divin in ([#1280](https://github.com/krzysztofzablocki/Sourcery/pull/1280))
+- Added isSet to TypeName by @art-divin in ([#1281](https://github.com/krzysztofzablocki/Sourcery/pull/1281))
+- chore(deps): bump nokogiri from 1.15.4 to 1.16.2 by @dependabot in ([#1273](https://github.com/krzysztofzablocki/Sourcery/pull/1273))
+- Implement GenericRequirement support for member type disambiguation by @art-divin in ([#1283](https://github.com/krzysztofzablocki/Sourcery/pull/1283))
+- Add generic requirements to Method by @art-divin in ([#1284](https://github.com/krzysztofzablocki/Sourcery/pull/1284))
+- Recognize subclasses with generics by @art-divin in ([#1287](https://github.com/krzysztofzablocki/Sourcery/pull/1287))
+- Implemented typealias unboxing during type resolution by @art-divin in ([#1288](https://github.com/krzysztofzablocki/Sourcery/pull/1288))
+- Added documentation to typealias by @art-divin in ([#1289](https://github.com/krzysztofzablocki/Sourcery/pull/1289))
+- Fix: Function with completion as parameter that contains itself an optional any parameter produces wrong mock by @paul1893 in ([#1290](https://github.com/krzysztofzablocki/Sourcery/pull/1290))
+- Fix: Function with inout parameter when function has more than one parameter produces wrong mock by @paul1893 in ([#1291](https://github.com/krzysztofzablocki/Sourcery/pull/1291))
+- Substitute underlying type from typealias by @art-divin in ([#1292](https://github.com/krzysztofzablocki/Sourcery/pull/1292))
+- Added support for multiline documentation comments by @art-divin in ([#1293](https://github.com/krzysztofzablocki/Sourcery/pull/1293))
+- Update SwiftSyntax dependency to 510.0.0 by @calda in ([#1294](https://github.com/krzysztofzablocki/Sourcery/pull/1294))
+- Resolved all SwiftSyntax Warnings by @art-divin in ([#1295](https://github.com/krzysztofzablocki/Sourcery/pull/1295))
+- Trailing Annotation Parsing by @art-divin in ([#1296](https://github.com/krzysztofzablocki/Sourcery/pull/1296))
+- Fixed Crash in AnnotationParser by @art-divin in ([#1297](https://github.com/krzysztofzablocki/Sourcery/pull/1297))
+- Disabled Optimization During Generated Code Verification by @art-divin in ([#1300](https://github.com/krzysztofzablocki/Sourcery/pull/1300))
+- Adjusted file structure to accommodate two generated files by @art-divin in ([#1299](https://github.com/krzysztofzablocki/Sourcery/pull/1299))
+- Expand --serialParse flag to also apply to Composer.uniqueTypesAndFunctions by @calda in ([#1301](https://github.com/krzysztofzablocki/Sourcery/pull/1301))
+- Make AutoMockable Generate Compilable Swift Code by @art-divin in ([#1304](https://github.com/krzysztofzablocki/Sourcery/pull/1304))
+- Fix Closure Parameter CVarArg with Existential by @art-divin in ([#1305](https://github.com/krzysztofzablocki/Sourcery/pull/1305))
+
+## 2.1.7
+## Changes
+- Podspec updates - set correct filepath for Sourcery
+- Fixed generated AutoMockable compilation issue due to generated variable names containing & character. Added support for existential any for throwable errors. ([#1263](https://github.com/krzysztofzablocki/Sourcery/pull/1263))
+
+## 2.1.6
+## Changes
+- Podspec updates - set specific version per supported platform
+
+## 2.1.5
+## Changes
+- Podspec updates
+- Add support for inout parameter for AutoMockable protocols ([#1261](https://github.com/krzysztofzablocki/Sourcery/pull/1261))
+
+## 2.1.4
+## Changes
+- Added generic requirements and generic parameters to Subscript ([#1242](https://github.com/krzysztofzablocki/Sourcery/issues/1242))
+- Added isAsync and throws to Subscript ([#1249](https://github.com/krzysztofzablocki/Sourcery/issues/1249))
+- Initialise Subscript's returnTypeName with TypeSyntax, not String ([#1250](https://github.com/krzysztofzablocki/Sourcery/issues/1250))
+- Swifty generated variable names + fixed generated mocks compilation issues due to method generic parameters ([#1252](https://github.com/krzysztofzablocki/Sourcery/issues/1252))
+
+## 2.1.3
+## Changes
+- Add support for `typealias`es in EJS templates. ([#1208](https://github.com/krzysztofzablocki/Sourcery/pull/1208))
+- Add support for existential to Automockable Protocol with generic types. ([#1220](https://github.com/krzysztofzablocki/Sourcery/pull/1220))
+- Add support for generic parameters and requirements in subscripts.
+    ([#1242](https://github.com/krzysztofzablocki/Sourcery/pull/1242))
+- Throw throwable error after updating mocks's calls counts and received parameters/invocations.
+    ([#1224](https://github.com/krzysztofzablocki/Sourcery/pull/1224))
+- Fix unit tests on Linux ([#1225](https://github.com/krzysztofzablocki/Sourcery/pull/1225))
+- Updated XcodeProj to 8.16.0 ([#1228](https://github.com/krzysztofzablocki/Sourcery/pull/1228))
+- Fixed Unable to mock a protocol with methods that differ in parameter type - Error: "Invalid redeclaration" ([#1238](https://github.com/krzysztofzablocki/Sourcery/issues/1238))
+- Support for variadic arguments as method parameters ([#1222](https://github.com/krzysztofzablocki/Sourcery/issues/1222))
+
+## 2.1.2
+## Changes
+- Bump SPM version to support Swift 5.9 ([#1213](https://github.com/krzysztofzablocki/Sourcery/pull/1213))
+- Add Dockerfile ([#1211](https://github.com/krzysztofzablocki/Sourcery/pull/1211))
+
+## 2.1.1
+## Changes
+- Separate EJSTemplate.swift for swift test and for swift build -c release ([#1203](https://github.com/krzysztofzablocki/Sourcery/pull/1203))
+
+## 2.1.0
+## Changes
+- Added support for Swift Package Manager config ([#1184](https://github.com/krzysztofzablocki/Sourcery/pull/1184))
+- Add support to any keyword for function parameter type to AutoMockable.stencil ([#1169](https://github.com/krzysztofzablocki/Sourcery/pull/1169))
+- Add support to any keyword for function return type to AutoMockable.stencil([#1186](https://github.com/krzysztofzablocki/Sourcery/pull/1186))
+- Add support for protocol compositions in EJS templates. ([#1192](https://github.com/krzysztofzablocki/Sourcery/pull/1192))
+- Linux Support (experimental) ([#1188](https://github.com/krzysztofzablocki/Sourcery/pull/1188))
+- Add support for opaque type (some keyword) to function parameter type in AutoMockable.stencil ([#1197](https://github.com/krzysztofzablocki/Sourcery/pull/1197))
 
 ## 2.0.3
 ## Internal Changes
 - Modifications to included files of Swift Templates are now detected by hashing instead of using the modification date when invalidating the cache ([#1161](https://github.com/krzysztofzablocki/Sourcery/pull/1161))
+- Fixes incorrectly parsed /r/n newline sequences ([#1165](https://github.com/krzysztofzablocki/Sourcery/issues/1165) and [#1138](https://github.com/krzysztofzablocki/Sourcery/issues/1138))
+- Fixes incorrect parsing of annotations if there are attributes on lines preceeding declaration ([#1141](https://github.com/krzysztofzablocki/Sourcery/issues/1141))
+- Fixes incorrect parsing of trailing inline comments following enum case' rawValue ([#1154](https://github.com/krzysztofzablocki/Sourcery/issues/1154))
+- Fixes incorrect parsing of multibyte enum case identifiers with associated values
+- Improves type inference when using contained types for variables ([#1091](https://github.com/krzysztofzablocki/Sourcery/issues/1091))
 
 ## 2.0.2
 - Fixes incorrectly parsed variable names that include property wrapper and comments, closes #1140

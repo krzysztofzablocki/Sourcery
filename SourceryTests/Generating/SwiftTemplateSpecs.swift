@@ -30,7 +30,7 @@ class SwiftTemplateTests: QuickSpec {
 
             let templatePath = Stubs.swiftTemplates + Path("Equality.swifttemplate")
             let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-
+#if canImport(ObjectiveC)
             it("creates persistable data") {
                 func templateContextData(_ code: String) -> TemplateContext? {
                     guard let parserResult = try? makeParser(for: code).parse() else { fail(); return nil }
@@ -60,6 +60,7 @@ class SwiftTemplateTests: QuickSpec {
 
                 expect(context.types).to(equal(unarchived?.types))
             }
+#endif
 
             it("generates correct output") {
                 expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
@@ -92,7 +93,13 @@ class SwiftTemplateTests: QuickSpec {
                 let templatePath = Stubs.swiftTemplates + Path("IncludeFile.swifttemplate")
                 let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                expect { try Sourcery(cacheDisabled: true)
+                .processFiles(
+                    .sources(Paths(include: [Stubs.sourceDirectory])), 
+                    usingTemplates: Paths(include: [templatePath]), 
+                    output: output, 
+                    baseIndentation: 0) }.toNot(throwError()
+                )
 
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
@@ -167,7 +174,7 @@ class SwiftTemplateTests: QuickSpec {
                     }
                     .to(throwError(closure: { (error) in
                         let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
-                        expect("\(error)").to(contain("\(path):10:11: error: missing argument for parameter #1 in call\nprint(\"\\( )\", terminator: \"\");\n          ^\n"))
+                        expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call\nsourceryBuffer.append(\"\\( )\");\n                          ^\n"))
                     }))
             }
 
@@ -187,17 +194,20 @@ class SwiftTemplateTests: QuickSpec {
                     try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
                     }
                     .to(throwError(closure: { (error) in
-                        expect("\(error)").to(contain("\(templatePath): SwiftTemplate/main.swift:10: Fatal error: Template not implemented"))
+                        expect("\(error)").to(contain("\(templatePath): SwiftTemplate/main.swift:11: Fatal error: Template not implemented"))
                     }))
             }
 
             context("with existing cache") {
-                beforeEach {
-                    expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-                    expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
-                }
+                // beforeEach {
+                    
+                // }
 
                 context("and missing build dir") {
+#if canImport(ObjectiveC)
+                    expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+#endif
+                    expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
                     guard let buildDir = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate").map({ Path($0.path) }) else {
                         fail("Could not create buildDir path")
                         return
@@ -211,6 +221,8 @@ class SwiftTemplateTests: QuickSpec {
                     }
 
                     it("generates the code") {
+                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
                         expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                         let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))

@@ -10,7 +10,11 @@ import Foundation
 
 public struct SourceryVersion {
     public let value: String
-    public static let current = SourceryVersion(value: inUnitTests ? "Major.Minor.Patch" : "2.0.2")
+    public static let current = SourceryVersion(value: inUnitTests ? "Major.Minor.Patch" : "2.1.8")
 }
 
-public var inUnitTests = NSClassFromString("XCTest") != nil
+#if canImport(ObjectiveC)
+public let inUnitTests: Bool = NSClassFromString("XCTest") != nil
+#else
+public let inUnitTests: Bool = ProcessInfo.processInfo.processName.hasSuffix("xctest")
+#endif

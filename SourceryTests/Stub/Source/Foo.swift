@@ -1,16 +1,18 @@
 import Foundation
 
-class Foo {
+class FooBarBaz {
+    typealias Name = [String: String]
+
     var name: String = ""
     var value: Int = 0
 }
 
 protocol AutoEquatable {}
 
-class FooSubclass: Foo, AutoEquatable {
+class FooSubclass: FooBarBaz, AutoEquatable {
     var other: String = ""
 }
 
-func performFoo(value: Foo) {
+func performFoo(value: FooBarBaz) {
 
 }

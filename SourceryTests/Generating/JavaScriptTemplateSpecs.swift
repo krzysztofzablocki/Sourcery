@@ -1,3 +1,5 @@
+#if !canImport(ObjectiveC)
+#else
 import Foundation
 import Quick
 import Nimble
@@ -28,6 +30,28 @@ class JavaScriptTemplateTests: QuickSpec {
                 let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                 expect(result).to(equal(expectedResult))
             }
+            
+            it("provides protocol compositions") {
+                let templatePath = Stubs.jsTemplates + Path("ProtocolCompositions.ejs")
+                let expectedResult = try? (Stubs.resultDirectory + Path("FooBar.swift")).read(.utf8)
+                
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                print("expected:\n\(expectedResult)\n\ngot:\n\(result)")
+                expect(result).to(equal(expectedResult))
+            }
+            
+            it("provides typealias information") {
+                let templatePath = Stubs.jsTemplates + Path("Typealiases.ejs")
+                let expectedResult = try? (Stubs.resultDirectory + Path("Typealiases.swift")).read(.utf8)
+                
+                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+
+                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                print("expected:\n\(expectedResult)\n\ngot:\n\(result)")
+                expect(result).to(equal(expectedResult))
+            }
 
             it("handles includes") {
                 let templatePath = Stubs.jsTemplates + Path("Includes.ejs")
@@ -51,7 +75,8 @@ class JavaScriptTemplateTests: QuickSpec {
 
             it("rethrows template parsing errors") {
                 expect {
-                    try Generator.generate(nil, types: Types(types: []), functions: [], template: JavaScriptTemplate(templateString: "<% invalid %>"))
+                    expect(EJSTemplate.ejsPath).toNot(beNil())
+                    try Generator.generate(nil, types: Types(types: []), functions: [], template: JavaScriptTemplate(templateString: "<% invalid %>", ejsPath: EJSTemplate.ejsPath!))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal(": ReferenceError: ejs:1\n >> 1| <% invalid %>\n\nCan\'t find variable: invalid"))
@@ -60,7 +85,8 @@ class JavaScriptTemplateTests: QuickSpec {
 
             it("rethrows template runtime errors") {
                 expect {
-                    try Generator.generate(nil, types: Types(types: []), functions: [], template: JavaScriptTemplate(templateString: "<%_ for (type of types.implementing.Some) { -%><% } %>"))
+                    expect(EJSTemplate.ejsPath).toNot(beNil())
+                    try Generator.generate(nil, types: Types(types: []), functions: [], template: JavaScriptTemplate(templateString: "<%_ for (type of types.implementing.Some) { -%><% } %>", ejsPath: EJSTemplate.ejsPath!))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal(": Unknown type Some, should be used with `based`"))
@@ -69,7 +95,8 @@ class JavaScriptTemplateTests: QuickSpec {
 
             it("throws unknown property exception") {
                 expect {
-                    try Generator.generate(nil, types: Types(types: []), functions: [], template: JavaScriptTemplate(templateString: "<%_ for (type of types.implements.Some) { -%><% } %>"))
+                    expect(EJSTemplate.ejsPath).toNot(beNil())
+                    try Generator.generate(nil, types: Types(types: []), functions: [], template: JavaScriptTemplate(templateString: "<%_ for (type of types.implements.Some) { -%><% } %>", ejsPath: EJSTemplate.ejsPath!))
                     }
                     .to(throwError(closure: { (error) in
                         expect("\(error)").to(equal(": TypeError: ejs:1\n >> 1| <%_ for (type of types.implements.Some) { -%><% } %>\n\nUnknown property `implements`"))
@@ -88,3 +115,4 @@ class JavaScriptTemplateTests: QuickSpec {
         }
     }
 }
+#endif

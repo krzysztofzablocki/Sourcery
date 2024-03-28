@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "SourceryRuntime"
-  s.version      = "2.0.2"
+  s.version      = "2.1.8"
   s.summary      = "A tool that brings meta-programming to Swift, allowing you to code generate Swift code."
   s.platform     = :osx, '10.15'
 

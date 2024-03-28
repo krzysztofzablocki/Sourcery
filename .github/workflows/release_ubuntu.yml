@@ -1,0 +1,56 @@
+name: release ubuntu
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to build (branch, tag or SHA)'
+        required: false
+        default: 'master'
+  push:
+    tags:
+      - '*'
+
+jobs:
+  tests:
+    uses: ./.github/workflows/test_ubuntu.yml
+  build:
+    needs: [tests]
+    name: Build Sourcery for Ubuntu (latest)
+    runs-on: ubuntu-22.04
+    outputs:
+      filename: ${{ steps.build.outputs.filename }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref }}
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "5.9.2"
+      - name: Build it
+        id: build
+        run: |
+          BUILD_DIR="${HOME}/build/"
+          swift build --disable-sandbox -c release --build-path $BUILD_DIR
+          mv "${BUILD_DIR}x86_64-unknown-linux-gnu/release/sourcery" "${BUILD_DIR}/sourcery"
+          
+          UNAME=$(uname -m)
+          CODENAME=$(lsb_release -c -s)
+          DESCRIPTION=$(lsb_release -d -s | sed "s/ /-/g" | sed "s/./\L&/g")
+          SUFFIX=$DESCRIPTION-$CODENAME-$UNAME
+          TAG=$GITHUB_REF_NAME
+          FILENAME="sourcery-${TAG}-${SUFFIX}.tar.xz"
+
+          pushd $BUILD_DIR
+          tar -zcvf $FILENAME sourcery
+          mv $FILENAME "${HOME}/"
+          popd
+          
+          echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.build.outputs.FILENAME }}
+          path: "~/${{ steps.build.outputs.FILENAME }}"
+          retention-days: 5

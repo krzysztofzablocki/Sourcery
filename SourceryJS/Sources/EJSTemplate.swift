@@ -1,3 +1,4 @@
+#if canImport(ObjectiveC) && !DEBUG
 import JavaScriptCore
 import PathKit
 
@@ -120,3 +121,4 @@ open class EJSTemplate {
     }
 
 }
+#endif

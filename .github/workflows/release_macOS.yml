@@ -1,0 +1,96 @@
+name: release macOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to build (branch, tag or SHA)'
+        required: false
+        default: 'master'
+  push:
+    tags:
+      - '*'
+      
+jobs:
+  tests:
+    uses: ./.github/workflows/test_macOS.yml
+  build:
+    needs: [tests]
+    name: Build Sourcery for macOS
+    runs-on: macos-13
+    steps:
+      - name: Set Xcode 15.1.0
+        run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
+      - name: Print Current Xcode
+        run: xcode-select -p
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref }}
+      - name: Build it
+        id: build
+        run: |
+          brew install coreutils
+          brew install sourcekitten
+          bundle install
+          rake docs
+
+          CLI_DIR="${HOME}/cli/"
+          RESOURCES_DIR="${CLI_DIR}Resources/"
+          TEMPLATES_DIR="${CLI_DIR}Templates/"
+          BUILD_DIR="${HOME}/build/"
+          BIN_DIR="${CLI_DIR}bin/"
+          ARTIFACT_BUNDLE_PATH="${HOME}/artifactbundle/"
+          path_to_sourcery_binary="${BIN_DIR}/sourcery"
+
+          mkdir -p $BIN_DIR
+          mkdir -p $RESOURCES_DIR
+          mkdir -p $TEMPLATES_DIR
+          mkdir -p ${ARTIFACT_BUNDLE_PATH}bin
+
+          cp -r docs/docsets/Sourcery.docset $CLI_DIR
+          cp -r "Templates/Templates/" $TEMPLATES_DIR
+          cp Resources/daemon.gif $RESOURCES_DIR
+          cp Resources/icon-128.png $RESOURCES_DIR
+          cp CHANGELOG.md $CLI_DIR
+          cp README.md $CLI_DIR
+          cp LICENSE $CLI_DIR
+
+          cp -r SourceryJS/Resources/ejs.js $BIN_DIR
+          cp -r $CLI_DIR/ "${ARTIFACT_BUNDLE_PATH}sourcery"
+          cp Templates/artifactbundle.info.json.template ${ARTIFACT_BUNDLE_PATH}/info.json
+
+          swift build --disable-sandbox -c release --arch arm64 --build-path $BUILD_DIR
+          swift build --disable-sandbox -c release --arch x86_64 --build-path $BUILD_DIR
+          lipo -create -output $path_to_sourcery_binary ${BUILD_DIR}arm64-apple-macosx/release/sourcery ${BUILD_DIR}x86_64-apple-macosx/release/sourcery
+          strip -rSTX ${path_to_sourcery_binary}
+
+          cp $path_to_sourcery_binary "${ARTIFACT_BUNDLE_PATH}sourcery/bin/"
+
+          pushd $CLI_DIR
+          TAG=$GITHUB_REF_NAME
+          FILENAME="sourcery-$TAG.zip"
+          zip -r -X $FILENAME .
+          mv $FILENAME "${HOME}/"
+          popd
+
+          pushd $ARTIFACT_BUNDLE_PATH
+          sed -i '' "s/VERSION/${TAG}/g" ${ARTIFACT_BUNDLE_PATH}/info.json
+          ARTIFACTBUNDLENAME=$FILENAME.artifactbundle.zip
+          zip -r -X $ARTIFACTBUNDLENAME .
+          mv $ARTIFACTBUNDLENAME "${HOME}/"
+          popd
+
+          echo "FILENAME=${FILENAME}" >> $GITHUB_OUTPUT
+          echo "ARTIFACTBUNDLENAME=${ARTIFACTBUNDLENAME}" >> $GITHUB_OUTPUT
+      - name: 'Upload Sourcery Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.build.outputs.FILENAME }}
+          path: "~/${{ steps.build.outputs.FILENAME }}"
+          retention-days: 5
+      - name: 'Upload Bundle Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.build.outputs.ARTIFACTBUNDLENAME }}
+          path: "~/${{ steps.build.outputs.ARTIFACTBUNDLENAME }}"
+          retention-days: 5

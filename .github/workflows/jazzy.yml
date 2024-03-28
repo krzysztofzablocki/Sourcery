@@ -1,0 +1,43 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: rake docs
+
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to build (branch, tag or SHA)'
+        required: false
+        default: 'master'
+  push:
+    branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  update_docs:
+    runs-on: macos-13
+    steps:
+    - name: Set Xcode 15.1.0
+      run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
+    - name: Print Current Xcode
+      run: xcode-select -p
+    - uses: actions/checkout@v3
+    - name: Update Docs
+      run: |
+        brew install coreutils
+        brew install sourcekitten
+        bundle install
+        rake docs
+    - uses: EndBug/add-and-commit@v9.1.3
+      with:
+        add: '.'
+        message: 'Update Docs'
+        committer_name: GitHub Actions
+        committer_email: actions@github.com
+
+ 

@@ -14,6 +14,7 @@ import PathKit
 #endif
 @testable import SourceryFramework
 @testable import SourceryRuntime
+import XCTest
 
 // swiftlint:disable type_body_length file_length
 class ParserComposerSpec: QuickSpec {
@@ -150,6 +151,68 @@ class ParserComposerSpec: QuickSpec {
                                               class Bar {}
                                               """)
                             assertMethods(types)
+                        }
+
+                        it("extracts method generic requirements properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                  func fooBar<T>(bar: T) where T: Equatable { }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                            expect(fooBar?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                            expect(fooBar?.parameters.first?.type?.implements["Codable"]).to(beNil())
+                            expect(fooBar?.parameters.first?.type?.genericRequirements).toNot(beNil())
+                        }
+
+                        it("extracts multiple method generic requirements properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                  func fooBar<T>(bar: T) where T: Equatable, T: Codable { }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                            expect(fooBar?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                            expect(fooBar?.parameters.first?.type?.implements["Codable"]).toNot(beNil())
+                            expect(fooBar?.parameters.first?.type?.genericRequirements).toNot(beNil())
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(contain("Equatable"))
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(contain("Codable"))
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(contain("&"))
+                        }
+
+                        it("extracts multiple method generic requirements on return type properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                enum TestEnum: String, Codable, Equatable { case abc, def }
+                                                func fooBar<T>(bar: T) -> T where T: Equatable, T: Codable { TestEnum.abc as! T }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.returnType?.implements["Equatable"]).toNot(beNil())
+                            expect(fooBar?.returnType?.implements["Codable"]).toNot(beNil())
+                            expect(fooBar?.returnType?.genericRequirements).toNot(beNil())
+                            expect(fooBar?.returnType?.isGeneric).to(beTrue())
+                            expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("Equatable"))
+                            expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("Codable"))
+                            expect(fooBar?.returnTypeName.actualTypeName?.name).to(contain("&"))
+                        }
+
+                        it("extracts method generic requirements without protocol properly") {
+                            let types = parse("""
+                                              class Foo {
+                                                  func fooBar<T>(bar: T) { }
+                                              };
+                                              """)
+                            let fooType = types.first(where: { $0.name == "Foo" })
+                            let fooBar = fooType?.methods.last
+                            expect(fooBar?.name).to(equal("fooBar<T>(bar: T)"))
+                            expect(fooBar?.parameters.first?.type).to(beNil())
+                            expect(fooBar?.parameters.first?.actualTypeName?.name).to(equal("T"))
                         }
                     }
 
@@ -371,11 +434,13 @@ class ParserComposerSpec: QuickSpec {
                         beforeEach {
                             method = Method(name: "fooMethod(bar: String)", selectorName: "fooMethod(bar:)",
                                             parameters: [MethodParameter(name: "bar",
+                                                                         index: 0,
                                                                          typeName: TypeName(name: "String"))],
                                             returnTypeName: TypeName(name: "Void"),
                                             definedInTypeName: TypeName(name: "Foo"))
                             defaultedMethod = Method(name: "fooMethod(bar: String = \"Baz\")", selectorName: "fooMethod(bar:)",
                                                      parameters: [MethodParameter(name: "bar",
+                                                                                  index: 0,
                                                                                   typeName: TypeName(name: "String"),
                                                                                   defaultValue: "\"Baz\"")],
                                                      returnTypeName: TypeName(name: "Void"),
@@ -506,6 +571,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 definedInTypeName: TypeName(name: "Foo"))],
                                                            methods: [Method(name: "init?(rawValue: String)", selectorName: "init(rawValue:)",
                                                                             parameters: [MethodParameter(name: "rawValue",
+                                                                                                         index: 0,
                                                                                                          typeName: TypeName(name: "String"))],
                                                                             returnTypeName: TypeName(name: "Foo?"),
                                                                             isStatic: true,
@@ -530,7 +596,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isStatic: false,
                                                                                 definedInTypeName: TypeName(name: "Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName(name: "RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", index: 0, typeName: TypeName(name: "RawValue"))],
                                                                             returnTypeName: TypeName(name: "Foo?"),
                                                                             isStatic: true,
                                                                             isFailableInitializer: true,
@@ -554,7 +620,7 @@ class ParserComposerSpec: QuickSpec {
                                                                                 isStatic: false,
                                                                                 definedInTypeName: TypeName(name: "Foo"))],
                                                            methods: [Method(name: "init?(rawValue: RawValue)", selectorName: "init(rawValue:)",
-                                                                            parameters: [MethodParameter(name: "rawValue", typeName: TypeName(name: "RawValue"))],
+                                                                            parameters: [MethodParameter(name: "rawValue", index: 0, typeName: TypeName(name: "RawValue"))],
                                                                             returnTypeName: TypeName(name: "Foo?"),
                                                                             isStatic: true,
                                                                             isFailableInitializer: true,
@@ -627,16 +693,104 @@ class ParserComposerSpec: QuickSpec {
                     }
                 }
 
+                context("given generic custom type") {
+                    context("given generic's protocol requirements") {
+                        context("given type's variables' generic type") {
+                            it("extracts generic requirement correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable {
+                                    let value: T
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.instanceVariables.first?.type?.implements["Equatable"]).toNot(beNil())
+                            }
+
+                            it("extracts generic requirement as protocol composition correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable, T: Codable {
+                                    let value: T
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.instanceVariables.first?.type?.implements["Equatable"]).toNot(beNil())
+                                expect(generic?.instanceVariables.first?.type?.implements["Codable"]).toNot(beNil())
+                            }
+                        }
+                        context("given type's methods' generic return type") {
+                            it("extracts generic requirement correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable {
+                                    enum MyEnum: Equatable, String { case abc, def }
+                                    func method() -> T { return MyEnum.abc }
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.returnType?.implements["Equatable"]).toNot(beNil())
+                            }
+
+                            it("extracts generic requirement as protocol composition correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable, T: Codable {
+                                    enum MyEnum: Equatable, Codable, String { case abc, def }
+                                    func method() -> T { return MyEnum.abc }
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.returnType?.implements["Equatable"]).toNot(beNil())
+                                expect(generic?.methods.first?.returnType?.implements["Codable"]).toNot(beNil())
+                            }
+                        }
+
+                        context("given type's methods' generic argument type") {
+                            it("extracts generic requirement correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable {
+                                    func method(_ arg: T) {}
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                            }
+
+                            it("extracts generic requirement as protocol composition correctly") {
+                                let types = parse(
+                                """
+                                struct GenericStruct<T>: Equatable where T: Equatable, T: Codable {
+                                    func method(_ arg: T) {}
+                                }
+                                """)
+
+                                let generic = types.first(where: { $0.name == "GenericStruct" })
+                                expect(generic).toNot(beNil())
+                                expect(generic?.methods.first?.parameters.first?.type?.implements["Equatable"]).toNot(beNil())
+                                expect(generic?.methods.first?.parameters.first?.type?.implements["Codable"]).toNot(beNil())
+                            }
+                        }
+                    }
+                }
+
                 context("given tuple type") {
                     it("extracts elements properly") {
                         let types = parse("struct Foo { var tuple: (a: Int, b: Int, String, _: Float, literal: [String: [String: Float]], generic: Dictionary<String, Dictionary<String, Float>>, closure: (Int) -> (Int) -> Int, tuple: (Int, Int))}")
                         let variable = types.first?.variables.first
                         let tuple = variable?.typeName.tuple
-
-                        let stringToFloatDictGeneric = GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "Float"))])
                         let stringToFloatDictGenericLiteral = GenericType(name: "Dictionary", typeParameters: [GenericTypeParameter(typeName: TypeName(name: "String")), GenericTypeParameter(typeName: TypeName(name: "Float"))])
-
-                        let stringToFloatDict = DictionaryType(name: "Dictionary<String, Float>", valueTypeName: TypeName(name: "Float"), keyTypeName: TypeName(name: "String"))
                         let stringToFloatDictLiteral = DictionaryType(name: "[String: Float]", valueTypeName: TypeName(name: "Float"), keyTypeName: TypeName(name: "String"))
 
                         expect(tuple?.elements[0]).to(equal(TupleElement(name: "a", typeName: TypeName(name: "Int"))))
@@ -702,6 +856,25 @@ class ParserComposerSpec: QuickSpec {
                         ))
                         expect(variables?[3].typeName.array).to(equal(
                           TypeName.buildArray(of: .buildClosure(TypeName(name: "()")), useGenericName: true).array
+                        ))
+                    }
+                }
+
+                context("given generic set type") {
+                    it("extracts element type properly") {
+                        let types = parse("struct Foo { var set: Set<Int>; var setOfTuples: Set<(Int, Int)>; var setOfSets: Set<Set<Int>>, var setOfClosures: Set<() -> ()> }")
+                        let variables = types.first?.variables
+                        expect(variables?[0].typeName.set).to(equal(
+                          TypeName.buildSet(of: .Int).set
+                        ))
+                        expect(variables?[1].typeName.set).to(equal(
+                          TypeName.buildSet(of: .buildTuple(.Int, .Int)).set
+                        ))
+                        expect(variables?[2].typeName.set).to(equal(
+                          TypeName.buildSet(of: .buildSet(of: .Int)).set
+                        ))
+                        expect(variables?[3].typeName.set).to(equal(
+                          TypeName.buildSet(of: .buildClosure(TypeName(name: "()"))).set
                         ))
                     }
                 }
@@ -1212,7 +1385,7 @@ class ParserComposerSpec: QuickSpec {
 
                     context("given method parameter") {
                         it("replaces method parameter type alias with actual type") {
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName(name: "FooAlias", actualTypeName: TypeName(name: "Foo")), type: Class(name: "Foo"))
+                            let expectedMethodParameter = MethodParameter(name: "foo", index: 0, typeName: TypeName(name: "FooAlias", actualTypeName: TypeName(name: "Foo")), type: Class(name: "Foo"))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: FooAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -1228,7 +1401,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName(name: "Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName(name: "Int"))
                                 ])
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName(name: "(FooAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
+                            let expectedMethodParameter = MethodParameter(name: "foo", index: 0, typeName: TypeName(name: "(FooAlias, Int)", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
 
                             let types = parse("typealias FooAlias = Foo; class Foo {}; class Bar { func some(foo: (FooAlias, Int)) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -1245,7 +1418,7 @@ class ParserComposerSpec: QuickSpec {
                                 TupleElement(name: "0", typeName: TypeName(name: "Foo"), type: Class(name: "Foo")),
                                 TupleElement(name: "1", typeName: TypeName(name: "Int"))
                                 ])
-                            let expectedMethodParameter = MethodParameter(name: "foo", typeName: TypeName(name: "GlobalAlias", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
+                            let expectedMethodParameter = MethodParameter(name: "foo", index: 0, typeName: TypeName(name: "GlobalAlias", actualTypeName: expectedActualTypeName, tuple: expectedActualTypeName.tuple))
 
                             let types = parse("typealias GlobalAlias = (Foo, Int); class Foo {}; class Bar { func some(foo: GlobalAlias) }")
                             let methodParameter = types.first?.methods.first?.parameters.first
@@ -1954,7 +2127,7 @@ class ParserComposerSpec: QuickSpec {
                             ])
                             expectedBar.module = "Foo"
 
-                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName(name: "Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo"))], containedTypes: [expectedBar])
+                            let expectedFoo = Struct(name: "Foo", variables: [Variable(name: "bar", typeName: TypeName(name: "Foo.Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo"))], containedTypes: [expectedBar])
                             expectedFoo.module = "Foo"
 
                             let types = parseModules(
@@ -1987,7 +2160,7 @@ class ParserComposerSpec: QuickSpec {
                             expectedBaz.module = "ModuleA"
 
                             let expectedFoo = Struct(name: "Foo", variables: [
-                                Variable(name: "bar", typeName: TypeName(name: "Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
+                                Variable(name: "bar", typeName: TypeName(name: "Foo.Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
                                 Variable(name: "bazbars", typeName: TypeName(name: "Baz<Bar>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("ModuleA.Foo.Bar"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
                                 Variable(name: "bazDoubles", typeName: TypeName(name: "Baz<Double>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("Double"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo")),
                                 Variable(name: "bazInts", typeName: TypeName(name: "Baz<Int>", generic: .init(name: "ModuleA.Foo.Baz", typeParameters: [.init(typeName: .init("Int"))])), type: expectedBaz, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo"))
@@ -2039,7 +2212,7 @@ class ParserComposerSpec: QuickSpec {
                                 }
                             }
 
-                            check(variable: "bar", typeName: "Bar", type: "Foo.Bar", onType: "ModuleA.Foo")
+                            check(variable: "bar", typeName: "Foo.Bar", type: "Foo.Bar", onType: "ModuleA.Foo")
                             check(variable: "bazbars", typeName: "Baz<Bar>", type: "Foo.Baz", onType: "ModuleA.Foo")
                             check(variable: "bazDoubles", typeName: "Baz<Double>", type: "Foo.Baz", onType: "ModuleA.Foo")
                             check(variable: "bazInts", typeName: "Baz<Int>", type: "Foo.Baz", onType: "ModuleA.Foo")

@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Debug sourcery",
+            "program": "${workspaceFolder:Sourcery-master}/.build/debug/sourcery",
+            "args": [],
+            "cwd": "${workspaceFolder:Sourcery-master}",
+            "preLaunchTask": "swift: Build Debug sourcery"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Release sourcery",
+            "program": "${workspaceFolder:Sourcery-master}/.build/release/sourcery",
+            "args": [],
+            "cwd": "${workspaceFolder:Sourcery-master}",
+            "preLaunchTask": "swift: Build Release sourcery"
+        }
+    ]
+}

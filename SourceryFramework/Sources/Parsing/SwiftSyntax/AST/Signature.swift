@@ -15,16 +15,22 @@ public struct Signature {
     public let throwsOrRethrowsKeyword: String?
 
     public init(_ node: FunctionSignatureSyntax, annotationsParser: AnnotationsParser) {
-        self.init(parameters: node.input.parameterList,
-                  output: node.output.map { TypeName($0.returnType) },
-                  asyncKeyword: node.asyncOrReasyncKeyword?.text,
-                  throwsOrRethrowsKeyword: node.throwsOrRethrowsKeyword?.description.trimmed,
+        self.init(parameters: node.parameterClause.parameters,
+                  output: node.returnClause.map { TypeName($0.type) },
+                  asyncKeyword: node.effectSpecifiers?.asyncSpecifier?.text,
+                  throwsOrRethrowsKeyword: node.effectSpecifiers?.throwsSpecifier?.description.trimmed,
                   annotationsParser: annotationsParser
         )
     }
 
     public init(parameters: FunctionParameterListSyntax?, output: TypeName?, asyncKeyword: String?, throwsOrRethrowsKeyword: String?, annotationsParser: AnnotationsParser) {
-        input = parameters?.map { MethodParameter($0, annotationsParser: annotationsParser) } ?? []
+        var methodParameters: [MethodParameter] = []
+        if let parameters {
+            for (idx, param) in parameters.enumerated() {
+                methodParameters.append(MethodParameter(param, index: idx, annotationsParser: annotationsParser))
+            }
+        }
+        input = methodParameters
         self.output = output
         self.asyncKeyword = asyncKeyword
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword

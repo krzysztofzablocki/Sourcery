@@ -17,7 +17,7 @@
     <a title="Array Extension Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Sourcery 2.0.1 Docs</a> (100% documented)</p>
+        <p><a href="../index.html">Sourcery 2.1.8 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="../search.json">
@@ -172,6 +172,9 @@
                 <a href="../Classes/DiffableResult.html">DiffableResult</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/GenericParameter.html">GenericParameter</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
               <li class="nav-group-task">
@@ -182,6 +185,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/Modifier.html">Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SetType.html">SetType</a>
               </li>
             </ul>
           </li>
@@ -200,10 +206,19 @@
                 <a href="../Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/StringProtocol.html">StringProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Typealias.html">Typealias</a>
               </li>
             </ul>
           </li>
@@ -248,8 +263,8 @@
                 <div class="language">
                   
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">extension</span> <span class="kt">Array</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/MethodParameter.html">MethodParameter</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/ClosureParameter.html">ClosureParameter</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/MethodParameter.html">MethodParameter</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt"><a href="../Classes/TupleElement.html">TupleElement</a></span></code></pre>
 
                 </div>
@@ -340,9 +355,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:Sa15SourceryRuntimeE15parallelPerform9transformyyxXE_tF"></a>
-                    <a name="//apple_ref/swift/Method/parallelPerform(transform:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:Sa15SourceryRuntimeE15parallelPerform9transformyyxXE_tF">parallelPerform(transform:<wbr>)</a>
+                    <a name="/s:Sa15SourceryRuntimeE15parallelPerformyyyxXEF"></a>
+                    <a name="//apple_ref/swift/Method/parallelPerform(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeE15parallelPerformyyyxXEF">parallelPerform(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -356,46 +371,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">parallelPerform</span><span class="p">(</span><span class="nv">transform</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Available%20where%20%60Element%60%20%3D%3D%20%60MethodParameter%60"></a>
-                <a name="//apple_ref/swift/Section/Available where `Element` == `MethodParameter`" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Element%60%20%3D%3D%20%60MethodParameter%60"></a>
-                  <h3 class="section-name"><p>Available where <code>Element</code> == <code><a href="../Classes/MethodParameter.html">MethodParameter</a></code></p>
-</h3>
-                </div>
-              </div>
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:Sa15SourceryRuntimeAA15MethodParameterCRszlE8asSourceSSvp"></a>
-                    <a name="//apple_ref/swift/Property/asSource" class="dashAnchor"></a>
-                    <a class="token" href="#/s:Sa15SourceryRuntimeAA15MethodParameterCRszlE8asSourceSSvp">asSource</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asSource</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">parallelPerform</span><span class="p">(</span><span class="n">_</span> <span class="nv">work</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -421,6 +397,45 @@
                     <a name="/s:Sa15SourceryRuntimeAA16ClosureParameterCRszlE8asSourceSSvp"></a>
                     <a name="//apple_ref/swift/Property/asSource" class="dashAnchor"></a>
                     <a class="token" href="#/s:Sa15SourceryRuntimeAA16ClosureParameterCRszlE8asSourceSSvp">asSource</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asSource</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Element%60%20%3D%3D%20%60MethodParameter%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Element` == `MethodParameter`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Element%60%20%3D%3D%20%60MethodParameter%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Element</code> == <code><a href="../Classes/MethodParameter.html">MethodParameter</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:Sa15SourceryRuntimeAA15MethodParameterCRszlE8asSourceSSvp"></a>
+                    <a name="//apple_ref/swift/Property/asSource" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Sa15SourceryRuntimeAA15MethodParameterCRszlE8asSourceSSvp">asSource</a>
                     </code>
                   </div>
                   <div class="height-container">

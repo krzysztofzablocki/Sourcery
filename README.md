@@ -1,11 +1,14 @@
-[![CircleCI](https://circleci.com/gh/krzysztofzablocki/Sourcery.svg?style=shield)](https://circleci.com/gh/krzysztofzablocki/Sourcery)
+[![macOS 13](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/test_macOS.yml/badge.svg)](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/test_macOS.yml)
+[![ubuntu x86_64](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/test_ubuntu.yml/badge.svg?branch=master)](https://github.com/krzysztofzablocki/Sourcery/actions/workflows/test_ubuntu.yml)
 <!-- [![codecov](https://codecov.io/gh/krzysztofzablocki/Sourcery/branch/master/graph/badge.svg)](https://codecov.io/gh/krzysztofzablocki/Sourcery) -->
 [![docs](https://krzysztofzablocki.github.io/Sourcery/badge.svg)](https://krzysztofzablocki.github.io/Sourcery/index.html)
 [![Version](https://img.shields.io/cocoapods/v/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![License](https://img.shields.io/cocoapods/l/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 [![Platform](https://img.shields.io/cocoapods/p/Sourcery.svg?style=flat)](http://cocoapods.org/pods/Sourcery)
 
-**There is now a new powerful way to both write and integrate Sourcery functionality: Sourcery Pro provides a powerful Stencil editor and extends Xcode with the ability to handle live AST templates: [available on Mac App Store](https://apps.apple.com/us/app/sourcery-pro/id1561780836?mt=12)**
+[**In-Depth Sourcery guide is covered as part of my SwiftyStack engineering course.**](https://www.swiftystack.com/)
+
+**Sourcery Pro provides a powerful Stencil editor and extends Xcode with the ability to handle live AST templates: [available on Mac App Store](https://apps.apple.com/us/app/sourcery-pro/id1561780836?mt=12)**
 
 https://user-images.githubusercontent.com/1468993/114271090-f6c19200-9a0f-11eb-9bd8-d7bb15129eb2.mp4
 
@@ -141,6 +144,10 @@ Add the dependency to `.pre-commit-config.yaml`.
 
 Full documentation for the latest release is available [here](http://merowing.info/Sourcery/).
 
+## Linux Support
+
+Linux support is [described on this page](LINUX.md).
+
 ## Usage
 
 ### Running the executable
@@ -196,6 +203,7 @@ Inside a project/package that uses this command plugin, right-click the project 
 - `--help` - Display help information
 - `--cacheBasePath` - Base path to the cache directory. Can be overriden by the config file.
 - `--buildPath` - Path to directory used when building from .swifttemplate files. This defaults to system temp directory
+- `--hideVersionHeader` [default: false] - Stop adding the Sourcery version to the generated files headers.
 
 ### Configuration file
 
@@ -236,6 +244,14 @@ To clarify what is expected of our community, Sourcery has adopted the code of c
 ## Sponsoring
 
 If you'd like to support Sourcery development you can do so through [GitHub Sponsors](https://github.com/sponsors/krzysztofzablocki) or [Open Collective](https://opencollective.com/sourcery), it's highly appreciated 🙇‍
+
+If you are a company and would like to sponsor the project directly and get it's logo here, you can [contact me directly](mailto:krzysztof.zablocki@pixle.pl?subject=[Sourcery-Sponsorship])
+
+### Sponsors 
+
+[<img alt="Bumble Inc" width="256px" src="https://github.com/krzysztofzablocki/Sourcery/assets/1468993/159e0943-c890-42b7-9de7-9de9e70dd720" />](https://team.bumble.com/teams/engineering)
+
+[<img alt="Airbnb Engineering" width="128px" src="https://github.com/krzysztofzablocki/Sourcery/assets/1468993/b1c06e1c-06da-4a77-a4f1-7dabd02bbaba" />](https://airbnb.io/)
 
 ## License
 

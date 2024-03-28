@@ -28,41 +28,48 @@ class TypedSpec: QuickSpec {
                 return variable?.typeName ?? TypeName(name: "")
             }
 
+#if canImport(ObjectiveC)
             it("can report optional via KVC") {
-                expect({{ type.name }}(typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect({{ type.name }}(typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
-                expect({{ type.name }}(typeName: typeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
-                expect({{ type.name }}(typeName: typeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
-                expect({{ type.name }}(typeName: typeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
+                expect({{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("Int?")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect({{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("Int!")).value(forKeyPath: "isOptional") as? Bool).to(equal(true))
+                expect({{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("Int?")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(false))
+                expect({{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("Int!")).value(forKeyPath: "isImplicitlyUnwrappedOptional") as? Bool).to(equal(true))
+                expect({{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("Int?")).value(forKeyPath: "unwrappedTypeName") as? String).to(equal("Int"))
             }
 
             it("can report tuple type via KVC") {
-                let sut = {{ type.name }}(typeName: typeName("(Int, Int)"))
+                let sut = {{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("(Int, Int)"))
                 expect(sut.value(forKeyPath: "isTuple") as? Bool).to(equal(true))
             }
 
             it("can report closure type via KVC") {
-                let sut = {{ type.name }}(typeName: typeName("(Int) -> (Int)"))
+                let sut = {{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("(Int) -> (Int)"))
                 expect(sut.value(forKeyPath: "isClosure") as? Bool).to(equal(true))
             }
 
             it("can report array type via KVC") {
-                let sut = {{ type.name }}(typeName: typeName("[Int]"))
+                let sut = {{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("[Int]"))
                 expect(sut.value(forKeyPath: "isArray") as? Bool).to(equal(true))
             }
 
+            it("can report set type via KVC") {
+                let sut = {{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("Set<Int>"))
+                expect(sut.value(forKeyPath: "isSet") as? Bool).to(equal(true))
+            }
+
             it("can report dictionary type via KVC") {
-                let sut = {{ type.name }}(typeName: typeName("[Int: Int]"))
+                let sut = {{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("[Int: Int]"))
                 expect(sut.value(forKeyPath: "isDictionary") as? Bool).to(equal(true))
             }
 
             it("can report actual type name via KVC") {
-                let sut = {{ type.name }}(typeName: typeName("Alias"))
+                let sut = {{ type.name }}({% if type.name == "MethodParameter" %}index: 0, {% endif %}typeName: typeName("Alias"))
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(typeName("Alias")))
 
                 sut.typeName.actualTypeName = typeName("Int")
                 expect(sut.value(forKeyPath: "actualTypeName") as? TypeName).to(equal(typeName("Int")))
             }
+#endif
         }
         {% endfor %}
     }

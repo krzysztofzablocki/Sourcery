@@ -1,7 +1,8 @@
-// Generated using Sourcery 2.0.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
+#if canImport(JavaScriptCore)
 import JavaScriptCore
 
 @objc protocol ActorAutoJSExport: JSExport {
@@ -10,6 +11,7 @@ import JavaScriptCore
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -47,6 +49,7 @@ import JavaScriptCore
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -106,6 +109,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -143,6 +147,7 @@ extension BytesRange: BytesRangeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -154,6 +159,7 @@ extension Class: ClassAutoJSExport {}
     var typeName: TypeName { get }
     var `inout`: Bool { get }
     var type: Type? { get }
+    var isVariadic: Bool { get }
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
@@ -206,6 +212,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -242,6 +249,7 @@ extension DictionaryType: DictionaryTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -259,6 +267,13 @@ extension Enum: EnumAutoJSExport {}
 
 extension EnumCase: EnumCaseAutoJSExport {}
 
+
+@objc protocol GenericParameterAutoJSExport: JSExport {
+    var name: String { get }
+    var inheritedTypeName: TypeName? { get }
+}
+
+extension GenericParameter: GenericParameterAutoJSExport {}
 
 @objc protocol GenericRequirementAutoJSExport: JSExport {
     var leftType: AssociatedType { get }
@@ -322,6 +337,7 @@ extension Import: ImportAutoJSExport {}
     var isGeneric: Bool { get }
     var isOptional: Bool { get }
     var isNonisolated: Bool { get }
+    var isDynamic: Bool { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
     var definedInTypeName: TypeName? { get }
@@ -329,6 +345,7 @@ extension Import: ImportAutoJSExport {}
     var definedInType: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -343,6 +360,7 @@ extension Method: MethodAutoJSExport {}
     var typeAttributes: AttributeList { get }
     var defaultValue: String? { get }
     var annotations: Annotations { get }
+    var index: Int { get }
     var asSource: String { get }
     var isOptional: Bool { get }
     var isImplicitlyUnwrappedOptional: Bool { get }
@@ -366,6 +384,7 @@ extension Modifier: ModifierAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -408,14 +427,14 @@ extension Modifier: ModifierAutoJSExport {}
 
 extension Protocol: ProtocolAutoJSExport {}
 
-
-
-
-@objc protocol StructAutoJSExport: JSExport {
+@objc protocol ProtocolCompositionAutoJSExport: JSExport {
     var kind: String { get }
+    var composedTypeNames: [TypeName] { get }
+    var composedTypes: [Type]? { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var accessLevel: String { get }
     var name: String { get }
     var isUnknownExtension: Bool { get }
@@ -453,6 +472,68 @@ extension Protocol: ProtocolAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var fileName: String? { get }
+}
+
+extension ProtocolComposition: ProtocolCompositionAutoJSExport {}
+
+@objc protocol SetTypeAutoJSExport: JSExport {
+    var name: String { get }
+    var elementTypeName: TypeName { get }
+    var elementType: Type? { get }
+    var asGeneric: GenericType { get }
+    var asSource: String { get }
+}
+
+extension SetType: SetTypeAutoJSExport {}
+
+
+
+@objc protocol StructAutoJSExport: JSExport {
+    var kind: String { get }
+    var module: String? { get }
+    var imports: [Import] { get }
+    var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
+    var accessLevel: String { get }
+    var name: String { get }
+    var isUnknownExtension: Bool { get }
+    var globalName: String { get }
+    var isGeneric: Bool { get }
+    var localName: String { get }
+    var variables: [Variable] { get }
+    var rawVariables: [Variable] { get }
+    var allVariables: [Variable] { get }
+    var methods: [Method] { get }
+    var rawMethods: [Method] { get }
+    var allMethods: [Method] { get }
+    var subscripts: [Subscript] { get }
+    var rawSubscripts: [Subscript] { get }
+    var allSubscripts: [Subscript] { get }
+    var initializers: [Method] { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var staticVariables: [Variable] { get }
+    var staticMethods: [Method] { get }
+    var classMethods: [Method] { get }
+    var instanceVariables: [Variable] { get }
+    var instanceMethods: [Method] { get }
+    var computedVariables: [Variable] { get }
+    var storedVariables: [Variable] { get }
+    var inheritedTypes: [String] { get }
+    var based: [String: String] { get }
+    var basedTypes: [String: Type] { get }
+    var inherits: [String: Type] { get }
+    var implements: [String: Type] { get }
+    var containedTypes: [Type] { get }
+    var containedType: [String: Type] { get }
+    var parentName: String? { get }
+    var parent: Type? { get }
+    var supertype: Type? { get }
+    var attributes: AttributeList { get }
+    var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -469,6 +550,8 @@ extension Struct: StructAutoJSExport {}
     var isFinal: Bool { get }
     var readAccess: String { get }
     var writeAccess: String { get }
+    var isAsync: Bool { get }
+    var `throws`: Bool { get }
     var isMutable: Bool { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
@@ -477,6 +560,9 @@ extension Struct: StructAutoJSExport {}
     var definedInType: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericParameters: [GenericParameter] { get }
+    var genericRequirements: [GenericRequirement] { get }
+    var isGeneric: Bool { get }
 }
 
 extension Subscript: SubscriptAutoJSExport {}
@@ -515,6 +601,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
+    var typealiases: [String: Typealias] { get }
     var kind: String { get }
     var accessLevel: String { get }
     var name: String { get }
@@ -553,6 +640,7 @@ extension TupleType: TupleTypeAutoJSExport {}
     var supertype: Type? { get }
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
+    var genericRequirements: [GenericRequirement] { get }
     var fileName: String? { get }
 }
 
@@ -578,6 +666,8 @@ extension Type: TypeAutoJSExport {}
     var dictionary: DictionaryType? { get }
     var isClosure: Bool { get }
     var closure: ClosureType? { get }
+    var isSet: Bool { get }
+    var set: SetType? { get }
     var asSource: String { get }
     var description: String { get }
     var debugDescription: String { get }
@@ -585,6 +675,23 @@ extension Type: TypeAutoJSExport {}
 
 extension TypeName: TypeNameAutoJSExport {}
 
+@objc protocol TypealiasAutoJSExport: JSExport {
+    var aliasName: String { get }
+    var typeName: TypeName { get }
+    var type: Type? { get }
+    var module: String? { get }
+    var annotations: Annotations { get }
+    var documentation: Documentation { get }
+    var parent: Type? { get }
+    var accessLevel: String { get }
+    var parentName: String? { get }
+    var name: String { get }
+    var isOptional: Bool { get }
+    var isImplicitlyUnwrappedOptional: Bool { get }
+    var unwrappedTypeName: String { get }
+}
+
+extension Typealias: TypealiasAutoJSExport {}
 
 
 @objc protocol TypesCollectionAutoJSExport: JSExport {
@@ -610,6 +717,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var modifiers: [SourceryModifier] { get }
     var isFinal: Bool { get }
     var isLazy: Bool { get }
+    var isDynamic: Bool { get }
     var definedInTypeName: TypeName? { get }
     var actualDefinedInTypeName: TypeName? { get }
     var definedInType: Type? { get }
@@ -621,3 +729,4 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
 extension Variable: VariableAutoJSExport {}
 
 
+#endif

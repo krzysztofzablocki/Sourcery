@@ -16,7 +16,7 @@
     <a title="Usage  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 2.0.1 Docs</a> (100% documented)</p>
+        <p><a href="index.html">Sourcery 2.1.8 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -171,6 +171,9 @@
                 <a href="Classes/DiffableResult.html">DiffableResult</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/GenericParameter.html">GenericParameter</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/GenericRequirement.html">GenericRequirement</a>
               </li>
               <li class="nav-group-task">
@@ -181,6 +184,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/Modifier.html">Modifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/SetType.html">SetType</a>
               </li>
             </ul>
           </li>
@@ -199,10 +205,19 @@
                 <a href="Extensions/Array.html">Array</a>
               </li>
               <li class="nav-group-task">
+                <a href="Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)BytesRange">BytesRange</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Other%20Extensions.html#/c:@M@SourceryRuntime@objc(cs)FileParserResult">FileParserResult</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Extensions/String.html">String</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/StringProtocol.html">StringProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Typealias.html">Typealias</a>
               </li>
             </ul>
           </li>
@@ -269,6 +284,7 @@
 <li><code>--version</code> - Display the current version of Sourcery</li>
 <li><code>--help</code> - Display help information.</li>
 <li><code>--cacheBasePath</code> - Path to Sourcery internal cache (available only in configuration file)</li>
+<li><code>--parseDocumentation</code>  [default: false] - Include documentation comments for all declarations.</li>
 </ul>
 
 <p>Use <code>--help</code> to see the list of all available options.</p>
@@ -334,6 +350,20 @@ Single configuration file can contain multiple configurations under root <code>c
     <span class="na">xcframeworks</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
         <span class="pi">-</span> <span class="s">&lt;path to xcframework file&gt;</span>
+</code></pre>
+
+<p>You can also provide a Swift Package which will be scanned. Source files will be scanned based on the package&rsquo;s <code>path</code> and <code>exclude</code> options.</p>
+<pre class="highlight yaml"><code><span class="na">package</span><span class="pi">:</span>
+  <span class="na">path</span><span class="pi">:</span> <span class="s">&lt;path to to the Package.swift root directory&gt;</span>
+  <span class="na">target</span><span class="pi">:</span> <span class="s">&lt;target name&gt;</span>
+</code></pre>
+
+<p>Multiple targets:</p>
+<pre class="highlight yaml"><code><span class="na">package</span><span class="pi">:</span>
+  <span class="na">path</span><span class="pi">:</span> <span class="s">&lt;path to to the Package.swift root directory&gt;</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">&lt;target name&gt;</span>
+    <span class="pi">-</span> <span class="s">&lt;target name&gt;</span>
 </code></pre>
 <h4 id='excluding-sources-or-templates' class='heading'>Excluding sources or templates</h4>
 

@@ -41,9 +41,9 @@ extension Array where Element == Modifier {
         var isClass: Bool = false
 
         forEach { modifier in
-            if modifier.tokenKind == .staticKeyword {
+            if modifier.tokenKind == .keyword(.static) {
                 isStatic = true
-            } else if modifier.tokenKind == .classKeyword {
+            } else if modifier.tokenKind == .keyword(.class) {
                 isClass = true
             }
 

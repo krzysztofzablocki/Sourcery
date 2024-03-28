@@ -9,8 +9,9 @@ extension TypeName {
     }
 
     static func buildSet(of elementType: TypeName) -> TypeName {
-        let generic = GenericType(name: "Set", typeParameters: [.init(typeName: elementType)])
-        return TypeName(name: generic.asSource, generic: generic)
+        let name = "Set<\(elementType.asSource)>"
+        let set = SetType(name: name, elementTypeName: elementType)
+        return TypeName(name: set.name, set: set, generic: set.asGeneric)
     }
 
     static func buildDictionary(key keyTypeName: TypeName, value valueTypeName: TypeName, useGenericName: Bool = false) -> TypeName {
@@ -56,6 +57,7 @@ extension TypeName {
                         array: type.array,
                         dictionary: type.dictionary,
                         closure: type.closure,
+                        set: type.set,
                         generic: type.generic
         )
     }

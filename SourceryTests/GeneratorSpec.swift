@@ -36,9 +36,9 @@ class GeneratorSpec: QuickSpec {
                 ]
 
                 complexType.rawMethods = [
-                    Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Int"))], accessLevel: .public, definedInTypeName: TypeName(name: "Complex")),
-                    Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Float"))], isStatic: true, definedInTypeName: TypeName(name: "Complex")),
-                    Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Int"))], isClass: true, definedInTypeName: TypeName(name: "Complex"))
+                    Method(name: "foo(some: Int)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int"))], accessLevel: .public, definedInTypeName: TypeName(name: "Complex")),
+                    Method(name: "foo2(some: Int)", selectorName: "foo2(some:)", parameters: [MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Float"))], isStatic: true, definedInTypeName: TypeName(name: "Complex")),
+                    Method(name: "foo3(some: Int)", selectorName: "foo3(some:)", parameters: [MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int"))], isClass: true, definedInTypeName: TypeName(name: "Complex"))
                 ]
 
                 let complexTypeExtension = Type(name: "Complex", isExtension: true, variables: [])
@@ -47,14 +47,14 @@ class GeneratorSpec: QuickSpec {
                     Variable(name: "tupleFromExtension", typeName: .buildTuple(.Int, TypeName(name: "Bar")), isComputed: true, definedInTypeName: TypeName(name: "Complex"))
                 ]
                 complexTypeExtension.rawMethods = [
-                    Method(name: "fooFromExtension(some: Int)", selectorName: "fooFromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Int"))], definedInTypeName: TypeName(name: "Complex")),
-                    Method(name: "foo2FromExtension(some: Int)", selectorName: "foo2FromExtension(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "Float"))], definedInTypeName: TypeName(name: "Complex"))
+                    Method(name: "fooFromExtension(some: Int)", selectorName: "fooFromExtension(some:)", parameters: [MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int"))], definedInTypeName: TypeName(name: "Complex")),
+                    Method(name: "foo2FromExtension(some: Int)", selectorName: "foo2FromExtension(some:)", parameters: [MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Float"))], definedInTypeName: TypeName(name: "Complex"))
                 ]
 
                 let knownProtocol = Protocol(name: "KnownProtocol", variables: [
                     Variable(name: "protocolVariable", typeName: TypeName(name: "Int"), isComputed: true, definedInTypeName: TypeName(name: "KnownProtocol"))
                     ], methods: [
-                        Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", typeName: TypeName(name: "String"))], accessLevel: .public, definedInTypeName: TypeName(name: "KnownProtocol"))
+                        Method(name: "foo(some: String)", selectorName: "foo(some:)", parameters: [MethodParameter(name: "some", index: 0, typeName: TypeName(name: "String"))], accessLevel: .public, definedInTypeName: TypeName(name: "KnownProtocol"))
                     ])
 
                 let innerOptionsType = Type(name: "InnerOptions", accessLevel: .public, variables: [
@@ -256,10 +256,15 @@ class GeneratorSpec: QuickSpec {
                 it("can access variable type information") {
                     expect(generate("{% for variable in type.Complex.variables %}{{ variable.type.name }}{% endfor %}")).to(equal("FooBar"))
                 }
-
+                #if canImport(ObjectiveC)
                 it("can render variable isOptional") {
                     expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("0"))
                 }
+                #else
+                it("can render variable isOptional") {
+                    expect(generate("{{ type.Complex.variables.first.isOptional }}")).to(equal("false"))
+                }
+                #endif
 
                 it("can render variable definedInType") {
                     expect(generate("{% for type in types.all %}{% for variable in type.variables %}{{ variable.definedInType.name }} {% endfor %}{% endfor %}")).to(equal("Complex Complex Complex Complex Complex Complex Foo Options "))

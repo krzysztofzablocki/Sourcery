@@ -123,7 +123,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
 
     public override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         startVisitingType(node) { parent in
-            let modifiers = node.modifiers?.map(Modifier.init) ?? []
+            let modifiers = node.modifiers.map(Modifier.init)
             let base = modifiers.baseModifiers(parent: nil)
 
             return Type(
@@ -134,7 +134,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
               variables: [],
               methods: [],
               subscripts: [],
-              inheritedTypes: node.inheritanceClause?.inheritedTypeCollection.map { $0.typeName.description.trimmed } ?? [],
+              inheritedTypes: node.inheritanceClause?.inheritedTypes.map { $0.type.description.trimmed } ?? [],
               containedTypes: [],
               typealiases: [],
               attributes: Attribute.from(node.attributes),
@@ -163,7 +163,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
     }
 
     public override func visit(_ node: ImportDeclSyntax) -> SyntaxVisitorContinueKind {
-        imports.append(Import(path: node.path.description.trimmed, kind: node.importKind?.text.trimmed))
+        imports.append(Import(path: node.path.description.trimmed, kind: node.importKindSpecifier?.text.trimmed))
         return .skipChildren
     }
 
@@ -201,12 +201,13 @@ class SyntaxTreeCollector: SyntaxVisitor {
         return .skipChildren
     }
 
-    public override func visit(_ node: TypealiasDeclSyntax) -> SyntaxVisitorContinueKind {
-        let localName = node.identifier.text.trimmed
+    public override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+        let localName = node.name.text.trimmed
         let typeName = TypeName(node.initializer.value)
-        let modifiers = node.modifiers?.map(Modifier.init) ?? []
+        let modifiers = node.modifiers.map(Modifier.init)
         let baseModifiers = modifiers.baseModifiers(parent: visitingType)
         let annotations = annotationsParser.annotations(from: node)
+        let documentation = annotationsParser.documentation(from: node)
 
         if let composition = processPossibleProtocolComposition(for: typeName.name, localName: localName, annotations: annotations, accessLevel: baseModifiers.readAccess) {
             if let visitingType = visitingType {
@@ -223,7 +224,8 @@ class SyntaxTreeCollector: SyntaxVisitor {
           typeName: typeName,
           accessLevel: baseModifiers.readAccess,
           parent: visitingType,
-          module: module
+          module: module,
+          documentation: documentation
         )
 
         // TODO: add generic requirements
@@ -236,15 +238,15 @@ class SyntaxTreeCollector: SyntaxVisitor {
         return .skipChildren
     }
 
-    public override func visit(_ node: AssociatedtypeDeclSyntax) -> SyntaxVisitorContinueKind {
+    public override func visit(_ node: AssociatedTypeDeclSyntax) -> SyntaxVisitorContinueKind {
         guard let sourceryProtocol = visitingType as? SourceryProtocol else {
             return .skipChildren
         }
 
-        let name = node.identifier.text.trimmed
+        let name = node.name.text.trimmed
         var typeName: TypeName?
         var type: Type?
-        if let possibleTypeName = node.inheritanceClause?.inheritedTypeCollection.description.trimmed {
+        if let possibleTypeName = node.inheritanceClause?.inheritedTypes.description.trimmed {
             type = processPossibleProtocolComposition(for: possibleTypeName, localName: "")
             typeName = TypeName(possibleTypeName)
         }

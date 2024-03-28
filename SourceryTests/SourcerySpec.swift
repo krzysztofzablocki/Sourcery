@@ -7,6 +7,9 @@ import Foundation
 #else
 @testable import Sourcery
 #endif
+#if !canImport(ObjectiveC)
+import CDispatch
+#endif
 @testable import SourceryRuntime
 import XcodeProj
 
@@ -143,6 +146,25 @@ class SourcerySpecTests: QuickSpec {
 
                         let result = try? generatedPath.read(.utf8)
                         expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                    }
+
+                    context("with hide version from header enabled") {
+                        beforeEach {
+                            expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, hideVersionHeader: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        }
+                        it("removes version information from within generated template") {
+                        let expectedResult = """
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            // Line One
+                            """
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                        }
                     }
 
                     it("does not remove code from within generated template when missing origin") {
@@ -1121,6 +1143,7 @@ class SourcerySpecTests: QuickSpec {
                     }
                 }
 
+#if canImport(ObjectiveC)
                 context("with watcher") {
                     var watcher: Any?
                     let tmpTemplate = outputDir + Path("FakeTemplate.stencil")
@@ -1128,26 +1151,27 @@ class SourcerySpecTests: QuickSpec {
 
                     it("re-generates on template change") {
                         updateTemplate(code: "Found {{ types.enums.count }} Enums")
-
-                        expect { watcher = try Sourcery(watcherEnabled: true, cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [tmpTemplate]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        let sourcery = Sourcery(watcherEnabled: true, cacheDisabled: true)
+                        expect { watcher = try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [tmpTemplate]), output: output, baseIndentation: 0) }.toNot(throwError())
 
                         // ! Change the template
                         updateTemplate(code: "Found {{ types.all.count }} Types")
 
                         let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate)).read(.utf8)) }
-                        expect(result()).toEventually(contain("\(Sourcery.generationHeader)Found 3 Types"))
+                        expect(result()).toEventually(contain("\(sourcery.generationHeader)Found 3 Types"))
 
                         _ = watcher
                     }
                 }
+#endif
             }
 
             context("given a template folder") {
 
                 context("given a single file output") {
                     let outputFile = outputDir + "Composed.swift"
+#if canImport(JavaScriptCore)
                     let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other+SourceryTemplates.swift")).read(.utf8).withoutWhitespaces
-
                     it("joins generated code into single file") {
                         expect {
                             try Sourcery(cacheDisabled: true)
@@ -1164,6 +1188,24 @@ class SourcerySpecTests: QuickSpec {
                         let result = try? outputFile.read(.utf8)
                         expect(result?.withoutWhitespaces).to(equal(expectedResult?.withoutWhitespaces))
                     }
+#else
+                    let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other+SourceryTemplates_Linux.swift")).read(.utf8).withoutWhitespaces
+                    it("joins generated code into single file") {
+                        expect {
+                            try Sourcery(cacheDisabled: true)
+                                .processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
+                                              usingTemplates: Paths(include: [
+                                                Stubs.templateDirectory + "Basic.stencil",
+                                                Stubs.templateDirectory + "Other.stencil",
+                                                Stubs.templateDirectory + "SourceryTemplateStencil.sourcerytemplate"
+                                              ]),
+                                              output: Output(outputFile), baseIndentation: 0)
+                            }.toNot(throwError())
+
+                        let result = try? outputFile.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult?.withoutWhitespaces))
+                    }
+#endif
 
                     it("does not create generated file with empty content") {
                         let templatePath = Stubs.templateDirectory + Path("Empty.stencil")
@@ -1271,6 +1313,7 @@ class SourcerySpecTests: QuickSpec {
                         }.toNot(throwError())
                 }
 
+#if canImport(ObjectiveC)
                 it("links generated files") {
                     expect {
                         try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output, baseIndentation: 0)
@@ -1278,7 +1321,7 @@ class SourcerySpecTests: QuickSpec {
 
                     expect(sourceFilesPaths.contains(outputDir + "Other.generated.swift")).to(beTrue())
                 }
-
+#endif
                 it("links generated files when using per file generation") {
                     templatePath = outputDir + "PerFileGeneration.stencil"
                     update(code: """
@@ -1300,7 +1343,7 @@ class SourcerySpecTests: QuickSpec {
                     expect {
                         let paths = sourceFilesPaths
                         expect(paths.contains(outputDir + "PerFileGeneration.generated.swift")).to(beTrue())
-                        expect(paths.contains(outputDir + "Generated/Foo.generated.swift")).to(beTrue())
+                        expect(paths.contains(outputDir + "Generated/FooBarBaz.generated.swift")).to(beTrue())
                     }.toNot(throwError())
                 }
             }

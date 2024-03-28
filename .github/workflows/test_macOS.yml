@@ -1,0 +1,29 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+
+name: test macOS
+
+on:
+  workflow_call:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+jobs:
+  macos_build:
+    runs-on: macos-13
+    steps:
+    - name: Set Xcode 15.1.0
+      run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
+    - name: Print Current Xcode
+      run: xcode-select -p
+    - uses: actions/checkout@v3
+    - name: Run tests
+      run: swift test
+
+ 

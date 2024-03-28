@@ -16,18 +16,23 @@ import {{ import }}
 @testable import {{ import }}
 {% endfor %}
 
-{% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
+{% macro cleanString string %}{{ string | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | replace:" ","_" | replace:"?","_" | replace:"!","_" | replace:",","_" | replace:"->","_" | replace:"@","_" | replace:".","_" | replace:"[","" | replace:"]","" | replace:"<","" | replace:">","" | replace:"&","" | snakeToCamelCase }}{% endmacro %}
+{%- macro swiftifyMethodName method -%}
+    {%- set cleanMethodName %}{% call cleanString method.name %}{% endset %}
+    {%- set cleanMethodReturnTypeName %}{% call cleanString method.actualReturnTypeName.name %}{% endset -%}
+    {{ cleanMethodName | lowerFirstLetter }}{{ cleanMethodReturnTypeName | upperFirstLetter }}
+{%- endmacro -%}
 
 {% macro accessLevel level %}{% if level != 'internal' %}{{ level }} {% endif %}{% endmacro %}
 
 {% macro staticSpecifier method %}{% if method.isStatic and not method.isInitializer %}static {% endif %}{% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ThrowableError: Error?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ThrowableError: (any Error)?
 {% endmacro %}
 
 {% macro methodThrowableErrorUsage method %}
-        if let error = {% call swiftifyMethodName method.selectorName %}ThrowableError {
+        if let error = {% call swiftifyMethodName method %}ThrowableError {
             throw error
         }
 {% endmacro %}
@@ -39,25 +44,25 @@ import {{ import }}
         {% endfor -%}
     {% endset %}
     {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
-        {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {{ param.name }}{% endfor %}
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append({% for param in method.parameters %}{{ param.name }}){% endfor %}
+        {% call swiftifyMethodName method %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }} = {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{% endfor %}
+        {% call swiftifyMethodName method %}ReceivedInvocations.append({% for param in method.parameters %}{% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}){% endfor %}
     {% else %}
     {% if not method.parameters.count == 0 and not hasNonEscapingClosures %}
-        {% call swiftifyMethodName method.selectorName %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations.append(({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %}))
+        {% call swiftifyMethodName method %}ReceivedArguments = ({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %})
+        {% call swiftifyMethodName method %}ReceivedInvocations.append(({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last%}, {% endif %}{% endfor %}))
     {% endif %}
     {% endif %}
 {% endmacro %}
 
-{% macro methodClosureName method %}{% call swiftifyMethodName method.selectorName %}Closure{% endmacro %}
+{% macro methodClosureName method %}{% call swiftifyMethodName method %}Closure{% endmacro %}
 
 {% macro closureReturnTypeName method %}{% if method.isOptionalReturnType %}{{ method.unwrappedReturnTypeName }}?{% else %}{{ method.returnTypeName }}{% endif %}{% endmacro %}
 
 {% macro methodClosureDeclaration method %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call methodClosureName method %}: (({% for param in method.parameters %}{{ param.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call closureReturnTypeName method %}{% endif %})?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call methodClosureName method %}: (({% for param in method.parameters %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic true %}{% if not forloop.last %}, {% elif param.typeName.isClosure and param.typeName.closure.returnTypeName.name|contains:"any " %}{% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call existentialVariableTypeName method.returnTypeName true %}{% endif %})?
 {% endmacro %}
 
-{% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
+{% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ '&' if param.typeName.name | hasPrefix:"inout " }}{% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
 
 {% macro mockMethod method %}
     //MARK: - {{ method.shortName }}
@@ -66,9 +71,9 @@ import {{ import }}
         {% call methodThrowableErrorDeclaration method %}
     {% endif %}
     {% if not method.isInitializer %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}CallsCount = 0
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}Called: Bool {
-        return {% call swiftifyMethodName method.selectorName %}CallsCount > 0
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}CallsCount = 0
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}Called: Bool {
+        return {% call swiftifyMethodName method %}CallsCount > 0
     }
     {% endif %}
     {% set hasNonEscapingClosures %}
@@ -77,14 +82,14 @@ import {{ import }}
         {% endfor -%}
     {% endset %}
     {% if method.parameters.count == 1 and not hasNonEscapingClosures %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}?{% endfor %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}{{ param.typeName.unwrappedTypeName }}{{ ')' if param.isClosure }}{%if param.typeName.isOptional%}?{%endif%}]{% endfor %} = []
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}: {{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName param.isVariadic false %}{{ ')' if param.isClosure }})?{% endfor %}
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedInvocations{% for param in method.parameters %}: [{{ '(' if param.isClosure }}({% call existentialClosureVariableTypeName param.typeName.unwrappedTypeName param.isVariadic false %}){{ ')' if param.isClosure }}{%if param.typeName.isOptional%}?{%endif%}]{% endfor %} = []
     {% elif not method.parameters.count == 0 and not hasNonEscapingClosures %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})?
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {{ param.unwrappedTypeName if param.typeAttributes.escaping else param.typeName }}{{ ', ' if not forloop.last }}{% endfor %})] = []
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedArguments: ({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureTupleVariableTypeName param.typeName.unwrappedTypeName param.isVariadic false %}{% else %}{% call existentialClosureTupleVariableTypeName param.typeName param.isVariadic false %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReceivedInvocations: [({% for param in method.parameters %}{{ param.name }}: {% if param.typeAttributes.escaping %}{% call existentialClosureTupleVariableTypeName param.typeName.unwrappedTypeName param.isVariadic false %}{% else %}{% call existentialClosureTupleVariableTypeName param.typeName param.isVariadic false %}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})] = []
     {% endif %}
     {% if not method.returnTypeName.isVoid and not method.isInitializer %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method.selectorName %}ReturnValue: {{ '(' if method.returnTypeName.isClosure and not method.isOptionalReturnType }}{{ method.returnTypeName }}{{ ')' if method.returnTypeName.isClosure and not method.isOptionalReturnType }}{{ '!' if not method.isOptionalReturnType }}
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReturnValue: {{ '(' if method.returnTypeName.isClosure and not method.isOptionalReturnType or method.returnTypeName|contains:"any "}}{% call existentialVariableTypeName method.returnTypeName false %}{{ ')' if method.returnTypeName.isClosure and not method.isOptionalReturnType or method.returnTypeName|contains:"any " }}{{ '!' if not method.isOptionalReturnType }}
     {% endif %}
     {% call methodClosureDeclaration method %}
 
@@ -99,19 +104,19 @@ import {{ import }}
     {{ value }}
     {% endfor %}
     {% endfor %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}func {{ method.name }}{{ ' async' if method.isAsync }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}{% call methodName method %}{{ ' async' if method.isAsync }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {% call existentialVariableTypeName method.returnTypeName false %}{% endif %} {
+        {% call swiftifyMethodName method %}CallsCount += 1
+        {% call methodReceivedParameters method %}
         {% if method.throws %}
         {% call methodThrowableErrorUsage method %}
         {% endif %}
-        {% call swiftifyMethodName method.selectorName %}CallsCount += 1
-        {% call methodReceivedParameters method %}
         {% if method.returnTypeName.isVoid %}
         {% if method.throws %}try {% endif %}{% if method.isAsync %}await {% endif %}{% call methodClosureName method %}?({% call methodClosureCallParameters method %})
         {% else %}
         if let {% call methodClosureName method %} = {% call methodClosureName method %} {
             return {{ 'try ' if method.throws }}{{ 'await ' if method.isAsync }}{% call methodClosureName method %}({% call methodClosureCallParameters method %})
         } else {
-            return {% call swiftifyMethodName method.selectorName %}ReturnValue
+            return {% call swiftifyMethodName method %}ReturnValue
         }
         {% endif %}
     }
@@ -119,43 +124,51 @@ import {{ import }}
 {% endif %}
 {% endmacro %}
 
+{% macro mockSubscript subscript index %}
+    //MARK: - Subscript #{{ index }}
+    {% call accessLevel subscript.readAccess %}subscript{% if subscript.isGeneric %}<{% for genericParameter in subscript.genericParameters %}{{ genericParameter.name }}{% if genericParameter.inheritedTypeName %}: {{ genericParameter.inheritedTypeName.name }}{% endif %}{{ ', ' if not forloop.last }}{% endfor %}>{% endif %}({% for parameter in subscript.parameters %}{{ parameter.asSource }}{{ ', ' if not forloop.last }}{% endfor %}) -> {{ subscript.returnTypeName.name }}{% if subscript.genericRequirements|count != 0 %} where {% for requirement in subscript.genericRequirements %}{{ requirement.leftType.name }} {{ requirement.relationshipSyntax }} {{ requirement.rightType.typeName.name }}{{ ', ' if not forloop.last }}{% endfor %}{% endif %} {
+        {% if subscript.readAccess %}get{% if subscript.isAsync %} async{% endif %}{% if subscript.throws %} throws{% endif %} { fatalError("Subscripts are not fully supported yet") }{% endif %}
+        {% if subscript.writeAccess %}set { fatalError("Subscripts are not fully supported yet") }{% endif %}
+    }
+{% endmacro %}
+
 {% macro resetMethod method %}
         {# for type method which are mocked, a way to reset the invocation, argument, etc #}
         {% if method.isStatic and not method.isInitializer %} //MARK: - {{ method.shortName }}
         {% if not method.isInitializer %}
-        {% call swiftifyMethodName method.selectorName %}CallsCount = 0
+        {% call swiftifyMethodName method %}CallsCount = 0
         {% endif %}
         {% if method.parameters.count == 1 %}
-        {% call swiftifyMethodName method.selectorName %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}{% endfor %} = nil
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations = []
+        {% call swiftifyMethodName method %}Received{% for param in method.parameters %}{{ param.name|upperFirstLetter }}{% endfor %} = nil
+        {% call swiftifyMethodName method %}ReceivedInvocations = []
         {% elif not method.parameters.count == 0 %}
-        {% call swiftifyMethodName method.selectorName %}ReceivedArguments = nil
-        {% call swiftifyMethodName method.selectorName %}ReceivedInvocations = []
+        {% call swiftifyMethodName method %}ReceivedArguments = nil
+        {% call swiftifyMethodName method %}ReceivedInvocations = []
         {% endif %}
         {% call methodClosureName method %} = nil
         {% if method.throws %}
-        {% call swiftifyMethodName method.selectorName %}ThrowableError = nil
+        {% call swiftifyMethodName method %}ThrowableError = nil
         {% endif %}
-        
+
         {% endif %}
 
 {% endmacro %}
 
 {% macro mockOptionalVariable variable %}
-    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {{ variable.typeName }}
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {% call existentialVariableTypeName variable.typeName false %}
 {% endmacro %}
 
 {% macro mockNonOptionalArrayOrDictionaryVariable variable %}
-    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {{ variable.typeName }} = {% if variable.isArray %}[]{% elif variable.isDictionary %}[:]{% endif %}
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {% call existentialVariableTypeName variable.typeName false %} = {% if variable.isArray %}[]{% elif variable.isDictionary %}[:]{% endif %}
 {% endmacro %}
 
 {% macro mockNonOptionalVariable variable %}
-    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {{ variable.typeName }} {
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {% call existentialVariableTypeName variable.typeName false %} {
         get { return {% call underlyingMockedVariableName variable %} }
         set(value) { {% call underlyingMockedVariableName variable %} = value }
     }
-    {% set wrappedTypeName %}{% if variable.typeName.isProtocolComposition %}({{ variable.typeName }}){% else %}{{ variable.typeName }}{% endif %}{% endset %}
-    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ wrappedTypeName }}!
+    {% set wrappedTypeName %}{% if variable.typeName.isProtocolComposition %}({% call existentialVariableTypeName variable.typeName false %}){% else %}{% call existentialVariableTypeName variable.typeName false %}{% endif %}{% endset %}
+    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: ({% call existentialVariableTypeName wrappedTypeName false %})!
 {% endmacro %}
 
 {% macro variableThrowableErrorDeclaration variable %}
@@ -169,7 +182,7 @@ import {{ import }}
 {% endmacro %}
 
 {% macro variableClosureDeclaration variable %}
-    {% call accessLevel variable.readAccess %}var {% call variableClosureName variable %}: (() {% if variable.isAsync %}async {% endif %}{% if variable.throws %}throws {% endif %}-> {{ variable.typeName }})?
+    {% call accessLevel variable.readAccess %}var {% call variableClosureName variable %}: (() {% if variable.isAsync %}async {% endif %}{% if variable.throws %}throws {% endif %}-> {% call existentialVariableTypeName variable.typeName true %})?
 {% endmacro %}
 
 {% macro variableClosureName variable %}{% call mockedVariableName variable %}Closure{% endmacro %}
@@ -180,12 +193,12 @@ import {{ import }}
         return {% call mockedVariableName variable %}CallsCount > 0
     }
 
-    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {{ variable.typeName }} {
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {% call existentialVariableTypeName variable.typeName false %} {
         get {% if variable.isAsync %}async {% endif %}{% if variable.throws %}throws {% endif %}{
+            {% call mockedVariableName variable %}CallsCount += 1
             {% if variable.throws %}
             {% call variableThrowableErrorUsage variable %}
             {% endif %}
-            {% call mockedVariableName variable %}CallsCount += 1
             if let {% call variableClosureName variable %} = {% call variableClosureName variable %} {
                 return {{ 'try ' if variable.throws }}{{ 'await ' if variable.isAsync }}{% call variableClosureName variable %}()
             } else {
@@ -193,7 +206,7 @@ import {{ import }}
             }
         }
     }
-    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}{{ '!' if not variable.isOptional }}
+    {% call accessLevel variable.readAccess %}var {% call underlyingMockedVariableName variable %}: {% call existentialVariableTypeName variable.typeName false %}{{ '!' if not variable.isOptional }}
     {% if variable.throws %}
         {% call variableThrowableErrorDeclaration variable %}
     {% endif %}
@@ -202,6 +215,122 @@ import {{ import }}
 
 {% macro underlyingMockedVariableName variable %}underlying{{ variable.name|upperFirstLetter }}{% endmacro %}
 {% macro mockedVariableName variable %}{{ variable.name }}{% endmacro %}
+{# Swift does not support closures with implicitly unwrapped optional return value type. That is why existentialVariableTypeName.isNotAllowedToBeImplicitlyUnwrappedOptional should be true in such case #}
+{% macro existentialVariableTypeName typeName isNotAllowedToBeImplicitlyUnwrappedOptional -%}
+    {%- if typeName|contains:"<" and typeName|contains:">" -%}
+        {{ typeName }}
+    {%- elif typeName|contains:"any " and typeName|contains:"!"  -%}
+        {{ typeName | replace:"any","(any" | replace:"!",")!" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional  -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+        ({{ typeName | replace:"any","(any" | replace:"?",")?" }})
+    {%- elif typeName|contains:"some " and typeName|contains:"!"  -%}
+        {{ typeName | replace:"some","(some" | replace:"!",")!" }}
+    {%- elif typeName|contains:"some " and typeName.isOptional  -%}
+        {{ typeName | replace:"some","(some" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
+        ({{ typeName | replace:"some","(some" | replace:"?",")?" }})
+    {%- elif typeName.isClosure -%}
+        ({{ typeName }})
+    {%- elif isNotAllowedToBeImplicitlyUnwrappedOptional -%}
+        {{ typeName | replace:"!","" }}
+    {%- else -%}
+        {{ typeName }}
+    {%- endif -%}
+{%- endmacro %}
+{# Swift does not support closures with variadic parameters of existential types as arguments. That is why existentialClosureVariableTypeName.isVariadic should be false when typeName is a closure #}
+{% macro existentialClosureVariableTypeName typeName isVariadic keepInout -%}
+    {% set name %}
+        {%- if keepInout -%}
+            {{ typeName }}
+        {%- else -%}
+            {{ typeName | replace:"inout ","" }}
+        {%- endif -%}
+    {% endset %}
+    {%- if typeName|contains:"any " and typeName|contains:"!" -%}
+        {{ name | replace:"any","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
+        ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" and typeName.closure.parameters.count > 1 -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" | replace:") ->",")) ->" }}
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" and typeName.closure.parameters.count > 1 -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"any " and typeName|contains:"?" -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
+        {{ name | replace:"some","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif isVariadic and typeName|contains:"any " -%}
+        [({{ name }})]
+    {%- elif isVariadic -%}
+        {{ name }}...
+    {%- else -%}
+        {{ name|replace:"some ","any " }}
+    {%- endif -%}
+{%- endmacro %}
+{# Swift does not support tuples with variadic parameters. That is why existentialClosureVariableTypeName.isVariadic should be false when typeName is a closure #}
+{% macro existentialClosureTupleVariableTypeName typeName isVariadic keepInout -%}
+    {% set name %}
+        {%- if keepInout -%}
+            {{ typeName }}
+        {%- else -%}
+            {{ typeName | replace:"inout ","" }}
+        {%- endif -%}
+    {% endset %}
+    {%- if typeName|contains:"any " and typeName|contains:"!" -%}
+        {{ name | replace:"any","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
+        ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"any " and typeName|contains:"?" -%}
+        {{ name | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
+        {{ name | replace:"some","(any" | replace:"!",")?" }}
+    {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"?" -%}
+        {{ name | replace:"some","(any" | replace:"?",")?" }}
+    {%- elif isVariadic -%}
+        [{{ name }}]
+    {%- else -%}
+        {{ name|replace:"some ","any " }}
+    {%- endif -%}
+{%- endmacro %}
+{% macro existentialParameterTypeName typeName isVariadic -%}
+    {%- if typeName|contains:"any " and typeName|contains:"?," and typeName|contains:">?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?,",")?," }}
+    {%- elif typeName|contains:"any " and typeName|contains:"!" -%}
+        {{ typeName | replace:"any","(any" | replace:"!",")!" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
+        ({{ typeName.unwrappedTypeName | replace:"any","(any" | replace:"?",")?" }})?
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName.closure.parameters.count > 1 and typeName.closure.returnTypeName.name|contains:"any " and typeName|contains:"?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" | replace:") ->",")) ->" }})
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName.closure.returnTypeName.name|contains:"any " and typeName|contains:"?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }})
+    {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"any " and typeName.isOptional -%}
+        {{ typeName | replace:"any","(any" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName|contains:"!" -%}
+        {{ typeName | replace:"some","(some" | replace:"!",")!" }}
+    {%- elif typeName|contains:"some " and typeName.isClosure and typeName|contains:"?" -%}
+        {{ typeName | replace:"some","(some" | replace:"?",")?" }}
+    {%- elif typeName|contains:"some " and typeName.isOptional -%}
+        {{ typeName | replace:"some","(some" | replace:"?",")?" }}
+    {%- elif isVariadic -%}
+        {{ typeName }}...
+    {%- elif typeName.isClosure and typeName.closure.parameters.count > 0 and typeName.closure.parameters.last.isVariadic -%}
+        {{ typeName }})
+    {%- else -%}
+        {{ typeName }}
+    {%- endif -%}
+{%- endmacro %}
+{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 %}({% endif %}{% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
 
 {% for type in types.protocols where type.based.AutoMockable or type|annotated:"AutoMockable" %}{% if type.name != "AutoMockable" %}
 {% call accessLevel type.accessLevel %}class {{ type.name }}Mock: {{ type.name }} {
@@ -223,6 +352,10 @@ import {{ import }}
 
 {% for method in type.allMethods|!definedInExtension %}
     {% call mockMethod method %}
+{% endfor %}
+
+{% for subscript in type.allSubscripts|!definedInExtension %}
+    {% call mockSubscript subscript forloop.counter %}
 {% endfor %}
 }
 {% endif %}{% endfor %}
