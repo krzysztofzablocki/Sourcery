@@ -28,8 +28,8 @@ extension SourceryMethod {
           signature: Signature(
             parameters: signature.parameterClause.parameters,
             output: nil,
-            asyncKeyword: signature.asyncOrReasyncKeyword?.description.trimmed,
-            throwsOrRethrowsKeyword: signature.throwsOrRethrowsKeyword?.description.trimmed,
+            asyncKeyword: signature.effectSpecifiers?.asyncSpecifier?.description.trimmed,
+            throwsOrRethrowsKeyword: signature.effectSpecifiers?.throwsSpecifier?.description.trimmed,
             annotationsParser: annotationsParser
           ),
           modifiers: node.modifiers,

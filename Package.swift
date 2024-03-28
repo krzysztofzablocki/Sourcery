@@ -268,7 +268,7 @@ var dependencies: [Package.Dependency] = [
 dependencies.append(.package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"))
 #endif
 
-let package = Package(
+var package = Package(
     name: "Sourcery",
     platforms: [
         .macOS(.v13),
@@ -287,4 +287,15 @@ let package = Package(
     ],
     dependencies: dependencies,
     targets: targets
+)
+
+package.targets.append(
+    .testTarget(
+        name: "Jeff",
+        dependencies: [
+            "SourceryLib",
+            "Quick",
+            "Nimble"
+        ]
+    )
 )

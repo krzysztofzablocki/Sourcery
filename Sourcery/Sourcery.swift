@@ -132,7 +132,9 @@ public class Sourcery {
 
         var result = try process(source)
 
-        result.types.cleanUp()
+        result.types.types.forEach {
+            $0.cleanUp()
+        }
         
         if isDryRun {
             let encoder = JSONEncoder()

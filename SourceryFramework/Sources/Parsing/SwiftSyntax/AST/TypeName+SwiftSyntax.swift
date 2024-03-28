@@ -138,9 +138,9 @@ extension TypeName {
                   isVariadic: node.ellipsis != nil
                 )
             }
-            let returnTypeName = TypeName(typeIdentifier.returnType)
-            let asyncKeyword = typeIdentifier.fixedAsyncKeyword.map { $0.text.trimmed }
-            let throwsOrRethrows = typeIdentifier.fixedThrowsOrRethrowsKeyword.map { $0.text.trimmed }
+            let returnTypeName = TypeName(typeIdentifier.returnClause.type)
+            let asyncKeyword = typeIdentifier.effectSpecifiers?.asyncSpecifier.map { $0.text.trimmed }
+            let throwsOrRethrows = typeIdentifier.effectSpecifiers?.throwsSpecifier.map { $0.text.trimmed }
             let name = typeIdentifier.description
             self.init(
                 name: name,
@@ -170,7 +170,7 @@ extension TypeName {
         } else if node.as(ClassRestrictionTypeSyntax.self) != nil {
             self.init(name: "AnyObject")
         } else if let typeIdentifier = node.as(PackExpansionTypeSyntax.self) {
-            self.init(typeIdentifier.patternType)
+            self.init(typeIdentifier.repetitionPattern)
             
             self.name = typeIdentifier.description
         } else {

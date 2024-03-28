@@ -12,57 +12,6 @@ public typealias AttributeList = [String: [Attribute]]
 
 @objcMembers
 public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
-
-    public func cleanUp() {
-        self.rawVariables.forEach {
-            $0.cleanUp()
-        }
-        self.rawVariables = []
-        
-        self.rawMethods.forEach {
-            $0.cleanUp()
-        }
-        self.rawMethods = []
-        
-        self.rawSubscripts.forEach {
-            $0.cleanUp()
-        }
-        self.rawSubscripts = []
-        
-        self.parent = nil
-        
-        self.typealiases.forEach { _, ta in
-            ta.cleanUp()
-        }
-        self.typealiases = [:]
-        
-        supertype = nil
-        
-//        containedType.forEach {
-//            $1.cleanUp()
-//        }
-        containedType = [:]
-        
-//        containedTypes.forEach {
-//            $0.cleanUp()
-//        }
-        containedTypes = []
-        
-//        implements.forEach {
-//            $1.cleanUp()
-//        }
-        implements = [:]
-        
-//        inherits.forEach {
-//            $1.cleanUp()
-//        }
-        inherits = [:]
-        
-//        basedTypes.forEach {
-//            $1.cleanUp()
-//        }
-        basedTypes = [:]
-    }
     
     /// :nodoc:
     public var module: String?
@@ -351,7 +300,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     // sourcery: skipEquality, skipDescription
     /// Contained types groupd by their names
-    public private(set) var containedType: [String: Type] = [:]
+    public internal(set) var containedType: [String: Type] = [:]
 
     /// Name of parent type (for contained types only)
     public private(set) var parentName: String?
