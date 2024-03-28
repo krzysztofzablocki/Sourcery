@@ -70,7 +70,7 @@ class FileParserAttributesSpec: QuickSpec {
                                 "available": [Attribute(name: "available", arguments: [
                                     "0": "*" as NSString,
                                     "1": "unavailable" as NSString,
-                                    "renamed": "NewFoo" as NSString
+                                    "renamed": "\"NewFoo\"" as NSString
                                 ], description: "@available(*, unavailable, renamed: \"NewFoo\")")
                                 ]]))
 
@@ -195,8 +195,9 @@ class FileParserAttributesSpec: QuickSpec {
                 ]))
             }
 
-            it("extracts property wrapper attributes") {
-                expect(parse("""
+            context("parsing property wrapper") {
+                it("extracts attributes") {
+                    expect(parse("""
                     class Foo {
                         @UserDefaults(key: "user_name", 123)
                         var name: String = "abc"
@@ -205,11 +206,33 @@ class FileParserAttributesSpec: QuickSpec {
                     "UserDefaults": [
                         Attribute(
                             name: "UserDefaults",
-                            arguments: ["key": "user_name" as NSString, "1": "123" as NSString],
+                            arguments: ["key": "\"user_name\"" as NSString, "1": "123" as NSString],
                             description: "@UserDefaults(key: \"user_name\", 123)"
                         )
                     ]
                 ]))
+                }
+
+                it("extracts and parses attributes correctly") {
+                    let expectedArguments: [String: NSObject] = [
+                        "path": "\"provisioning_features.is_enabled\"" as NSString,
+                        "remoteFeatureName": "\"provision_enabled\"" as NSString
+                    ]
+                    let arguments = parse(
+"""
+class Foo {
+@FeatureFlag(remoteFeatureName: "provision_enabled", path: "provisioning_features.is_enabled", description: nil)
+var variable: Bool
+}
+"""
+                    ).first?.variables.first?.attributes["FeatureFlag"]?.first?.arguments
+                    expect(arguments).toNot(beNil())
+                    if let parsedArguments = arguments {
+                        for expected in expectedArguments {
+                            expect((parsedArguments[expected.key] as? NSObject)).to(equal(expected.value))
+                        }
+                    }
+                }
             }
         }
     }

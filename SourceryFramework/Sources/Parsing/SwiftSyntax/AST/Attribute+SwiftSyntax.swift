@@ -12,9 +12,9 @@ extension Attribute {
               let components = part.split(separator: ":", maxSplits: 1)
               switch components.count {
               case 2:
-                  arguments[components[0].trimmed] = components[1].replacingOccurrences(of: "\"", with: "").trimmed as NSString
+                  arguments[components[0].trimmed] = components[1].trimmed as NSString
               case 1:
-                  arguments["\(idx)"] = components[0].replacingOccurrences(of: "\"", with: "").trimmed as NSString
+                  arguments["\(idx)"] = components[0].trimmed as NSString
               default:
                   Log.astError("Unrecognized attribute format \(attribute.arguments?.description ?? "")")
                   return
