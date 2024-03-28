@@ -39,6 +39,11 @@ public final class Actor: Type {
         modifiers.contains { $0.name == "final" }
     }
 
+    /// Whether method is distributed method
+    public var isDistributed: Bool {
+        modifiers.contains(where: { $0.name == "distributed" })
+    }
+
     /// :nodoc:
     public override init(name: String = "",
                          parent: Type? = nil,
@@ -84,7 +89,8 @@ public final class Actor: Type {
         var string = super.description
         string.append(", ")
         string.append("kind = \\(String(describing: self.kind)), ")
-        string.append("isFinal = \\(String(describing: self.isFinal))")
+        string.append("isFinal = \\(String(describing: self.isFinal)), ")
+        string.append("isDistributed = \\(String(describing: self.isDistributed))")
         return string
     }
 
@@ -924,7 +930,7 @@ public enum Composer {
         }
     }
 
-    private static func findBaseType(for type: Type, name: String, typesByName: [String: Type]) -> Type? {
+    internal static func findBaseType(for type: Type, name: String, typesByName: [String: Type]) -> Type? {
         // special case to check if the type is based on one of the recognized types
         // and the superclass has a generic constraint in `name` part of the `TypeName`
         var name = name
@@ -943,7 +949,16 @@ public enum Composer {
                 return baseType
             }
         }
-        return nil
+        guard name.contains("&") else { return nil }
+        // this can happen for a type which consists of mutliple types composed together (i.e. (A & B))
+        let nameComponents = name.components(separatedBy: "&").map { $0.trimmingCharacters(in: .whitespaces) }
+        let types: [Type] = nameComponents.compactMap {
+            typesByName[$0]
+        }
+        let typeNames = types.map {
+            TypeName(name: $0.name)
+        }
+        return ProtocolComposition(name: name, inheritedTypes: types.map { $0.globalName }, composedTypeNames: typeNames, composedTypes: types)
     }
 
     private static func updateTypeRelationship(for type: Type, typesByName: [String: Type], processed: inout [String: Bool]) {
@@ -954,30 +969,43 @@ public enum Composer {
                 processed[globalName] = true
                 updateTypeRelationship(for: baseType, typesByName: typesByName, processed: &processed)
             }
-
-            baseType.based.keys.forEach { type.based[$0] = $0 }
-            baseType.basedTypes.forEach { type.basedTypes[$0.key] = $0.value }
-            baseType.inherits.forEach { type.inherits[$0.key] = $0.value }
-            baseType.implements.forEach { type.implements[$0.key] = $0.value }
-
-            if baseType is Class {
-                type.inherits[globalName] = baseType
-            } else if let baseProtocol = baseType as? SourceryProtocol {
-                type.implements[globalName] = baseProtocol
-                if let extendingProtocol = type as? SourceryProtocol {
-                    baseProtocol.associatedTypes.forEach {
-                        if extendingProtocol.associatedTypes[$0.key] == nil {
-                            extendingProtocol.associatedTypes[$0.key] = $0.value
-                        }
-                    }
+            copyTypeRelationships(from: baseType, to: type)
+            if let composedType = baseType as? ProtocolComposition {
+                let implements = composedType.composedTypes?.filter({ $0 is SourceryProtocol })
+                implements?.forEach { updateInheritsAndImplements(from: $0, to: type) }
+                if implements?.count == composedType.composedTypes?.count
+                    || composedType.composedTypes == nil
+                    || composedType.composedTypes?.isEmpty == true
+                {
+                    type.implements[globalName] = baseType
                 }
-            } else if baseType is ProtocolComposition {
-                // TODO: associated types?
-                type.implements[globalName] = baseType
+            } else {
+                updateInheritsAndImplements(from: baseType, to: type)
             }
-
             type.basedTypes[globalName] = baseType
         }
+    }
+
+    private static func updateInheritsAndImplements(from baseType: Type, to type: Type) {
+        if baseType is Class {
+            type.inherits[baseType.name] = baseType
+        } else if let `protocol` = baseType as? SourceryProtocol {
+            type.implements[baseType.name] = baseType
+            if let extendingProtocol = type as? SourceryProtocol {
+                `protocol`.associatedTypes.forEach {
+                    if extendingProtocol.associatedTypes[$0.key] == nil {
+                        extendingProtocol.associatedTypes[$0.key] = $0.value
+                    }
+                }
+            }
+        }
+    }
+
+    private static func copyTypeRelationships(from baseType: Type, to type: Type) {
+        baseType.based.keys.forEach { type.based[$0] = $0 }
+        baseType.basedTypes.forEach { type.basedTypes[$0.key] = $0.value }
+        baseType.inherits.forEach { type.inherits[$0.key] = $0.value }
+        baseType.implements.forEach { type.implements[$0.key] = $0.value }
     }
 }
 
@@ -2264,14 +2292,31 @@ internal struct ParserResultsComposed {
 
         // extend all types with their extensions
         parsedTypes.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { inheritedName in
-                resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name ?? inheritedName
+            let inheritedTypes: [[String]] = type.inheritedTypes.compactMap { inheritedName in
+                if let resolvedGlobalName = resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                    return [resolvedGlobalName]
+                }
+                if let baseType = Composer.findBaseType(for: type, name: inheritedName, typesByName: typeMap) {
+                    if let composed = baseType as? ProtocolComposition, let composedTypes = composed.composedTypes {
+                        // ignore inheritedTypes when it is a `ProtocolComposition` and composedType is a protocol
+                        var combinedTypes = composedTypes.map { $0.globalName }
+                        combinedTypes.append(baseType.globalName)
+                        return combinedTypes
+                    }
+                }
+                return [inheritedName]
             }
-
-            let uniqueType = typeMap[type.globalName] ?? // this check will only fail on an extension?
-                typeFromComposedName(type.name, modules: modules) ?? // this can happen for an extension on unknown type, this case should probably be handled by the inferTypeNameFromModules
-                (inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] })
-
+            type.inheritedTypes = inheritedTypes.flatMap { $0 }
+            let uniqueType: Type?
+            if let mappedType = typeMap[type.globalName] {
+                // this check will only fail on an extension?
+                uniqueType = mappedType
+            } else if let composedNameType = typeFromComposedName(type.name, modules: modules) {
+                // this can happen for an extension on unknown type, this case should probably be handled by the inferTypeNameFromModules
+                uniqueType = composedNameType
+            } else {
+                uniqueType = inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] }
+            }
             guard let current = uniqueType else {
                 assert(type.isExtension, "Type \\(type.globalName) should be extension")
 
@@ -4762,13 +4807,13 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     public var selectorName: String
 
     // sourcery: skipEquality, skipDescription
-    /// Method name without arguments names and parenthesis, i.e. `foo<T>`
+    /// Method name without arguments names and parentheses, i.e. `foo<T>`
     public var shortName: String {
         return name.range(of: "(").map({ String(name[..<$0.lowerBound]) }) ?? name
     }
 
     // sourcery: skipEquality, skipDescription
-    /// Method name without arguments names, parenthesis and generic types, i.e. `foo` (can be used to generate code for method call)
+    /// Method name without arguments names, parentheses and generic types, i.e. `foo` (can be used to generate code for method call)
     public var callName: String {
         return shortName.range(of: "<").map({ String(shortName[..<$0.lowerBound]) }) ?? shortName
     }
@@ -4809,6 +4854,11 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
 
     /// Whether method is async method
     public let isAsync: Bool
+
+    /// Whether method is distributed
+    public var isDistributed: Bool {
+        modifiers.contains(where: { $0.name == "distributed" })
+    }
 
     /// Whether method throws
     public let `throws`: Bool
@@ -5041,6 +5091,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.parameters != rhs.parameters { return false }
         if self.returnTypeName != rhs.returnTypeName { return false }
         if self.isAsync != rhs.isAsync { return false }
+        if self.isDistributed != rhs.isDistributed { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.`rethrows` != rhs.`rethrows` { return false }
         if self.accessLevel != rhs.accessLevel { return false }
@@ -6150,7 +6201,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
     public var inherits = [String: Type]()
 
     // sourcery: skipEquality, skipDescription
-    /// Protocols this type implements
+    /// Protocols this type implements. Does not contain classes in case where composition (`&`) is used in the declaration
     public var implements: [String: Type] = [:]
 
     /// Contained types
@@ -7640,6 +7691,7 @@ import JavaScriptCore
 @objc protocol ActorAutoJSExport: JSExport {
     var kind: String { get }
     var isFinal: Bool { get }
+    var isDistributed: Bool { get }
     var module: String? { get }
     var imports: [Import] { get }
     var allImports: [Import] { get }
@@ -7954,6 +8006,7 @@ extension Import: ImportAutoJSExport {}
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
     var unwrappedReturnTypeName: String { get }
     var isAsync: Bool { get }
+    var isDistributed: Bool { get }
     var `throws`: Bool { get }
     var `rethrows`: Bool { get }
     var accessLevel: String { get }
