@@ -115,14 +115,31 @@ internal struct ParserResultsComposed {
 
         // extend all types with their extensions
         parsedTypes.forEach { type in
-            type.inheritedTypes = type.inheritedTypes.map { inheritedName in
-                resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name ?? inheritedName
+            let inheritedTypes: [[String]] = type.inheritedTypes.compactMap { inheritedName in
+                if let resolvedGlobalName = resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                    return [resolvedGlobalName]
+                }
+                if let baseType = Composer.findBaseType(for: type, name: inheritedName, typesByName: typeMap) {
+                    if let composed = baseType as? ProtocolComposition, let composedTypes = composed.composedTypes {
+                        // ignore inheritedTypes when it is a `ProtocolComposition` and composedType is a protocol
+                        var combinedTypes = composedTypes.map { $0.globalName }
+                        combinedTypes.append(baseType.globalName)
+                        return combinedTypes
+                    }
+                }
+                return [inheritedName]
             }
-
-            let uniqueType = typeMap[type.globalName] ?? // this check will only fail on an extension?
-                typeFromComposedName(type.name, modules: modules) ?? // this can happen for an extension on unknown type, this case should probably be handled by the inferTypeNameFromModules
-                (inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] })
-
+            type.inheritedTypes = inheritedTypes.flatMap { $0 }
+            let uniqueType: Type?
+            if let mappedType = typeMap[type.globalName] {
+                // this check will only fail on an extension?
+                uniqueType = mappedType
+            } else if let composedNameType = typeFromComposedName(type.name, modules: modules) {
+                // this can happen for an extension on unknown type, this case should probably be handled by the inferTypeNameFromModules
+                uniqueType = composedNameType
+            } else {
+                uniqueType = inferTypeNameFromModules(from: type.localName, containedInType: type.parent, uniqueTypes: typeMap, modules: modules).flatMap { typeMap[$0] }
+            }
             guard let current = uniqueType else {
                 assert(type.isExtension, "Type \(type.globalName) should be extension")
 
