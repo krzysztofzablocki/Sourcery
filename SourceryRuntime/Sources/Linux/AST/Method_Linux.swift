@@ -54,13 +54,13 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     public var selectorName: String
 
     // sourcery: skipEquality, skipDescription
-    /// Method name without arguments names and parenthesis, i.e. `foo<T>`
+    /// Method name without arguments names and parentheses, i.e. `foo<T>`
     public var shortName: String {
         return name.range(of: "(").map({ String(name[..<$0.lowerBound]) }) ?? name
     }
 
     // sourcery: skipEquality, skipDescription
-    /// Method name without arguments names, parenthesis and generic types, i.e. `foo` (can be used to generate code for method call)
+    /// Method name without arguments names, parentheses and generic types, i.e. `foo` (can be used to generate code for method call)
     public var callName: String {
         return shortName.range(of: "<").map({ String(shortName[..<$0.lowerBound]) }) ?? shortName
     }
