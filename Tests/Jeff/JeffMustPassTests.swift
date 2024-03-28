@@ -57,10 +57,13 @@ class JeffMustPassTests: XCTestCase {
     }
     
     func testEllipsesTypeName() {
-        XCTAssertEqual(
-            typeName("Int...").asSource,
-            "Int..."
-        )
+        let code = """
+        public func test(a: Int...)
+        """
+        
+        guard let parserResult = try? makeParser(for: code).parse() else { XCTFail(); return }
+    
+        XCTAssertEqual(parserResult.functions.first!.name, "test(a: Int...)")
     }
     
     func testImplicitlyUnwrappedTypeName() {
