@@ -23,23 +23,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 generic: GenericType? = nil,
                 isProtocolComposition: Bool = false) {
 
-        let optionalSuffix: String
-        // TODO: TBR
-        let hasPrefix: Bool = name.hasPrefix("Optional<") as Bool
-        let containsName: Bool = name.contains(" where ") as Bool
-        if !hasPrefix && !containsName {
-            if isOptional {
-                optionalSuffix = "?"
-            } else if isImplicitlyUnwrappedOptional {
-                optionalSuffix = "!"
-            } else {
-                optionalSuffix = ""
-            }
-        } else {
-            optionalSuffix = ""
-        }
-
-        self.name = name + optionalSuffix
+        self.name = name
         self.actualTypeName = actualTypeName
         self.unwrappedTypeName = unwrappedTypeName ?? name
         self.tuple = tuple
@@ -140,28 +124,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
 
     /// Prints typename as it would appear on definition
     public var asSource: String {
-        // TODO: TBR special treatment
-        let specialTreatment: Bool = isOptional && name.hasPrefix("Optional<")
-
-        let attributeValues: [Attribute] = attributes.flatMap { $0.value }
-        let attributeValuesUnsorted: [String] = attributeValues.map { $0.asSource }
-        var attributes: [String] = attributeValuesUnsorted.sorted()
-        attributes.append(contentsOf: modifiers.map({ $0.asSource }))
-        attributes.append(contentsOf: [specialTreatment ? name : unwrappedTypeName])
-        var description = attributes.joined(separator: " ")
-
-//        if let _ = self.dictionary { // array and dictionary cases are covered by the unwrapped type name
-//            description.append(dictionary.asSource)
-//        } else if let _ = self.array {
-//            description.append(array.asSource)
-//        } else if let _ = self.generic {
-//            let arguments = generic.typeParameters
-//              .map({ $0.typeName.asSource })
-//              .joined(separator: ", ")
-//            description.append("<\(arguments)>")
-//        }
-
-        return description
+        return self.name
     }
 
     public override var description: String {

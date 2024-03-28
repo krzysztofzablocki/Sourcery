@@ -49,21 +49,21 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 generic: GenericType? = nil,
                 isProtocolComposition: Bool = false) {
 
-//        let optionalSuffix: String
+        let optionalSuffix: String
         // TODO: TBR
-//        if !name.hasPrefix("Optional<") && !name.contains(" where ") {
-//            if isOptional {
-//                optionalSuffix = "?"
-//            } else if isImplicitlyUnwrappedOptional {
-//                optionalSuffix = "!"
-//            } else {
-//                optionalSuffix = ""
-//            }
-//        } else {
-//            optionalSuffix = ""
-//        }
+        if !name.hasPrefix("Optional<") && !name.contains(" where ") {
+            if isOptional {
+                optionalSuffix = "?"
+            } else if isImplicitlyUnwrappedOptional {
+                optionalSuffix = "!"
+            } else {
+                optionalSuffix = ""
+            }
+        } else {
+            optionalSuffix = ""
+        }
 
-        self.name = name
+        self.name = name + optionalSuffix
         self.actualTypeName = actualTypeName
         self.unwrappedTypeName = unwrappedTypeName ?? name
         self.tuple = tuple
@@ -81,11 +81,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
     }
 
     /// Type name used in declaration
-    public var name: String {
-        didSet {
-            print("Set name to \(name)")
-        }
-    }
+    public var name: String
 
     /// The generics of this TypeName
     public var generic: GenericType?
@@ -168,41 +164,34 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
 
     /// Prints typename as it would appear on definition
     public var asSource: String {
-        return name
         // TODO: TBR special treatment
-//        let specialTreatment = isOptional && name.hasPrefix("Optional<")
-//
-//        var description = (
-//          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
-//          modifiers.map({ $0.asSource }) +
-//          [specialTreatment ? name : unwrappedTypeName]
-//        ).joined(separator: " ")
-//
-//        if let _ = self.dictionary { // array and dictionary cases are covered by the unwrapped type name
-////            description.append(dictionary.asSource)
-//        } else if let _ = self.array {
-////            description.append(array.asSource)
-//        } else if let _ = self.generic {
-////            let arguments = generic.typeParameters
-////              .map({ $0.typeName.asSource })
-////              .joined(separator: ", ")
-////            description.append("<\(arguments)>")
-//        }
-//        if !specialTreatment {
-//            if isImplicitlyUnwrappedOptional {
-//                if description.contains(" ") {
-//                    description = "(" + description + ")"
-//                }
-//                description.append("!")
-//            } else if isOptional {
-//                if description.contains(" ") {
-//                    description = "(" + description + ")"
-//                }
-//                description.append("?")
-//            }
-//        }
-//
-//        return description
+        let specialTreatment = isOptional && name.hasPrefix("Optional<")
+
+        var description = (
+          attributes.flatMap({ $0.value }).map({ $0.asSource }).sorted() +
+          modifiers.map({ $0.asSource }) +
+          [specialTreatment ? name : unwrappedTypeName]
+        ).joined(separator: " ")
+
+        if let _ = self.dictionary { // array and dictionary cases are covered by the unwrapped type name
+//            description.append(dictionary.asSource)
+        } else if let _ = self.array {
+//            description.append(array.asSource)
+        } else if let _ = self.generic {
+//            let arguments = generic.typeParameters
+//              .map({ $0.typeName.asSource })
+//              .joined(separator: ", ")
+//            description.append("<\(arguments)>")
+        }
+        if !specialTreatment {
+            if isImplicitlyUnwrappedOptional {
+                description.append("!")
+            } else if isOptional {
+                description.append("?")
+            }
+        }
+
+        return description
     }
 
     public override var description: String {
