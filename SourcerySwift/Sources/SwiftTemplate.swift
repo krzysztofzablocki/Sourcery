@@ -276,6 +276,30 @@ open class SwiftTemplate {
         return binaryFile
     }
 
+#if os(macOS)
+    private var manifestCode: String {
+        return """
+        // swift-tools-version:5.7
+        // The swift-tools-version declares the minimum version of Swift required to build this package.
+
+        import PackageDescription
+
+        let package = Package(
+            name: "SwiftTemplate",
+            platforms: [
+                .macOS(.v10_15)
+            ],
+            products: [
+                .executable(name: "SwiftTemplate", targets: ["SwiftTemplate"])
+            ],
+            targets: [
+                .target(name: "SourceryRuntime"),
+                .executableTarget(name: "SwiftTemplate", dependencies: ["SourceryRuntime"])
+            ]
+        )
+        """
+    }
+#else
     private var manifestCode: String {
         return """
         // swift-tools-version:5.7
@@ -295,7 +319,7 @@ open class SwiftTemplate {
         )
         """
     }
-
+#endif
     var cacheKey: String? {
         var contents = code
 
