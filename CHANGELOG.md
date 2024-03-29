@@ -1,4 +1,15 @@
 # Sourcery CHANGELOG
+## 2.2.0
+## Changes
+- Remove Sourcery version from header by @dcacenabes in ([#1309](https://github.com/krzysztofzablocki/Sourcery/pull/1309))
+- Enable Single Print when Generating Based on Swifttemplate by @art-divin in ([#1308](https://github.com/krzysztofzablocki/Sourcery/pull/1308))
+- [Bug] Annotations aren't being extracted from initializers by @liamnichols in ([#1311](https://github.com/krzysztofzablocki/Sourcery/pull/1311))
+- Implemented Proper Protocol Composition Type Parsing by @art-divin in ([#1314](https://github.com/krzysztofzablocki/Sourcery/pull/1314))
+- Renamed parenthesis to parentheses by @art-divin in ([#1315](https://github.com/krzysztofzablocki/Sourcery/pull/1315))
+- Switched to Double for CLI argument processing by @art-divin in ([#1317](https://github.com/krzysztofzablocki/Sourcery/pull/1317))
+- Added isDistributed to Actor and Method by @art-divin in ([#1318](https://github.com/krzysztofzablocki/Sourcery/pull/1318))
+- Enable Quotes when parsing arguments in property wrapper parameters by @art-divin in ([#1316](https://github.com/krzysztofzablocki/Sourcery/pull/1316))
+
 ## 2.1.8
 ## Changes
 - ClosureParameter isVariadic Support by @art-divin in ([#1268](https://github.com/krzysztofzablocki/Sourcery/pull/1268))
