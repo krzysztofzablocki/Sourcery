@@ -332,7 +332,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
     public init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name
         self.arguments = arguments
-        self._description = description ?? "@\\(name)"
+        let argumentDescription = arguments.map { "\\($0.key): \\($0.value is String ? "\\"" : "")\\($0.value)\\($0.value is String ? "\\"" : "")" }.joined(separator: ", ")
+        self._description = description ?? "@\\(name)\\(!argumentDescription.isEmpty ? "(" : "")\\(argumentDescription)\\(!argumentDescription.isEmpty ? ")" : "")"
     }
 
     /// TODO: unify `asSource` / `description`?
@@ -342,7 +343,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 
     /// Attribute description that can be used in a template.
     public override var description: String {
-        return _description
+        _description
     }
 
     /// :nodoc:
@@ -7575,7 +7576,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -7681,7 +7682,7 @@ extension Variable: NSCoding {}
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8418,7 +8419,7 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 2.1.8 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
