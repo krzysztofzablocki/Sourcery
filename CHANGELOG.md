@@ -1,4 +1,8 @@
 # Sourcery CHANGELOG
+## 2.2.1
+## Changes
+- Set minimum platform for macOS by @art-divin ([#1319](https://github.com/krzysztofzablocki/Sourcery/pull/1319))
+
 ## 2.2.0
 ## Changes
 - Remove Sourcery version from header by @dcacenabes in ([#1309](https://github.com/krzysztofzablocki/Sourcery/pull/1309))
