@@ -23,7 +23,8 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
     public init(name: String, arguments: [String: NSObject] = [:], description: String? = nil) {
         self.name = name
         self.arguments = arguments
-        self._description = description ?? "@\(name)"
+        let argumentDescription = arguments.map { "\($0.key): \($0.value is String ? "\"" : "")\($0.value)\($0.value is String ? "\"" : "")" }.joined(separator: ", ")
+        self._description = description ?? "@\(name)\(!argumentDescription.isEmpty ? "(" : "")\(argumentDescription)\(!argumentDescription.isEmpty ? ")" : "")"
     }
 
     /// TODO: unify `asSource` / `description`?
@@ -33,7 +34,7 @@ public class Attribute: NSObject, AutoCoding, AutoEquatable, AutoDiffable, AutoJ
 
     /// Attribute description that can be used in a template.
     public override var description: String {
-        return _description
+        _description
     }
 
     /// :nodoc:
