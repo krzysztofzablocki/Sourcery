@@ -173,7 +173,7 @@ class SwiftTemplateTests: QuickSpec {
                     try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath, version: "version"))
                     }
                     .to(throwError(closure: { (error) in
-                        let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
+                        let path = Path.cleanTemporaryDir(name: "build").parent() + "/version/Sources/SwiftTemplate/main.swift"
                         expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call\nsourceryBuffer.append(\"\\( )\");\n                          ^\n"))
                     }))
             }

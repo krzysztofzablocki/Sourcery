@@ -215,7 +215,7 @@ open class SwiftTemplate {
                 }
             }
         } else {
-            try binaryPath = build()
+            binaryPath = try build()
         }
 
         let serializedContextPath = buildDir + "context.bin"
