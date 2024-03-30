@@ -1,4 +1,8 @@
 # Sourcery CHANGELOG
+## 2.2.2
+## Changes
+- Improved Logging/Error Handling during SwiftTemplate Processing by @art-divin ([#1320](https://github.com/krzysztofzablocki/Sourcery/pull/1320))
+
 ## 2.2.1
 ## Changes
 - Set minimum platform for macOS by @art-divin ([#1319](https://github.com/krzysztofzablocki/Sourcery/pull/1319))
