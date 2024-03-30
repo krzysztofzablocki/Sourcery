@@ -8,6 +8,7 @@ import TSCBasic
 import Workspace
 import PackageModel
 import SourceryFramework
+import SourceryUtils
 
 public struct Project {
     public let file: XcodeProj

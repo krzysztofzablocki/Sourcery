@@ -23,16 +23,17 @@ private struct ProcessResult {
 }
 
 open class SwiftTemplate {
-
     public let sourcePath: Path
     let buildPath: Path?
     let cachePath: Path?
-    let code: String
+    let mainFileCodeRaw: String
     let version: String?
     let includedFiles: [Path]
 
     private lazy var buildDir: Path = {
-        let pathComponent = "SwiftTemplate" + (version.map { "/\($0)" } ?? "")
+        var pathComponent = "SwiftTemplate"
+        pathComponent.append("/\(UUID().uuidString)")
+        pathComponent.append((version.map { "/\($0)" } ?? ""))
 
         if let buildPath {
             return (buildPath + pathComponent).absolute()
@@ -42,12 +43,12 @@ open class SwiftTemplate {
         return Path(tempDirURL.path)
     }()
 
-  public init(path: Path, cachePath: Path? = nil, version: String? = nil, buildPath: Path? = nil) throws {
+    public init(path: Path, cachePath: Path? = nil, version: String? = nil, buildPath: Path? = nil) throws {
         self.sourcePath = path
         self.buildPath = buildPath
         self.cachePath = cachePath
         self.version = version
-        (self.code, self.includedFiles) = try SwiftTemplate.parse(sourcePath: path)
+        (self.mainFileCodeRaw, self.includedFiles) = try SwiftTemplate.parse(sourcePath: path)
     }
 
     private enum Command {
@@ -58,9 +59,8 @@ open class SwiftTemplate {
     }
 
     static func parse(sourcePath: Path) throws -> (String, [Path]) {
-
         let commands = try SwiftTemplate.parseCommands(in: sourcePath)
-
+        let startParsing = currentTimestamp()
         var includedFiles: [Path] = []
         var outputFile = [String]()
         var hasContents = false
@@ -99,11 +99,12 @@ open class SwiftTemplate {
 
         \(contents)
         """
-
+        Log.benchmark("\tRaw processing time for \(sourcePath.lastComponent) took: \(currentTimestamp() - startParsing)")
         return (code, includedFiles)
     }
 
     private static func parseCommands(in sourcePath: Path, includeStack: [Path] = []) throws -> [Command] {
+        let startProcessing = currentTimestamp()
         let templateContent = try "<%%>" + sourcePath.read()
 
         let components = templateContent.components(separatedBy: Delimiters.open)
@@ -186,7 +187,7 @@ open class SwiftTemplate {
             }
             processedComponents.append(component)
         }
-
+        Log.benchmark("\tRaw command processing for \(sourcePath.lastComponent) took: \(currentTimestamp() - startProcessing)")
         return commands
     }
 
@@ -194,14 +195,24 @@ open class SwiftTemplate {
         let binaryPath: Path
 
         if let cachePath = cachePath,
-            let hash = cacheKey,
-            let hashPath = hash.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics) {
-
+           let hash = executableCacheKey,
+           let hashPath = hash.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics) {
             binaryPath = cachePath + hashPath
-            if !binaryPath.exists {
+            if binaryPath.exists {
+                Log.verbose("Reusing built SwiftTemplate binary for SwiftTemplate with cache key: \(hash)...")
+            } else {
+                Log.verbose("Building new SwiftTemplate binary for SwiftTemplate...")
                 try? cachePath.delete() // clear old cache
                 try cachePath.mkdir()
-                try build().move(binaryPath)
+                do {
+                    try build().move(binaryPath)
+                } catch let error as NSError {
+                    if error.domain == "NSCocoaErrorDomain", error.code == 516 {
+                        Log.warning("This error can be ignored: Attempt to copy `SwiftTemplate` binary to \(binaryPath) failed. Probably multiple Sourcery processes trying to cache into the same directory.")
+                    } else {
+                        throw error
+                    }
+                }
             }
         } else {
             try binaryPath = build()
@@ -223,6 +234,7 @@ open class SwiftTemplate {
     }
 
     func build() throws -> Path {
+        let startCompiling = currentTimestamp()
         let sourcesDir = buildDir + Path("Sources")
         let templateFilesDir = sourcesDir + Path("SwiftTemplate")
         let mainFile = templateFilesDir + Path("main.swift")
@@ -236,7 +248,7 @@ open class SwiftTemplate {
         if !manifestFile.exists {
             try manifestFile.write(manifestCode)
         }
-        try mainFile.write(code)
+        try mainFile.write(mainFileCodeRaw)
 
         let binaryFile = buildDir + Path(".build/release/SwiftTemplate")
 
@@ -272,7 +284,7 @@ open class SwiftTemplate {
                 .filter { !$0.isEmpty }
                 .joined(separator: "\n")
         }
-
+        Log.benchmark("\tRaw compilation of SwiftTemplate took: \(currentTimestamp() - startCompiling)")
         return binaryFile
     }
 
@@ -320,10 +332,20 @@ open class SwiftTemplate {
         """
     }
 #endif
-    var cacheKey: String? {
-        var contents = code
 
-        // For every included file, make sure that the path and modification date are included in the key
+    /// Brief:
+    ///   - Executable cache key is calculated solely on the contents of the SwiftTemplate ephemeral package.
+    /// Rationale:
+    ///   1. cache key is used to find SwiftTemplate `executable` file from a previous compilation
+    ///   2. `SwiftTemplate` contains types from `SourceryRuntime` and `main.swift`
+    ///   3. `main.swift` in `SwiftTemplate` contains `only .swifttemplate file processing result`
+    ///   4. Copied `includeFile` directives from the given `.swifttemplate` are also included into `SwiftTemplate` ephemeral package
+    ///
+    /// Due to this reason, the correct logic for calculating `executableCacheKey` is to only consider contents of `SwiftTemplate` ephemeral package,
+    /// because `main.swift` is **the only file** which changes in `SwiftTemplate` ephemeral binary, and `includeFiles` are the only files that may
+    /// be changed between executions of Sourcery.
+    var executableCacheKey: String? {
+        var contents = mainFileCodeRaw
         let files = includedFiles.map({ $0.absolute() }).sorted(by: { $0.string < $1.string })
         for file in files {
             let hash = (try? file.read().sha256().base64EncodedString()) ?? ""
@@ -358,7 +380,7 @@ private extension String {
     var stringEncoded: String {
         return self.unicodeScalars.map { x -> String in
             return x.escaped(asASCII: true)
-            }.joined(separator: "")
+        }.joined(separator: "")
     }
 }
 
@@ -410,11 +432,11 @@ private extension Process {
 
 extension String {
     func bridge() -> NSString {
-        #if os(Linux)
-            return NSString(string: self)
-        #else
-            return self as NSString
-        #endif
+#if os(Linux)
+        return NSString(string: self)
+#else
+        return self as NSString
+#endif
     }
 }
 
