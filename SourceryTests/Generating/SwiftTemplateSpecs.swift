@@ -173,7 +173,7 @@ class SwiftTemplateTests: QuickSpec {
                     try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath, version: "version"))
                     }
                     .to(throwError(closure: { (error) in
-                        let path = Path.cleanTemporaryDir(name: "build").parent() + "SwiftTemplate/version/Sources/SwiftTemplate/main.swift"
+                        let path = Path.cleanTemporaryDir(name: "build").parent() + "/version/Sources/SwiftTemplate/main.swift"
                         expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call\nsourceryBuffer.append(\"\\( )\");\n                          ^\n"))
                     }))
             }
@@ -241,7 +241,7 @@ class SwiftTemplateTests: QuickSpec {
                 expect(result).to(equal(expectedResult))
             }
 
-            it("should change cacheKey based on includeFile modifications") {
+            it("should have different executableCacheKey based on includeFile modifications") {
                 let templatePath = outputDir + "Template.swifttemplate"
                 try templatePath.write(#"<%- includeFile("Utils.swift") -%>"#)
 
@@ -249,12 +249,12 @@ class SwiftTemplateTests: QuickSpec {
                 try utilsPath.write(#"let foo = "bar""#)
 
                 let template = try SwiftTemplate(path: templatePath, cachePath: nil, version: "1.0.0")
-                let originalKey = template.cacheKey
-                let keyBeforeModification = template.cacheKey
+                let originalKey = template.executableCacheKey
+                let keyBeforeModification = template.executableCacheKey
 
                 try utilsPath.write(#"let foo = "baz""#)
 
-                let keyAfterModification = template.cacheKey
+                let keyAfterModification = template.executableCacheKey
                 expect(originalKey).to(equal(keyBeforeModification))
                 expect(originalKey).toNot(equal(keyAfterModification))
             }

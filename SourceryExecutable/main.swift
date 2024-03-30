@@ -121,15 +121,14 @@ func runCLI() {
         Flag("hideVersionHeader", description: "Do not include Sourcery version in the generated files headers.")
     ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, ejsPath, cacheBasePath, buildPath, hideVersionHeader in
         do {
-            Log.stackMessages = isDryRun
-            switch (quiet, verboseLogging) {
-            case (true, _):
-                Log.level = .errors
-            case (false, let isVerbose):
-                Log.level = isVerbose ? .verbose : .info
-            }
-            Log.logBenchmarks = (verboseLogging || logBenchmark) && !quiet
-            Log.logAST = (verboseLogging || logAST) && !quiet
+            let logConfiguration = Log.Configuration(
+                isDryRun: isDryRun,
+                isQuiet: quiet,
+                isVerboseLoggingEnabled: verboseLogging,
+                isLogBenchmarkEnabled: logBenchmark,
+                shouldLogAST: logAST
+            )
+            Log.setup(using: logConfiguration)
 
             // if ejsPath is not provided use default value or executable path
             EJSTemplate.ejsPath = ejsPath.string.isEmpty
@@ -305,15 +304,14 @@ func runCLI() {
         Flag("hideVersionHeader", description: "Do not include Sourcery version in the generated files headers.")
     ) { disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, cacheBasePath, buildPath, hideVersionHeader in
         do {
-            Log.stackMessages = isDryRun
-            switch (quiet, verboseLogging) {
-            case (true, _):
-                Log.level = .errors
-            case (false, let isVerbose):
-                Log.level = isVerbose ? .verbose : .info
-            }
-            Log.logBenchmarks = (verboseLogging || logBenchmark) && !quiet
-            Log.logAST = (verboseLogging || logAST) && !quiet
+            let logConfiguration = Log.Configuration(
+                isDryRun: isDryRun,
+                isQuiet: quiet,
+                isVerboseLoggingEnabled: verboseLogging,
+                isLogBenchmarkEnabled: logBenchmark,
+                shouldLogAST: logAST
+            )
+            Log.setup(using: logConfiguration)
 
             let configurations = configPaths.flatMap { configPath -> [Configuration] in
                 let yamlPath: Path = configPath.isDirectory ? configPath + ".sourcery.yml" : configPath

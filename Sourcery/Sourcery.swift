@@ -47,7 +47,18 @@ public class Sourcery {
     fileprivate var fileAnnotatedContent: [Path: [String]] = [:]
 
     /// Creates Sourcery processor
-  public init(verbose: Bool = false, watcherEnabled: Bool = false, cacheDisabled: Bool = false, cacheBasePath: Path? = nil, buildPath: Path? = nil, prune: Bool = false, serialParse: Bool = false, hideVersionHeader: Bool = false, arguments: [String: NSObject] = [:]) {
+    public init(
+        verbose: Bool = false,
+        watcherEnabled: Bool = false,
+        cacheDisabled: Bool = false,
+        cacheBasePath: Path? = nil,
+        buildPath: Path? = nil,
+        prune: Bool = false,
+        serialParse: Bool = false, 
+        hideVersionHeader: Bool = false,
+        arguments: [String: NSObject] = [:],
+        logConfiguration: Log.Configuration? = nil
+    ) {
         self.verbose = verbose
         self.arguments = arguments
         self.watcherEnabled = watcherEnabled
@@ -57,6 +68,9 @@ public class Sourcery {
         self.prune = prune
         self.serialParse = serialParse
         self.hideVersionHeader = hideVersionHeader
+        if let logConfiguration {
+            Log.setup(using: logConfiguration)
+        }
 
         var prefix = Sourcery.generationMarker
         if !hideVersionHeader {

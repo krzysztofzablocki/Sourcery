@@ -3,6 +3,33 @@ import Foundation
 
 /// :nodoc:
 public enum Log {
+    public struct Configuration {
+        let isDryRun: Bool
+        let isQuiet: Bool
+        let isVerboseLoggingEnabled: Bool
+        let isLogBenchmarkEnabled: Bool
+        let shouldLogAST: Bool
+
+        public init(isDryRun: Bool, isQuiet: Bool, isVerboseLoggingEnabled: Bool, isLogBenchmarkEnabled: Bool, shouldLogAST: Bool) {
+            self.isDryRun = isDryRun
+            self.isQuiet = isQuiet
+            self.isVerboseLoggingEnabled = isVerboseLoggingEnabled
+            self.isLogBenchmarkEnabled = isLogBenchmarkEnabled
+            self.shouldLogAST = shouldLogAST
+        }
+    }
+
+    public static func setup(using configuration: Configuration) {
+        Log.stackMessages = configuration.isDryRun
+        switch (configuration.isQuiet, configuration.isVerboseLoggingEnabled) {
+        case (true, _):
+            Log.level = .errors
+        case (false, let isVerbose):
+            Log.level = isVerbose ? .verbose : .info
+        }
+        Log.logBenchmarks = (configuration.isVerboseLoggingEnabled || configuration.isLogBenchmarkEnabled) && !configuration.isQuiet
+        Log.logAST = (configuration.shouldLogAST) && !configuration.isQuiet
+    }
 
     public enum Level: Int {
         case errors
