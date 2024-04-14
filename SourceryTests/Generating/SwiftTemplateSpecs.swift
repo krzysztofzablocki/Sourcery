@@ -199,14 +199,8 @@ class SwiftTemplateTests: QuickSpec {
             }
 
             context("with existing cache") {
-                // beforeEach {
-                    
-                // }
-
                 context("and missing build dir") {
-#if canImport(ObjectiveC)
                     expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-#endif
                     expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
                     guard let buildDir = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate").map({ Path($0.path) }) else {
                         fail("Could not create buildDir path")
@@ -227,6 +221,37 @@ class SwiftTemplateTests: QuickSpec {
 
                         let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
                         expect(result).to(equal(expectedResult))
+                    }
+
+                    it("generates the code asynchronously without throwing error") {
+                        let iterations = 2
+                        let paths = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true) as [String]
+                        let path = paths[0]
+                        let caches = Path(path) + Path("Sourcery")
+                        try? caches.delete()
+                        @Sendable func generateCode() async throws -> Int {
+                            expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                            let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+                            expect(result).to(equal(expectedResult))
+                            return 1
+                        }
+                        let semaphore = DispatchSemaphore(value: 0)
+                        Task {
+                            _ = try await withThrowingTaskGroup(of: Int.self) { taskGroup in
+                                for _ in 0 ..< iterations {
+                                    taskGroup.addTask {
+                                        try await generateCode()
+                                    }
+                                }
+                                var counter = 0
+                                for try await _ in taskGroup {
+                                    counter += 1
+                                }
+                                return counter
+                            }
+                            semaphore.signal()
+                        }
+                        semaphore.wait()
                     }
                 }
             }
