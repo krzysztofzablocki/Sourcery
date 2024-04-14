@@ -1,4 +1,8 @@
 # Sourcery CHANGELOG
+## 2.2.3
+## Changes
+- Fixed Issue when Caching of SwiftTemplate Binary Failes by @art-divin ([#1323](https://github.com/krzysztofzablocki/Sourcery/pull/1323))
+
 ## 2.2.2
 ## Changes
 - Improved Logging/Error Handling during SwiftTemplate Processing by @art-divin ([#1320](https://github.com/krzysztofzablocki/Sourcery/pull/1320))
