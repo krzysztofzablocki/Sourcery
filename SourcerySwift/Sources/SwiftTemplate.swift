@@ -202,16 +202,13 @@ open class SwiftTemplate {
                 Log.verbose("Reusing built SwiftTemplate binary for SwiftTemplate with cache key: \(hash)...")
             } else {
                 Log.verbose("Building new SwiftTemplate binary for SwiftTemplate...")
-                try? cachePath.delete() // clear old cache
-                try cachePath.mkdir()
                 do {
-                    try build().move(binaryPath)
+                    let path = try build()
+                    try? cachePath.delete() // clear old cache
+                    try? cachePath.mkdir()
+                    try? path.move(binaryPath)
                 } catch let error as NSError {
-                    if error.domain == "NSCocoaErrorDomain", error.code == 516 {
-                        Log.warning("This error can be ignored: Attempt to copy `SwiftTemplate` binary to \(binaryPath) failed. Probably multiple Sourcery processes trying to cache into the same directory.")
-                    } else {
-                        throw error
-                    }
+                    throw error
                 }
             }
         } else {
