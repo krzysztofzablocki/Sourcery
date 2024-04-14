@@ -200,9 +200,7 @@ class SwiftTemplateTests: QuickSpec {
 
             context("with existing cache") {
                 context("and missing build dir") {
-//#if canImport(ObjectiveC)
                     expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-//#endif
                     expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
                     guard let buildDir = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate").map({ Path($0.path) }) else {
                         fail("Could not create buildDir path")
