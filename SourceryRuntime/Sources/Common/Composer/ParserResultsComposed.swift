@@ -533,6 +533,10 @@ internal struct ParserResultsComposed {
         // let variable: Module.ID.ID // should be resolved as MyView.ID type
         let finalLookup = typeName.actualTypeName ?? typeName
         var resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
+        if let type = unique[resolvedIdentifier] {
+            return type
+        }
+        
         for alias in resolvedTypealiases {
             /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested
             if resolvedIdentifier.contains(alias.value.name), let range = resolvedIdentifier.range(of: alias.value.name) {
