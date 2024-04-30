@@ -2249,6 +2249,54 @@ class ParserComposerSpec: QuickSpec {
                             check(variable: "batDouble", typeName: "Double", type: "Double", onType: "ModuleA.Foo.Bar")
                             check(variable: "batInt", typeName: "Int", type: nil, onType: "ModuleA.Foo.Bar")
                         }
+                        
+                        it("resolves variable type correctly when typealias is used") {
+                            let expectedBar = Class(name: "Bar", variables: [])
+                            
+                            let expectedContainsTopLevelTypealias = Struct(name: "ContainsTopLevelTypealias")
+
+                            let expectedBaz = Struct(name: "Baz", variables: [
+                                Variable(name: "bar", typeName: TypeName(name: "Foo.Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo.Baz")),
+                                Variable(name: "topLevelTypealias", typeName: TypeName(name: "TopLevelTypealias"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo.Baz")),
+                                Variable(name: "topLevelType", typeName: TypeName(name: "ContainsTopLevelTypealias"), type: expectedContainsTopLevelTypealias, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo.Baz")),
+                                Variable(name: "usingTypealias", typeName: TypeName(name: "MyEnum.MyTypealias.Bar"), type: expectedBar, accessLevel: (.internal, .none), definedInTypeName: TypeName(name: "Foo.Baz"))
+                            ])
+                            
+                            let expectedFoo = Struct(name: "Foo", containedTypes: [expectedBar, expectedBaz])
+                            
+                            let types = parseModules(
+                                (name: nil, contents:
+                                    """
+                                    enum MyEnum {
+                                        typealias MyTypealias = Foo
+                                    }
+                                    
+                                    typealias TopLevelTypealias = Foo.Bar
+                                    struct ContainsTopLevelTypealias {}
+
+                                    struct Foo {
+                                        class Bar {}
+
+                                        struct Baz {
+                                            let bar: Foo.Bar
+                                            let topLevelTypealias: TopLevelTypealias
+                                            let topLevelType: ContainsTopLevelTypealias
+                                            let usingTypealias: MyEnum.MyTypealias.Bar
+                                        }
+                                    }
+                                    """
+                                )).types
+
+                            let parsedFoo = types.first(where: { $0.globalName == "Foo" })
+                            expect(parsedFoo).to(equal(expectedFoo))
+                            let parsedBaz = parsedFoo?.containedTypes.last
+                            expect(parsedBaz).toNot(beNil())
+                            expect(parsedBaz!.variables.first?.type).to(equal(expectedBar))
+                            expect(parsedBaz!.variables.last?.type).to(equal(expectedBar))
+                            for variable in parsedBaz!.variables {
+                                expect(variable.type).toNot(beNil(), description: "\(variable.typeName.name)")
+                            }
+                        }
                     }
                 }
 
