@@ -33,7 +33,7 @@ public class Sourcery {
     fileprivate let buildPath: Path?
     fileprivate let prune: Bool
     fileprivate let serialParse: Bool
-    fileprivate var hideVersionHeader: Bool
+    fileprivate let hideVersionHeader: Bool
 
     fileprivate var status = ""
     fileprivate var templatesPaths = Paths(include: [])
@@ -67,13 +67,17 @@ public class Sourcery {
         self.buildPath = buildPath
         self.prune = prune
         self.serialParse = serialParse
-        self.hideVersionHeader = hideVersionHeader
+        if let hideVersionHeader = arguments["hideVersionHeader"] {
+            self.hideVersionHeader = (hideVersionHeader as? NSNumber)?.boolValue == true
+        } else {
+            self.hideVersionHeader = hideVersionHeader
+        }
         if let logConfiguration {
             Log.setup(using: logConfiguration)
         }
 
         var prefix = Sourcery.generationMarker
-        if !hideVersionHeader {
+        if !self.hideVersionHeader {
           prefix += " \(Sourcery.version)"
         }
         self.generationHeader = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
