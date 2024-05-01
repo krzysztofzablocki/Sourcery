@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -348,6 +348,7 @@ extension Import: ImportAutoJSExport {}
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var genericRequirements: [GenericRequirement] { get }
+    var genericParameters: [GenericParameter] { get }
 }
 
 extension Method: MethodAutoJSExport {}

@@ -2650,8 +2650,14 @@ internal struct ParserResultsComposed {
         } else
         if let generic = lookupName.generic {
             var needsUpdate = false
-
             generic.typeParameters.forEach { parameter in
+                // Detect if the generic type is local to the method
+                if let method {
+                    for genericParameter in method.genericParameters where parameter.typeName.name == genericParameter.name {
+                        return
+                    }
+                }
+
                 parameter.type = resolveTypeWithName(parameter.typeName)
                 if parameter.typeName.actualTypeName != nil {
                     needsUpdate = true
@@ -2738,6 +2744,10 @@ internal struct ParserResultsComposed {
         // let variable: Module.ID.ID // should be resolved as MyView.ID type
         let finalLookup = typeName.actualTypeName ?? typeName
         var resolvedIdentifier = finalLookup.generic?.name ?? finalLookup.unwrappedTypeName
+        if let type = unique[resolvedIdentifier] {
+            return type
+        }
+        
         for alias in resolvedTypealiases {
             /// iteratively replace all typealiases from the resolvedIdentifier to get to the actual type name requested
             if resolvedIdentifier.contains(alias.value.name), let range = resolvedIdentifier.range(of: alias.value.name) {
@@ -5433,6 +5443,16 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// list of generic requirements
     public var genericRequirements: [GenericRequirement]
 
+    /// List of generic parameters
+    ///
+    /// - Example:
+    ///
+    ///   ```swift
+    ///   func method<GenericParameter>(foo: GenericParameter)
+    ///                    ^ ~ a generic parameter
+    ///   ```
+    public var genericParameters: [GenericParameter]
+
     /// :nodoc:
     public init(name: String,
                 selectorName: String? = nil,
@@ -5450,7 +5470,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
                 definedInTypeName: TypeName? = nil,
-                genericRequirements: [GenericRequirement] = []) {
+                genericRequirements: [GenericRequirement] = [],
+                genericParameters: [GenericParameter] = []) {
         self.name = name
         self.selectorName = selectorName ?? name
         self.parameters = parameters
@@ -5468,6 +5489,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         self.documentation = documentation
         self.definedInTypeName = definedInTypeName
         self.genericRequirements = genericRequirements
+        self.genericParameters = genericParameters
     }
 
     /// :nodoc:
@@ -5490,7 +5512,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("definedInTypeName = \\(String(describing: self.definedInTypeName)), ")
         string.append("attributes = \\(String(describing: self.attributes)), ")
         string.append("modifiers = \\(String(describing: self.modifiers)), ")
-        string.append("genericRequirements = \\(String(describing: self.genericRequirements))")
+        string.append("genericRequirements = \\(String(describing: self.genericRequirements)), ")
+        string.append("genericRequirements = \\(String(describing: self.genericParameters))")
         return string
     }
 
@@ -5517,6 +5540,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
+        results.append(contentsOf: DiffableResult(identifier: "genericParameters").trackDifference(actual: self.genericParameters, expected: castObject.genericParameters))
         return results
     }
 
@@ -5541,6 +5565,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         hasher.combine(self.genericRequirements)
+        hasher.combine(self.genericParameters)
         return hasher.finalize()
     }
 
@@ -5565,6 +5590,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
         if self.genericRequirements != rhs.genericRequirements { return false }
+        if self.genericParameters != rhs.genericParameters { return false }
         return true
     }
 
@@ -5641,6 +5667,12 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 }
                 fatalError()
              }; self.genericRequirements = genericRequirements
+            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else { 
+                withVaList(["genericParameters"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericParameters = genericParameters
         }
 
         /// :nodoc:
@@ -5664,6 +5696,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
+            aCoder.encode(self.genericParameters, forKey: "genericParameters")
         }
 // sourcery:end
 }
@@ -8036,7 +8069,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 2.2.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8142,7 +8175,7 @@ extension Variable: NSCoding {}
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 2.2.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8492,6 +8525,7 @@ extension Import: ImportAutoJSExport {}
     var attributes: AttributeList { get }
     var modifiers: [SourceryModifier] { get }
     var genericRequirements: [GenericRequirement] { get }
+    var genericParameters: [GenericParameter] { get }
 }
 
 extension Method: MethodAutoJSExport {}
@@ -8879,7 +8913,7 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 2.2.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
