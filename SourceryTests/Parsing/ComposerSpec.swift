@@ -2297,6 +2297,50 @@ class ParserComposerSpec: QuickSpec {
                                 expect(variable.type).toNot(beNil(), description: "\(variable.typeName.name)")
                             }
                         }
+
+                        it("resolves geeneric method parameter type correctly when typealias is used") {
+                            let expectedBar = Class(name: "Foo", variables: [], methods: [
+                                Method(name: "foo<Value>(param: Bar<Value>)", selectorName: "foo(param:)", parameters: [
+                                    MethodParameter(name: "param", index: 0, typeName: TypeName(name: "Bar<Value>", generic: GenericType(name: "Bar", typeParameters: [
+                                        GenericTypeParameter(typeName: TypeName(name: "Value"), type: nil)
+                                    ])), type: nil, defaultValue: nil, annotations: [:], isInout: false, isVariadic: false)
+                                ], definedInTypeName: TypeName(name: "Foo"), genericParameters: [
+                                    GenericParameter(name: "Value", inheritedTypeName: nil)
+                                ]),
+                                Method(name: "foo<Value: Int>(param: Bar<Value>)", selectorName: "foo(param:)", parameters: [
+                                    MethodParameter(name: "param", index: 0, typeName: TypeName(name: "Bar<Value>", generic: GenericType(name: "Bar", typeParameters: [
+                                        GenericTypeParameter(typeName: TypeName(name: "Value"), type: nil)
+                                    ])), type: nil, defaultValue: nil, annotations: [:], isInout: false, isVariadic: false)
+                                ], definedInTypeName: TypeName(name: "Foo"), genericParameters: [
+                                    GenericParameter(name: "Value", inheritedTypeName: TypeName(name: "Int"))
+                                ]),
+                                Method(name: "fooBar<Value>(param: Bar<Value>)", selectorName: "fooBar(param:)", parameters: [
+                                    MethodParameter(name: "param", index: 0, typeName: TypeName(name: "Bar<Value>", generic: GenericType(name: "Bar", typeParameters: [
+                                        GenericTypeParameter(typeName: TypeName(name: "Value"), type: nil)
+                                    ])), type: nil, defaultValue: nil, annotations: [:], isInout: false, isVariadic: false)
+                                ], returnTypeName: TypeName(name: "Void where Value == Int"), definedInTypeName: TypeName(name: "Foo"), genericRequirements: [
+                                    GenericRequirement(leftType: AssociatedType(name: "Value"), rightType: GenericTypeParameter(typeName: TypeName(name: "Int")), relationship: .equals)
+                                ], genericParameters: [
+                                    GenericParameter(name: "Value", inheritedTypeName: TypeName(name: "Int"))
+                                ])
+                            ])
+
+                            let types = parseModules(
+                                (name: nil, contents:
+                                    """
+                                    typealias Value = String?
+
+                                    class Foo {
+                                        func foo<Value>(param: Bar<Value>)
+                                        func foo<Value: Int>(param: Bar<Value>)
+                                        func fooBar<Value>(param: Bar<Value>) where Value == Int
+                                    }
+                                    """
+                                )).types
+
+                            let parsedFoo = types.first(where: { $0.globalName == "Foo" })
+                            expect(parsedFoo).to(equal(expectedBar))
+                        }
                     }
                 }
 

@@ -88,6 +88,10 @@ extension SourceryMethod {
         if let generics = genericParameterClause?.parameters {
             fullName = funcName + "<\(generics.description.trimmed)>"
         }
+
+        let genericParameters = genericParameterClause?.parameters.compactMap { parameter in
+            return GenericParameter(parameter)
+        } ?? []
         var genericRequirements: [GenericRequirement] = []
         if let genericWhereClause = genericWhereClause {
             genericRequirements = genericWhereClause.requirements.compactMap { requirement in
@@ -98,6 +102,18 @@ extension SourceryMethod {
                 }
                 return nil
             }
+
+            if !genericParameters.isEmpty {
+                // assign types from `where` clause to the associated generic parameters
+                for parameter in genericParameters where parameter.inheritedTypeName == nil {
+                    if let lookupInGenericReqs = genericRequirements.first(where: {
+                        $0.leftType.name == parameter.name
+                    }) {
+                        parameter.inheritedTypeName = lookupInGenericReqs.rightType.typeName
+                    }
+                }
+            }
+
             // TODO: TBR
             returnTypeName = TypeName(name: returnTypeName.name + " \(genericWhereClause.withoutTrivia().description.trimmed)",
                                       unwrappedTypeName: returnTypeName.unwrappedTypeName,
@@ -143,7 +159,8 @@ extension SourceryMethod {
           annotations: annotations,
           documentation: documentation,
           definedInTypeName: typeName,
-          genericRequirements: genericRequirements
+          genericRequirements: genericRequirements,
+          genericParameters: genericParameters
         )
     }
 

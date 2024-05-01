@@ -219,6 +219,16 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// list of generic requirements
     public var genericRequirements: [GenericRequirement]
 
+    /// List of generic parameters
+    ///
+    /// - Example:
+    ///
+    ///   ```swift
+    ///   func method<GenericParameter>(foo: GenericParameter)
+    ///                    ^ ~ a generic parameter
+    ///   ```
+    public var genericParameters: [GenericParameter]
+
     /// :nodoc:
     public init(name: String,
                 selectorName: String? = nil,
@@ -236,7 +246,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
                 definedInTypeName: TypeName? = nil,
-                genericRequirements: [GenericRequirement] = []) {
+                genericRequirements: [GenericRequirement] = [],
+                genericParameters: [GenericParameter] = []) {
         self.name = name
         self.selectorName = selectorName ?? name
         self.parameters = parameters
@@ -254,6 +265,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         self.documentation = documentation
         self.definedInTypeName = definedInTypeName
         self.genericRequirements = genericRequirements
+        self.genericParameters = genericParameters
     }
 
     /// :nodoc:
@@ -276,7 +288,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("definedInTypeName = \(String(describing: self.definedInTypeName)), ")
         string.append("attributes = \(String(describing: self.attributes)), ")
         string.append("modifiers = \(String(describing: self.modifiers)), ")
-        string.append("genericRequirements = \(String(describing: self.genericRequirements))")
+        string.append("genericRequirements = \(String(describing: self.genericRequirements)), ")
+        string.append("genericRequirements = \(String(describing: self.genericParameters))")
         return string
     }
 
@@ -303,6 +316,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
+        results.append(contentsOf: DiffableResult(identifier: "genericParameters").trackDifference(actual: self.genericParameters, expected: castObject.genericParameters))
         return results
     }
 
@@ -327,6 +341,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         hasher.combine(self.genericRequirements)
+        hasher.combine(self.genericParameters)
         return hasher.finalize()
     }
 
@@ -351,6 +366,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
         if self.genericRequirements != rhs.genericRequirements { return false }
+        if self.genericParameters != rhs.genericParameters { return false }
         return true
     }
 
@@ -358,25 +374,25 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { 
+            guard let name: String = aDecoder.decode(forKey: "name") else {
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { 
+            guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else {
                 withVaList(["selectorName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.selectorName = selectorName
-            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { 
+            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else {
                 withVaList(["parameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.parameters = parameters
-            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { 
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else {
                 withVaList(["returnTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -386,7 +402,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
-            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else {
                 withVaList(["accessLevel"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -395,13 +411,13 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             self.isClass = aDecoder.decode(forKey: "isClass")
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
                 withVaList(["documentation"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -409,24 +425,30 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
              }; self.documentation = documentation
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.modifiers = modifiers
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
                 withVaList(["genericRequirements"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.genericRequirements = genericRequirements
+            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else {
+                withVaList(["genericParameters"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericParameters = genericParameters
         }
 
         /// :nodoc:
@@ -450,6 +472,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
+            aCoder.encode(self.genericParameters, forKey: "genericParameters")
         }
 // sourcery:end
 }

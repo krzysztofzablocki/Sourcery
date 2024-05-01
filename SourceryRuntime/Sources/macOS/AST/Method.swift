@@ -180,6 +180,16 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// list of generic requirements
     public var genericRequirements: [GenericRequirement]
 
+    /// List of generic parameters
+    ///
+    /// - Example:
+    ///
+    ///   ```swift
+    ///   func method<GenericParameter>(foo: GenericParameter)
+    ///                    ^ ~ a generic parameter
+    ///   ```
+    public var genericParameters: [GenericParameter]
+
     /// :nodoc:
     public init(name: String,
                 selectorName: String? = nil,
@@ -197,7 +207,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
                 definedInTypeName: TypeName? = nil,
-                genericRequirements: [GenericRequirement] = []) {
+                genericRequirements: [GenericRequirement] = [],
+                genericParameters: [GenericParameter] = []) {
         self.name = name
         self.selectorName = selectorName ?? name
         self.parameters = parameters
@@ -215,6 +226,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         self.documentation = documentation
         self.definedInTypeName = definedInTypeName
         self.genericRequirements = genericRequirements
+        self.genericParameters = genericParameters
     }
 
     /// :nodoc:
@@ -237,7 +249,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("definedInTypeName = \(String(describing: self.definedInTypeName)), ")
         string.append("attributes = \(String(describing: self.attributes)), ")
         string.append("modifiers = \(String(describing: self.modifiers)), ")
-        string.append("genericRequirements = \(String(describing: self.genericRequirements))")
+        string.append("genericRequirements = \(String(describing: self.genericRequirements)), ")
+        string.append("genericRequirements = \(String(describing: self.genericParameters))")
         return string
     }
 
@@ -264,6 +277,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "attributes").trackDifference(actual: self.attributes, expected: castObject.attributes))
         results.append(contentsOf: DiffableResult(identifier: "modifiers").trackDifference(actual: self.modifiers, expected: castObject.modifiers))
         results.append(contentsOf: DiffableResult(identifier: "genericRequirements").trackDifference(actual: self.genericRequirements, expected: castObject.genericRequirements))
+        results.append(contentsOf: DiffableResult(identifier: "genericParameters").trackDifference(actual: self.genericParameters, expected: castObject.genericParameters))
         return results
     }
 
@@ -288,6 +302,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         hasher.combine(self.attributes)
         hasher.combine(self.modifiers)
         hasher.combine(self.genericRequirements)
+        hasher.combine(self.genericParameters)
         return hasher.finalize()
     }
 
@@ -312,6 +327,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.attributes != rhs.attributes { return false }
         if self.modifiers != rhs.modifiers { return false }
         if self.genericRequirements != rhs.genericRequirements { return false }
+        if self.genericParameters != rhs.genericParameters { return false }
         return true
     }
 
@@ -388,6 +404,12 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 }
                 fatalError()
              }; self.genericRequirements = genericRequirements
+            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else {
+                withVaList(["genericParameters"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.genericParameters = genericParameters
         }
 
         /// :nodoc:
@@ -411,6 +433,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             aCoder.encode(self.attributes, forKey: "attributes")
             aCoder.encode(self.modifiers, forKey: "modifiers")
             aCoder.encode(self.genericRequirements, forKey: "genericRequirements")
+            aCoder.encode(self.genericParameters, forKey: "genericParameters")
         }
 // sourcery:end
 }
