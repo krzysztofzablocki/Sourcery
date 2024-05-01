@@ -1,4 +1,9 @@
 # Sourcery CHANGELOG
+## 2.2.4
+- Fixed typealias resolution breaking resolution of real types. by @fabianmuecke ([#1325](https://github.com/krzysztofzablocki/Sourcery/pull/1325))
+- Disabled type resolving for local method generic parameters by @art-divin ([#1327](https://github.com/krzysztofzablocki/Sourcery/pull/1327))
+- Added hideVersionHeader to configuration arguments by @art-divin ([#1328](https://github.com/krzysztofzablocki/Sourcery/pull/1328))
+
 ## 2.2.3
 ## Changes
 - Fixed Issue when Caching of SwiftTemplate Binary Failes by @art-divin ([#1323](https://github.com/krzysztofzablocki/Sourcery/pull/1323))
