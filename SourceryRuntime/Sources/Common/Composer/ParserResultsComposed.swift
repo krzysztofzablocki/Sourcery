@@ -445,8 +445,14 @@ internal struct ParserResultsComposed {
         } else
         if let generic = lookupName.generic {
             var needsUpdate = false
-
             generic.typeParameters.forEach { parameter in
+                // Detect if the generic type is local to the method
+                if let method {
+                    for genericParameter in method.genericParameters where parameter.typeName.name == genericParameter.name {
+                        return
+                    }
+                }
+
                 parameter.type = resolveTypeWithName(parameter.typeName)
                 if parameter.typeName.actualTypeName != nil {
                     needsUpdate = true
