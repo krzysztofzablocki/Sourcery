@@ -342,9 +342,9 @@ import {{ import }}
 {% endfor %}
 
 {% if type.allMethods|static|count != 0 and type.allMethods|initializer|count != type.allMethods|static|count %}
-    static func reset()
+    {% call accessLevel type.accessLevel %}static func reset()
     {
-    {% for method in type.allMethods|static %}
+    {% for method in type.allMethods|static|!definedInExtension %}
         {% call resetMethod method %}
     {% endfor %}
     }
