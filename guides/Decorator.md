@@ -2,7 +2,7 @@
 
 In Swift it can be cumbersome to write a simple decorator that decorates all the calls to decorated type methods, you basically have to do it manually for each single method. With this template you can generate simple decorator that generate all the methods and property calls automatically, skipping methods and properties already implemented manually.
 
-You can use this template as a starting point for mor sophisticated implementations. This template also shows you some powers of swift templates, like using helper methods and whitespace control tags.
+You can use this template as a starting point for more sophisticated implementations. This template also shows you some powers of swift templates, like using helper methods and whitespace control tags.
 
 ### [Swift template](https://github.com/krzysztofzablocki/Sourcery/blob/master/Templates/Templates/Decorator.swifttemplate)
 
