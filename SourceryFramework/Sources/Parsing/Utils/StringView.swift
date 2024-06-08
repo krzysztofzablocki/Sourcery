@@ -392,8 +392,12 @@ public struct StringView {
     - returns: An equivalent `NSRange`.
     */
     public func NSRangeToByteRange(start: Int, length: Int) -> ByteRange? {
-        let startUTF16Index = utf16View.index(utf16View.startIndex, offsetBy: start)
-        let endUTF16Index = utf16View.index(startUTF16Index, offsetBy: length)
+        guard
+            let startUTF16Index = utf16View.index(utf16View.startIndex, offsetBy: start, limitedBy: utf16View.endIndex),
+            let endUTF16Index = utf16View.index(startUTF16Index, offsetBy: length, limitedBy: utf16View.endIndex) 
+        else {
+            return nil
+        }
 
         guard let startUTF8Index = startUTF16Index.samePosition(in: utf8View),
             let endUTF8Index = endUTF16Index.samePosition(in: utf8View) else {
