@@ -479,6 +479,57 @@ class SourcerySpecTests: QuickSpec {
                         expect(result).to(equal(expectedResult))
                     }
 
+                    it("extracts annotations when prefix contains case noun") {
+                        update(code: """
+                            struct MyStruct {
+                                // sourcery:inline:MyStruct.Inlined
+                                // This will be replaced
+                                // sourcery:end
+                                // sourcery: stub = "A"
+                                let basic: String;
+                                // sourcery: stub = "B"
+                                let caseProperty: String;
+                                // sourcery: stub = "C"
+                                let casesProperty: String;
+                                // sourcery: stub = "D"
+                                let CaseProperty: String;
+                            }
+                            """, in: sourcePath)
+                        update(code: """
+                            // sourcery:inline:MyStruct.Inlined
+                            {% for type in types.all %}
+                            {% for variable in type.storedVariables %}
+                            let {{ variable.name }}XXX = "{{ variable.annotations["stub"] }}";
+                            {% endfor %}
+                            {% endfor %}
+                            // sourcery:end
+                            """, in: templatePath)
+
+                        expect { try Sourcery(watcherEnabled: false, cacheDisabled: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+
+                        let expectedResult = """
+                            struct MyStruct {
+                                // sourcery:inline:MyStruct.Inlined
+                                let basicXXX = "A";
+                                let casePropertyXXX = "B";
+                                let casesPropertyXXX = "C";
+                                let CasePropertyXXX = "D";
+                                // sourcery:end
+                                // sourcery: stub = "A"
+                                let basic: String;
+                                // sourcery: stub = "B"
+                                let caseProperty: String;
+                                // sourcery: stub = "C"
+                                let casesProperty: String;
+                                // sourcery: stub = "D"
+                                let CaseProperty: String;
+                            }
+                            """
+
+                        let result = try? sourcePath.read(.utf8)
+                        expect(result).to(equal(expectedResult))
+                    }
+
                     it("handles previously generated code with UTF16 characters") {
                         update(code: """
                             class A {

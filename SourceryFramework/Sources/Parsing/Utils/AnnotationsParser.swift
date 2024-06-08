@@ -212,8 +212,8 @@ public struct AnnotationsParser {
         }
 
         // `case` is not included in the key of enum case definition, so we strip it manually
-        let isInsideCaseDefinition = prefix.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("case")
-        prefix = prefix.trimmingPrefix("case").trimmingCharacters(in: .whitespaces)
+        let isInsideCaseDefinition = prefix.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("case ")
+        prefix = prefix.trimmingPrefix("case ").trimmingCharacters(in: .whitespaces)
         var inlineCommentFound = false
 
         while !prefix.isEmpty {
@@ -242,7 +242,17 @@ public struct AnnotationsParser {
             let previousLine = lines[position.line - 2]
             let content = previousLine.content.trimmingCharacters(in: .whitespaces)
             
-            guard previousLine.type == .comment || previousLine.type == .documentationComment || previousLine.type == .propertyWrapper || previousLine.type == .macros, content.hasPrefix("//") || content.hasSuffix("*/") || content.hasPrefix("@") || content.hasPrefix("#") else {
+            guard
+                previousLine.type == .comment
+                    || previousLine.type == .documentationComment
+                    || previousLine.type == .propertyWrapper
+                    || previousLine.type == .macros,
+
+                    content.hasPrefix("//")
+                    || content.hasSuffix("*/")
+                    || content.hasPrefix("@")
+                    || content.hasPrefix("#")
+            else {
                 stop = true
                 return (annotations, shouldUsePositionBeforeTrailing)
             }
