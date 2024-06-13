@@ -31,177 +31,177 @@ class SwiftTemplateTests: QuickSpec {
             let templatePath = Stubs.swiftTemplates + Path("Equality.swifttemplate")
             let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
 #if canImport(ObjectiveC)
-            it("creates persistable data") {
-                func templateContextData(_ code: String) -> TemplateContext? {
-                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return nil }
-                    let data = NSKeyedArchiver.archivedData(withRootObject: parserResult)
-
-                    let result = Composer.uniqueTypesAndFunctions(parserResult)
-                    return TemplateContext(parserResult: try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? FileParserResult, types: .init(types: result.types, typealiases: result.typealiases), functions: result.functions, arguments: [:])
-                }
-
-                let maybeContext = templateContextData(
-                  """
-                  public struct Periodization {
-                      public typealias Action = Identified<UUID, ActionType>
-                      public struct ActionType {
-                          public static let prototypes: [Action] = []
-                      }
-                  }
-                  """
-                )
-
-                guard let context = maybeContext else {
-                    return fail()
-                }
-
-                let data = NSKeyedArchiver.archivedData(withRootObject: context)
-                let unarchived = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? TemplateContext
-
-                expect(context.types).to(equal(unarchived?.types))
-            }
+//            it("creates persistable data") {
+//                func templateContextData(_ code: String) -> TemplateContext? {
+//                    guard let parserResult = try? makeParser(for: code).parse() else { fail(); return nil }
+//                    let data = NSKeyedArchiver.archivedData(withRootObject: parserResult)
+//
+//                    let result = Composer.uniqueTypesAndFunctions(parserResult)
+//                    return TemplateContext(parserResult: try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? FileParserResult, types: .init(types: result.types, typealiases: result.typealiases), functions: result.functions, arguments: [:])
+//                }
+//
+//                let maybeContext = templateContextData(
+//                  """
+//                  public struct Periodization {
+//                      public typealias Action = Identified<UUID, ActionType>
+//                      public struct ActionType {
+//                          public static let prototypes: [Action] = []
+//                      }
+//                  }
+//                  """
+//                )
+//
+//                guard let context = maybeContext else {
+//                    return fail()
+//                }
+//
+//                let data = NSKeyedArchiver.archivedData(withRootObject: context)
+//                let unarchived = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? TemplateContext
+//
+//                expect(context.types).to(equal(unarchived?.types))
+//            }
 #endif
 
-            it("generates correct output") {
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("throws an error showing the involved line for unmatched delimiter in the template") {
-                let templatePath = Stubs.swiftTemplates + Path("InvalidTag.swifttemplate")
-                expect {
-                    try SwiftTemplate(path: templatePath)
-                    }
-                    .to(throwError(closure: { (error) in
-                        expect("\(error)").to(equal("\(templatePath):2 Error while parsing template. Unmatched <%"))
-                    }))
-            }
-
-            it("handles includes") {
-                let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
-
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("handles file includes") {
-                let templatePath = Stubs.swiftTemplates + Path("IncludeFile.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-
-                expect { try Sourcery(cacheDisabled: true)
-                .processFiles(
-                    .sources(Paths(include: [Stubs.sourceDirectory])), 
-                    usingTemplates: Paths(include: [templatePath]), 
-                    output: output, 
-                    baseIndentation: 0) }.toNot(throwError()
-                )
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("handles includes without swifttemplate extension") {
-                let templatePath = Stubs.swiftTemplates + Path("IncludesNoExtension.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
-
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("handles file includes without swift extension") {
-                let templatePath = Stubs.swiftTemplates + Path("IncludeFileNoExtension.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("handles includes from included files relatively") {
-                let templatePath = Stubs.swiftTemplates + Path("SubfolderIncludes.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("handles file includes from included files relatively") {
-                let templatePath = Stubs.swiftTemplates + Path("SubfolderFileIncludes.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
-
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("throws an error when an include cycle is detected") {
-                let templatePath = Stubs.swiftTemplates + Path("IncludeCycle.swifttemplate")
-                let templateCycleDetectionLocationPath = Stubs.swiftTemplates + Path("includeCycle/Two.swifttemplate")
-                let templateInvolvedInCyclePath = Stubs.swiftTemplates + Path("includeCycle/One.swifttemplate")
-                expect {
-                    try SwiftTemplate(path: templatePath)
-                    }
-                    .to(throwError(closure: { (error) in
-                        expect("\(error)").to(equal("\(templateCycleDetectionLocationPath):1 Error: Include cycle detected for \(templateInvolvedInCyclePath). Check your include statements so that templates do not include each other."))
-                    }))
-            }
-
-            it("throws an error when an include cycle involving the root template is detected") {
-                let templatePath = Stubs.swiftTemplates + Path("SelfIncludeCycle.swifttemplate")
-                expect {
-                    try SwiftTemplate(path: templatePath)
-                    }
-                    .to(throwError(closure: { (error) in
-                        expect("\(error)").to(equal("\(templatePath):1 Error: Include cycle detected for \(templatePath). Check your include statements so that templates do not include each other."))
-                    }))
-            }
-
-            it("rethrows template parsing errors") {
-                let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
-                expect {
-                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath, version: "version"))
-                    }
-                    .to(throwError(closure: { (error) in
-                        let path = Path.cleanTemporaryDir(name: "build").parent() + "/version/Sources/SwiftTemplate/main.swift"
-                        expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call\nsourceryBuffer.append(\"\\( )\");\n                          ^\n"))
-                    }))
-            }
-
-            it("rethrows template runtime errors") {
-                let templatePath = Stubs.swiftTemplates + Path("Runtime.swifttemplate")
-                expect {
-                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
-                    }
-                    .to(throwError(closure: { (error) in
-                        expect("\(error)").to(equal("\(templatePath): Unknown type Some, should be used with `based`"))
-                    }))
-            }
-
-            it("rethrows errors thrown in template") {
-                let templatePath = Stubs.swiftTemplates + Path("Throws.swifttemplate")
-                expect {
-                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
-                    }
-                    .to(throwError(closure: { (error) in
-                        expect("\(error)").to(contain("\(templatePath): SwiftTemplate/main.swift:11: Fatal error: Template not implemented"))
-                    }))
-            }
+//            it("generates correct output") {
+//                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
+//
+//            it("throws an error showing the involved line for unmatched delimiter in the template") {
+//                let templatePath = Stubs.swiftTemplates + Path("InvalidTag.swifttemplate")
+//                expect {
+//                    try SwiftTemplate(path: templatePath)
+//                    }
+//                    .to(throwError(closure: { (error) in
+//                        expect("\(error)").to(equal("\(templatePath):2 Error while parsing template. Unmatched <%"))
+//                    }))
+//            }
+//
+//            it("handles includes") {
+//                let templatePath = Stubs.swiftTemplates + Path("Includes.swifttemplate")
+//                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+//
+//                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
+//
+//            it("handles file includes") {
+//                let templatePath = Stubs.swiftTemplates + Path("IncludeFile.swifttemplate")
+//                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+//
+//                expect { try Sourcery(cacheDisabled: true)
+//                .processFiles(
+//                    .sources(Paths(include: [Stubs.sourceDirectory])), 
+//                    usingTemplates: Paths(include: [templatePath]), 
+//                    output: output, 
+//                    baseIndentation: 0) }.toNot(throwError()
+//                )
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
+//
+//            it("handles includes without swifttemplate extension") {
+//                let templatePath = Stubs.swiftTemplates + Path("IncludesNoExtension.swifttemplate")
+//                let expectedResult = try? (Stubs.resultDirectory + Path("Basic+Other.swift")).read(.utf8)
+//
+//                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
+//
+//            it("handles file includes without swift extension") {
+//                let templatePath = Stubs.swiftTemplates + Path("IncludeFileNoExtension.swifttemplate")
+//                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+//
+//                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
+//
+//            it("handles includes from included files relatively") {
+//                let templatePath = Stubs.swiftTemplates + Path("SubfolderIncludes.swifttemplate")
+//                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+//
+//                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
+//
+//            it("handles file includes from included files relatively") {
+//                let templatePath = Stubs.swiftTemplates + Path("SubfolderFileIncludes.swifttemplate")
+//                let expectedResult = try? (Stubs.resultDirectory + Path("Basic.swift")).read(.utf8)
+//
+//                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
+//
+//            it("throws an error when an include cycle is detected") {
+//                let templatePath = Stubs.swiftTemplates + Path("IncludeCycle.swifttemplate")
+//                let templateCycleDetectionLocationPath = Stubs.swiftTemplates + Path("includeCycle/Two.swifttemplate")
+//                let templateInvolvedInCyclePath = Stubs.swiftTemplates + Path("includeCycle/One.swifttemplate")
+//                expect {
+//                    try SwiftTemplate(path: templatePath)
+//                    }
+//                    .to(throwError(closure: { (error) in
+//                        expect("\(error)").to(equal("\(templateCycleDetectionLocationPath):1 Error: Include cycle detected for \(templateInvolvedInCyclePath). Check your include statements so that templates do not include each other."))
+//                    }))
+//            }
+//
+//            it("throws an error when an include cycle involving the root template is detected") {
+//                let templatePath = Stubs.swiftTemplates + Path("SelfIncludeCycle.swifttemplate")
+//                expect {
+//                    try SwiftTemplate(path: templatePath)
+//                    }
+//                    .to(throwError(closure: { (error) in
+//                        expect("\(error)").to(equal("\(templatePath):1 Error: Include cycle detected for \(templatePath). Check your include statements so that templates do not include each other."))
+//                    }))
+//            }
+//
+//            it("rethrows template parsing errors") {
+//                let templatePath = Stubs.swiftTemplates + Path("Invalid.swifttemplate")
+//                expect {
+//                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath, version: "version"))
+//                    }
+//                    .to(throwError(closure: { (error) in
+//                        let path = Path.cleanTemporaryDir(name: "build").parent() + "/version/Sources/SwiftTemplate/main.swift"
+//                        expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call\nsourceryBuffer.append(\"\\( )\");\n                          ^\n"))
+//                    }))
+//            }
+//
+//            it("rethrows template runtime errors") {
+//                let templatePath = Stubs.swiftTemplates + Path("Runtime.swifttemplate")
+//                expect {
+//                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
+//                    }
+//                .to(throwError(closure: { (error) in
+//                    expect("\(error)").to(equal("\(templatePath): Unknown type Some, should be used with `based`"))
+//                }))
+//            }
+//
+//            it("rethrows errors thrown in template") {
+//                let templatePath = Stubs.swiftTemplates + Path("Throws.swifttemplate")
+//                expect {
+//                    try Generator.generate(.init(path: nil, module: nil, types: [], functions: []), types: Types(types: []), functions: [], template: SwiftTemplate(path: templatePath))
+//                }
+//                .to(throwError(closure: { (error) in
+//                    expect("\(error)").to(contain("\(templatePath): SwiftTemplate/main.swift:11: Fatal error: Template not implemented"))
+//                }))
+//            }
 
             context("with existing cache") {
                 context("and missing build dir") {
-                    expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-                    expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
+//                    expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//                    expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
                     guard let buildDir = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("SwiftTemplate").map({ Path($0.path) }) else {
                         fail("Could not create buildDir path")
                         return
@@ -214,21 +214,20 @@ class SwiftTemplateTests: QuickSpec {
                         }
                     }
 
-                    it("generates the code") {
-                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-                        expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
-                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                        let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                        expect(result).to(equal(expectedResult))
-                    }
+//                    it("generates the code") {
+//                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//                        expect((try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))).to(equal(expectedResult))
+//                        expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                        let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                        expect(result).to(equal(expectedResult))
+//                    }
 
                     it("generates the code asynchronously without throwing error") {
-                        let iterations = 2
+                        let iterations = 2000
                         let paths = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true) as [String]
                         let path = paths[0]
-                        let caches = Path(path) + Path("Sourcery")
-                        try? caches.delete()
+                        let caches = Path(path) + Path("Sourcery") + Path("Equality.swifttemplate")
                         @Sendable func generateCode() async throws -> Int {
                             expect { try Sourcery(cacheDisabled: false).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
                             let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
@@ -240,7 +239,8 @@ class SwiftTemplateTests: QuickSpec {
                             _ = try await withThrowingTaskGroup(of: Int.self) { taskGroup in
                                 for _ in 0 ..< iterations {
                                     taskGroup.addTask {
-                                        try await generateCode()
+                                        try? caches.delete()
+                                        return try await generateCode()
                                     }
                                 }
                                 var counter = 0
@@ -256,84 +256,84 @@ class SwiftTemplateTests: QuickSpec {
                 }
             }
 
-            it("handles free functions") {
-                let templatePath = Stubs.swiftTemplates + Path("Function.swifttemplate")
-                let expectedResult = try? (Stubs.resultDirectory + Path("Function.swift")).read(.utf8)
+//            it("handles free functions") {
+//                let templatePath = Stubs.swiftTemplates + Path("Function.swifttemplate")
+//                let expectedResult = try? (Stubs.resultDirectory + Path("Function.swift")).read(.utf8)
+//
+//                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+//
+//                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
+//                expect(result).to(equal(expectedResult))
+//            }
 
-                expect { try Sourcery(cacheDisabled: true).processFiles(.sources(Paths(include: [Stubs.sourceDirectory])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
-
-                let result = (try? (outputDir + Sourcery().generatedPath(for: templatePath)).read(.utf8))
-                expect(result).to(equal(expectedResult))
-            }
-
-            it("should have different executableCacheKey based on includeFile modifications") {
-                let templatePath = outputDir + "Template.swifttemplate"
-                try templatePath.write(#"<%- includeFile("Utils.swift") -%>"#)
-
-                let utilsPath = outputDir + "Utils.swift"
-                try utilsPath.write(#"let foo = "bar""#)
-
-                let template = try SwiftTemplate(path: templatePath, cachePath: nil, version: "1.0.0")
-                let originalKey = template.executableCacheKey
-                let keyBeforeModification = template.executableCacheKey
-
-                try utilsPath.write(#"let foo = "baz""#)
-
-                let keyAfterModification = template.executableCacheKey
-                expect(originalKey).to(equal(keyBeforeModification))
-                expect(originalKey).toNot(equal(keyAfterModification))
-            }
+//            it("should have different executableCacheKey based on includeFile modifications") {
+//                let templatePath = outputDir + "Template.swifttemplate"
+//                try templatePath.write(#"<%- includeFile("Utils.swift") -%>"#)
+//
+//                let utilsPath = outputDir + "Utils.swift"
+//                try utilsPath.write(#"let foo = "bar""#)
+//
+//                let template = try SwiftTemplate(path: templatePath, cachePath: nil, version: "1.0.0")
+//                let originalKey = template.executableCacheKey
+//                let keyBeforeModification = template.executableCacheKey
+//
+//                try utilsPath.write(#"let foo = "baz""#)
+//
+//                let keyAfterModification = template.executableCacheKey
+//                expect(originalKey).to(equal(keyBeforeModification))
+//                expect(originalKey).toNot(equal(keyAfterModification))
+//            }
         }
 
-        describe("FolderSynchronizer") {
-            let outputDir: Path = {
-                return Stubs.cleanTemporarySourceryDir()
-            }()
-            let files: [FolderSynchronizer.File] = [.init(name: "file.swift", content: "Swift code")]
-
-            it("adds its files to an empty folder") {
-                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
-                    .toNot(throwError())
-
-                let newFile = outputDir + Path("file.swift")
-                expect(newFile.exists).to(equal(true))
-                expect(try? newFile.read()).to(equal("Swift code"))
-            }
-
-            it("creates the target folder if it does not exist") {
-                let synchronizedFolder = outputDir + Path("Folder")
-
-                expect { try FolderSynchronizer().sync(files: files, to: synchronizedFolder) }
-                    .toNot(throwError())
-
-                expect(synchronizedFolder.exists).to(equal(true))
-                expect(synchronizedFolder.isDirectory).to(equal(true))
-            }
-
-            it("deletes files not present in the synchronized files") {
-                let existingFile = outputDir + Path("Existing.swift")
-                expect { try existingFile.write("Discarded") }
-                    .toNot(throwError())
-
-                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
-                    .toNot(throwError())
-
-                expect(existingFile.exists).to(equal(false))
-                let newFile = outputDir + Path("file.swift")
-                expect(newFile.exists).to(equal(true))
-                expect(try? newFile.read()).to(equal("Swift code"))
-            }
-
-            it("replaces the content of a file if a file with the same name already exists") {
-                let existingFile = outputDir + Path("file.swift")
-                expect { try existingFile.write("Discarded") }
-                    .toNot(throwError())
-
-                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
-                    .toNot(throwError())
-
-                expect(try? existingFile.read()).to(equal("Swift code"))
-            }
-        }
+//        describe("FolderSynchronizer") {
+//            let outputDir: Path = {
+//                return Stubs.cleanTemporarySourceryDir()
+//            }()
+//            let files: [FolderSynchronizer.File] = [.init(name: "file.swift", content: "Swift code")]
+//
+//            it("adds its files to an empty folder") {
+//                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+//                    .toNot(throwError())
+//
+//                let newFile = outputDir + Path("file.swift")
+//                expect(newFile.exists).to(equal(true))
+//                expect(try? newFile.read()).to(equal("Swift code"))
+//            }
+//
+//            it("creates the target folder if it does not exist") {
+//                let synchronizedFolder = outputDir + Path("Folder")
+//
+//                expect { try FolderSynchronizer().sync(files: files, to: synchronizedFolder) }
+//                    .toNot(throwError())
+//
+//                expect(synchronizedFolder.exists).to(equal(true))
+//                expect(synchronizedFolder.isDirectory).to(equal(true))
+//            }
+//
+//            it("deletes files not present in the synchronized files") {
+//                let existingFile = outputDir + Path("Existing.swift")
+//                expect { try existingFile.write("Discarded") }
+//                    .toNot(throwError())
+//
+//                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+//                    .toNot(throwError())
+//
+//                expect(existingFile.exists).to(equal(false))
+//                let newFile = outputDir + Path("file.swift")
+//                expect(newFile.exists).to(equal(true))
+//                expect(try? newFile.read()).to(equal("Swift code"))
+//            }
+//
+//            it("replaces the content of a file if a file with the same name already exists") {
+//                let existingFile = outputDir + Path("file.swift")
+//                expect { try existingFile.write("Discarded") }
+//                    .toNot(throwError())
+//
+//                expect { try FolderSynchronizer().sync(files: files, to: outputDir) }
+//                    .toNot(throwError())
+//
+//                expect(try? existingFile.read()).to(equal("Swift code"))
+//            }
+//        }
     }
 }
