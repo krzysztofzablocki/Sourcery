@@ -30,6 +30,10 @@ open class SwiftTemplate {
     let version: String?
     let includedFiles: [Path]
 
+    private enum RenderError: Error {
+        case binaryMissing
+    }
+
     private lazy var buildDir: Path = {
         var pathComponent = "SwiftTemplate"
         pathComponent.append("/\(UUID().uuidString)")
@@ -192,27 +196,38 @@ open class SwiftTemplate {
     }
 
     public func render(_ context: Any) throws -> String {
-        let binaryPath: Path
+        do {
+            return try render(context: context)
+        } catch is RenderError {
+            return try render(context: context)
+        }
+    }
 
+    private func render(context: Any) throws -> String {
+        var destinationBinaryPath: Path
+        var originalBinaryPath = buildDir + Path(".build/release/SwiftTemplate")
         if let cachePath = cachePath,
            let hash = executableCacheKey,
            let hashPath = hash.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics) {
-            binaryPath = cachePath + hashPath
-            if binaryPath.exists {
-                Log.verbose("Reusing built SwiftTemplate binary for SwiftTemplate with cache key: \(hash)...")
+            destinationBinaryPath = cachePath + hashPath
+            if destinationBinaryPath.exists {
+                Log.benchmark("Reusing built SwiftTemplate binary for SwiftTemplate with cache key: \(hash)...")
             } else {
-                Log.verbose("Building new SwiftTemplate binary for SwiftTemplate...")
-                do {
-                    let path = try build()
-                    try? cachePath.delete() // clear old cache
-                    try? cachePath.mkdir()
-                    try? path.move(binaryPath)
-                } catch let error as NSError {
-                    throw error
-                }
+                Log.benchmark("Building new SwiftTemplate binary for SwiftTemplate...")
+                try build()
+                // attempt to create cache dir
+                try? cachePath.mkdir()
+                // attempt to move to the created `cacheDir`
+                try? originalBinaryPath.copy(destinationBinaryPath)
             }
+            // create a link to the compiled binary in a unique stable location
+            if !buildDir.exists {
+                try buildDir.mkpath()
+            }
+            originalBinaryPath = buildDir + hashPath
+            try FileManager.default.createSymbolicLink(atPath: originalBinaryPath.string, withDestinationPath: destinationBinaryPath.string)
         } else {
-            binaryPath = try build()
+            try build()
         }
 
         let serializedContextPath = buildDir + "context.bin"
@@ -222,15 +237,19 @@ open class SwiftTemplate {
         }
         try serializedContextPath.write(data)
 
-        let result = try Process.runCommand(path: binaryPath.description,
-                                            arguments: [serializedContextPath.description])
-        if !result.error.isEmpty {
-            throw "\(sourcePath): \(result.error)"
+        Log.benchmark("Binary file location: \(originalBinaryPath.string)")
+        if FileManager.default.fileExists(atPath: originalBinaryPath.string) {
+            let result = try Process.runCommand(path: originalBinaryPath.string,
+                                                arguments: [serializedContextPath.description])
+            if !result.error.isEmpty {
+                throw "\(sourcePath): \(result.error)"
+            }
+            return result.output
         }
-        return result.output
+        throw RenderError.binaryMissing
     }
 
-    func build() throws -> Path {
+    private func build() throws {
         let startCompiling = currentTimestamp()
         let sourcesDir = buildDir + Path("Sources")
         let templateFilesDir = sourcesDir + Path("SwiftTemplate")
@@ -246,8 +265,6 @@ open class SwiftTemplate {
             try manifestFile.write(manifestCode)
         }
         try mainFile.write(mainFileCodeRaw)
-
-        let binaryFile = buildDir + Path(".build/release/SwiftTemplate")
 
         try includedFiles.forEach { includedFile in
             try includedFile.copy(templateFilesDir + Path(includedFile.lastComponent))
@@ -282,7 +299,6 @@ open class SwiftTemplate {
                 .joined(separator: "\n")
         }
         Log.benchmark("\tRaw compilation of SwiftTemplate took: \(currentTimestamp() - startCompiling)")
-        return binaryFile
     }
 
 #if os(macOS)
