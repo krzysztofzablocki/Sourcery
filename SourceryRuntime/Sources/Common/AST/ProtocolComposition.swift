@@ -10,7 +10,8 @@ import Foundation
 public final class ProtocolComposition: Type {
 
     /// Returns "protocolComposition"
-    public override var kind: String { return "protocolComposition" }
+    public class var kind: String { return "protocolComposition" }
+    public override var kind: String { Self.kind }
 
     /// The names of the types composed to form this composition
     public let composedTypeNames: [TypeName]
@@ -35,7 +36,8 @@ public final class ProtocolComposition: Type {
                 isGeneric: Bool = false,
                 composedTypeNames: [TypeName] = [],
                 composedTypes: [Type]? = nil,
-                implements: [String: Type] = [:]) {
+                implements: [String: Type] = [:],
+                kind: String = ProtocolComposition.kind) {
         self.composedTypeNames = composedTypeNames
         self.composedTypes = composedTypes
         super.init(
@@ -51,7 +53,8 @@ public final class ProtocolComposition: Type {
             typealiases: typealiases,
             annotations: annotations,
             isGeneric: isGeneric,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 

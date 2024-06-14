@@ -16,7 +16,8 @@ import Foundation
 public final class Struct: Type {
 
     /// Returns "struct"
-    public override var kind: String { return "struct" }
+    public class var kind: String { return "struct" }
+    public override var kind: String { Self.kind }
 
     /// :nodoc:
     public override init(name: String = "",
@@ -35,7 +36,8 @@ public final class Struct: Type {
                          annotations: [String: NSObject] = [:],
                          documentation: [String] = [],
                          isGeneric: Bool = false,
-                         implements: [String: Type] = [:]) {
+                         implements: [String: Type] = [:],
+                         kind: String = Struct.kind) {
         super.init(
             name: name,
             parent: parent,
@@ -53,7 +55,8 @@ public final class Struct: Type {
             annotations: annotations,
             documentation: documentation,
             isGeneric: isGeneric,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 

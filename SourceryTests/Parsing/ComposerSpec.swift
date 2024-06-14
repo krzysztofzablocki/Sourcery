@@ -1902,7 +1902,7 @@ class ParserComposerSpec: QuickSpec {
 
                     it("resolves protocol generic requirement types and inherits associated types") {
                         let expectedRightType = Struct(name: "RightType")
-                        let genericProtocol = Protocol(name: "GenericProtocol", associatedTypes: ["LeftType": AssociatedType(name: "LeftType")])
+                        let genericProtocol = Protocol(name: "GenericProtocol", associatedTypes: ["LeftType": AssociatedType(name: "LeftType", typeName: TypeName(name: "Any"))])
                         let expectedProtocol = Protocol(name: "SomeGenericProtocol", inheritedTypes: ["GenericProtocol"])
                         expectedProtocol.associatedTypes = genericProtocol.associatedTypes
                         expectedProtocol.genericRequirements = [

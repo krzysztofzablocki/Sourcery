@@ -86,6 +86,8 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilter("isEmpty", filter: isEmpty)
         ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
+        ext.registerFilter("values", filter: values)
+        ext.registerFilter("last", filter: last)
 
         #if canImport(ObjectiveC)
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
@@ -282,6 +284,24 @@ public extension Stencil.Extension {
         registerBoolFilter("!\(accessLevel.rawValue)Set", filter: { (v: SourceryVariable) in v.writeAccess != accessLevel.rawValue && v.writeAccess != AccessLevel.none.rawValue })
     }
 
+}
+
+private func last(_ value: Any?) -> Any? {
+    switch value {
+    case let arr as NSArray:
+        return arr.lastObject
+    default:
+        return nil
+    }
+}
+
+private func values(_ value: Any?) -> Any? {
+    switch value {
+    case let dict as NSDictionary:
+        return dict.allValues
+    default:
+        return nil
+    }
 }
 
 private func toArray(_ value: Any?) -> Any? {

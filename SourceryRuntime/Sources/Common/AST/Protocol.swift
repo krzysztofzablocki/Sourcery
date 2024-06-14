@@ -18,7 +18,8 @@ public typealias SourceryProtocol = Protocol
 public final class Protocol: Type {
 
     /// Returns "protocol"
-    public override var kind: String { return "protocol" }
+    public class var kind: String { return "protocol" }
+    public override var kind: String { Self.kind }
 
     /// list of all declared associated types with their names as keys
     public var associatedTypes: [String: AssociatedType] {
@@ -52,7 +53,8 @@ public final class Protocol: Type {
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
-                implements: [String: Type] = [:]) {
+                implements: [String: Type] = [:],
+                kind: String = Protocol.kind) {
         self.associatedTypes = associatedTypes
         super.init(
             name: name,
@@ -71,7 +73,8 @@ public final class Protocol: Type {
             annotations: annotations,
             documentation: documentation,
             isGeneric: !associatedTypes.isEmpty || !genericRequirements.isEmpty,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 

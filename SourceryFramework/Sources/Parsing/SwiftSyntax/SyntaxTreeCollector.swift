@@ -3,6 +3,22 @@ import SourceryRuntime
 import SourceryUtils
 import Foundation
 
+//sourcery:AutoMockable
+protocol TestProtocol {
+
+
+    associatedtype Value5: Collection where Value5.Element == Int
+
+    func getValue5() -> Value5
+}
+
+class OhMy: TestProtocol {
+    typealias Value5 = [Int]
+    func getValue5() -> Value5 {
+        return []
+    }
+}
+
 class SyntaxTreeCollector: SyntaxVisitor {
     var types = [Type]()
     var typealiases = [Typealias]()
@@ -246,15 +262,60 @@ class SyntaxTreeCollector: SyntaxVisitor {
         let name = node.name.text.trimmed
         var typeName: TypeName?
         var type: Type?
+
+        // TODO: RA here, if an associatedType has a protocol requirements like:
+        // `code`:
+        //
+        //    associatedtype Value5: Sequence where Value5.Element == Int
+        //
+        // Then this is mostly not processed and ignored, and the resulting typealias
+        // would rely on assigning a `Sequence` as a concrete type which is invalid
+        // so not to generate a non-working typelias, "collection" and "sequence" type is replaced
+        // with [Any], which still would not satisfy protocol requirement and needs to be properly implemented
+        // The following logic does the best effort in finding a concrete type
+        //
         if let possibleTypeName = node.inheritanceClause?.inheritedTypes.description.trimmed {
+            if possibleTypeName.contains("Sequence") || possibleTypeName.contains("Collection") {
+                var genericRequirements: [GenericRequirement] = []
+                if let genericWhereClause = node.genericWhereClause {
+                    genericRequirements = genericWhereClause.requirements.compactMap { requirement in
+                        if let sameType = requirement.requirement.as(SameTypeRequirementSyntax.self) {
+                            return GenericRequirement(sameType)
+                        } else if let conformanceType = requirement.requirement.as(ConformanceRequirementSyntax.self) {
+                            return GenericRequirement(conformanceType)
+                        }
+                        return nil
+                    }
+                }
+                if let composition = processPossibleProtocolComposition(for: possibleTypeName, localName: "") {
+                    type = composition
+                } else {
+                    type = Protocol(name: possibleTypeName)
+                }
+                if genericRequirements.isEmpty {
+                    typeName = TypeName(possibleTypeName)
+                } else {
+                    // take the first `.Element ==` form of requirement and use a concrete type
+                    let requirement = genericRequirements.first {
+                        $0.leftType.name.hasSuffix("Element")
+                    }
+                    typeName = TypeName("[\(requirement?.rightType.typeName.name ?? "Any")]")
+                }
+            } else {
+                type = processPossibleProtocolComposition(for: possibleTypeName, localName: "")
+                typeName = TypeName(possibleTypeName)
+            }
+        } else if let possibleTypeName = (node.initializer?.value as? TypeSyntax)?.description.trimmed {
             type = processPossibleProtocolComposition(for: possibleTypeName, localName: "")
             typeName = TypeName(possibleTypeName)
+        } else {
+            type = Type(name: "Any")
+            typeName = TypeName(name: "Any", actualTypeName: TypeName(name: "Any"))
         }
 
         sourceryProtocol.associatedTypes[name] = AssociatedType(name: name, typeName: typeName, type: type)
         return .skipChildren
     }
-
 
     public override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
         return .skipChildren

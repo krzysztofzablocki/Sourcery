@@ -334,6 +334,9 @@ import {{ import }}
 
 {% for type in types.protocols where type.based.AutoMockable or type|annotated:"AutoMockable" %}{% if type.name != "AutoMockable" %}
 {% call accessLevel type.accessLevel %}class {{ type.name }}Mock: {{ type.name }} {
+{% for associatedType in type.associatedTypes|values %}
+    typealias {{ associatedType.name }} = {% if associatedType.type != nil %}{{ associatedType.type.globalName }}{% elif associatedType.typeName != nil %}{{ associatedType.typeName.name }}{% else %}Any{% endif %}
+{% endfor %}
 
     {% if type.accessLevel == "public" %}public init() {}{% endif %}
 
