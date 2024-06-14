@@ -191,9 +191,8 @@ open class SwiftTemplate {
         return commands
     }
 
-    public func render(_ context: Any) throws -> String {
+    private func optimizeMe() throws -> Path {
         let binaryPath: Path
-
         if let cachePath = cachePath,
            let hash = executableCacheKey,
            let hashPath = hash.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics) {
@@ -214,7 +213,11 @@ open class SwiftTemplate {
         } else {
             binaryPath = try build()
         }
+        return binaryPath
+    }
 
+    public func render(_ context: Any) throws -> String {
+        let binaryPath: Path = try optimizeMe()
         let serializedContextPath = buildDir + "context.bin"
         let data = try NSKeyedArchiver.archivedData(withRootObject: context, requiringSecureCoding: false)
         if !buildDir.exists {
