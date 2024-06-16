@@ -185,7 +185,6 @@ public enum Composer {
             guard let typeName = value.typeName,
                   let type = resolve(typeName, sourceryProtocol)
             else {
-//                value.type = Type(name: value.typeName?.name ?? "Any")
                 return
             }
             value.type = type
