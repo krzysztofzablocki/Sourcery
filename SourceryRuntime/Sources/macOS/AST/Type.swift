@@ -48,7 +48,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     // sourcery: forceEquality
     /// Kind of type declaration, i.e. `enum`, `struct`, `class`, `protocol` or `extension`
-    public var kind: String { isExtension ? "extension" : _kind ?? "unknown" }
+    public var kind: String { isExtension ? "extension" : _kind }
 
     // sourcery: skipJSExport
     /// Kind of a backing store for `self.kind`

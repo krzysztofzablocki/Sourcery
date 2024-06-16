@@ -270,3 +270,30 @@ public protocol ProtocolWithMethodWithInoutParameter {
     func execute(param: inout String)
     func execute(param: inout String, bar: Int)
 }
+//sourcery:AutoMockable
+protocol TestProtocol {
+    associatedtype Value: Sequence where Value.Element: Collection, Value.Element: Hashable, Value.Element: Comparable
+
+    func getValue() -> Value
+
+
+    associatedtype Value2 = Int
+
+    func getValue2() -> Value2
+
+    associatedtype Value3: Collection where Value3.Element == String
+
+    func getValue3() -> Value3
+
+    associatedtype Value4: Sequence & Hashable
+
+    func getValue4() -> Value4
+
+    associatedtype Value5: Sequence where Value5.Element == Int
+
+    func getValue5() -> Value5
+
+    associatedtype Value6: Sequence where Value6.Element == Int, Value6.Element: Hashable, Value6.Element: Comparable
+
+    func getValue6() -> Value6
+}
