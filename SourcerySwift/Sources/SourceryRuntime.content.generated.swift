@@ -31,8 +31,12 @@ import Foundation
 @objc(SwiftActor) @objcMembers
 #endif
 public final class Actor: Type {
+    
+    // sourcery: skipJSExport
+    public class var kind: String { return "actor" }
+
     /// Returns "actor"
-    public override var kind: String { return "actor" }
+    public override var kind: String { Self.kind }
 
     /// Whether type is final
     public var isFinal: Bool {
@@ -61,7 +65,8 @@ public final class Actor: Type {
                          annotations: [String: NSObject] = [:],
                          documentation: [String] = [],
                          isGeneric: Bool = false,
-                         implements: [String: Type] = [:]) {
+                         implements: [String: Type] = [:],
+                         kind: String = Actor.kind) {
         super.init(
             name: name,
             parent: parent,
@@ -79,7 +84,8 @@ public final class Actor: Type {
             annotations: annotations,
             documentation: documentation,
             isGeneric: isGeneric,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 
@@ -620,8 +626,11 @@ import Foundation
 @objc(SwiftClass) @objcMembers
 #endif
 public final class Class: Type {
+    // sourcery: skipJSExport
+    public class var kind: String { return "class" }
+
     /// Returns "class"
-    public override var kind: String { return "class" }
+    public override var kind: String { Self.kind }
 
     /// Whether type is final 
     public var isFinal: Bool {
@@ -645,7 +654,8 @@ public final class Class: Type {
                          annotations: [String: NSObject] = [:],
                          documentation: [String] = [],
                          isGeneric: Bool = false,
-                         implements: [String: Type] = [:]) {
+                         implements: [String: Type] = [:],
+                         kind: String = Class.kind) {
         super.init(
             name: name,
             parent: parent,
@@ -663,7 +673,8 @@ public final class Class: Type {
             annotations: annotations,
             documentation: documentation,
             isGeneric: isGeneric,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 
@@ -746,11 +757,11 @@ public enum Composer {
         let composed = ParserResultsComposed(parserResult: parserResult)
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return composed.resolveType(typeName: typeName, containingType: containingType)
+            composed.resolveType(typeName: typeName, containingType: containingType)
         }
 
         let methodResolveType = { (typeName: TypeName, containingType: Type?, method: Method) -> Type? in
-            return composed.resolveType(typeName: typeName, containingType: containingType, method: method)
+            composed.resolveType(typeName: typeName, containingType: containingType, method: method)
         }
 
         let processType = { (type: Type) in
@@ -773,7 +784,7 @@ public enum Composer {
             }
 
             if let sourceryProtocol = type as? SourceryProtocol {
-                resolveProtocolTypes(sourceryProtocol, resolve: resolveType)
+                resolveAssociatedTypes(sourceryProtocol, resolve: resolveType)
             }
         }
 
@@ -901,11 +912,13 @@ public enum Composer {
         protocolComposition.composedTypes = composedTypes
     }
 
-    private static func resolveProtocolTypes(_ sourceryProtocol: SourceryProtocol, resolve: TypeResolver) {
+    private static func resolveAssociatedTypes(_ sourceryProtocol: SourceryProtocol, resolve: TypeResolver) {
         sourceryProtocol.associatedTypes.forEach { (_, value) in
             guard let typeName = value.typeName,
                   let type = resolve(typeName, sourceryProtocol)
-            else { return }
+            else {
+                return
+            }
             value.type = type
         }
 
@@ -2218,6 +2231,7 @@ internal struct ParserResultsComposed {
     let parsedTypes: [Type]
     let functions: [SourceryMethod]
     let resolvedTypealiases: [String: Typealias]
+    let associatedTypes: [String: AssociatedType]
     let unresolvedTypealiases: [String: Typealias]
 
     init(parserResult: FileParserResult) {
@@ -2228,6 +2242,7 @@ internal struct ParserResultsComposed {
         let aliases = Self.typealiases(parserResult)
         resolvedTypealiases = aliases.resolved
         unresolvedTypealiases = aliases.unresolved
+        associatedTypes = Self.extractAssociatedTypes(parserResult)
         parsedTypes = parserResult.types
 
         // set definedInType for all methods and variables
@@ -2254,6 +2269,11 @@ internal struct ParserResultsComposed {
         let typealiases = Array(unresolvedTypealiases.values)
         typealiases.forEach { alias in
             alias.type = resolveType(typeName: alias.typeName, containingType: alias.parent)
+        }
+
+        /// Map associated types
+        associatedTypes.forEach {
+            typeMap[$0.key] = $0.value.type
         }
 
         types = unifyTypes()
@@ -2301,7 +2321,7 @@ internal struct ParserResultsComposed {
                     resolveExtensionOfNestedType(type)
                 }
 
-                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
                     var moduleName: String = ""
                     if let module = type.module {
                         moduleName = "\\(module)."
@@ -2321,7 +2341,7 @@ internal struct ParserResultsComposed {
         // extend all types with their extensions
         parsedTypes.forEach { type in
             let inheritedTypes: [[String]] = type.inheritedTypes.compactMap { inheritedName in
-                if let resolvedGlobalName = resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                if let resolvedGlobalName = resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
                     return [resolvedGlobalName]
                 }
                 if let baseType = Composer.findBaseType(for: type, name: inheritedName, typesByName: typeMap) {
@@ -2380,6 +2400,14 @@ internal struct ParserResultsComposed {
         })
     }
 
+    // extract associated types from all types and add them to types
+    private static func extractAssociatedTypes(_ parserResult: FileParserResult) -> [String: AssociatedType] {
+        parserResult.types
+            .compactMap { $0 as? SourceryProtocol }
+            .map { $0.associatedTypes }
+            .flatMap { $0 }.reduce(into: [:]) { $0[$1.key] = $1.value }
+    }
+
     /// returns typealiases map to their full names, with `resolved` removing intermediate
     /// typealises and `unresolved` including typealiases that reference other typealiases.
     private static func typealiases(_ parserResult: FileParserResult) -> (resolved: [String: Typealias], unresolved: [String: Typealias]) {
@@ -2412,11 +2440,14 @@ internal struct ParserResultsComposed {
     }
 
     /// Resolves type identifier for name
-    func resolveGlobalName(for type: String,
-                           containingType: Type? = nil,
-                           unique: [String: Type]? = nil,
-                           modules: [String: [String: Type]],
-                           typealiases: [String: Typealias]) -> (name: String, typealias: Typealias?)? {
+    func resolveGlobalName(
+        for type: String,
+        containingType: Type? = nil,
+        unique: [String: Type]? = nil,
+        modules: [String: [String: Type]],
+        typealiases: [String: Typealias],
+        associatedTypes: [String: AssociatedType]
+    ) -> (name: String, typealias: Typealias?)? {
         // if the type exists for this name and isn't an extension just return it's name
         // if it's extension we need to check if there aren't other options TODO: verify
         if let realType = unique?[type], realType.isExtension == false {
@@ -2425,6 +2456,13 @@ internal struct ParserResultsComposed {
 
         if let alias = typealiases[type] {
             return (name: alias.type?.globalName ?? alias.typeName.name, typealias: alias)
+        }
+
+        if let associatedType = associatedTypes[type],
+            let actualType = associatedType.type
+        {
+            let typeName = associatedType.typeName ?? TypeName(name: actualType.name)
+            return (name: actualType.globalName, typealias: Typealias(aliasName: type, typeName: typeName))
         }
 
         if let containingType = containingType {
@@ -2436,7 +2474,7 @@ internal struct ParserResultsComposed {
             while currentContainer != nil, let parentName = currentContainer?.globalName {
                 /// TODO: no parent for sure?
                 /// manually walk the containment tree
-                if let name = resolveGlobalName(for: "\\(parentName).\\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
+                if let name = resolveGlobalName(for: "\\(parentName).\\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases, associatedTypes: associatedTypes) {
                     return name
                 }
 
@@ -2770,20 +2808,27 @@ internal struct ParserResultsComposed {
             }
         }
 
-        return unique[resolvedIdentifier]
+        if let associatedType = associatedTypes[resolvedIdentifier] {
+            return associatedType.type
+        }
+
+        return unique[resolvedIdentifier] ?? unique[typeName.name]
     }
 
     private func actualTypeName(for typeName: TypeName,
-                                       containingType: Type? = nil) -> TypeName? {
+                                containingType: Type? = nil) -> TypeName? {
         let unique = typeMap
         let typealiases = resolvedTypealiases
+        let associatedTypes = associatedTypes
 
         var unwrapped = typeName.unwrappedTypeName
         if let generic = typeName.generic {
             unwrapped = generic.name
+        } else if let type = associatedTypes[unwrapped] {
+            unwrapped = type.name
         }
 
-        guard let aliased = resolveGlobalName(for: unwrapped, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) else {
+        guard let aliased = resolveGlobalName(for: unwrapped, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases, associatedTypes: associatedTypes) else {
             return nil
         }
 
@@ -2862,8 +2907,11 @@ public typealias SourceryProtocol = Protocol
 #endif
 public final class Protocol: Type {
 
+    // sourcery: skipJSExport
+    public class var kind: String { return "protocol" }
+
     /// Returns "protocol"
-    public override var kind: String { return "protocol" }
+    public override var kind: String { Self.kind }
 
     /// list of all declared associated types with their names as keys
     public var associatedTypes: [String: AssociatedType] {
@@ -2897,7 +2945,8 @@ public final class Protocol: Type {
                 modifiers: [SourceryModifier] = [],
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
-                implements: [String: Type] = [:]) {
+                implements: [String: Type] = [:],
+                kind: String = Protocol.kind) {
         self.associatedTypes = associatedTypes
         super.init(
             name: name,
@@ -2916,7 +2965,8 @@ public final class Protocol: Type {
             annotations: annotations,
             documentation: documentation,
             isGeneric: !associatedTypes.isEmpty || !genericRequirements.isEmpty,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 
@@ -2992,8 +3042,11 @@ import Foundation
 #endif
 public final class ProtocolComposition: Type {
 
+    // sourcery: skipJSExport
+    public class var kind: String { return "protocolComposition" }
+
     /// Returns "protocolComposition"
-    public override var kind: String { return "protocolComposition" }
+    public override var kind: String { Self.kind }
 
     /// The names of the types composed to form this composition
     public let composedTypeNames: [TypeName]
@@ -3018,7 +3071,8 @@ public final class ProtocolComposition: Type {
                 isGeneric: Bool = false,
                 composedTypeNames: [TypeName] = [],
                 composedTypes: [Type]? = nil,
-                implements: [String: Type] = [:]) {
+                implements: [String: Type] = [:],
+                kind: String = ProtocolComposition.kind) {
         self.composedTypeNames = composedTypeNames
         self.composedTypes = composedTypes
         super.init(
@@ -3034,7 +3088,8 @@ public final class ProtocolComposition: Type {
             typealiases: typealiases,
             annotations: annotations,
             isGeneric: isGeneric,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 
@@ -3224,8 +3279,11 @@ import Foundation
 #endif
 public final class Struct: Type {
 
+    // sourcery: skipJSExport
+    public class var kind: String { return "struct" }
+
     /// Returns "struct"
-    public override var kind: String { return "struct" }
+    public override var kind: String { Self.kind }
 
     /// :nodoc:
     public override init(name: String = "",
@@ -3244,7 +3302,8 @@ public final class Struct: Type {
                          annotations: [String: NSObject] = [:],
                          documentation: [String] = [],
                          isGeneric: Bool = false,
-                         implements: [String: Type] = [:]) {
+                         implements: [String: Type] = [:],
+                         kind: String = Struct.kind) {
         super.init(
             name: name,
             parent: parent,
@@ -3262,7 +3321,8 @@ public final class Struct: Type {
             annotations: annotations,
             documentation: documentation,
             isGeneric: isGeneric,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 
@@ -4238,9 +4298,13 @@ import Foundation
 /// Defines Swift enum
 @objcMembers
 public final class Enum: Type {
+
+    // sourcery: skipJSExport
+    public class var kind: String { return "enum" }
+
     // sourcery: skipDescription
     /// Returns "enum"
-    public override var kind: String { return "enum" }
+    public override var kind: String { Self.kind }
 
     /// Enum cases
     public var cases: [EnumCase]
@@ -4312,7 +4376,7 @@ public final class Enum: Type {
         self.rawTypeName = rawTypeName
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric, kind: Self.kind)
 
         if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)
@@ -6025,7 +6089,11 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
 
     // sourcery: forceEquality
     /// Kind of type declaration, i.e. `enum`, `struct`, `class`, `protocol` or `extension`
-    public var kind: String { isExtension ? "extension" : "unknown" }
+    public var kind: String { isExtension ? "extension" : _kind }
+
+    // sourcery: skipJSExport
+    /// Kind of a backing store for `self.kind`
+    private var _kind: String
 
     /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
     public let accessLevel: String
@@ -6355,7 +6423,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
                 isGeneric: Bool = false,
-                implements: [String: Type] = [:]) {
+                implements: [String: Type] = [:],
+                kind: String = "unknown") {
         self.localName = name
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
@@ -6374,6 +6443,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         self.isGeneric = isGeneric
         self.genericRequirements = genericRequirements
         self.implements = implements
+        self._kind = kind
         super.init()
         containedTypes.forEach {
             containedType[$0.localName] = $0
@@ -6412,6 +6482,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
         string.append("typealiases = \\(String(describing: self.typealiases)), ")
         string.append("isExtension = \\(String(describing: self.isExtension)), ")
         string.append("kind = \\(String(describing: self.kind)), ")
+        string.append("_kind = \\(String(describing: self._kind)), ")
         string.append("accessLevel = \\(String(describing: self.accessLevel)), ")
         string.append("name = \\(String(describing: self.name)), ")
         string.append("isUnknownExtension = \\(String(describing: self.isUnknownExtension)), ")
@@ -6547,6 +6618,12 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
                 fatalError()
              }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
+            guard let _kind: String = aDecoder.decode(forKey: "_kind") else { 
+                withVaList(["_kind"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self._kind = _kind
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
@@ -6665,6 +6742,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
             aCoder.encode(self.imports, forKey: "imports")
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
+            aCoder.encode(self._kind, forKey: "_kind")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isGeneric, forKey: "isGeneric")
             aCoder.encode(self.localName, forKey: "localName")
