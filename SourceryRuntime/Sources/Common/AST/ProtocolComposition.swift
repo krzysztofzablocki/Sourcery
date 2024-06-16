@@ -9,8 +9,10 @@ import Foundation
 #endif
 public final class ProtocolComposition: Type {
 
-    /// Returns "protocolComposition"
+    // sourcery: skipJSExport
     public class var kind: String { return "protocolComposition" }
+
+    /// Returns "protocolComposition"
     public override var kind: String { Self.kind }
 
     /// The names of the types composed to form this composition

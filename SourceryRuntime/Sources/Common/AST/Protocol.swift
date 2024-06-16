@@ -17,8 +17,10 @@ public typealias SourceryProtocol = Protocol
 #endif
 public final class Protocol: Type {
 
-    /// Returns "protocol"
+    // sourcery: skipJSExport
     public class var kind: String { return "protocol" }
+
+    /// Returns "protocol"
     public override var kind: String { Self.kind }
 
     /// list of all declared associated types with their names as keys

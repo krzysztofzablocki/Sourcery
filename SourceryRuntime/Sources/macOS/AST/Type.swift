@@ -577,13 +577,13 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable {
                 fatalError()
              }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
-            guard let _kind: String = aDecoder.decode(forKey: "_kind") else {
+            guard let _kind: String = aDecoder.decode(forKey: "_kind") else { 
                 withVaList(["_kind"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self._kind = _kind
-            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else {
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

@@ -15,8 +15,10 @@ import Foundation
 #endif
 public final class Struct: Type {
 
-    /// Returns "struct"
+    // sourcery: skipJSExport
     public class var kind: String { return "struct" }
+
+    /// Returns "struct"
     public override var kind: String { Self.kind }
 
     /// :nodoc:

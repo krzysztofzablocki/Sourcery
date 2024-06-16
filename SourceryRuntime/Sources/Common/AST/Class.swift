@@ -5,8 +5,10 @@ import Foundation
 @objc(SwiftClass) @objcMembers
 #endif
 public final class Class: Type {
-    /// Returns "class"
+    // sourcery: skipJSExport
     public class var kind: String { return "class" }
+
+    /// Returns "class"
     public override var kind: String { Self.kind }
 
     /// Whether type is final 

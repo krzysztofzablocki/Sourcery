@@ -6,8 +6,11 @@ import Foundation
 @objc(SwiftActor) @objcMembers
 #endif
 public final class Actor: Type {
-    /// Returns "actor"
+    
+    // sourcery: skipJSExport
     public class var kind: String { return "actor" }
+
+    /// Returns "actor"
     public override var kind: String { Self.kind }
 
     /// Whether type is final

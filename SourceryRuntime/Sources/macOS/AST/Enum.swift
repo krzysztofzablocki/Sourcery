@@ -9,9 +9,12 @@ import Foundation
 /// Defines Swift enum
 @objcMembers
 public final class Enum: Type {
+
+    // sourcery: skipJSExport
+    public class var kind: String { return "enum" }
+
     // sourcery: skipDescription
     /// Returns "enum"
-    public class var kind: String { return "enum" }
     public override var kind: String { Self.kind }
 
     /// Enum cases
