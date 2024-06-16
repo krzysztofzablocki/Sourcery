@@ -1793,7 +1793,7 @@ class ParserComposerSpec: QuickSpec {
                             actualTypeName: givenTypealias.typeName
                           )
                         )
-                        let actualProtocol = parse(code).first
+                        let actualProtocol = parse(code).last
                         expect(actualProtocol).to(equal(expectedProtocol))
                         let actualTypeName = (actualProtocol as? SourceryProtocol)?.associatedTypes.first?.value.typeName?.actualTypeName
                         expect(actualTypeName).to(equal(givenTypealias.actualTypeName))
