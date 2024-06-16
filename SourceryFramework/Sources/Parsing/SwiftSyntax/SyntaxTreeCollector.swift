@@ -3,22 +3,6 @@ import SourceryRuntime
 import SourceryUtils
 import Foundation
 
-//sourcery:AutoMockable
-protocol TestProtocol {
-
-
-    associatedtype Value5: Collection where Value5.Element == Int
-
-    func getValue5() -> Value5
-}
-
-class OhMy: TestProtocol {
-    typealias Value5 = [Int]
-    func getValue5() -> Value5 {
-        return []
-    }
-}
-
 class SyntaxTreeCollector: SyntaxVisitor {
     var types = [Type]()
     var typealiases = [Typealias]()
