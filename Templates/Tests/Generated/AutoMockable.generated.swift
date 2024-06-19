@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.1.7 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -9,6 +9,7 @@ import UIKit
 #elseif os(OSX)
 import AppKit
 #endif
+
 
 
 
@@ -1644,6 +1645,109 @@ class SubscriptProtocolMock: SubscriptProtocol {
     subscript<T>(arg: String) -> T? where T : Cancellable {
         get throws { fatalError("Subscripts are not fully supported yet") }
     }
+}
+class TestProtocolMock<
+    Value: Sequence,
+    Value3: Collection,
+    Value5: Sequence,
+    Value6: Sequence>: TestProtocol
+    where Value.Element : Collection,Value.Element : Hashable,Value.Element : Comparable,Value3.Element == String,Value5.Element == Int,Value6.Element == Int,Value6.Element : Hashable,Value6.Element : Comparable {
+    typealias Value2 = Int
+
+
+
+
+    //MARK: - getValue
+
+    var getValueSequenceCallsCount = 0
+    var getValueSequenceCalled: Bool {
+        return getValueSequenceCallsCount > 0
+    }
+    var getValueSequenceReturnValue: Value!
+    var getValueSequenceClosure: (() -> Value)?
+
+    func getValue() -> Value {
+        getValueSequenceCallsCount += 1
+        if let getValueSequenceClosure = getValueSequenceClosure {
+            return getValueSequenceClosure()
+        } else {
+            return getValueSequenceReturnValue
+        }
+    }
+
+    //MARK: - getValue2
+
+    var getValue2Value2CallsCount = 0
+    var getValue2Value2Called: Bool {
+        return getValue2Value2CallsCount > 0
+    }
+    var getValue2Value2ReturnValue: Value2!
+    var getValue2Value2Closure: (() -> Value2)?
+
+    func getValue2() -> Value2 {
+        getValue2Value2CallsCount += 1
+        if let getValue2Value2Closure = getValue2Value2Closure {
+            return getValue2Value2Closure()
+        } else {
+            return getValue2Value2ReturnValue
+        }
+    }
+
+    //MARK: - getValue3
+
+    var getValue3CollectionCallsCount = 0
+    var getValue3CollectionCalled: Bool {
+        return getValue3CollectionCallsCount > 0
+    }
+    var getValue3CollectionReturnValue: Value3!
+    var getValue3CollectionClosure: (() -> Value3)?
+
+    func getValue3() -> Value3 {
+        getValue3CollectionCallsCount += 1
+        if let getValue3CollectionClosure = getValue3CollectionClosure {
+            return getValue3CollectionClosure()
+        } else {
+            return getValue3CollectionReturnValue
+        }
+    }
+
+    //MARK: - getValue5
+
+    var getValue5SequenceCallsCount = 0
+    var getValue5SequenceCalled: Bool {
+        return getValue5SequenceCallsCount > 0
+    }
+    var getValue5SequenceReturnValue: Value5!
+    var getValue5SequenceClosure: (() -> Value5)?
+
+    func getValue5() -> Value5 {
+        getValue5SequenceCallsCount += 1
+        if let getValue5SequenceClosure = getValue5SequenceClosure {
+            return getValue5SequenceClosure()
+        } else {
+            return getValue5SequenceReturnValue
+        }
+    }
+
+    //MARK: - getValue6
+
+    var getValue6SequenceCallsCount = 0
+    var getValue6SequenceCalled: Bool {
+        return getValue6SequenceCallsCount > 0
+    }
+    var getValue6SequenceReturnValue: Value6!
+    var getValue6SequenceClosure: (() -> Value6)?
+
+    func getValue6() -> Value6 {
+        getValue6SequenceCallsCount += 1
+        if let getValue6SequenceClosure = getValue6SequenceClosure {
+            return getValue6SequenceClosure()
+        } else {
+            return getValue6SequenceReturnValue
+        }
+    }
+
+
 }
 class ThrowableProtocolMock: ThrowableProtocol {
 

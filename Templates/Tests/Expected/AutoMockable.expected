@@ -1649,7 +1649,6 @@ class SubscriptProtocolMock: SubscriptProtocol {
 class TestProtocolMock<
     Value: Sequence,
     Value3: Collection,
-    Value4: Sequence & Hashable,
     Value5: Sequence,
     Value6: Sequence>: TestProtocol
     where Value.Element : Collection,Value.Element : Hashable,Value.Element : Comparable,Value3.Element == String,Value5.Element == Int,Value6.Element == Int,Value6.Element : Hashable,Value6.Element : Comparable {
@@ -1709,24 +1708,6 @@ class TestProtocolMock<
             return getValue3CollectionClosure()
         } else {
             return getValue3CollectionReturnValue
-        }
-    }
-
-    //MARK: - getValue4
-
-    var getValue4TestProtocolCallsCount = 0
-    var getValue4TestProtocolCalled: Bool {
-        return getValue4TestProtocolCallsCount > 0
-    }
-    var getValue4TestProtocolReturnValue: Value4!
-    var getValue4TestProtocolClosure: (() -> Value4)?
-
-    func getValue4() -> Value4 {
-        getValue4TestProtocolCallsCount += 1
-        if let getValue4TestProtocolClosure = getValue4TestProtocolClosure {
-            return getValue4TestProtocolClosure()
-        } else {
-            return getValue4TestProtocolReturnValue
         }
     }
 

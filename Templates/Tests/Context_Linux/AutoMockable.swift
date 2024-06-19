@@ -276,7 +276,6 @@ protocol TestProtocol {
 
     func getValue() -> Value
 
-
     associatedtype Value2 = Int
 
     func getValue2() -> Value2
@@ -284,10 +283,6 @@ protocol TestProtocol {
     associatedtype Value3: Collection where Value3.Element == String
 
     func getValue3() -> Value3
-
-    associatedtype Value4: Sequence & Hashable
-
-    func getValue4() -> Value4
 
     associatedtype Value5: Sequence where Value5.Element == Int
 
