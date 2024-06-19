@@ -13,6 +13,7 @@ internal struct ParserResultsComposed {
     let parsedTypes: [Type]
     let functions: [SourceryMethod]
     let resolvedTypealiases: [String: Typealias]
+    let associatedTypes: [String: AssociatedType]
     let unresolvedTypealiases: [String: Typealias]
 
     init(parserResult: FileParserResult) {
@@ -23,6 +24,7 @@ internal struct ParserResultsComposed {
         let aliases = Self.typealiases(parserResult)
         resolvedTypealiases = aliases.resolved
         unresolvedTypealiases = aliases.unresolved
+        associatedTypes = Self.extractAssociatedTypes(parserResult)
         parsedTypes = parserResult.types
 
         // set definedInType for all methods and variables
@@ -49,6 +51,11 @@ internal struct ParserResultsComposed {
         let typealiases = Array(unresolvedTypealiases.values)
         typealiases.forEach { alias in
             alias.type = resolveType(typeName: alias.typeName, containingType: alias.parent)
+        }
+
+        /// Map associated types
+        associatedTypes.forEach {
+            typeMap[$0.key] = $0.value.type
         }
 
         types = unifyTypes()
@@ -96,7 +103,7 @@ internal struct ParserResultsComposed {
                     resolveExtensionOfNestedType(type)
                 }
 
-                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
                     var moduleName: String = ""
                     if let module = type.module {
                         moduleName = "\(module)."
@@ -116,7 +123,7 @@ internal struct ParserResultsComposed {
         // extend all types with their extensions
         parsedTypes.forEach { type in
             let inheritedTypes: [[String]] = type.inheritedTypes.compactMap { inheritedName in
-                if let resolvedGlobalName = resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases)?.name {
+                if let resolvedGlobalName = resolveGlobalName(for: inheritedName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
                     return [resolvedGlobalName]
                 }
                 if let baseType = Composer.findBaseType(for: type, name: inheritedName, typesByName: typeMap) {
@@ -175,6 +182,14 @@ internal struct ParserResultsComposed {
         })
     }
 
+    // extract associated types from all types and add them to types
+    private static func extractAssociatedTypes(_ parserResult: FileParserResult) -> [String: AssociatedType] {
+        parserResult.types
+            .compactMap { $0 as? SourceryProtocol }
+            .map { $0.associatedTypes }
+            .flatMap { $0 }.reduce(into: [:]) { $0[$1.key] = $1.value }
+    }
+
     /// returns typealiases map to their full names, with `resolved` removing intermediate
     /// typealises and `unresolved` including typealiases that reference other typealiases.
     private static func typealiases(_ parserResult: FileParserResult) -> (resolved: [String: Typealias], unresolved: [String: Typealias]) {
@@ -207,11 +222,14 @@ internal struct ParserResultsComposed {
     }
 
     /// Resolves type identifier for name
-    func resolveGlobalName(for type: String,
-                           containingType: Type? = nil,
-                           unique: [String: Type]? = nil,
-                           modules: [String: [String: Type]],
-                           typealiases: [String: Typealias]) -> (name: String, typealias: Typealias?)? {
+    func resolveGlobalName(
+        for type: String,
+        containingType: Type? = nil,
+        unique: [String: Type]? = nil,
+        modules: [String: [String: Type]],
+        typealiases: [String: Typealias],
+        associatedTypes: [String: AssociatedType]
+    ) -> (name: String, typealias: Typealias?)? {
         // if the type exists for this name and isn't an extension just return it's name
         // if it's extension we need to check if there aren't other options TODO: verify
         if let realType = unique?[type], realType.isExtension == false {
@@ -220,6 +238,13 @@ internal struct ParserResultsComposed {
 
         if let alias = typealiases[type] {
             return (name: alias.type?.globalName ?? alias.typeName.name, typealias: alias)
+        }
+
+        if let associatedType = associatedTypes[type],
+            let actualType = associatedType.type
+        {
+            let typeName = associatedType.typeName ?? TypeName(name: actualType.name)
+            return (name: actualType.globalName, typealias: Typealias(aliasName: type, typeName: typeName))
         }
 
         if let containingType = containingType {
@@ -231,7 +256,7 @@ internal struct ParserResultsComposed {
             while currentContainer != nil, let parentName = currentContainer?.globalName {
                 /// TODO: no parent for sure?
                 /// manually walk the containment tree
-                if let name = resolveGlobalName(for: "\(parentName).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
+                if let name = resolveGlobalName(for: "\(parentName).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases, associatedTypes: associatedTypes) {
                     return name
                 }
 
@@ -565,20 +590,27 @@ internal struct ParserResultsComposed {
             }
         }
 
-        return unique[resolvedIdentifier]
+        if let associatedType = associatedTypes[resolvedIdentifier] {
+            return associatedType.type
+        }
+
+        return unique[resolvedIdentifier] ?? unique[typeName.name]
     }
 
     private func actualTypeName(for typeName: TypeName,
-                                       containingType: Type? = nil) -> TypeName? {
+                                containingType: Type? = nil) -> TypeName? {
         let unique = typeMap
         let typealiases = resolvedTypealiases
+        let associatedTypes = associatedTypes
 
         var unwrapped = typeName.unwrappedTypeName
         if let generic = typeName.generic {
             unwrapped = generic.name
+        } else if let type = associatedTypes[unwrapped] {
+            unwrapped = type.name
         }
 
-        guard let aliased = resolveGlobalName(for: unwrapped, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases) else {
+        guard let aliased = resolveGlobalName(for: unwrapped, containingType: containingType, unique: unique, modules: modules, typealiases: typealiases, associatedTypes: associatedTypes) else {
             return nil
         }
 

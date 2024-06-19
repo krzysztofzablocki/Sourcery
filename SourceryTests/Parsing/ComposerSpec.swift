@@ -1793,7 +1793,7 @@ class ParserComposerSpec: QuickSpec {
                             actualTypeName: givenTypealias.typeName
                           )
                         )
-                        let actualProtocol = parse(code).first
+                        let actualProtocol = parse(code).last
                         expect(actualProtocol).to(equal(expectedProtocol))
                         let actualTypeName = (actualProtocol as? SourceryProtocol)?.associatedTypes.first?.value.typeName?.actualTypeName
                         expect(actualTypeName).to(equal(givenTypealias.actualTypeName))
@@ -1902,7 +1902,7 @@ class ParserComposerSpec: QuickSpec {
 
                     it("resolves protocol generic requirement types and inherits associated types") {
                         let expectedRightType = Struct(name: "RightType")
-                        let genericProtocol = Protocol(name: "GenericProtocol", associatedTypes: ["LeftType": AssociatedType(name: "LeftType")])
+                        let genericProtocol = Protocol(name: "GenericProtocol", associatedTypes: ["LeftType": AssociatedType(name: "LeftType", typeName: TypeName(name: "Any"))])
                         let expectedProtocol = Protocol(name: "SomeGenericProtocol", inheritedTypes: ["GenericProtocol"])
                         expectedProtocol.associatedTypes = genericProtocol.associatedTypes
                         expectedProtocol.genericRequirements = [

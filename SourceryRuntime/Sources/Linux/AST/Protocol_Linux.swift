@@ -8,14 +8,21 @@
 
 import Foundation
 
-#if canImport(ObjectiveC)
+#if !canImport(ObjectiveC)
 
 /// :nodoc:
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-@objcMembers
 public final class Protocol: Type {
+    public override subscript(dynamicMember member: String) -> Any? {
+        switch member {
+            case "associatedTypes":
+                return associatedTypes
+            default:
+                return super[dynamicMember: member]
+        }
+    }
 
     // sourcery: skipJSExport
     public class var kind: String { return "protocol" }

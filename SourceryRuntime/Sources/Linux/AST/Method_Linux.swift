@@ -374,25 +374,25 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else {
+            guard let name: String = aDecoder.decode(forKey: "name") else { 
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.name = name
-            guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else {
+            guard let selectorName: String = aDecoder.decode(forKey: "selectorName") else { 
                 withVaList(["selectorName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.selectorName = selectorName
-            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else {
+            guard let parameters: [MethodParameter] = aDecoder.decode(forKey: "parameters") else { 
                 withVaList(["parameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.parameters = parameters
-            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else {
+            guard let returnTypeName: TypeName = aDecoder.decode(forKey: "returnTypeName") else { 
                 withVaList(["returnTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -402,7 +402,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
-            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else {
+            guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -411,13 +411,13 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             self.isClass = aDecoder.decode(forKey: "isClass")
             self.isFailableInitializer = aDecoder.decode(forKey: "isFailableInitializer")
-            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else {
+            guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.annotations = annotations
-            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else {
+            guard let documentation: Documentation = aDecoder.decode(forKey: "documentation") else { 
                 withVaList(["documentation"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -425,25 +425,25 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
              }; self.documentation = documentation
             self.definedInTypeName = aDecoder.decode(forKey: "definedInTypeName")
             self.definedInType = aDecoder.decode(forKey: "definedInType")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.modifiers = modifiers
-            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else {
+            guard let genericRequirements: [GenericRequirement] = aDecoder.decode(forKey: "genericRequirements") else { 
                 withVaList(["genericRequirements"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.genericRequirements = genericRequirements
-            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else {
+            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else { 
                 withVaList(["genericParameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

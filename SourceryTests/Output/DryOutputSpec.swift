@@ -485,15 +485,6 @@ internal func == (lhs: EqEnum, rhs: EqEnum) -> Bool {
                  let outputInterceptor = OutputInterceptor()
                  sourcery.dryOutput = outputInterceptor.handleOutput(_:)
 
-                 let expectedResults = ["Basic+Other.swift",
-                                        "Basic.swift",
-                                        "Basic+Other.swift",
-                                        "Basic.swift",
-                                        "Basic.swift",
-                                        "Basic.swift",
-                                        "Function.swift"]
-                     .compactMap { try? (Stubs.resultDirectory + Path($0)).read(.utf8) }
-
                  expect {
                      try sourcery.processFiles(.sources(Paths(include: [Stubs.sourceDirectory])),
                                                usingTemplates: Paths(include: templatePaths),

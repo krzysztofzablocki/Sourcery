@@ -25,11 +25,11 @@ public enum Composer {
         let composed = ParserResultsComposed(parserResult: parserResult)
 
         let resolveType = { (typeName: TypeName, containingType: Type?) -> Type? in
-            return composed.resolveType(typeName: typeName, containingType: containingType)
+            composed.resolveType(typeName: typeName, containingType: containingType)
         }
 
         let methodResolveType = { (typeName: TypeName, containingType: Type?, method: Method) -> Type? in
-            return composed.resolveType(typeName: typeName, containingType: containingType, method: method)
+            composed.resolveType(typeName: typeName, containingType: containingType, method: method)
         }
 
         let processType = { (type: Type) in
@@ -52,7 +52,7 @@ public enum Composer {
             }
 
             if let sourceryProtocol = type as? SourceryProtocol {
-                resolveProtocolTypes(sourceryProtocol, resolve: resolveType)
+                resolveAssociatedTypes(sourceryProtocol, resolve: resolveType)
             }
         }
 
@@ -180,11 +180,13 @@ public enum Composer {
         protocolComposition.composedTypes = composedTypes
     }
 
-    private static func resolveProtocolTypes(_ sourceryProtocol: SourceryProtocol, resolve: TypeResolver) {
+    private static func resolveAssociatedTypes(_ sourceryProtocol: SourceryProtocol, resolve: TypeResolver) {
         sourceryProtocol.associatedTypes.forEach { (_, value) in
             guard let typeName = value.typeName,
                   let type = resolve(typeName, sourceryProtocol)
-            else { return }
+            else {
+                return
+            }
             value.type = type
         }
 

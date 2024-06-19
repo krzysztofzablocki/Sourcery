@@ -332,8 +332,50 @@ import {{ import }}
 {%- endmacro %}
 {% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 %}({% endif %}{% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
 
+{% macro extractProtocolCompositionFromAssociatedTypes type -%}
+    {%- if type.associatedTypes|sortedValuesByKeys|count > 0 -%}
+    <
+    {%- for associatedType in type.associatedTypes|sortedValuesByKeys -%}
+    {% if associatedType.type.kind != nil and associatedType.type.kind|contains:"protocol" %}
+    {{ associatedType.name }}: {{ associatedType.typeName }},
+    {%- endif -%}
+    {%- endfor -%}
+    >
+    {%- endif -%}
+{%- endmacro %}
+
+{%- macro extractProtocolRequirementsFromAssociatedTypes associatedTypes -%}
+    {%- for associatedType in associatedTypes -%}
+        {%- if associatedType.type.kind != nil and associatedType.type.kind|contains:"protocol" -%}
+            {%- for requirement in associatedType.type.genericRequirements -%}
+                {%- set requirementString -%}
+                    {{ requirement.leftType.name }} {{ requirement.relationshipSyntax }} {{ requirement.rightType.typeName.name }}
+                {%- endset -%}
+                {{ requirementString }},
+            {%- endfor -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endmacro -%}
+
+
+{% macro extractProtocolRequirementsFromType type -%}
+    {%- set requirements -%}
+    {% call extractProtocolRequirementsFromAssociatedTypes type.associatedTypes|sortedValuesByKeys %}
+    {%- endset -%}
+    {% if requirements|isEmpty == false %}
+    where {{ requirements }}{
+    {%- else -%}
+    {
+    {% endif %}
+{%- endmacro %}
+
 {% for type in types.protocols where type.based.AutoMockable or type|annotated:"AutoMockable" %}{% if type.name != "AutoMockable" %}
-{% call accessLevel type.accessLevel %}class {{ type.name }}Mock: {{ type.name }} {
+{% call accessLevel type.accessLevel %}class {{ type.name }}Mock{% set generics %}{% call extractProtocolCompositionFromAssociatedTypes type %}{% endset %}{{ generics | replace:",>",">"}}: {{ type.name }} {%- set requirements -%}{% call extractProtocolRequirementsFromType type %}{%- endset -%} {{ requirements|replace:",{","{"|replace:"{"," {" }}
+{% for associatedType in type.associatedTypes|sortedValuesByKeys %}
+    {% if associatedType.type.kind == nil or not associatedType.type.kind|contains:"protocol" %}
+    typealias {{ associatedType.name }} = {% if associatedType.type != nil %}{{ associatedType.type.name }}{% elif associatedType.typeName != nil %}{{ associatedType.typeName.name }}{% else %}Any{% endif %}
+    {% endif %}
+{% endfor %}
 
     {% if type.accessLevel == "public" %}public init() {}{% endif %}
 

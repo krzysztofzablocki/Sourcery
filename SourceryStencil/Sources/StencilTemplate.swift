@@ -63,6 +63,7 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerAccessLevelFilters(.private)
         ext.registerAccessLevelFilters(.fileprivate)
         ext.registerAccessLevelFilters(.internal)
+        ext.registerAccessLevelFilters(.package)
 
         ext.registerBoolFilterOrWithArguments("based",
                                               filter: { (t: Type, name: String) in t.based[name] != nil },
@@ -86,6 +87,14 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         ext.registerFilter("isEmpty", filter: isEmpty)
         ext.registerFilter("reversed", filter: reversed)
         ext.registerFilter("toArray", filter: toArray)
+        ext.registerFilter("sortedValuesByKeys", filter: sortedValuesByKeys)
+        ext.registerFilter("last", filter: last)
+
+        ext.registerFilterWithArguments("push") { arg1, arg2 in
+            var array = arg1 as? [Any] ?? []
+            array.append(arg2)
+            return array
+        }
 
         #if canImport(ObjectiveC)
         ext.registerFilterWithArguments("sorted") { (array, propertyName: String) -> Any? in
@@ -172,7 +181,6 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
 public extension Annotated {
 
     func isAnnotated(with annotation: String) -> Bool {
-
         if annotation.contains("=") {
             let components = annotation.components(separatedBy: "=").map({ $0.trimmingCharacters(in: .whitespaces) })
             var keyPath = components[0].components(separatedBy: ".")
@@ -284,6 +292,29 @@ public extension Stencil.Extension {
 
 }
 
+private func last(_ value: Any?) -> Any? {
+    switch value {
+    case let arr as NSArray:
+        return arr.lastObject
+    default:
+        return nil
+    }
+}
+
+private func sortedValuesByKeys(_ value: Any?) -> Any? {
+    switch value {
+    case let dict as NSDictionary:
+        let keys = dict.allKeys.sorted { (($0 as? String) ?? "" < ($1 as? String) ?? "") }
+        var retVal: [Any?] = []
+        for key in keys {
+            retVal.append(dict[key])
+        }
+        return retVal
+    default:
+        return nil
+    }
+}
+
 private func toArray(_ value: Any?) -> Any? {
     switch value {
     case let array as NSArray:
@@ -310,11 +341,15 @@ private func count(_ value: Any?) -> Any? {
 }
 
 private func isEmpty(_ value: Any?) -> Any? {
-    guard let array = value as? NSArray else {
-        return false
+    switch value {
+    case let array as NSArray:
+        // swiftlint:disable:next empty_count
+        array.count == 0
+    case let string as NSString:
+        string.length == 0
+    default:
+        false
     }
-    // swiftlint:disable:next empty_count
-    return array.count == 0
 }
 
 private struct Filter<T> {

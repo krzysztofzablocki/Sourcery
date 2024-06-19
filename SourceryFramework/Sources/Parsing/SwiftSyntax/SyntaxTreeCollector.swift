@@ -246,15 +246,36 @@ class SyntaxTreeCollector: SyntaxVisitor {
         let name = node.name.text.trimmed
         var typeName: TypeName?
         var type: Type?
+
         if let possibleTypeName = node.inheritanceClause?.inheritedTypes.description.trimmed {
+            var genericRequirements: [GenericRequirement] = []
+            if let genericWhereClause = node.genericWhereClause {
+                genericRequirements = genericWhereClause.requirements.compactMap { requirement in
+                    if let sameType = requirement.requirement.as(SameTypeRequirementSyntax.self) {
+                        return GenericRequirement(sameType)
+                    } else if let conformanceType = requirement.requirement.as(ConformanceRequirementSyntax.self) {
+                        return GenericRequirement(conformanceType)
+                    }
+                    return nil
+                }
+            }
+            if let composition = processPossibleProtocolComposition(for: possibleTypeName, localName: "") {
+                type = composition
+            } else {
+                type = Protocol(name: possibleTypeName, genericRequirements: genericRequirements)
+            }
+            typeName = TypeName(possibleTypeName)
+        } else if let possibleTypeName = (node.initializer?.value as? TypeSyntax)?.description.trimmed {
             type = processPossibleProtocolComposition(for: possibleTypeName, localName: "")
             typeName = TypeName(possibleTypeName)
+        } else {
+            type = Type(name: "Any")
+            typeName = TypeName(name: "Any", actualTypeName: TypeName(name: "Any"))
         }
 
         sourceryProtocol.associatedTypes[name] = AssociatedType(name: name, typeName: typeName, type: type)
         return .skipChildren
     }
-
 
     public override func visit(_ node: OperatorDeclSyntax) -> SyntaxVisitorContinueKind {
         return .skipChildren
