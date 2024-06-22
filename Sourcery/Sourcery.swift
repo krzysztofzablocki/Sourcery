@@ -109,7 +109,7 @@ public class Sourcery {
            let trailingTrim = Stencil.TrimBehaviour.Trim(rawValue: trailing) {
             stencilTrimBehaviour = Stencil.TrimBehaviour(leading: leadingTrim, trailing: trailingTrim)
         } else {
-            stencilTrimBehaviour = .all
+            stencilTrimBehaviour = .nothing
         }
     }
 

@@ -4,14 +4,14 @@ import PathKit
 import StencilSwiftKit
 import SourceryRuntime
 
-public final class StencilTemplate: Stencil.Template {
+public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
     private(set) public var sourcePath: Path = ""
     
     /// Trim leading / trailing whitespaces until content or newline tag appears
     public var trimEnabled: Bool = false
 
-    public convenience init(path: Path) throws {
-        try self.init(path: path, templateString: try path.read(), trimBehaviour: .all)
+    public convenience init(path: Path, trimBehaviour: Stencil.TrimBehaviour) throws {
+        try self.init(path: path, templateString: try path.read(), trimBehaviour: trimBehaviour)
     }
     
     public convenience init(path: Path, templateString: String, trimBehaviour: Stencil.TrimBehaviour) throws {
