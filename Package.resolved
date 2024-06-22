@@ -158,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/art-divin/swift-package-manager.git",
       "state" : {
-        "revision" : "e52fe5f37674b0bd648f3a45a34909af40d50cd1",
-        "version" : "1.0.7"
+        "revision" : "7df9321541e544d711dd93f5b97dd4e8bf7e100e",
+        "version" : "1.0.8"
       }
     },
     {

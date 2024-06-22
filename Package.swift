@@ -261,7 +261,7 @@ var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
     .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
-    .package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.7"),
+    .package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.8"),
 ]
 
 #if !canImport(ObjectiveC)
