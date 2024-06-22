@@ -15,7 +15,7 @@ import SourceryUtils
 import SourceryJS
 import SourceryLib
 
-extension Path: ArgumentConvertible {
+extension Path: @retroactive ArgumentConvertible {
     /// :nodoc:
     public init(parser: ArgumentParser) throws {
         if let path = parser.shift() {

@@ -69,6 +69,7 @@ extension SourceryCommandPlugin: XcodeCommandPlugin {
 }
 #endif
 
-extension String: LocalizedError {
+extension String: @retroactive Error {}
+extension String: @retroactive LocalizedError {
     public var errorDescription: String? { return self }
 }

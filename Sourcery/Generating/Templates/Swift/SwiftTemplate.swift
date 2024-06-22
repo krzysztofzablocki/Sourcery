@@ -11,7 +11,7 @@ import SourceryFramework
 import SourceryRuntime
 import SourcerySwift
 
-extension SwiftTemplate: Template {
+extension SwiftTemplate: @retroactive Template {
 
     public func render(_ context: TemplateContext) throws -> String {
         return try self.render(context as Any)
