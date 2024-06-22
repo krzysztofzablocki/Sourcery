@@ -1,4 +1,15 @@
 # Sourcery CHANGELOG
+## 2.2.5
+* chore(deps): bump nokogiri from 1.16.2 to 1.16.5 by @dependabot in https://github.com/krzysztofzablocki/Sourcery/pull/1331
+* Fix typo in Decorator.md by @ahmedk92 in https://github.com/krzysztofzablocki/Sourcery/pull/1339
+* chore(deps): bump rexml from 3.2.5 to 3.2.8 by @dependabot in https://github.com/krzysztofzablocki/Sourcery/pull/1332
+* Fixed incorrect case prefix parsing by @art-divin in https://github.com/krzysztofzablocki/Sourcery/pull/1341
+* Fixed crash when inline function has out of bound indexes by @art-divin in https://github.com/krzysztofzablocki/Sourcery/pull/1342
+* Improved concurrency support in SwiftTemplate caching by @art-divin in https://github.com/krzysztofzablocki/Sourcery/pull/1344
+* Fix associatedtype generics by @art-divin in https://github.com/krzysztofzablocki/Sourcery/pull/1345
+* AutoMockable: fix generating static reset func by @MontakOleg in https://github.com/krzysztofzablocki/Sourcery/pull/1336
+* Enabled lookup for generic type information in arrays by @art-divin in https://github.com/krzysztofzablocki/Sourcery/pull/1346
+
 ## 2.2.4
 - Fixed typealias resolution breaking resolution of real types. by @fabianmuecke ([#1325](https://github.com/krzysztofzablocki/Sourcery/pull/1325))
 - Disabled type resolving for local method generic parameters by @art-divin ([#1327](https://github.com/krzysztofzablocki/Sourcery/pull/1327))
