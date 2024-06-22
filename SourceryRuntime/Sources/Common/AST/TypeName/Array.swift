@@ -25,7 +25,7 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
     /// Returns array as generic type
     public var asGeneric: GenericType {
         GenericType(name: "Array", typeParameters: [
-            .init(typeName: elementTypeName)
+            .init(typeName: elementTypeName, type: elementType)
         ])
     }
 
