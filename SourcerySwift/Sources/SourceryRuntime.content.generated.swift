@@ -235,7 +235,7 @@ public final class ArrayType: NSObject, SourceryModel, Diffable {
     /// Returns array as generic type
     public var asGeneric: GenericType {
         GenericType(name: "Array", typeParameters: [
-            .init(typeName: elementTypeName)
+            .init(typeName: elementTypeName, type: elementType)
         ])
     }
 
@@ -2610,7 +2610,7 @@ internal struct ParserResultsComposed {
         if let array = lookupName.array {
             array.elementType = resolveTypeWithName(array.elementTypeName)
 
-            if array.elementTypeName.actualTypeName != nil || retrievedName != nil {
+            if array.elementTypeName.actualTypeName != nil || retrievedName != nil || array.elementType != nil {
                 let array = ArrayType(name: array.name, elementTypeName: array.elementTypeName, elementType: array.elementType)
                 array.elementTypeName = array.elementTypeName.actualTypeName ?? array.elementTypeName
                 array.elementTypeName.actualTypeName = nil
@@ -2898,13 +2898,13 @@ protocol SourceryModel: SourceryModelWithoutDescription, AutoDescription {}
 
 import Foundation
 
+#if canImport(ObjectiveC)
+
 /// :nodoc:
 public typealias SourceryProtocol = Protocol
 
 /// Describes Swift protocol
-#if canImport(ObjectiveC)
 @objcMembers
-#endif
 public final class Protocol: Type {
 
     // sourcery: skipJSExport
@@ -3027,7 +3027,7 @@ public final class Protocol: Type {
         }
 // sourcery:end
 }
-
+#endif
 """),
     .init(name: "ProtocolComposition.swift", content:
 """
@@ -7714,7 +7714,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -7820,7 +7820,7 @@ extension Variable: NSCoding {}
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8558,7 +8558,7 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
