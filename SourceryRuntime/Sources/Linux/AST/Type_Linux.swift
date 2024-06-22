@@ -92,7 +92,11 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Sou
 
     // sourcery: forceEquality
     /// Kind of type declaration, i.e. `enum`, `struct`, `class`, `protocol` or `extension`
-    public var kind: String { isExtension ? "extension" : "unknown" }
+    public var kind: String { isExtension ? "extension" : _kind }
+
+    // sourcery: skipJSExport
+    /// Kind of a backing store for `self.kind`
+    private var _kind: String
 
     /// Type access level, i.e. `internal`, `private`, `fileprivate`, `public`, `open`
     public let accessLevel: String
@@ -422,7 +426,8 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Sou
                 annotations: [String: NSObject] = [:],
                 documentation: [String] = [],
                 isGeneric: Bool = false,
-                implements: [String: Type] = [:]) {
+                implements: [String: Type] = [:],
+                kind: String = "unknown") {
         self.localName = name
         self.accessLevel = accessLevel.rawValue
         self.isExtension = isExtension
@@ -441,6 +446,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Sou
         self.isGeneric = isGeneric
         self.genericRequirements = genericRequirements
         self.implements = implements
+        self._kind = kind
         super.init()
         containedTypes.forEach {
             containedType[$0.localName] = $0
@@ -471,13 +477,15 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Sou
     /// :nodoc:
     // sourcery: skipJSExport
     override public var description: String {
-        var string = "\(Swift.type(of: self)): "
+        let type: Type.Type = Swift.type(of: self)
+        var string = "\(type): "
         string.append("module = \(String(describing: self.module)), ")
         string.append("imports = \(String(describing: self.imports)), ")
         string.append("allImports = \(String(describing: self.allImports)), ")
         string.append("typealiases = \(String(describing: self.typealiases)), ")
         string.append("isExtension = \(String(describing: self.isExtension)), ")
         string.append("kind = \(String(describing: self.kind)), ")
+        string.append("_kind = \(String(describing: self._kind)), ")
         string.append("accessLevel = \(String(describing: self.accessLevel)), ")
         string.append("name = \(String(describing: self.name)), ")
         string.append("isUnknownExtension = \(String(describing: self.isUnknownExtension)), ")
@@ -613,6 +621,12 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Sou
                 fatalError()
              }; self.typealiases = typealiases
             self.isExtension = aDecoder.decode(forKey: "isExtension")
+            guard let _kind: String = aDecoder.decode(forKey: "_kind") else { 
+                withVaList(["_kind"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self._kind = _kind
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
@@ -731,6 +745,7 @@ public class Type: NSObject, SourceryModel, Annotated, Documented, Diffable, Sou
             aCoder.encode(self.imports, forKey: "imports")
             aCoder.encode(self.typealiases, forKey: "typealiases")
             aCoder.encode(self.isExtension, forKey: "isExtension")
+            aCoder.encode(self._kind, forKey: "_kind")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isGeneric, forKey: "isGeneric")
             aCoder.encode(self.localName, forKey: "localName")

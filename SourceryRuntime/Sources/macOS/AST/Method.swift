@@ -404,7 +404,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 }
                 fatalError()
              }; self.genericRequirements = genericRequirements
-            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else {
+            guard let genericParameters: [GenericParameter] = aDecoder.decode(forKey: "genericParameters") else { 
                 withVaList(["genericParameters"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }

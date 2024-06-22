@@ -9,9 +9,13 @@ import Foundation
 /// Defines Swift enum
 @objcMembers
 public final class Enum: Type {
+
+    // sourcery: skipJSExport
+    public class var kind: String { return "enum" }
+
     // sourcery: skipDescription
     /// Returns "enum"
-    public override var kind: String { return "enum" }
+    public override var kind: String { Self.kind }
 
     /// Enum cases
     public var cases: [EnumCase]
@@ -83,7 +87,7 @@ public final class Enum: Type {
         self.rawTypeName = rawTypeName
         self.hasRawType = rawTypeName != nil || !inheritedTypes.isEmpty
 
-        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric)
+        super.init(name: name, parent: parent, accessLevel: accessLevel, isExtension: isExtension, variables: variables, methods: methods, inheritedTypes: inheritedTypes, containedTypes: containedTypes, typealiases: typealiases, attributes: attributes, modifiers: modifiers, annotations: annotations, documentation: documentation, isGeneric: isGeneric, kind: Self.kind)
 
         if let rawTypeName = rawTypeName?.name, let index = self.inheritedTypes.firstIndex(of: rawTypeName) {
             self.inheritedTypes.remove(at: index)

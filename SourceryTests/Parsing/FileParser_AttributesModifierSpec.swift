@@ -231,7 +231,7 @@ var variable: Bool
                     expect(arguments).toNot(beNil())
                     if let parsedArguments = arguments {
                         for expected in expectedArguments {
-                            expect((parsedArguments[expected.key] as? NSObject)).to(equal(expected.value))
+                            expect(parsedArguments[expected.key]).to(equal(expected.value))
                         }
                     }
                 }

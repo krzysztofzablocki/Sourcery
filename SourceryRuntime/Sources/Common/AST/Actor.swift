@@ -6,8 +6,12 @@ import Foundation
 @objc(SwiftActor) @objcMembers
 #endif
 public final class Actor: Type {
+    
+    // sourcery: skipJSExport
+    public class var kind: String { return "actor" }
+
     /// Returns "actor"
-    public override var kind: String { return "actor" }
+    public override var kind: String { Self.kind }
 
     /// Whether type is final
     public var isFinal: Bool {
@@ -36,7 +40,8 @@ public final class Actor: Type {
                          annotations: [String: NSObject] = [:],
                          documentation: [String] = [],
                          isGeneric: Bool = false,
-                         implements: [String: Type] = [:]) {
+                         implements: [String: Type] = [:],
+                         kind: String = Actor.kind) {
         super.init(
             name: name,
             parent: parent,
@@ -54,7 +59,8 @@ public final class Actor: Type {
             annotations: annotations,
             documentation: documentation,
             isGeneric: isGeneric,
-            implements: implements
+            implements: implements,
+            kind: kind
         )
     }
 
