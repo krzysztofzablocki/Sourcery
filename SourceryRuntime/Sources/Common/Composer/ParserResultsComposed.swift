@@ -392,7 +392,7 @@ internal struct ParserResultsComposed {
         if let array = lookupName.array {
             array.elementType = resolveTypeWithName(array.elementTypeName)
 
-            if array.elementTypeName.actualTypeName != nil || retrievedName != nil {
+            if array.elementTypeName.actualTypeName != nil || retrievedName != nil || array.elementType != nil {
                 let array = ArrayType(name: array.name, elementTypeName: array.elementTypeName, elementType: array.elementType)
                 array.elementTypeName = array.elementTypeName.actualTypeName ?? array.elementTypeName
                 array.elementTypeName.actualTypeName = nil
