@@ -4,23 +4,23 @@ import PathKit
 import StencilSwiftKit
 import SourceryRuntime
 
-public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
+public final class StencilTemplate: Stencil.Template {
     private(set) public var sourcePath: Path = ""
     
     /// Trim leading / trailing whitespaces until content or newline tag appears
     public var trimEnabled: Bool = false
 
     public convenience init(path: Path) throws {
-        try self.init(path: path, templateString: try path.read())
+        try self.init(path: path, templateString: try path.read(), trimBehaviour: .all)
     }
     
-    public convenience init(path: Path, templateString: String) throws {
-        self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment(templatePath: path))
+    public convenience init(path: Path, templateString: String, trimBehaviour: Stencil.TrimBehaviour) throws {
+        self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment(templatePath: path, trimBehaviour: trimBehaviour))
         sourcePath = path
     }
 
-    public convenience init(templateString: String) {
-        self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment())
+    public convenience init(templateString: String, trimBehaviour: Stencil.TrimBehaviour) {
+        self.init(templateString: templateString, environment: StencilTemplate.sourceryEnvironment(trimBehaviour: trimBehaviour))
     }
     
     // swiftlint:disable:next discouraged_optional_collection
@@ -33,7 +33,7 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         return result.replacingOccurrences(of: NewLineNode.marker, with: "\n")
     }
 
-    public static func sourceryEnvironment(templatePath: Path? = nil) -> Stencil.Environment {
+    public static func sourceryEnvironment(templatePath: Path? = nil, trimBehaviour: Stencil.TrimBehaviour) -> Stencil.Environment {
         let ext = Stencil.Extension()
 
         ext.registerFilter("json") { (value, arguments) -> Any? in
@@ -165,7 +165,7 @@ public final class StencilTemplate: StencilSwiftKit.StencilSwiftTemplate {
         var extensions = stencilSwiftEnvironment().extensions
         extensions.append(ext)
         let loader = templatePath.map({ FileSystemLoader(paths: [$0.parent()]) })
-        return Environment(loader: loader, extensions: extensions, templateClass: StencilTemplate.self)
+        return Environment(loader: loader, extensions: extensions, templateClass: StencilTemplate.self, trimBehaviour: trimBehaviour)
     }
 }
 

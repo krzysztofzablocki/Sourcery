@@ -11,10 +11,28 @@ import SourceryRuntime
 import SourceryJS
 import SourcerySwift
 import SourceryStencil
+import Stencil
 #if canImport(ObjectiveC)
 import TryCatch
 #endif
 import XcodeProj
+
+public extension Stencil.TrimBehaviour.Trim {
+    init?(rawValue: String) {
+        switch rawValue {
+        case "nothing":
+            self = .nothing
+        case "whitespace":
+            self = .whitespace
+        case "whitespaceAndOneNewLine":
+            self = .whitespaceAndOneNewLine
+        case "whitespaceAndNewLines":
+            self = .whitespaceAndNewLines
+        default:
+            return nil
+        }
+    }
+}
 
 public class Sourcery {
     public static let version: String = SourceryVersion.current.value
@@ -34,6 +52,7 @@ public class Sourcery {
     fileprivate let prune: Bool
     fileprivate let serialParse: Bool
     fileprivate let hideVersionHeader: Bool
+    fileprivate let stencilTrimBehaviour: Stencil.TrimBehaviour
 
     fileprivate var status = ""
     fileprivate var templatesPaths = Paths(include: [])
@@ -78,10 +97,20 @@ public class Sourcery {
 
         var prefix = Sourcery.generationMarker
         if !self.hideVersionHeader {
-          prefix += " \(Sourcery.version)"
+            prefix += " \(Sourcery.version)"
         }
         self.generationHeader = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
         + "// DO NOT EDIT\n"
+
+        if let stencilTrimmingBehaviour = arguments["stencilTrimBehaviour"] as? [String: NSObject],
+           let leading = stencilTrimmingBehaviour["leading"] as? String,
+           let trailing = stencilTrimmingBehaviour["trailing"] as? String,
+           let leadingTrim = Stencil.TrimBehaviour.Trim(rawValue: leading),
+           let trailingTrim = Stencil.TrimBehaviour.Trim(rawValue: trailing) {
+            stencilTrimBehaviour = Stencil.TrimBehaviour(leading: leadingTrim, trailing: trailingTrim)
+        } else {
+            stencilTrimBehaviour = .all
+        }
     }
 
     /// Processes source files and generates corresponding code.
@@ -274,7 +303,7 @@ public class Sourcery {
 
 #if canImport(ObjectiveC)
 private extension Sourcery {
-    func templates(from: Paths) throws -> [Template] {
+    func templates(from: Paths) throws -> [SourceryFramework.Template] {
         return try templatePaths(from: from).compactMap {
             if $0.extension == "sourcerytemplate" {
                 let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
@@ -286,7 +315,7 @@ private extension Sourcery {
                     }
                     return try JavaScriptTemplate(path: $0, templateString: template.instance.content, ejsPath: ejsPath)
                 case .stencil:
-                    return try StencilTemplate(path: $0, templateString: template.instance.content)
+                    return try StencilTemplate(path: $0, templateString: template.instance.content, trimBehaviour: stencilTrimBehaviour)
                 }
             } else if $0.extension == "swifttemplate" {
                 let cachePath = cachesDir(sourcePath: $0)
@@ -298,7 +327,7 @@ private extension Sourcery {
                 }
                 return try JavaScriptTemplate(path: $0, ejsPath: ejsPath)
             } else {
-                return try StencilTemplate(path: $0)
+                return try StencilTemplate(path: $0, trimBehaviour: stencilTrimBehaviour)
             }
         }
     }
@@ -309,12 +338,12 @@ private extension Sourcery {
         return try templatePaths(from: from).compactMap {
             if $0.extension == "sourcerytemplate" {
                 let template = try JSONDecoder().decode(SourceryTemplate.self, from: $0.read())
-                return try StencilTemplate(path: $0, templateString: template.instance.content)
+                return try StencilTemplate(path: $0, templateString: template.instance.content, trimBehaviour: stencilTrimBehaviour)
             } else if $0.extension == "swifttemplate" {
                 let cachePath = cachesDir(sourcePath: $0)
                 return try SwiftTemplate(path: $0, cachePath: cachePath, version: type(of: self).version, buildPath: buildPath)
             } else {
-                return try StencilTemplate(path: $0)
+                return try StencilTemplate(path: $0, trimBehaviour: stencilTrimBehaviour)
             }
         }
     }
@@ -676,7 +705,7 @@ extension Sourcery {
         try writeIfChanged(updatedContent(), to: path)
     }
 
-    private func generate(_ template: Template, forParsingResult parsingResult: ParsingResult, outputPath: Path, forceParse: [String], baseIndentation: Int) throws -> GenerationResult {
+    private func generate(_ template: SourceryFramework.Template, forParsingResult parsingResult: ParsingResult, outputPath: Path, forceParse: [String], baseIndentation: Int) throws -> GenerationResult {
         guard watcherEnabled else {
             let generationStart = currentTimestamp()
             let result = try Generator.generate(parsingResult.parserResult, types: parsingResult.types, functions: parsingResult.functions, template: template, arguments: self.arguments)
