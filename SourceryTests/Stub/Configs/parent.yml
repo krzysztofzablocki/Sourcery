@@ -1,0 +1,2 @@
+configurations:
+    - child: valid.yml
