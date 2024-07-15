@@ -85,7 +85,7 @@ extension Subscript {
 
         var parameters: [MethodParameter] = []
         for (idx, param) in node.parameterClause.parameters.enumerated() {
-            parameters.append(MethodParameter(param, index: idx, annotationsParser: annotationsParser))
+            parameters.append(MethodParameter(param, index: idx, annotationsParser: annotationsParser, parent: parent))
         }
         self.init(
           parameters: parameters,

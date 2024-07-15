@@ -284,6 +284,38 @@ class FileParserMethodsSpec: QuickSpec {
                             ]))
                     }
 
+                    it("extracts correct typeName when a nested type shadows a global type") {
+                        let code = """
+                        protocol Foo {
+                        }
+
+                        class Bar {
+                            struct Foo {
+                            }
+
+                            func doSomething(with foo: Foo) -> Foo {
+                            }
+                        }
+                        """
+
+                        let fooProtocol = Protocol(name: "Foo")
+                        let fooStruct = Struct(name: "Foo")
+                        let barClass = Class(
+                            name: "Bar",
+                            methods: [
+                                Method(name: "doSomething(with foo: Bar.Foo)", selectorName: "doSomething(with:)", parameters: [
+                                    MethodParameter(argumentLabel: "with", name: "foo", index: 0, typeName: TypeName("Bar.Foo"), type: fooStruct)
+                                ], returnTypeName: TypeName("Bar.Foo"), definedInTypeName: TypeName("Bar"))
+                            ],
+                            containedTypes: [
+                                fooStruct
+                            ]
+                        )
+
+                        let result = parse(code)
+                        expect(result).to(equal([fooProtocol, barClass, fooStruct]))
+                    }
+
                     context("given parameter default value") {
                         it("extracts simple default value") {
                             expect(parse("class Foo { func foo(a: Int? = nil) {} }")).to(equal([

@@ -9,7 +9,7 @@ extension SourceryMethod {
           parent: parent,
           identifier: node.name.text.trimmed,
           typeName: typeName,
-          signature: Signature(node.signature, annotationsParser: annotationsParser),
+          signature: Signature(node.signature, annotationsParser: annotationsParser, parent: parent),
           modifiers: node.modifiers,
           attributes: node.attributes,
           genericParameterClause: node.genericParameterClause,
@@ -30,7 +30,8 @@ extension SourceryMethod {
             output: nil,
             asyncKeyword: nil,
             throwsOrRethrowsKeyword: signature.effectSpecifiers?.throwsSpecifier?.description.trimmed,
-            annotationsParser: annotationsParser
+            annotationsParser: annotationsParser,
+            parent: parent
           ),
           modifiers: node.modifiers,
           attributes: node.attributes,
@@ -46,7 +47,7 @@ extension SourceryMethod {
           parent: parent,
           identifier: "deinit",
           typeName: typeName,
-          signature: Signature(parameters: nil, output: nil, asyncKeyword: nil, throwsOrRethrowsKeyword: nil, annotationsParser: annotationsParser),
+          signature: Signature(parameters: nil, output: nil, asyncKeyword: nil, throwsOrRethrowsKeyword: nil, annotationsParser: annotationsParser, parent: parent),
           modifiers: node.modifiers,
           attributes: node.attributes,
           genericParameterClause: nil,

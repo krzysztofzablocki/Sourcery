@@ -14,20 +14,42 @@ public struct Signature {
     /// The `throws` or `rethrows` keyword, if any.
     public let throwsOrRethrowsKeyword: String?
 
-    public init(_ node: FunctionSignatureSyntax, annotationsParser: AnnotationsParser) {
+    public init(_ node: FunctionSignatureSyntax, annotationsParser: AnnotationsParser, parent: Type?) {
+        let isVisitingTypeSourceryProtocol = parent is SourceryProtocol
+
+        // NOTE: This matches implementation in Variable+SwiftSyntax.swift
+        // TODO: Walk up the `parent` in the event that there are multiple levels of nested types
+        var returnTypeName = node.returnClause.map { TypeName($0.type) }
+        if !isVisitingTypeSourceryProtocol {
+            // we are in a custom type, which may contain other types
+            // in order to assign correct type to the variable, we need to match
+            // all of the contained types against the variable type
+            if let matchingContainedType = parent?.containedTypes.first(where: { $0.localName == returnTypeName?.name }) {
+                returnTypeName = TypeName(matchingContainedType.name)
+            }
+        }
+
         self.init(parameters: node.parameterClause.parameters,
-                  output: node.returnClause.map { TypeName($0.type) },
+                  output: returnTypeName,
                   asyncKeyword: node.effectSpecifiers?.asyncSpecifier?.text,
                   throwsOrRethrowsKeyword: node.effectSpecifiers?.throwsSpecifier?.description.trimmed,
-                  annotationsParser: annotationsParser
+                  annotationsParser: annotationsParser,
+                  parent: parent
         )
     }
 
-    public init(parameters: FunctionParameterListSyntax?, output: TypeName?, asyncKeyword: String?, throwsOrRethrowsKeyword: String?, annotationsParser: AnnotationsParser) {
+    public init(
+        parameters: FunctionParameterListSyntax?,
+        output: TypeName?,
+        asyncKeyword: String?,
+        throwsOrRethrowsKeyword: String?,
+        annotationsParser: AnnotationsParser,
+        parent: Type?
+    ) {
         var methodParameters: [MethodParameter] = []
         if let parameters {
             for (idx, param) in parameters.enumerated() {
-                methodParameters.append(MethodParameter(param, index: idx, annotationsParser: annotationsParser))
+                methodParameters.append(MethodParameter(param, index: idx, annotationsParser: annotationsParser, parent: parent))
             }
         }
         input = methodParameters
