@@ -293,7 +293,7 @@ class FileParserMethodsSpec: QuickSpec {
                             struct Foo {
                             }
 
-                            func doSomething(with foo: Foo) {
+                            func doSomething(with foo: Foo) -> Foo {
                             }
                         }
                         """
@@ -305,7 +305,7 @@ class FileParserMethodsSpec: QuickSpec {
                             methods: [
                                 Method(name: "doSomething(with foo: Bar.Foo)", selectorName: "doSomething(with:)", parameters: [
                                     MethodParameter(argumentLabel: "with", name: "foo", index: 0, typeName: TypeName("Bar.Foo"), type: fooStruct)
-                                ], definedInTypeName: TypeName("Bar"))
+                                ], returnTypeName: TypeName("Bar.Foo"), definedInTypeName: TypeName("Bar"))
                             ],
                             containedTypes: [
                                 fooStruct
