@@ -86,6 +86,33 @@ class ConfigurationSpec: QuickSpec {
                 }
             }
 
+            context("given config file with child configurations") {
+                it("resolves each child configuration") {
+                    do {
+                        let configs = try Configurations.make(
+                            path: Stubs.configs + "parent.yml",
+                            relativePath: Stubs.configs,
+                            env: env
+                        )
+
+                        expect(configs.count).to(equal(1))
+
+                        guard case let Source.sources(paths) = configs[0].source,
+                              let path = paths.include.first else {
+                            fail("Config has no Source Paths")
+                            return
+                        }
+
+                        let configServerUrl = configs[0].args[serverUrlArg] as? String
+
+                        expect(configServerUrl).to(equal(serverUrl))
+                        expect(path).to(equal(Stubs.configs))
+                    } catch {
+                        expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
+                    }
+                }
+            }
+
             context("given invalid config file") {
 
                 func configError(_ config: [String: Any]) -> String {
