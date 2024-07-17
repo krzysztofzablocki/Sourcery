@@ -225,6 +225,7 @@ open class SwiftTemplate {
                 try buildDir.mkpath()
             }
             originalBinaryPath = buildDir + hashPath
+            destinationBinaryPath = destinationBinaryPath.isRelative ? destinationBinaryPath.absolute() : destinationBinaryPath
             try FileManager.default.createSymbolicLink(atPath: originalBinaryPath.string, withDestinationPath: destinationBinaryPath.string)
         } else {
             try build()
