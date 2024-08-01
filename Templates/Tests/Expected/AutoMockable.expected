@@ -1457,6 +1457,30 @@ class SameShortMethodNamesProtocolMock: SameShortMethodNamesProtocol {
 
 
 }
+class SendableProtocolMock: SendableProtocol, @unchecked Sendable {
+
+
+    var value: Any {
+        get { return underlyingValue }
+        set(value) { underlyingValue = value }
+    }
+    var underlyingValue: (Any)!
+
+
+
+}
+class SendableSendableProtocolMock: SendableSendableProtocol, @unchecked Sendable {
+
+
+    var value: Any {
+        get { return underlyingValue }
+        set(value) { underlyingValue = value }
+    }
+    var underlyingValue: (Any)!
+
+
+
+}
 class SingleOptionalParameterFunctionMock: SingleOptionalParameterFunction {
 
 
