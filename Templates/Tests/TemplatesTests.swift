@@ -81,13 +81,40 @@ class TemplatesTests: QuickSpec {
                 fatalError("Template \(name) can not be checked as the expected file can not be read")
             }
 
-            let emptyLinesFilter: (String) -> Bool = { line in return !line.isEmpty }
-            let commentLinesFilter: (String) -> Bool = { line in return !line.hasPrefix("//") }
-            let generatedFileLines = generatedFileString.components(separatedBy: .newlines).filter(emptyLinesFilter)
-            let generatedFileFilteredLines = generatedFileLines.filter(emptyLinesFilter).filter(commentLinesFilter)
+            let generatedFileLines = generatedFileString.components(separatedBy: .newlines)
             let expectedFileLines = expectedFileString.components(separatedBy: .newlines)
-            let expectedFileFilteredLines = expectedFileLines.filter(emptyLinesFilter).filter(commentLinesFilter)
-            expect(generatedFileFilteredLines).to(equal(expectedFileFilteredLines))
+
+            /// String normalization.
+            ///  Transformations:
+            ///  * Trim all whitespaces, tabs and new lines.
+            ///  * If this line is comment (starts with `//`) treat is as an empty line.
+            let normalizeString: (String) -> String = {
+              let string = $0.trimmingCharacters(in: .whitespacesAndNewlines)
+              if string.hasPrefix("//") {
+                return ""
+              }
+              return string
+            }
+
+            // Allow test to produce all failures. So the diff is clearly visible.
+            self.continueAfterFailure = true
+
+            // Get the full diff.
+            let diff: CollectionDifference<String> = generatedFileLines.difference(from: expectedFileLines) {
+                normalizeString($0) == normalizeString($1)
+            }
+
+          let expectedFileName = (expectedFilePath as NSString).lastPathComponent
+            for diffLine in diff {
+                switch diffLine {
+                case let .insert(offset: offset, element: element, associatedWith: _) where !normalizeString(element).isEmpty:
+                    fail("Missing line in \(expectedFileName):\(offset):\n\(element)")
+                case let .remove(offset: offset, element: element, associatedWith: _) where !normalizeString(element).isEmpty:
+                    fail("Unexpected line in \(expectedFileName):\(offset):\n\(element)")
+                default:
+                  continue
+                }
+            }
         }
 
 #if !canImport(ObjectiveC)
