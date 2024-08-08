@@ -292,3 +292,15 @@ protocol TestProtocol {
 
     func getValue6() -> Value6
 }
+
+// sourcery: AutoMockable
+protocol SendableProtocol: Sendable {
+  var value: Any { get }
+}
+
+protocol NotMockedSendableProtocol: Sendable {}
+
+// sourcery: AutoMockable
+protocol SendableSendableProtocol: NotMockedSendableProtocol {
+  var value: Any { get }
+}
