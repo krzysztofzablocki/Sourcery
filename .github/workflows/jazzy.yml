@@ -22,8 +22,8 @@ jobs:
   update_docs:
     runs-on: macos-13
     steps:
-    - name: Set Xcode 15.1.0
-      run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
+    - name: Set Xcode 16.0.0
+      run: sudo xcode-select -s /Applications/Xcode_16.0.0.app/Contents/Developer
     - name: Print Current Xcode
       run: xcode-select -p
     - uses: actions/checkout@v3
