@@ -174,7 +174,8 @@ class SwiftTemplateTests: QuickSpec {
                     }
                     .to(throwError(closure: { (error) in
                         let path = Path.cleanTemporaryDir(name: "build").parent() + "/version/Sources/SwiftTemplate/main.swift"
-                        expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call\nsourceryBuffer.append(\"\\( )\");\n                          ^\n"))
+                        expect("\(error)").to(contain("\(path):11:27: error: missing argument for parameter #1 in call"))
+                        expect("\(error)").to(contain("sourceryBuffer.append(\"\\( )\");"))
                     }))
             }
 

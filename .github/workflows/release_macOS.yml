@@ -17,10 +17,10 @@ jobs:
   build:
     needs: [tests]
     name: Build Sourcery for macOS
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
-      - name: Set Xcode 15.1.0
-        run: sudo xcode-select -s /Applications/Xcode_15.1.0.app/Contents/Developer
+      - name: Set Xcode 15.3.0
+        run: sudo xcode-select -s /Applications/Xcode_15.3.0.app/Contents/Developer
       - name: Print Current Xcode
         run: xcode-select -p
       - uses: actions/checkout@v3

@@ -21,7 +21,7 @@ jobs:
     - name: Setup Swift
       uses: YOCKOW/Action-setup-swift@main
       with:
-        swift-version: "5.9.2"
+        swift-version: "5.10"
     - name: Get swift version
       run: swift --version
     - uses: actions/checkout@v3
