@@ -251,7 +251,7 @@ import {{ import }}
     {%- if typeName|contains:"any " and typeName|contains:"!" -%}
         {{ name | replace:"any","(any" | replace:"!",")?" }}
     {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
-        ({{ typeName.unwrappedTypeName| replace:"inout ","" | replace:"any","(any" | replace:"?",")?" }})?
+        {{ name | replace:"any (\w+)\?","\(any \\$1)?","regex" | replace:"\","" }}
     {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" and typeName.closure.parameters.count > 1 -%}
         {{ name | replace:"any","(any" | replace:"?",")?" | replace:") ->",")) ->" }}
     {%- elif typeName|contains:"any " and typeName.isClosure and typeName|contains:"?" and typeName.closure.parameters.count > 1 -%}
@@ -307,7 +307,7 @@ import {{ import }}
     {%- elif typeName|contains:"any " and typeName|contains:"!" -%}
         {{ typeName | replace:"any","(any" | replace:"!",")!" }}
     {%- elif typeName|contains:"any " and typeName.isOptional and typeName.isClosure -%}
-        ({{ typeName.unwrappedTypeName | replace:"any","(any" | replace:"?",")?" }})?
+        {{ typeName | replace:"any (\w+)\?","\(any \\$1)?","regex" | replace:"\","" }}
     {%- elif typeName|contains:"any " and typeName.isClosure and typeName.closure.parameters.count > 1 and typeName.closure.returnTypeName.name|contains:"any " and typeName|contains:"?" -%}
         {{ typeName | replace:"any","(any" | replace:"?",")?" | replace:") ->",")) ->" }})
     {%- elif typeName|contains:"any " and typeName.isClosure and typeName.closure.returnTypeName.name|contains:"any " and typeName|contains:"?" -%}
@@ -330,7 +330,7 @@ import {{ import }}
         {{ typeName }}
     {%- endif -%}
 {%- endmacro %}
-{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 %}({% endif %}{% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
+{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 %}{% endif %}{% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
 
 {% macro extractProtocolCompositionFromAssociatedTypes type -%}
     {%- if type.associatedTypes|sortedValuesByKeys|count > 0 -%}
