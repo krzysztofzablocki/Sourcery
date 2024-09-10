@@ -39,7 +39,7 @@ import {{ import }}
 
 {% macro methodReceivedParameters method %}
     {% set hasNonEscapingClosures %}
-        {%- for param in method.parameters where param.isClosure and not param.typeAttributes.escaping %}
+        {%- for param in method.parameters where param.isClosure and not param.typeAttributes.escaping and not param.isOptional %}
             {{ true }}
         {% endfor -%}
     {% endset %}
@@ -77,7 +77,7 @@ import {{ import }}
     }
     {% endif %}
     {% set hasNonEscapingClosures %}
-        {%- for param in method.parameters where param.isClosure and not param.typeAttributes.escaping %}
+        {%- for param in method.parameters where param.isClosure and not param.typeAttributes.escaping and not param.isOptional %}
             {{ true }}
         {% endfor -%}
     {% endset %}

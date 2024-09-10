@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -9,6 +9,7 @@ import UIKit
 #elseif os(OSX)
 import AppKit
 #endif
+
 
 
 
@@ -964,10 +965,14 @@ class FunctionWithNullableCompletionThatHasNullableAnyParameterProtocolMock: Fun
     var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCalled: Bool {
         return addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount > 0
     }
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedArguments: (request: Int, completionHandler: ((((any Error)?) -> Void))?)?
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedInvocations: [(request: Int, completionHandler: ((((any Error)?) -> Void))?)] = []
     var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure: ((Int, ((((any Error)?) -> Void))?) -> Void)?
 
     func add(_ request: Int, withCompletionHandler completionHandler: ((((any Error)?) -> Void))?) {
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount += 1
+        addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedArguments = (request: request, completionHandler: completionHandler)
+        addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedInvocations.append((request: request, completionHandler: completionHandler))
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure?(request, completionHandler)
     }
 
@@ -1125,6 +1130,30 @@ class MultiNonEscapingClosureProtocolMock: MultiNonEscapingClosureProtocol {
 
 
 }
+class MultiNullableClosureProtocolMock: MultiNullableClosureProtocol {
+
+
+
+
+    //MARK: - setClosure
+
+    var setClosureNameStringClosureVoidVoidCallsCount = 0
+    var setClosureNameStringClosureVoidVoidCalled: Bool {
+        return setClosureNameStringClosureVoidVoidCallsCount > 0
+    }
+    var setClosureNameStringClosureVoidVoidReceivedArguments: (name: String, closure: (() -> Void)?)?
+    var setClosureNameStringClosureVoidVoidReceivedInvocations: [(name: String, closure: (() -> Void)?)] = []
+    var setClosureNameStringClosureVoidVoidClosure: ((String, (() -> Void)?) -> Void)?
+
+    func setClosure(name: String, _ closure: (() -> Void)?) {
+        setClosureNameStringClosureVoidVoidCallsCount += 1
+        setClosureNameStringClosureVoidVoidReceivedArguments = (name: name, closure: closure)
+        setClosureNameStringClosureVoidVoidReceivedInvocations.append((name: name, closure: closure))
+        setClosureNameStringClosureVoidVoidClosure?(name, closure)
+    }
+
+
+}
 class NonEscapingClosureProtocolMock: NonEscapingClosureProtocol {
 
 
@@ -1141,6 +1170,30 @@ class NonEscapingClosureProtocolMock: NonEscapingClosureProtocol {
     func executeClosure(_ closure: () -> Void) {
         executeClosureClosureVoidVoidCallsCount += 1
         executeClosureClosureVoidVoidClosure?(closure)
+    }
+
+
+}
+class NullableClosureProtocolMock: NullableClosureProtocol {
+
+
+
+
+    //MARK: - setClosure
+
+    var setClosureClosureVoidVoidCallsCount = 0
+    var setClosureClosureVoidVoidCalled: Bool {
+        return setClosureClosureVoidVoidCallsCount > 0
+    }
+    var setClosureClosureVoidVoidReceivedClosure: (((() -> Void)))?
+    var setClosureClosureVoidVoidReceivedInvocations: [(((() -> Void)))?] = []
+    var setClosureClosureVoidVoidClosure: (((() -> Void)?) -> Void)?
+
+    func setClosure(_ closure: (() -> Void)?) {
+        setClosureClosureVoidVoidCallsCount += 1
+        setClosureClosureVoidVoidReceivedClosure = closure
+        setClosureClosureVoidVoidReceivedInvocations.append(closure)
+        setClosureClosureVoidVoidClosure?(closure)
     }
 
 
