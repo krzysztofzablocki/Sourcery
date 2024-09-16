@@ -58,7 +58,7 @@ internal func == (lhs: AutoEquatableNSObject, rhs: AutoEquatableNSObject) -> Boo
     return true
 }
 // MARK: - AutoEquatableProtocol AutoEquatable
-internal func == (lhs: AutoEquatableProtocol, rhs: AutoEquatableProtocol) -> Bool {
+internal func == (lhs: any AutoEquatableProtocol, rhs: any AutoEquatableProtocol) -> Bool {
     guard lhs.width == rhs.width else { return false }
     guard lhs.height == rhs.height else { return false }
     guard lhs.name == rhs.name else { return false }

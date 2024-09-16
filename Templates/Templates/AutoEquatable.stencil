@@ -29,7 +29,7 @@ fileprivate func compareArrays<T>(lhs: [T], rhs: [T], compare: (_ lhs: T, _ rhs:
 // MARK: - {{ type.name }} AutoEquatable
 {% if not type.kind == "protocol" and not type.based.NSObject %}extension {{ type.name }}: Equatable {}{% endif %}
 {% if type.supertype.based.Equatable or type.supertype.implements.AutoEquatable or type.supertype|annotated:"AutoEquatable" %}THIS WONT COMPILE, WE DONT SUPPORT INHERITANCE for AutoEquatable{% endif %}
-{{ type.accessLevel }} func == (lhs: {{ type.name }}, rhs: {{ type.name }}) -> Bool {
+{{ type.accessLevel }} func == (lhs:{% if type.kind == "protocol" %} any{% endif %} {{ type.name }}, rhs:{% if type.kind == "protocol" %} any{% endif %} {{ type.name }}) -> Bool {
     {% if not type.kind == "protocol" %}
     {% call compareVariables type.storedVariables %}
     {% else %}
