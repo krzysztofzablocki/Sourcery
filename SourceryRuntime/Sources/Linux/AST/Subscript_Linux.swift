@@ -30,6 +30,8 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
                 return isAsync
             case "throws":
                 return `throws`
+            case "throwsTypeName":
+                return throwsTypeName
             case "isMutable":
                 return isMutable
             case "annotations":
@@ -106,6 +108,9 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     /// Whether subscript throws
     public let `throws`: Bool
 
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
+
     /// Whether variable is mutable or not
     public var isMutable: Bool {
         return writeAccess != AccessLevel.none.rawValue
@@ -158,6 +163,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
                 isAsync: Bool = false,
                 `throws`: Bool = false,
+                throwsTypeName: TypeName? = nil,
                 genericParameters: [GenericParameter] = [],
                 genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
@@ -172,6 +178,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         self.writeAccess = accessLevel.write.rawValue
         self.isAsync = isAsync
         self.throws = `throws`
+        self.throwsTypeName = throwsTypeName
         self.genericParameters = genericParameters
         self.genericRequirements = genericRequirements
         self.attributes = attributes
@@ -193,6 +200,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         string.append("writeAccess = \(String(describing: self.writeAccess)), ")
         string.append("isAsync = \(String(describing: self.isAsync)), ")
         string.append("`throws` = \(String(describing: self.throws)), ")
+        string.append("throwsTypeName = \(String(describing: self.throwsTypeName)), ")
         string.append("isMutable = \(String(describing: self.isMutable)), ")
         string.append("annotations = \(String(describing: self.annotations)), ")
         string.append("documentation = \(String(describing: self.documentation)), ")
@@ -218,6 +226,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
         results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.throws, expected: castObject.throws))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
@@ -238,6 +247,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         hasher.combine(self.writeAccess)
         hasher.combine(self.isAsync)
         hasher.combine(self.throws)
+        hasher.combine(self.throwsTypeName)
         hasher.combine(self.annotations)
         hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
@@ -257,6 +267,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         if self.writeAccess != rhs.writeAccess { return false }
         if self.isAsync != rhs.isAsync { return false }
         if self.throws != rhs.throws { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         if self.annotations != rhs.annotations { return false }
         if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
@@ -298,6 +309,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
              }; self.writeAccess = writeAccess
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
@@ -347,6 +359,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")

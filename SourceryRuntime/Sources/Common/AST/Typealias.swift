@@ -16,6 +16,9 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
 
     /// module in which this typealias was declared
     public var module: String?
+    
+    /// Imports that existed in the file that contained this typealias declaration
+    public var imports: [Import] = []
 
     /// typealias annotations
     public var annotations: Annotations = [:]
@@ -130,6 +133,12 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
              }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.module = aDecoder.decode(forKey: "module")
+            guard let imports: [Import] = aDecoder.decode(forKey: "imports") else { 
+                withVaList(["imports"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.imports = imports
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
@@ -158,6 +167,7 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.module, forKey: "module")
+            aCoder.encode(self.imports, forKey: "imports")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.parent, forKey: "parent")

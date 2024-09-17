@@ -32,6 +32,8 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             return isAsync
         case "throws":
             return `throws`
+        case "throwsTypeName":
+            return throwsTypeName
         case "isArray":
             return isArray
         case "isDictionary":
@@ -62,6 +64,9 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
     
     /// Whether variable throws
     public let `throws`: Bool
+
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
 
     /// Whether variable is static
     public let isStatic: Bool
@@ -135,6 +140,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
                 isComputed: Bool = false,
                 isAsync: Bool = false,
                 `throws`: Bool = false,
+                throwsTypeName: TypeName? = nil,
                 isStatic: Bool = false,
                 defaultValue: String? = nil,
                 attributes: AttributeList = [:],
@@ -149,6 +155,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         self.isComputed = isComputed
         self.isAsync = isAsync
         self.`throws` = `throws`
+        self.throwsTypeName = throwsTypeName
         self.isStatic = isStatic
         self.defaultValue = defaultValue
         self.readAccess = accessLevel.read.rawValue
@@ -169,6 +176,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         string.append("isComputed = \(String(describing: self.isComputed)), ")
         string.append("isAsync = \(String(describing: self.isAsync)), ")
         string.append("`throws` = \(String(describing: self.`throws`)), ")
+        string.append("throwsTypeName = \(String(describing: self.throwsTypeName)), ")
         string.append("isStatic = \(String(describing: self.isStatic)), ")
         string.append("readAccess = \(String(describing: self.readAccess)), ")
         string.append("writeAccess = \(String(describing: self.writeAccess)), ")
@@ -198,6 +206,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
         results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
@@ -219,6 +228,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         hasher.combine(self.isComputed)
         hasher.combine(self.isAsync)
         hasher.combine(self.`throws`)
+        hasher.combine(self.throwsTypeName)
         hasher.combine(self.isStatic)
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)
@@ -239,6 +249,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         if self.isComputed != rhs.isComputed { return false }
         if self.isAsync != rhs.isAsync { return false }
         if self.`throws` != rhs.`throws` { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         if self.isStatic != rhs.isStatic { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
@@ -271,6 +282,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             self.isComputed = aDecoder.decode(forKey: "isComputed")
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { 
                 withVaList(["readAccess"]) { arguments in
@@ -321,6 +333,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             aCoder.encode(self.isComputed, forKey: "isComputed")
             aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")

@@ -257,12 +257,17 @@ var dependencies: [Package.Dependency] = [
     // PathKit needs to be exact to avoid a SwiftPM bug where dependency resolution takes a very long time.
     .package(url: "https://github.com/kylef/PathKit.git", exact: "1.0.1"),
     .package(url: "https://github.com/art-divin/StencilSwiftKit.git", exact: "2.10.4"),
-    .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.16.0"),
-    .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "510.0.0"),
+    .package(url: "https://github.com/tuist/XcodeProj.git", exact: "8.24.6"),
+    .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
     .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
-    .package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.8"),
 ]
+
+#if compiler(>=6.2)
+dependencies.append(.package(url: "https://github.com/swiftlang/swift-package-manager.git", revision: "3c17da7")) // release/6.2
+#else
+dependencies.append(.package(url: "https://github.com/art-divin/swift-package-manager.git", exact: "1.0.8"))
+#endif
 
 #if !canImport(ObjectiveC)
 dependencies.append(.package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"))

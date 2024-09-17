@@ -9,10 +9,22 @@ import Foundation
 public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
+            case "array":
+                return array
+            case "closure":
+                return closure
+            case "dictionary":
+                return dictionary
+            case "generic":
+                return generic
+            case "set":
+                return set
             case "tuple":
                 return tuple
             case "name":
                 return name
+            case "actualTypeName":
+                return actualTypeName
             case "isOptional":
                 return isOptional
             case "unwrappedTypeName":
@@ -21,12 +33,14 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return isProtocolComposition
             case "isVoid":
                 return isVoid
+            case "isArray":
+                return isArray
             case "isClosure":
                 return isClosure
-            case "closure":
-                return closure
-            case "set":
-                return set
+            case "isDictionary":
+                return isDictionary
+            case "isGeneric":
+                return isGeneric
             case "isSet":
                 return isSet
             default:
@@ -161,6 +175,11 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
 
     /// Set type data
     public var set: SetType?
+
+    /// Whether type is `Never`
+    public var isNever: Bool {
+        return name == "Never"
+    }
 
     /// Prints typename as it would appear on definition
     public var asSource: String {

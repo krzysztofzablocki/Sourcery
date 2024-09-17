@@ -167,6 +167,26 @@ class SourcerySpecTests: QuickSpec {
                         }
                     }
 
+                    context("with custom header prefix") {
+                        beforeEach {
+                            expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, hideVersionHeader: true, headerPrefix: "// swiftlint:disable all").processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        }
+                        it("removes version information from within generated template") {
+                        let expectedResult = """
+                            // swiftlint:disable all
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            // Line One
+                            """
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                        }
+                    }
+
                     it("does not remove code from within generated template when missing origin") {
                         update(code: """
                             class Foo {
@@ -1366,6 +1386,7 @@ class SourcerySpecTests: QuickSpec {
 
             }
 
+#if canImport(ObjectiveC)
             context("given project") {
                 var originalProject: XcodeProj?
 
@@ -1409,7 +1430,6 @@ class SourcerySpecTests: QuickSpec {
                         }.toNot(throwError())
                 }
 
-#if canImport(ObjectiveC)
                 it("links generated files") {
                     expect {
                         try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output, baseIndentation: 0)
@@ -1417,7 +1437,7 @@ class SourcerySpecTests: QuickSpec {
 
                     expect(sourceFilesPaths.contains(outputDir + "Other.generated.swift")).to(beTrue())
                 }
-#endif
+
                 it("links generated files when using per file generation") {
                     templatePath = outputDir + "PerFileGeneration.stencil"
                     update(code: """
@@ -1443,6 +1463,7 @@ class SourcerySpecTests: QuickSpec {
                     }.toNot(throwError())
                 }
             }
+#endif
         }
     }
 }

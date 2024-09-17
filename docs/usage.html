@@ -16,7 +16,7 @@
     <a title="Usage  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Sourcery 2.2.5 Docs</a> (100% documented)</p>
+        <p><a href="index.html">Sourcery 2.2.7 Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/krzysztofzablocki/Sourcery"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right">
           <form role="search" action="search.json">
@@ -305,7 +305,7 @@ a path to config file itself. By default Sourcery will search for <code>.sourcer
 <span class="na">output</span><span class="pi">:</span>
   <span class="s">&lt;output path&gt;</span> <span class="c1"># note that there is no `-` here as only single output path is supported</span>
 <span class="na">args</span><span class="pi">:</span>
-  <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
+  <span class="na">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
 <h4 id='multiple-configurations' class='heading'>Multiple configurations</h4>
 
@@ -319,8 +319,8 @@ Single configuration file can contain multiple configurations under root <code>c
         <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
       <span class="na">output</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
       <span class="na">args</span><span class="pi">:</span>
-        <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
-        <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
+        <span class="na">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
+        <span class="na">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
     <span class="pi">-</span> <span class="na">sources</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
         <span class="pi">-</span> <span class="s">&lt;sources path&gt;</span>
@@ -328,11 +328,20 @@ Single configuration file can contain multiple configurations under root <code>c
         <span class="pi">-</span> <span class="s">&lt;templates path&gt;</span>
       <span class="na">output</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
       <span class="na">args</span><span class="pi">:</span>
-        <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
-        <span class="s">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
+        <span class="na">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
+        <span class="na">&lt;name&gt;</span><span class="pi">:</span> <span class="s">&lt;value&gt;</span>
 </code></pre>
 
 <p>This will be equivalent to running Sourcery separately for each of the configurations. In watch mode Sourcery will observe changes in the paths from all the configurations.</p>
+<h4 id='child-configurations' class='heading'>Child configurations</h4>
+
+<p>You can specify a child configurations by using the <code>child</code> key:</p>
+<pre class="highlight yaml"><code><span class="na">configurations</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">child</span><span class="pi">:</span> <span class="s">./.child_config.yml</span>
+    <span class="pi">-</span> <span class="na">child</span><span class="pi">:</span> <span class="s">Subdirectory/.another_child_config.yml</span>
+</code></pre>
+
+<p>Sources will be resolved relative to the child config paths.</p>
 <h4 id='sources' class='heading'>Sources</h4>
 
 <p>You can provide sources using paths to directories or specific files.</p>
@@ -403,7 +412,7 @@ When source is a project you can use <code>exclude</code> key to exclude some of
   <span class="na">path</span><span class="pi">:</span> <span class="s">&lt;output path&gt;</span>
   <span class="na">link</span><span class="pi">:</span>
     <span class="na">project</span><span class="pi">:</span> <span class="s">&lt;path to the xcodeproj to link to&gt;</span>
-    <span class="na">target</span><span class="pi">:</span> <span class="s">&lt;name of the target to link to&gt; // or targets</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">target1</span><span class="pi">,</span> <span class="nv">target2</span><span class="pi">,</span> <span class="nv">...</span><span class="pi">]</span>
+    <span class="na">target</span><span class="pi">:</span> <span class="na">&lt;name of the target to link to&gt; // or targets</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">target1</span><span class="pi">,</span> <span class="nv">target2</span><span class="pi">,</span> <span class="nv">...</span><span class="pi">]</span>
     <span class="na">group</span><span class="pi">:</span> <span class="s">&lt;group in the project to add files to&gt; // by default files are added to project's root group</span>
 </code></pre>
 <div class="aside aside-note">

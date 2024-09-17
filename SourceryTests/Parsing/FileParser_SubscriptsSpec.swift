@@ -123,17 +123,29 @@ class FileParserSubscriptsSpec: QuickSpec {
                                            protocol Subscript: AnyObject {
                                              subscript(arg1: Int) -> Int? { get async }
                                              subscript(arg2: Int) -> Int? { get throws }
-                                             subscript(arg3: Int) -> Int? { get async throws }
+                                             subscript(arg3: Int) -> Int? { get throws(CustomError) }
+                                             subscript(arg4: Int) -> Int? { get async throws }
+                                             subscript(arg5: Int) -> Int? { get async throws(CustomError) }
                                            }
                                            """).first?.subscripts
 
                     expect(subscripts?[0].isAsync).to(beTrue())
                     expect(subscripts?[1].isAsync).to(beFalse())
-                    expect(subscripts?[2].isAsync).to(beTrue())
+                    expect(subscripts?[2].isAsync).to(beFalse())
+                    expect(subscripts?[3].isAsync).to(beTrue())
+                    expect(subscripts?[4].isAsync).to(beTrue())
 
                     expect(subscripts?[0].throws).to(beFalse())
                     expect(subscripts?[1].throws).to(beTrue())
                     expect(subscripts?[2].throws).to(beTrue())
+                    expect(subscripts?[3].throws).to(beTrue())
+                    expect(subscripts?[4].throws).to(beTrue())
+
+                    expect(subscripts?[0].throwsTypeName).to(beNil())
+                    expect(subscripts?[1].throwsTypeName).to(beNil())
+                    expect(subscripts?[2].throwsTypeName).to(equal(TypeName("CustomError")))
+                    expect(subscripts?[3].throwsTypeName).to(beNil())
+                    expect(subscripts?[4].throwsTypeName).to(equal(TypeName("CustomError")))
                 }
                 
                 it("extracts optional return type") {

@@ -1005,7 +1005,7 @@ public enum Composer {
         if baseType is Class {
             type.inherits[baseType.name] = baseType
         } else if let `protocol` = baseType as? SourceryProtocol {
-            type.implements[baseType.name] = baseType
+            type.implements[baseType.globalName] = baseType
             if let extendingProtocol = type as? SourceryProtocol {
                 `protocol`.associatedTypes.forEach {
                     if extendingProtocol.associatedTypes[$0.key] == nil {
@@ -2246,6 +2246,14 @@ internal struct ParserResultsComposed {
         associatedTypes = Self.extractAssociatedTypes(parserResult)
         parsedTypes = parserResult.types
 
+        var moduleAndTypeNameCollisions: Set<String> = []
+
+        for type in parsedTypes where !type.isExtension && type.parent == nil {
+            if let module = type.module, type.localName == module {
+                moduleAndTypeNameCollisions.insert(module)
+            }
+        }
+
         // set definedInType for all methods and variables
         parsedTypes
             .forEach { type in
@@ -2255,16 +2263,23 @@ internal struct ParserResultsComposed {
             }
 
         // map all known types to their names
-        parsedTypes
-            .filter { !$0.isExtension }
-            .forEach {
-                typeMap[$0.globalName] = $0
-                if let module = $0.module {
-                    var typesByModules = modules[module, default: [:]]
-                    typesByModules[$0.name] = $0
-                    modules[module] = typesByModules
-                }
+
+        for type in parsedTypes where !type.isExtension && type.parent == nil {
+            let name = type.name
+            // If a type name has the `<module>.` prefix, and the type `<module>.<module>` is undefined, we can safely remove the `<module>.` prefix
+            if let module = type.module, name.hasPrefix(module), name.dropFirst(module.count).hasPrefix("."), !moduleAndTypeNameCollisions.contains(module) {
+                type.localName.removeFirst(module.count + 1)
             }
+        }
+
+        for type in parsedTypes where !type.isExtension {
+            typeMap[type.globalName] = type
+            if let module = type.module {
+                var typesByModules = modules[module, default: [:]]
+                typesByModules[type.name] = type
+                modules[module] = typesByModules
+            }
+        }
 
         /// Resolve typealiases
         let typealiases = Array(unresolvedTypealiases.values)
@@ -2274,15 +2289,25 @@ internal struct ParserResultsComposed {
 
         /// Map associated types
         associatedTypes.forEach {
-            typeMap[$0.key] = $0.value.type
+            if let globalName = $0.value.type?.globalName,
+               let type = typeMap[globalName] {
+                typeMap[$0.key] = type
+            } else {
+                typeMap[$0.key] = $0.value.type
+            }
         }
 
         types = unifyTypes()
     }
 
-    private func resolveExtensionOfNestedType(_ type: Type) {
+    mutating private func resolveExtensionOfNestedType(_ type: Type) {
         var components = type.localName.components(separatedBy: ".")
-        let rootName = type.module ?? components.removeFirst() // Module/parent name
+        let rootName: String
+        if type.parent != nil, let module = type.module {
+            rootName = module
+        } else {
+            rootName = components.removeFirst()
+        }
         if let moduleTypes = modules[rootName], let baseType = moduleTypes[components.joined(separator: ".")] ?? moduleTypes[type.localName] {
             type.localName = baseType.localName
             type.module = baseType.module
@@ -2297,6 +2322,14 @@ internal struct ParserResultsComposed {
                     type.parent = baseType.parent
                     return
                 }
+            }
+        }
+        // Parent extensions should always be processed before `type`, as this affects the globalName of `type`.
+        for parent in type.parentTypes where parent.isExtension && parent.localName.contains(".") {
+            let oldName = parent.globalName
+            resolveExtensionOfNestedType(parent)
+            if oldName != parent.globalName {
+                rewriteChildren(of: parent)
             }
         }
     }
@@ -2317,19 +2350,14 @@ internal struct ParserResultsComposed {
             .forEach { (type: Type) in
                 let oldName = type.globalName
 
-                let hasDotInLocalName = type.localName.contains(".") as Bool
-                if let _ = type.parent, hasDotInLocalName {
+                if type.localName.contains(".") {
                     resolveExtensionOfNestedType(type)
-                }
-
-                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
+                } else if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
                     var moduleName: String = ""
                     if let module = type.module {
                         moduleName = "\\(module)."
                     }
                     type.localName = resolved.replacingOccurrences(of: moduleName, with: "")
-                } else {
-                    return
                 }
 
                 // nothing left to do
@@ -3509,7 +3537,8 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
                 "based": types.based,
                 "inheriting": types.inheriting,
                 "implementing": types.implementing,
-                "protocolCompositions": types.protocolCompositions
+                "protocolCompositions": types.protocolCompositions,
+                "typealiases": types.typealiases
             ] as [String : Any],
             "functions": functions,
             "type": types.typesByName,
@@ -3547,6 +3576,9 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
 
     /// module in which this typealias was declared
     public var module: String?
+    
+    /// Imports that existed in the file that contained this typealias declaration
+    public var imports: [Import] = []
 
     /// typealias annotations
     public var annotations: Annotations = [:]
@@ -3661,6 +3693,12 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
              }; self.typeName = typeName
             self.type = aDecoder.decode(forKey: "type")
             self.module = aDecoder.decode(forKey: "module")
+            guard let imports: [Import] = aDecoder.decode(forKey: "imports") else { 
+                withVaList(["imports"]) { arguments in
+                    NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
+                }
+                fatalError()
+             }; self.imports = imports
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
@@ -3689,6 +3727,7 @@ public final class Typealias: NSObject, Typed, SourceryModel, Diffable {
             aCoder.encode(self.typeName, forKey: "typeName")
             aCoder.encode(self.type, forKey: "type")
             aCoder.encode(self.module, forKey: "module")
+            aCoder.encode(self.imports, forKey: "imports")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.parent, forKey: "parent")
@@ -4006,8 +4045,11 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
     /// throws or rethrows keyword
     public let throwsOrRethrowsKeyword: String?
 
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
+
     /// :nodoc:
-    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil) {
+    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil, throwsTypeName: TypeName? = nil) {
         self.name = name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
@@ -4015,7 +4057,8 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         self.asyncKeyword = asyncKeyword
         self.isAsync = asyncKeyword != nil
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
-        self.`throws` = throwsOrRethrowsKeyword != nil
+        self.`throws` = throwsOrRethrowsKeyword != nil && !(throwsTypeName?.isNever ?? false)
+        self.throwsTypeName = throwsTypeName
     }
 
     public var asSource: String {
@@ -4034,6 +4077,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         string.append("asyncKeyword = \\(String(describing: self.asyncKeyword)), ")
         string.append("`throws` = \\(String(describing: self.`throws`)), ")
         string.append("throwsOrRethrowsKeyword = \\(String(describing: self.throwsOrRethrowsKeyword)), ")
+        string.append("throwsTypeName = \\(String(describing: self.throwsTypeName)), ")
         string.append("asSource = \\(String(describing: self.asSource))")
         return string
     }
@@ -4051,6 +4095,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         results.append(contentsOf: DiffableResult(identifier: "asyncKeyword").trackDifference(actual: self.asyncKeyword, expected: castObject.asyncKeyword))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
         results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         return results
     }
 
@@ -4065,6 +4110,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         hasher.combine(self.asyncKeyword)
         hasher.combine(self.`throws`)
         hasher.combine(self.throwsOrRethrowsKeyword)
+        hasher.combine(self.throwsTypeName)
         return hasher.finalize()
     }
 
@@ -4078,6 +4124,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         if self.asyncKeyword != rhs.asyncKeyword { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         return true
     }
 
@@ -4108,6 +4155,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
             self.asyncKeyword = aDecoder.decode(forKey: "asyncKeyword")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.throwsOrRethrowsKeyword = aDecoder.decode(forKey: "throwsOrRethrowsKeyword")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
         }
 
         /// :nodoc:
@@ -4120,6 +4168,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
             aCoder.encode(self.asyncKeyword, forKey: "asyncKeyword")
             aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.throwsOrRethrowsKeyword, forKey: "throwsOrRethrowsKeyword")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
         }
 // sourcery:end
 
@@ -4966,6 +5015,15 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// Whether method throws
     public let `throws`: Bool
 
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
+
+    // sourcery: skipEquality, skipDescription
+    /// Return if the throwsType is generic
+    public var isThrowsTypeGeneric: Bool {
+        return genericParameters.contains { $0.name == throwsTypeName?.name }
+    }
+
     /// Whether method rethrows
     public let `rethrows`: Bool
 
@@ -5092,6 +5150,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 returnTypeName: TypeName = TypeName(name: "Void"),
                 isAsync: Bool = false,
                 throws: Bool = false,
+                throwsTypeName: TypeName? = nil,
                 rethrows: Bool = false,
                 accessLevel: AccessLevel = .internal,
                 isStatic: Bool = false,
@@ -5110,6 +5169,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         self.returnTypeName = returnTypeName
         self.isAsync = isAsync
         self.throws = `throws`
+        self.throwsTypeName = throwsTypeName
         self.rethrows = `rethrows`
         self.accessLevel = accessLevel.rawValue
         self.isStatic = isStatic
@@ -5134,6 +5194,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("returnTypeName = \\(String(describing: self.returnTypeName)), ")
         string.append("isAsync = \\(String(describing: self.isAsync)), ")
         string.append("`throws` = \\(String(describing: self.`throws`)), ")
+        string.append("throwsTypeName = \\(String(describing: self.throwsTypeName)), ")
         string.append("`rethrows` = \\(String(describing: self.`rethrows`)), ")
         string.append("accessLevel = \\(String(describing: self.accessLevel)), ")
         string.append("isStatic = \\(String(describing: self.isStatic)), ")
@@ -5145,7 +5206,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("attributes = \\(String(describing: self.attributes)), ")
         string.append("modifiers = \\(String(describing: self.modifiers)), ")
         string.append("genericRequirements = \\(String(describing: self.genericRequirements)), ")
-        string.append("genericRequirements = \\(String(describing: self.genericParameters))")
+        string.append("genericParameters = \\(String(describing: self.genericParameters))")
         return string
     }
 
@@ -5161,6 +5222,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
         results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
@@ -5186,6 +5248,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         hasher.combine(self.returnTypeName)
         hasher.combine(self.isAsync)
         hasher.combine(self.`throws`)
+        hasher.combine(self.throwsTypeName)
         hasher.combine(self.`rethrows`)
         hasher.combine(self.accessLevel)
         hasher.combine(self.isStatic)
@@ -5211,6 +5274,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.isAsync != rhs.isAsync { return false }
         if self.isDistributed != rhs.isDistributed { return false }
         if self.`throws` != rhs.`throws` { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         if self.`rethrows` != rhs.`rethrows` { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isStatic != rhs.isStatic { return false }
@@ -5257,6 +5321,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             self.returnType = aDecoder.decode(forKey: "returnType")
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
             self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
@@ -5316,6 +5381,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             aCoder.encode(self.returnType, forKey: "returnType")
             aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
             aCoder.encode(self.`rethrows`, forKey: "`rethrows`")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isStatic, forKey: "isStatic")
@@ -5594,6 +5660,9 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
     /// Whether subscript throws
     public let `throws`: Bool
 
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
+
     /// Whether variable is mutable or not
     public var isMutable: Bool {
         return writeAccess != AccessLevel.none.rawValue
@@ -5645,6 +5714,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
                 accessLevel: (read: AccessLevel, write: AccessLevel) = (.internal, .internal),
                 isAsync: Bool = false,
                 `throws`: Bool = false,
+                throwsTypeName: TypeName? = nil,
                 genericParameters: [GenericParameter] = [],
                 genericRequirements: [GenericRequirement] = [],
                 attributes: AttributeList = [:],
@@ -5659,6 +5729,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         self.writeAccess = accessLevel.write.rawValue
         self.isAsync = isAsync
         self.throws = `throws`
+        self.throwsTypeName = throwsTypeName
         self.genericParameters = genericParameters
         self.genericRequirements = genericRequirements
         self.attributes = attributes
@@ -5680,6 +5751,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         string.append("writeAccess = \\(String(describing: self.writeAccess)), ")
         string.append("isAsync = \\(String(describing: self.isAsync)), ")
         string.append("`throws` = \\(String(describing: self.throws)), ")
+        string.append("throwsTypeName = \\(String(describing: self.throwsTypeName)), ")
         string.append("isMutable = \\(String(describing: self.isMutable)), ")
         string.append("annotations = \\(String(describing: self.annotations)), ")
         string.append("documentation = \\(String(describing: self.documentation)), ")
@@ -5705,6 +5777,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
         results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.throws, expected: castObject.throws))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         results.append(contentsOf: DiffableResult(identifier: "annotations").trackDifference(actual: self.annotations, expected: castObject.annotations))
         results.append(contentsOf: DiffableResult(identifier: "documentation").trackDifference(actual: self.documentation, expected: castObject.documentation))
         results.append(contentsOf: DiffableResult(identifier: "definedInTypeName").trackDifference(actual: self.definedInTypeName, expected: castObject.definedInTypeName))
@@ -5725,6 +5798,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         hasher.combine(self.writeAccess)
         hasher.combine(self.isAsync)
         hasher.combine(self.throws)
+        hasher.combine(self.throwsTypeName)
         hasher.combine(self.annotations)
         hasher.combine(self.documentation)
         hasher.combine(self.definedInTypeName)
@@ -5744,6 +5818,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
         if self.writeAccess != rhs.writeAccess { return false }
         if self.isAsync != rhs.isAsync { return false }
         if self.throws != rhs.throws { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         if self.annotations != rhs.annotations { return false }
         if self.documentation != rhs.documentation { return false }
         if self.definedInTypeName != rhs.definedInTypeName { return false }
@@ -5785,6 +5860,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
              }; self.writeAccess = writeAccess
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
             guard let annotations: Annotations = aDecoder.decode(forKey: "annotations") else { 
                 withVaList(["annotations"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
@@ -5834,6 +5910,7 @@ public final class Subscript: NSObject, SourceryModel, Annotated, Documented, De
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
             aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
             aCoder.encode(self.annotations, forKey: "annotations")
             aCoder.encode(self.documentation, forKey: "documentation")
             aCoder.encode(self.definedInTypeName, forKey: "definedInTypeName")
@@ -6940,6 +7017,11 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
     /// Set type data
     public var set: SetType?
 
+    /// Whether type is `Never`
+    public var isNever: Bool {
+        return name == "Never"
+    }
+
     /// Prints typename as it would appear on definition
     public var asSource: String {
         // TODO: TBR special treatment
@@ -7426,6 +7508,9 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
     /// Whether variable throws
     public let `throws`: Bool
 
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
+
     /// Whether variable is static
     public let isStatic: Bool
 
@@ -7498,6 +7583,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
                 isComputed: Bool = false,
                 isAsync: Bool = false,
                 `throws`: Bool = false,
+                throwsTypeName: TypeName? = nil,
                 isStatic: Bool = false,
                 defaultValue: String? = nil,
                 attributes: AttributeList = [:],
@@ -7512,6 +7598,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         self.isComputed = isComputed
         self.isAsync = isAsync
         self.`throws` = `throws`
+        self.throwsTypeName = throwsTypeName
         self.isStatic = isStatic
         self.defaultValue = defaultValue
         self.readAccess = accessLevel.read.rawValue
@@ -7532,6 +7619,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         string.append("isComputed = \\(String(describing: self.isComputed)), ")
         string.append("isAsync = \\(String(describing: self.isAsync)), ")
         string.append("`throws` = \\(String(describing: self.`throws`)), ")
+        string.append("throwsTypeName = \\(String(describing: self.throwsTypeName)), ")
         string.append("isStatic = \\(String(describing: self.isStatic)), ")
         string.append("readAccess = \\(String(describing: self.readAccess)), ")
         string.append("writeAccess = \\(String(describing: self.writeAccess)), ")
@@ -7562,6 +7650,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         results.append(contentsOf: DiffableResult(identifier: "isComputed").trackDifference(actual: self.isComputed, expected: castObject.isComputed))
         results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
         results.append(contentsOf: DiffableResult(identifier: "readAccess").trackDifference(actual: self.readAccess, expected: castObject.readAccess))
         results.append(contentsOf: DiffableResult(identifier: "writeAccess").trackDifference(actual: self.writeAccess, expected: castObject.writeAccess))
@@ -7583,6 +7672,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         hasher.combine(self.isComputed)
         hasher.combine(self.isAsync)
         hasher.combine(self.`throws`)
+        hasher.combine(self.throwsTypeName)
         hasher.combine(self.isStatic)
         hasher.combine(self.readAccess)
         hasher.combine(self.writeAccess)
@@ -7603,6 +7693,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
         if self.isComputed != rhs.isComputed { return false }
         if self.isAsync != rhs.isAsync { return false }
         if self.`throws` != rhs.`throws` { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         if self.isStatic != rhs.isStatic { return false }
         if self.readAccess != rhs.readAccess { return false }
         if self.writeAccess != rhs.writeAccess { return false }
@@ -7635,6 +7726,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             self.isComputed = aDecoder.decode(forKey: "isComputed")
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
             self.isStatic = aDecoder.decode(forKey: "isStatic")
             guard let readAccess: String = aDecoder.decode(forKey: "readAccess") else { 
                 withVaList(["readAccess"]) { arguments in
@@ -7685,6 +7777,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
             aCoder.encode(self.isComputed, forKey: "isComputed")
             aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
             aCoder.encode(self.isStatic, forKey: "isStatic")
             aCoder.encode(self.readAccess, forKey: "readAccess")
             aCoder.encode(self.writeAccess, forKey: "writeAccess")
@@ -7715,7 +7808,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -7821,7 +7914,7 @@ extension Variable: NSCoding {}
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8008,6 +8101,7 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var asyncKeyword: String? { get }
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
+    var throwsTypeName: TypeName? { get }
     var asSource: String { get }
 }
 
@@ -8141,6 +8235,7 @@ extension Import: ImportAutoJSExport {}
     var parameters: [MethodParameter] { get }
     var returnTypeName: TypeName { get }
     var actualReturnTypeName: TypeName { get }
+    var isThrowsTypeGeneric: Bool { get }
     var returnType: Type? { get }
     var isOptionalReturnType: Bool { get }
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
@@ -8148,6 +8243,7 @@ extension Import: ImportAutoJSExport {}
     var isAsync: Bool { get }
     var isDistributed: Bool { get }
     var `throws`: Bool { get }
+    var throwsTypeName: TypeName? { get }
     var `rethrows`: Bool { get }
     var accessLevel: String { get }
     var isStatic: Bool { get }
@@ -8378,6 +8474,7 @@ extension Struct: StructAutoJSExport {}
     var writeAccess: String { get }
     var isAsync: Bool { get }
     var `throws`: Bool { get }
+    var throwsTypeName: TypeName? { get }
     var isMutable: Bool { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
@@ -8494,6 +8591,7 @@ extension Type: TypeAutoJSExport {}
     var closure: ClosureType? { get }
     var isSet: Bool { get }
     var set: SetType? { get }
+    var isNever: Bool { get }
     var asSource: String { get }
     var description: String { get }
     var debugDescription: String { get }
@@ -8506,6 +8604,7 @@ extension TypeName: TypeNameAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var module: String? { get }
+    var imports: [Import] { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
     var parent: Type? { get }
@@ -8532,6 +8631,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var isComputed: Bool { get }
     var isAsync: Bool { get }
     var `throws`: Bool { get }
+    var throwsTypeName: TypeName? { get }
     var isStatic: Bool { get }
     var readAccess: String { get }
     var writeAccess: String { get }
@@ -8559,7 +8659,7 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 

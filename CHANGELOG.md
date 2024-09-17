@@ -1,4 +1,31 @@
 # Sourcery CHANGELOG
+
+## 2.2.7
+* Feature/typed throws support by @alexandre-pod in https://github.com/krzysztofzablocki/Sourcery/pull/1401
+* Add missing `isGeneric` dynamic member by @tayloraswift in https://github.com/krzysztofzablocki/Sourcery/pull/1408
+
+## 2.2.6 
+* Method/Initializer parameter types now resolve to the local type if it exists by @liamnichols in https://github.com/krzysztofzablocki/Sourcery/pull/1347
+* Fixed wrong relative path in symbolic link by @pavel-trafimuk in https://github.com/krzysztofzablocki/Sourcery/pull/1350
+* chore: add unchecked Sendable conformance to AutoMockable by @nekrich in https://github.com/krzysztofzablocki/Sourcery/pull/1355
+* Fixes issue around mutable capture of 'inout' parameter 'buffer' is not allowed in concurrently-executing code by @mapierce in https://github.com/krzysztofzablocki/Sourcery/pull/1363
+* chore(deps): bump rexml from 3.2.8 to 3.3.6 by @dependabot in https://github.com/krzysztofzablocki/Sourcery/pull/1360
+* Updated swift-syntax package's url (#1354) by @akhmedovgg in https://github.com/krzysztofzablocki/Sourcery/pull/1364
+* `Templates/AutoMockable.stencil`: fix stencil to consider nullable closures as escaping by @alexdmotoc in https://github.com/krzysztofzablocki/Sourcery/pull/1358
+* Fix AutoMockable for closure with multiple parameters by @MontakOleg in https://github.com/krzysztofzablocki/Sourcery/pull/1373
+* fix: AutoEquatable Stencil to use `any` for protocols by @iDevid in https://github.com/krzysztofzablocki/Sourcery/pull/1367
+* Add support for child configs by @jimmya in https://github.com/krzysztofzablocki/Sourcery/pull/1338
+* Try to fix associated types messing up types unification by @fabianmuecke in https://github.com/krzysztofzablocki/Sourcery/pull/1377
+* Added annotations to typealiases and typealiases property to EJS template context. by @fabianmuecke in https://github.com/krzysztofzablocki/Sourcery/pull/1379
+* Fix module name for xcframework by @till0xff in https://github.com/krzysztofzablocki/Sourcery/pull/1381
+* Fix protocol inheritance by @till0xff in https://github.com/krzysztofzablocki/Sourcery/pull/1383
+* Fixed nested type resolution by @till0xff in https://github.com/krzysztofzablocki/Sourcery/pull/1384
+* fix: Fixes description of Method's genericParameters by @sergiocampama in https://github.com/krzysztofzablocki/Sourcery/pull/1386
+* Ability to use custom header prefix by @ilia3546 in https://github.com/krzysztofzablocki/Sourcery/pull/1389
+* Fixed tests under linux by @art-divin in https://github.com/krzysztofzablocki/Sourcery/pull/1390
+* chore(deps): bump rexml from 3.3.6 to 3.3.9 by @dependabot in https://github.com/krzysztofzablocki/Sourcery/pull/1376
+* Fixing dockerfile by @art-divin in https://github.com/krzysztofzablocki/Sourcery/pull/1391
+
 ## 2.2.5
 * chore(deps): bump nokogiri from 1.16.2 to 1.16.5 by @dependabot in https://github.com/krzysztofzablocki/Sourcery/pull/1331
 * Fix typo in Decorator.md by @ahmedk92 in https://github.com/krzysztofzablocki/Sourcery/pull/1339

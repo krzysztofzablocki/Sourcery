@@ -213,6 +213,12 @@ class TypeNameSpec: QuickSpec {
                     expect(variableTypeName("(@MainActor @Sendable (Int) -> Void)!").name).to(equal("(@MainActor @Sendable (Int) -> Void)!"))
                 }
             }
+
+            context("given Never type") {
+                it("reports Never correctly") {
+                    expect(variableTypeName("Never").isNever).to(beTrue())
+                }
+            }
         }
     }
 }

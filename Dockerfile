@@ -1,5 +1,5 @@
-ARG BUILDER_IMAGE=swift:5.9-jammy
-ARG RUNTIME_IMAGE=swift:5.9-jammy-slim
+ARG BUILDER_IMAGE=swift:6.0-jammy
+ARG RUNTIME_IMAGE=swift:6.0-jammy-slim
 
 # Builder image
 FROM ${BUILDER_IMAGE} AS builder
@@ -24,7 +24,7 @@ COPY Templates Templates/
 COPY Tests Tests/
 COPY Package.* ./
 
-RUN swift package update
+RUN swift package --only-use-versions-from-resolved-file resolve
 ARG SWIFT_FLAGS="-c release"
 RUN swift build $SWIFT_FLAGS --product sourcery
 RUN mv `swift build $SWIFT_FLAGS --show-bin-path`/sourcery /usr/bin

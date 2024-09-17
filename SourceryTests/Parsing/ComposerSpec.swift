@@ -980,6 +980,15 @@ class ParserComposerSpec: QuickSpec {
                         ))
                     }
 
+                    it("extracts typed throws return type") {
+                        let types = parse("struct Foo { var closure: () throws(CustomError) -> Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() throws(CustomError) -> Int", parameters: [], returnTypeName: TypeName(name: "Int"), throwsOrRethrowsKeyword: "throws", throwsTypeName: TypeName("CustomError"))
+                        ))
+                    }
+
                     it("extracts void return type") {
                         let types = parse("struct Foo { var closure: () -> Void }")
                         let variables = types.first?.variables
@@ -999,13 +1008,13 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts complex closure type") {
-                        let types = parse("struct Foo { var closure: () -> (Int) throws -> Int }")
+                        let types = parse("struct Foo { var closure: () -> (Int) throws(CustomError) -> Int }")
                         let variables = types.first?.variables
 
                         expect(variables?[0].typeName.closure).to(equal(
-                            ClosureType(name: "() -> (Int) throws -> Int", parameters: [], returnTypeName: TypeName(name: "(Int) throws -> Int", closure: ClosureType(name: "(Int) throws -> Int", parameters: [
+                            ClosureType(name: "() -> (Int) throws(CustomError) -> Int", parameters: [], returnTypeName: TypeName(name: "(Int) throws(CustomError) -> Int", closure: ClosureType(name: "(Int) throws(CustomError) -> Int", parameters: [
                                 ClosureParameter(typeName: TypeName(name: "Int"))
-                                ], returnTypeName: TypeName(name: "Int"), throwsOrRethrowsKeyword: "throws"
+                                ], returnTypeName: TypeName(name: "Int"), throwsOrRethrowsKeyword: "throws", throwsTypeName: TypeName("CustomError")
                             )))
                         ))
                     }
@@ -2398,10 +2407,34 @@ class ParserComposerSpec: QuickSpec {
                     it("resolve extensions with nested types properly") {
                         let types = parseModules(
                             ("Mod1", "enum NS {}"),
-                            ("Mod2", "import Mod1; extension NS { struct A {} }"),
-                            ("Mod3", "import Mod1; extension NS { struct B {} }")
+                            ("Mod2", "import Mod1; extension NS { struct A { struct D {} } }"),
+                            ("Mod3", "import Mod1; extension Mod1.NS { struct B { struct C {} } }")
                         ).types
-                        expect(types.map { $0.globalName }).to(equal(["Mod1.NS", "Mod2.NS.A", "Mod3.NS.B"]))
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.NS", "Mod2.NS.A", "Mod2.NS.A.D", "Mod3.NS.B", "Mod3.NS.B.C"]))
+                    }
+
+                    it("resolve extensions with global names declared before nested type") {
+                        let types = parseModules(
+                            ("Mod1", "enum A {}; extension Mod1.A.B.C { enum D {} }; extension Mod1.A { enum B { enum C {} } }")
+                        ).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.A", "Mod1.A.B", "Mod1.A.B.C", "Mod1.A.B.C.D"]))
+                    }
+
+                    it("resolve extensions declared before nested type") {
+                        let types = parseModules(
+                            ("Mod1", "enum A {}; extension A.B.C { enum D {} }; extension A { enum B { enum C {} } }")
+                        ).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.A", "Mod1.A.B", "Mod1.A.B.C", "Mod1.A.B.C.D"]))
+                    }
+
+                    it("resolve extensions with nested types properly") {
+                        let types = parseModules(("Mod1", "enum NS {}; extension Mod1.NS.A.B { struct D {} } extension Mod1.NS { struct A { struct B {} } }")).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.NS", "Mod1.NS.A", "Mod1.NS.A.B", "Mod1.NS.A.B.D"]))
+                    }
+
+                    it("resolves extension of type with global parent name in same module") {
+                        let types = parseModules(("Mod1", "enum NS {}; extension Mod1.NS { struct A {} }; extension Mod1.NS.A { struct B {} }; extension Mod1.NS.A.B { struct C {} }")).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.NS", "Mod1.NS.A", "Mod1.NS.A.B", "Mod1.NS.A.B.C"]))
                     }
 
                     it("resolves extensions of nested types properly") {
@@ -2449,6 +2482,15 @@ class ParserComposerSpec: QuickSpec {
                         return Composer.uniqueTypesAndFunctions(parserResult).types.sorted {
                             $0.globalName < $1.globalName
                         }
+                    }
+
+                    it("resolves inherited properties") {
+                        let types = parseModules(
+                            ("A", "protocol Foo { var a: Int { get } }"),
+                            ("B", "protocol Foo { var b: Int { get } }"),
+                            ("C", "import A; import B; protocol Foo: A.Foo, B.Foo { var c: Int { get } }"))
+
+                        expect(types.last?.allVariables.map(\.name).sorted()).to(equal(["a", "b", "c"]))
                     }
 
                     it("resolves types properly") {

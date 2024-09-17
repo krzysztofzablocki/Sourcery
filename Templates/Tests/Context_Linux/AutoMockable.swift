@@ -59,6 +59,26 @@ protocol ThrowableProtocol: AutoMockable {
     func doOrThrowVoid() throws
 }
 
+protocol TypedThrowableProtocol: AutoMockable {
+    init() throws(CustomError)
+    init<E>(init2: Void) throws(E) where E: Error
+    var value: Int { get throws(CustomError) }
+    var valueAnyError: Int { get throws(any Error) }
+    var valueThrowsNever: Int { get throws(Never) }
+    func doOrThrow() throws(CustomError) -> String
+    // func doOrThrowVoid() throws(CustomErrorNameSpace.Error)
+    func doOrThrowAnyError() throws(any Error)
+    func doOrThrowNever() throws(Never)
+    func doOrRethrows<E>(_ block: () throws(E) -> Void) throws(E) -> Int where E: Error
+}
+
+struct CustomError: Error {}
+// This seems to not be supported on linux, as it cause a crash when running Sourcery
+// because of the cycle in Type (with Type and Typealias), causing a crash during NSArchive decoding
+// enum CustomErrorNameSpace {
+//     struct Error: Swift.Error {}
+// }
+
 protocol CurrencyPresenter: AutoMockable {
     func showSourceCurrency(_ currency: String)
 }
@@ -75,8 +95,16 @@ protocol ClosureProtocol: AutoMockable {
     func setClosure(_ closure: @escaping () -> Void)
 }
 
+protocol NullableClosureProtocol: AutoMockable {
+    func setClosure(_ closure: (() -> Void)?)
+}
+
 protocol MultiClosureProtocol: AutoMockable {
     func setClosure(name: String, _ closure: @escaping () -> Void)
+}
+
+protocol MultiNullableClosureProtocol: AutoMockable {
+    func setClosure(name: String, _ closure: (() -> Void)?)
 }
 
 protocol NonEscapingClosureProtocol: AutoMockable {
@@ -89,6 +117,10 @@ protocol MultiNonEscapingClosureProtocol: AutoMockable {
 
 protocol MultiExistentialArgumentsClosureProtocol: AutoMockable {
     func execute(completion: ((any StubWithSomeNameProtocol)?, any StubWithSomeNameProtocol) -> (any StubWithSomeNameProtocol)?)
+}
+
+protocol ClosureWithTwoParametersProtocol: AutoMockable {
+    func setClosure(closure: @escaping (String, Int) -> Void)
 }
 
 /// sourcery: AutoMockable
@@ -188,6 +220,19 @@ protocol AnyProtocol: AutoMockable {
     func z() -> any StubProtocol & CustomStringConvertible
 }
 
+protocol AnyProtocolWithOptionals: AutoMockable {
+    var a: [any StubProtocol]? { get }
+    var b: [Result<Void, any Error>] { get }
+    var c: (Int, [(any StubProtocol)?])? { get }
+    var d: (Int, (any StubProtocol)?) { get }
+    var e: (Int, (any StubProtocol)?)? { get }
+    var f: (Int, [any StubProtocol]?)? { get }
+    func g(_ g: String, handler: @escaping ([any StubProtocol]?) -> Void) -> Bool
+    func h(_ h: String, handler: @escaping ([StubProtocol]) -> Void) -> Bool
+    func i(_ i: String, handler: @escaping ([(any StubProtocol)?]) -> Void) -> Bool
+    var j: (anyInteger: Int, anyArray: [any StubProtocol]?)? { get }
+}
+
 protocol SomeProtocol: AutoMockable {
     func a(_ x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol)
     func b(x: (some StubProtocol)?, y: (some StubProtocol)!, z: some StubProtocol) async -> String
@@ -258,6 +303,7 @@ protocol SubscriptProtocol {
     subscript<T>(arg: T) -> String { get async }
     subscript<T: Hashable>(arg: T) -> T? { get set }
     subscript<T>(arg: String) -> T? where T: Cancellable { get throws }
+    subscript<T>(arg2: String) -> T { get throws(CustomError) }
 }
 
 // sourcery: AutoMockable

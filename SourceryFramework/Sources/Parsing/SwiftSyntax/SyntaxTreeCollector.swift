@@ -225,6 +225,7 @@ class SyntaxTreeCollector: SyntaxVisitor {
           accessLevel: baseModifiers.readAccess,
           parent: visitingType,
           module: module,
+          annotations: annotations,
           documentation: documentation
         )
 

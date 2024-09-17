@@ -1,0 +1,8 @@
+<%_
+for (alias of types.typealiases.filter((t) => t.annotations.AutoStruct != null)) { %>
+struct Any<%- alias.name %>: <%- alias.type.name %> {
+<%_ for (variable of alias.type.instanceVariables) { -%>
+    var <%- variable.name %>: <%- variable.typeName.asSource %>
+<% } -%>
+}
+<%_ } -%>

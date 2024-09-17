@@ -130,7 +130,8 @@ public final class TemplateContext: NSObject, SourceryModel, NSCoding, Diffable 
                 "based": types.based,
                 "inheriting": types.inheriting,
                 "implementing": types.implementing,
-                "protocolCompositions": types.protocolCompositions
+                "protocolCompositions": types.protocolCompositions,
+                "typealiases": types.typealiases
             ] as [String : Any],
             "functions": functions,
             "type": types.typesByName,

@@ -27,6 +27,14 @@ internal struct ParserResultsComposed {
         associatedTypes = Self.extractAssociatedTypes(parserResult)
         parsedTypes = parserResult.types
 
+        var moduleAndTypeNameCollisions: Set<String> = []
+
+        for type in parsedTypes where !type.isExtension && type.parent == nil {
+            if let module = type.module, type.localName == module {
+                moduleAndTypeNameCollisions.insert(module)
+            }
+        }
+
         // set definedInType for all methods and variables
         parsedTypes
             .forEach { type in
@@ -36,16 +44,23 @@ internal struct ParserResultsComposed {
             }
 
         // map all known types to their names
-        parsedTypes
-            .filter { !$0.isExtension }
-            .forEach {
-                typeMap[$0.globalName] = $0
-                if let module = $0.module {
-                    var typesByModules = modules[module, default: [:]]
-                    typesByModules[$0.name] = $0
-                    modules[module] = typesByModules
-                }
+
+        for type in parsedTypes where !type.isExtension && type.parent == nil {
+            let name = type.name
+            // If a type name has the `<module>.` prefix, and the type `<module>.<module>` is undefined, we can safely remove the `<module>.` prefix
+            if let module = type.module, name.hasPrefix(module), name.dropFirst(module.count).hasPrefix("."), !moduleAndTypeNameCollisions.contains(module) {
+                type.localName.removeFirst(module.count + 1)
             }
+        }
+
+        for type in parsedTypes where !type.isExtension {
+            typeMap[type.globalName] = type
+            if let module = type.module {
+                var typesByModules = modules[module, default: [:]]
+                typesByModules[type.name] = type
+                modules[module] = typesByModules
+            }
+        }
 
         /// Resolve typealiases
         let typealiases = Array(unresolvedTypealiases.values)
@@ -55,15 +70,25 @@ internal struct ParserResultsComposed {
 
         /// Map associated types
         associatedTypes.forEach {
-            typeMap[$0.key] = $0.value.type
+            if let globalName = $0.value.type?.globalName,
+               let type = typeMap[globalName] {
+                typeMap[$0.key] = type
+            } else {
+                typeMap[$0.key] = $0.value.type
+            }
         }
 
         types = unifyTypes()
     }
 
-    private func resolveExtensionOfNestedType(_ type: Type) {
+    mutating private func resolveExtensionOfNestedType(_ type: Type) {
         var components = type.localName.components(separatedBy: ".")
-        let rootName = type.module ?? components.removeFirst() // Module/parent name
+        let rootName: String
+        if type.parent != nil, let module = type.module {
+            rootName = module
+        } else {
+            rootName = components.removeFirst()
+        }
         if let moduleTypes = modules[rootName], let baseType = moduleTypes[components.joined(separator: ".")] ?? moduleTypes[type.localName] {
             type.localName = baseType.localName
             type.module = baseType.module
@@ -78,6 +103,14 @@ internal struct ParserResultsComposed {
                     type.parent = baseType.parent
                     return
                 }
+            }
+        }
+        // Parent extensions should always be processed before `type`, as this affects the globalName of `type`.
+        for parent in type.parentTypes where parent.isExtension && parent.localName.contains(".") {
+            let oldName = parent.globalName
+            resolveExtensionOfNestedType(parent)
+            if oldName != parent.globalName {
+                rewriteChildren(of: parent)
             }
         }
     }
@@ -98,19 +131,14 @@ internal struct ParserResultsComposed {
             .forEach { (type: Type) in
                 let oldName = type.globalName
 
-                let hasDotInLocalName = type.localName.contains(".") as Bool
-                if let _ = type.parent, hasDotInLocalName {
+                if type.localName.contains(".") {
                     resolveExtensionOfNestedType(type)
-                }
-
-                if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
+                } else if let resolved = resolveGlobalName(for: oldName, containingType: type.parent, unique: typeMap, modules: modules, typealiases: resolvedTypealiases, associatedTypes: associatedTypes)?.name {
                     var moduleName: String = ""
                     if let module = type.module {
                         moduleName = "\(module)."
                     }
                     type.localName = resolved.replacingOccurrences(of: moduleName, with: "")
-                } else {
-                    return
                 }
 
                 // nothing left to do

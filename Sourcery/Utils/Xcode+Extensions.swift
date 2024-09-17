@@ -71,7 +71,7 @@ extension XcodeProj {
         // Find existing group to reuse
         // Having `ProjectRoot/Data/` exists and given group to create `ProjectRoot/Data/Generated`
         // will create `Generated` group under ProjectRoot/Data to link files to
-        let existingGroup = findGroup(in: fileGroup, components: components)
+        let existingGroup = findGroup(in: fileGroup, components: components, validate: { $0?.path == $1 || $0?.name == $1 })
 
         var groupName: String?
 
@@ -103,21 +103,11 @@ extension XcodeProj {
         }
         return fileGroup
     }
-    
+
 }
 
 private extension XcodeProj {
-    
-    func findGroup(in group: PBXGroup, components: [String]) -> (group: PBXGroup?, components: [String]) {
-        let existingGroup = findGroup(in: group, components: components, validate: { $0?.path == $1 })
-        
-        if existingGroup.group?.path != nil {
-            return existingGroup
-        }
-        
-        return findGroup(in: group, components: components, validate: { $0?.name == $1 })
-    }
-    
+
     func findGroup(in group: PBXGroup, components: [String], validate: (PBXFileElement?, String?) -> Bool) -> (group: PBXGroup?, components: [String]) {
         return components.reduce((group: group as PBXGroup?, components: components)) { current, name in
             let first = current.group?.children.first { validate($0, name) } as? PBXGroup
@@ -125,5 +115,4 @@ private extension XcodeProj {
             return (result, current.components.filter { !validate(result, $0) })
         }
     }
-    
 }
