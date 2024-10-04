@@ -349,3 +349,8 @@ protocol NotMockedSendableProtocol: Sendable {}
 protocol SendableSendableProtocol: NotMockedSendableProtocol {
   var value: Any { get }
 }
+
+// sourcery: AutoMockable
+protocol AnyClosureProtocol {
+    func evaluateJavaScript(_ javaScriptString: String, completionHandler: (@MainActor @Sendable (Any?, (any Error)?) -> Void)?)
+}

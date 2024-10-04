@@ -91,6 +91,22 @@ class AnnotatedProtocolMock: AnnotatedProtocol {
 
 
 }
+class AnyClosureProtocolMock: AnyClosureProtocol {
+    //MARK: - evaluateJavaScript
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount = 0
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCalled: Bool {
+        return evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount > 0
+    }
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedArguments: (javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any)?, (any Error)?) -> Void))?)?
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedInvocations: [(javaScriptString: String, completionHandler: ((@MainActor @Sendable (Any)?, (any Error)?) -> Void))?)] = []
+    var evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidClosure: ((String, (@MainActor @Sendable (Any?, (any Error)?) -> Void)?) -> Void)?
+    func evaluateJavaScript(_ javaScriptString: String, completionHandler: (@MainActor @Sendable (Any?, (any Error)?) -> Void)?) {
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidCallsCount += 1
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedArguments = (javaScriptString: javaScriptString, completionHandler: completionHandler)
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidReceivedInvocations.append((javaScriptString: javaScriptString, completionHandler: completionHandler))
+        evaluateJavaScriptJavaScriptStringStringCompletionHandlerMainActorSendableAnyAnyErrorVoidVoidClosure?(javaScriptString, completionHandler)
+    }
+}
 class AnyProtocolMock: AnyProtocol {
 
 
@@ -1075,9 +1091,9 @@ class FunctionWithNullableCompletionThatHasNullableAnyParameterProtocolMock: Fun
     }
     var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedArguments: (request: Int, completionHandler: ((((any Error)?) -> Void))?)?
     var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedInvocations: [(request: Int, completionHandler: ((((any Error)?) -> Void))?)] = []
-    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure: ((Int, ((((any Error)?) -> Void))?) -> Void)?
+    var addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidClosure: ((Int, (((any Error)?) -> Void)?) -> Void)?
 
-    func add(_ request: Int, withCompletionHandler completionHandler: ((((any Error)?) -> Void))?) {
+    func add(_ request: Int, withCompletionHandler completionHandler: (((any Error)?) -> Void)?) {
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidCallsCount += 1
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedArguments = (request: request, completionHandler: completionHandler)
         addRequestIntWithCompletionHandlerCompletionHandlerAnyErrorVoidVoidReceivedInvocations.append((request: request, completionHandler: completionHandler))
@@ -1211,7 +1227,7 @@ class MultiExistentialArgumentsClosureProtocolMock: MultiExistentialArgumentsClo
     }
     var executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidClosure: ((((any StubWithSomeNameProtocol)?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol)?) -> Void)?
 
-    func execute(completion: (((any StubWithSomeNameProtocol)?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol)?)) {
+    func execute(completion: ((any StubWithSomeNameProtocol)?, (any StubWithSomeNameProtocol)) -> (any StubWithSomeNameProtocol)?)) {
         executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidCallsCount += 1
         executeCompletionAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolAnyStubWithSomeNameProtocolVoidClosure?(completion)
     }
