@@ -15,7 +15,8 @@ class ConfigurationSpec: QuickSpec {
         describe("Configuration") {
             let serverUrlArg = "serverUrl"
             let serverUrl: String = "www.example.com"
-            let env = ["SOURCE_PATH": "Sources",
+            let sourcePath = "Sources"
+            let env = ["SOURCE_PATH": sourcePath,
                        serverUrlArg: serverUrl]
 
             context("given valid config file with env placeholders") {
@@ -80,6 +81,33 @@ class ConfigurationSpec: QuickSpec {
                             expect(configServerUrl).to(equal("\(serverUrl)/\(offset)"))
                             expect(path).to(equal(Path("/some/path/Sources/\(offset)")))
                         }
+                    } catch {
+                        expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
+                    }
+                }
+            }
+
+            context("given config file with child configurations") {
+                it("resolves each child configuration") {
+                    do {
+                        let configs = try Configurations.make(
+                            path: Stubs.configs + "parent.yml",
+                            relativePath: Stubs.configs,
+                            env: env
+                        )
+
+                        expect(configs.count).to(equal(1))
+
+                        guard case let Source.sources(paths) = configs[0].source,
+                              let path = paths.include.first else {
+                            fail("Config has no Source Paths")
+                            return
+                        }
+
+                        let configServerUrl = configs[0].args[serverUrlArg] as? String
+
+                        expect(configServerUrl).to(equal(serverUrl))
+                        expect(path).to(equal(Stubs.configs + sourcePath))
                     } catch {
                         expect("\(error)").to(equal("Invalid config file format. Expected dictionary."))
                     }

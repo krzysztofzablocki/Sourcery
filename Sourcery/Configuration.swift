@@ -183,7 +183,7 @@ public struct Package {
         })
         semaphore.wait()
         
-        guard let manifest = try manifestResult?.get() else{
+        guard let manifest = try manifestResult?.get() else {
             throw Configuration.Error.invalidSources(message: "Unable to load manifest")
         }
         self.root = path
@@ -227,6 +227,8 @@ public enum Source {
         } else if let packages = (dict["package"] as? [[String: Any]]) ?? (dict["package"] as? [String: Any]).map({ [$0] }) {
             guard !packages.isEmpty else { throw Configuration.Error.invalidSources(message: "No packages provided.") }
             self = try .packages(packages.map({ try Package(dict: $0, relativePath: relativePath) }))
+        } else if dict["child"] != nil {
+            throw Configuration.Error.internalError(message: "'child' should have been parsed already.")
         } else {
             throw Configuration.Error.invalidSources(message: "'sources', 'project' or 'package' key are missing.")
         }
@@ -315,6 +317,7 @@ public struct Configuration {
         case invalidOutput(message: String)
         case invalidCacheBasePath(message: String)
         case invalidPaths(message: String)
+        case internalError(message: String)
 
         public var description: String {
             switch self {
@@ -331,6 +334,8 @@ public struct Configuration {
             case .invalidCacheBasePath(let message):
                 return "Invalid cacheBasePath. \(message)"
             case .invalidPaths(let message):
+                return "\(message)"
+            case .internalError(let message):
                 return "\(message)"
             }
         }
@@ -431,8 +436,14 @@ public enum Configurations {
         }
 
         if let configurations = dict["configurations"] as? [[String: Any]] {
-            return try configurations.map { dict in
-                try Configuration(dict: dict, relativePath: relativePath)
+            return try configurations.flatMap { dict in
+                if let child = dict["child"] as? String {
+                    let childPath = Path(child, relativeTo: relativePath)
+                    let childRelativePath = Path(components: childPath.components.dropLast())
+                    return try Configurations.make(path: childPath, relativePath: childRelativePath, env: env)
+                } else {
+                    return try [Configuration(dict: dict, relativePath: relativePath)]
+                }
             }
         } else {
             return try [Configuration(dict: dict, relativePath: relativePath)]
