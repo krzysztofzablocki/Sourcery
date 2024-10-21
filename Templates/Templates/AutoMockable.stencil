@@ -324,13 +324,11 @@ import {{ import }}
         {{ typeName | replace:"some","(some" | replace:"?",")?" }}
     {%- elif isVariadic -%}
         {{ typeName }}...
-    {%- elif typeName.isClosure and typeName.closure.parameters.count > 0 and typeName.closure.parameters.last.isVariadic -%}
-        {{ typeName }})
     {%- else -%}
         {{ typeName }}
     {%- endif -%}
 {%- endmacro %}
-{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 %}({% endif %}{% call existentialParameterTypeName param.typeName param.isVariadic %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
+{% macro methodName method %}func {{ method.shortName}}({%- for param in method.parameters %}{% if param.argumentLabel == nil %}_ {% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{%elif param.argumentLabel == param.name%}{{ param.name }}{%else%}{{ param.argumentLabel }} {{ param.name }}{% endif %}: {% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 %}({% endif %}{% call existentialParameterTypeName param.typeName param.isVariadic %}{% if param.typeName.isClosure and param.typeName.closure.parameters.count > 1 and not (param.typeName|contains:"any " and param.typeName.closure.returnTypeName.name|contains:"any " and param.typeName|contains:"?") %}){% endif %}{% if not forloop.last %}, {% endif %}{% endfor -%}){% endmacro %}
 
 {% macro extractProtocolCompositionFromAssociatedTypes type -%}
     {%- if type.associatedTypes|sortedValuesByKeys|count > 0 -%}
