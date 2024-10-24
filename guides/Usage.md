@@ -78,6 +78,16 @@ configurations:
 
 This will be equivalent to running Sourcery separately for each of the configurations. In watch mode Sourcery will observe changes in the paths from all the configurations.
 
+#### Child configurations
+
+You can specify a child configurations by using the `child` key:
+```yaml
+configurations:
+    - child: ./.child_config.yml
+    - child: Subdirectory/.another_child_config.yml
+```
+Sources will be resolved relative to the child config paths.
+
 #### Sources
 
 You can provide sources using paths to directories or specific files.
