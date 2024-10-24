@@ -674,6 +674,30 @@ class ClosureProtocolMock: ClosureProtocol {
 
 
 }
+class ClosureWithTwoParametersProtocolMock: ClosureWithTwoParametersProtocol {
+
+
+
+
+    //MARK: - setClosure
+
+    var setClosureClosureEscapingStringIntVoidVoidCallsCount = 0
+    var setClosureClosureEscapingStringIntVoidVoidCalled: Bool {
+        return setClosureClosureEscapingStringIntVoidVoidCallsCount > 0
+    }
+    var setClosureClosureEscapingStringIntVoidVoidReceivedClosure: (((String, Int) -> Void))?
+    var setClosureClosureEscapingStringIntVoidVoidReceivedInvocations: [(((String, Int) -> Void))] = []
+    var setClosureClosureEscapingStringIntVoidVoidClosure: ((@escaping (String, Int) -> Void) -> Void)?
+
+    func setClosure(closure: (@escaping (String, Int) -> Void)) {
+        setClosureClosureEscapingStringIntVoidVoidCallsCount += 1
+        setClosureClosureEscapingStringIntVoidVoidReceivedClosure = closure
+        setClosureClosureEscapingStringIntVoidVoidReceivedInvocations.append(closure)
+        setClosureClosureEscapingStringIntVoidVoidClosure?(closure)
+    }
+
+
+}
 class CurrencyPresenterMock: CurrencyPresenter {
 
 

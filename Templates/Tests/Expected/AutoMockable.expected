@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.4 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -9,6 +9,7 @@ import UIKit
 #elseif os(OSX)
 import AppKit
 #endif
+
 
 
 
@@ -669,6 +670,30 @@ class ClosureProtocolMock: ClosureProtocol {
         setClosureClosureEscapingVoidVoidReceivedClosure = closure
         setClosureClosureEscapingVoidVoidReceivedInvocations.append(closure)
         setClosureClosureEscapingVoidVoidClosure?(closure)
+    }
+
+
+}
+class ClosureWithTwoParametersProtocolMock: ClosureWithTwoParametersProtocol {
+
+
+
+
+    //MARK: - setClosure
+
+    var setClosureClosureEscapingStringIntVoidVoidCallsCount = 0
+    var setClosureClosureEscapingStringIntVoidVoidCalled: Bool {
+        return setClosureClosureEscapingStringIntVoidVoidCallsCount > 0
+    }
+    var setClosureClosureEscapingStringIntVoidVoidReceivedClosure: (((String, Int) -> Void))?
+    var setClosureClosureEscapingStringIntVoidVoidReceivedInvocations: [(((String, Int) -> Void))] = []
+    var setClosureClosureEscapingStringIntVoidVoidClosure: ((@escaping (String, Int) -> Void) -> Void)?
+
+    func setClosure(closure: (@escaping (String, Int) -> Void)) {
+        setClosureClosureEscapingStringIntVoidVoidCallsCount += 1
+        setClosureClosureEscapingStringIntVoidVoidReceivedClosure = closure
+        setClosureClosureEscapingStringIntVoidVoidReceivedInvocations.append(closure)
+        setClosureClosureEscapingStringIntVoidVoidClosure?(closure)
     }
 
 

@@ -91,6 +91,10 @@ protocol MultiExistentialArgumentsClosureProtocol: AutoMockable {
     func execute(completion: ((any StubWithSomeNameProtocol)?, any StubWithSomeNameProtocol) -> (any StubWithSomeNameProtocol)?)
 }
 
+protocol ClosureWithTwoParametersProtocol: AutoMockable {
+    func setClosure(closure: @escaping (String, Int) -> Void)
+}
+
 /// sourcery: AutoMockable
 protocol AnnotatedProtocol {
     func sayHelloWith(name: String)
