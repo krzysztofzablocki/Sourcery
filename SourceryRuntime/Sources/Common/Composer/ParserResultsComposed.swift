@@ -55,7 +55,12 @@ internal struct ParserResultsComposed {
 
         /// Map associated types
         associatedTypes.forEach {
-            typeMap[$0.key] = $0.value.type
+            if let globalName = $0.value.type?.globalName,
+               let type = typeMap[globalName] {
+                typeMap[$0.key] = type
+            } else {
+                typeMap[$0.key] = $0.value.type
+            }
         }
 
         types = unifyTypes()
