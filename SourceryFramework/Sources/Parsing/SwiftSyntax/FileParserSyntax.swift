@@ -55,6 +55,10 @@ public final class FileParserSyntax: SyntaxVisitor, FileParserType {
             $0.imports = collector.imports
             $0.path = path
         }
+        
+        collector.typealiases.forEach {
+            $0.imports = collector.imports
+        }
 
         return FileParserResult(
           path: path,

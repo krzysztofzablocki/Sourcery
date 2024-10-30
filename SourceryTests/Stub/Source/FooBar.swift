@@ -9,3 +9,9 @@ protocol HasBar {
 
 // sourcery: AutoStruct
 typealias FooBar = HasFoo & HasBar
+
+// sourcery: AutoStruct
+typealias FooAlias = HasFoo
+
+// sourcery: AutoStruct
+typealias BarAlias = HasBar
