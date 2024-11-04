@@ -673,6 +673,7 @@ extension Type: TypeAutoJSExport {}
     var set: SetType? { get }
     var asSource: String { get }
     var description: String { get }
+    var hash: Int { get }
     var debugDescription: String { get }
 }
 
@@ -683,6 +684,7 @@ extension TypeName: TypeNameAutoJSExport {}
     var typeName: TypeName { get }
     var type: Type? { get }
     var module: String? { get }
+    var imports: [Import] { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
     var parent: Type? { get }
