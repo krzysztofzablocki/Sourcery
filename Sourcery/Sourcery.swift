@@ -132,7 +132,7 @@ public class Sourcery {
                         }
                         for framework in target.xcframeworks {
                             paths.append(framework.swiftInterfacePath)
-                            modules.append(target.module)
+                            modules.append(framework.module)
                         }
                     }
                 }

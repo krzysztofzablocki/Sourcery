@@ -22,6 +22,7 @@ public struct Project {
 
             public let path: Path
             public let swiftInterfacePath: Path
+            public let module: String
 
             public init(rawPath: String, relativePath: Path) throws {
                 let frameworkRelativePath = Path(rawPath, relativeTo: relativePath)
@@ -46,6 +47,7 @@ public struct Project {
                 }
                 self.path = frameworkRelativePath
                 self.swiftInterfacePath = interfacePath
+                self.module = moduleName
             }
         }
 
