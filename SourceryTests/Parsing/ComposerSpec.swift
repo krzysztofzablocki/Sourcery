@@ -2398,10 +2398,34 @@ class ParserComposerSpec: QuickSpec {
                     it("resolve extensions with nested types properly") {
                         let types = parseModules(
                             ("Mod1", "enum NS {}"),
-                            ("Mod2", "import Mod1; extension NS { struct A {} }"),
-                            ("Mod3", "import Mod1; extension NS { struct B {} }")
+                            ("Mod2", "import Mod1; extension NS { struct A { struct D {} } }"),
+                            ("Mod3", "import Mod1; extension Mod1.NS { struct B { struct C {} } }")
                         ).types
-                        expect(types.map { $0.globalName }).to(equal(["Mod1.NS", "Mod2.NS.A", "Mod3.NS.B"]))
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.NS", "Mod2.NS.A", "Mod2.NS.A.D", "Mod3.NS.B", "Mod3.NS.B.C"]))
+                    }
+
+                    it("resolve extensions with global names declared before nested type") {
+                        let types = parseModules(
+                            ("Mod1", "enum A {}; extension Mod1.A.B.C { enum D {} }; extension Mod1.A { enum B { enum C {} } }")
+                        ).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.A", "Mod1.A.B", "Mod1.A.B.C", "Mod1.A.B.C.D"]))
+                    }
+
+                    it("resolve extensions declared before nested type") {
+                        let types = parseModules(
+                            ("Mod1", "enum A {}; extension A.B.C { enum D {} }; extension A { enum B { enum C {} } }")
+                        ).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.A", "Mod1.A.B", "Mod1.A.B.C", "Mod1.A.B.C.D"]))
+                    }
+
+                    it("resolve extensions with nested types properly") {
+                        let types = parseModules(("Mod1", "enum NS {}; extension Mod1.NS.A.B { struct D {} } extension Mod1.NS { struct A { struct B {} } }")).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.NS", "Mod1.NS.A", "Mod1.NS.A.B", "Mod1.NS.A.B.D"]))
+                    }
+
+                    it("resolves extension of type with global parent name in same module") {
+                        let types = parseModules(("Mod1", "enum NS {}; extension Mod1.NS { struct A {} }; extension Mod1.NS.A { struct B {} }; extension Mod1.NS.A.B { struct C {} }")).types
+                        expect(types.map(\.globalName).sorted()).to(equal(["Mod1.NS", "Mod1.NS.A", "Mod1.NS.A.B", "Mod1.NS.A.B.C"]))
                     }
 
                     it("resolves extensions of nested types properly") {

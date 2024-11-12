@@ -673,7 +673,6 @@ extension Type: TypeAutoJSExport {}
     var set: SetType? { get }
     var asSource: String { get }
     var description: String { get }
-    var hash: Int { get }
     var debugDescription: String { get }
 }
 
