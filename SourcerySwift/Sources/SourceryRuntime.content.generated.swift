@@ -1005,7 +1005,7 @@ public enum Composer {
         if baseType is Class {
             type.inherits[baseType.name] = baseType
         } else if let `protocol` = baseType as? SourceryProtocol {
-            type.implements[baseType.name] = baseType
+            type.implements[baseType.globalName] = baseType
             if let extendingProtocol = type as? SourceryProtocol {
                 `protocol`.associatedTypes.forEach {
                     if extendingProtocol.associatedTypes[$0.key] == nil {

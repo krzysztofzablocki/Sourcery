@@ -2475,6 +2475,15 @@ class ParserComposerSpec: QuickSpec {
                         }
                     }
 
+                    it("resolves inherited properties") {
+                        let types = parseModules(
+                            ("A", "protocol Foo { var a: Int { get } }"),
+                            ("B", "protocol Foo { var b: Int { get } }"),
+                            ("C", "import A; import B; protocol Foo: A.Foo, B.Foo { var c: Int { get } }"))
+
+                        expect(types.last?.allVariables.map(\.name).sorted()).to(equal(["a", "b", "c"]))
+                    }
+
                     it("resolves types properly") {
                         let types = parseModules(
                             ("Mod1", "protocol Foo { func foo1() }"),
