@@ -19,7 +19,7 @@ import XcodeProj
 public class Sourcery {
     public static let version: String = SourceryVersion.current.value
     public static let generationMarker: String = "// Generated using Sourcery"
-    public let generationHeader: String
+    public let generationHeader: String?
 
     enum Error: Swift.Error {
         case containsMergeConflictMarkers
@@ -33,6 +33,7 @@ public class Sourcery {
     fileprivate let buildPath: Path?
     fileprivate let prune: Bool
     fileprivate let serialParse: Bool
+    fileprivate let hideHeader: Bool
     fileprivate let hideVersionHeader: Bool
 
     fileprivate var status = ""
@@ -55,6 +56,7 @@ public class Sourcery {
         buildPath: Path? = nil,
         prune: Bool = false,
         serialParse: Bool = false, 
+        hideHeader: Bool = false,
         hideVersionHeader: Bool = false,
         arguments: [String: NSObject] = [:],
         logConfiguration: Log.Configuration? = nil
@@ -67,6 +69,11 @@ public class Sourcery {
         self.buildPath = buildPath
         self.prune = prune
         self.serialParse = serialParse
+        if let hideHeader = arguments["hideHeader"] {
+            self.hideHeader = (hideHeader as? NSNumber)?.boolValue == true
+        } else {
+            self.hideHeader = hideHeader
+        }
         if let hideVersionHeader = arguments["hideVersionHeader"] {
             self.hideVersionHeader = (hideVersionHeader as? NSNumber)?.boolValue == true
         } else {
@@ -76,12 +83,16 @@ public class Sourcery {
             Log.setup(using: logConfiguration)
         }
 
-        var prefix = Sourcery.generationMarker
-        if !self.hideVersionHeader {
-          prefix += " \(Sourcery.version)"
+        if hideHeader {
+            self.generationHeader = nil
+        } else {
+            var prefix = Sourcery.generationMarker
+            if !self.hideVersionHeader {
+                prefix += " \(Sourcery.version)"
+            }
+            self.generationHeader = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
+            + "// DO NOT EDIT\n"
         }
-        self.generationHeader = "\(prefix) — https://github.com/krzysztofzablocki/Sourcery\n"
-        + "// DO NOT EDIT\n"
     }
 
     /// Processes source files and generates corresponding code.
@@ -638,7 +649,7 @@ extension Sourcery {
     private func output(type: DryOutputType, result: String, to outputPath: Path) throws {
         let resultIsEmpty = result.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         var result = result
-        if !resultIsEmpty, outputPath.extension == "swift" {
+        if let generationHeader, !resultIsEmpty, outputPath.extension == "swift" {
             result = generationHeader + result
         }
 
