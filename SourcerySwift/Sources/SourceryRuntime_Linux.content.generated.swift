@@ -5616,7 +5616,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("attributes = \\(String(describing: self.attributes)), ")
         string.append("modifiers = \\(String(describing: self.modifiers)), ")
         string.append("genericRequirements = \\(String(describing: self.genericRequirements)), ")
-        string.append("genericRequirements = \\(String(describing: self.genericParameters))")
+        string.append("genericParameters = \\(String(describing: self.genericParameters))")
         return string
     }
 
