@@ -167,6 +167,20 @@ class SourcerySpecTests: QuickSpec {
                         }
                     }
 
+                    context("with hide header enabled") {
+                        beforeEach {
+                            expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, hideHeader: true).processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        }
+                        it("removes header from within generated template") {
+                        let expectedResult = "// Line One"
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                        }
+                    }
+
                     it("does not remove code from within generated template when missing origin") {
                         update(code: """
                             class Foo {
@@ -1254,7 +1268,7 @@ class SourcerySpecTests: QuickSpec {
                         updateTemplate(code: "Found {{ types.all.count }} Types")
 
                         let result: () -> String? = { (try? (outputDir + Sourcery().generatedPath(for: tmpTemplate)).read(.utf8)) }
-                        expect(result()).toEventually(contain("\(sourcery.generationHeader)Found 3 Types"))
+                        expect(result()).toEventually(contain("\(sourcery.generationHeader ?? "")Found 3 Types"))
 
                         _ = watcher
                     }

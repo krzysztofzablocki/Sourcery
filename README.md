@@ -203,6 +203,7 @@ Inside a project/package that uses this command plugin, right-click the project 
 - `--help` - Display help information
 - `--cacheBasePath` - Base path to the cache directory. Can be overriden by the config file.
 - `--buildPath` - Path to directory used when building from .swifttemplate files. This defaults to system temp directory
+- `--hideHeader` [default: false] - Stop adding the Sourcery header to the generated files.
 - `--hideVersionHeader` [default: false] - Stop adding the Sourcery version to the generated files headers.
 
 ### Configuration file
