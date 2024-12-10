@@ -167,6 +167,26 @@ class SourcerySpecTests: QuickSpec {
                         }
                     }
 
+                    context("with custom header prefix") {
+                        beforeEach {
+                            expect { try Sourcery(watcherEnabled: false, cacheDisabled: true, hideVersionHeader: true, headerPrefix: "// swiftlint:disable all").processFiles(.sources(Paths(include: [sourcePath])), usingTemplates: Paths(include: [templatePath]), output: output, baseIndentation: 0) }.toNot(throwError())
+                        }
+                        it("removes version information from within generated template") {
+                        let expectedResult = """
+                            // swiftlint:disable all
+                            // Generated using Sourcery — https://github.com/krzysztofzablocki/Sourcery
+                            // DO NOT EDIT
+
+                            // Line One
+                            """
+
+                        let generatedPath = outputDir + Sourcery().generatedPath(for: templatePath)
+
+                        let result = try? generatedPath.read(.utf8)
+                        expect(result?.withoutWhitespaces).to(equal(expectedResult.withoutWhitespaces))
+                        }
+                    }
+
                     it("does not remove code from within generated template when missing origin") {
                         update(code: """
                             class Foo {
