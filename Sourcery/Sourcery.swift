@@ -57,7 +57,8 @@ public class Sourcery {
         serialParse: Bool = false, 
         hideVersionHeader: Bool = false,
         arguments: [String: NSObject] = [:],
-        logConfiguration: Log.Configuration? = nil
+        logConfiguration: Log.Configuration? = nil,
+        headerPrefix: String? = nil
     ) {
         self.verbose = verbose
         self.arguments = arguments
@@ -76,7 +77,11 @@ public class Sourcery {
             Log.setup(using: logConfiguration)
         }
 
-        var prefix = Sourcery.generationMarker
+        var prefix = ""
+        if let headerPrefix {
+            prefix += headerPrefix + "\n"
+        }
+        prefix += Sourcery.generationMarker
         if !self.hideVersionHeader {
           prefix += " \(Sourcery.version)"
         }

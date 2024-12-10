@@ -118,8 +118,9 @@ func runCLI() {
         Option<Path>("ejsPath", default: "", description: "Path to EJS file for JavaScript templates."),
         Option<Path>("cacheBasePath", default: "", description: "Base path to Sourcery's cache directory"),
         Option<Path>("buildPath", default: "", description: "Sets a custom build path"),
-        Flag("hideVersionHeader", description: "Do not include Sourcery version in the generated files headers.")
-    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, ejsPath, cacheBasePath, buildPath, hideVersionHeader in
+        Flag("hideVersionHeader", description: "Do not include Sourcery version in the generated files headers."),
+        Option<String?>("headerPrefix", default: nil, description: "Additional prefix for headers.")
+    ) { watcherEnabled, disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, ejsPath, cacheBasePath, buildPath, hideVersionHeader, headerPrefix in
         do {
             let logConfiguration = Log.Configuration(
                 isDryRun: isDryRun,
@@ -206,7 +207,8 @@ func runCLI() {
                                         prune: prune,
                                         serialParse: serialParse,
                                         hideVersionHeader: hideVersionHeader,
-                                        arguments: configuration.args)
+                                        arguments: configuration.args,
+                                        headerPrefix: headerPrefix)
 
                 if isDryRun, watcherEnabled {
                     throw "--dry not compatible with --watch"
@@ -301,8 +303,9 @@ func runCLI() {
         	"""),
         Option<Path>("cacheBasePath", default: "", description: "Base path to Sourcery's cache directory"),
         Option<Path>("buildPath", default: "", description: "Sets a custom build path"),
-        Flag("hideVersionHeader", description: "Do not include Sourcery version in the generated files headers.")
-    ) { disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, cacheBasePath, buildPath, hideVersionHeader in
+        Flag("hideVersionHeader", description: "Do not include Sourcery version in the generated files headers."),
+        Option<String?>("headerPrefix", default: nil, description: "Additional prefix for headers.")
+    ) { disableCache, verboseLogging, logAST, logBenchmark, parseDocumentation, quiet, prune, serialParse, sources, excludeSources, templates, excludeTemplates, output, isDryRun, configPaths, forceParse, baseIndentation, args, cacheBasePath, buildPath, hideVersionHeader, headerPrefix in
         do {
             let logConfiguration = Log.Configuration(
                 isDryRun: isDryRun,
@@ -384,7 +387,8 @@ func runCLI() {
                                         prune: prune,
                                         serialParse: serialParse,
                                         hideVersionHeader: hideVersionHeader,
-                                        arguments: configuration.args)
+                                        arguments: configuration.args,
+                                        headerPrefix: headerPrefix)
 
                 return try sourcery.processFiles(
                     configuration.source,
