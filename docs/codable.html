@@ -427,8 +427,8 @@
 
 <p>For such enum template will generate code that will successfully decode from/encode to JSON of following form:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w">
-  </span><span class="s2">"anotherValue"</span><span class="p">:</span><span class="w"> </span><span class="s2">"anotherCase"</span><span class="w">
+  </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w">
+  </span><span class="nl">"anotherValue"</span><span class="p">:</span><span class="w"> </span><span class="s2">"anotherCase"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -454,9 +454,9 @@
 
 <p>If you define a coding key named <code>enumCaseKey</code> then the template will generate code that will encode/decode enum in/from following format:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">enum</span><span class="w"> </span><span class="err">case</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">encoded</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">special</span><span class="w"> </span><span class="err">key</span><span class="w">
-  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"someCase"</span><span class="w"> </span><span class="err">//</span><span class="w"> </span><span class="err">enum</span><span class="w"> </span><span class="err">case</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">encoded</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">special</span><span class="w"> </span><span class="err">key</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -464,9 +464,9 @@
 
 <p>If you don&rsquo;t define <code>enumCaseKey</code> then the template will generate code that will encode/decode enum in/from following format:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
+  </span><span class="nl">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
@@ -474,7 +474,7 @@
 <p>Associated values of each enum case must be either all named or all unnamed.
 For cases with unnamed associated values JSON format will use array instead of dictionary for associated values, in the same order in which they are defined:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="nl">"someCase"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="mi">1</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Jhon"</span><span class="w">
   </span><span class="p">]</span><span class="w">
