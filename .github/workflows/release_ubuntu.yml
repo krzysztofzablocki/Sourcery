@@ -27,7 +27,7 @@ jobs:
       - name: Setup Swift
         uses: swift-actions/setup-swift@v2
         with:
-          swift-version: "5.9.2"
+          swift-version: "5.10"
       - name: Build it
         id: build
         run: |
