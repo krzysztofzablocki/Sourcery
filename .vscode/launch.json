@@ -7,9 +7,9 @@
                 "swift"
             ],
             "name": "Debug sourcery",
-            "program": "${workspaceFolder:Sourcery-master}/.build/debug/sourcery",
+            "program": "${workspaceFolder:Sourcery}/.build/debug/sourcery",
             "args": [],
-            "cwd": "${workspaceFolder:Sourcery-master}",
+            "cwd": "${workspaceFolder:Sourcery}",
             "preLaunchTask": "swift: Build Debug sourcery"
         },
         {
@@ -19,9 +19,9 @@
                 "swift"
             ],
             "name": "Release sourcery",
-            "program": "${workspaceFolder:Sourcery-master}/.build/release/sourcery",
+            "program": "${workspaceFolder:Sourcery}/.build/release/sourcery",
             "args": [],
-            "cwd": "${workspaceFolder:Sourcery-master}",
+            "cwd": "${workspaceFolder:Sourcery}",
             "preLaunchTask": "swift: Build Release sourcery"
         }
     ]

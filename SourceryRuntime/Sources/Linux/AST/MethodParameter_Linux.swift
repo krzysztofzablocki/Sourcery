@@ -21,6 +21,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 return asSource
             case "index":
                 return index
+            case "isOptional":
+                return isOptional
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }

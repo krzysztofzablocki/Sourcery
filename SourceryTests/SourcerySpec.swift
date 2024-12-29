@@ -1386,6 +1386,7 @@ class SourcerySpecTests: QuickSpec {
 
             }
 
+#if canImport(ObjectiveC)
             context("given project") {
                 var originalProject: XcodeProj?
 
@@ -1429,7 +1430,6 @@ class SourcerySpecTests: QuickSpec {
                         }.toNot(throwError())
                 }
 
-#if canImport(ObjectiveC)
                 it("links generated files") {
                     expect {
                         try Sourcery(cacheDisabled: true, prune: true).processFiles(sources, usingTemplates: templates, output: output, baseIndentation: 0)
@@ -1437,7 +1437,7 @@ class SourcerySpecTests: QuickSpec {
 
                     expect(sourceFilesPaths.contains(outputDir + "Other.generated.swift")).to(beTrue())
                 }
-#endif
+
                 it("links generated files when using per file generation") {
                     templatePath = outputDir + "PerFileGeneration.stencil"
                     update(code: """
@@ -1463,6 +1463,7 @@ class SourcerySpecTests: QuickSpec {
                     }.toNot(throwError())
                 }
             }
+#endif
         }
     }
 }
