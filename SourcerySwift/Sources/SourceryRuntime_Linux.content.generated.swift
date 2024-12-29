@@ -1005,7 +1005,7 @@ public enum Composer {
         if baseType is Class {
             type.inherits[baseType.name] = baseType
         } else if let `protocol` = baseType as? SourceryProtocol {
-            type.implements[baseType.name] = baseType
+            type.implements[baseType.globalName] = baseType
             if let extendingProtocol = type as? SourceryProtocol {
                 `protocol`.associatedTypes.forEach {
                     if extendingProtocol.associatedTypes[$0.key] == nil {
@@ -5128,6 +5128,8 @@ public class MethodParameter: NSObject, SourceryModel, Typed, Annotated, Diffabl
                 return asSource
             case "index":
                 return index
+            case "isOptional":
+                return isOptional
             default:
                 fatalError("unable to lookup: \\(member) in \\(self)")
         }
@@ -8337,7 +8339,7 @@ public final class Variable: NSObject, SourceryModel, Typed, Annotated, Document
 """),
     .init(name: "Coding.generated.swift", content:
 """
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -8443,7 +8445,7 @@ extension Variable: NSCoding {}
 """),
     .init(name: "JSExport.generated.swift", content:
 """
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace trailing_newline
 
@@ -9182,7 +9184,7 @@ extension Variable: VariableAutoJSExport {}
 """),
     .init(name: "Typed.generated.swift", content:
 """
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable vertical_whitespace
 
