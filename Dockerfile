@@ -1,5 +1,5 @@
-ARG BUILDER_IMAGE=swift:5.9-jammy
-ARG RUNTIME_IMAGE=swift:5.9-jammy-slim
+ARG BUILDER_IMAGE=swift:6.0-jammy
+ARG RUNTIME_IMAGE=swift:6.0-jammy-slim
 
 # Builder image
 FROM ${BUILDER_IMAGE} AS builder
