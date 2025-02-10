@@ -290,15 +290,6 @@ internal struct ParserResultsComposed {
 
                 currentContainer = currentContainer?.parent
             }
-
-//            if let name = resolveGlobalName(for: "\(containingType.globalName).\(type)", containingType: containingType.parent, unique: unique, modules: modules, typealiases: typealiases) {
-//                return name
-//            }
-
-//             last check it's via module
-//            if let module = containingType.module, let name = resolveGlobalName(for: "\(module).\(type)", containingType: nil, unique: unique, modules: modules, typealiases: typealiases) {
-//                return name
-//            }
         }
 
         // TODO: is this needed?
@@ -557,7 +548,7 @@ internal struct ParserResultsComposed {
             let relevantRequirements = genericRequirements.filter {
                 // matched type against a generic requirement name
                 // thus type should be replaced with a protocol composition
-                $0.leftType.name == typeNameForLookup
+                $0.leftType.name == typeNameForLookup || $0.rightType.typeName.name == typeNameForLookup
             }
             if relevantRequirements.count > 1 {
                 // compose protocols into `ProtocolComposition` and generate TypeName
