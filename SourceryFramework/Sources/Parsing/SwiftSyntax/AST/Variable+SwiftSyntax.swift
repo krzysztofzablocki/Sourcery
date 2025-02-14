@@ -35,7 +35,7 @@ extension Variable {
               computeAccessors = Set(accessors.compactMap { accessor -> Kind? in
                   let kindRaw = accessor.accessorSpecifier.text.trimmed
                   if kindRaw == "get" {
-                    return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsSpecifier != nil)
+                      return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsClause?.throwsSpecifier != nil)
                   }
 
                   if kindRaw == "set" {

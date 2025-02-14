@@ -153,7 +153,7 @@ extension TypeName {
             }
             let returnTypeName = TypeName(typeIdentifier.returnClause.type)
             let asyncKeyword = typeIdentifier.effectSpecifiers?.asyncSpecifier.map { $0.text.trimmed }
-            let throwsOrRethrows = typeIdentifier.effectSpecifiers?.throwsSpecifier.map { $0.text.trimmed }
+            let throwsOrRethrows = typeIdentifier.effectSpecifiers?.throwsClause?.throwsSpecifier.text.trimmed
             let name = "\(elements.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrows != nil ? " \(throwsOrRethrows!)" : "") -> \(returnTypeName.asSource)"
             self.init(
                 name: name,

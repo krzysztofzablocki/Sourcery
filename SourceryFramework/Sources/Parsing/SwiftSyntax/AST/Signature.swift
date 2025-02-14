@@ -32,7 +32,7 @@ public struct Signature {
         self.init(parameters: node.parameterClause.parameters,
                   output: returnTypeName,
                   asyncKeyword: node.effectSpecifiers?.asyncSpecifier?.text,
-                  throwsOrRethrowsKeyword: node.effectSpecifiers?.throwsSpecifier?.description.trimmed,
+                  throwsOrRethrowsKeyword: node.effectSpecifiers?.throwsClause?.throwsSpecifier.description.trimmed,
                   annotationsParser: annotationsParser,
                   parent: parent
         )
