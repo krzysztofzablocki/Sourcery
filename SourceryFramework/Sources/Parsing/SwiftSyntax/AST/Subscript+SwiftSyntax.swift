@@ -14,24 +14,29 @@ extension Subscript {
         var hadSetter = false
         var hadAsync = false
         var hadThrowable = false
+        var hadThrowsTypeName: TypeName?
 
         if let block = node
           .accessorBlock {
             enum Kind: Hashable {
-                case get(isAsync: Bool, throws: Bool)
+                case get(isAsync: Bool, throws: Bool, throwsTypeName: TypeName?)
                 case set
             }
 
           let computeAccessors: Set<Kind>
           switch block.accessors {
           case .getter:
-            computeAccessors = [.get(isAsync: false, throws: false)]
+            computeAccessors = [.get(isAsync: false, throws: false, throwsTypeName: nil)]
 
             case .accessors(let accessors):
               computeAccessors = Set(accessors.compactMap { accessor -> Kind? in
                   let kindRaw = accessor.accessorSpecifier.text.trimmed
                   if kindRaw == "get" {
-                    return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsClause?.throwsSpecifier != nil)
+                    return Kind.get(
+                        isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil,
+                        throws: accessor.effectSpecifiers?.throwsClause?.throwsSpecifier != nil,
+                        throwsTypeName: accessor.effectSpecifiers?.throwsClause?.type.map { TypeName($0) }
+                    )
                   }
 
                   if kindRaw == "set" {
@@ -50,10 +55,11 @@ extension Subscript {
                 }
 
                 for accessor in computeAccessors {
-                    if case let .get(isAsync: isAsync, throws: `throws`) = accessor {
+                    if case let .get(isAsync: isAsync, throws: `throws`, throwsTypeName: throwsTypeName) = accessor {
                         hadGetter = true
                         hadAsync = isAsync
                         hadThrowable = `throws`
+                        hadThrowsTypeName = throwsTypeName
                         break
                     }
                 }
@@ -93,6 +99,7 @@ extension Subscript {
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
           isAsync: hadAsync,
           throws: hadThrowable,
+          throwsTypeName: hadThrowsTypeName,
           genericParameters: genericParameters,
           genericRequirements: genericRequirements,
           attributes: Attribute.from(node.attributes),
