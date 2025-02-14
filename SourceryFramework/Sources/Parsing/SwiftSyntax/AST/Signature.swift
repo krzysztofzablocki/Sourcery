@@ -14,6 +14,9 @@ public struct Signature {
     /// The `throws` or `rethrows` keyword, if any.
     public let throwsOrRethrowsKeyword: String?
 
+    /// The ThrownError type in `throws(ThrownError)`
+    public let throwsTypeName: TypeName?
+
     public init(_ node: FunctionSignatureSyntax, annotationsParser: AnnotationsParser, parent: Type?) {
         let isVisitingTypeSourceryProtocol = parent is SourceryProtocol
 
@@ -33,6 +36,7 @@ public struct Signature {
                   output: returnTypeName,
                   asyncKeyword: node.effectSpecifiers?.asyncSpecifier?.text,
                   throwsOrRethrowsKeyword: node.effectSpecifiers?.throwsClause?.throwsSpecifier.description.trimmed,
+                  throwsTypeName: node.effectSpecifiers?.throwsClause?.type.map { TypeName($0) },
                   annotationsParser: annotationsParser,
                   parent: parent
         )
@@ -43,6 +47,7 @@ public struct Signature {
         output: TypeName?,
         asyncKeyword: String?,
         throwsOrRethrowsKeyword: String?,
+        throwsTypeName: TypeName?,
         annotationsParser: AnnotationsParser,
         parent: Type?
     ) {
@@ -56,6 +61,7 @@ public struct Signature {
         self.output = output
         self.asyncKeyword = asyncKeyword
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
+        self.throwsTypeName = throwsTypeName
     }
 
     public func definition(with name: String) -> String {

@@ -30,6 +30,7 @@ extension SourceryMethod {
             output: nil,
             asyncKeyword: nil,
             throwsOrRethrowsKeyword: signature.effectSpecifiers?.throwsClause?.throwsSpecifier.description.trimmed,
+            throwsTypeName: signature.effectSpecifiers?.throwsClause?.type.map { TypeName($0) },
             annotationsParser: annotationsParser,
             parent: parent
           ),
@@ -47,7 +48,15 @@ extension SourceryMethod {
           parent: parent,
           identifier: "deinit",
           typeName: typeName,
-          signature: Signature(parameters: nil, output: nil, asyncKeyword: nil, throwsOrRethrowsKeyword: nil, annotationsParser: annotationsParser, parent: parent),
+          signature: Signature(
+            parameters: nil,
+            output: nil,
+            asyncKeyword: nil,
+            throwsOrRethrowsKeyword: nil,
+            throwsTypeName: nil,
+            annotationsParser: annotationsParser,
+            parent: parent
+          ),
           modifiers: node.modifiers,
           attributes: node.attributes,
           genericParameterClause: nil,
@@ -150,6 +159,7 @@ extension SourceryMethod {
           returnTypeName: returnTypeName,
           isAsync: signature.asyncKeyword == "async",
           throws: signature.throwsOrRethrowsKeyword == "throws",
+          throwsTypeName: signature.throwsOrRethrowsKeyword == "throws" ? signature.throwsTypeName : nil,
           rethrows: signature.throwsOrRethrowsKeyword == "rethrows",
           accessLevel: baseModifiers.readAccess,
           isStatic: initializerNode != nil ? true : baseModifiers.isStatic,

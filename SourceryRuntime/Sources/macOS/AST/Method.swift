@@ -71,6 +71,9 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// Whether method throws
     public let `throws`: Bool
 
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
+
     /// Whether method rethrows
     public let `rethrows`: Bool
 
@@ -197,6 +200,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 returnTypeName: TypeName = TypeName(name: "Void"),
                 isAsync: Bool = false,
                 throws: Bool = false,
+                throwsTypeName: TypeName? = nil,
                 rethrows: Bool = false,
                 accessLevel: AccessLevel = .internal,
                 isStatic: Bool = false,
@@ -215,6 +219,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         self.returnTypeName = returnTypeName
         self.isAsync = isAsync
         self.throws = `throws`
+        self.throwsTypeName = throwsTypeName
         self.rethrows = `rethrows`
         self.accessLevel = accessLevel.rawValue
         self.isStatic = isStatic
@@ -239,6 +244,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         string.append("returnTypeName = \(String(describing: self.returnTypeName)), ")
         string.append("isAsync = \(String(describing: self.isAsync)), ")
         string.append("`throws` = \(String(describing: self.`throws`)), ")
+        string.append("throwsTypeName = \(String(describing: self.throwsTypeName)), ")
         string.append("`rethrows` = \(String(describing: self.`rethrows`)), ")
         string.append("accessLevel = \(String(describing: self.accessLevel)), ")
         string.append("isStatic = \(String(describing: self.isStatic)), ")
@@ -266,6 +272,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         results.append(contentsOf: DiffableResult(identifier: "returnTypeName").trackDifference(actual: self.returnTypeName, expected: castObject.returnTypeName))
         results.append(contentsOf: DiffableResult(identifier: "isAsync").trackDifference(actual: self.isAsync, expected: castObject.isAsync))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         results.append(contentsOf: DiffableResult(identifier: "`rethrows`").trackDifference(actual: self.`rethrows`, expected: castObject.`rethrows`))
         results.append(contentsOf: DiffableResult(identifier: "accessLevel").trackDifference(actual: self.accessLevel, expected: castObject.accessLevel))
         results.append(contentsOf: DiffableResult(identifier: "isStatic").trackDifference(actual: self.isStatic, expected: castObject.isStatic))
@@ -291,6 +298,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         hasher.combine(self.returnTypeName)
         hasher.combine(self.isAsync)
         hasher.combine(self.`throws`)
+        hasher.combine(self.throwsTypeName)
         hasher.combine(self.`rethrows`)
         hasher.combine(self.accessLevel)
         hasher.combine(self.isStatic)
@@ -316,6 +324,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
         if self.isAsync != rhs.isAsync { return false }
         if self.isDistributed != rhs.isDistributed { return false }
         if self.`throws` != rhs.`throws` { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         if self.`rethrows` != rhs.`rethrows` { return false }
         if self.accessLevel != rhs.accessLevel { return false }
         if self.isStatic != rhs.isStatic { return false }
@@ -362,6 +371,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             self.returnType = aDecoder.decode(forKey: "returnType")
             self.isAsync = aDecoder.decode(forKey: "isAsync")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
             self.`rethrows` = aDecoder.decode(forKey: "`rethrows`")
             guard let accessLevel: String = aDecoder.decode(forKey: "accessLevel") else { 
                 withVaList(["accessLevel"]) { arguments in
@@ -421,6 +431,7 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
             aCoder.encode(self.returnType, forKey: "returnType")
             aCoder.encode(self.isAsync, forKey: "isAsync")
             aCoder.encode(self.`throws`, forKey: "`throws`")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
             aCoder.encode(self.`rethrows`, forKey: "`rethrows`")
             aCoder.encode(self.accessLevel, forKey: "accessLevel")
             aCoder.encode(self.isStatic, forKey: "isStatic")

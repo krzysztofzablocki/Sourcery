@@ -107,7 +107,8 @@ class FileParserMethodsSpec: QuickSpec {
                                                     Foo
                         func fooBar() rethrows ; func fooVoid();
                         func fooAsync() async; func barAsync() async throws;
-                        func fooInOut(some: Int, anotherSome: inout String) }
+                        func fooInOut(some: Int, anotherSome: inout String)
+                        func fooTypedThrows() throws(CustomError); func fooTypedThrowsAsync() async throws(CustomError) }
                     """)[0].methods
                     expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName(name: "Foo"), throws: true, isStatic: true, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[1]).to(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
@@ -122,6 +123,8 @@ class FileParserMethodsSpec: QuickSpec {
                         MethodParameter(name: "some", index: 0, typeName: TypeName(name: "Int")),
                         MethodParameter(name: "anotherSome", index: 1, typeName: TypeName(name: "inout String"), isInout: true)
                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))
+                    expect(methods[8]).to(equal(Method(name: "fooTypedThrows()", selectorName: "fooTypedThrows", returnTypeName: TypeName(name: "Void"), throws: true, throwsTypeName: TypeName(name: "CustomError"), rethrows: false, definedInTypeName: TypeName(name: "Foo"))))
+                    expect(methods[9]).to(equal(Method(name: "fooTypedThrowsAsync()", selectorName: "fooTypedThrowsAsync", returnTypeName: TypeName(name: "Void"), isAsync: true, throws: true, throwsTypeName: TypeName(name: "CustomError"), rethrows: false, definedInTypeName: TypeName(name: "Foo"))))
                 }
 
                 it("extracts class method properly") {
