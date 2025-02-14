@@ -28,7 +28,7 @@ import {{ import }}
 {% macro staticSpecifier method %}{% if method.isStatic and not method.isInitializer %}static {% endif %}{% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ThrowableError: (any Error)?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ThrowableError: {% if method.throwsTypeName %}({% call getTypeName method.throwsTypeName %})?{% else %}(any Error)?{% endif %}
 {% endmacro %}
 
 {% macro methodThrowableErrorUsage method %}
@@ -58,8 +58,12 @@ import {{ import }}
 
 {% macro closureReturnTypeName method %}{% if method.isOptionalReturnType %}{{ method.unwrappedReturnTypeName }}?{% else %}{{ method.returnTypeName }}{% endif %}{% endmacro %}
 
+{% macro getTypeName type %}{% if type.actualTypeName %}{{ type.actualTypeName }}{% else %}{{ type.name }}{% endif %}{% endmacro -%}
+
+{% macro throwsSpecifier throwable %}{% if throwable.throws %}throws{% if throwable.throwsTypeName %}({% call getTypeName throwable.throwsTypeName %}){% endif %}{% endif %}{% endmacro -%}
+
 {% macro methodClosureDeclaration method %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call methodClosureName method %}: (({% for param in method.parameters %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic true %}{% if not forloop.last %}, {% elif param.typeName.isClosure and param.typeName.closure.returnTypeName.name|contains:"any " %}{% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% if method.throws %}throws {% endif %}-> {% if method.isInitializer %}Void{% else %}{% call existentialVariableTypeName method.returnTypeName true %}{% endif %})?
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call methodClosureName method %}: (({% for param in method.parameters %}{% call existentialClosureVariableTypeName param.typeName param.isVariadic true %}{% if not forloop.last %}, {% elif param.typeName.isClosure and param.typeName.closure.returnTypeName.name|contains:"any " %}{% endif %}{% endfor %}) {% if method.isAsync %}async {% endif %}{% call throwsSpecifier method %}{{ ' ' if method.throws }}-> {% if method.isInitializer %}Void{% else %}{% call existentialVariableTypeName method.returnTypeName true %}{% endif %})?
 {% endmacro %}
 
 {% macro methodClosureCallParameters method %}{% for param in method.parameters %}{{ '&' if param.typeName.name | hasPrefix:"inout " }}{% if not param.name == "" %}{{ param.name }}{% else %}arg{{ param.index }}{% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}{% endmacro %}
@@ -104,7 +108,7 @@ import {{ import }}
     {{ value }}
     {% endfor %}
     {% endfor %}
-    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}{% call methodName method %}{{ ' async' if method.isAsync }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {% call existentialVariableTypeName method.returnTypeName false %}{% endif %} {
+    {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}{% call methodName method %}{{ ' async' if method.isAsync }}{{ ' ' if method.throws }}{% call throwsSpecifier method %}{% if not method.returnTypeName.isVoid %} -> {% call existentialVariableTypeName method.returnTypeName false %}{% endif %} {
         {% call swiftifyMethodName method %}CallsCount += 1
         {% call methodReceivedParameters method %}
         {% if method.throws %}
@@ -127,7 +131,7 @@ import {{ import }}
 {% macro mockSubscript subscript index %}
     //MARK: - Subscript #{{ index }}
     {% call accessLevel subscript.readAccess %}subscript{% if subscript.isGeneric %}<{% for genericParameter in subscript.genericParameters %}{{ genericParameter.name }}{% if genericParameter.inheritedTypeName %}: {{ genericParameter.inheritedTypeName.name }}{% endif %}{{ ', ' if not forloop.last }}{% endfor %}>{% endif %}({% for parameter in subscript.parameters %}{{ parameter.asSource }}{{ ', ' if not forloop.last }}{% endfor %}) -> {{ subscript.returnTypeName.name }}{% if subscript.genericRequirements|count != 0 %} where {% for requirement in subscript.genericRequirements %}{{ requirement.leftType.name }} {{ requirement.relationshipSyntax }} {{ requirement.rightType.typeName.name }}{{ ', ' if not forloop.last }}{% endfor %}{% endif %} {
-        {% if subscript.readAccess %}get{% if subscript.isAsync %} async{% endif %}{% if subscript.throws %} throws{% endif %} { fatalError("Subscripts are not fully supported yet") }{% endif %}
+        {% if subscript.readAccess %}get{% if subscript.isAsync %} async{% endif %}{% if subscript.throws %} {% call throwsSpecifier subscript %}{% endif %} { fatalError("Subscripts are not fully supported yet") }{% endif %}
         {% if subscript.writeAccess %}set { fatalError("Subscripts are not fully supported yet") }{% endif %}
     }
 {% endmacro %}
@@ -172,7 +176,7 @@ import {{ import }}
 {% endmacro %}
 
 {% macro variableThrowableErrorDeclaration variable %}
-    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}ThrowableError: Error?
+    {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}ThrowableError: {% if variable.throwsTypeName %}({% call getTypeName variable.throwsTypeName %})?{% else %}Error?{% endif %}
 {% endmacro %}
 
 {% macro variableThrowableErrorUsage variable %}
@@ -182,7 +186,7 @@ import {{ import }}
 {% endmacro %}
 
 {% macro variableClosureDeclaration variable %}
-    {% call accessLevel variable.readAccess %}var {% call variableClosureName variable %}: (() {% if variable.isAsync %}async {% endif %}{% if variable.throws %}throws {% endif %}-> {% call existentialVariableTypeName variable.typeName true %})?
+    {% call accessLevel variable.readAccess %}var {% call variableClosureName variable %}: (() {% if variable.isAsync %}async {% endif %}{% if variable.throws %}{% call throwsSpecifier variable %} {% endif %}-> {% call existentialVariableTypeName variable.typeName true %})?
 {% endmacro %}
 
 {% macro variableClosureName variable %}{% call mockedVariableName variable %}Closure{% endmacro %}
@@ -194,7 +198,7 @@ import {{ import }}
     }
 
     {% call accessLevel variable.readAccess %}var {% call mockedVariableName variable %}: {% call existentialVariableTypeName variable.typeName false %} {
-        get {% if variable.isAsync %}async {% endif %}{% if variable.throws %}throws {% endif %}{
+        get {% if variable.isAsync %}async {% endif %}{% if variable.throws %}{% call throwsSpecifier variable %} {% endif %}{
             {% call mockedVariableName variable %}CallsCount += 1
             {% if variable.throws %}
             {% call variableThrowableErrorUsage variable %}

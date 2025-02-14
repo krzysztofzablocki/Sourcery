@@ -59,6 +59,19 @@ protocol ThrowableProtocol: AutoMockable {
     func doOrThrowVoid() throws
 }
 
+protocol TypedThrowableProtocol: AutoMockable {
+    var value: Int { get throws(CustomError) }
+    var valueAnyError: Int { get throws(any Error) }
+    func doOrThrow() throws(CustomError) -> String
+    func doOrThrowVoid() throws(CustomErrorNameSpace.Error)
+    func doOrThrowAnyError() throws(any Error)
+}
+
+struct CustomError: Error {}
+enum CustomErrorNameSpace {
+    struct Error: Swift.Error {}
+}
+
 protocol CurrencyPresenter: AutoMockable {
     func showSourceCurrency(_ currency: String)
 }
@@ -270,6 +283,7 @@ protocol SubscriptProtocol {
     subscript<T>(arg: T) -> String { get async }
     subscript<T: Hashable>(arg: T) -> T? { get set }
     subscript<T>(arg: String) -> T? where T: Cancellable { get throws }
+    subscript<T>(arg2: String) -> T { get throws(CustomError) }
 }
 
 // sourcery: AutoMockable

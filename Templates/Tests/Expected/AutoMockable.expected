@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -1746,6 +1746,10 @@ class SubscriptProtocolMock: SubscriptProtocol {
     subscript<T>(arg: String) -> T? where T : Cancellable {
         get throws { fatalError("Subscripts are not fully supported yet") }
     }
+    //MARK: - Subscript #6
+    subscript<T>(arg2: String) -> T {
+        get throws(CustomError) { fatalError("Subscripts are not fully supported yet") }
+    }
 }
 class TestProtocolMock<
     Value: Sequence,
@@ -1942,6 +1946,111 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
     var firstNameThrowableError: Error?
     var firstNameClosure: (() throws -> String)?
 
+
+
+}
+class TypedThrowableProtocolMock: TypedThrowableProtocol {
+
+
+    var valueCallsCount = 0
+    var valueCalled: Bool {
+        return valueCallsCount > 0
+    }
+
+    var value: Int {
+        get throws(CustomError) {
+            valueCallsCount += 1
+            if let error = valueThrowableError {
+                throw error
+            }
+            if let valueClosure = valueClosure {
+                return try valueClosure()
+            } else {
+                return underlyingValue
+            }
+        }
+    }
+    var underlyingValue: Int!
+    var valueThrowableError: (CustomError)?
+    var valueClosure: (() throws(CustomError) -> Int)?
+    var valueAnyErrorCallsCount = 0
+    var valueAnyErrorCalled: Bool {
+        return valueAnyErrorCallsCount > 0
+    }
+
+    var valueAnyError: Int {
+        get throws(any Error) {
+            valueAnyErrorCallsCount += 1
+            if let error = valueAnyErrorThrowableError {
+                throw error
+            }
+            if let valueAnyErrorClosure = valueAnyErrorClosure {
+                return try valueAnyErrorClosure()
+            } else {
+                return underlyingValueAnyError
+            }
+        }
+    }
+    var underlyingValueAnyError: Int!
+    var valueAnyErrorThrowableError: (any Error)?
+    var valueAnyErrorClosure: (() throws(any Error) -> Int)?
+
+
+    //MARK: - doOrThrow
+
+    var doOrThrowStringThrowableError: (CustomError)?
+    var doOrThrowStringCallsCount = 0
+    var doOrThrowStringCalled: Bool {
+        return doOrThrowStringCallsCount > 0
+    }
+    var doOrThrowStringReturnValue: String!
+    var doOrThrowStringClosure: (() throws(CustomError) -> String)?
+
+    func doOrThrow() throws(CustomError) -> String {
+        doOrThrowStringCallsCount += 1
+        if let error = doOrThrowStringThrowableError {
+            throw error
+        }
+        if let doOrThrowStringClosure = doOrThrowStringClosure {
+            return try doOrThrowStringClosure()
+        } else {
+            return doOrThrowStringReturnValue
+        }
+    }
+
+    //MARK: - doOrThrowVoid
+
+    var doOrThrowVoidVoidThrowableError: (CustomErrorNameSpace.Error)?
+    var doOrThrowVoidVoidCallsCount = 0
+    var doOrThrowVoidVoidCalled: Bool {
+        return doOrThrowVoidVoidCallsCount > 0
+    }
+    var doOrThrowVoidVoidClosure: (() throws(CustomErrorNameSpace.Error) -> Void)?
+
+    func doOrThrowVoid() throws(CustomErrorNameSpace.Error) {
+        doOrThrowVoidVoidCallsCount += 1
+        if let error = doOrThrowVoidVoidThrowableError {
+            throw error
+        }
+        try doOrThrowVoidVoidClosure?()
+    }
+
+    //MARK: - doOrThrowAnyError
+
+    var doOrThrowAnyErrorVoidThrowableError: (any Error)?
+    var doOrThrowAnyErrorVoidCallsCount = 0
+    var doOrThrowAnyErrorVoidCalled: Bool {
+        return doOrThrowAnyErrorVoidCallsCount > 0
+    }
+    var doOrThrowAnyErrorVoidClosure: (() throws(any Error) -> Void)?
+
+    func doOrThrowAnyError() throws(any Error) {
+        doOrThrowAnyErrorVoidCallsCount += 1
+        if let error = doOrThrowAnyErrorVoidThrowableError {
+            throw error
+        }
+        try doOrThrowAnyErrorVoidClosure?()
+    }
 
 
 }
