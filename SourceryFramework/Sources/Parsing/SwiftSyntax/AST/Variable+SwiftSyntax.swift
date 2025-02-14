@@ -18,24 +18,29 @@ extension Variable {
         var hadSetter = false
         var hadAsync = false
         var hadThrowable = false
+        var hadThrowsTypeName: TypeName?
 
         if let block = node
             .accessorBlock {
             enum Kind: Hashable {
-                case get(isAsync: Bool, throws: Bool)
+                case get(isAsync: Bool, throws: Bool, throwsTypeName: TypeName?)
                 case set
             }
 
             let computeAccessors: Set<Kind>
             switch block.accessors {
             case .getter:
-              computeAccessors = [.get(isAsync: false, throws: false)]
+                computeAccessors = [.get(isAsync: false, throws: false, throwsTypeName: nil)]
 
             case .accessors(let accessors):
               computeAccessors = Set(accessors.compactMap { accessor -> Kind? in
                   let kindRaw = accessor.accessorSpecifier.text.trimmed
                   if kindRaw == "get" {
-                      return Kind.get(isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil, throws: accessor.effectSpecifiers?.throwsClause?.throwsSpecifier != nil)
+                      return Kind.get(
+                        isAsync: accessor.effectSpecifiers?.asyncSpecifier != nil,
+                        throws: accessor.effectSpecifiers?.throwsClause?.throwsSpecifier != nil,
+                        throwsTypeName: accessor.effectSpecifiers?.throwsClause?.type.map { TypeName($0) }
+                      )
                   }
 
                   if kindRaw == "set" {
@@ -54,10 +59,11 @@ extension Variable {
                 }
                 
                 for accessor in computeAccessors {
-                    if case let .get(isAsync: isAsync, throws: `throws`) = accessor {
+                    if case let .get(isAsync: isAsync, throws: `throws`, throwsTypeName: throwsTypeName) = accessor {
                         hadGetter = true
                         hadAsync = isAsync
                         hadThrowable = `throws`
+                        hadThrowsTypeName = throwsTypeName
                         break
                     }
                 }
@@ -70,6 +76,7 @@ extension Variable {
         let isComputed = node.initializer == nil && hadGetter && !isVisitingTypeSourceryProtocol
         let isAsync = hadAsync
         let `throws` = hadThrowable
+        let throwsTypeName = hadThrowsTypeName
         let isWritable = variableNode.bindingSpecifier.tokens(viewMode: .fixedUp).contains { $0.tokenKind == .keyword(.var) } && (!isComputed || hadSetter)
 
         var typeName: TypeName? = node.typeAnnotation.map { TypeName($0.type) } ??
@@ -93,6 +100,7 @@ extension Variable {
           isComputed: isComputed,
           isAsync: isAsync,
           throws: `throws`,
+          throwsTypeName: throwsTypeName,
           isStatic: isStatic,
           defaultValue: node.initializer?.value.description.trimmingCharacters(in: .whitespacesAndNewlines),
           attributes: Attribute.from(variableNode.attributes),
