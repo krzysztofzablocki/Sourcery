@@ -2001,6 +2001,20 @@ class TypedThrowableProtocolMock: TypedThrowableProtocol {
     var underlyingValueThrowsNever: (Int)!
 
 
+    //MARK: - init
+
+    var initTypedThrowableProtocolThrowableError: (CustomError)?
+    var initTypedThrowableProtocolClosure: (() throws(CustomError) -> Void)?
+
+    required init() {
+        initTypedThrowableProtocolClosure?()
+    }
+    //MARK: - init<E>
+
+
+    required init<E>(init2: Void) {
+        fatalError("Generic typed throws in inits are not fully supported yet")
+    }
     //MARK: - doOrThrow
 
     var doOrThrowStringThrowableError: (CustomError)?

@@ -101,8 +101,12 @@ import {{ import }}
 
 {% if method.isInitializer %}
     {% call accessLevel method.accessLevel %}required {{ method.name }} {
+        {% if method.isThrowsTypeGeneric %}
+        fatalError("Generic typed throws in inits are not fully supported yet")
+        {% else %}
         {% call methodReceivedParameters method %}
         {% call methodClosureName method %}?({% call methodClosureCallParameters method %})
+        {% endif %}
     }
 {% else %}
     {% for name, attribute in method.attributes %}

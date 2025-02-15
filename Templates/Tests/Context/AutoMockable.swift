@@ -60,6 +60,8 @@ protocol ThrowableProtocol: AutoMockable {
 }
 
 protocol TypedThrowableProtocol: AutoMockable {
+    init() throws(CustomError)
+    init<E>(init2: Void) throws(E) where E: Error
     var value: Int { get throws(CustomError) }
     var valueAnyError: Int { get throws(any Error) }
     var valueThrowsNever: Int { get throws(Never) }
