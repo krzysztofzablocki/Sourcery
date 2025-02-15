@@ -980,6 +980,15 @@ class ParserComposerSpec: QuickSpec {
                         ))
                     }
 
+                    it("extracts typed throws return type") {
+                        let types = parse("struct Foo { var closure: () throws(CustomError) -> Int }")
+                        let variables = types.first?.variables
+
+                        expect(variables?[0].typeName.closure).to(equal(
+                            ClosureType(name: "() throws(CustomError) -> Int", parameters: [], returnTypeName: TypeName(name: "Int"), throwsOrRethrowsKeyword: "throws", throwsTypeName: TypeName("CustomError"))
+                        ))
+                    }
+
                     it("extracts void return type") {
                         let types = parse("struct Foo { var closure: () -> Void }")
                         let variables = types.first?.variables
@@ -999,13 +1008,13 @@ class ParserComposerSpec: QuickSpec {
                     }
 
                     it("extracts complex closure type") {
-                        let types = parse("struct Foo { var closure: () -> (Int) throws -> Int }")
+                        let types = parse("struct Foo { var closure: () -> (Int) throws(CustomError) -> Int }")
                         let variables = types.first?.variables
 
                         expect(variables?[0].typeName.closure).to(equal(
-                            ClosureType(name: "() -> (Int) throws -> Int", parameters: [], returnTypeName: TypeName(name: "(Int) throws -> Int", closure: ClosureType(name: "(Int) throws -> Int", parameters: [
+                            ClosureType(name: "() -> (Int) throws(CustomError) -> Int", parameters: [], returnTypeName: TypeName(name: "(Int) throws(CustomError) -> Int", closure: ClosureType(name: "(Int) throws(CustomError) -> Int", parameters: [
                                 ClosureParameter(typeName: TypeName(name: "Int"))
-                                ], returnTypeName: TypeName(name: "Int"), throwsOrRethrowsKeyword: "throws"
+                                ], returnTypeName: TypeName(name: "Int"), throwsOrRethrowsKeyword: "throws", throwsTypeName: TypeName("CustomError")
                             )))
                         ))
                     }
