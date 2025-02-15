@@ -2070,6 +2070,13 @@ class TypedThrowableProtocolMock: TypedThrowableProtocol {
         doOrThrowNeverVoidClosure?()
     }
 
+    //MARK: - doOrRethrows<E>
+
+
+    func doOrRethrows<E>(_ block: () throws(E) -> Void) throws(E) -> Int where E: Error {
+        fatalError("Generic typed throws are not fully supported yet")
+    }
+
 
 }
 class VariablesProtocolMock: VariablesProtocol {

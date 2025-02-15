@@ -71,6 +71,7 @@ import {{ import }}
 {% macro mockMethod method %}
     //MARK: - {{ method.shortName }}
 
+    {% if not method.isThrowsTypeGeneric %}
     {% if method.throws %}
         {% call methodThrowableErrorDeclaration method %}
     {% endif %}
@@ -96,6 +97,7 @@ import {{ import }}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}var {% call swiftifyMethodName method %}ReturnValue: {{ '(' if method.returnTypeName.isClosure and not method.isOptionalReturnType or method.returnTypeName|contains:"any "}}{% call existentialVariableTypeName method.returnTypeName false %}{{ ')' if method.returnTypeName.isClosure and not method.isOptionalReturnType or method.returnTypeName|contains:"any " }}{{ '!' if not method.isOptionalReturnType }}
     {% endif %}
     {% call methodClosureDeclaration method %}
+    {% endif %}
 
 {% if method.isInitializer %}
     {% call accessLevel method.accessLevel %}required {{ method.name }} {
@@ -109,6 +111,9 @@ import {{ import }}
     {% endfor %}
     {% endfor %}
     {% call accessLevel method.accessLevel %}{% call staticSpecifier method %}{% call methodName method %}{{ ' async' if method.isAsync }}{{ ' ' if method.throws }}{% call throwsSpecifier method %}{% if not method.returnTypeName.isVoid %} -> {% call existentialVariableTypeName method.returnTypeName false %}{% endif %} {
+        {% if method.isThrowsTypeGeneric %}
+        fatalError("Generic typed throws are not fully supported yet")
+        {% else %}
         {% call swiftifyMethodName method %}CallsCount += 1
         {% call methodReceivedParameters method %}
         {% if method.throws %}
@@ -122,6 +127,7 @@ import {{ import }}
         } else {
             return {% call swiftifyMethodName method %}ReturnValue
         }
+        {% endif %}
         {% endif %}
     }
 

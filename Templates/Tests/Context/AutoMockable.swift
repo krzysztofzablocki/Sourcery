@@ -67,6 +67,7 @@ protocol TypedThrowableProtocol: AutoMockable {
     func doOrThrowVoid() throws(CustomErrorNameSpace.Error)
     func doOrThrowAnyError() throws(any Error)
     func doOrThrowNever() throws(Never)
+    func doOrRethrows<E>(_ block: () throws(E) -> Void) throws(E) -> Int where E: Error
 }
 
 struct CustomError: Error {}
