@@ -80,6 +80,12 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     }
 
     // sourcery: skipEquality, skipDescription
+    /// Return if the throwsType is generic
+    public var isThrowsTypeGeneric: Bool {
+        return genericParameters.contains { $0.name == throwsTypeName?.name }
+    }
+
+    // sourcery: skipEquality, skipDescription
     /// Actual return value type, if known
     public var returnType: Type?
 

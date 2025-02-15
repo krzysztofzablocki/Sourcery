@@ -108,7 +108,9 @@ class FileParserMethodsSpec: QuickSpec {
                         func fooBar() rethrows ; func fooVoid();
                         func fooAsync() async; func barAsync() async throws;
                         func fooInOut(some: Int, anotherSome: inout String)
-                        func fooTypedThrows() throws(CustomError); func fooTypedThrowsAsync() async throws(CustomError) }
+                        func fooTypedThrows() throws(CustomError); func fooTypedThrowsAsync() async throws(CustomError) 
+                        func rethrowing<E>(block: () throws(E) -> Int) throws(E) -> Int where E: Error
+                    }
                     """)[0].methods
                     expect(methods[0]).to(equal(Method(name: "init()", selectorName: "init", parameters: [], returnTypeName: TypeName(name: "Foo"), throws: true, isStatic: true, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[1]).to(equal(Method(name: "bar(some: Int)", selectorName: "bar(some:)", parameters: [
@@ -125,6 +127,16 @@ class FileParserMethodsSpec: QuickSpec {
                         ], returnTypeName: TypeName(name: "Void"), definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[8]).to(equal(Method(name: "fooTypedThrows()", selectorName: "fooTypedThrows", returnTypeName: TypeName(name: "Void"), throws: true, throwsTypeName: TypeName(name: "CustomError"), rethrows: false, definedInTypeName: TypeName(name: "Foo"))))
                     expect(methods[9]).to(equal(Method(name: "fooTypedThrowsAsync()", selectorName: "fooTypedThrowsAsync", returnTypeName: TypeName(name: "Void"), isAsync: true, throws: true, throwsTypeName: TypeName(name: "CustomError"), rethrows: false, definedInTypeName: TypeName(name: "Foo"))))
+                    expect(methods[9].isThrowsTypeGeneric).to(beFalse())
+                    expect(methods[10]).to(equal(Method(name: "rethrowing<E>(block: () throws(E) -> Int)", selectorName: "rethrowing(block:)", parameters: [
+                        MethodParameter(name: "block", index: 0, typeName: TypeName(name: "() throws(E) -> Int", closure: ClosureType(name: "() throws(E) -> Int", parameters: [], returnTypeName: TypeName(name: "Int"), returnType: nil, asyncKeyword: nil, throwsOrRethrowsKeyword: "throws", throwsTypeName: TypeName(name: "E")))),
+                    ], returnTypeName: TypeName(name: "Int where E: Error"), isAsync: false, throws: true, throwsTypeName: TypeName(name: "E"), rethrows: false, definedInTypeName: TypeName(name: "Foo"), genericRequirements: [
+                        GenericRequirement.init(leftType: AssociatedType(name: "E", typeName: nil, type: nil), rightType: GenericTypeParameter(typeName: TypeName("Error"), type: nil), relationship: .conformsTo)
+                    ], genericParameters: [
+                        GenericParameter(name: "E", inheritedTypeName: TypeName("Error"))
+                    ])))
+                    expect(methods[10].isThrowsTypeGeneric).to(beTrue())
+
                 }
 
                 it("extracts class method properly") {

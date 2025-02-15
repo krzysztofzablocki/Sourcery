@@ -74,6 +74,12 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
     /// Type of thrown error if specified
     public let throwsTypeName: TypeName?
 
+    // sourcery: skipEquality, skipDescription
+    /// Return if the throwsType is generic
+    public var isThrowsTypeGeneric: Bool {
+        return genericParameters.contains { $0.name == throwsTypeName?.name }
+    }
+
     /// Whether method rethrows
     public let `rethrows`: Bool
 
