@@ -158,7 +158,7 @@ extension SourceryMethod {
           parameters: signature.input,
           returnTypeName: returnTypeName,
           isAsync: signature.asyncKeyword == "async",
-          throws: signature.throwsOrRethrowsKeyword == "throws",
+          throws: signature.throwsOrRethrowsKeyword == "throws" && !(signature.throwsTypeName?.isNever ?? false),
           throwsTypeName: signature.throwsOrRethrowsKeyword == "throws" ? signature.throwsTypeName : nil,
           rethrows: signature.throwsOrRethrowsKeyword == "rethrows",
           accessLevel: baseModifiers.readAccess,

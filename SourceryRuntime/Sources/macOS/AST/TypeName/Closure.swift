@@ -65,7 +65,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable {
         self.asyncKeyword = asyncKeyword
         self.isAsync = asyncKeyword != nil
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
-        self.`throws` = throwsOrRethrowsKeyword != nil
+        self.`throws` = throwsOrRethrowsKeyword != nil && !(throwsTypeName?.isNever ?? false)
         self.throwsTypeName = throwsTypeName
     }
 

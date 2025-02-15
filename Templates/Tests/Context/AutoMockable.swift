@@ -62,9 +62,11 @@ protocol ThrowableProtocol: AutoMockable {
 protocol TypedThrowableProtocol: AutoMockable {
     var value: Int { get throws(CustomError) }
     var valueAnyError: Int { get throws(any Error) }
+    var valueThrowsNever: Int { get throws(Never) }
     func doOrThrow() throws(CustomError) -> String
     func doOrThrowVoid() throws(CustomErrorNameSpace.Error)
     func doOrThrowAnyError() throws(any Error)
+    func doOrThrowNever() throws(Never)
 }
 
 struct CustomError: Error {}

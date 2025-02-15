@@ -162,6 +162,11 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
     /// Set type data
     public var set: SetType?
 
+    /// Whether type is `Never`
+    public var isNever: Bool {
+        return name == "Never"
+    }
+
     /// Prints typename as it would appear on definition
     public var asSource: String {
         // TODO: TBR special treatment

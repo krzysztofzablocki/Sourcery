@@ -98,7 +98,7 @@ extension Subscript {
           returnTypeName: TypeName(node.returnClause.type),
           accessLevel: (read: readAccess, write: isWritable ? writeAccess : .none),
           isAsync: hadAsync,
-          throws: hadThrowable,
+          throws: hadThrowable && !(hadThrowsTypeName?.isNever ?? false),
           throwsTypeName: hadThrowsTypeName,
           genericParameters: genericParameters,
           genericRequirements: genericRequirements,

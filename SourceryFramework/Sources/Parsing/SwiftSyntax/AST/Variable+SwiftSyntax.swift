@@ -75,8 +75,8 @@ extension Variable {
         let isVisitingTypeSourceryProtocol = visitingType is SourceryProtocol
         let isComputed = node.initializer == nil && hadGetter && !isVisitingTypeSourceryProtocol
         let isAsync = hadAsync
-        let `throws` = hadThrowable
         let throwsTypeName = hadThrowsTypeName
+        let `throws` = hadThrowable && !(throwsTypeName?.isNever ?? false)
         let isWritable = variableNode.bindingSpecifier.tokens(viewMode: .fixedUp).contains { $0.tokenKind == .keyword(.var) } && (!isComputed || hadSetter)
 
         var typeName: TypeName? = node.typeAnnotation.map { TypeName($0.type) } ??

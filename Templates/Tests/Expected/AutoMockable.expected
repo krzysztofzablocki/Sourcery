@@ -1994,6 +1994,11 @@ class TypedThrowableProtocolMock: TypedThrowableProtocol {
     var underlyingValueAnyError: Int!
     var valueAnyErrorThrowableError: (any Error)?
     var valueAnyErrorClosure: (() throws(any Error) -> Int)?
+    var valueThrowsNever: Int {
+        get { return underlyingValueThrowsNever }
+        set(value) { underlyingValueThrowsNever = value }
+    }
+    var underlyingValueThrowsNever: (Int)!
 
 
     //MARK: - doOrThrow
@@ -2050,6 +2055,19 @@ class TypedThrowableProtocolMock: TypedThrowableProtocol {
             throw error
         }
         try doOrThrowAnyErrorVoidClosure?()
+    }
+
+    //MARK: - doOrThrowNever
+
+    var doOrThrowNeverVoidCallsCount = 0
+    var doOrThrowNeverVoidCalled: Bool {
+        return doOrThrowNeverVoidCallsCount > 0
+    }
+    var doOrThrowNeverVoidClosure: (() -> Void)?
+
+    func doOrThrowNever() {
+        doOrThrowNeverVoidCallsCount += 1
+        doOrThrowNeverVoidClosure?()
     }
 
 
