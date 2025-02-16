@@ -66,16 +66,17 @@ protocol TypedThrowableProtocol: AutoMockable {
     var valueAnyError: Int { get throws(any Error) }
     var valueThrowsNever: Int { get throws(Never) }
     func doOrThrow() throws(CustomError) -> String
-    func doOrThrowVoid() throws(CustomErrorNameSpace.Error)
+    // func doOrThrowVoid() throws(CustomErrorNameSpace.Error)
     func doOrThrowAnyError() throws(any Error)
     func doOrThrowNever() throws(Never)
     func doOrRethrows<E>(_ block: () throws(E) -> Void) throws(E) -> Int where E: Error
 }
 
 struct CustomError: Error {}
-enum CustomErrorNameSpace {
-    struct Error: Swift.Error {}
-}
+// This seems to not be supported on linux, as it cause a crash when running sourcery
+// enum CustomErrorNameSpace {
+//     struct Error: Swift.Error {}
+// }
 
 protocol CurrencyPresenter: AutoMockable {
     func showSourceCurrency(_ currency: String)
