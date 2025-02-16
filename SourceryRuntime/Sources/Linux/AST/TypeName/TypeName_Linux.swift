@@ -13,6 +13,8 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return tuple
             case "name":
                 return name
+            case "actualTypeName":
+                return actualTypeName
             case "isOptional":
                 return isOptional
             case "unwrappedTypeName":

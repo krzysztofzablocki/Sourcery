@@ -40,6 +40,8 @@ public final class Method: NSObject, SourceryModel, Annotated, Documented, Defin
                 return isOptionalReturnType
             case "actualReturnTypeName":
                 return actualReturnTypeName
+            case "isThrowsTypeGeneric":
+                return isThrowsTypeGeneric
             case "isDynamic":
                 return isDynamic
             case "genericRequirements":
