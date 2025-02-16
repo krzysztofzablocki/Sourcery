@@ -73,7 +73,8 @@ protocol TypedThrowableProtocol: AutoMockable {
 }
 
 struct CustomError: Error {}
-// This seems to not be supported on linux, as it cause a crash when running sourcery
+// This seems to not be supported on linux, as it cause a crash when running Sourcery
+// because of the cycle in Type (with Type and Typealias), causing a crash during NSArchive decoding
 // enum CustomErrorNameSpace {
 //     struct Error: Swift.Error {}
 // }

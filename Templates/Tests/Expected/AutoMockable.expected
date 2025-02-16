@@ -2037,23 +2037,6 @@ class TypedThrowableProtocolMock: TypedThrowableProtocol {
         }
     }
 
-    //MARK: - doOrThrowVoid
-
-    var doOrThrowVoidVoidThrowableError: (CustomErrorNameSpace.Error)?
-    var doOrThrowVoidVoidCallsCount = 0
-    var doOrThrowVoidVoidCalled: Bool {
-        return doOrThrowVoidVoidCallsCount > 0
-    }
-    var doOrThrowVoidVoidClosure: (() throws(CustomErrorNameSpace.Error) -> Void)?
-
-    func doOrThrowVoid() throws(CustomErrorNameSpace.Error) {
-        doOrThrowVoidVoidCallsCount += 1
-        if let error = doOrThrowVoidVoidThrowableError {
-            throw error
-        }
-        try doOrThrowVoidVoidClosure?()
-    }
-
     //MARK: - doOrThrowAnyError
 
     var doOrThrowAnyErrorVoidThrowableError: (any Error)?
