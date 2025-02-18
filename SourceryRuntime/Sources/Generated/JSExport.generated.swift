@@ -185,6 +185,7 @@ extension ClosureParameter: ClosureParameterAutoJSExport {}
     var asyncKeyword: String? { get }
     var `throws`: Bool { get }
     var throwsOrRethrowsKeyword: String? { get }
+    var throwsTypeName: TypeName? { get }
     var asSource: String { get }
 }
 
@@ -318,6 +319,7 @@ extension Import: ImportAutoJSExport {}
     var parameters: [MethodParameter] { get }
     var returnTypeName: TypeName { get }
     var actualReturnTypeName: TypeName { get }
+    var isThrowsTypeGeneric: Bool { get }
     var returnType: Type? { get }
     var isOptionalReturnType: Bool { get }
     var isImplicitlyUnwrappedOptionalReturnType: Bool { get }
@@ -325,6 +327,7 @@ extension Import: ImportAutoJSExport {}
     var isAsync: Bool { get }
     var isDistributed: Bool { get }
     var `throws`: Bool { get }
+    var throwsTypeName: TypeName? { get }
     var `rethrows`: Bool { get }
     var accessLevel: String { get }
     var isStatic: Bool { get }
@@ -555,6 +558,7 @@ extension Struct: StructAutoJSExport {}
     var writeAccess: String { get }
     var isAsync: Bool { get }
     var `throws`: Bool { get }
+    var throwsTypeName: TypeName? { get }
     var isMutable: Bool { get }
     var annotations: Annotations { get }
     var documentation: Documentation { get }
@@ -671,6 +675,7 @@ extension Type: TypeAutoJSExport {}
     var closure: ClosureType? { get }
     var isSet: Bool { get }
     var set: SetType? { get }
+    var isNever: Bool { get }
     var asSource: String { get }
     var description: String { get }
     var debugDescription: String { get }
@@ -710,6 +715,7 @@ extension TypesCollection: TypesCollectionAutoJSExport {}
     var isComputed: Bool { get }
     var isAsync: Bool { get }
     var `throws`: Bool { get }
+    var throwsTypeName: TypeName? { get }
     var isStatic: Bool { get }
     var readAccess: String { get }
     var writeAccess: String { get }

@@ -60,6 +60,12 @@ class MethodSpec: QuickSpec {
                 expect(Method(name: "foo()").isGeneric).to(beFalse())
             }
 
+            it("reports throws error generic type") {
+                expect(Method(name: "foo<E: Error>() throws(E)", throws: true, throwsTypeName: TypeName("E"), genericRequirements: [], genericParameters: [GenericParameter(name: "E", inheritedTypeName: TypeName("Error"))]).isThrowsTypeGeneric).to(beTrue())
+                expect(Method(name: "foo<E>() throws(E) where E: Error", throws: true, throwsTypeName: TypeName("E"), genericRequirements: [GenericRequirement(leftType: AssociatedType(name: "E", typeName: TypeName("E"), type: nil), rightType: GenericTypeParameter(typeName: TypeName("Error"), type: nil), relationship: .conformsTo)], genericParameters: [GenericParameter(name: "E")]).isThrowsTypeGeneric).to(beTrue())
+                expect(Method(name: "foo()").isThrowsTypeGeneric).to(beFalse())
+            }
+
             it("reports distributed method") {
                 expect(Method(name: "foo()", modifiers: [.init(name: "distributed")]).isDistributed).to(beTrue())
             }

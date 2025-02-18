@@ -13,6 +13,8 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return tuple
             case "name":
                 return name
+            case "actualTypeName":
+                return actualTypeName
             case "isOptional":
                 return isOptional
             case "unwrappedTypeName":
@@ -161,6 +163,11 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
 
     /// Set type data
     public var set: SetType?
+
+    /// Whether type is `Never`
+    public var isNever: Bool {
+        return name == "Never"
+    }
 
     /// Prints typename as it would appear on definition
     public var asSource: String {

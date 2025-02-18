@@ -160,6 +160,8 @@ class FileParserVariableSpec: QuickSpec {
                     it("reports variable throwability") {
                         expect(variable("var name: String { get } ")?.throws).to(beFalse())
                         expect(variable("var name: String { get throws }")?.throws).to(beTrue())
+                        expect(variable("var name: String { get throws(CustomError) }")?.throws).to(beTrue())
+                        expect(variable("var name: String { get throws(CustomError) }")?.throwsTypeName).to(equal(TypeName("CustomError")))
                     }
                 }
 

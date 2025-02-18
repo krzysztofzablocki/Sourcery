@@ -1,4 +1,4 @@
-// Generated using Sourcery 2.2.5 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 // swiftlint:disable line_length
 // swiftlint:disable variable_name
@@ -1746,6 +1746,10 @@ class SubscriptProtocolMock: SubscriptProtocol {
     subscript<T>(arg: String) -> T? where T : Cancellable {
         get throws { fatalError("Subscripts are not fully supported yet") }
     }
+    //MARK: - Subscript #6
+    subscript<T>(arg2: String) -> T {
+        get throws(CustomError) { fatalError("Subscripts are not fully supported yet") }
+    }
 }
 class TestProtocolMock<
     Value: Sequence,
@@ -1942,6 +1946,133 @@ class ThrowingVariablesProtocolMock: ThrowingVariablesProtocol {
     var firstNameThrowableError: Error?
     var firstNameClosure: (() throws -> String)?
 
+
+
+}
+class TypedThrowableProtocolMock: TypedThrowableProtocol {
+
+
+    var valueCallsCount = 0
+    var valueCalled: Bool {
+        return valueCallsCount > 0
+    }
+
+    var value: Int {
+        get throws(CustomError) {
+            valueCallsCount += 1
+            if let error = valueThrowableError {
+                throw error
+            }
+            if let valueClosure = valueClosure {
+                return try valueClosure()
+            } else {
+                return underlyingValue
+            }
+        }
+    }
+    var underlyingValue: Int!
+    var valueThrowableError: (CustomError)?
+    var valueClosure: (() throws(CustomError) -> Int)?
+    var valueAnyErrorCallsCount = 0
+    var valueAnyErrorCalled: Bool {
+        return valueAnyErrorCallsCount > 0
+    }
+
+    var valueAnyError: Int {
+        get throws(any Error) {
+            valueAnyErrorCallsCount += 1
+            if let error = valueAnyErrorThrowableError {
+                throw error
+            }
+            if let valueAnyErrorClosure = valueAnyErrorClosure {
+                return try valueAnyErrorClosure()
+            } else {
+                return underlyingValueAnyError
+            }
+        }
+    }
+    var underlyingValueAnyError: Int!
+    var valueAnyErrorThrowableError: (any Error)?
+    var valueAnyErrorClosure: (() throws(any Error) -> Int)?
+    var valueThrowsNever: Int {
+        get { return underlyingValueThrowsNever }
+        set(value) { underlyingValueThrowsNever = value }
+    }
+    var underlyingValueThrowsNever: (Int)!
+
+
+    //MARK: - init
+
+    var initTypedThrowableProtocolThrowableError: (CustomError)?
+    var initTypedThrowableProtocolClosure: (() throws(CustomError) -> Void)?
+
+    required init() {
+        initTypedThrowableProtocolClosure?()
+    }
+    //MARK: - init<E>
+
+
+    required init<E>(init2: Void) {
+        fatalError("Generic typed throws in inits are not fully supported yet")
+    }
+    //MARK: - doOrThrow
+
+    var doOrThrowStringThrowableError: (CustomError)?
+    var doOrThrowStringCallsCount = 0
+    var doOrThrowStringCalled: Bool {
+        return doOrThrowStringCallsCount > 0
+    }
+    var doOrThrowStringReturnValue: String!
+    var doOrThrowStringClosure: (() throws(CustomError) -> String)?
+
+    func doOrThrow() throws(CustomError) -> String {
+        doOrThrowStringCallsCount += 1
+        if let error = doOrThrowStringThrowableError {
+            throw error
+        }
+        if let doOrThrowStringClosure = doOrThrowStringClosure {
+            return try doOrThrowStringClosure()
+        } else {
+            return doOrThrowStringReturnValue
+        }
+    }
+
+    //MARK: - doOrThrowAnyError
+
+    var doOrThrowAnyErrorVoidThrowableError: (any Error)?
+    var doOrThrowAnyErrorVoidCallsCount = 0
+    var doOrThrowAnyErrorVoidCalled: Bool {
+        return doOrThrowAnyErrorVoidCallsCount > 0
+    }
+    var doOrThrowAnyErrorVoidClosure: (() throws(any Error) -> Void)?
+
+    func doOrThrowAnyError() throws(any Error) {
+        doOrThrowAnyErrorVoidCallsCount += 1
+        if let error = doOrThrowAnyErrorVoidThrowableError {
+            throw error
+        }
+        try doOrThrowAnyErrorVoidClosure?()
+    }
+
+    //MARK: - doOrThrowNever
+
+    var doOrThrowNeverVoidCallsCount = 0
+    var doOrThrowNeverVoidCalled: Bool {
+        return doOrThrowNeverVoidCallsCount > 0
+    }
+    var doOrThrowNeverVoidClosure: (() -> Void)?
+
+    func doOrThrowNever() {
+        doOrThrowNeverVoidCallsCount += 1
+        doOrThrowNeverVoidClosure?()
+    }
+
+    //MARK: - doOrRethrows<E>
+
+
+    func doOrRethrows<E>(_ block: () throws(E) -> Void) throws(E) -> Int where E: Error {
+        fatalError("Generic typed throws are not fully supported yet")
+    }
 
 
 }

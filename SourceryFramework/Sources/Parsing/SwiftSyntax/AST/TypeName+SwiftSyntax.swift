@@ -153,8 +153,9 @@ extension TypeName {
             }
             let returnTypeName = TypeName(typeIdentifier.returnClause.type)
             let asyncKeyword = typeIdentifier.effectSpecifiers?.asyncSpecifier.map { $0.text.trimmed }
-            let throwsOrRethrows = typeIdentifier.effectSpecifiers?.throwsSpecifier.map { $0.text.trimmed }
-            let name = "\(elements.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrows != nil ? " \(throwsOrRethrows!)" : "") -> \(returnTypeName.asSource)"
+            let throwsOrRethrows = typeIdentifier.effectSpecifiers?.throwsClause?.throwsSpecifier.text.trimmed
+            let throwsTypeName = typeIdentifier.effectSpecifiers?.throwsClause?.type.map { TypeName($0) }
+            let name = "\(elements.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrows != nil ? " \(throwsOrRethrows!)" : "")\(throwsTypeName != nil ? "(\(throwsTypeName!.asSource))": "") -> \(returnTypeName.asSource)"
             self.init(
                 name: name,
                 closure: ClosureType(
@@ -162,7 +163,8 @@ extension TypeName {
                     parameters: elements,
                     returnTypeName: returnTypeName,
                     asyncKeyword: asyncKeyword,
-                    throwsOrRethrowsKeyword: throwsOrRethrows)
+                    throwsOrRethrowsKeyword: throwsOrRethrows,
+                    throwsTypeName: throwsOrRethrows == "throws" ? throwsTypeName : nil)
             )
         } else if let typeIdentifier = node.as(AttributedTypeSyntax.self) {
             let type = TypeName(typeIdentifier.baseType) // TODO: add test for nested type with attributes at multiple level?

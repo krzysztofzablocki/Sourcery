@@ -29,6 +29,8 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
                 return `throws`
             case "throwsOrRethrowsKeyword":
                 return throwsOrRethrowsKeyword
+            case "throwsTypeName":
+                return throwsTypeName
             default:
                 fatalError("unable to lookup: \(member) in \(self)")
         }
@@ -81,8 +83,11 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
     /// throws or rethrows keyword
     public let throwsOrRethrowsKeyword: String?
 
+    /// Type of thrown error if specified
+    public let throwsTypeName: TypeName?
+
     /// :nodoc:
-    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil) {
+    public init(name: String, parameters: [ClosureParameter], returnTypeName: TypeName, returnType: Type? = nil, asyncKeyword: String? = nil, throwsOrRethrowsKeyword: String? = nil, throwsTypeName: TypeName? = nil) {
         self.name = name
         self.parameters = parameters
         self.returnTypeName = returnTypeName
@@ -90,11 +95,12 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
         self.asyncKeyword = asyncKeyword
         self.isAsync = asyncKeyword != nil
         self.throwsOrRethrowsKeyword = throwsOrRethrowsKeyword
-        self.`throws` = throwsOrRethrowsKeyword != nil
+        self.`throws` = throwsOrRethrowsKeyword != nil && !(throwsTypeName?.isNever ?? false)
+        self.throwsTypeName = throwsTypeName
     }
 
     public var asSource: String {
-        "\(parameters.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrowsKeyword != nil ? " \(throwsOrRethrowsKeyword!)" : "") -> \(returnTypeName.asSource)"
+        "\(parameters.asSource)\(asyncKeyword != nil ? " \(asyncKeyword!)" : "")\(throwsOrRethrowsKeyword != nil ? " \(throwsOrRethrowsKeyword!)\(throwsTypeName != nil ? "(\(throwsTypeName!.asSource))" : "")" : "") -> \(returnTypeName.asSource)"
     }
 
     /// :nodoc:
@@ -109,6 +115,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
         string.append("asyncKeyword = \(String(describing: self.asyncKeyword)), ")
         string.append("`throws` = \(String(describing: self.`throws`)), ")
         string.append("throwsOrRethrowsKeyword = \(String(describing: self.throwsOrRethrowsKeyword)), ")
+        string.append("throwsTypeName = \(String(describing: self.throwsTypeName)), ")
         string.append("asSource = \(String(describing: self.asSource))")
         return string
     }
@@ -126,6 +133,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
         results.append(contentsOf: DiffableResult(identifier: "asyncKeyword").trackDifference(actual: self.asyncKeyword, expected: castObject.asyncKeyword))
         results.append(contentsOf: DiffableResult(identifier: "`throws`").trackDifference(actual: self.`throws`, expected: castObject.`throws`))
         results.append(contentsOf: DiffableResult(identifier: "throwsOrRethrowsKeyword").trackDifference(actual: self.throwsOrRethrowsKeyword, expected: castObject.throwsOrRethrowsKeyword))
+        results.append(contentsOf: DiffableResult(identifier: "throwsTypeName").trackDifference(actual: self.throwsTypeName, expected: castObject.throwsTypeName))
         return results
     }
 
@@ -140,6 +148,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
         hasher.combine(self.asyncKeyword)
         hasher.combine(self.`throws`)
         hasher.combine(self.throwsOrRethrowsKeyword)
+        hasher.combine(self.throwsTypeName)
         return hasher.finalize()
     }
 
@@ -153,6 +162,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
         if self.asyncKeyword != rhs.asyncKeyword { return false }
         if self.`throws` != rhs.`throws` { return false }
         if self.throwsOrRethrowsKeyword != rhs.throwsOrRethrowsKeyword { return false }
+        if self.throwsTypeName != rhs.throwsTypeName { return false }
         return true
     }
 
@@ -183,6 +193,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
             self.asyncKeyword = aDecoder.decode(forKey: "asyncKeyword")
             self.`throws` = aDecoder.decode(forKey: "`throws`")
             self.throwsOrRethrowsKeyword = aDecoder.decode(forKey: "throwsOrRethrowsKeyword")
+            self.throwsTypeName = aDecoder.decode(forKey: "throwsTypeName")
         }
 
         /// :nodoc:
@@ -195,6 +206,7 @@ public final class ClosureType: NSObject, SourceryModel, Diffable, SourceryDynam
             aCoder.encode(self.asyncKeyword, forKey: "asyncKeyword")
             aCoder.encode(self.`throws`, forKey: "`throws`")
             aCoder.encode(self.throwsOrRethrowsKeyword, forKey: "throwsOrRethrowsKeyword")
+            aCoder.encode(self.throwsTypeName, forKey: "throwsTypeName")
         }
 // sourcery:end
 
