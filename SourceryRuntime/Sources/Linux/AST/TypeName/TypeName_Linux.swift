@@ -23,8 +23,12 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return isProtocolComposition
             case "isVoid":
                 return isVoid
+            case "isArray":
+                return isArray
             case "isClosure":
                 return isClosure
+            case "isDictionary":
+                return isDictionary
             case "isGeneric":
                 return isGeneric
             case "closure":
