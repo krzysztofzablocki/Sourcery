@@ -25,6 +25,8 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return isVoid
             case "isClosure":
                 return isClosure
+            case "isGeneric":
+                return isGeneric
             case "closure":
                 return closure
             case "set":
@@ -265,7 +267,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
 
         /// :nodoc:
         required public init?(coder aDecoder: NSCoder) {
-            guard let name: String = aDecoder.decode(forKey: "name") else { 
+            guard let name: String = aDecoder.decode(forKey: "name") else {
                 withVaList(["name"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -274,13 +276,13 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
             self.generic = aDecoder.decode(forKey: "generic")
             self.isProtocolComposition = aDecoder.decode(forKey: "isProtocolComposition")
             self.actualTypeName = aDecoder.decode(forKey: "actualTypeName")
-            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else { 
+            guard let attributes: AttributeList = aDecoder.decode(forKey: "attributes") else {
                 withVaList(["attributes"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
                 fatalError()
              }; self.attributes = attributes
-            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else { 
+            guard let modifiers: [SourceryModifier] = aDecoder.decode(forKey: "modifiers") else {
                 withVaList(["modifiers"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
@@ -288,7 +290,7 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
              }; self.modifiers = modifiers
             self.isOptional = aDecoder.decode(forKey: "isOptional")
             self.isImplicitlyUnwrappedOptional = aDecoder.decode(forKey: "isImplicitlyUnwrappedOptional")
-            guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else { 
+            guard let unwrappedTypeName: String = aDecoder.decode(forKey: "unwrappedTypeName") else {
                 withVaList(["unwrappedTypeName"]) { arguments in
                     NSException.raise(NSExceptionName.parseErrorException, format: "Key '%@' not found.", arguments: arguments)
                 }
