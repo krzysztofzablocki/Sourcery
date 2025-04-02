@@ -9,6 +9,16 @@ import Foundation
 public final class TypeName: NSObject, SourceryModelWithoutDescription, LosslessStringConvertible, Diffable, SourceryDynamicMemberLookup {
     public subscript(dynamicMember member: String) -> Any? {
         switch member {
+            case "array":
+                return array
+            case "closure":
+                return closure
+            case "dictionary":
+                return dictionary
+            case "generic":
+                return generic
+            case "set":
+                return set
             case "tuple":
                 return tuple
             case "name":
@@ -31,10 +41,6 @@ public final class TypeName: NSObject, SourceryModelWithoutDescription, Lossless
                 return isDictionary
             case "isGeneric":
                 return isGeneric
-            case "closure":
-                return closure
-            case "set":
-                return set
             case "isSet":
                 return isSet
             default:
